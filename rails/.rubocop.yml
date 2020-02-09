@@ -1,0 +1,30 @@
+require: rubocop-rails
+
+AllCops:
+  Exclude:
+    - db/**/**
+    - bin/**
+    - Guardfile
+
+Naming/FileName:
+  Exclude:
+    - config/initializers/**
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/**
+    - lib/tasks/**
+
+Metrics/LineLength:
+  Max: 180
+
+Rails:
+  Enabled: true
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+  Exclude:
+    - config/application.rb
+
+Style/Encoding:
+  Enabled: false
