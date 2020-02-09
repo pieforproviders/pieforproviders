@@ -35,7 +35,7 @@ A digital assistant for your child care business.
 ## Get Started
 
 - clone the repo
-- `cd pieforproviders`
+- `cd pieforproviders/rails`
 - copy `.env.sample` to `.env` and add values
 - `bundle install`
 - `bundle exec rails db:setup`
