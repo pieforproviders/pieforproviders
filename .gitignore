@@ -33,3 +33,6 @@ coverage
 
 # for rvm
 .ruby-gemset
+
+# built node app
+/public/*
