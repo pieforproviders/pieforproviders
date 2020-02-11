@@ -1,25 +1,20 @@
-import React from 'react'
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch
-} from 'react-router-dom'
-import Dashboard from './Dashboard'
-import Login from './Login'
+import React from "react"
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom"
+import Dashboard from "./Dashboard"
+import Login from "./Login"
 
 function App() {
   return (
     <Router>
       <Switch>
-        <Route path='/login'>
+        <Route path="/login">
           <Login />
         </Route>
-        <Route path='/dashboard'>
+        <Route path="/dashboard">
           <Dashboard />
         </Route>
-        <Route path='/'>
-          <Redirect to={'/login'} />
+        <Route path="/">
+          <Redirect to={"/login"} />
         </Route>
       </Switch>
     </Router>

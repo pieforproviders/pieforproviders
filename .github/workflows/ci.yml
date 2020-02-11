@@ -25,10 +25,7 @@ jobs:
         run: |
           cd client
           yarn
-          yarn lint --watchAll=false
-          bundle exec rubocop
-          bundle exec rails db:prepare
-          bundle exec rspec
+          yarn lint
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest
