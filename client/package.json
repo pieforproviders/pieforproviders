@@ -54,6 +54,9 @@
     ],
     "*.+(json|css|md)": [
       "prettier --write"
+    ],
+    "../**/*.rb": [
+      "bundle exec rubocop -a"
     ]
   },
   "prettier": {
