@@ -5,11 +5,6 @@ jobs:
     name: Backend linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.6.x
       - name: Rubocop
         run: |
           sudo apt-get -yqq install libpq-dev
@@ -20,15 +15,11 @@ jobs:
     name: Frontend linting
     runs-on: ubuntu-latest    
     steps:
-      - uses: actions/checkout@v1
-      - name: Go to Client App
-        run: cd client
-      - name: Install Dependencies
-        run: yarn
-      - name: Build
-        run: yarn build
-      - name: Test
-        run: yarn test --watchAll=false
+      - name: Linting
+        run: |
+          cd client
+          yarn
+          yarn lint
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest
@@ -42,12 +33,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.6.x
-      - name: Build and run tests
+      - name: rspec
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/test
           RAILS_ENV: test
@@ -56,19 +42,14 @@ jobs:
           sudo apt-get -yqq install libpq-dev
           gem install bundler
           bundle install --jobs 4 --retry 3
-          bundle exec rubocop
           bundle exec rails db:prepare
           bundle exec rspec
   test_frontend:
     name: Frontend tests
     runs-on: ubuntu-latest    
     steps:
-      - uses: actions/checkout@v1
-      - name: Go to Client App
-        run: cd client
-      - name: Install Dependencies
-        run: yarn
-      - name: Build
-        run: yarn build
-      - name: Test
-        run: yarn test --watchAll=false
+      - name: yarn test
+        run: |
+          cd client
+          yarn
+          yarn test --watchAll=false
