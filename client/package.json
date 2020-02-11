@@ -56,7 +56,7 @@
       "prettier --write"
     ],
     "../**/*.rb": [
-      "bundle exec rubocop -a"
+      "rubocop -a"
     ]
   },
   "prettier": {
