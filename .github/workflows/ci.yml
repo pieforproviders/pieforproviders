@@ -2,6 +2,7 @@ name: CI
 on: [push, pull_request]
 jobs:
   lint_backend:
+    name: Backend linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -16,7 +17,7 @@ jobs:
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
   lint_frontend:
-    name: Frontend tests
+    name: Frontend linting
     runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v1
@@ -29,6 +30,7 @@ jobs:
       - name: Test
         run: yarn test --watchAll=false
   test_backend:
+    name: Backend tests
     runs-on: ubuntu-latest
     services:
       db:
