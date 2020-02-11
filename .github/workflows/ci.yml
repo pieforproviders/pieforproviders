@@ -1,5 +1,9 @@
 name: CI
-on: [push]
+on: 
+  push:
+  pull_request:
+    branches:
+    - master
 jobs:
   lint_backend:
     name: Backend linting
