@@ -5,6 +5,11 @@ jobs:
     name: Backend linting
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
       - name: Rubocop
         run: |
           sudo apt-get -yqq install libpq-dev
@@ -15,11 +20,15 @@ jobs:
     name: Frontend linting
     runs-on: ubuntu-latest    
     steps:
+      - uses: actions/checkout@v1
       - name: Linting
         run: |
           cd client
           yarn
-          yarn lint
+          yarn lint --watchAll=false
+          bundle exec rubocop
+          bundle exec rails db:prepare
+          bundle exec rspec
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest
@@ -33,6 +42,11 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
+      - uses: actions/checkout@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
       - name: rspec
         env:
           DATABASE_URL: postgres://postgres:@localhost:5432/test
@@ -48,6 +62,7 @@ jobs:
     name: Frontend tests
     runs-on: ubuntu-latest    
     steps:
+      - uses: actions/checkout@v1
       - name: yarn test
         run: |
           cd client
