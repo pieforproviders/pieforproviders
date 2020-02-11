@@ -14,7 +14,8 @@ export function Dashboard() {
   }, [])
   return (
     <div className='Dashboard'>
-      <p>I'm the dashboard</p>
+      <h1>I'm the dashboard</h1>
+      <p>Here are all the users:</p>
       {users.map(user => (
         <p key={user.email}>
           {user.full_name}: {user.email}
