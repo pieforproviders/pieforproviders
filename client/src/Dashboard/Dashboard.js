@@ -13,8 +13,8 @@ export function Dashboard() {
       .catch(error => console.log(error))
   }, [])
   return (
-    <div className='Dashboard'>
-      <h1>I'm the dashboard</h1>
+    <div className="dashboard">
+      <h1>This is the dashboard</h1>
       <p>Here are all the users:</p>
       {users.map(user => (
         <p key={user.email}>

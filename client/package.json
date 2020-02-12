@@ -2,19 +2,19 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=12.14.1",
+    "npm": ">=6.13.1"
+  },
   "proxy": "http://localhost:3001",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "autoprefixer": "^9.7.3",
+    "babel-plugin-syntax-decorators": "^6.13.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "husky": "^4.2.1",
-    "lint-staged": "^10.0.7",
-    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
@@ -23,27 +23,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "lint": "eslint .",
+    "test": "react-scripts test --coverage",
+    "lint": "yarn eslint ./src",
+    "lint:fix": "yarn lint --fix",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "plugin:prettier/recommended"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "husky": {
     "hooks": {
@@ -62,8 +45,69 @@
     ]
   },
   "prettier": {
-    "printWidth": 90,
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "none",
     "bracketSpacing": true,
-    "semi": false
+    "semi": false,
+    "useTabs": false,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "react",
+      "prettier"
+    ],
+    "extends": [
+      "react-app",
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "prettier",
+      "prettier/react"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    }
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!jest/**",
+      "!build/**",
+      "!src/serviceWorker.js",
+      "!src/index.js",
+      "!src/util/commands.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!geodesy).+\\.js$"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.3",
+    "enzyme-to-json": "^3.4.3",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1"
   }
 }
