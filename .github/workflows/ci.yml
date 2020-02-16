@@ -1,9 +1,5 @@
 name: CI
-on: 
-  push:
-  pull_request:
-    branches:
-    - master
+on: [pull_request]
 jobs:
   lint_backend:
     name: Backend linting
@@ -31,7 +27,6 @@ jobs:
           yarn
           yarn lint
   test_backend:
-    name: Backend tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -44,23 +39,35 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
+
+      - uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.6.x
-      - name: rspec
-        env:
-          DATABASE_URL: postgres://postgres:@localhost:5432/test
-          RAILS_ENV: test
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          ruby-version: 2.5.5
+
+      - name: Install dependent libraries
+        run: sudo apt-get install libpq-dev
+
+      - name: Bundle install
         run: |
-          sudo apt-get -yqq install libpq-dev
           gem install bundler
           bundle install --jobs 4 --retry 3
-          bundle exec rails db:prepare
-          bundle exec rspec
+
+      - name: Setup Database
+        run: |
+          cp config/database.yml.github-actions config/database.yml
+          bundle exec rake db:create
+          bundle exec rake db:schema:load
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+      - name: Run RSpec
+        run: COVERAGE=true bundle exec rspec  --require rails_helper
+        env:
+          RAILS_ENV: test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
   test_frontend:
     name: Frontend tests
     runs-on: ubuntu-latest    
