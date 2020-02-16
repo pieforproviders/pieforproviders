@@ -8,12 +8,6 @@ RSpec.configure do |config|
   # to ensure that it's configured to serve Swagger from the same folder
   config.swagger_root = Rails.root.join('swagger').to_s
 
-  # TODO: set this to env port - how do we get this inside docker?
-  # PORT || HOST_PORT || 3000 ?
-  # https://docs.docker.com/compose/environment-variables/
-  # protocol = ActionMailer::Base.default_url_options[:protocol]
-  # host = ActionMailer::Base.default_url_options[:host]
-
   # Define one or more Swagger documents and provide global metadata for each one
   # When you run the 'rswag:specs:swaggerize' rake task, the complete Swagger will
   # be generated at the provided relative path under swagger_root

@@ -5,7 +5,8 @@ import './Login.css'
 export function Login() {
   return (
     <div className="login">
-      Visit the <Link to="dashboard">Dashboard</Link>
+      A user would normally log in here. But for now, visit the{' '}
+      <Link to="dashboard">Dashboard</Link>
     </div>
   )
 }
