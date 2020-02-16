@@ -2,22 +2,91 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=12.14.1",
+    "npm": ">=6.13.1"
+  },
   "proxy": "http://localhost:3001",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "autoprefixer": "^9.7.3",
+    "babel-plugin-syntax-decorators": "^6.13.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test --coverage",
+    "lint": "yarn eslint ./src",
+    "lint:fix": "yarn lint --fix",
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.+(js|jsx)": [
+      "eslint --fix"
+    ],
+    "*.+(json|css|md)": [
+      "prettier --write"
+    ],
+    "../**/*.rb": [
+      "rubocop -a"
+    ]
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "semi": false,
+    "useTabs": false,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "plugins": [
+      "react",
+      "prettier"
+    ],
+    "extends": [
+      "react-app",
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "prettier",
+      "prettier/react"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    }
+  },
+  "jest": {
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!jest/**",
+      "!build/**",
+      "!src/serviceWorker.js",
+      "!src/index.js",
+      "!src/util/commands.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!geodesy).+\\.js$"
+    ]
   },
   "browserslist": {
     "production": [
@@ -30,5 +99,15 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.18.3",
+    "enzyme-to-json": "^3.4.3",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
+    "prettier": "^1.19.1"
   }
 }

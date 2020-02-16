@@ -1,0 +1,19 @@
+{
+  "name": "Pie for Providers",
+  "description": "Pie for Providers App",
+  "addons": ["heroku-postgresql:hobby-dev", "papertrail"],
+  "env": {
+    "RAILS_ENV": "production"
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/ruby"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "bundle exec rails db:migrate:with_data"
+  }
+}
