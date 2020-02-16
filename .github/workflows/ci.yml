@@ -5,8 +5,6 @@ on:
     branches:
     - master
 jobs:
-  build_ruby:
-    name: Build Ruby
   lint_backend:
     name: Backend linting
     runs-on: ubuntu-latest
