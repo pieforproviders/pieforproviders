@@ -1,5 +1,9 @@
 name: CI
-on: [pull_request]
+on: 
+  push:
+  pull_request:
+    branches:
+    - master
 jobs:
   lint_backend:
     name: Backend linting
@@ -27,6 +31,7 @@ jobs:
           yarn
           yarn lint
   test_backend:
+    name: Backend tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -39,19 +44,16 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v1
-
-      - uses: actions/setup-ruby@v1
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
         with:
-          ruby-version: 2.5.5
-
+          ruby-version: 2.6.x
       - name: Install dependent libraries
         run: sudo apt-get install libpq-dev
-
       - name: Bundle install
         run: |
           gem install bundler
           bundle install --jobs 4 --retry 3
-
       - name: Setup Database
         run: |
           cp config/database.yml.github-actions config/database.yml
@@ -61,9 +63,8 @@ jobs:
           RAILS_ENV: test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-
       - name: Run RSpec
-        run: COVERAGE=true bundle exec rspec  --require rails_helper
+        run: bundle exec rspec --require rails_helper
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
