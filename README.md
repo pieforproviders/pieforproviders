@@ -3,17 +3,22 @@
 
 A digital assistant for your child care business.
 
-## Prerequisites
+## Why Contribute?
 
-* postgres
-* bundler
+We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve. 
 
-## Optional
+We need your help. 
 
-* rvm or another ruby version manager to isolate your dependency installation
-* heroku cli
+Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work. 
 
-## Architecture
+Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md).
+
+Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
+
+<details>
+  <summary>Architecture</summary>
+
+* ERD/Database Planning Diagram: [https://dbdiagram.io/d/5e1a354f94d9ab14375a1f91](https://dbdiagram.io/d/5e1a354f94d9ab14375a1f91)
 
 * Backend: Rails
   * **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
@@ -27,17 +32,33 @@ A digital assistant for your child care business.
     * Faker
   * v1 API Routes returning JSON
   * Postgres DB
-* Frontend: TBD (probably React)
+* Frontend: React
+  * ESLint/Prettier
+  * Jest/Enzyme
+  * Husky for pre-commit hooks
+</details>
 
-## Assumptions, Assertions, and Comments
+<details>
+  <summary>Assumptions, Assertions, and Comments</summary>
+  
+  * I decided to go with a monorepo because of previous experience managing multi-repo projects.  If you need to make changes to multiple layers of the application, creating and managing multiple branches on multiple repos is more disruptive than handling merge conflicts, in my experience.  With a monorepo, everything you need to code review a PR is in the same place, and it makes it easier to track changes that impacted multiple layers of the application.
+</details>
 
-* I decided to go with a monorepo because of previous experience managing multi-repo projects.  If you need to make changes to multiple layers of the application, creating and managing multiple branches on multiple repos is more disruptive than handling merge conflicts, in my experience.  With a monorepo, everything you need to code review a PR is in the same place, and it makes it easier to track changes that impacted multiple layers of the application.
+## Prerequisites
+
+* `postgres`
+* `bundler`
+
+## Optional
+
+* `rvm` or another ruby version manager to isolate your dependency installation
+* `heroku cli`
 
 ## Get Started
 
 - clone the repo
 - `cd pieforproviders/rails`
-- copy `.env.sample` to `.env` and add values
+- copy `.env.sample` to `.env` and add values (contact a repo contributor)
 - `bundle install`
 - `bundle exec rails db:setup`
 - `bundle exec rails s` or `heroku local` if you prefer to use the heroku cli
