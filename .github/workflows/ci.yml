@@ -14,10 +14,17 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.6.x
+      - uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-
       - name: Rubocop
         run: |
           sudo apt-get -yqq install libpq-dev
           gem install bundler
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
   lint_frontend:
@@ -25,6 +32,13 @@ jobs:
     runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v1
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
       - name: Linting
         run: |
           cd client
@@ -48,11 +62,18 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: 2.6.x
+      - uses: actions/cache@v1
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gem-
       - name: Install dependent libraries
         run: sudo apt-get install libpq-dev
       - name: Bundle install
         run: |
           gem install bundler
+          bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
       - name: Setup Database
         run: |
@@ -74,6 +95,13 @@ jobs:
     runs-on: ubuntu-latest    
     steps:
       - uses: actions/checkout@v1
+      - name: Cache NPM dependencies
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
       - name: yarn test
         run: |
           cd client

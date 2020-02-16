@@ -5,6 +5,7 @@ AllCops:
     - db/**/**
     - bin/**
     - Guardfile
+    - vendor/**/*
 
 Naming/FileName:
   Exclude:
