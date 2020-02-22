@@ -3,6 +3,10 @@
 
 A digital assistant for your child care business.
 
+## Code of Conduct
+
+Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with this project.
+
 ## Why Contribute?
 
 We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve. 
@@ -48,6 +52,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 * `postgres`
 * `bundler`
+* `XCode Select` tools if you're on Mac
 
 ## Optional
 
@@ -59,11 +64,16 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - clone the repo
 - `cd pieforproviders/rails`
 - copy `.env.sample` to `.env` and add values (contact a repo contributor)
+- `gem install bundler`
 - `bundle install`
 - `bundle exec rails db:setup`
-- `bundle exec rails s` or `heroku local` if you prefer to use the heroku cli
+- `npm install yarn -g`
+- `cd client`
+- `yarn install`
+- `cd ../`
+- `bundle exec rails s` or `heroku local -f Procfile.dev` if you prefer to use the heroku cli
 
-Visit `localhost:3000` to see Rails running. 🥳
+Visit `localhost:3000` to see the React frontend. 🥳
 
 ## Running tests
 
@@ -83,3 +93,13 @@ Visit `localhost:3000` to see Rails running. 🥳
 ## Notes
 
 * re: names - full_name with a greeting_name is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
+
+## Troubleshooting
+
+If you get the following error:
+
+```
+gyp: No Xcode or CLT version detected!
+```
+
+try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
