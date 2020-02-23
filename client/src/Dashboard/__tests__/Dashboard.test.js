@@ -1,6 +1,6 @@
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import { Dashboard } from './Dashboard'
+import { Dashboard } from '../Dashboard'
 import { act } from 'react-dom/test-utils'
 
 describe('<Dashboard />', () => {
