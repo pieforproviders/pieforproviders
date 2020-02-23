@@ -9,6 +9,10 @@ Rails.application.routes.draw do
       resources :users
     end
   end
+
+  get '*path', to: 'application#fallback_index_html', constraints: lambda { |request|
+    !request.xhr? && request.format.html?
+  }
 end
 
 # rubocop:disable Metrics/LineLength
