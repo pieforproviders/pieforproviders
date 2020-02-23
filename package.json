@@ -9,8 +9,8 @@
   "private": false,
   "scripts": {
     "build": "echo 'I am building!' && cd client && yarn install && yarn build && cd ..",
-    "deploy": "cp -a client/build/. public/",
-    "postinstall": "yarn build && yarn deploy && echo 'Client built!'"
+    "deploy": "echo 'I am deploying!' && cp -a client/build/. public/",
+    "postinstall": "echo 'I am postinstalling!' && yarn build && yarn deploy && echo 'Client built!'"
   },
   "engines": {
     "yarn": "1.21.1",
