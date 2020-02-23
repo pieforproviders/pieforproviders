@@ -4,7 +4,6 @@ import './Login.css'
 import ReactGA from 'react-ga'
 
 export function Login() {
-  ReactGA.initialize('UA-117297491-1')
   ReactGA.pageview(window.location.pathname + window.location.search)
   ReactGA.event({
     category: 'Guest',
