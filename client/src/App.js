@@ -12,6 +12,7 @@ import ReactGA from 'react-ga'
 
 function App() {
   ReactGA.initialize('UA-117297491-1', { testMode: true })
+  console.log('app.js loaded')
   return (
     <Router>
       <Switch>
