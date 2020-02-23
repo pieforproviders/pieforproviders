@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom'
 import Dashboard from './Dashboard'
 import Login from './Login'
+import NotFound from './NotFound'
 import ReactGA from 'react-ga'
 
 function App() {
@@ -20,9 +21,10 @@ function App() {
         <Route path="/dashboard">
           <Dashboard />
         </Route>
-        <Route path="/">
+        <Route exact path="/">
           <Redirect to={'/login'} />
         </Route>
+        <Route component={NotFound} />
       </Switch>
     </Router>
   )
