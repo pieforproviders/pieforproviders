@@ -21,6 +21,7 @@ export function Dashboard() {
           {user.full_name}: {user.email}
         </p>
       ))}
+      <p>Testing new content deploy</p>
     </div>
   )
 }
