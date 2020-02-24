@@ -10,7 +10,7 @@
   "scripts": {
     "build": "echo 'I am building this!' && cd client && yarn install && yarn build && cd ..",
     "deploy": "echo 'I am deploying this!' && cp -a client/build/. public/",
-    "postinstall": "echo 'I am postinstalling this!' && yarn build && yarn deploy && echo 'Client built!'"
+    "heroku-postbuild": "echo 'I am postinstalling this!' && yarn build && yarn deploy && echo 'Client built!'"
   },
   "engines": {
     "yarn": "1.21.1",
