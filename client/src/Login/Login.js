@@ -13,6 +13,7 @@ export function Login() {
     <div className="login">
       A user would normally log in here. But for now, visit the{' '}
       <Link to="dashboard">Dashboard</Link>
+      <p>Gonna test new content deploys!</p>
     </div>
   )
 }
