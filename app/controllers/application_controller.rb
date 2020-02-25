@@ -4,10 +4,6 @@
 class ApplicationController < ActionController::API
   around_action :collect_metrics
 
-  def fallback_index_html
-    render file: 'public/index.html', layout: false
-  end
-
   def collect_metrics
     start = Time.zone.now
     yield

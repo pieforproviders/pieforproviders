@@ -1,5 +1,10 @@
 import React from 'react'
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch
+} from 'react-router-dom'
 import Dashboard from './Dashboard'
 import Login from './Login'
 import NotFound from './NotFound'
@@ -9,7 +14,7 @@ function App() {
   ReactGA.initialize('UA-117297491-1', { testMode: true })
   console.log('app.js loaded')
   return (
-    <BrowserRouter basename="/public">
+    <Router>
       <Switch>
         <Route path="/login">
           <Login />
@@ -22,7 +27,7 @@ function App() {
         </Route>
         <Route component={NotFound} />
       </Switch>
-    </BrowserRouter>
+    </Router>
   )
 }
 
