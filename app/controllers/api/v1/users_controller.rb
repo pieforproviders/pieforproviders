@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # API for application users
-class Api::V1::UsersController < Api::V1::ApiController
+class Api::V1::UsersController < Api::V1::ApiController                   
   before_action :set_user, only: %i[show update destroy]
 
   # GET /users

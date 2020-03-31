@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   }
 end
 
-# rubocop:disable Metrics/LineLength
+# rubocop:disable Layout/LineLength
 
 # == Route Map
 #
@@ -59,4 +59,4 @@ end
 #             update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
 #                  rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
 
-# rubocop:enable Metrics/LineLength
+# rubocop:enable Layout/LineLength
