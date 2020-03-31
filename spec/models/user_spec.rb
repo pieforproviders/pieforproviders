@@ -17,21 +17,18 @@ end
 # Table name: users
 #
 #  id                         :uuid             not null, primary key
-#  active                     :boolean          default(TRUE)
-#  county                     :string
-#  date_of_birth              :date
-#  email                      :string
-#  full_name                  :string
+#  active                     :boolean          default(TRUE), not null
+#  email                      :string           not null
+#  full_name                  :string           not null
 #  greeting_name              :string
-#  language                   :string
-#  okay_to_email              :boolean          default(TRUE)
-#  okay_to_phone              :boolean          default(TRUE)
-#  okay_to_text               :boolean          default(TRUE)
-#  opt_in_email               :boolean          default(TRUE)
-#  opt_in_phone               :boolean          default(TRUE)
-#  opt_in_text                :boolean          default(TRUE)
+#  language                   :string           not null
+#  mobile                     :string
+#  opt_in_email               :boolean          default(TRUE), not null
+#  opt_in_phone               :boolean          default(TRUE), not null
+#  opt_in_text                :boolean          default(TRUE), not null
 #  phone                      :string
-#  service_agreement_accepted :boolean          default(TRUE)
-#  timezone                   :string
-#  zip                        :string
+#  service_agreement_accepted :boolean          default(FALSE), not null
+#  timezone                   :string           not null
+#  created_at                 :datetime         not null
+#  updated_at                 :datetime         not null
 #

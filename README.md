@@ -71,7 +71,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - `cd client`
 - `yarn install`
 - `cd ../`
-- `bundle exec rails s` or `heroku local -f Procfile.dev` if you prefer to use the heroku cli
+- `rake start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 

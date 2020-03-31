@@ -3,14 +3,14 @@ class CreateUsers < ActiveRecord::Migration[6.0]
     create_table :users, id: :uuid do |t|
       t.boolean :active, null: false, default: true
       t.string :full_name, null: false
-      t.string :greeting_name, 
+      t.string :greeting_name
       t.string :email, unique: true, null: false
       t.string :language, null: false
-      t.string :mobile, 
+      t.string :mobile
       t.boolean :opt_in_email, null: false, default: true
       t.boolean :opt_in_phone, null: false, default: true
       t.boolean :opt_in_text, null: false, default: true
-      t.string :phone, 
+      t.string :phone
       t.boolean :service_agreement_accepted, null: false, default: false
       t.string :timezone, null: false
       t.timestamps
