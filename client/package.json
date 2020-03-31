@@ -37,9 +37,6 @@
     ],
     "src/**/*.scss": [
       "stylelint --syntax scss --fix", "git add"
-    ],
-    "../**/*.rb": [
-      "rubocop -a", "git add"
     ]
   },
   "husky": {
