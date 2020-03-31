@@ -1,13 +1,14 @@
 user = User.first_or_create!(
   email: ENV.fetch("TESTUSER_EMAIL", "test@test.com"),
-  full_name: "Kate Donaldson"
+  full_name: "Kate Donaldson",
+  greeting_name: "Kate",
+  phone: "8888888888",
+  mobile: "8888888888",
+  opt_in_text: true,
+  opt_in_email: true,
+  opt_in_phone: true,
+  active: true,
+  language: "english",
+  service_agreement_accepted: false,
+  timezone: "Central Time (US & Canada)"
 )
-
-child = Child.first_or_create!(
-  full_name: Faker::Movies::HarryPotter.character,
-  greeting_name: Faker::Name.first_name,
-  date_of_birth: Faker::Date.birthday(min_age: 0, max_age: 9),
-  users: [user]
-)
-
-UserChild.find_by(user: user, child: child).update_attributes(relationship: "provider")
