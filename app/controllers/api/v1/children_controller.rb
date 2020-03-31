@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # API for children receiving care
-class Api::V1::ChildrenController < Api::V1::ApiController
+class Api::V1::ChildrenController < Api::V1::ApiController                 
   before_action :set_child, only: %i[show update destroy]
 
   # GET /children
