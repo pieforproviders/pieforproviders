@@ -31,6 +31,22 @@
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint . --fix", "git add"
+    ],
+    "src/**/*.scss": [
+      "stylelint --syntax scss --fix", "git add"
+    ],
+    "../**/*.rb": [
+      "rubocop -a", "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "prettier": {
     "printWidth": 80,
     "tabWidth": 2,
