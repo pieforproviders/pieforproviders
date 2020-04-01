@@ -10,7 +10,7 @@ Contributions to Pie for Providers should be made in the form of GitHub pull req
 
 ## Workflow
 
-When you start working on an issue:
+When you start working on an issue:  
 [ ] assign the ticket to yourself  
 [ ] visit the [project board](https://github.com/pieforproviders/pieforproviders/projects/1) and pull the ticket into "In Progress"  
 
