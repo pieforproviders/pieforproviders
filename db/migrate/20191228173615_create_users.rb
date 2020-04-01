@@ -4,7 +4,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.boolean :active, null: false, default: true
       t.string :full_name, null: false
       t.string :greeting_name
-      t.string :email, unique: true, null: false
+      t.string :email, null: false
       t.string :language, null: false
       t.string :mobile
       t.boolean :opt_in_email, null: false, default: true
@@ -14,6 +14,8 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.boolean :service_agreement_accepted, null: false, default: false
       t.string :timezone, null: false
       t.timestamps
+
+      t.index :email, unique: true
     end
   end
 end

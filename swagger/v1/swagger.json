@@ -5,180 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/children": {
-      "get": {
-        "summary": "lists all children",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "children found"
-          },
-          "500": {
-            "description": "internal server error"
-          }
-        }
-      },
-      "post": {
-        "summary": "creates a child",
-        "tags": [
-          "children"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "child",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createChild"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "child created"
-          },
-          "422": {
-            "description": "invalid request"
-          },
-          "500": {
-            "description": "internal server error"
-          }
-        }
-      }
-    },
-    "/api/v1/children/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "type": "string",
-          "required": true
-        }
-      ],
-      "get": {
-        "summary": "retrieves a child",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "child found"
-          },
-          "404": {
-            "description": "child not found"
-          },
-          "500": {
-            "description": "internal server error"
-          }
-        }
-      },
-      "put": {
-        "summary": "updates a child",
-        "tags": [
-          "children"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "child",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updateChild"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "child updated"
-          },
-          "422": {
-            "description": "child cannot be updated"
-          },
-          "404": {
-            "description": "child not found"
-          },
-          "500": {
-            "description": "internal server error"
-          }
-        }
-      },
-      "delete": {
-        "summary": "deletes a child",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "child deleted"
-          },
-          "404": {
-            "description": "child not found"
-          },
-          "500": {
-            "description": "internal server error"
-          }
-        }
-      }
-    },
     "/api/v1/users": {
       "get": {
         "summary": "lists all users",
@@ -361,14 +187,6 @@
         "user": {
           "type": "object",
           "properties": {
-            "county": {
-              "type": "string",
-              "example": "Cook"
-            },
-            "date_of_birth": {
-              "type": "string",
-              "example": "1980-10-11"
-            },
             "email": {
               "type": "string",
               "example": "user@user.com"
@@ -396,69 +214,11 @@
             "timezone": {
               "type": "string",
               "example": "Eastern Time (US & Canada)"
-            },
-            "zip": {
-              "type": "string",
-              "example": "01545"
             }
           },
           "required": [
             "email"
           ]
-        }
-      }
-    },
-    "createChild": {
-      "type": "object",
-      "properties": {
-        "child": {
-          "type": "object",
-          "properties": {
-            "full_name": {
-              "type": "string",
-              "example": "Ronald Weasley"
-            },
-            "greeting_name": {
-              "type": "string",
-              "example": "Ron"
-            },
-            "date_of_birth": {
-              "type": "string",
-              "example": "1980-12-10"
-            },
-            "user_ids": {
-              "type": "array"
-            }
-          },
-          "required": [
-            "full_name",
-            "user_ids"
-          ]
-        }
-      }
-    },
-    "updateChild": {
-      "type": "object",
-      "properties": {
-        "child": {
-          "type": "object",
-          "properties": {
-            "full_name": {
-              "type": "string",
-              "example": "Ronald Weasley"
-            },
-            "greeting_name": {
-              "type": "string",
-              "example": "Ron"
-            },
-            "date_of_birth": {
-              "type": "string",
-              "example": "1980-12-10"
-            },
-            "user_ids": {
-              "type": "array"
-            }
-          }
         }
       }
     },
@@ -468,14 +228,6 @@
         "user": {
           "type": "object",
           "properties": {
-            "county": {
-              "type": "string",
-              "example": "Cook"
-            },
-            "date_of_birth": {
-              "type": "string",
-              "example": "1980-10-11"
-            },
             "email": {
               "type": "string",
               "example": "user@user.com"
@@ -503,10 +255,6 @@
             "timezone": {
               "type": "string",
               "example": "Eastern Time (US & Canada)"
-            },
-            "zip": {
-              "type": "string",
-              "example": "01545"
             }
           }
         }

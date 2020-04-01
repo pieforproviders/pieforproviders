@@ -50,19 +50,10 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   def user_params
     params.require(:user).permit(
-      :active,
-      :email,
-      :full_name,
-      :greeting_name,
-      :id,
-      :language,
-      :mobile,
-      :opt_in_email,
-      :opt_in_phone,
-      :opt_in_text,
-      :phone,
-      :service_agreement_accepted,
-      :timezone
+      :active, :email, :full_name, :greeting_name,
+      :id, :language, :mobile, :opt_in_email,
+      :opt_in_phone, :opt_in_text, :phone,
+      :service_agreement_accepted, :timezone
     )
   end
 end

@@ -39,52 +39,17 @@ RSpec.configure do |config|
             user: {
               type: :object,
               properties: {
-                county: { type: :string, example: 'Cook' },
-                date_of_birth: { type: :string, example: '1980-10-11' },
                 email: { type: :string, example: 'user@user.com' },
                 full_name: { type: :string, example: 'Marlee Matlin' },
                 greeting_name: { type: :string, example: 'Marlee' },
                 language: { type: :string, example: 'Farsi' },
                 phone: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Eastern Time (US & Canada)' },
-                zip: { type: :string, example: '01545' }
+                timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
               },
               required: %w[
                 email
               ]
-            }
-          }
-        },
-        createChild: {
-          type: :object,
-          properties: {
-            child: {
-              type: :object,
-              properties: {
-                full_name: { type: :string, example: 'Ronald Weasley' },
-                greeting_name: { type: :string, example: 'Ron' },
-                date_of_birth: { type: :string, example: '1980-12-10' },
-                user_ids: { type: :array }
-              },
-              required: %w[
-                full_name
-                user_ids
-              ]
-            }
-          }
-        },
-        updateChild: {
-          type: :object,
-          properties: {
-            child: {
-              type: :object,
-              properties: {
-                full_name: { type: :string, example: 'Ronald Weasley' },
-                greeting_name: { type: :string, example: 'Ron' },
-                date_of_birth: { type: :string, example: '1980-12-10' },
-                user_ids: { type: :array }
-              }
             }
           }
         },
@@ -94,16 +59,13 @@ RSpec.configure do |config|
             user: {
               type: :object,
               properties: {
-                county: { type: :string, example: 'Cook' },
-                date_of_birth: { type: :string, example: '1980-10-11' },
                 email: { type: :string, example: 'user@user.com' },
                 full_name: { type: :string, example: 'Marlee Matlin' },
                 greeting_name: { type: :string, example: 'Marlee' },
                 language: { type: :string, example: 'Farsi' },
                 phone: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Eastern Time (US & Canada)' },
-                zip: { type: :string, example: '01545' }
+                timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
               }
             }
           }

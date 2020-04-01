@@ -3,9 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it { should have_many(:user_children).dependent(:restrict_with_error) }
-  it { should have_many(:children).through(:user_children) }
   it { should validate_presence_of(:email) }
+  it { should validate_uniqueness_of(:email) }
+  it { should validate_presence_of(:full_name) }
+  it { should validate_presence_of(:language) }
+  it { should validate_presence_of(:timezone) }
 
   let!(:user) { create(:user, phone: '888-888-8888') }
   it 'formats a phone number with non-digit characters' do
@@ -31,4 +33,8 @@ end
 #  timezone                   :string           not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
+#
+# Indexes
+#
+#  index_users_on_email  (email) UNIQUE
 #

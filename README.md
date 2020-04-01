@@ -64,20 +64,34 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - clone the repo
 - `cd pieforproviders/rails`
 - copy `.env.sample` to `.env` and add values (contact a repo contributor)
-- `gem install bundler`
-- `bundle install`
-- `bundle exec rails db:setup`
-- `npm install yarn -g`
+- install bundler for gems: `gem install bundler`
+- install gems: `bundle install`
+- set up the database: `bundle exec rails db:setup`
+- install yarn globally if you don't have it yet: `npm install yarn -g`
 - `cd client`
-- `yarn install`
+- install front-end packages: `yarn install`
 - `cd ../`
-- `rake start`
+- start with heroku local: `rails start`
+  > if you want to run this without heroku cli:  
+  > - start rails in one terminal: `rails s -p 3001`
+  > - open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 
+Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
+
 ## Running tests
 
-`bundle exec rspec` or `bundle exec guard` to watch
+- `bundle exec rspec` or `bundle exec guard` to watch
+- When tests pass and you're ready for a PR, please run `rails rswag` to update the API documentation
+
+## Adding/Updating Models
+
+Please make sure you write specs that include JSON validation of the request output for schema (see [spec/support/api/schemas/user.json](spec/support/api/schemas/user.json))
+
+## Adding/Updating API Controllers
+
+Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb) to include your controller actions
 
 ## Resources/Further Reading
 
@@ -92,7 +106,7 @@ Visit `localhost:3000` to see the React frontend. 🥳
 
 ## Notes
 
-* re: names - full_name with a greeting_name is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
+* re: names - `full_name` with a `greeting_name` is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
 
 ## Troubleshooting
 

@@ -3,45 +3,39 @@
   "required": ["users"],
   "items": {
     "type": "object",
-    "required" : [
+    "required": [
+      "created_at",
       "id",
       "active",
-      "county",
-      "date_of_birth",
       "email",
       "full_name",
       "greeting_name",
       "language",
-      "okay_to_email",
-      "okay_to_phone",
-      "okay_to_text",
+      "mobile",
       "opt_in_email",
       "opt_in_phone",
       "opt_in_text",
       "phone",
       "service_agreement_accepted",
       "timezone",
-      "zip"
+      "updated_at"
     ],
-    "properties" : {
-      "id" : { "type" : "string" },
-      "active" : { "type" : "boolean" },
-      "county" : { "type" : "string" },
-      "date_of_birth" : { "type" : "string", "format": "date" },
-      "email" : { "type" : "string" },
-      "full_name" : { "type" : "string" },
-      "greeting_name" : { "type" : "string" },
-      "language" : { "type" : "string" },
-      "okay_to_email" : { "type" : "boolean" },
-      "okay_to_phone" : { "type" : "boolean" },
-      "okay_to_text" : { "type" : "boolean" },
-      "opt_in_email" : { "type" : "boolean" },
-      "opt_in_phone" : { "type" : "boolean" },
-      "opt_in_text" : { "type" : "boolean" },
-      "phone" : { "type" : "string" },
-      "service_agreement_accepted" : { "type" : "boolean" },
-      "timezone" : { "type" : "string" },
-      "zip" : { "type" : "string" }
+    "properties": {
+      "created_at": { "type": "string" , "format": "date-time" },
+      "id": { "type": "string" },
+      "active": { "type": "boolean" },
+      "email": { "type": "string" },
+      "full_name": { "type": "string" },
+      "greeting_name": { "type": "string" },
+      "language": { "type": "string" },
+      "mobile": { "type": "string" },
+      "opt_in_email": { "type": "boolean" },
+      "opt_in_phone": { "type": "boolean" },
+      "opt_in_text": { "type": "boolean" },
+      "phone": { "type": "string" },
+      "service_agreement_accepted": { "type": "boolean" },
+      "timezone": { "type": "string" },
+      "updated_at": { "type": "string" , "format": "date-time" }
     }
   }
 }

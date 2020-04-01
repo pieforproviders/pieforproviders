@@ -5,16 +5,14 @@ require 'swagger_helper'
 RSpec.describe 'users API', type: :request do
   let!(:params) do
     {
-      "county": 'Cork',
-      "date_of_birth": '1982-01-01',
       "email": 'fake_email@fake_email.com',
       "full_name": 'Oliver Twist',
       "greeting_name": 'Oliver',
       "language": 'English',
+      "mobile": '912-444-5555',
       "phone": '912-444-5555',
       "service_agreement_accepted": 'true',
-      "timezone": 'CST',
-      "zip": '60606'
+      "timezone": 'Central Time (US & Canada)'
     }
   end
 
@@ -190,10 +188,10 @@ RSpec.describe 'users API', type: :request do
         # context 'when authenticated' do
         #   include_context 'authenticated user'
         response '200', 'user updated' do
-          let(:user) { { "user": params.merge("zip": '11111') } }
+          let(:user) { { "user": params.merge("full_name": 'Ron Weasley') } }
           run_test! do
             expect(response).to match_response_schema('user')
-            expect(response.parsed_body['zip']).to eq('11111')
+            expect(response.parsed_body['full_name']).to eq('Ron Weasley')
           end
         end
 
