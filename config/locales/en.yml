@@ -31,3 +31,16 @@
 
 en:
   hello: "Hello world"
+  faker:
+    childcare_businesses:
+      name:
+        - Kids Clubhouse Pre-School
+        - Creative Castle Nursery School
+        - Dollhouse Daycare Center
+        - Rising Stars Nursery School
+        - Little Giggles Daycare
+        - Happy Faces Childcare
+        - Growing Tree Pre-School
+        - Kids Garden Nursery School
+        - Fairytales Playgroup
+        - Little Orchids Childcare

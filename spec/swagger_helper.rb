@@ -70,6 +70,35 @@ RSpec.configure do |config|
             }
           }
         }
+      },
+      createBusiness: {
+        type: :object,
+        properties: {
+          business: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Harlequin Childcare' },
+              category: { type: :string, example: 'license_exempt_home' }
+            },
+            required: %w[
+              name
+              category
+            ]
+          }
+        }
+      },
+      updateBusiness: {
+        type: :object,
+        properties: {
+          business: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Harlequin Childcare' },
+              category: { type: :string, example: 'license_exempt_home' },
+              active: { type: :boolean, example: 'true' }
+            }
+          }
+        }
       }
     }
   }

@@ -6,6 +6,8 @@ AllCops:
     - bin/**
     - Guardfile
     - vendor/**/*
+    - tmp/**/**
+    - client/**/**
 
 Naming/FileName:
   Exclude:
@@ -16,8 +18,17 @@ Metrics/BlockLength:
     - spec/**/**
     - lib/tasks/**
 
+# screens are bigger now and long lines are more acceptable
 Layout/LineLength:
   Max: 180
+
+# pending auto-enable
+Lint/RaiseException:
+  Enabled: true
+
+# pending auto-enable
+Lint/StructNewOverride:
+  Enabled: true
 
 Rails:
   Enabled: true
@@ -30,11 +41,14 @@ Style/ClassAndModuleChildren:
 Style/Encoding:
   Enabled: false
 
+# pending auto-enable
 Style/HashEachMethods:
   Enabled: true
 
+# pending auto-enable
 Style/HashTransformKeys:
   Enabled: true
 
+# pending auto-enable
 Style/HashTransformValues:
   Enabled: true

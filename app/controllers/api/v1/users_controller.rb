@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     render json: @users
   end
 
-  # GET /users/1
+  # GET /users/:user_id
   def show
     render json: @user
   end
@@ -27,7 +27,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /users/1
+  # PATCH/PUT /users/:user_id
   def update
     if @user.update(user_params)
       render json: @user
@@ -36,9 +36,10 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
-  # DELETE /users/1
+  # DELETE /users/:user_id
   def destroy
-    @user.destroy
+    # soft delete
+    @user.update!(active: false)
   end
 
   private

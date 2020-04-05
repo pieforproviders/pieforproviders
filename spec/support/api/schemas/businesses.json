@@ -1,0 +1,25 @@
+{
+  "type": "array",
+  "required": ["businesses"],
+  "items": {
+    "type": "object",
+    "required": [
+      "active",
+      "category",
+      "created_at",
+      "id",
+      "name",
+      "updated_at",
+      "user_id"
+    ],
+    "properties": {
+      "active": { "type": "boolean" },
+      "created_at": { "type": "string" , "format": "date-time" },
+      "id": { "type": "string" },
+      "name": { "type": "string" },
+      "category": { "type": "string" },
+      "updated_at": { "type": "string" , "format": "date-time" },
+      "user_id": { "type": "string", "format": "uuid" }
+    }
+  }
+}

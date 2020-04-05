@@ -5,6 +5,194 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/users/{user_id}/businesses": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "lists all businesses for a user",
+        "tags": [
+          "businesses"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "businesses found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a business",
+        "tags": [
+          "businesses"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "business",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createBusiness"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "business created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/businesses/{business_id}": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "business_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "retrieves a business",
+        "tags": [
+          "businesses"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "business found"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a business",
+        "tags": [
+          "businesses"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "business",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/updateBusiness"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "business updated"
+          },
+          "422": {
+            "description": "business cannot be updated"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a business",
+        "tags": [
+          "businesses"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "business deleted"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "lists all users",
@@ -256,6 +444,50 @@
               "type": "string",
               "example": "Eastern Time (US & Canada)"
             }
+          }
+        }
+      }
+    }
+  },
+  "createBusiness": {
+    "type": "object",
+    "properties": {
+      "business": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Harlequin Childcare"
+          },
+          "category": {
+            "type": "string",
+            "example": "license_exempt_home"
+          }
+        },
+        "required": [
+          "name",
+          "category"
+        ]
+      }
+    }
+  },
+  "updateBusiness": {
+    "type": "object",
+    "properties": {
+      "business": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Harlequin Childcare"
+          },
+          "category": {
+            "type": "string",
+            "example": "license_exempt_home"
+          },
+          "active": {
+            "type": "boolean",
+            "example": "true"
           }
         }
       }
