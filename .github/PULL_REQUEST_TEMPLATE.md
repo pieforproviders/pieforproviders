@@ -9,7 +9,6 @@
 
 ## 📋 Summary
 <!-- A summary of your changes and a link to the ticket -->
-Ticket: <!-- link to ticket -->
 
 ## 🧐 Why tho
 <!-- Why is this task necessary? -->
