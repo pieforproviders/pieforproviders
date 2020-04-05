@@ -38,6 +38,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # DELETE /users/:user_id
   def destroy
+    # soft delete
     @user.update!(active: false)
   end
 

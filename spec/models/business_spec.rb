@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Business, type: :model do
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:category) }
+  it { should validate_inclusion_of(:category).in_array(Business::CATEGORIES) }
 end
 
 # == Schema Information

@@ -37,6 +37,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
 
   # DELETE /users/:user_id/businesses/:business_id
   def destroy
+    # soft delete
     @business.update!(active: false)
   end
 

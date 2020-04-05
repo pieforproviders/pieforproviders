@@ -26,6 +26,9 @@ ActiveRecord::Schema.define(version: 2020_04_05_020218) do
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "full_name", null: false

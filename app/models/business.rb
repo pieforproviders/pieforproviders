@@ -9,6 +9,7 @@ class Business < ApplicationRecord
 
   validates :name, presence: true
   validates :category, presence: true
+  validates :category, inclusion: { in: CATEGORIES }
 
   CATEGORIES = %w[
     licensed_center_single
