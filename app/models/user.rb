@@ -17,6 +17,8 @@ class User < ApplicationRecord
   validates :service_agreement_accepted, inclusion: { in: [true, false] }
   validates :timezone, presence: true
 
+  scope :active, -> { where(active: true) }
+
   # format phone numbers - remove any non-digit characters
   def phone=(value)
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
