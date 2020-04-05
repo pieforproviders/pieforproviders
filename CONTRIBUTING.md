@@ -21,3 +21,8 @@ When you start working on an issue:
 [ ] When updating dependencies, please explain _why_ the update is necessary  
 [ ] If your PR is not getting reviewed or you need a specific person to review it, you can @-tag a reviewer asking for a review in the pull request or a comment  
 [ ] Add tests relevant to the fixed bug or new feature  
+[ ] Run rubocop on your branch; failed builds will not be merged  
+
+## Architecture Guidelines
+
+* We use uuids for the id primary key in API tables

@@ -2,9 +2,11 @@
  * [ ] Did you write tests?
  * [ ] Did you run `rails rswag`?
  * [ ] Did you run `rubocop`?
+ * [ ] Are your primary keys UUIDs on any new tables?
 
 ## Deployment Considerations
-* [ ] Migrations
+* [ ] Data Migrations
+* [ ] Schema Migrations
 * [ ] Dependencies
 
 ## 📋 Summary
