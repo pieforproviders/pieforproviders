@@ -1,3 +1,12 @@
+# Before You Submit:
+ * [ ] Did you write tests?
+ * [ ] Did you run `rails rswag`?
+ * [ ] Did you run `rubocop`?
+
+## Deployment Considerations
+* [ ] Migrations
+* [ ] Dependencies
+
 ## 📋 Summary
 <!-- A summary of your changes and a link to the ticket -->
 Ticket: <!-- link to ticket -->
