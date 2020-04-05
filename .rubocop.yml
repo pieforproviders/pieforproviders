@@ -26,6 +26,10 @@ Layout/LineLength:
 Lint/RaiseException:
   Enabled: true
 
+# pending auto-enable
+Lint/StructNewOverride:
+  Enabled: true
+
 Rails:
   Enabled: true
 
