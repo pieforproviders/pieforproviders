@@ -2,7 +2,6 @@
 
 # The businesses for which users are responsible for keeping subsidy data
 class Business < ApplicationRecord
-  
   CATEGORIES = %w[
     licensed_center_single
     licensed_center_multi
@@ -21,7 +20,6 @@ class Business < ApplicationRecord
   validates :name, presence: true
   validates :category, presence: true
   validates :category, inclusion: { in: CATEGORIES }
-
 end
 
 # == Schema Information

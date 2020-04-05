@@ -6,6 +6,8 @@ AllCops:
     - bin/**
     - Guardfile
     - vendor/**/*
+    - tmp/**/**
+    - client/**/**
 
 Naming/FileName:
   Exclude:
