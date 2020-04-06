@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   scope module: :api, defaults: { format: :json }, path: 'api' do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
-      resources :users do
+      resources :users, shallow: true do
         resources :businesses
       end
     end
