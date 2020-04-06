@@ -29,4 +29,4 @@ When you start working on an issue:
 * We use rswag to generate docs, which means the request specs use the rswag DSL
 * We validate the JSON response of the API on every endpoint
 * We use a [postman collection for testing](https://www.getpostman.com/collections/f81af858440ca4549eba) - if you add endpoints, please add request mocks here
-* We soft-delete everything, rather than destroying records, unless otherwise noted
+* TODO: determine error handling when trying to destroy something that has dependents; if no dependents, should we allow destruction?  Soft delete?
