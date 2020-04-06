@@ -99,6 +99,40 @@ RSpec.configure do |config|
             }
           }
         }
+      },
+      createChild: {
+        type: :object,
+        properties: {
+          child: {
+            type: :object,
+            properties: {
+              ccms_id: { type: :string, example: '123456789' },
+              date_of_birth: { type: :string, example: '1991-11-01' },
+              first_name: { type: :string, example: 'Seamus' },
+              full_name: { type: :string, example: 'Seamus Finnigan' },
+              last_name: { type: :string, example: 'Finnigan' }
+            },
+            required: %w[
+              name
+              category
+            ]
+          }
+        }
+      },
+      updateChild: {
+        type: :object,
+        properties: {
+          child: {
+            type: :object,
+            properties: {
+              ccms_id: { type: :string, example: '987654321' },
+              date_of_birth: { type: :string, example: '1992-11-01' },
+              first_name: { type: :string, example: 'Sean' },
+              full_name: { type: :string, example: 'Sean Flannery' },
+              last_name: { type: :string, example: 'Flannery' }
+            }
+          }
+        }
       }
     }
   }

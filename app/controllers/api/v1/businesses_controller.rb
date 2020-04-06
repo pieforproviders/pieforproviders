@@ -54,7 +54,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
 
   def business_params
     params.require(:business).permit(
-      :category, :id, :name, :user_id
+      :active, :category, :id, :name, :user_id
     )
   end
 end
