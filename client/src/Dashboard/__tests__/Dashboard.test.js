@@ -4,7 +4,7 @@ import { Dashboard } from '../Dashboard'
 import { act } from 'react-dom/test-utils'
 
 describe('<Dashboard />', () => {
-  const wrapper = shallow(<Dashboard />)
+  const wrapper = mount(<Dashboard />)
 
   it('renders the Dashboard container', () => {
     expect(wrapper.find('.dashboard').exists()).toBe(true)
@@ -29,8 +29,8 @@ describe('<Dashboard />', () => {
           }
         })
       })
-      await act(async () => mount(<Dashboard />))
-      // .then(expect(wrapper.find('.dashboard').text()).toContain('User First'))
+      // await act(async () => mount(<Dashboard />))
+      expect(wrapper.find('.dashboard').text()).toContain('User First')
       // .then(
       //   expect(wrapper.find('.dashboard').text()).toContain('test@test.com')
       // )

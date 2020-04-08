@@ -1,21 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
-import './Login.css'
-import ReactGA from 'react-ga'
+import React from 'react'
+import './Import.css'
 
 export function Import() {
-  // const [users, setUsers] = useState([])
-
-  // useEffect(() => {
-  //   fetch('/api/v1/users', {
-  //     headers: { Accept: 'application/vnd.pieforproviders.v1+json' }
-  //   })
-  //     .then(response => response.json())
-  //     .then(json => setUsers(json))
-  //     .catch(error => console.log(error))
-  // }, [])
   return (
-    <div className="dashboard">
+    <div className="import">
       <p>need to import here</p>
     </div>
   )
