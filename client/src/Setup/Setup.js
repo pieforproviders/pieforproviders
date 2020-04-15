@@ -7,6 +7,7 @@ export function Setup() {
   const [businesses, setBusinesses] = useState([])
 
   useEffect(() => {
+    // TODO: useApi from react-use-fetch-api after making a PR for headers
     const userBusinesses = async () => {
       const result = await fetch(`/api/v1/users/${id}/businesses`, {
         headers: { Accept: 'application/vnd.pieforproviders.v1+json' }
