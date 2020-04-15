@@ -2,40 +2,41 @@
 
 # API for user children
 class Api::V1::ChildrenController < Api::V1::ApiController
-  before_action :set_user
-  before_action :set_user_child, only: %i[show update destroy]
+  before_action :set_child, only: %i[show update destroy]
 
-  # GET /users/:user_id/children
+  # GET /children
   def index
-    render json: @user.children
+    @children = Child.all
+
+    render json: @children
   end
 
-  # GET /users/:user_id/children/:child_id
+  # GET /children/:slug
   def show
     render json: @child
   end
 
-  # POST /users/:user_id/children
+  # POST /children
   def create
-    child = @user.children.create!(child_params)
+    @child = Child.new(child_params)
 
-    if child.save
-      render json: @user, include: :children, status: :created, location: @user
+    if @child.save
+      render json: @child, status: :created, location: @child
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @child.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /users/:user_id/children/:child_id
+  # PATCH/PUT /children/:slug
   def update
     if @child.update(child_params)
-      render json: @user, include: :children
+      render json: @child
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @child.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /users/:user_id/children/:child_id
+  # DELETE /children/:slug
   def destroy
     # soft delete
     @child.update!(active: false)
@@ -43,18 +44,13 @@ class Api::V1::ChildrenController < Api::V1::ApiController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_user
-    @user = User.includes(:children).find(params[:user_id])
-  end
-
-  def set_user_child
-    @child = @user.children.find_by!(id: params[:id]) if @user
+  def set_child
+    @child = Child.find_by!(slug: params[:slug])
   end
 
   def child_params
     params.require(:child).permit(
-      :active, :ccms_id, :date_of_birth, :first_name, :full_name, :id, :last_name, :user_id
+      :active, :ccms_id, :date_of_birth, :first_name, :full_name, :id, :last_name, :slug, :user_id
     )
   end
 end

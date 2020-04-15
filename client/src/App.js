@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
-import Import from './Import'
 import Login from './Login'
 import NotFound from './NotFound'
 import Setup from './Setup'
@@ -24,11 +23,8 @@ function App() {
         <Route path="/dashboard">
           <Dashboard />
         </Route>
-        <Route path="/:id/setup">
+        <Route path="/setup">
           <Setup />
-        </Route>
-        <Route path="/:id/import">
-          <Import />
         </Route>
         <Route exact path="/">
           <Redirect to={'/login'} />

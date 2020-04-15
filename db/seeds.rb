@@ -10,5 +10,5 @@ user = User.first_or_create!(
   active: true,
   language: "english",
   service_agreement_accepted: false,
-  timezone: "Central Time (US & Canada)"
+  timezone: "Central Time (US & Canada)",
 )

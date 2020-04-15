@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     render json: @users
   end
 
-  # GET /users/:user_id
+  # GET /users/:slug
   def show
     render json: @user
   end
@@ -27,7 +27,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /users/:user_id
+  # PATCH/PUT /users/:slug
   def update
     if @user.update(user_params)
       render json: @user
@@ -36,7 +36,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     end
   end
 
-  # DELETE /users/:user_id
+  # DELETE /users/:slug
   def destroy
     # soft delete
     @user.update!(active: false)
@@ -46,7 +46,7 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find_by!(slug: params[:slug])
   end
 
   def user_params
@@ -54,7 +54,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       :active, :email, :full_name, :greeting_name,
       :id, :language, :mobile, :opt_in_email,
       :opt_in_phone, :opt_in_text, :phone,
-      :service_agreement_accepted, :timezone
+      :service_agreement_accepted, :slug, :timezone
     )
   end
 end

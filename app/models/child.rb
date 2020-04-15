@@ -18,6 +18,8 @@ class Child < ApplicationRecord
   rescue TypeError, ArgumentError
     record.errors.add(attr, 'Invalid date')
   end
+
+  before_validation { |child| child.slug = generate_slug("#{child.first_name}#{child.last_name}#{child.date_of_birth}#{child.user_id}") }
 end
 
 # == Schema Information
@@ -30,6 +32,7 @@ end
 #  first_name    :string           not null
 #  full_name     :string           not null
 #  last_name     :string           not null
+#  slug          :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  ccms_id       :string
@@ -37,5 +40,6 @@ end
 #
 # Indexes
 #
+#  index_children_on_slug     (slug) UNIQUE
 #  index_children_on_user_id  (user_id)
 #

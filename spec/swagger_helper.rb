@@ -49,6 +49,10 @@ RSpec.configure do |config|
               },
               required: %w[
                 email
+                full_name
+                language
+                service_agreement_accepted
+                timezone
               ]
             }
           }
@@ -113,8 +117,9 @@ RSpec.configure do |config|
               last_name: { type: :string, example: 'Finnigan' }
             },
             required: %w[
-              name
-              category
+              first_name
+              last_name
+              date_of_birth
             ]
           }
         }

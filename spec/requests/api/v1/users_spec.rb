@@ -121,9 +121,9 @@ RSpec.describe 'users API', type: :request do
     end
   end
 
-  path '/api/v1/users/{id}' do
-    parameter name: :id, in: :path, type: :string
-    let(:id) { User.create(params).id }
+  path '/api/v1/users/{slug}' do
+    parameter name: :slug, in: :path, type: :string
+    let(:slug) { User.create!(params).slug }
     get 'retrieves a user' do
       tags 'users'
       produces 'application/json', 'application/xml'
@@ -142,7 +142,7 @@ RSpec.describe 'users API', type: :request do
         end
 
         response '404', 'user not found' do
-          let(:id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end
@@ -201,7 +201,7 @@ RSpec.describe 'users API', type: :request do
         end
 
         response '404', 'user not found' do
-          let(:id) { 'invalid' }
+          let(:slug) { 'invalid' }
           let(:user) { { "user": params } }
           run_test!
         end
@@ -249,7 +249,7 @@ RSpec.describe 'users API', type: :request do
         end
 
         response '404', 'user not found' do
-          let(:id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end

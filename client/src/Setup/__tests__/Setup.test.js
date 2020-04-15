@@ -40,8 +40,8 @@ describe('<Setup />', () => {
       })
       await act(async () => {
         wrapper = mount(
-          <MemoryRouter initialEntries={[`/${businessId}/setup`]}>
-            <Route path="/:id/setup">
+          <MemoryRouter initialEntries={[`/setup`]}>
+            <Route path="/setup">
               <Setup />
             </Route>
           </MemoryRouter>

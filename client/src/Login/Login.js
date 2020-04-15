@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import './Login.css'
 import ReactGA from 'react-ga'
+import { sha1 } from 'hash-anything'
 
 export function Login() {
   ReactGA.pageview(window.location.pathname + window.location.search)
@@ -31,9 +32,9 @@ export function Login() {
         Dashboard
       </h1>
       {users.map(user => (
-        <p key={user.email}>
+        <p key={sha1(user.email, user.full_name)}>
           {user.full_name}: {user.email}{' '}
-          <NavLink to={`/${user.id}/setup`}>Click Me</NavLink>
+          <NavLink to={`/setup`}>Click Me</NavLink>
         </p>
       ))}
       <p>Testing new content deploy</p>

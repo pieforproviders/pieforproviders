@@ -5,15 +5,7 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/users/{user_id}/businesses": {
-      "parameters": [
-        {
-          "name": "user_id",
-          "in": "path",
-          "type": "string",
-          "required": true
-        }
-      ],
+    "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
         "tags": [
@@ -76,16 +68,10 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/businesses/{business_id}": {
+    "/api/v1/businesses/{slug}": {
       "parameters": [
         {
-          "name": "user_id",
-          "in": "path",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "business_id",
+          "name": "slug",
           "in": "path",
           "type": "string",
           "required": true
@@ -193,17 +179,9 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/children": {
-      "parameters": [
-        {
-          "name": "user_id",
-          "in": "path",
-          "type": "string",
-          "required": true
-        }
-      ],
+    "/api/v1/children": {
       "get": {
-        "summary": "lists all children for a user",
+        "summary": "lists all children",
         "tags": [
           "children"
         ],
@@ -264,16 +242,10 @@
         }
       }
     },
-    "/api/v1/users/{user_id}/children/{child_id}": {
+    "/api/v1/children/{slug}": {
       "parameters": [
         {
-          "name": "user_id",
-          "in": "path",
-          "type": "string",
-          "required": true
-        },
-        {
-          "name": "child_id",
+          "name": "slug",
           "in": "path",
           "type": "string",
           "required": true
@@ -444,10 +416,10 @@
         }
       }
     },
-    "/api/v1/users/{id}": {
+    "/api/v1/users/{slug}": {
       "parameters": [
         {
-          "name": "id",
+          "name": "slug",
           "in": "path",
           "type": "string",
           "required": true
@@ -593,7 +565,11 @@
             }
           },
           "required": [
-            "email"
+            "email",
+            "full_name",
+            "language",
+            "service_agreement_accepted",
+            "timezone"
           ]
         }
       }
@@ -709,8 +685,9 @@
           }
         },
         "required": [
-          "name",
-          "category"
+          "first_name",
+          "last_name",
+          "date_of_birth"
         ]
       }
     }
