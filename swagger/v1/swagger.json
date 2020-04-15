@@ -193,6 +193,194 @@
         }
       }
     },
+    "/api/v1/users/{user_id}/children": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "lists all children for a user",
+        "tags": [
+          "children"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "children found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a child",
+        "tags": [
+          "children"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "child",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createChild"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "child created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/users/{user_id}/children/{child_id}": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "child_id",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "retrieves a child",
+        "tags": [
+          "children"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "child found"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a child",
+        "tags": [
+          "children"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "child",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/updateChild"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "child updated"
+          },
+          "422": {
+            "description": "child cannot be updated"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a child",
+        "tags": [
+          "children"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "child deleted"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "lists all users",
@@ -488,6 +676,70 @@
           "active": {
             "type": "boolean",
             "example": "true"
+          }
+        }
+      }
+    }
+  },
+  "createChild": {
+    "type": "object",
+    "properties": {
+      "child": {
+        "type": "object",
+        "properties": {
+          "ccms_id": {
+            "type": "string",
+            "example": "123456789"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "example": "1991-11-01"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Seamus"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Seamus Finnigan"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Finnigan"
+          }
+        },
+        "required": [
+          "name",
+          "category"
+        ]
+      }
+    }
+  },
+  "updateChild": {
+    "type": "object",
+    "properties": {
+      "child": {
+        "type": "object",
+        "properties": {
+          "ccms_id": {
+            "type": "string",
+            "example": "987654321"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "example": "1992-11-01"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Sean"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Sean Flannery"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Flannery"
           }
         }
       }

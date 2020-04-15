@@ -5,10 +5,12 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
+import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
+import Import from './Import'
 import Login from './Login'
 import NotFound from './NotFound'
-import ReactGA from 'react-ga'
+import Setup from './Setup'
 
 function App() {
   ReactGA.initialize('UA-117297491-1', { testMode: true })
@@ -21,6 +23,12 @@ function App() {
         </Route>
         <Route path="/dashboard">
           <Dashboard />
+        </Route>
+        <Route path="/:id/setup">
+          <Setup />
+        </Route>
+        <Route path="/:id/import">
+          <Import />
         </Route>
         <Route exact path="/">
           <Redirect to={'/login'} />

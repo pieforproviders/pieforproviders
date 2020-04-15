@@ -17,6 +17,7 @@ class Business < ApplicationRecord
 
   belongs_to :user
 
+  validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true
   validates :category, presence: true
   validates :category, inclusion: { in: CATEGORIES }

@@ -1,0 +1,68 @@
+{
+  "type": "object",
+  "required": [
+    "active",
+    "children",
+    "created_at",
+    "email",
+    "full_name",
+    "greeting_name",
+    "id",
+    "language",
+    "mobile",
+    "opt_in_email",
+    "opt_in_phone",
+    "opt_in_text",
+    "phone",
+    "service_agreement_accepted",
+    "timezone",
+    "updated_at"
+  ],
+  "properties": {
+    "active": { "type": "boolean" },
+    "children": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "active",
+          "ccms_id",
+          "created_at",
+          "date_of_birth",
+          "first_name",
+          "full_name",
+          "id",
+          "last_name",
+          "updated_at",
+          "user_id"
+        ],
+        "properties": {
+          "active": { "type": "boolean" },
+          "ccms_id": { "type": "string" },
+          "created_at": { "type": "string" , "format": "date-time" },
+          "date_of_birth": { "type": "string", "format": "date" },
+          "id": { "type": "string" },
+          "first_name": { "type": "string" },
+          "full_name": { "type": "string" },
+          "last_name": { "type": "string" },
+          "updated_at": { "type": "string" , "format": "date-time" },
+          "user_id": { "type": "string", "format": "uuid" }
+        }
+      }
+    },
+    "created_at": { "type": "string" , "format": "date-time" },
+    "email": { "type": "string" },
+    "full_name": { "type": "string" },
+    "greeting_name": { "type": "string" },
+    "id": { "type": "string" },
+    "language": { "type": "string" },
+    "mobile": { "type": "string" },
+    "opt_in_email": { "type": "boolean" },
+    "opt_in_phone": { "type": "boolean" },
+    "opt_in_text": { "type": "boolean" },
+    "phone": { "type": "string" },
+    "service_agreement_accepted": { "type": "boolean" },
+    "timezone": { "type": "string" },
+    "updated_at": { "type": "string" , "format": "date-time" }
+  }
+}

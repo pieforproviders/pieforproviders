@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users do
         resources :businesses
+        resources :children
       end
     end
   end

@@ -1,7 +1,9 @@
 # Before You Submit:
  * [ ] Did you write tests?
- * [ ] Did you run `rails rswag`?
- * [ ] Did you run `rubocop`?
+ * [ ] Did you run `rails rswag` from the root?
+ * [ ] Did you run `rubocop` from the root?
+ * [ ] Did you run `yarn lint` in `/client`?
+ * [ ] Did you run `yarn test` in `/client`?
  * [ ] Are your primary keys UUIDs on any new tables?
 
 ## Deployment Considerations

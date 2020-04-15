@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# Application users
+# Person responsible for subsidy management for one or more businesses
 class User < ApplicationRecord
   # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
   self.implicit_order_column = 'created_at'
 
   has_many :businesses, dependent: :restrict_with_error
+  has_many :children, dependent: :restrict_with_error
 
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
