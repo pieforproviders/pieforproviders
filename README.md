@@ -1,7 +1,7 @@
 # README
 ![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)
 
-A digital assistant for your child care business.
+We help child care providers and families claim the government funding for which they are already eligible. 
 
 ## Code of Conduct
 
