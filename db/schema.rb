@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2020_04_15_014152) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug", null: false
+    t.index ["first_name", "last_name", "date_of_birth", "user_id"], name: "unique_children", unique: true
     t.index ["slug"], name: "index_children_on_slug", unique: true
     t.index ["user_id"], name: "index_children_on_user_id"
   end
