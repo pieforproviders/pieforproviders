@@ -12,6 +12,7 @@
       "full_name",
       "id",
       "last_name",
+      "slug",
       "updated_at",
       "user_id"
     ],
@@ -24,6 +25,7 @@
       "first_name": { "type": "string" },
       "full_name": { "type": "string" },
       "last_name": { "type": "string" },
+      "slug": { "type": "string" },
       "updated_at": { "type": "string" , "format": "date-time" },
       "user_id": { "type": "string", "format": "uuid" }
     }

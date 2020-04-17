@@ -17,6 +17,7 @@
       "opt_in_text",
       "phone",
       "service_agreement_accepted",
+      "slug",
       "timezone",
       "updated_at"
     ],
@@ -34,6 +35,7 @@
       "opt_in_text": { "type": "boolean" },
       "phone": { "type": "string" },
       "service_agreement_accepted": { "type": "boolean" },
+      "slug": { "type": "string" },
       "timezone": { "type": "string" },
       "updated_at": { "type": "string" , "format": "date-time" }
     }

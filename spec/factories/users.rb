@@ -31,6 +31,7 @@ end
 #  opt_in_text                :boolean          default(TRUE), not null
 #  phone                      :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
+#  slug                       :string           not null
 #  timezone                   :string           not null
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
@@ -38,4 +39,5 @@ end
 # Indexes
 #
 #  index_users_on_email  (email) UNIQUE
+#  index_users_on_slug   (slug) UNIQUE
 #

@@ -2,40 +2,41 @@
 
 # API for user businesses
 class Api::V1::BusinessesController < Api::V1::ApiController
-  before_action :set_user
-  before_action :set_user_business, only: %i[show update destroy]
+  before_action :set_business, only: %i[show update destroy]
 
-  # GET /users/:user_id/businesses
+  # GET /businesses
   def index
-    render json: @user.businesses
+    @businesses = Business.all
+
+    render json: @businesses
   end
 
-  # GET /users/:user_id/businesses/:business_id
+  # GET /businesses/:slug
   def show
     render json: @business
   end
 
-  # POST /users/:user_id/businesses
+  # POST /businesses
   def create
-    business = @user.businesses.create!(business_params)
+    @business = Business.new(business_params)
 
-    if business.save
-      render json: @user, include: :businesses, status: :created, location: @user
+    if @business.save
+      render json: @business, status: :created, location: @business
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @business.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /users/:user_id/businesses/:business_id
+  # PATCH/PUT /businesses/:slug
   def update
     if @business.update(business_params)
-      render json: @user, include: :businesses
+      render json: @business
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: @business.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /users/:user_id/businesses/:business_id
+  # DELETE /businesses/:slug
   def destroy
     # soft delete
     @business.update!(active: false)
@@ -43,18 +44,13 @@ class Api::V1::BusinessesController < Api::V1::ApiController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_user
-    @user = User.includes(:businesses).find(params[:user_id])
-  end
-
-  def set_user_business
-    @business = @user.businesses.find_by!(id: params[:id]) if @user
+  def set_business
+    @business = Business.find_by!(slug: params[:slug])
   end
 
   def business_params
     params.require(:business).permit(
-      :active, :category, :id, :name, :user_id
+      :active, :category, :id, :name, :slug, :user_id
     )
   end
 end

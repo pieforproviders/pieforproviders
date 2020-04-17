@@ -15,6 +15,7 @@
     "opt_in_text",
     "phone",
     "service_agreement_accepted",
+    "slug",
     "timezone",
     "updated_at"
   ],
@@ -30,15 +31,17 @@
           "created_at",
           "id",
           "name",
+          "slug",
           "updated_at",
           "user_id"
         ],
         "properties": {
           "active": { "type": "boolean" },
+          "category": { "type": "string" },
           "created_at": { "type": "string" , "format": "date-time" },
           "id": { "type": "string" },
           "name": { "type": "string" },
-          "category": { "type": "string" },
+          "slug": { "type": "string" },
           "updated_at": { "type": "string" , "format": "date-time" },
           "user_id": { "type": "string", "format": "uuid" }
         }
@@ -56,6 +59,7 @@
     "opt_in_text": { "type": "boolean" },
     "phone": { "type": "string" },
     "service_agreement_accepted": { "type": "boolean" },
+    "slug": { "type": "string" },
     "timezone": { "type": "string" },
     "updated_at": { "type": "string" , "format": "date-time" }
   }

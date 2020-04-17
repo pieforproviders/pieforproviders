@@ -15,16 +15,16 @@ RSpec.describe 'businesses API', type: :request do
       "timezone": 'Central Time (US & Canada)'
     }
   end
+  let(:user_id) { User.create(user_params).id }
   let!(:business_params) do
     {
       "name": 'Happy Hearts Childcare',
-      "category": 'licensed_center_single'
+      "category": 'licensed_center_single',
+      "user_id": user_id
     }
   end
 
-  path '/api/v1/users/{user_id}/businesses' do
-    parameter name: :user_id, in: :path, type: :string
-    let(:user_id) { User.create(user_params).id }
+  path '/api/v1/businesses' do
     get 'lists all businesses for a user' do
       tags 'businesses'
       produces 'application/json'
@@ -84,7 +84,7 @@ RSpec.describe 'businesses API', type: :request do
         response '201', 'business created' do
           let(:business) { { "business": business_params } }
           run_test! do
-            expect(response).to match_response_schema('user_with_businesses')
+            expect(response).to match_response_schema('business')
           end
         end
         response '422', 'invalid request' do
@@ -129,11 +129,9 @@ RSpec.describe 'businesses API', type: :request do
     end
   end
 
-  path '/api/v1/users/{user_id}/businesses/{business_id}' do
-    parameter name: :user_id, in: :path, type: :string
-    parameter name: :business_id, in: :path, type: :string
-    let(:user_id) { User.create(user_params).id }
-    let(:business_id) { User.find(user_id).businesses.create!(business_params).id }
+  path '/api/v1/businesses/{slug}' do
+    parameter name: :slug, in: :path, type: :string
+    let(:slug) { Business.create!(business_params).slug }
     get 'retrieves a business' do
       tags 'businesses'
       produces 'application/json', 'application/xml'
@@ -152,7 +150,7 @@ RSpec.describe 'businesses API', type: :request do
         end
 
         response '404', 'business not found' do
-          let(:business_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end
@@ -200,7 +198,7 @@ RSpec.describe 'businesses API', type: :request do
         response '200', 'business updated' do
           let(:business) { { "business": business_params.merge("name": 'Hogwarts School') } }
           run_test! do
-            expect(response).to match_response_schema('user_with_businesses')
+            expect(response).to match_response_schema('business')
             # expect(response.parsed_body['name']).to eq('Hogwarts School')
           end
         end
@@ -211,7 +209,7 @@ RSpec.describe 'businesses API', type: :request do
         end
 
         response '404', 'business not found' do
-          let(:business_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           let(:business) { { "business": business_params } }
           run_test!
         end
@@ -259,7 +257,7 @@ RSpec.describe 'businesses API', type: :request do
         end
 
         response '404', 'business not found' do
-          let(:business_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end

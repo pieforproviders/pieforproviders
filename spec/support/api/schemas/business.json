@@ -5,6 +5,7 @@
     "created_at",
     "id",
     "name",
+    "slug",
     "updated_at",
     "user_id"
   ],
@@ -14,6 +15,7 @@
     "created_at": { "type": "string" , "format": "date-time" },
     "id": { "type": "string" },
     "name": { "type": "string" },
+    "slug": { "type": "string" },
     "updated_at": { "type": "string" , "format": "date-time" },
     "user_id": { "type": "string", "format": "uuid" }
   }

@@ -15,20 +15,20 @@ RSpec.describe 'children API', type: :request do
       "timezone": 'Central Time (US & Canada)'
     }
   end
+  let(:user_id) { User.create(user_params).id }
   let!(:child_params) do
     {
       "ccms_id": '1234567890',
       "first_name": 'Parvati',
       "full_name": 'Parvati Patil',
       "last_name": 'Patil',
-      "date_of_birth": '1981-04-09'
+      "date_of_birth": '1981-04-09',
+      "user_id": user_id
     }
   end
 
-  path '/api/v1/users/{user_id}/children' do
-    parameter name: :user_id, in: :path, type: :string
-    let(:user_id) { User.create(user_params).id }
-    get 'lists all children for a user' do
+  path '/api/v1/children' do
+    get 'lists all children' do
       tags 'children'
       produces 'application/json'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
@@ -87,7 +87,7 @@ RSpec.describe 'children API', type: :request do
         response '201', 'child created' do
           let(:child) { { "child": child_params } }
           run_test! do
-            expect(response).to match_response_schema('user_with_children')
+            expect(response).to match_response_schema('child')
           end
         end
         response '422', 'invalid request' do
@@ -132,11 +132,9 @@ RSpec.describe 'children API', type: :request do
     end
   end
 
-  path '/api/v1/users/{user_id}/children/{child_id}' do
-    parameter name: :user_id, in: :path, type: :string
-    parameter name: :child_id, in: :path, type: :string
-    let(:user_id) { User.create(user_params).id }
-    let(:child_id) { User.find(user_id).children.create!(child_params).id }
+  path '/api/v1/children/{slug}' do
+    parameter name: :slug, in: :path, type: :string
+    let(:slug) { Child.create!(child_params).slug }
     get 'retrieves a child' do
       tags 'children'
       produces 'application/json', 'application/xml'
@@ -155,7 +153,7 @@ RSpec.describe 'children API', type: :request do
         end
 
         response '404', 'child not found' do
-          let(:child_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end
@@ -203,8 +201,8 @@ RSpec.describe 'children API', type: :request do
         response '200', 'child updated' do
           let(:child) { { "child": child_params.merge("first_name": 'Padma') } }
           run_test! do
-            expect(response).to match_response_schema('user_with_children')
-            # expect(response.parsed_body['name']).to eq('Hogwarts School')
+            expect(response).to match_response_schema('child')
+            expect(response.parsed_body['first_name']).to eq('Padma')
           end
         end
 
@@ -214,7 +212,7 @@ RSpec.describe 'children API', type: :request do
         end
 
         response '404', 'child not found' do
-          let(:child_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           let(:child) { { "child": child_params } }
           run_test!
         end
@@ -262,7 +260,7 @@ RSpec.describe 'children API', type: :request do
         end
 
         response '404', 'child not found' do
-          let(:child_id) { 'invalid' }
+          let(:slug) { 'invalid' }
           run_test!
         end
         # end
