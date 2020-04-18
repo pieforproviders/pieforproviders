@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import './Login.css'
 import ReactGA from 'react-ga'
 import { sha1 } from 'hash-anything'
+import { useApi } from 'react-use-fetch-api'
 
 export function Login() {
   ReactGA.pageview(window.location.pathname + window.location.search)
@@ -11,19 +12,17 @@ export function Login() {
     action: 'Landed on Login Page'
   })
 
+  const { get } = useApi()
+
   const [users, setUsers] = useState([])
 
   useEffect(() => {
-    const users = async () => {
-      const result = await fetch(`/api/v1/users`, {
-        headers: { Accept: 'application/vnd.pieforproviders.v1+json' }
-      })
-
-      setUsers(await result.json())
-    }
-
-    users()
-  }, [])
+    get('/api/v1/users', {
+      Accept: 'application/vnd.pieforproviders.v1+json'
+    }).then(data => {
+      setUsers(data)
+    })
+  }, [get])
 
   return (
     <div className="login">

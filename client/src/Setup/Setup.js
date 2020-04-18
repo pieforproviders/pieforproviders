@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import './Setup.css'
 import { sha1 } from 'hash-anything'
+import { useApi } from 'react-use-fetch-api'
 
 export function Setup() {
+  let { get } = useApi()
   const [businesses, setBusinesses] = useState([])
 
   useEffect(() => {
-    // TODO: useApi from react-use-fetch-api after making a PR for headers
-    const businesses = async () => {
-      const result = await fetch('/api/v1/businesses', {
-        headers: { Accept: 'application/vnd.pieforproviders.v1+json' }
-      })
-
-      setBusinesses(await result.json())
-    }
-
-    businesses()
-  }, [])
+    get('/api/v1/businesses', {
+      Accept: 'application/vnd.pieforproviders.v1+json'
+    }).then(data => {
+      setBusinesses(data)
+    })
+  }, [get])
 
   return (
     <div className="setup">

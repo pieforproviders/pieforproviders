@@ -24,6 +24,7 @@
     "react-ga": "^2.7.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
+    "react-use-fetch-api": "^1.0.8",
     "typescript": "^3.8.3",
     "uuid": "^7.0.3",
     "xlsx": "^0.15.6"
