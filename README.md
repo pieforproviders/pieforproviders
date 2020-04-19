@@ -59,7 +59,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 * `rvm` or another ruby version manager to isolate your dependency installation
 * `heroku cli`
 
-## Get Started
+## Getting Started
 
 - clone the repo
 - `cd pieforproviders`
@@ -71,10 +71,21 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - `cd client`
 - install front-end packages: `yarn install`
 - `cd ../`
-- start with heroku local: `rails start`
-  > if you want to run this without heroku cli:  
-  > - start rails in one terminal: `rails s -p 3001`
-  > - open a second terminal and start react: `cd client && yarn start`
+
+## Running the app locally
+You have several convenient options for running the app locally.
+
+1. Rake task
+  - Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+  - `rails start`
+
+2. Foreman
+  - Install [foreman](https://github.com/ddollar/foreman) -- `gem install foreman`
+  - Run `foreman start`
+
+3. Without Foreman or Heroku
+  - Start rails in one terminal: `rails s -p 3001`
+  - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 
