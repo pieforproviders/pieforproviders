@@ -14,8 +14,8 @@ assignees: ''
 ## 🧶 Acceptance Criteria
 <!-- what needs to happen before this feature is able to be merged?  How will we know it's done? -->
 
-🖍️ Implementation Details
+## 🖍️ Implementation Details
 <!-- Any technical details that need to be taken into consideration as we implement -->
 
-🥧 Additional context
+## 🥧 Additional context
 <!-- Add any other context or screenshots about the feature request here. -->
