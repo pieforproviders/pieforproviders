@@ -62,7 +62,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 ## Get Started
 
 - clone the repo
-- `cd pieforproviders/rails`
+- `cd pieforproviders`
 - copy `.env.sample` to `.env` and add values (contact a repo contributor)
 - install bundler for gems: `gem install bundler`
 - install gems: `bundle install`
