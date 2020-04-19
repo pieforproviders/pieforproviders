@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import './Setup.css'
 import { sha1 } from 'hash-anything'
-import { useApi } from 'react-use-fetch-api'
+import { useQuery } from 'react-query'
+import { getBusinesses } from '../api'
 
 export function Setup() {
-  let { get } = useApi()
-  const [businesses, setBusinesses] = useState([])
-
-  useEffect(() => {
-    get('/api/v1/businesses', {
-      Accept: 'application/vnd.pieforproviders.v1+json'
-    }).then(data => {
-      setBusinesses(data)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { status, data: businesses, error } = useQuery(
+    'businesses',
+    getBusinesses
+  )
 
   return (
     <div className="setup">
@@ -23,6 +17,8 @@ export function Setup() {
         This content is only to display something here - eventually this will be
         the setup wizard
       </p>
+      {status === 'loading' && <div>Loading...</div>}
+      {status === 'error' && <div>Error: {error.message}</div>}
       {businesses?.map(business => (
         <div key={sha1(business.slug, business.name)}>
           {business.name} ({business.id})

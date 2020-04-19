@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import './Login.css'
 import ReactGA from 'react-ga'
 import { sha1 } from 'hash-anything'
-import { useApi } from 'react-use-fetch-api'
+import { useQuery } from 'react-query'
+import { getUsers } from '../api'
 
 export function Login() {
   ReactGA.pageview(window.location.pathname + window.location.search)
@@ -12,18 +13,7 @@ export function Login() {
     action: 'Landed on Login Page'
   })
 
-  const { get } = useApi()
-
-  const [users, setUsers] = useState([])
-
-  useEffect(() => {
-    get('/api/v1/users', {
-      Accept: 'application/vnd.pieforproviders.v1+json'
-    }).then(data => {
-      setUsers(data)
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const { status, data: users, error } = useQuery('users', getUsers)
 
   return (
     <div className="login">
@@ -31,7 +21,9 @@ export function Login() {
         Users would normally login here and then be redirected to their
         Dashboard
       </h1>
-      {users.map(user => (
+      {status === 'loading' && <div>Loading...</div>}
+      {status === 'error' && <div>Error: {error.message}</div>}
+      {users?.map(user => (
         <p key={sha1(user.email, user.full_name)}>
           {user.full_name}: {user.email}{' '}
           <NavLink to={`/setup`}>Click Me</NavLink>

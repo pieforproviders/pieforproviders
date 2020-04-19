@@ -5,7 +5,7 @@ import { Login } from '../Login'
 import ReactGA from 'react-ga'
 import { v4 as uuid } from 'uuid'
 import { act } from 'react-dom/test-utils'
-import * as useApiModule from 'react-use-fetch-api'
+import * as api from '../../api'
 
 jest.mock('react-ga', () => ({
   pageview: jest.fn(),
@@ -25,10 +25,9 @@ const mockReturnValue = [
     id: id
   }
 ]
-const getSpy = jest.fn(() => Promise.resolve(mockReturnValue))
-jest.spyOn(useApiModule, 'useApi').mockImplementation(() => ({
-  get: getSpy
-}))
+
+const getSpy = jest.fn(() => mockReturnValue)
+jest.spyOn(api, 'getUsers').mockImplementation(() => getSpy)
 
 describe('<Login />', () => {
   describe('before data is loaded', () => {

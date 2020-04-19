@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme'
 import { Setup } from '../Setup'
 import { v4 as uuid } from 'uuid'
 import { act } from 'react-dom/test-utils'
-import * as useApiModule from 'react-use-fetch-api'
+import * as api from '../../api'
 
 const businessId = uuid()
 const businessName = 'Happy Hearts Childcare'
@@ -16,10 +16,9 @@ const mockReturnValue = [
     name: businessName
   }
 ]
-const getSpy = jest.fn(() => Promise.resolve(mockReturnValue))
-jest.spyOn(useApiModule, 'useApi').mockImplementation(() => ({
-  get: getSpy
-}))
+
+const getSpy = jest.fn(() => mockReturnValue)
+jest.spyOn(api, 'getBusinesses').mockImplementation(() => getSpy)
 
 describe('<Setup />', () => {
   it('renders the Setup container', () => {
