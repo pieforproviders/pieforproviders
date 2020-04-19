@@ -22,7 +22,8 @@ export function Login() {
     }).then(data => {
       setUsers(data)
     })
-  }, [get])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="login">
