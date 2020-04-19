@@ -30,6 +30,7 @@ coverage
 # Dotenv
 **/*.env*
 !.env.sample
+!.env.development.sample
 
 # for rvm
 .ruby-gemset
