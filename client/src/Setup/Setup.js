@@ -13,7 +13,8 @@ export function Setup() {
     }).then(data => {
       setBusinesses(data)
     })
-  }, [get])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="setup">
