@@ -11,8 +11,11 @@ assignees: ''
 <!-- Is your feature request related to a problem? Please describe it. (Ex. I'm always frustrated when...) -->
 <!-- Provide a clear and concise description of what you want to happen -->
 
-## 🏖 Implementation Details
+## 🧶 Acceptance Criteria
+<!-- what needs to happen before this feature is able to be merged?  How will we know it's done? -->
+
+🖍️ Implementation Details
 <!-- Any technical details that need to be taken into consideration as we implement -->
 
-## 🥞Additional context
+🥧 Additional context
 <!-- Add any other context or screenshots about the feature request here. -->
