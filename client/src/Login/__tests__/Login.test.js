@@ -2,7 +2,6 @@ import React from 'react'
 import { mount, shallow } from 'enzyme'
 import { MemoryRouter, Route } from 'react-router'
 import { Login } from '../Login'
-import ReactGA from 'react-ga'
 import { v4 as uuid } from 'uuid'
 import { act } from 'react-dom/test-utils'
 import * as useApiModule from 'react-use-fetch-api'
@@ -34,14 +33,6 @@ describe('<Login />', () => {
   describe('before data is loaded', () => {
     beforeAll(() => {
       wrapper = shallow(<Login />)
-    })
-
-    it('calls ReactGA.pageview()', () => {
-      expect(ReactGA.pageview).toBeCalled()
-    })
-
-    it('calls ReactGA.event()', () => {
-      expect(ReactGA.event).toBeCalled()
     })
 
     it('renders the Login container', () => {
