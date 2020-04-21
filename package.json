@@ -15,7 +15,8 @@
     "test": "yarn --cwd client test",
     "lint": "yarn --cwd client lint",
     "lint:fix": "yarn --cwd client lint --fix",
-    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\"",
+    "install": "echo '🧇🧇 you are in the root, try again from the client folder 🧇🧇'"
   },
   "engines": {
     "yarn": "1.22.0",
