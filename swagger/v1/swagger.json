@@ -551,6 +551,10 @@
               "type": "string",
               "example": "Farsi"
             },
+            "organization": {
+              "type": "string",
+              "example": "Society for the Promotion of Elfish Welfare"
+            },
             "phone": {
               "type": "string",
               "example": "888-888-8888"
@@ -596,6 +600,10 @@
               "type": "string",
               "example": "Farsi"
             },
+            "organization": {
+              "type": "string",
+              "example": "Society for the Promotion of Elfish Welfare"
+            },
             "phone": {
               "type": "string",
               "example": "888-888-8888"
@@ -626,11 +634,16 @@
           "category": {
             "type": "string",
             "example": "license_exempt_home"
+          },
+          "user_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           }
         },
         "required": [
           "name",
-          "category"
+          "category,",
+          "user_id"
         ]
       }
     }
@@ -682,12 +695,17 @@
           "last_name": {
             "type": "string",
             "example": "Finnigan"
+          },
+          "user_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           }
         },
         "required": [
           "first_name",
           "last_name",
-          "date_of_birth"
+          "date_of_birth",
+          "user_id"
         ]
       }
     }
