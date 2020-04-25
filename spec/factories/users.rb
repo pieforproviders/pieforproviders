@@ -10,6 +10,7 @@ FactoryBot.define do
     opt_in_email { Faker::Boolean.boolean }
     opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }
+    organization { Faker::Company.name }
     phone { Faker::PhoneNumber.phone_number }
     service_agreement_accepted { Faker::Boolean.boolean }
     timezone { TimeZoneService.us_zones.sample }
@@ -29,6 +30,7 @@ end
 #  opt_in_email               :boolean          default(TRUE), not null
 #  opt_in_phone               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
+#  organization               :string           not null
 #  phone                      :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  slug                       :string           not null

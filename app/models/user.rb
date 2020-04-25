@@ -12,6 +12,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
   validates :language, presence: true
+  validates :organization, presence: true
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_phone, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
@@ -42,6 +43,7 @@ end
 #  opt_in_email               :boolean          default(TRUE), not null
 #  opt_in_phone               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
+#  organization               :string           not null
 #  phone                      :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  slug                       :string           not null

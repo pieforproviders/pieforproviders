@@ -43,6 +43,7 @@ RSpec.configure do |config|
                 full_name: { type: :string, example: 'Marlee Matlin' },
                 greeting_name: { type: :string, example: 'Marlee' },
                 language: { type: :string, example: 'Farsi' },
+                organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
                 phone: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
                 timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
@@ -67,6 +68,7 @@ RSpec.configure do |config|
                 full_name: { type: :string, example: 'Marlee Matlin' },
                 greeting_name: { type: :string, example: 'Marlee' },
                 language: { type: :string, example: 'Farsi' },
+                organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
                 phone: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
                 timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
@@ -82,11 +84,13 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               name: { type: :string, example: 'Harlequin Childcare' },
-              category: { type: :string, example: 'license_exempt_home' }
+              category: { type: :string, example: 'license_exempt_home' },
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             },
             required: %w[
               name
               category
+              user_id
             ]
           }
         }
@@ -114,12 +118,14 @@ RSpec.configure do |config|
               date_of_birth: { type: :string, example: '1991-11-01' },
               first_name: { type: :string, example: 'Seamus' },
               full_name: { type: :string, example: 'Seamus Finnigan' },
-              last_name: { type: :string, example: 'Finnigan' }
+              last_name: { type: :string, example: 'Finnigan' },
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             },
             required: %w[
               first_name
               last_name
               date_of_birth
+              user_id
             ]
           }
         }
