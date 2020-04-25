@@ -7,6 +7,7 @@ user = User.first_or_create!(
   opt_in_text: true,
   opt_in_email: true,
   opt_in_phone: true,
+  organization: "Pie for Providers",
   active: true,
   language: "english",
   service_agreement_accepted: false,
