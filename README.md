@@ -22,7 +22,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 <details>
   <summary>Architecture</summary>
 
-* ERD/Database Planning Diagram: [https://dbdiagram.io/d/5e83dbfd4495b02c3b8910b4](https://dbdiagram.io/d/5e83dbfd4495b02c3b8910b4)
+* ERD/Database Planning Diagram: [https://dbdiagram.io/d/5e8a57ab4495b02c3b8949f4](https://dbdiagram.io/d/5e8a57ab4495b02c3b8949f4)
 
 * Backend: Rails
   * **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
