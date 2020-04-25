@@ -85,11 +85,11 @@ RSpec.configure do |config|
             properties: {
               name: { type: :string, example: 'Harlequin Childcare' },
               category: { type: :string, example: 'license_exempt_home' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55'}
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             },
             required: %w[
               name
-              category,
+              category
               user_id
             ]
           }
@@ -119,7 +119,7 @@ RSpec.configure do |config|
               first_name: { type: :string, example: 'Seamus' },
               full_name: { type: :string, example: 'Seamus Finnigan' },
               last_name: { type: :string, example: 'Finnigan' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55'}
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             },
             required: %w[
               first_name
