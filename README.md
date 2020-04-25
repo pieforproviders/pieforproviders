@@ -34,8 +34,10 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
     * DatabaseCleaner
     * FactoryBot
     * Faker
+    * RSwag
   * v1 API Routes returning JSON
   * Postgres DB
+  * API Documentation with swagger
 * Frontend: React
   * ESLint/Prettier
   * Jest/Enzyme
