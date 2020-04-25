@@ -7,6 +7,7 @@ RSpec.describe User, type: :model do
   it { should validate_uniqueness_of(:email) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:language) }
+  it { should validate_presence_of(:organization) }
   it { should validate_presence_of(:timezone) }
 
   let!(:user) { create(:user, phone: '888-888-8888') }
@@ -28,6 +29,7 @@ end
 #  opt_in_email               :boolean          default(TRUE), not null
 #  opt_in_phone               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
+#  organization               :string           not null
 #  phone                      :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  slug                       :string           not null

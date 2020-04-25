@@ -31,4 +31,5 @@ end
 #
 #  index_children_on_slug     (slug) UNIQUE
 #  index_children_on_user_id  (user_id)
+#  unique_children            (first_name,last_name,date_of_birth,user_id) UNIQUE
 #

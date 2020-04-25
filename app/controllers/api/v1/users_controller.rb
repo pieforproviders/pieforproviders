@@ -53,7 +53,7 @@ class Api::V1::UsersController < Api::V1::ApiController
     params.require(:user).permit(
       :active, :email, :full_name, :greeting_name,
       :id, :language, :mobile, :opt_in_email,
-      :opt_in_phone, :opt_in_text, :phone,
+      :opt_in_phone, :opt_in_text, :organization, :phone,
       :service_agreement_accepted, :slug, :timezone
     )
   end
