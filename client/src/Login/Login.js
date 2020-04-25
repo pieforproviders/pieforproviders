@@ -6,15 +6,18 @@ import { sha1 } from 'hash-anything'
 import { useApi } from 'react-use-fetch-api'
 
 export function Login() {
-  ReactGA.pageview(window.location.pathname + window.location.search)
-  ReactGA.event({
-    category: 'Guest',
-    action: 'Landed on Login Page'
-  })
-
   const { get } = useApi()
-
   const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') {
+      ReactGA.pageview(window.location.pathname + window.location.search)
+      ReactGA.event({
+        category: 'Guest',
+        action: 'Landed on Login Page'
+      })
+    }
+  }, [])
 
   useEffect(() => {
     get('/api/v1/users', {

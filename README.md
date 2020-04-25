@@ -22,7 +22,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 <details>
   <summary>Architecture</summary>
 
-* ERD/Database Planning Diagram: [https://dbdiagram.io/d/5e1a354f94d9ab14375a1f91](https://dbdiagram.io/d/5e1a354f94d9ab14375a1f91)
+* ERD/Database Planning Diagram: [https://dbdiagram.io/d/5e83dbfd4495b02c3b8910b4](https://dbdiagram.io/d/5e83dbfd4495b02c3b8910b4)
 
 * Backend: Rails
   * **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
@@ -63,7 +63,8 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 - clone the repo
 - `cd pieforproviders`
-- copy `.env.sample` to `.env` and add values (contact a repo contributor)
+- Run `cp .env.sample .env` and `cp client/.env.development.sample cp client/.env.development` and add values (contact a repo contributor)
+- Run  (contact a repo contributor)
 - install bundler for gems: `gem install bundler`
 - install gems: `bundle install`
 - set up the database: `bundle exec rails db:setup`
