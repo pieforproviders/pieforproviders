@@ -15,7 +15,7 @@ We need your help.
 
 Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work. 
 
-Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md) by picking up any of our [open issues](https://github.com/pieforproviders/pieforproviders/issues?q=is%3Aopen+is%3Aissue+label%3A%22ready+for+work%22).
+Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md) by picking up any of our [open issues](https://github.com/pieforproviders/pieforproviders/issues?q=is%3Aopen+is%3Aissue+label%3A%22ready+for+work%22+sort%3Aupdated-desc+no%3Aassignee).
 
 Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
