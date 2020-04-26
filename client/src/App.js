@@ -10,7 +10,7 @@ import Dashboard from './Dashboard'
 import Login from './Login'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
-import Setup from './Setup'
+import CSVImport from './CSVImport'
 
 const App = () => {
   useEffect(() => {
@@ -29,8 +29,8 @@ const App = () => {
           <Route path="/dashboard">
             <Dashboard />
           </Route>
-          <Route path="/setup">
-            <Setup />
+          <Route path="/csv-import">
+            <CSVImport />
           </Route>
           <Route exact path="/">
             <Redirect to={'/login'} />
