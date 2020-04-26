@@ -642,7 +642,7 @@
         },
         "required": [
           "name",
-          "category,",
+          "category",
           "user_id"
         ]
       }
@@ -684,17 +684,9 @@
             "type": "string",
             "example": "1991-11-01"
           },
-          "first_name": {
-            "type": "string",
-            "example": "Seamus"
-          },
           "full_name": {
             "type": "string",
             "example": "Seamus Finnigan"
-          },
-          "last_name": {
-            "type": "string",
-            "example": "Finnigan"
           },
           "user_id": {
             "type": "uuid",
@@ -702,8 +694,7 @@
           }
         },
         "required": [
-          "first_name",
-          "last_name",
+          "full_name",
           "date_of_birth",
           "user_id"
         ]
@@ -724,17 +715,9 @@
             "type": "string",
             "example": "1992-11-01"
           },
-          "first_name": {
-            "type": "string",
-            "example": "Sean"
-          },
           "full_name": {
             "type": "string",
             "example": "Sean Flannery"
-          },
-          "last_name": {
-            "type": "string",
-            "example": "Flannery"
           }
         }
       }
