@@ -5,10 +5,8 @@
     "ccms_id",
     "created_at",
     "date_of_birth",
-    "first_name",
     "full_name",
     "id",
-    "last_name",
     "slug",
     "updated_at",
     "user_id"
@@ -16,14 +14,12 @@
   "properties": {
     "active": { "type": "boolean" },
     "ccms_id": { "type": "string" },
-    "created_at": { "type": "string" , "format": "date-time" },
+    "created_at": { "type": "string", "format": "date-time" },
     "date_of_birth": { "type": "string", "format": "date" },
     "id": { "type": "string" },
-    "first_name": { "type": "string" },
     "full_name": { "type": "string" },
-    "last_name": { "type": "string" },
     "slug": { "type": "string" },
-    "updated_at": { "type": "string" , "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
     "user_id": { "type": "string", "format": "uuid" }
   }
 }

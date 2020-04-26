@@ -20,9 +20,7 @@ RSpec.describe 'children API', type: :request do
   let!(:child_params) do
     {
       "ccms_id": '1234567890',
-      "first_name": 'Parvati',
       "full_name": 'Parvati Patil',
-      "last_name": 'Patil',
       "date_of_birth": '1981-04-09',
       "user_id": user_id
     }
@@ -200,15 +198,15 @@ RSpec.describe 'children API', type: :request do
         # context 'when authenticated' do
         #   include_context 'authenticated user'
         response '200', 'child updated' do
-          let(:child) { { "child": child_params.merge("first_name": 'Padma') } }
+          let(:child) { { "child": child_params.merge("full_name": 'Padma Patil') } }
           run_test! do
             expect(response).to match_response_schema('child')
-            expect(response.parsed_body['first_name']).to eq('Padma')
+            expect(response.parsed_body['full_name']).to eq('Padma Patil')
           end
         end
 
         response '422', 'child cannot be updated' do
-          let(:child) { { "child": { "first_name": nil } } }
+          let(:child) { { "child": { "full_name": nil } } }
           run_test!
         end
 

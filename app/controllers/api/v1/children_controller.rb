@@ -50,7 +50,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
 
   def child_params
     params.require(:child).permit(
-      :active, :ccms_id, :date_of_birth, :first_name, :full_name, :id, :last_name, :slug, :user_id
+      :active, :ccms_id, :date_of_birth, :full_name, :id, :slug, :user_id
     )
   end
 end

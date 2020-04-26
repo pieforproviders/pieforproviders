@@ -8,12 +8,8 @@
     "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
-        "tags": [
-          "businesses"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["businesses"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Accept",
@@ -33,13 +29,8 @@
       },
       "post": {
         "summary": "creates a business",
-        "tags": [
-          "businesses"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["businesses"],
+        "consumes": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -79,13 +70,8 @@
       ],
       "get": {
         "summary": "retrieves a business",
-        "tags": [
-          "businesses"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["businesses"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -108,17 +94,9 @@
       },
       "put": {
         "summary": "updates a business",
-        "tags": [
-          "businesses"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["businesses"],
+        "consumes": ["application/json", "application/xml"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -151,13 +129,8 @@
       },
       "delete": {
         "summary": "deletes a business",
-        "tags": [
-          "businesses"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["businesses"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -182,12 +155,8 @@
     "/api/v1/children": {
       "get": {
         "summary": "lists all children",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["children"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Accept",
@@ -207,13 +176,8 @@
       },
       "post": {
         "summary": "creates a child",
-        "tags": [
-          "children"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["children"],
+        "consumes": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -253,13 +217,8 @@
       ],
       "get": {
         "summary": "retrieves a child",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["children"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -282,17 +241,9 @@
       },
       "put": {
         "summary": "updates a child",
-        "tags": [
-          "children"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["children"],
+        "consumes": ["application/json", "application/xml"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -325,13 +276,8 @@
       },
       "delete": {
         "summary": "deletes a child",
-        "tags": [
-          "children"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["children"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -356,12 +302,8 @@
     "/api/v1/users": {
       "get": {
         "summary": "lists all users",
-        "tags": [
-          "users"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "tags": ["users"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "Accept",
@@ -381,13 +323,8 @@
       },
       "post": {
         "summary": "creates a user",
-        "tags": [
-          "users"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["users"],
+        "consumes": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -427,13 +364,8 @@
       ],
       "get": {
         "summary": "retrieves a user",
-        "tags": [
-          "users"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["users"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -456,17 +388,9 @@
       },
       "put": {
         "summary": "updates a user",
-        "tags": [
-          "users"
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["users"],
+        "consumes": ["application/json", "application/xml"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -499,13 +423,8 @@
       },
       "delete": {
         "summary": "deletes a user",
-        "tags": [
-          "users"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
+        "tags": ["users"],
+        "produces": ["application/json", "application/xml"],
         "parameters": [
           {
             "name": "Accept",
@@ -640,11 +559,7 @@
             "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           }
         },
-        "required": [
-          "name",
-          "category,",
-          "user_id"
-        ]
+        "required": ["name", "category,", "user_id"]
       }
     }
   },
@@ -684,29 +599,16 @@
             "type": "string",
             "example": "1991-11-01"
           },
-          "first_name": {
-            "type": "string",
-            "example": "Seamus"
-          },
           "full_name": {
             "type": "string",
             "example": "Seamus Finnigan"
-          },
-          "last_name": {
-            "type": "string",
-            "example": "Finnigan"
           },
           "user_id": {
             "type": "uuid",
             "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           }
         },
-        "required": [
-          "first_name",
-          "last_name",
-          "date_of_birth",
-          "user_id"
-        ]
+        "required": ["full_name", "date_of_birth", "user_id"]
       }
     }
   },
@@ -724,17 +626,9 @@
             "type": "string",
             "example": "1992-11-01"
           },
-          "first_name": {
-            "type": "string",
-            "example": "Sean"
-          },
           "full_name": {
             "type": "string",
             "example": "Sean Flannery"
-          },
-          "last_name": {
-            "type": "string",
-            "example": "Flannery"
           }
         }
       }
