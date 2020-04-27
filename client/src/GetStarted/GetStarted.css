@@ -1,0 +1,63 @@
+#header {
+	display: flex;
+	box-shadow: 3px 3px 5px #ccc;
+	justify-content: space-between;
+	color: #1E90FF;
+}
+
+#header h1, img {
+	margin: 10px;
+}
+
+img {
+	height: 50px;
+	align-self: center;
+}
+
+.main-contianer{
+	margin: 10px 80px;
+}
+
+.main-container, h2 {
+	color: #1E90FF;
+}
+
+.second-container {
+	box-shadow: 2px 2px 5px 4px #ccc;
+	height: 79vh;
+}
+
+.second-container h4 {
+	color: #1E90FF;
+}
+
+.third-container {
+	margin: auto 80px;
+}
+
+#welcome {
+	text-align: center;
+	margin-top: 20px;
+}
+
+.step-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.steps {
+	height: 250px;
+	width: 250px;
+	text-align: center;
+	background-color: #B0E0E6;
+}
+
+.steps p {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+#button {
+	text-align: center;
+	margin: 6% auto;
+}

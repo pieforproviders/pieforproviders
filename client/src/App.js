@@ -11,6 +11,7 @@ import Login from './Login'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CSVImport from './CSVImport'
+import GetStarted from './GetStarted'
 
 const App = () => {
   useEffect(() => {
@@ -31,6 +32,9 @@ const App = () => {
           </Route>
           <Route path="/csv-import">
             <CSVImport />
+          </Route>
+          <Route path="/start">
+            <GetStarted />
           </Route>
           <Route exact path="/">
             <Redirect to={'/login'} />
