@@ -1,0 +1,171 @@
+// core table that owns the users and their access
+Table users [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  full_name string [not null]
+  greeting_name string
+  email string [unique, not null]
+  phone string
+  mobile string
+  opt_in_text boolean [not null, default: true]
+  opt_in_email boolean [not null, default: true]
+  opt_in_phone boolean [not null, default: true]
+  organization string [not null]
+  password string [not null] // devise
+  active boolean [not null, default: true]
+  language string [not null]
+  confirmed boolean [not null, default: false] // devise
+  service_agreement_accepted boolean [not null, default: false]
+  timezone string [not null]
+}
+
+Enum license_types {
+  licensed_center
+  licensed_family_home
+  licensed_group_home
+  license_exempt_home
+  license_exempt_center
+}
+
+Table businesses [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  user_id uuid [ref: > users.id, not null]
+  license license_types [not null]
+  name string [not null]
+  active boolean [not null, default: true]
+}
+
+Table sites [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  business_id uuid [ref: > businesses.id, not null]
+  name string [not null]
+  address_line_1 string [not null]
+  address_line_2 string [not null]
+  city string [not null]
+  state string [not null]
+  zip string [not null]
+  county string [not null]
+  qris_rating string
+  active boolean [not null, default: true]
+}
+
+Table agencies [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  user_id uuid [ref: > users.id, not null]
+  name string [not null]
+  active boolean [not null, default: true]
+}
+
+Table children [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  user_id uuid [ref: > users.id, not null]
+  ccms_id string
+  first_name string [not null]
+  last_name string [not null]
+  full_name string [not null]
+  date_of_birth date [not null]
+  active boolean [not null, default: true]
+}
+
+Table child_sites [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  child_id uuid [ref: > children.id, not null]
+  sites_id uuid [ref: > sites.id, not null]
+}
+
+Enum copay_frequencies {
+  daily
+  weekly
+  monthly
+}
+
+Enum case_statuses {
+  submitted
+  pending
+  approved
+  denied
+}
+
+Table case_cycles [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  case_number string
+  copay monetize
+  copay_frequency copay_frequencies
+  status case_statuses
+  submitted_on date
+  effective_on date
+  notified_on date
+  expires_on date
+}
+
+Enum allowance_intervals {
+  weekly
+  monthly
+  annually
+}
+
+Table child_case_cycles [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  child_id uuid [ref: > children.id, not null]
+  subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
+  case_cycle_id uuid [ref: > case_cycles.id, not null]
+  part_days_allowed integer [not null]
+  full_days_allowed integer [not null]
+  day_allowance_interval allowance_intervals [not null, default: "month"]
+}
+
+Table child_case_cycle_payments [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  payment_id uuid [ref: > payments.id, not null]
+  amount monetize [not null]
+  discrepancy monetize
+  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
+}
+
+Table child_case_cycle_agencies [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  agency_id uuid [ref: > agencies.id, not null]
+  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
+}
+
+Enum lengths_of_care {
+  part_day
+  full_day
+  full_plus_part_day
+  full_plus_full_day
+}
+
+Table attendances [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
+  length_of_care lengths_of_care [not null]
+  starts_on date [not null]
+}
+
+Table payments [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  agency_id uuid [ref: > agencies.id, not null]
+  site_id uuid [ref: > sites.id, not null]
+  paid_on date [not null]
+  care_started_on date [not null]
+  care_finished_on date [not null]
+  amount monetize [not null]
+  discrepancy monetize
+}
+
+Table subsidy_rules [headercolor: #3498db] {
+  id uuid [pk, unique, not null]
+  name string [not null]
+  county string [not null]
+  state string [not null]
+  max_age decimal [not null]
+  part_day_rate monetize [not null]
+  full_day_rate monetize [not null]
+  part_day_max_hours decimal [not null]
+  full_day_max_hours decimal [not null]
+  full_plus_part_day_max_hours decimal [not null]
+  full_plus_full_day_max_hours decimal [not null]
+  part_day_threshold decimal [not null]
+  full_day_threshold decimal [not null]
+  provider_type license_types [not null]
+  qris_rating string
+}
