@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/login' => 'static#show_login'
+
   get '*path', to: 'static#fallback_index_html', constraints: lambda { |request|
     !request.xhr? && request.format.html?
   }
