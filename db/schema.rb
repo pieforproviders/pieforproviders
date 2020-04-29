@@ -10,11 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_29_014219) do
+ActiveRecord::Schema.define(version: 2020_04_29_020409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "blocked_tokens", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "expiration", null: false
+    t.index ["jti"], name: "index_blocked_tokens_on_jti"
+  end
 
   create_table "businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false

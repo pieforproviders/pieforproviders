@@ -1,4 +1,4 @@
-class AddBlockList < ActiveRecord::Migration[6.0]
+class AddBlockedTokens < ActiveRecord::Migration[6.0]
   def change
     create_table :blocked_tokens do |t|
       t.string :jti, null: false
