@@ -14,29 +14,46 @@ RSpec.describe 'POST /signup', type: :request do
   end
 
   context 'when user is unauthenticated' do
-    before { post url, params: params }
-
-    it 'returns 200' do
-      expect(response.status).to eq 200
-    end
-
-    it 'returns a new user' do
-      expect(response.body).to match_schema('user')
-    end
-  end
-
-  context 'when user already exists' do
-    before do
-      create(:user, email: params[:user][:email])
-      post url, params: params
-    end
-
-    it 'returns bad request status' do
-      expect(response.status).to eq 400
-    end
-
-    it 'returns validation errors' do
-      expect(json['errors'].first['title']).to eq('Bad Request')
+    path '/signup' do
+      post 'creates a user' do
+        tags 'users'
+        consumes 'application/json', 'application/xml'
+        parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+        parameter name: :user, in: :body, schema: {
+          '$ref' => '#/definitions/createUser'
+        }
+  
+        context 'on the right api version' do
+          include_context 'correct api version header'
+          # context 'when authenticated' do
+          #   include_context 'authenticated user'
+          response '201', 'user created' do
+            let(:user) { { "user": params } }
+            run_test! do
+              expect(response).to match_response_schema('user')
+            end
+          end
+          response '422', 'invalid request' do
+            let(:user) { { "user": { "title": 'whatever' } } }
+            run_test!
+          end
+          response '400', 'bad request' do
+            before(:each) { create(:user, email: params[:user][:email]) }
+            let(:user) { { "user": params } }
+            run_test! do
+              expect(response['errors'].first['title']).to eq('Bad Request')
+            end
+          end
+        end
+  
+        context 'on the wrong api version' do
+          include_context 'incorrect api version header'
+          response '500', 'internal server error' do
+            let(:user) { { "user": params } }
+            run_test!
+          end
+        end
+      end
     end
   end
 end
