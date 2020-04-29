@@ -4,6 +4,12 @@
 class RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
+  # TODO #11:
+  # confirmation emails?
+  # password reeset emails?
+  # how do we do this in API only mode and on development
+  # Fix the login route to allow for creating new accounts and logging in to one, now all things are 403 (yay! also boo!)
+
   def create
     build_resource(sign_up_params)
 
