@@ -11,6 +11,8 @@ FactoryBot.define do
     opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }
     organization { Faker::Company.name }
+    password { Faker::Internet.password }
+    password_confirmation { Faker::Internet.password }
     phone { Faker::PhoneNumber.phone_number }
     service_agreement_accepted { Faker::Boolean.boolean }
     timezone { TimeZoneService.us_zones.sample }

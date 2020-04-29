@@ -11,6 +11,8 @@ RSpec.describe 'users API', type: :request do
       "language": 'English',
       "mobile": '912-444-5555',
       "organization": 'Society for the Promotion of Elfish Welfare',
+      "password": "password1234!",
+      "password_confirmation": "password1234!",
       "phone": '912-444-5555',
       "service_agreement_accepted": 'true',
       "timezone": 'Central Time (US & Canada)'
