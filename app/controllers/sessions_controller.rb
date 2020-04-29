@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Create Sessions when Users log in
 class SessionsController < Devise::SessionsController
   respond_to :json
 
