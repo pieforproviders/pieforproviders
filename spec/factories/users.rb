@@ -8,6 +8,7 @@ FactoryBot.define do
     full_name { Faker::Games::WorldOfWarcraft.hero }
     greeting_name { Faker::Name.first_name }
     language { %w[English Spanish Russian].sample }
+    mobile { Faker::PhoneNumber.phone_number }
     opt_in_email { Faker::Boolean.boolean }
     opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }

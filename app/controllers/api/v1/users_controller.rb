@@ -3,6 +3,7 @@
 # API for application users
 class Api::V1::UsersController < Api::V1::ApiController
   before_action :set_user, only: %i[show update destroy]
+  skip_before_action :authenticate_user!, only: %i[create]
 
   # GET /users
   def index

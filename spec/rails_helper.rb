@@ -71,6 +71,9 @@ RSpec.configure do |config|
   # add FactoryBot methods
   config.include FactoryBot::Syntax::Methods
 
+  # add Devise helpers
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
