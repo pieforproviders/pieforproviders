@@ -1,56 +1,57 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'POST /signup', type: :request do
   let(:url) { '/signup' }
   let(:params) do
     {
-      user: {
-        email: 'user@example.com',
-        password: 'password'
-      }
+      email: 'user@example.com',
+      full_name: 'Alicia Spinnet',
+      greeting_name: 'Alicia',
+      language: 'English',
+      mobile: '888-888-8888',
+      organization: 'Gryffindor Quidditch Team',
+      password: 'password',
+      password_confirmation: 'password',
+      phone: '888-888-8888',
+      timezone: 'Eastern Time (US & Canada)'
     }
   end
 
-  context 'when user is unauthenticated' do
-    path '/signup' do
-      post 'creates a user' do
-        tags 'users'
-        consumes 'application/json', 'application/xml'
-        parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-        parameter name: :user, in: :body, schema: {
-          '$ref' => '#/definitions/createUser'
-        }
-  
-        context 'on the right api version' do
-          include_context 'correct api version header'
-          # context 'when authenticated' do
-          #   include_context 'authenticated user'
-          response '201', 'user created' do
-            let(:user) { { "user": params } }
-            run_test! do
-              expect(response).to match_response_schema('user')
-            end
-          end
-          response '422', 'invalid request' do
-            let(:user) { { "user": { "title": 'whatever' } } }
-            run_test!
-          end
-          response '400', 'bad request' do
-            before(:each) { create(:user, email: params[:user][:email]) }
-            let(:user) { { "user": params } }
-            run_test! do
-              expect(response['errors'].first['title']).to eq('Bad Request')
-            end
+  path '/signup' do
+    post 'creates a user' do
+      tags 'users'
+      consumes 'application/json', 'application/xml'
+      parameter name: :user, in: :body, schema: {
+        '$ref' => '#/definitions/createUser'
+      }
+
+      response '201', 'user created' do
+        let(:user) { { "user": params } }
+        run_test! do
+          expect(response).to match_response_schema('user')
+        end
+      end
+
+      response '422', 'invalid request' do
+        context 'with bad data' do
+          let(:user) { { "user": { "title": 'whatever' } } }
+          run_test! do
+            expect(JSON.parse(response.body)['errors'].first['detail']['email'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['errors'].first['detail']['password'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['errors'].first['detail']['full_name'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['errors'].first['detail']['language'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['errors'].first['detail']['organization'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['errors'].first['detail']['timezone'].first).to eq("can't be blank")
           end
         end
-  
-        context 'on the wrong api version' do
-          include_context 'incorrect api version header'
-          response '500', 'internal server error' do
-            let(:user) { { "user": params } }
-            run_test!
+        context 'with an existing user' do
+          before(:each) { create(:user, email: params[:email]) }
+          let(:user) { { "user": params } }
+          run_test! do
+            expect(JSON.parse(response.body)['errors'].first['detail']['email'].first).to eq('has already been taken')
           end
         end
       end

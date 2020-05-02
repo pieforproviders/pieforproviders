@@ -4,7 +4,7 @@
 class RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
-  # TODO #11:
+  # TODO: #11:
   # confirmation emails?
   # password reeset emails?
   # how do we do this in API only mode and on development

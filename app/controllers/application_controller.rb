@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
 
   def render_resource(resource)
     if resource.errors.empty?
-      render json: resource
+      render json: resource, status: :created, location: resource
     else
       validation_error(resource)
     end
@@ -16,13 +16,13 @@ class ApplicationController < ActionController::API
     render json: {
       errors: [
         {
-          status: '400',
-          title: 'Bad Request',
+          status: '422',
+          title: 'Unprocessable Entity',
           detail: resource.errors,
           code: '100'
         }
       ]
-    }, status: :bad_request
+    }, status: :unprocessable_entity
   end
 
   def collect_metrics

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'swagger_helper'
 
 RSpec.describe 'POST /login', type: :request do
   let(:user) { create(:user) }
@@ -23,13 +24,8 @@ RSpec.describe 'POST /login', type: :request do
       expect(response).to have_http_status(200)
     end
 
-    it 'returns JTW token in authorization header' do
+    it 'returns JWT token in authorization header' do
       expect(response.headers['Authorization']).to be_present
-    end
-
-    it 'returns valid JWT token' do
-      decoded_token = decoded_jwt_token_from_response(response)
-      expect(decoded_token.first['sub']).to be_present
     end
   end
 
