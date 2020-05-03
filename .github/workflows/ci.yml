@@ -94,6 +94,7 @@ jobs:
           RAILS_ENV: test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
+          DEVISE_JWT_SECRET_KEY: imasecretkey
   test_frontend:
     name: Frontend tests
     runs-on: ubuntu-latest    

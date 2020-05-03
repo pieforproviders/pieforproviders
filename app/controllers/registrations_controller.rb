@@ -8,6 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
   # confirmation emails?
   # password reset emails?
   # how do we do this in API only mode and on development
+  # Verify (and probably fix) Swagger docs endpoints with Auth
 
   def create
     build_resource(sign_up_params)
