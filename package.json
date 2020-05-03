@@ -16,11 +16,14 @@
     "lint": "yarn --cwd client lint",
     "lint:fix": "yarn --cwd client lint --fix",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\"",
-    "install": "yarn --cwd client install"
+    "install": "yarn --cwd client install",
+    "ad": "yarn --cwd client add",
+    "rm": "yarn --cwd client remove"
   },
   "engines": {
     "yarn": "1.22.0",
     "npm": "6.13.4",
     "node": "12.14.1"
-  }
+  },
+  "dependencies": {}
 }
