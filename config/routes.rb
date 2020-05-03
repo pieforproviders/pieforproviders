@@ -22,9 +22,9 @@ Rails.application.routes.draw do
     end
   end
 
-  get '*path', to: 'static#fallback_index_html', constraints: lambda { |request|
+  get '*path', to: "application#fallback_index_html", constraints: ->(request) do
     !request.xhr? && request.format.html?
-  }
+  end
 end
 
 # rubocop:disable Layout/LineLength

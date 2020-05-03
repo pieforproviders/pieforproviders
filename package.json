@@ -8,9 +8,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "echo 'I am building this!' && cd client && yarn install && yarn build && cd ..",
-    "deploy": "echo 'I am deploying this!' && cp -a client/build/. public/",
-    "heroku-postbuild": "echo 'I am postinstalling this!' && yarn build && yarn deploy && echo 'Client built!'",
+    "build": "yarn --cwd client install && yarn --cwd client build",
+    "deploy": "cp -a client/build/. public/",
+    "heroku-postbuild": "yarn build && yarn deploy",
     "start": "yarn --cwd client start",
     "test": "yarn --cwd client test",
     "lint": "yarn --cwd client lint",
