@@ -3,6 +3,6 @@
 # serves the static pages for React
 class StaticController < ApplicationController
   def fallback_index_html
-    render file: 'public/index.html', layout: false
+    render file: 'client/public/index.html', layout: false
   end
 end
