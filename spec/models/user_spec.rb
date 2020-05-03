@@ -10,7 +10,7 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:organization) }
   it { should validate_presence_of(:timezone) }
 
-  let!(:user) { create(:user, phone: '888-888-8888') }
+  let!(:user) { create(:confirmed_user, phone: '888-888-8888') }
   it 'formats a phone number with non-digit characters' do
     expect(user.phone).to eq('8888888888')
   end

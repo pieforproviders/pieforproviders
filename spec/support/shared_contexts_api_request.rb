@@ -14,7 +14,7 @@ end
 
 RSpec.shared_context 'authenticated user' do
   before do
-    logged_in_user = create(:user)
+    logged_in_user = create(:confirmed_user)
     sign_in logged_in_user
   end
 end

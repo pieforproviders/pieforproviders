@@ -18,6 +18,10 @@ FactoryBot.define do
     phone { Faker::PhoneNumber.phone_number }
     service_agreement_accepted { Faker::Boolean.boolean }
     timezone { TimeZoneService.us_zones.sample }
+
+    factory :confirmed_user do
+      before(:create, &:skip_confirmation!)
+    end
   end
 end
 # == Schema Information
