@@ -1,4 +1,3 @@
-// core table that owns the users and their access
 Table users [headercolor: #3498db] {
   id uuid [pk, unique, not null]
   full_name string [not null]
@@ -59,8 +58,6 @@ Table children [headercolor: #3498db] {
   id uuid [pk, unique, not null]
   user_id uuid [ref: > users.id, not null]
   ccms_id string
-  first_name string [not null]
-  last_name string [not null]
   full_name string [not null]
   date_of_birth date [not null]
   active boolean [not null, default: true]
