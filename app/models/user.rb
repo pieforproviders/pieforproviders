@@ -2,6 +2,12 @@
 
 # Person responsible for subsidy management for one or more businesses
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
+  devise :confirmable, :database_authenticatable, :registerable,
+         :recoverable, :validatable, :jwt_authenticatable,
+         jwt_revocation_strategy: BlockedToken
+
   # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
   self.implicit_order_column = 'created_at'
 

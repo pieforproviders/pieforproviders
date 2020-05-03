@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   it { should validate_presence_of(:email) }
-  it { should validate_uniqueness_of(:email) }
+  it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:language) }
   it { should validate_presence_of(:organization) }
   it { should validate_presence_of(:timezone) }
 
-  let!(:user) { create(:user, phone: '888-888-8888') }
+  let!(:user) { create(:confirmed_user, phone: '888-888-8888') }
   it 'formats a phone number with non-digit characters' do
     expect(user.phone).to eq('8888888888')
   end

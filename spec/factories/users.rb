@@ -1,19 +1,27 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  password = Faker::Internet.password
   factory :user do
     active { Faker::Boolean.boolean }
     email { Faker::Internet.email }
     full_name { Faker::Games::WorldOfWarcraft.hero }
     greeting_name { Faker::Name.first_name }
     language { %w[English Spanish Russian].sample }
+    mobile { Faker::PhoneNumber.phone_number }
     opt_in_email { Faker::Boolean.boolean }
     opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }
     organization { Faker::Company.name }
+    password { password }
+    password_confirmation { password }
     phone { Faker::PhoneNumber.phone_number }
     service_agreement_accepted { Faker::Boolean.boolean }
     timezone { TimeZoneService.us_zones.sample }
+
+    factory :confirmed_user do
+      before(:create, &:skip_confirmation!)
+    end
   end
 end
 # == Schema Information

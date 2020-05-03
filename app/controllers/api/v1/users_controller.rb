@@ -3,6 +3,7 @@
 # API for application users
 class Api::V1::UsersController < Api::V1::ApiController
   before_action :set_user, only: %i[show update destroy]
+  skip_before_action :authenticate_user!, only: %i[create]
 
   # GET /users
   def index
@@ -53,8 +54,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     params.require(:user).permit(
       :active, :email, :full_name, :greeting_name,
       :id, :language, :mobile, :opt_in_email,
-      :opt_in_phone, :opt_in_text, :organization, :phone,
-      :service_agreement_accepted, :slug, :timezone
+      :opt_in_phone, :opt_in_text, :organization, :password,
+      :password_confirmation, :phone, :service_agreement_accepted,
+      :slug, :timezone
     )
   end
 end

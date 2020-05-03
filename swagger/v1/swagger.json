@@ -26,6 +26,9 @@
           "200": {
             "description": "businesses found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -61,6 +64,9 @@
           },
           "422": {
             "description": "invalid request"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -100,6 +106,9 @@
           },
           "404": {
             "description": "business not found"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -144,6 +153,9 @@
           "404": {
             "description": "business not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -173,6 +185,9 @@
           "404": {
             "description": "business not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -199,6 +214,9 @@
         "responses": {
           "200": {
             "description": "children found"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -235,6 +253,9 @@
           },
           "422": {
             "description": "invalid request"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -274,6 +295,9 @@
           },
           "404": {
             "description": "child not found"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -318,6 +342,9 @@
           "404": {
             "description": "child not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -347,6 +374,9 @@
           "404": {
             "description": "child not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -373,6 +403,9 @@
         "responses": {
           "200": {
             "description": "users found"
+          },
+          "401": {
+            "description": "not authorized"
           },
           "500": {
             "description": "internal server error"
@@ -449,6 +482,9 @@
           "404": {
             "description": "user not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -492,6 +528,9 @@
           "404": {
             "description": "user not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
           }
@@ -521,8 +560,40 @@
           "404": {
             "description": "user not found"
           },
+          "401": {
+            "description": "not authorized"
+          },
           "500": {
             "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "summary": "creates a user",
+        "tags": [
+          "users"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createUser"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "user created"
+          },
+          "422": {
+            "description": "invalid request"
           }
         }
       }
@@ -555,6 +626,14 @@
               "type": "string",
               "example": "Society for the Promotion of Elfish Welfare"
             },
+            "password": {
+              "type": "string",
+              "example": "password1234!"
+            },
+            "password_confirmation": {
+              "type": "string",
+              "example": "password1234!"
+            },
             "phone": {
               "type": "string",
               "example": "888-888-8888"
@@ -572,6 +651,8 @@
             "email",
             "full_name",
             "language",
+            "password",
+            "password_confirmation",
             "service_agreement_accepted",
             "timezone"
           ]
