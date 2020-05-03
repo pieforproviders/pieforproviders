@@ -30,6 +30,7 @@ const App = () => {
             <Dashboard />
           </Route>
           <Route exact path="/csv-import">
+            {console.log("I'm here, hitting the CSV Import")}
             <CSVImport />
           </Route>
           <Route exact path="/">

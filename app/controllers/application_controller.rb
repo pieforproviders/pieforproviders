@@ -5,10 +5,6 @@ class ApplicationController < ActionController::API
   around_action :collect_metrics
 
   def fallback_index_html
-    Rails.logger.info "\n\nGot to the fallback\n\n"
-    if File.exist?('public/index.html')
-      Rails.logger.info "\n\n\n#{File.open('public/index.html').read}\n\n\n"
-    end
     render file: 'public/index.html'
   end
 
