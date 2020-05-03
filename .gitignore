@@ -37,3 +37,7 @@ coverage
 
 # built node app
 /public/*
+
+# node/yarn packages in the root don't really do anything
+node_modules
+yarn.lock
