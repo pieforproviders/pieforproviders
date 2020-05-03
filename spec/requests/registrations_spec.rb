@@ -48,9 +48,7 @@ RSpec.describe 'POST /signup', type: :request do
           end
         end
         context 'with an existing user' do
-          before(:each) do
-            new_user = create(:confirmed_user, email: params[:email])
-          end
+          before(:each) { create(:confirmed_user, email: params[:email]) }
           let(:user) { { "user": params } }
           run_test! do
             expect(JSON.parse(response.body)['errors'].first['detail']['email'].first).to eq('has already been taken')
