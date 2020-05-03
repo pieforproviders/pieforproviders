@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   end
 
   get '*path', to: 'application#fallback_index_html', constraints: lambda { |request|
+    Rails.logger.info "\n\nXHR: #{request.xhr?} | Format: #{request.format} | Body: #{request.body}\n\n"
     !request.xhr? && request.format.html?
   }
 end
