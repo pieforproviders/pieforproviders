@@ -4,10 +4,6 @@
 class ApplicationController < ActionController::API
   around_action :collect_metrics
 
-  def fallback_index_html
-    render file: 'public/index.html'
-  end
-
   def render_resource(resource)
     if resource.errors.empty?
       render json: resource, status: :created, location: resource
