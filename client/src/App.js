@@ -23,14 +23,13 @@ const App = () => {
     <ErrorBoundary>
       <Router>
         <Switch>
-          <Route exact path="/login">
+          <Route path="/login">
             <Login />
           </Route>
-          <Route exact path="/dashboard">
+          <Route path="/dashboard">
             <Dashboard />
           </Route>
-          <Route exact path="/csv-import">
-            {console.log("I'm here, hitting the CSV Import")}
+          <Route path="/csv-import">
             <CSVImport />
           </Route>
           <Route exact path="/">
