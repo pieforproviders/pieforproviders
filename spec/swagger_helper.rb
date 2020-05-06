@@ -87,7 +87,7 @@ RSpec.configure do |config|
           business: {
             type: :object,
             properties: {
-              name: { type: :string, example: 'Harlequin Childcare' },
+              name: { type: :string, example: 'Harlequin Child Care' },
               category: { type: :string, example: 'license_exempt_home' },
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             },
@@ -105,7 +105,7 @@ RSpec.configure do |config|
           business: {
             type: :object,
             properties: {
-              name: { type: :string, example: 'Harlequin Childcare' },
+              name: { type: :string, example: 'Harlequin Child Care' },
               category: { type: :string, example: 'license_exempt_home' },
               active: { type: :boolean, example: 'true' }
             }

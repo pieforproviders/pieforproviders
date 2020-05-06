@@ -21,7 +21,7 @@ RSpec.describe 'businesses API', type: :request do
   let(:user_id) { User.create(user_params).id }
   let!(:business_params) do
     {
-      "name": 'Happy Hearts Childcare',
+      "name": 'Happy Hearts Child Care',
       "category": 'licensed_center_single',
       "user_id": user_id
     }

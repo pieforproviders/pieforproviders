@@ -24,8 +24,10 @@ export class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      // TODO: add some language here for error handling for users
       return (
         <button
+          className="border border-primaryBlue"
           onClick={() =>
             Sentry.showReportDialog({ eventId: this.state.eventId })
           }
