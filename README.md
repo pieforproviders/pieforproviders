@@ -66,7 +66,6 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - clone the repo
 - `cd pieforproviders`
 - Run `cp .env.sample .env` and `cp client/.env.development.sample cp client/.env.development` and add values (contact a repo contributor)
-- Run  (contact a repo contributor)
 - install bundler for gems: `gem install bundler`
 - install gems: `bundle install`
 - set up the database: `bundle exec rails db:setup`
