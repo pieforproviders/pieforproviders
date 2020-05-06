@@ -1,0 +1,23 @@
+# Configuration for new-issue-welcome - https://github.com/behaviorbot/new-issue-welcome
+
+# Comment to be posted to on first time issues
+# newIssueWelcomeComment: >
+#   Thanks for opening your first issue here! Be sure to follow the issue template!
+
+# Configuration for new-pr-welcome - https://github.com/behaviorbot/new-pr-welcome
+
+# Comment to be posted to on PRs from first time contributors in your repository
+newPRWelcomeComment: >
+  Thank your for opening a pull request to contribute to Pie for Providers!
+
+  https://tenor.com/view/pie-pusheen-cat-halloween-pumpkin-spice-gif-9842471
+
+  Please make sure you have followed our contributing guidelines. As long as the PR template is sufficiently completed, we will review this PR as soon as possible.  If you haven't filled the template out, please do so!
+
+# Configuration for first-pr-merge - https://github.com/behaviorbot/first-pr-merge
+
+# Comment to be posted to on pull requests merged by a first time user
+# firstPRMergeComment: >
+#   Congrats on merging your first pull request! We here at behaviorbot are proud of you!
+
+# It is recommend to include as many gifs and emojis as possible
