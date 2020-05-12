@@ -1,5 +1,4 @@
 import React from 'react'
-import { sha1 } from 'hash-anything'
 import PropTypes from 'prop-types'
 
 export function CSVImportReview({ kids }) {
@@ -8,9 +7,10 @@ export function CSVImportReview({ kids }) {
       {kids && (
         <div className="kids-list">
           {kids.map(kid => {
+            const { info, id } = kid
             return (
-              <div key={sha1(kid[0], kid[1], kid[2])}>
-                {kid[0]} {kid[1]} {kid[2]}
+              <div key={id}>
+                {info[0]} {info[1]} {info[2]}
               </div>
             )
           })}
@@ -21,5 +21,5 @@ export function CSVImportReview({ kids }) {
 }
 
 CSVImportReview.propTypes = {
-  kids: PropTypes.arrayOf(PropTypes.array)
+  kids: PropTypes.arrayOf(PropTypes.object)
 }

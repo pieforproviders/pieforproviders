@@ -3,7 +3,12 @@ import { shallow } from 'enzyme'
 import { CSVImportReview } from '../CSVImportReview'
 
 describe('<CSVImport />', () => {
-  const kids = [['Harry', 'Potter', '07-31-1980']]
+  const kids = [
+    {
+      info: ['Harry', 'Potter', '07-31-1980'],
+      id: 'A123'
+    }
+  ]
   let wrapper
 
   it('renders the kids list if data is passed', () => {
