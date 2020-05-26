@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :business do
-    name { Faker::ChildcareBusinesses.name }
+    name { Faker::ChildCareBusinesses.name }
     category { Business::CATEGORIES.sample }
   end
 end
