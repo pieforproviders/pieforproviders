@@ -3,11 +3,11 @@ import ReactGA from 'react-ga'
 import { Link } from 'react-router-dom'
 import CheckboxInput from '_shared/forms/CheckboxInput'
 import DropdownInput from '_shared/forms/DropdownInput'
-import Input from 'react-phone-number-input/input'
 import Button from '_shared/forms/Button.js'
 import TextInput from '_shared/forms/TextInput.js'
 import ToggleInput from '_shared/forms/ToggleInput'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
+import { useForm } from 'react-hook-form'
 import '_assets/styles/layouts/signup.css'
 
 /**
@@ -16,20 +16,24 @@ import '_assets/styles/layouts/signup.css'
 
 export function Signup() {
   const [userData, setUserData] = useState({
-    fullName: '',
-    email: '',
+    fullName: null,
+    greetingName: null,
+    email: null,
     language: 'en',
-    multiBusiness: '',
-    organization: '',
-    password: '',
-    passwordConfirmation: '',
+    multiBusiness: null,
+    organization: null,
+    password: null,
+    passwordConfirmation: null,
     phoneType: 'cellPhone',
+    phoneNumber: null,
     serviceAgreementAccepted: false
   })
 
-  const handleSubmit = event => {
-    event.preventDefault()
-    console.log(`We're gonna post ${JSON.stringify(userData)}`)
+  const { register, handleSubmit, watch, errors } = useForm()
+
+  const onSubmit = data => {
+    console.log(`userData JSON: ${JSON.stringify(userData)}`)
+    console.log('data', data)
   }
 
   useEffect(() => {
@@ -75,9 +79,10 @@ export function Signup() {
             Log In
           </Link>
         </p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             containerClasses="mb-4"
+            inputClasses={errors.organization && 'error-input'}
             inputId="organization"
             label="Name of organization"
             labelClasses="mb-4"
@@ -85,38 +90,47 @@ export function Signup() {
               setUserData({ ...userData, organization: event.target.value })
             }
             placeholder="Amanda's Daycare"
+            register={register({
+              required: 'Name of organization is required.'
+            })}
             required
             value={userData.organization}
           />
+          {console.log('errors', errors)}
 
           <TextInput
             containerClasses="mb-4"
-            inputId="full-name"
+            inputClasses={errors.fullName && 'error-input'}
+            inputId="fullName"
             label="Full name"
             labelClasses="mb-4"
             onInput={event =>
               setUserData({ ...userData, fullName: event.target.value })
             }
             placeholder="Amanda Diaz"
+            register={register({ required: 'Full name is required.' })}
             required
             value={userData.fullName}
           />
 
           <TextInput
             containerClasses="mb-4"
-            inputId="greeting-name"
+            inputClasses={errors.greetingName && 'error-input'}
+            inputId="greetingName"
             label="What should we call you?"
             labelClasses="mb-4"
             onInput={event =>
               setUserData({ ...userData, greetingName: event.target.value })
             }
             placeholder="Amanda"
+            register={register({ required: 'Greeting name is required.' })}
             required
             value={userData.greetingName}
           />
 
           <DropdownInput
-            inputId="multi-business"
+            containerClasses="mb-4"
+            inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
             labelClasses="mb-4"
             onChange={value => {
@@ -133,8 +147,13 @@ export function Signup() {
               }
             ]}
             placeholder="Choose one"
+            register={register({
+              required: 'Single or multi-business option is required.'
+            })}
             required
-            selectClasses="mb-4"
+            selectClasses={['mb-4', errors.multiBusiness && 'error-input']
+              .filter(item => !!item)
+              .join(' ')}
             value={userData.multiBusiness}
           />
 
@@ -145,28 +164,40 @@ export function Signup() {
             <div className="grid">
               <DropdownInput
                 combo
-                inputId="phone-type"
+                inputId="phoneType"
                 options={[
                   { label: 'Cell', value: 'cellPhone' },
                   { label: 'Home', value: 'homePhone' },
                   { label: 'Work', value: 'workPhone' }
                 ]}
-                selectClasses="mb-4"
+                selectClasses={['mb-4', errors.phoneType && 'error-input']
+                  .filter(item => !!item)
+                  .join(' ')}
                 defaultOption="cellPhone"
                 value={userData.phoneType}
                 onChange={value =>
                   setUserData({ ...userData, phoneType: value })
                 }
               />
-              <Input
+              <TextInput
                 aria-labelledby="phone-type-label"
-                className="leading-4 phone-input-combo mb-4"
-                country="US"
-                id="phone"
-                onChange={value =>
+                className={[
+                  'leading-4 phone-input-combo mb-4',
+                  errors.phoneNumber && 'error-input'
+                ]
+                  .filter(item => !!item)
+                  .join(' ')}
+                inputId="phone"
+                onInput={value =>
                   setUserData({ ...userData, phoneNumber: value })
                 }
                 placeholder="888-888-8888"
+                register={register({
+                  pattern: {
+                    value: /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
+                    message: 'Please provide a valid phone number.'
+                  }
+                })}
                 type="tel"
                 value={userData.phoneNumber}
               />
@@ -174,7 +205,7 @@ export function Signup() {
           </div>
 
           <ToggleInput
-            defaultOption={userData.language}
+            containerClasses="mb-4"
             inputId="language"
             label="Preferred language"
             labelClasses="mb-4"
@@ -189,12 +220,17 @@ export function Signup() {
                 value: 'es'
               }
             ]}
+            register={register({ required: 'Language is required' })}
             required
-            selectClasses="grid-cols-2 mb-4"
+            selectClasses={['grid-cols-2', errors.language && 'error-input']
+              .filter(item => !!item)
+              .join(' ')}
+            selectedOption={userData.language}
           />
 
           <TextInput
             containerClasses="mb-4"
+            inputClasses={errors.email && 'error-input'}
             inputId="email"
             label="Email"
             labelClasses="mb-4"
@@ -202,6 +238,13 @@ export function Signup() {
               setUserData({ ...userData, email: event.target.value })
             }
             placeholder="amanda@gmail.com"
+            register={register({
+              required: 'Email is required',
+              pattern: {
+                value: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
+                message: 'Please provide a valid email address'
+              }
+            })}
             required
             type="email"
             value={userData.email}
@@ -209,6 +252,7 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
+            inputClasses={errors.password && 'error-input'}
             inputId="password"
             label="Password"
             labelClasses="mb-4"
@@ -217,13 +261,22 @@ export function Signup() {
             }
             type="password"
             placeholder="8+ characters, letters, and numbers"
+            register={register({
+              required: 'Password is required',
+              pattern: {
+                value: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
+                message:
+                  'Password must be a minimum of 8 characters, and include numbers and letters.'
+              }
+            })}
             required
             value={userData.password}
           />
 
           <TextInput
             containerClasses="mb-4"
-            inputId="password-confirmation"
+            inputClasses={errors.passwordConfirmation && 'error-input'}
+            inputId="passwordConfirmation"
             label="Confirm password"
             labelClasses="mb-4"
             onInput={event =>
@@ -234,14 +287,20 @@ export function Signup() {
             }
             type="password"
             placeholder="Confirm your password"
+            register={register({
+              required: 'Password confirmation is required',
+              validate: value => value === watch('password')
+            })}
             required
             value={userData.passwordConfirmation}
           />
+
           <div className="medium:text-center">
             <CheckboxInput
               containerClasses="mt-8 large:text-left"
               checked={userData.serviceAgreementAccepted}
-              inputId="service-agreement-accepted"
+              inputId="serviceAgreementAccepted"
+              inputClasses={errors.serviceAgreementAccepted && 'error-input'}
               label={<TermsLabel />}
               onChange={() => {
                 setUserData({
@@ -249,6 +308,9 @@ export function Signup() {
                   serviceAgreementAccepted: !userData.serviceAgreementAccepted
                 })
               }}
+              register={register({
+                required: 'Please read and agree to our Terms of Service'
+              })}
               required
             />
 

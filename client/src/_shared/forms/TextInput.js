@@ -12,8 +12,9 @@ import PropTypes from 'prop-types'
  * @param {string}  [label]             The display text for the label div.
  * @param {func}    onInput             Callback to be triggered when the text input's value changes.
  * @param {string}  [placeholder]       Placeholder text to display inside the text input.
+ * @param {func}    [register]          Register for form validation with react-hook-form
  * @param {boolean} [required]          Indicates whether or not the text input's value is required.
- * @param {boolean} [type='text']              Type of input (e.g. email, tel, text, password, etc.)
+ * @param {boolean} [type='text']       ype of input (e.g. email, tel, text, password, etc.)
  * @param {boolean} value               The text input's value state on render.
  *
  */
@@ -26,6 +27,7 @@ export default function TextInput({
   label,
   onInput,
   placeholder,
+  register,
   required,
   type = 'text',
   value
@@ -47,17 +49,21 @@ export default function TextInput({
 
   return (
     <div className={containerClass}>
-      <label htmlFor={inputId} className={labelClass}>
-        {label}
-      </label>
+      {label && (
+        <label htmlFor={inputId} className={labelClass}>
+          {label}
+        </label>
+      )}
       <input
         autoComplete={type === 'password' ? 'off' : 'on'}
         className={inputClass}
         id={inputId}
+        name={inputId}
         onInput={onInput}
         placeholder={placeholder}
+        ref={register}
         type={type}
-        value={value}
+        defaultValue={value}
       />
     </div>
   )
@@ -69,10 +75,11 @@ TextInput.propTypes = {
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   onInput: PropTypes.func.isRequired,
   placeholder: PropTypes.string.isRequired,
+  register: PropTypes.func,
   required: PropTypes.bool,
   type: PropTypes.string,
-  value: PropTypes.string.isRequired
+  value: PropTypes.string
 }

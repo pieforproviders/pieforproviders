@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
  * @param {string}  [labelClasses]      Custom classes to be applied to the label div.
  * @param {string}  label               The display text for the label div.
  * @param {func}    onChange            Callback to be triggered when the checkbox's checked state changes.
+ * @param {func}    [register]          Register for form validation with react-hook-form
  * @param {boolean} [required]          Indicates whether or not the checkbox's value is required.
  *
  */
@@ -23,6 +24,7 @@ export default function CheckboxInput({
   labelClasses,
   label,
   onChange,
+  register,
   required
 }) {
   const containerClass = ['checkbox-input', containerClasses]
@@ -39,8 +41,10 @@ export default function CheckboxInput({
         checked={checked}
         className={inputClasses}
         id={inputId}
+        name={inputId}
         onChange={onChange}
         onKeyDown={event => event.key === 'Enter' && onChange()}
+        ref={register}
         type="checkbox"
       />
       <label htmlFor={inputId} className={labelClass}>
@@ -58,5 +62,6 @@ CheckboxInput.propTypes = {
   labelClasses: PropTypes.string,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
   onChange: PropTypes.func.isRequired,
+  register: PropTypes.func,
   required: PropTypes.bool
 }

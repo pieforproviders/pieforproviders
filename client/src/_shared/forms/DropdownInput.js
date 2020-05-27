@@ -16,6 +16,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess'
  * @param {string}   [optionClasses]     Custom classes to be applied to the "options" in the dropdown.
  * @param {Object[]} options             Array of options with a value (for direct comparison) and a label (for display).
  * @param {string}   [placeholder]       Placeholder text to display inside the dropdown select box.
+ * @param {func}     [register]          Register for form validation with react-hook-form
  * @param {boolean}  [required]          Indicates whether or not the dropdowns's value is required.
  * @param {string}   [selectClasses]     Custom classes to be applied to the "select" box div.
  *
@@ -32,6 +33,7 @@ export default function DropdownInput({
   optionClasses,
   options,
   placeholder,
+  register,
   required,
   selectClasses
 }) {
@@ -94,8 +96,8 @@ export default function DropdownInput({
       )}
       <div
         aria-labelledby={`${inputId}-label`}
-        id={inputId}
         className={selectClass}
+        id={inputId}
         onClick={toggleMenu}
         onKeyDown={event => toggleMenuOnEnter(event)}
         role="listbox"
@@ -157,5 +159,6 @@ DropdownInput.propTypes = {
   ).isRequired,
   placeholder: PropTypes.string,
   selectClasses: PropTypes.string,
+  register: PropTypes.func,
   required: PropTypes.bool
 }

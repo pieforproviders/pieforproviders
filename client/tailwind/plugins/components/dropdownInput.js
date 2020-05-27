@@ -12,41 +12,31 @@ module.exports = function() {
         '[id$="-label"]': {
           display: 'block'
         },
-        '.select-box-solo': {
+        'div[role=listbox]': {
           borderColor: theme('colors.primaryBlue'),
           borderStyle: 'solid',
-          borderTopWidth: '1px',
-          borderRightWidth: '1px',
-          borderBottomWidth: '1px',
-          borderLeftWidth: '1px',
-          borderRadius: '0',
           lineHeight: '1rem',
+          borderRadius: '0',
           display: 'grid',
           gridTemplateColumns: 'auto 1rem',
-          padding: '0.75rem 1rem',
           width: '100%',
+          padding: '0.75rem 1rem',
           color: theme('colors.darkGray'),
           '&.item-selected': {
             color: theme('colors.primaryBlue')
-          }
-        },
-        '.select-box-combo': {
-          backgroundColor: theme('colors.blue3'),
-          borderColor: theme('colors.primaryBlue'),
-          borderStyle: 'solid',
-          borderTopWidth: '1px',
-          borderRightWidth: '0',
-          borderBottomWidth: '1px',
-          borderLeftWidth: '1px',
-          borderRadius: '0',
-          lineHeight: '1rem',
-          display: 'grid',
-          gridTemplateColumns: 'auto 1rem',
-          padding: '0.75rem 1rem',
-          width: '100%',
-          color: theme('colors.darkGray'),
-          '&.item-selected': {
-            color: theme('colors.primaryBlue')
+          },
+          '&.select-box-solo': {
+            borderWidth: '1px'
+          },
+          '&.select-box-combo': {
+            backgroundColor: theme('colors.blue3'),
+            borderTopWidth: '1px',
+            borderRightWidth: '0',
+            borderBottomWidth: '1px',
+            borderLeftWidth: '1px'
+          },
+          '&.error-input': {
+            borderColor: theme('colors.red1')
           }
         },
         '.dropdown-field': {
@@ -77,9 +67,6 @@ module.exports = function() {
               backgroundColor: theme('colors.blue4')
             }
           }
-        },
-        '.select-box-combo > .dropdown-list': {
-          marginTop: '-0.025rem'
         }
       }
     }
