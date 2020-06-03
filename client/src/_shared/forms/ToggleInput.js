@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
+import ValidationError from '_shared/forms/ValidationError'
 
 /**
  * Custom toggle/radio input including a label, that accepts styling
@@ -9,6 +10,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
  * @param {boolean}  checked             The toggle's checked state on render.
  * @param {string}   [containerClasses]  Custom classes to be applied to the container div.
  * @param {string}   [defaultOption]     The value of the default option to be selected on render.
+ * @param {Object}   [errors]            Errors on the input, if any.
  * @param {string}   inputId             Unique identifier for a rendered component.
  * @param {string}   [labelClasses]      Custom classes to be applied to the label div.
  * @param {string}   label               The display text for the label div.
@@ -23,6 +25,7 @@ import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 
 export default function ToggleInput({
   containerClasses,
+  errors,
   inputId,
   labelClasses,
   label,
@@ -52,7 +55,7 @@ export default function ToggleInput({
       .join(' ')
   }
 
-  const selectClass = ['toggle-options', selectClasses]
+  const selectClass = [errors && 'error-input', 'toggle-options', selectClasses]
     .filter(item => !!item)
     .join(' ')
 
@@ -91,6 +94,7 @@ export default function ToggleInput({
             </div>
           ))}
       </div>
+      {errors && <ValidationError errorMessage={errors.message} />}
     </fieldset>
   )
 }
@@ -98,6 +102,7 @@ export default function ToggleInput({
 ToggleInput.propTypes = {
   containerClasses: PropTypes.string,
   defaultOption: PropTypes.string,
+  errors: PropTypes.object,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
   label: PropTypes.string.isRequired,

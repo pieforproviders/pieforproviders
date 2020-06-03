@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ValidationError from '_shared/forms/ValidationError'
 
 /**
  * Custom dropdown input including a label, that accepts styling
  *
- * @param {boolean} [combo]             Indicates if the text input is displayed individually or as a combo box with a dropdown.
+ * @param {boolean} [comboSide]         Indicates the side of a combo box the text input should be displayed on.
  * @param {string}  [containerClasses]  Custom classes to be applied to the container div.
+ * @param {Object}  [errors]            Errors on the input, if any.
  * @param {string}  inputId             Unique identifier for a rendered component.
  * @param {string}  [inputClasses]      Custom classes to be applied to the text input.
  * @param {string}  [labelClasses]      Custom classes to be applied to the label div.
@@ -18,9 +20,11 @@ import PropTypes from 'prop-types'
  * @param {boolean} value               The text input's value state on render.
  *
  */
+
 export default function TextInput({
-  combo,
+  comboSide,
   containerClasses,
+  errors,
   inputId,
   inputClasses,
   labelClasses,
@@ -41,7 +45,8 @@ export default function TextInput({
     .join(' ')
 
   const inputClass = [
-    combo ? 'text-input-combo' : 'text-input-solo',
+    errors && 'error-input',
+    comboSide ? `text-input-combo-${comboSide}` : 'text-input-solo',
     inputClasses
   ]
     .filter(item => !!item)
@@ -65,13 +70,15 @@ export default function TextInput({
         type={type}
         defaultValue={value}
       />
+      {errors && <ValidationError errorMessage={errors.message} />}
     </div>
   )
 }
 
 TextInput.propTypes = {
-  combo: PropTypes.bool,
+  comboSide: PropTypes.string,
   containerClasses: PropTypes.string,
+  errors: PropTypes.object,
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,

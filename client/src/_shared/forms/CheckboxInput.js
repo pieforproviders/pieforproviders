@@ -1,11 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ValidationError from '_shared/forms/ValidationError'
 
 /**
  * Custom checkbox input including a label, that accepts styling
  *
  * @param {boolean} checked             The checkbox's checked state on render.
  * @param {string}  [containerClasses]  Custom classes to be applied to the container div.
+ * @param {Object}  [errors]            Errors on the input, if any.
  * @param {string}  inputId             Unique identifier for a rendered component.
  * @param {string}  [inputClasses]      Custom classes to be applied to the "input" - the checkbox itself.
  * @param {string}  [labelClasses]      Custom classes to be applied to the label div.
@@ -19,6 +21,7 @@ import PropTypes from 'prop-types'
 export default function CheckboxInput({
   checked,
   containerClasses,
+  errors,
   inputId,
   inputClasses,
   labelClasses,
@@ -35,11 +38,15 @@ export default function CheckboxInput({
     .filter(item => !!item)
     .join(' ')
 
+  const inputClass = [errors && 'error-input', inputClasses]
+    .filter(item => !!item)
+    .join(' ')
+
   return (
     <div className={containerClass}>
       <input
         checked={checked}
-        className={inputClasses}
+        className={inputClass}
         id={inputId}
         name={inputId}
         onChange={onChange}
@@ -50,6 +57,7 @@ export default function CheckboxInput({
       <label htmlFor={inputId} className={labelClass}>
         {label}
       </label>
+      {errors && <ValidationError errorMessage={errors.message} />}
     </div>
   )
 }
@@ -57,6 +65,7 @@ export default function CheckboxInput({
 CheckboxInput.propTypes = {
   checked: PropTypes.bool.isRequired,
   containerClasses: PropTypes.string,
+  errors: PropTypes.object,
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,

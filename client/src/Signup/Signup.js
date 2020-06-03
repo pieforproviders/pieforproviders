@@ -20,7 +20,7 @@ export function Signup() {
     greetingName: null,
     email: null,
     language: 'en',
-    multiBusiness: null,
+    multiBusiness: '',
     organization: null,
     password: null,
     passwordConfirmation: null,
@@ -74,7 +74,7 @@ export function Signup() {
         />
         <h1 className="visually-hidden">Log In</h1>
         <p className="text-center my-8 medium:mt-16 large:text-left large:mt-12 large:mb-6">
-          <span className="font-bold underline uppercase">Sign Up</span> or{' '}
+          <span className="font-bold uppercase">Sign Up</span> or{' '}
           <Link to="/login" className="uppercase">
             Log In
           </Link>
@@ -82,7 +82,7 @@ export function Signup() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.organization && 'error-input'}
+            errors={errors.organization}
             inputId="organization"
             label="Name of organization"
             labelClasses="mb-4"
@@ -96,11 +96,10 @@ export function Signup() {
             required
             value={userData.organization}
           />
-          {console.log('errors', errors)}
 
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.fullName && 'error-input'}
+            errors={errors.fullName}
             inputId="fullName"
             label="Full name"
             labelClasses="mb-4"
@@ -115,7 +114,7 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.greetingName && 'error-input'}
+            errors={errors.greetingName}
             inputId="greetingName"
             label="What should we call you?"
             labelClasses="mb-4"
@@ -130,6 +129,7 @@ export function Signup() {
 
           <DropdownInput
             containerClasses="mb-4"
+            errors={errors.multiBusiness}
             inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
             labelClasses="mb-4"
@@ -148,49 +148,40 @@ export function Signup() {
             ]}
             placeholder="Choose one"
             register={register({
-              required: 'Single or multi-business option is required.'
+              validate: value =>
+                value !== '' || 'Single or multi-business option is required.'
             })}
             required
-            selectClasses={['mb-4', errors.multiBusiness && 'error-input']
-              .filter(item => !!item)
-              .join(' ')}
             value={userData.multiBusiness}
           />
 
-          <div className="phone-input">
+          <div className="phone-input mb-4">
             <div className="mb-4" id="phone-type-label">
               Phone number (we will only call or text if you want us to)
             </div>
             <div className="grid">
               <DropdownInput
-                combo
+                comboSide="left"
+                errors={errors.phoneNumber}
                 inputId="phoneType"
                 options={[
                   { label: 'Cell', value: 'cellPhone' },
                   { label: 'Home', value: 'homePhone' },
                   { label: 'Work', value: 'workPhone' }
                 ]}
-                selectClasses={['mb-4', errors.phoneType && 'error-input']
-                  .filter(item => !!item)
-                  .join(' ')}
-                defaultOption="cellPhone"
-                value={userData.phoneType}
                 onChange={value =>
                   setUserData({ ...userData, phoneType: value })
                 }
+                value={userData.phoneType}
               />
               <TextInput
                 aria-labelledby="phone-type-label"
-                className={[
-                  'leading-4 phone-input-combo mb-4',
-                  errors.phoneNumber && 'error-input'
-                ]
-                  .filter(item => !!item)
-                  .join(' ')}
-                inputId="phone"
-                onInput={value =>
-                  setUserData({ ...userData, phoneNumber: value })
-                }
+                comboSide="right"
+                errors={errors.phoneNumber}
+                inputId="phoneNumber"
+                onInput={event => {
+                  setUserData({ ...userData, phoneNumber: event.target.value })
+                }}
                 placeholder="888-888-8888"
                 register={register({
                   pattern: {
@@ -206,6 +197,7 @@ export function Signup() {
 
           <ToggleInput
             containerClasses="mb-4"
+            errors={errors.language}
             inputId="language"
             label="Preferred language"
             labelClasses="mb-4"
@@ -222,15 +214,13 @@ export function Signup() {
             ]}
             register={register({ required: 'Language is required' })}
             required
-            selectClasses={['grid-cols-2', errors.language && 'error-input']
-              .filter(item => !!item)
-              .join(' ')}
+            selectClasses="grid-cols-2"
             selectedOption={userData.language}
           />
 
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.email && 'error-input'}
+            errors={errors.email}
             inputId="email"
             label="Email"
             labelClasses="mb-4"

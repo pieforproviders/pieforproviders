@@ -39,7 +39,6 @@ module.exports = {
     require('./tailwind/plugins/components/button')(),
     require('./tailwind/plugins/components/checkboxInput')(),
     require('./tailwind/plugins/components/dropdownInput')(),
-    require('./tailwind/plugins/components/phoneInput')(),
     require('./tailwind/plugins/components/textInput')(),
     require('./tailwind/plugins/components/toggleInput')(),
     require('./tailwind/plugins/components/visuallyHidden')(),

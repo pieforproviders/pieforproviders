@@ -1,45 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpandLessIcon from '@material-ui/icons/ExpandLess'
+import ValidationError from '_shared/forms/ValidationError'
 
 /**
  * Custom dropdown input including a label, that accepts styling
  *
- * @param {boolean}  [combo]             Indicates if the dropdown is displayed individually or as a combo box with a text input.
+ * @param {boolean}  [comboSide]         Indicates the side of a combo box the dropdown input should be displayed on.
  * @param {string}   [containerClasses]  Custom classes to be applied to the container div.
- * @param {string}   [defaultOption]     The value of the default option, if one should be set.
+ * @param {Object}   [errors]            Errors on the input, if any.
  * @param {string}   inputId             Unique identifier for a rendered component.
  * @param {string}   [labelClasses]      Custom classes to be applied to the label div.
  * @param {string}   [label]             The display text for the label div.
  * @param {func}     onChange            Callback to be triggered when the dropdown's selected option changes.
- * @param {string}   [optionClasses]     Custom classes to be applied to the "options" in the dropdown.
  * @param {Object[]} options             Array of options with a value (for direct comparison) and a label (for display).
  * @param {string}   [placeholder]       Placeholder text to display inside the dropdown select box.
  * @param {func}     [register]          Register for form validation with react-hook-form
  * @param {boolean}  [required]          Indicates whether or not the dropdowns's value is required.
  * @param {string}   [selectClasses]     Custom classes to be applied to the "select" box div.
+ * @param {string}   [value]             The current value of the dropdown
  *
  */
 
 export default function DropdownInput({
-  combo,
+  comboSide,
   containerClasses,
-  defaultOption,
+  errors,
   inputId,
   labelClasses,
   label,
   onChange,
-  optionClasses,
   options,
   placeholder,
   register,
   required,
-  selectClasses
+  selectClasses,
+  value
 }) {
-  const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(null)
-
   const containerClass = ['dropdown-input', containerClasses]
     .filter(item => !!item)
     .join(' ')
@@ -49,102 +45,48 @@ export default function DropdownInput({
     .join(' ')
 
   const selectClass = [
-    selectedOption && 'item-selected',
-    combo ? 'select-box-combo' : 'select-box-solo',
+    errors && 'error-input',
+    comboSide ? `select-box-combo-${comboSide}` : 'select-box-solo',
     selectClasses
   ]
     .filter(item => !!item)
     .join(' ')
 
-  const optionClass = ['dropdown-option', optionClasses]
-    .filter(item => !!item)
-    .join(' ')
-
-  const toggleMenuOnEnter = event => {
-    event.key === 'Enter' && toggleMenu()
-  }
-
-  const toggleMenu = () => {
-    setMenuIsOpen(!menuIsOpen)
-  }
-
-  const handleSelection = (option, event = null) => {
-    if ((event && event.key === 'Enter') || !event) {
-      setSelectedOption(option.value)
-      onChange(option.value)
-    }
-  }
-
-  useEffect(() => {
-    if (menuIsOpen) {
-      // close menu on page click
-      document.addEventListener('click', toggleMenu)
-    }
-
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener('click', toggleMenu)
-    }
-  })
-
   return (
     <div className={containerClass}>
       {label && (
-        <div className={labelClass} id={`${inputId}-label`}>
+        <label className={labelClass} htmlFor={inputId}>
           {label}
-        </div>
+        </label>
       )}
-      <div
-        aria-labelledby={`${inputId}-label`}
+      <select
+        name={inputId}
+        onChange={event => onChange(event.target.value)}
         className={selectClass}
-        id={inputId}
-        onClick={toggleMenu}
-        onKeyDown={event => toggleMenuOnEnter(event)}
-        role="listbox"
-        tabIndex="0"
+        ref={register}
+        value={value}
       >
-        <div className="dropdown-field">
-          {selectedOption
-            ? options &&
-              options.find(option => option.value === selectedOption).label
-            : defaultOption
-            ? options &&
-              options.find(option => option.value === defaultOption).label
-            : placeholder || ''}
-        </div>
-        <div className="dropdown-icon">
-          {menuIsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </div>
-      </div>
-
-      {menuIsOpen && (
-        <div className="dropdown-list" role="list">
-          {options &&
-            options.map(option => (
-              <div
-                aria-selected={selectedOption === option.value}
-                className={optionClass}
-                key={option.label}
-                onClick={() => handleSelection(option)}
-                onKeyDown={event => {
-                  handleSelection(option, event)
-                  toggleMenuOnEnter(event)
-                }}
-                role="option"
-                tabIndex="0"
-              >
-                {option.label}
-              </div>
-            ))}
-        </div>
-      )}
+        {placeholder && (
+          <option default value="">
+            {placeholder}
+          </option>
+        )}
+        {options &&
+          options.map(option => (
+            <option value={option.value} key={option.label}>
+              {option.label}
+            </option>
+          ))}
+      </select>
+      {errors && <ValidationError errorMessage={errors.message} />}
     </div>
   )
 }
 
 DropdownInput.propTypes = {
-  combo: PropTypes.bool,
+  comboSide: PropTypes.string,
   containerClasses: PropTypes.string,
+  errors: PropTypes.object,
   defaultOption: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
@@ -160,5 +102,6 @@ DropdownInput.propTypes = {
   placeholder: PropTypes.string,
   selectClasses: PropTypes.string,
   register: PropTypes.func,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  value: PropTypes.string
 }

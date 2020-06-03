@@ -16,17 +16,24 @@ module.exports = function() {
           display: 'block',
           padding: '0.75rem 1rem',
           width: '100%',
-          '&.text-input-solo': {
-            borderWidth: '1px'
-          },
-          '&.text-input-combo': {
-            borderTopWidth: '1px',
-            borderRightWidth: '1px',
-            borderBottomWidth: '1px',
-            borderLeftWidth: '0'
+          borderWidth: '1px',
+          '&.text-input-combo-right, &.text-input-combo-left': {
+            height: '2.75rem'
           },
           '&.error-input': {
-            borderColor: theme('colors.red1')
+            borderColor: theme('colors.red1'),
+            '&.text-input-combo-right, &.text-input-combo-left': {
+              borderTop: `1px solid ${theme('colors.red1')}`,
+              borderBottom: `1px solid ${theme('colors.red1')}`
+            },
+            '&.text-input-combo-right': {
+              borderLeft: `1px solid ${theme('colors.primaryBlue')}`,
+              borderRight: `1px solid ${theme('colors.red1')}`
+            },
+            '&.text-input-combo-left': {
+              borderRight: `1px solid ${theme('colors.primaryBlue')}`,
+              borderLeft: `1px solid ${theme('colors.red1')}`
+            }
           }
         }
       }
