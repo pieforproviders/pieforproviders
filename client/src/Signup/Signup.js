@@ -29,7 +29,9 @@ export function Signup() {
     serviceAgreementAccepted: false
   })
 
-  const { register, handleSubmit, watch, errors } = useForm()
+  const { register, handleSubmit, watch, errors } = useForm({
+    mode: 'onChange'
+  })
 
   const onSubmit = data => {
     console.log(`userData JSON: ${JSON.stringify(userData)}`)
@@ -133,8 +135,8 @@ export function Signup() {
             inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
             labelClasses="mb-4"
-            onChange={value => {
-              setUserData({ ...userData, multiBusiness: value })
+            onChange={event => {
+              setUserData({ ...userData, multiBusiness: event.target.value })
             }}
             options={[
               {
@@ -156,9 +158,13 @@ export function Signup() {
           />
 
           <div className="phone-input mb-4">
-            <div className="mb-4" id="phone-type-label">
+            <label
+              htmlFor="phoneType"
+              className="block mb-4"
+              id="phone-type-label"
+            >
               Phone number (we will only call or text if you want us to)
-            </div>
+            </label>
             <div className="grid">
               <DropdownInput
                 comboSide="left"
@@ -169,8 +175,8 @@ export function Signup() {
                   { label: 'Home', value: 'homePhone' },
                   { label: 'Work', value: 'workPhone' }
                 ]}
-                onChange={value =>
-                  setUserData({ ...userData, phoneType: value })
+                onChange={event =>
+                  setUserData({ ...userData, phoneType: event.target.value })
                 }
                 value={userData.phoneType}
               />
@@ -196,7 +202,6 @@ export function Signup() {
           </div>
 
           <ToggleInput
-            containerClasses="mb-4"
             errors={errors.language}
             inputId="language"
             label="Preferred language"

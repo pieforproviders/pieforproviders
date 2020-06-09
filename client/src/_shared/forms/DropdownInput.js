@@ -61,7 +61,7 @@ export default function DropdownInput({
       )}
       <select
         name={inputId}
-        onChange={event => onChange(event.target.value)}
+        onChange={onChange}
         className={selectClass}
         ref={register}
         value={value}
