@@ -44,9 +44,6 @@ export function Signup() {
   // Read the formState before render to subscribe the form state through Proxy
   const { isValid } = formState
 
-  console.log('isValid:', isValid)
-  console.log('errors:', errors)
-
   const onSubmit = data => {
     console.log(`userData JSON: ${JSON.stringify(userData)}`)
     console.log('data', data)
