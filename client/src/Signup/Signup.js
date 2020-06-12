@@ -242,7 +242,9 @@ export function Signup() {
             inputId="language"
             label="Preferred language"
             labelClasses="mb-4"
-            onChange={value => setUserData({ ...userData, language: value })}
+            onChange={event =>
+              setUserData({ ...userData, language: event.target.value })
+            }
             options={[
               {
                 label: 'English',

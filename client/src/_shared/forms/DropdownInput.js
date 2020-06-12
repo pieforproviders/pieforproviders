@@ -67,6 +67,7 @@ export default function DropdownInput({
         className={selectClass}
         ref={register}
         defaultValue={defaultValue}
+        // TODO: refactor this if we can
         // defaultValue makes this an uncontrolled component, but I need to
         // timebox this so we'll come up with another solution if we need
         // a controlled select

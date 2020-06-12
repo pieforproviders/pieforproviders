@@ -70,7 +70,7 @@ export default function ToggleInput({
                 checked={selectedOption === option.value}
                 id={option.value}
                 name={inputId}
-                onChange={() => onChange(option.value)}
+                onChange={onChange}
                 ref={register}
                 tabIndex="0"
                 type="radio"
