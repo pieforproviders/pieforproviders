@@ -200,9 +200,16 @@ export function Signup() {
                 errors={errors.phoneNumber}
                 inputId="phoneNumber"
                 onInput={event => {
+                  // TODO: refactor this
+                  var x = event.target.value
+                    .replace(/\D/g, '')
+                    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+                  event.target.value = !x[2]
+                    ? x[1]
+                    : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
                   setUserData({ ...userData, phoneNumber: event.target.value })
                 }}
-                placeholder="888-888-8888"
+                placeholder="(888) 888-8888"
                 register={register({
                   pattern: {
                     value: /(?:\d{1}\s)?\(?(\d{3})\)?-?\s?(\d{3})-?\s?(\d{4})/,
@@ -215,7 +222,7 @@ export function Signup() {
               />
             </div>
             {errors.phoneNumber && (
-              <ValidationError errorMessage={errors.message} />
+              <ValidationError errorMessage={errors.phoneNumber.message} />
             )}
           </div>
 
