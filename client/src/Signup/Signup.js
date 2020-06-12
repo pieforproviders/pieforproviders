@@ -21,11 +21,11 @@ export function Signup() {
     greetingName: null,
     email: null,
     language: 'en',
-    multiBusiness: '',
+    multiBusiness: null,
     organization: null,
     password: null,
     passwordConfirmation: null,
-    phoneType: 'cellPhone',
+    phoneType: null,
     phoneNumber: null,
     serviceAgreementAccepted: false
   })
