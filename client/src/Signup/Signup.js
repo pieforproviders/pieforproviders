@@ -149,10 +149,7 @@ export function Signup() {
               }
             ]}
             placeholder="Choose one"
-            register={register({
-              validate: value =>
-                value !== '' || 'Single or multi-business option is required.'
-            })}
+            register={register({ required: true })}
             required
             value={userData.multiBusiness}
           />
