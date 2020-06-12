@@ -30,6 +30,7 @@ export function Signup() {
     serviceAgreementAccepted: false
   })
 
+  // deconstructs the react-hook-form elements we need
   const {
     errors,
     formState,
@@ -41,7 +42,7 @@ export function Signup() {
     mode: 'onBlur'
   })
 
-  // Read the formState before render to subscribe the form state through Proxy
+  // we'll use isValid to see if we should allow the submit button to be pressed
   const { isValid } = formState
 
   const onSubmit = data => {
@@ -49,6 +50,7 @@ export function Signup() {
     console.log('data', data)
   }
 
+  // Google Analytics
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
       ReactGA.pageview(window.location.pathname + window.location.search)
@@ -59,6 +61,7 @@ export function Signup() {
     }
   }, [])
 
+  // Label for the Terms and Conditions checkbox with a link embedded
   const TermsLabel = () => {
     return (
       <>
@@ -167,6 +170,10 @@ export function Signup() {
             defaultValue={userData.multiBusiness}
           />
 
+          {/* 
+            TODO: Refactor combo boxes into their own component
+            Combo box input; dropdown on the left, text on the right
+          */}
           <div className="phone-input mb-4">
             <label
               htmlFor="phoneType"
@@ -197,7 +204,8 @@ export function Signup() {
                 errors={errors.phoneNumber}
                 inputId="phoneNumber"
                 onInput={event => {
-                  // TODO: refactor this
+                  // TODO: refactor this into a reusable masker?
+                  // masks input to US phone number format
                   var x = event.target.value
                     .replace(/\D/g, '')
                     .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
@@ -218,6 +226,12 @@ export function Signup() {
                 value={userData.phoneNumber}
               />
             </div>
+            {/*
+              places validationError on the parent component so we don't get
+              multiple error messages or misplaced messages; the phoneType box should
+              be highlighted like an error if the phoneNumber is invalid, but
+              the message only needs to be displayed once for the whole "fieldset"
+             */}
             {errors.phoneNumber && (
               <ValidationError errorMessage={errors.phoneNumber.message} />
             )}
@@ -322,6 +336,8 @@ export function Signup() {
               inputId="serviceAgreementAccepted"
               label={<TermsLabel />}
               onChange={() => {
+                // adds a validation trigger on change so the user doesn't have to
+                // click away from the checkbox before clicking the submit button
                 triggerValidation('serviceAgreementAccepted')
                 setUserData({
                   ...userData,
@@ -336,7 +352,7 @@ export function Signup() {
 
             <Button
               buttonClasses="submit block text-center mx-auto my-10"
-              disabled={!isValid}
+              disabled={!isValid} // disabled until the form input is valid
               label="Sign Up"
               type="submit"
             />
