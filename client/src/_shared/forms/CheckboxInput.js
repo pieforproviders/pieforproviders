@@ -50,7 +50,6 @@ export default function CheckboxInput({
         id={inputId}
         name={inputId}
         onChange={onChange}
-        onKeyDown={event => event.key === 'Enter' && onChange()}
         ref={register}
         type="checkbox"
       />
