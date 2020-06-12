@@ -17,6 +17,10 @@
   grid-column: 2 / 3;
 }
 
+#layout-signup .right form > fieldset > div {
+  margin-bottom: 1rem;
+}
+
 @media (min-width: 768px) {
   
   #layout-signup .right form {
@@ -72,7 +76,6 @@
 
   #layout-signup .right form > fieldset > div {
     grid-column: 1 / 5;
-    margin-bottom: 1rem;
   }
 
   #layout-signup .right form > div > div,

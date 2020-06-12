@@ -5,25 +5,27 @@ import ValidationError from '_shared/forms/ValidationError'
 /**
  * Custom dropdown input including a label, that accepts styling
  *
- * @param {boolean}  [comboSide]         Indicates the side of a combo box the dropdown input should be displayed on.
- * @param {string}   [containerClasses]  Custom classes to be applied to the container div.
- * @param {Object}   [errors]            Errors on the input, if any.
- * @param {string}   inputId             Unique identifier for a rendered component.
- * @param {string}   [labelClasses]      Custom classes to be applied to the label div.
- * @param {string}   [label]             The display text for the label div.
- * @param {func}     onChange            Callback to be triggered when the dropdown's selected option changes.
- * @param {Object[]} options             Array of options with a value (for direct comparison) and a label (for display).
- * @param {string}   [placeholder]       Placeholder text to display inside the dropdown select box.
- * @param {func}     [register]          Register for form validation with react-hook-form
- * @param {boolean}  [required]          Indicates whether or not the dropdowns's value is required.
- * @param {string}   [selectClasses]     Custom classes to be applied to the "select" box div.
- * @param {string}   [value]             The current value of the dropdown
+ * @param {boolean}  [comboSide]                 Indicates the side of a combo box the dropdown input should be displayed on.
+ * @param {string}   [containerClasses]          Custom classes to be applied to the container div.
+ * @param {string}   [defaultValue]              The initial value of the dropdown
+ * @param {Object}   [errors]                    Errors on the input, if any.
+ * @param {string}   inputId                     Unique identifier for a rendered component.
+ * @param {string}   [labelClasses]              Custom classes to be applied to the label div.
+ * @param {string}   [label]                     The display text for the label div.
+ * @param {func}     onChange                    Callback to be triggered when the dropdown's selected option changes.
+ * @param {Object[]} options                     Array of options with a value (for direct comparison) and a label (for display).
+ * @param {string}   [placeholder]               Placeholder text to display inside the dropdown select box.
+ * @param {func}     [register]                  Register for form validation with react-hook-form
+ * @param {boolean}  [showValidationError=true]  Indicates whether or not to display validation error text (useful for combo boxes)
+ * @param {boolean}  [required]                  Indicates whether or not the dropdowns's value is required.
+ * @param {string}   [selectClasses]             Custom classes to be applied to the "select" box div.
  *
  */
 
 export default function DropdownInput({
   comboSide,
   containerClasses,
+  defaultValue,
   errors,
   inputId,
   labelClasses,
@@ -34,7 +36,7 @@ export default function DropdownInput({
   register,
   required,
   selectClasses,
-  value
+  showValidationError = true
 }) {
   const containerClass = ['dropdown-input', containerClasses]
     .filter(item => !!item)
@@ -64,7 +66,10 @@ export default function DropdownInput({
         onChange={onChange}
         className={selectClass}
         ref={register}
-        value={value}
+        defaultValue={defaultValue}
+        // defaultValue makes this an uncontrolled component, but I need to
+        // timebox this so we'll come up with another solution if we need
+        // a controlled select
       >
         {placeholder && (
           <option default value="">
@@ -78,7 +83,9 @@ export default function DropdownInput({
             </option>
           ))}
       </select>
-      {errors && <ValidationError errorMessage={errors.message} />}
+      {errors && showValidationError && (
+        <ValidationError errorMessage={errors.message} />
+      )}
     </div>
   )
 }
@@ -86,6 +93,7 @@ export default function DropdownInput({
 DropdownInput.propTypes = {
   comboSide: PropTypes.string,
   containerClasses: PropTypes.string,
+  defaultValue: PropTypes.string,
   errors: PropTypes.object,
   defaultOption: PropTypes.string,
   inputId: PropTypes.string.isRequired,
@@ -100,8 +108,8 @@ DropdownInput.propTypes = {
     })
   ).isRequired,
   placeholder: PropTypes.string,
-  selectClasses: PropTypes.string,
   register: PropTypes.func,
   required: PropTypes.bool,
-  value: PropTypes.string
+  selectClasses: PropTypes.string,
+  showValidationError: PropTypes.bool
 }

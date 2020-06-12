@@ -6,6 +6,7 @@ import DropdownInput from '_shared/forms/DropdownInput'
 import Button from '_shared/forms/Button.js'
 import TextInput from '_shared/forms/TextInput.js'
 import ToggleInput from '_shared/forms/ToggleInput'
+import ValidationError from '_shared/forms/ValidationError'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
 import { useForm } from 'react-hook-form'
 import '_assets/styles/layouts/signup.css'
@@ -29,9 +30,15 @@ export function Signup() {
     serviceAgreementAccepted: false
   })
 
-  const { register, handleSubmit, watch, errors } = useForm({
-    mode: 'onChange'
+  const { errors, formState, handleSubmit, register, watch } = useForm({
+    mode: 'onBlur'
   })
+
+  // Read the formState before render to subscribe the form state through Proxy
+  const { isValid } = formState
+
+  console.log('isValid:', isValid)
+  console.log('errors:', errors)
 
   const onSubmit = data => {
     console.log(`userData JSON: ${JSON.stringify(userData)}`)
@@ -153,7 +160,7 @@ export function Signup() {
               required: 'Single or multi-business option is required.'
             })}
             required
-            value={userData.multiBusiness}
+            defaultValue={userData.multiBusiness}
           />
 
           <div className="phone-input mb-4">
@@ -177,6 +184,7 @@ export function Signup() {
                 onChange={event =>
                   setUserData({ ...userData, phoneType: event.target.value })
                 }
+                showValidationError={false}
                 value={userData.phoneType}
               />
               <TextInput
@@ -194,10 +202,14 @@ export function Signup() {
                     message: 'Please provide a valid phone number.'
                   }
                 })}
+                showValidationError={false}
                 type="tel"
                 value={userData.phoneNumber}
               />
             </div>
+            {errors.phoneNumber && (
+              <ValidationError errorMessage={errors.message} />
+            )}
           </div>
 
           <ToggleInput
@@ -246,7 +258,7 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.password && 'error-input'}
+            errors={errors.password}
             inputId="password"
             label="Password"
             labelClasses="mb-4"
@@ -269,7 +281,7 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            inputClasses={errors.passwordConfirmation && 'error-input'}
+            errors={errors.passwordConfirmation}
             inputId="passwordConfirmation"
             label="Confirm password"
             labelClasses="mb-4"
@@ -283,7 +295,9 @@ export function Signup() {
             placeholder="Confirm your password"
             register={register({
               required: 'Password confirmation is required',
-              validate: value => value === watch('password')
+              validate: value =>
+                value === watch('password') ||
+                'Password confirmation must match password'
             })}
             required
             value={userData.passwordConfirmation}
@@ -293,8 +307,8 @@ export function Signup() {
             <CheckboxInput
               containerClasses="mt-8 large:text-left"
               checked={userData.serviceAgreementAccepted}
+              errors={errors.serviceAgreementAccepted}
               inputId="serviceAgreementAccepted"
-              inputClasses={errors.serviceAgreementAccepted && 'error-input'}
               label={<TermsLabel />}
               onChange={() => {
                 setUserData({
@@ -310,6 +324,7 @@ export function Signup() {
 
             <Button
               buttonClasses="submit block text-center mx-auto my-10"
+              disabled={!isValid}
               label="Sign Up"
               type="submit"
             />
