@@ -30,7 +30,14 @@ export function Signup() {
     serviceAgreementAccepted: false
   })
 
-  const { errors, formState, handleSubmit, register, watch } = useForm({
+  const {
+    errors,
+    formState,
+    handleSubmit,
+    register,
+    triggerValidation,
+    watch
+  } = useForm({
     mode: 'onBlur'
   })
 
@@ -311,6 +318,7 @@ export function Signup() {
               inputId="serviceAgreementAccepted"
               label={<TermsLabel />}
               onChange={() => {
+                triggerValidation('serviceAgreementAccepted')
                 setUserData({
                   ...userData,
                   serviceAgreementAccepted: !userData.serviceAgreementAccepted
