@@ -15,6 +15,8 @@ import CSVImport from './CSVImport'
 
 const App = () => {
   useEffect(() => {
+    /* skip production code for coverage */
+    /* istanbul ignore next */
     if (process.env.NODE_ENV === 'production') {
       ReactGA.initialize('UA-117297491-1')
     }

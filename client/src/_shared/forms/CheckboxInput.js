@@ -1,16 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ValidationError from '_shared/forms/ValidationError'
 
 /**
  * Custom checkbox input including a label, that accepts styling
  *
- * @param {boolean} checked             The checkbox's checked state on render.
+ * @param {boolean} [checked]           The checkbox's checked state on render.
  * @param {string}  [containerClasses]  Custom classes to be applied to the container div.
- * @param {string}  inputId             Unique identifier for a rendered component.
+ * @param {Object}  [errors]            Errors on the input, if any.
  * @param {string}  [inputClasses]      Custom classes to be applied to the "input" - the checkbox itself.
+ * @param {string}  inputId             Unique identifier for a rendered component.
  * @param {string}  [labelClasses]      Custom classes to be applied to the label div.
- * @param {string}  label               The display text for the label div.
- * @param {func}    onChange            Callback to be triggered when the checkbox's checked state changes.
+ * @param {string}  [label]             The display text for the label div.
+ * @param {func}    [onChange]          Callback to be triggered when the checkbox's checked state changes.
+ * @param {func}    [register]          Register for form validation with react-hook-form
  * @param {boolean} [required]          Indicates whether or not the checkbox's value is required.
  *
  */
@@ -18,11 +21,13 @@ import PropTypes from 'prop-types'
 export default function CheckboxInput({
   checked,
   containerClasses,
-  inputId,
+  errors,
   inputClasses,
+  inputId,
   labelClasses,
   label,
   onChange,
+  register,
   required
 }) {
   const containerClass = ['checkbox-input', containerClasses]
@@ -33,30 +38,38 @@ export default function CheckboxInput({
     .filter(item => !!item)
     .join(' ')
 
+  const inputClass = [errors && 'error-input', inputClasses]
+    .filter(item => !!item)
+    .join(' ')
+
   return (
     <div className={containerClass}>
       <input
         checked={checked}
-        className={inputClasses}
+        className={inputClass}
         id={inputId}
+        name={inputId}
         onChange={onChange}
-        onKeyDown={event => event.key === 'Enter' && onChange()}
+        ref={register}
         type="checkbox"
       />
       <label htmlFor={inputId} className={labelClass}>
         {label}
       </label>
+      {errors && <ValidationError errorMessage={errors.message} />}
     </div>
   )
 }
 
 CheckboxInput.propTypes = {
-  checked: PropTypes.bool.isRequired,
+  checked: PropTypes.bool,
   containerClasses: PropTypes.string,
+  errors: PropTypes.object,
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-  onChange: PropTypes.func.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  onChange: PropTypes.func,
+  register: PropTypes.func,
   required: PropTypes.bool
 }
