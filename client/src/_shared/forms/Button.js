@@ -7,11 +7,16 @@ import PropTypes from 'prop-types'
  * @param {string}  [buttonClasses]     Custom classes to be applied to the button.
  * @param {boolean} [disabled]          Boolean for whether form is disabled or not.
  * @param {string}  label               The display text for the button.
- * @param {string}  [type]              Type of button (i.e. submit).
+ * @param {string}  [type=submit]       Type of button (i.e. submit).
  *
  */
 
-export default function Button({ buttonClasses, disabled, label, type }) {
+export default function Button({
+  buttonClasses,
+  disabled,
+  label,
+  type = submit
+}) {
   return (
     <>
       <button className={buttonClasses} type={type} disabled={disabled}>

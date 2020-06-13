@@ -11,8 +11,8 @@ import ValidationError from '_shared/forms/ValidationError'
  * @param {Object}   [errors]            Errors on the input, if any.
  * @param {string}   inputId             Unique identifier for a rendered component.
  * @param {string}   [labelClasses]      Custom classes to be applied to the label div.
- * @param {string}   label               The display text for the label div.
- * @param {func}     onChange            Callback to be triggered when the toggle's selected option changes.
+ * @param {string}   [label]             The display text for the label div.
+ * @param {func}     [onChange]          Callback to be triggered when the toggle's selected option changes.
  * @param {string}   [optionClasses]     Custom classes to be applied to the "options" in the option list.
  * @param {Object[]} options             Array of options with a value (for direct comparison) and a label (for display).
  * @param {func}     [register]          Register for form validation with react-hook-form
@@ -103,8 +103,8 @@ ToggleInput.propTypes = {
   errors: PropTypes.object,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
-  label: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  label: PropTypes.string,
+  onChange: PropTypes.func,
   optionClasses: PropTypes.string,
   options: PropTypes.arrayOf(
     PropTypes.shape({

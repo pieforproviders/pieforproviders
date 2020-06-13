@@ -12,13 +12,13 @@ import ValidationError from '_shared/forms/ValidationError'
  * @param {string}   inputId                     Unique identifier for a rendered component.
  * @param {string}   [labelClasses]              Custom classes to be applied to the label div.
  * @param {string}   [label]                     The display text for the label div.
- * @param {func}     onChange                    Callback to be triggered when the dropdown's selected option changes.
+ * @param {func}     [onChange]                  Callback to be triggered when the dropdown's selected option changes.
  * @param {Object[]} options                     Array of options with a value (for direct comparison) and a label (for display).
  * @param {string}   [placeholder]               Placeholder text to display inside the dropdown select box.
  * @param {func}     [register]                  Register for form validation with react-hook-form
- * @param {boolean}  [showValidationError=true]  Indicates whether or not to display validation error text (useful for combo boxes)
  * @param {boolean}  [required]                  Indicates whether or not the dropdowns's value is required.
  * @param {string}   [selectClasses]             Custom classes to be applied to the "select" box div.
+ * @param {boolean}  [showValidationError=true]  Indicates whether or not to display validation error text (useful for combo boxes)
  *
  */
 
@@ -96,12 +96,10 @@ DropdownInput.propTypes = {
   containerClasses: PropTypes.string,
   defaultValue: PropTypes.string,
   errors: PropTypes.object,
-  defaultOption: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
   label: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  optionClasses: PropTypes.string,
+  onChange: PropTypes.func,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

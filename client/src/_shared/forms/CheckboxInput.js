@@ -5,14 +5,14 @@ import ValidationError from '_shared/forms/ValidationError'
 /**
  * Custom checkbox input including a label, that accepts styling
  *
- * @param {boolean} checked             The checkbox's checked state on render.
+ * @param {boolean} [checked]           The checkbox's checked state on render.
  * @param {string}  [containerClasses]  Custom classes to be applied to the container div.
  * @param {Object}  [errors]            Errors on the input, if any.
- * @param {string}  inputId             Unique identifier for a rendered component.
  * @param {string}  [inputClasses]      Custom classes to be applied to the "input" - the checkbox itself.
+ * @param {string}  inputId             Unique identifier for a rendered component.
  * @param {string}  [labelClasses]      Custom classes to be applied to the label div.
- * @param {string}  label               The display text for the label div.
- * @param {func}    onChange            Callback to be triggered when the checkbox's checked state changes.
+ * @param {string}  [label]             The display text for the label div.
+ * @param {func}    [onChange]          Callback to be triggered when the checkbox's checked state changes.
  * @param {func}    [register]          Register for form validation with react-hook-form
  * @param {boolean} [required]          Indicates whether or not the checkbox's value is required.
  *
@@ -22,8 +22,8 @@ export default function CheckboxInput({
   checked,
   containerClasses,
   errors,
-  inputId,
   inputClasses,
+  inputId,
   labelClasses,
   label,
   onChange,
@@ -62,14 +62,14 @@ export default function CheckboxInput({
 }
 
 CheckboxInput.propTypes = {
-  checked: PropTypes.bool.isRequired,
+  checked: PropTypes.bool,
   containerClasses: PropTypes.string,
   errors: PropTypes.object,
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
-  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-  onChange: PropTypes.func.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  onChange: PropTypes.func,
   register: PropTypes.func,
   required: PropTypes.bool
 }

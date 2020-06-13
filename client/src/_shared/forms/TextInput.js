@@ -14,7 +14,7 @@ import ValidationError from '_shared/forms/ValidationError'
  * @param {string}  [labelClasses]              Custom classes to be applied to the label div.
  * @param {string}  [label]                     The display text for the label div.
  * @param {func}    [onBlur]                    Callback to be triggered when the user navigates away from the field.
- * @param {func}    onInput                     Callback to be triggered when the text input's value changes.
+ * @param {func}    [onInput]                   Callback to be triggered when the text input's value changes.
  * @param {string}  [placeholder]               Placeholder text to display inside the text input.
  * @param {func}    [register]                  Register for form validation with react-hook-form
  * @param {boolean} [required]                  Indicates whether or not the text input's value is required.
@@ -90,8 +90,8 @@ TextInput.propTypes = {
   labelClasses: PropTypes.string,
   label: PropTypes.string,
   onBlur: PropTypes.func,
-  onInput: PropTypes.func.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  onInput: PropTypes.func,
+  placeholder: PropTypes.string,
   register: PropTypes.func,
   required: PropTypes.bool,
   showValidationError: PropTypes.bool,
