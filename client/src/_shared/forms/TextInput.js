@@ -7,9 +7,10 @@ import ValidationError from '_shared/forms/ValidationError'
  *
  * @param {boolean} [comboSide]                 Indicates the side of a combo box the text input should be displayed on.
  * @param {string}  [containerClasses]          Custom classes to be applied to the container div.
+ * @param {boolean} [defaultValue]              The text input's value state on render.
  * @param {Object}  [errors]                    Errors on the input, if any.
- * @param {string}  inputId                     Unique identifier for a rendered component.
  * @param {string}  [inputClasses]              Custom classes to be applied to the text input.
+ * @param {string}  inputId                     Unique identifier for a rendered component.
  * @param {string}  [labelClasses]              Custom classes to be applied to the label div.
  * @param {string}  [label]                     The display text for the label div.
  * @param {func}    [onBlur]                    Callback to be triggered when the user navigates away from the field.
@@ -19,16 +20,16 @@ import ValidationError from '_shared/forms/ValidationError'
  * @param {boolean} [required]                  Indicates whether or not the text input's value is required.
  * @param {boolean} [showValidationError=true]  Indicates whether or not to display validation error text (useful for combo boxes)
  * @param {boolean} [type='text']               Type of input (e.g. email, tel, text, password, etc.)
- * @param {boolean} value                       The text input's value state on render.
  *
  */
 
 export default function TextInput({
   comboSide,
   containerClasses,
+  defaultValue,
   errors,
-  inputId,
   inputClasses,
+  inputId,
   labelClasses,
   label,
   onInput,
@@ -36,8 +37,7 @@ export default function TextInput({
   register,
   required,
   showValidationError = true,
-  type = 'text',
-  value
+  type = 'text'
 }) {
   const containerClass = ['text-input', containerClasses]
     .filter(item => !!item)
@@ -65,7 +65,7 @@ export default function TextInput({
       <input
         autoComplete={type === 'password' ? 'off' : 'on'}
         className={inputClass}
-        defaultValue={value}
+        defaultValue={defaultValue}
         id={inputId}
         name={inputId}
         onInput={onInput}
@@ -83,6 +83,7 @@ export default function TextInput({
 TextInput.propTypes = {
   comboSide: PropTypes.string,
   containerClasses: PropTypes.string,
+  defaultValue: PropTypes.string,
   errors: PropTypes.object,
   inputClasses: PropTypes.string,
   inputId: PropTypes.string.isRequired,
@@ -94,6 +95,5 @@ TextInput.propTypes = {
   register: PropTypes.func,
   required: PropTypes.bool,
   showValidationError: PropTypes.bool,
-  type: PropTypes.string,
-  value: PropTypes.string
+  type: PropTypes.string
 }

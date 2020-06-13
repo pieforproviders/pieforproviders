@@ -98,6 +98,7 @@ export function Signup() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.organization}
             errors={errors.organization}
             inputId="organization"
             label="Name of organization"
@@ -110,11 +111,11 @@ export function Signup() {
               required: 'Name of organization is required.'
             })}
             required
-            value={userData.organization}
           />
 
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.fullName}
             errors={errors.fullName}
             inputId="fullName"
             label="Full name"
@@ -125,11 +126,11 @@ export function Signup() {
             placeholder="Amanda Diaz"
             register={register({ required: 'Full name is required.' })}
             required
-            value={userData.fullName}
           />
 
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.greetingName}
             errors={errors.greetingName}
             inputId="greetingName"
             label="What should we call you?"
@@ -140,11 +141,11 @@ export function Signup() {
             placeholder="Amanda"
             register={register({ required: 'Greeting name is required.' })}
             required
-            value={userData.greetingName}
           />
 
           <DropdownInput
             containerClasses="mb-4"
+            defaultValue={userData.multiBusiness}
             errors={errors.multiBusiness}
             inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
@@ -167,7 +168,6 @@ export function Signup() {
               required: 'Single or multi-business option is required.'
             })}
             required
-            defaultValue={userData.multiBusiness}
           />
 
           {/* 
@@ -196,11 +196,11 @@ export function Signup() {
                   setUserData({ ...userData, phoneType: event.target.value })
                 }
                 showValidationError={false}
-                value={userData.phoneType}
               />
               <TextInput
                 aria-labelledby="phone-type-label"
                 comboSide="right"
+                defaultValue={userData.phoneNumber}
                 errors={errors.phoneNumber}
                 inputId="phoneNumber"
                 onInput={event => {
@@ -223,7 +223,6 @@ export function Signup() {
                 })}
                 showValidationError={false}
                 type="tel"
-                value={userData.phoneNumber}
               />
             </div>
             {/*
@@ -263,6 +262,7 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.email}
             errors={errors.email}
             inputId="email"
             label="Email"
@@ -280,11 +280,11 @@ export function Signup() {
             })}
             required
             type="email"
-            value={userData.email}
           />
 
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.password}
             errors={errors.password}
             inputId="password"
             label="Password"
@@ -303,11 +303,11 @@ export function Signup() {
               }
             })}
             required
-            value={userData.password}
           />
 
           <TextInput
             containerClasses="mb-4"
+            defaultValue={userData.passwordConfirmation}
             errors={errors.passwordConfirmation}
             inputId="passwordConfirmation"
             label="Confirm password"
@@ -327,7 +327,6 @@ export function Signup() {
                 'Password confirmation must match password'
             })}
             required
-            value={userData.passwordConfirmation}
           />
 
           <div className="medium:text-center">
