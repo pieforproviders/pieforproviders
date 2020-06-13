@@ -15,7 +15,7 @@ export default function Button({
   buttonClasses,
   disabled,
   label,
-  type = submit
+  type = 'submit'
 }) {
   return (
     <>
