@@ -7,9 +7,7 @@ import ValidationError from '_shared/forms/ValidationError'
 /**
  * Custom toggle/radio input including a label, that accepts styling
  *
- * @param {boolean}  checked             The toggle's checked state on render.
  * @param {string}   [containerClasses]  Custom classes to be applied to the container div.
- * @param {string}   [defaultOption]     The value of the default option to be selected on render.
  * @param {Object}   [errors]            Errors on the input, if any.
  * @param {string}   inputId             Unique identifier for a rendered component.
  * @param {string}   [labelClasses]      Custom classes to be applied to the label div.
@@ -19,7 +17,8 @@ import ValidationError from '_shared/forms/ValidationError'
  * @param {Object[]} options             Array of options with a value (for direct comparison) and a label (for display).
  * @param {func}     [register]          Register for form validation with react-hook-form
  * @param {boolean}  [required]          Indicates whether or not the dropdowns's value is required.
- * @param {string}   [selectClasses]     Custom classes to be applied to the "select" div of the option list.
+ * @param {string}   [selectClasses]     Custom classes to be applied to thee parent div. This should include `grid-cols-X` for the number of button columns you want in the radio box.
+ * @param {string}   [selectedOption]    The value that is currently selected for this radio element.
  *
  */
 
@@ -34,8 +33,8 @@ export default function ToggleInput({
   options,
   register,
   required,
-  selectedOption,
-  selectClasses
+  selectClasses,
+  selectedOption
 }) {
   const containerClass = ['toggle-input', containerClasses]
     .filter(item => !!item)
@@ -101,7 +100,6 @@ export default function ToggleInput({
 
 ToggleInput.propTypes = {
   containerClasses: PropTypes.string,
-  defaultOption: PropTypes.string,
   errors: PropTypes.object,
   inputId: PropTypes.string.isRequired,
   labelClasses: PropTypes.string,
@@ -114,8 +112,8 @@ ToggleInput.propTypes = {
       value: PropTypes.string.isRequired
     })
   ).isRequired,
-  selectClasses: PropTypes.string,
-  selectedOption: PropTypes.string,
   register: PropTypes.func,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  selectClasses: PropTypes.string,
+  selectedOption: PropTypes.string
 }
