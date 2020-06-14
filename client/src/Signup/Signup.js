@@ -17,19 +17,21 @@ import '_assets/styles/layouts/signup.css'
  */
 
 export function Signup() {
-  const [userData, setUserData] = useState({
+  const [user, setUser] = useState({
     fullName: null,
     greetingName: null,
     email: null,
     language: 'en',
-    multiBusiness: null,
     organization: null,
     password: null,
     passwordConfirmation: null,
     phoneType: null,
     phoneNumber: null,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     serviceAgreementAccepted: false
   })
+  const [multiBusiness, setMultiBusiness] = useState(null)
+  const { makeRequest } = useApiResponse()
 
   // deconstructs the react-hook-form elements we need
   const {
@@ -46,14 +48,15 @@ export function Signup() {
   // we'll use isValid to see if we should allow the submit button to be pressed
   const { isValid } = formState
 
-  const onSubmit = data => {
-    console.log(`userData JSON: ${JSON.stringify(userData)}`)
-    const response = useApiResponse({
+  const onSubmit = () => {
+    localStorage.setItem('pieMultiBusiness', multiBusiness)
+    const response = makeRequest({
       type: 'post',
       url: '/api/v1/users',
-      data: userData
+      data: { user: user }
     })
     console.log('response:', response)
+    console.log('multiBusiness:', localStorage.getItem('pieMultiBusiness'))
   }
 
   // Google Analytics
@@ -104,13 +107,13 @@ export function Signup() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.organization}
+            defaultValue={user.organization}
             errors={errors.organization}
             inputId="organization"
             label="Name of organization"
             labelClasses="mb-4"
             onInput={event =>
-              setUserData({ ...userData, organization: event.target.value })
+              setUser({ ...user, organization: event.target.value })
             }
             placeholder="Amanda's Daycare"
             register={register({
@@ -121,13 +124,13 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.fullName}
+            defaultValue={user.fullName}
             errors={errors.fullName}
             inputId="fullName"
             label="Full name"
             labelClasses="mb-4"
             onInput={event =>
-              setUserData({ ...userData, fullName: event.target.value })
+              setUser({ ...user, fullName: event.target.value })
             }
             placeholder="Amanda Diaz"
             register={register({ required: 'Full name is required.' })}
@@ -136,13 +139,13 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.greetingName}
+            defaultValue={user.greetingName}
             errors={errors.greetingName}
             inputId="greetingName"
             label="What should we call you?"
             labelClasses="mb-4"
             onInput={event =>
-              setUserData({ ...userData, greetingName: event.target.value })
+              setUser({ ...user, greetingName: event.target.value })
             }
             placeholder="Amanda"
             register={register({ required: 'Greeting name is required.' })}
@@ -151,13 +154,13 @@ export function Signup() {
 
           <DropdownInput
             containerClasses="mb-4"
-            defaultValue={userData.multiBusiness}
+            defaultValue={multiBusiness}
             errors={errors.multiBusiness}
             inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
             labelClasses="mb-4"
             onChange={event => {
-              setUserData({ ...userData, multiBusiness: event.target.value })
+              setMultiBusiness(event.target.value)
             }}
             options={[
               {
@@ -199,14 +202,14 @@ export function Signup() {
                   { label: 'Work', value: 'workPhone' }
                 ]}
                 onChange={event =>
-                  setUserData({ ...userData, phoneType: event.target.value })
+                  setUser({ ...user, phoneType: event.target.value })
                 }
                 showValidationError={false}
               />
               <TextInput
                 aria-labelledby="phone-type-label"
                 comboSide="right"
-                defaultValue={userData.phoneNumber}
+                defaultValue={user.phoneNumber}
                 errors={errors.phoneNumber}
                 inputId="phoneNumber"
                 onInput={event => {
@@ -218,7 +221,7 @@ export function Signup() {
                   event.target.value = !x[2]
                     ? x[1]
                     : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
-                  setUserData({ ...userData, phoneNumber: event.target.value })
+                  setUser({ ...user, phoneNumber: event.target.value })
                 }}
                 placeholder="(888) 888-8888"
                 register={register({
@@ -248,7 +251,7 @@ export function Signup() {
             label="Preferred language"
             labelClasses="mb-4"
             onChange={event =>
-              setUserData({ ...userData, language: event.target.value })
+              setUser({ ...user, language: event.target.value })
             }
             options={[
               {
@@ -263,19 +266,17 @@ export function Signup() {
             register={register({ required: 'Language is required' })}
             required
             selectClasses="grid-cols-2"
-            selectedOption={userData.language}
+            selectedOption={user.language}
           />
 
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.email}
+            defaultValue={user.email}
             errors={errors.email}
             inputId="email"
             label="Email"
             labelClasses="mb-4"
-            onInput={event =>
-              setUserData({ ...userData, email: event.target.value })
-            }
+            onInput={event => setUser({ ...user, email: event.target.value })}
             placeholder="amanda@gmail.com"
             register={register({
               required: 'Email is required',
@@ -290,13 +291,13 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.password}
+            defaultValue={user.password}
             errors={errors.password}
             inputId="password"
             label="Password"
             labelClasses="mb-4"
             onInput={event =>
-              setUserData({ ...userData, password: event.target.value })
+              setUser({ ...user, password: event.target.value })
             }
             type="password"
             placeholder="8+ characters, letters, and numbers"
@@ -313,14 +314,14 @@ export function Signup() {
 
           <TextInput
             containerClasses="mb-4"
-            defaultValue={userData.passwordConfirmation}
+            defaultValue={user.passwordConfirmation}
             errors={errors.passwordConfirmation}
             inputId="passwordConfirmation"
             label="Confirm password"
             labelClasses="mb-4"
             onInput={event =>
-              setUserData({
-                ...userData,
+              setUser({
+                ...user,
                 passwordConfirmation: event.target.value
               })
             }
@@ -338,7 +339,7 @@ export function Signup() {
           <div className="medium:text-center">
             <CheckboxInput
               containerClasses="mt-8 large:text-left"
-              checked={userData.serviceAgreementAccepted}
+              checked={user.serviceAgreementAccepted}
               errors={errors.serviceAgreementAccepted}
               inputId="serviceAgreementAccepted"
               label={<TermsLabel />}
@@ -346,9 +347,9 @@ export function Signup() {
                 // adds a validation trigger on change so the user doesn't have to
                 // click away from the checkbox before clicking the submit button
                 triggerValidation('serviceAgreementAccepted')
-                setUserData({
-                  ...userData,
-                  serviceAgreementAccepted: !userData.serviceAgreementAccepted
+                setUser({
+                  ...user,
+                  serviceAgreementAccepted: !user.serviceAgreementAccepted
                 })
               }}
               register={register({

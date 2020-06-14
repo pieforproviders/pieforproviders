@@ -11,11 +11,11 @@ RSpec.describe 'POST /signup', type: :request do
       full_name: 'Alicia Spinnet',
       greeting_name: 'Alicia',
       language: 'English',
-      phone_type: '888-888-8888',
       organization: 'Gryffindor Quidditch Team',
       password: 'password',
       password_confirmation: 'password',
       phone_number: '888-888-8888',
+      phone_type: 'cell',
       timezone: 'Eastern Time (US & Canada)'
     }
   end

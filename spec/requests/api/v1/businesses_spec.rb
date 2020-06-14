@@ -9,10 +9,10 @@ RSpec.describe 'businesses API', type: :request do
       "full_name": 'Oliver Twist',
       "greeting_name": 'Oliver',
       "language": 'English',
-      "phone_type": '912-444-5555',
       "password": 'password1234!',
       "password_confirmation": 'password1234!',
       "phone_number": '912-444-5555',
+      "phone_type": 'home',
       "organization": 'Society for the Promotion of Elfish Welfare',
       "service_agreement_accepted": 'true',
       "timezone": 'Central Time (US & Canada)'

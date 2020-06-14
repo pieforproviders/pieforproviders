@@ -48,7 +48,7 @@ RSpec.configure do |config|
                 password_confirmation: { type: :string, example: 'password1234!' },
                 phone_number: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
+                timezone: { type: :string, example: 'Central Time (US & Canada)' }
               },
               required: %w[
                 email

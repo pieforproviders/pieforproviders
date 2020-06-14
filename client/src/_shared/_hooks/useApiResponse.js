@@ -1,55 +1,46 @@
 import { useApi } from 'react-use-fetch-api'
-import { useEffect, useState } from 'react'
 
-export const useApiResponse = request => {
-  const [apiResponse, setApiResponse] = useState(null)
-
-  const {
-    type,
-    url,
-    data,
-    headers = {
-      Accept: 'application/vnd.pieforproviders.v1+json'
-    }
-  } = request
-
+export const useApiResponse = () => {
   function onUnauthorized(err) {
-    console.log('onUnauthorized')
+    console.log('onUnauthorized', err)
     return err
   }
 
   function onError(err) {
-    console.log('onError')
+    console.log('onError', err)
     return err
   }
 
   const { get, post, put, del } = useApi(onUnauthorized, onError)
 
-  useEffect(() => {
-    const makeRequest = async () => {
-      const result = await (() => {
-        switch (type) {
-          case 'get':
-            return async () => {
-              await get(url, headers)
-            }
-          case 'post':
-            return async () => {
-              await post(url, data, headers)
-            }
-          case 'put':
-            return async () => {
-              await put(url, data, headers)
-            }
-          case 'del':
-            return async () => {
-              await del(url, headers)
-            }
-        }
-        console.log('result:', result)
-      })
-    }
-    setApiResponse(makeRequest())
-  }, [])
-  return apiResponse
+  const makeRequest = async request => {
+    const {
+      type,
+      url,
+      data,
+      headers = {
+        Accept: 'application/vnd.pieforproviders.v1+json',
+        'Content-Type': 'application/json'
+      }
+    } = request
+
+    const result = (async () => {
+      switch (type) {
+        case 'post':
+          return await post(url, data, headers)
+        case 'put':
+          return await put(url, data, headers)
+        case 'del':
+          return await del(url, headers)
+        case 'get':
+        default:
+          return await get(url, headers)
+      }
+    })()
+    return result
+  }
+
+  return {
+    makeRequest: makeRequest
+  }
 }

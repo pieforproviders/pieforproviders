@@ -8,7 +8,6 @@ FactoryBot.define do
     full_name { Faker::Games::WorldOfWarcraft.hero }
     greeting_name { Faker::Name.first_name }
     language { %w[English Spanish Russian].sample }
-    phone_type { Faker::PhoneNumber.phone_number }
     opt_in_email { Faker::Boolean.boolean }
     opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }
@@ -16,6 +15,7 @@ FactoryBot.define do
     password { password }
     password_confirmation { password }
     phone_number { Faker::PhoneNumber.phone_number }
+    phone_type { ['cell', 'home', 'work'].sample }
     service_agreement_accepted { Faker::Boolean.boolean }
     timezone { TimeZoneService.us_zones.sample }
 
