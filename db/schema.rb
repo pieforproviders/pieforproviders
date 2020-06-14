@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_29_020409) do
+ActiveRecord::Schema.define(version: 2020_06_14_143825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "blocked_tokens", force: :cascade do |t|
     t.string "jti", null: false
     t.datetime "expiration", null: false
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
@@ -58,11 +58,11 @@ ActiveRecord::Schema.define(version: 2020_04_29_020409) do
     t.string "greeting_name"
     t.string "email", null: false
     t.string "language", null: false
-    t.string "mobile"
+    t.string "phone_type"
     t.boolean "opt_in_email", default: true, null: false
     t.boolean "opt_in_phone", default: true, null: false
     t.boolean "opt_in_text", default: true, null: false
-    t.string "phone"
+    t.string "phone_number"
     t.boolean "service_agreement_accepted", default: false, null: false
     t.string "timezone", null: false
     t.datetime "created_at", precision: 6, null: false

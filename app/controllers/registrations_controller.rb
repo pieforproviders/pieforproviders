@@ -21,9 +21,9 @@ class RegistrationsController < Devise::RegistrationsController
   def sign_up_params
     params.require(:user).permit(
       :active, :email, :full_name, :greeting_name,
-      :id, :language, :mobile, :opt_in_email,
+      :id, :language, :phone_type, :opt_in_email,
       :opt_in_phone, :opt_in_text, :organization, :password,
-      :password_confirmation, :phone, :service_agreement_accepted,
+      :password_confirmation, :phone_number, :service_agreement_accepted,
       :slug, :timezone
     )
   end

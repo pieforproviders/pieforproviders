@@ -548,7 +548,7 @@
               "type": "string",
               "example": "password1234!"
             },
-            "phone": {
+            "phone_number": {
               "type": "string",
               "example": "888-888-8888"
             },
@@ -599,7 +599,7 @@
               "type": "string",
               "example": "Society for the Promotion of Elfish Welfare"
             },
-            "phone": {
+            "phone_number": {
               "type": "string",
               "example": "888-888-8888"
             },

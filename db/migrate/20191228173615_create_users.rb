@@ -6,7 +6,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :greeting_name
       t.string :email, null: false
       t.string :language, null: false
-      t.string :mobile
+      t.string :phone_type
       t.boolean :opt_in_email, null: false, default: true
       t.boolean :opt_in_phone, null: false, default: true
       t.boolean :opt_in_text, null: false, default: true
