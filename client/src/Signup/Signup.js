@@ -9,6 +9,7 @@ import ToggleInput from '_shared/forms/ToggleInput'
 import ValidationError from '_shared/forms/ValidationError'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
 import { useForm } from 'react-hook-form'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import '_assets/styles/layouts/signup.css'
 
 /**
@@ -47,7 +48,12 @@ export function Signup() {
 
   const onSubmit = data => {
     console.log(`userData JSON: ${JSON.stringify(userData)}`)
-    console.log('data', data)
+    const response = useApiResponse({
+      type: 'post',
+      url: '/api/v1/users',
+      data: userData
+    })
+    console.log('response:', response)
   }
 
   // Google Analytics
