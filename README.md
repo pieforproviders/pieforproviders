@@ -11,7 +11,7 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in
 
 We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve. 
 
-We need your help. 
+We need your help!
 
 Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work. 
 
