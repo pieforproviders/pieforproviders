@@ -38,7 +38,7 @@ Rails.application.configure do
   # for testing devise mailers
   config.action_mailer.perform_deliveries = ENV.fetch('PERFORM_DELIVERIES', 'false') == 'true'
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.default_url_options = { host: ENV.fetch('MAIL_HOST', '') }
+  config.action_mailer.default_url_options = { host: ENV.fetch('MAIL_URL', '') }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.default_options = {
     from: ENV.fetch('SENDMAIL_USERNAME', '')
