@@ -9,6 +9,7 @@ import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import Login from './Login'
 import Signup from './Signup'
+import Confirmation from './Signup/Confirmation'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CSVImport from './CSVImport'
@@ -38,6 +39,9 @@ const App = () => {
             </Route>
             <Route path="/csv-import">
               <CSVImport />
+            </Route>
+            <Route path="/confirmation">
+              <Confirmation />
             </Route>
             <Route exact path="/">
               <Redirect to={'/login'} />

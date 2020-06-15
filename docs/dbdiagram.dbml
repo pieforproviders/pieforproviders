@@ -3,8 +3,8 @@ Table users [headercolor: #3498db] {
   full_name string [not null]
   greeting_name string
   email string [unique, not null]
-  phone string
-  mobile string
+  phone_number string
+  phone_type string
   opt_in_text boolean [not null, default: true]
   opt_in_email boolean [not null, default: true]
   opt_in_phone boolean [not null, default: true]

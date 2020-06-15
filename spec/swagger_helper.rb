@@ -46,9 +46,9 @@ RSpec.configure do |config|
                 organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
                 password: { type: :string, example: 'password1234!' },
                 password_confirmation: { type: :string, example: 'password1234!' },
-                phone: { type: :string, example: '888-888-8888' },
+                phone_number: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
+                timezone: { type: :string, example: 'Central Time (US & Canada)' }
               },
               required: %w[
                 email
@@ -73,7 +73,7 @@ RSpec.configure do |config|
                 greeting_name: { type: :string, example: 'Marlee' },
                 language: { type: :string, example: 'Farsi' },
                 organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
-                phone: { type: :string, example: '888-888-8888' },
+                phone_number: { type: :string, example: '888-888-8888' },
                 service_agreement_accepted: { type: :boolean, example: 'true' },
                 timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
               }
