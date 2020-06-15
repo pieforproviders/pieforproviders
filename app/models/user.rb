@@ -22,6 +22,7 @@ class User < ApplicationRecord
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_phone, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
+  validates :phone_number, uniqueness: true
   validates :service_agreement_accepted, inclusion: { in: [true, false] }
   validates :timezone, presence: true
 

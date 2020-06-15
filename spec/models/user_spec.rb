@@ -8,6 +8,7 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:language) }
   it { should validate_presence_of(:organization) }
+  it { should validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
   it { should validate_presence_of(:timezone) }
 
   let!(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
