@@ -2,6 +2,6 @@
 
 # Action Mailer allows you to send emails from your application using mailer classes and views.
 class ApplicationMailer < ActionMailer::Base
-  default from: 'from@example.com'
+  default from: 'tech@pieforproviders.com'
   layout 'mailer'
 end
