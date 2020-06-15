@@ -57,7 +57,6 @@ export function Signup() {
       data: { user: user }
     })
     if (Object.keys(response).length > 0) {
-      console.log('response:', response)
       history.push('/confirmation')
     } else {
       console.log('error creating')
