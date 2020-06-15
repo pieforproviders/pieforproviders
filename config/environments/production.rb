@@ -26,7 +26,7 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
 
-  # default to true on production environments
+  # default deliveries to true on production environments
   config.action_mailer.perform_deliveries = ENV.fetch("PERFORM_DELIVERIES", true)
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: ENV.fetch('MAIL_HOST', '') }
