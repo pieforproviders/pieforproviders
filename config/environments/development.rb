@@ -36,7 +36,7 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
 
   # for testing devise mailers
-  config.action_mailer.perform_deliveries = ENV.fetch('PERFORM_DELIVERIES', false)
+  config.action_mailer.perform_deliveries = ENV.fetch('PERFORM_DELIVERIES', 'false') == 'true'
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: ENV.fetch('MAIL_HOST', '') }
   config.action_mailer.delivery_method = :smtp
