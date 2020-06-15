@@ -3,11 +3,13 @@ import { useApi } from 'react-use-fetch-api'
 export const useApiResponse = () => {
   function onUnauthorized(err) {
     console.log('onUnauthorized', err)
+    // TODO: send to sentry
     return err
   }
 
   function onError(err) {
     console.log('onError', err)
+    // TODO: send to sentry
     return err
   }
 

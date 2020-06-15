@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import CheckboxInput from '_shared/forms/CheckboxInput'
 import DropdownInput from '_shared/forms/DropdownInput'
 import Button from '_shared/forms/Button.js'
@@ -25,13 +25,14 @@ export function Signup() {
     organization: null,
     password: null,
     passwordConfirmation: null,
-    phoneType: null,
+    phoneType: 'cell',
     phoneNumber: null,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     serviceAgreementAccepted: false
   })
   const [multiBusiness, setMultiBusiness] = useState(null)
   const { makeRequest } = useApiResponse()
+  let history = useHistory()
 
   // deconstructs the react-hook-form elements we need
   const {
@@ -48,15 +49,19 @@ export function Signup() {
   // we'll use isValid to see if we should allow the submit button to be pressed
   const { isValid } = formState
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     localStorage.setItem('pieMultiBusiness', multiBusiness)
-    const response = makeRequest({
+    const response = await makeRequest({
       type: 'post',
       url: '/api/v1/users',
       data: { user: user }
     })
-    console.log('response:', response)
-    console.log('multiBusiness:', localStorage.getItem('pieMultiBusiness'))
+    if (Object.keys(response).length > 0) {
+      console.log('response:', response)
+      history.push('/confirmation')
+    } else {
+      console.log('error creating')
+    }
   }
 
   // Google Analytics
@@ -197,9 +202,9 @@ export function Signup() {
                 errors={errors.phoneNumber}
                 inputId="phoneType"
                 options={[
-                  { label: 'Cell', value: 'cellPhone' },
-                  { label: 'Home', value: 'homePhone' },
-                  { label: 'Work', value: 'workPhone' }
+                  { label: 'Cell', value: 'cell' },
+                  { label: 'Home', value: 'home' },
+                  { label: 'Work', value: 'work' }
                 ]}
                 onChange={event =>
                   setUser({ ...user, phoneType: event.target.value })
