@@ -18,6 +18,7 @@ Metrics/BlockLength:
     - spec/**/**
     - lib/tasks/**
     - config/initializers/**
+    - config/environments/**
 
 # screens are bigger now and long lines are more acceptable
 Layout/LineLength:

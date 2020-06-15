@@ -27,16 +27,16 @@ Rails.application.configure do
   # config.action_controller.asset_host = 'http://assets.example.com'
 
   # default deliveries to true on production environments
-  config.action_mailer.perform_deliveries = ENV.fetch("PERFORM_DELIVERIES", true)
+  config.action_mailer.perform_deliveries = ENV.fetch('PERFORM_DELIVERIES', true)
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: ENV.fetch('MAIL_HOST', '') }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    user_name:      ENV.fetch('SENDMAIL_USERNAME', ''),
-    password:       ENV.fetch('SENDMAIL_PASSWORD', ''),
-    domain:         ENV.fetch('MAIL_HOST', ''),
-    address:       'smtp.gmail.com',
-    port:          '587',
+    user_name: ENV.fetch('SENDMAIL_USERNAME', ''),
+    password: ENV.fetch('SENDMAIL_PASSWORD', ''),
+    domain: ENV.fetch('MAIL_HOST', ''),
+    address: 'smtp.gmail.com',
+    port: '587',
     authentication: :plain,
     enable_starttls_auto: true
   }
