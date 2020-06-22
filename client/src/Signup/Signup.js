@@ -115,7 +115,7 @@ export function Signup() {
             errors={errors.organization}
             inputId="organization"
             label="Name of organization"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -132,7 +132,7 @@ export function Signup() {
             errors={errors.fullName}
             inputId="fullName"
             label="Full name"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -147,7 +147,7 @@ export function Signup() {
             errors={errors.greetingName}
             inputId="greetingName"
             label="What should we call you?"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
@@ -162,7 +162,7 @@ export function Signup() {
             errors={errors.multiBusiness}
             inputId="multiBusiness"
             label="Are you managing subsidy cases for multiple child care businesses?"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onChange={event => {
               setMultiBusiness(event.target.value)
             }}
@@ -253,7 +253,7 @@ export function Signup() {
             errors={errors.language}
             inputId="language"
             label="Preferred language"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
@@ -279,7 +279,7 @@ export function Signup() {
             errors={errors.email}
             inputId="email"
             label="Email"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event => setUser({ ...user, email: event.target.value })}
             placeholder="amanda@gmail.com"
             register={register({
@@ -299,7 +299,7 @@ export function Signup() {
             errors={errors.password}
             inputId="password"
             label="Password"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -322,7 +322,7 @@ export function Signup() {
             errors={errors.passwordConfirmation}
             inputId="passwordConfirmation"
             label="Confirm password"
-            labelClasses="mb-4"
+            labelClasses="mb-2"
             onInput={event =>
               setUser({
                 ...user,

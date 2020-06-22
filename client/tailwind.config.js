@@ -42,6 +42,7 @@ module.exports = {
     require('./tailwind/plugins/components/dropdownInput')(),
     require('./tailwind/plugins/components/textInput')(),
     require('./tailwind/plugins/components/toggleInput')(),
+    require('./tailwind/plugins/components/validationError')(),
     require('./tailwind/plugins/components/visuallyHidden')(),
 
     // utilities
