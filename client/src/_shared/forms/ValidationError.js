@@ -11,8 +11,8 @@ import PropTypes from 'prop-types'
 
 export default function ValidationError({ errorMessage }) {
   return (
-    <div className="text-red1 font-semibold mt-2">
-      <ErrorOutlineIcon fontSize="inherit" /> {errorMessage}
+    <div className="text-red1 font-semibold mt-2 error-message">
+      <ErrorOutlineIcon /> {errorMessage}
     </div>
   )
 }

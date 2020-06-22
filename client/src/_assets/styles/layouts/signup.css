@@ -21,6 +21,11 @@
   margin-bottom: 1rem;
 }
 
+#layout-signup .right form > div > label,
+#layout-signup .right form > fieldset > legend {
+  font-weight: 600;
+}
+
 @media (min-width: 768px) {
   
   #layout-signup .right form {
