@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
-import './tailwind.generated.css'
+import './App.less'
 import * as Sentry from '@sentry/browser'
 
 if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DSN) {
