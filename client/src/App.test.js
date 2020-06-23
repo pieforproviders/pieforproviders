@@ -29,10 +29,6 @@ describe('<App />', () => {
     </MemoryRouter>
   )
 
-  // it('calls ReactGA.initialize()', () => {
-  //   expect(ReactGA.initialize).toBeCalled()
-  // })
-
   it('renders the App container', () => {
     expect(wrapper.contains(<App />)).toBe(true)
   })
