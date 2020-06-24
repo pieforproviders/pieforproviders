@@ -1,9 +1,10 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 export function Login() {
+  const [apiError, setApiError] = useState(null)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
 
@@ -13,29 +14,37 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    localStorage.setItem('token', response.headers.get('authorization'))
-    // if unauthorized, redirect to /login with error
-    // if authorized, redirect to /dashboard
-    if (response.headers.get('authorization') !== null) {
-      console.log('token: ', localStorage.getItem('token'))
+    if (!response.ok) {
+      // TODO: Sentry
+      switch (response.status) {
+        case 401:
+          setApiError(
+            <p>
+              Your credentials were incorrect, please try again. Or{' '}
+              <Link to="/reset-password">reset your password</Link>
+            </p>
+          )
+          break
+        case 404:
+          setApiError('API not found - contact a site administrator')
+          break
+        default:
+          setApiError('WHERPS')
+          break
+      }
+    } else if (response.ok && response.headers.get('authorization') !== null) {
+      localStorage.setItem('token', response.headers.get('authorization'))
       history.push('/dashboard')
     } else {
-      console.log('error logging in')
+      // TODO: Sentry
+      setApiError('An unknown error occurred - please try again later')
     }
   }
 
-  const onFinishFailed = errorInfo => {
-    // TODO: this handles error states on the fields
-    console.log('Failed:', errorInfo)
-  }
   return (
     <div className="login">
-      <Form
-        name="login"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
+      {apiError && <div>{apiError}</div>}
+      <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
         <Form.Item
           label="Email"
           name="email"

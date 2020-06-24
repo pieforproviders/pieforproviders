@@ -14,9 +14,8 @@ async function fetchData({ path, method, data, headers }) {
     body: !!data ? JSON.stringify(data) : null,
     headers: !!headers ? headers : defaultHeaders
   }).then(response => {
-    if (!response.ok) {
-      throw new Error(response.status)
-    }
+    // TODO: do we want to do error handling here like the original hook?
+    // Not sure if there's a smarter way to do this
     return response
   })
 
