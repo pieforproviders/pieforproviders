@@ -36,6 +36,8 @@ group :development, :test do
   gem 'pry-remote'
   gem 'rspec-rails'
   gem 'rswag-specs'
+  gem 'rubocop-performance'
+  gem 'rubocop-rails'
 end
 
 group :development do
@@ -43,7 +45,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pgreset'
-  gem 'rubocop-rails'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
