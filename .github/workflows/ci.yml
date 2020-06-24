@@ -95,30 +95,12 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           DEVISE_JWT_SECRET_KEY: imasecretkey
-  static_analysis:
-    name: Rails Static Analysis
+  brakeman:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.6.x
-      - uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-
-      - name: Install dependent libraries
-        run: sudo apt-get install libpq-dev
-      - name: Bundle install
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Run Brakeman
-        run: brakeman
+      - uses: actions/checkout@v2
+      - name: Analyze code statically using Brakeman
+        uses: moneyforward/brakeman-action@v0
   test_frontend:
     name: Frontend tests
     runs-on: ubuntu-latest    
