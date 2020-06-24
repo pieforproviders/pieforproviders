@@ -31,6 +31,13 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
+  brakeman:
+    name: Brakeman Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Analyze code statically using Brakeman
+        uses: moneyforward/brakeman-action@v0
   lint_frontend:
     name: Frontend linting
     runs-on: ubuntu-latest    
