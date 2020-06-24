@@ -9,6 +9,13 @@ on:
     - master
     - develop
 jobs:
+  static_analysis:
+    name: Rails Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Brakeman
+        uses: devmasx/brakeman-linter-action@v1.0.0
   lint_backend:
     name: Backend linting
     runs-on: ubuntu-latest
