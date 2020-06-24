@@ -1,4 +1,4 @@
-import { useApi } from 'react-use-fetch-api'
+import useApi from '_shared/_hooks/useApi'
 
 export const useApiResponse = () => {
   function onUnauthorized(err) {

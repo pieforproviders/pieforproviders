@@ -1,3 +1,5 @@
+puts "seeding"
+
 user = User.create!(
   active: true,
   email: ENV.fetch("TESTUSER_EMAIL", "test@test.com"),

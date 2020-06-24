@@ -53,7 +53,7 @@ export function Signup() {
     localStorage.setItem('pieMultiBusiness', multiBusiness)
     const response = await makeRequest({
       type: 'post',
-      url: '/api/v1/users',
+      url: '/signup',
       data: { user: user }
     })
     if (Object.keys(response).length > 0) {
