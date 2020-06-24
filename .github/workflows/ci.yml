@@ -10,27 +10,12 @@ on:
     - develop
 jobs:
   lint_backend:
-    name: Backend linting
+    name: Rubocop
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1
-        with:
-          ruby-version: 2.6.x
-      - uses: actions/cache@v1
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-
+      - uses: actions/checkout@v2
       - name: Rubocop
-        run: |
-          sudo apt-get -yqq install libpq-dev
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-          bundle exec rubocop
+        uses: gimenete/rubocop-action@1.0
   lint_frontend:
     name: Frontend linting
     runs-on: ubuntu-latest    
