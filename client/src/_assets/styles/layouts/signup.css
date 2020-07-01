@@ -27,7 +27,6 @@
 }
 
 @media (min-width: 768px) {
-  
   #layout-signup .right form {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -53,8 +52,8 @@
     display: block;
     background-image: url(../../kid1.png);
     background-repeat: no-repeat;
-    background-size: auto auto;
-    background-attachment: fixed;
+    background-size: 100%;
+    background-attachment: local;
   }
 
   #layout-signup .right {
@@ -69,7 +68,6 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  
   #layout-signup .right form > div > label,
   #layout-signup .right form > fieldset > legend {
     grid-column: 1 / -1;
@@ -91,10 +89,9 @@
     grid-column: 1 / 2;
   }
 
-  #layout-signup .right form > .medium\:text-center, 
+  #layout-signup .right form > .medium\:text-center,
   #layout-signup .right form > .medium\:text-center > div {
     /* display: block; */
     grid-column: 1 / -1;
   }
-
 }
