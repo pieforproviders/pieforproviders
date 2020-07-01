@@ -1,7 +1,8 @@
 # README
+
 ![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)
 
-We help child care providers and families claim the government funding for which they are already eligible. 
+We help child care providers and families claim the government funding for which they are already eligible.
 
 ## Code of Conduct
 
@@ -9,11 +10,11 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in
 
 ## Why Contribute?
 
-We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve. 
+We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve.
 
 We need your help!
 
-Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work. 
+Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work.
 
 Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md) by picking up any of our [open issues](https://bit.ly/PieIssues).
 
@@ -22,27 +23,27 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 <details>
   <summary>Architecture</summary>
 
-* [ERD/Database Planning Diagram](docs/dbdiagram.pdf)
+- [ERD/Database Planning Diagram](docs/dbdiagram.pdf)
 
-* Backend: Rails
-  * **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
-  * Rubocop
-  * Data Migrations: https://github.com/ilyakatz/data-migrate
-  * RSpec
-    * SimpleCov
-    * Shoulda Matchers
-    * DatabaseCleaner
-    * FactoryBot
-    * Faker
-    * RSwag
-  * v1 API Routes returning JSON
-  * Postgres DB
-  * API Documentation with swagger
-* Frontend: React
-  * ESLint/Prettier
-  * Jest/Enzyme
-  * Husky for pre-commit hooks
-</details>
+- Backend: Rails
+  - **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
+  - Rubocop
+  - Data Migrations: https://github.com/ilyakatz/data-migrate
+  - RSpec
+    - SimpleCov
+    - Shoulda Matchers
+    - DatabaseCleaner
+    - FactoryBot
+    - Faker
+    - RSwag
+  - v1 API Routes returning JSON
+  - Postgres DB
+  - API Documentation with swagger
+- Frontend: React
+  - ESLint/Prettier
+  - Jest/Enzyme
+  - Husky for pre-commit hooks
+  </details>
 
 <details>
   <summary>Assumptions, Assertions, and Comments</summary>
@@ -52,20 +53,21 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 ## Prerequisites
 
-* `postgres`
-* `bundler`
-* `XCode Select` tools if you're on Mac
+- `postgres`
+- `bundler`
+- `XCode Select` tools if you're on Mac
 
 ## Optional
 
-* `rvm` or another ruby version manager to isolate your dependency installation
-* `heroku cli`
+- `rvm` or another ruby version manager to isolate your dependency installation
+- [Postgres.app](https://postgresapp.com/) or another postgres tool
+- `heroku cli`
 
 ## Getting Started
 
 - clone the repo
 - `cd pieforproviders`
-- Run `cp .env.sample .env` and `cp client/.env.development.sample cp client/.env.development` and add values (contact a repo contributor)
+- copy `.env.sample` to `.env` and add values (contact a repo contributor)
 - install bundler for gems: `gem install bundler`
 - install gems: `bundle install`
 - set up the database: `bundle exec rails db:setup`
@@ -75,19 +77,23 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - `cd ../`
 
 ## Running the app locally
+
 You have several convenient options for running the app locally.
 
 1. Rake task
-  - Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
-  - `rails start`
+
+- Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+- `rails start`
 
 2. Foreman
-  - Install [foreman](https://github.com/ddollar/foreman) -- `gem install foreman`
-  - Run `foreman start`
+
+- Install [foreman](https://github.com/ddollar/foreman) -- `gem install foreman`
+- Run `foreman start`
 
 3. Without Foreman or Heroku
-  - Start rails in one terminal: `rails s -p 3001`
-  - Open a second terminal and start react: `cd client && yarn start`
+
+- Start rails in one terminal: `rails s -p 3001`
+- Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 
@@ -108,18 +114,18 @@ Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb
 
 ## Resources/Further Reading
 
-* [Quickstart for Rails](https://docs.docker.com/compose/rails/)
-* [PosgreSQL UUID as primary key in Rails 5.1](https://clearcove.ca/2017/08/postgres-uuid-as-primary-key-in-rails-5-1)
-* [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
-* [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
+- [Quickstart for Rails](https://docs.docker.com/compose/rails/)
+- [PosgreSQL UUID as primary key in Rails 5.1](https://clearcove.ca/2017/08/postgres-uuid-as-primary-key-in-rails-5-1)
+- [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
+- [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
 
 ## TODO
 
-* Friendly IDs so the UUIDs don't get in the way: https://github.com/norman/friendly_id
+- Friendly IDs so the UUIDs don't get in the way: https://github.com/norman/friendly_id
 
 ## Notes
 
-* re: names - `full_name` with a `greeting_name` is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
+- re: names - `full_name` with a `greeting_name` is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
 
 ## Troubleshooting
 
