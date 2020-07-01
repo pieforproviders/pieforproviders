@@ -11,8 +11,8 @@ const defaultHeaders = {
 async function fetchData({ path, method, data, headers }) {
   const response = await fetch(path, {
     method: method,
-    body: !!data ? JSON.stringify(data) : null,
-    headers: !!headers ? headers : defaultHeaders
+    body: data ? JSON.stringify(data) : null,
+    headers: headers ? headers : defaultHeaders
   }).then(response => {
     // TODO: do we want to do error handling here like the original hook?
     // Not sure if there's a smarter way to do this
