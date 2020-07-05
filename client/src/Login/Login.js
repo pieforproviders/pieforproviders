@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
@@ -14,27 +14,18 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    // This is returning undefined when I use invalid creds and get a 401
     console.log('response:', response)
-    // if (!response.ok) {
-    //   // TODO: Sentry
-    //   switch (response.error) {
-    //     case null:
-    //       break
-    //     case 404:
-    //       setApiError('API not found - contact a site administrator')
-    //       break
-    //     case /You must sign in or sign up to continue/:
-    //       setApiError(response.error)
-    //       break
-    //   }
-    // } else if (response.ok && response.headers.get('authorization') !== null) {
-    //   localStorage.setItem('token', response.headers.get('authorization'))
-    //   history.push('/dashboard')
-    // } else {
-    //   // TODO: Sentry
-    //   setApiError('An unknown error occurred - please try again later')
-    // }
+    if (!response.ok) {
+      // TODO: Sentry
+      setApiError(response.json().error || 'error')
+    } else if (response.ok && response.headers.get('authorization') !== null) {
+      localStorage.setItem('token', response.headers.get('authorization'))
+      history.push('/dashboard')
+    } else {
+      // TODO: Sentry
+      // This is an OK response without an auth token
+      setApiError('An unknown error occurred - please try again later')
+    }
   }
 
   return (
@@ -64,7 +55,7 @@ export function Login() {
             }
           ]}
         >
-          <Input.Password />
+          <Input.Password autoComplete="current-password" />
         </Form.Item>
 
         <Form.Item name="remember" valuePropName="checked">

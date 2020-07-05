@@ -1010,7 +1010,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.0", "@babel/runtime@^7.4.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.0", "@babel/runtime@^7.4.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.4", "@babel/runtime@^7.9.2":
   version "7.9.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.2.tgz#d90df0583a3a252f09aaa619665367bae518db06"
   integrity sha512-NE2DtOdufG7R5vnfQUTehdTfNycfUANEtCa9PssN9O/xmTzP4E08UI797ixaei6hBEVL9BI/PsdJS5x7mWoB9Q==
@@ -1028,6 +1028,13 @@
   version "7.9.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.9.6.tgz#a9102eb5cadedf3f31d08a9ecf294af7827ea29f"
   integrity sha512-64AF1xY3OAkFHqOb9s4jpgk1Mm5vDZ4L3acHvAml+53nO1XbXLuDodsVpO4OIUsmemlUHMxNdYMNJmsvOwLrvQ==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.8.4":
+  version "7.10.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"
+  integrity sha512-UpTN5yUJr9b4EX2CnGNWIvER7Ab83ibv0pcvvHc4UOdrBI5jb8bj+32cCwPX6xu0mt2daFNjYhoi+X7beH0RSw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -9982,10 +9989,10 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-use-fetch-api@^1.0.8:
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/react-use-fetch-api/-/react-use-fetch-api-1.0.8.tgz#10ee4d21371c3602490eb1a348c426f145fd8a27"
-  integrity sha512-tEGP0st43iy1G/RbE1x0ckmbwXJiN/ssnQ7cxMpUwP+3J76fyEcKruLfDCrQGaR2PhX4bfL8m1AmEf418St45Q==
+react-use-fetch-api@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-use-fetch-api/-/react-use-fetch-api-2.0.1.tgz#fb21fd8598ab94ede46a546892ba8601396b2a55"
+  integrity sha512-O0NpmiDg4WPUzMa9c2VeUC+J/Fr02alIYAKsJ9eOQ9M85igC5BlC46zzoDiTr1ZnuslngVRcyj2zkCZY4rn+ZA==
   dependencies:
     "@babel/runtime" "^7.8.4"
 
