@@ -8,6 +8,7 @@ export default function useUnauthorizedHandler() {
     // TODO: Sentry
     localStorage.removeItem('token')
     history.push('/login')
+    return 3
   }
 
   return handler
