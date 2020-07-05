@@ -16,6 +16,7 @@ async function fetchData({ path, method, data, headers }) {
   }).then(response => {
     // TODO: do we want to do error handling here like the original hook?
     // Not sure if there's a smarter way to do this
+    console.log('response:', response)
     return response
   })
 
@@ -24,6 +25,7 @@ async function fetchData({ path, method, data, headers }) {
 
 export function useApi(onUnauthorized, onError) {
   const unauthorizedHandler = err => {
+    console.log('err:', err)
     if (err.message === '401' && !!onUnauthorized) {
       onUnauthorized(err)
     } else {

@@ -15,7 +15,10 @@ export function Dashboard({ token }) {
           Authorization: token
         }
       })
-      setBusinessList(await listOfBusinesses.json())
+      // const allBusinesses = await listOfBusinesses.json()
+      // if (!allBusinesses.error) {
+      //   setBusinessList(allBusinesses)
+      // }
     }
 
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576

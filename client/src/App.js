@@ -6,7 +6,6 @@ import {
   Switch
 } from 'react-router-dom'
 import ReactGA from 'react-ga'
-import AuthorizedRoute from './_utils/_routes/AuthorizedRoute'
 import Dashboard from './Dashboard'
 import Login from './Login'
 import Signup from './Signup'
@@ -35,12 +34,12 @@ const App = () => {
             <Route path="/login">
               <Login />
             </Route>
-            <AuthorizedRoute path="/dashboard">
+            <Route path="/dashboard">
               <Dashboard />
-            </AuthorizedRoute>
-            <AuthorizedRoute path="/csv-import">
+            </Route>
+            <Route path="/csv-import">
               <CSVImport />
-            </AuthorizedRoute>
+            </Route>
             <Route path="/confirmation">
               <Confirmation />
             </Route>

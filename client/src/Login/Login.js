@@ -14,31 +14,27 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    if (!response.ok) {
-      // TODO: Sentry
-      switch (response.status) {
-        case 401:
-          setApiError(
-            <p>
-              Your credentials were incorrect, please try again. Or{' '}
-              <Link to="/reset-password">reset your password</Link>
-            </p>
-          )
-          break
-        case 404:
-          setApiError('API not found - contact a site administrator')
-          break
-        default:
-          setApiError('WHERPS')
-          break
-      }
-    } else if (response.ok && response.headers.get('authorization') !== null) {
-      localStorage.setItem('token', response.headers.get('authorization'))
-      history.push('/dashboard')
-    } else {
-      // TODO: Sentry
-      setApiError('An unknown error occurred - please try again later')
-    }
+    // This is returning undefined when I use invalid creds and get a 401
+    console.log('response:', response)
+    // if (!response.ok) {
+    //   // TODO: Sentry
+    //   switch (response.error) {
+    //     case null:
+    //       break
+    //     case 404:
+    //       setApiError('API not found - contact a site administrator')
+    //       break
+    //     case /You must sign in or sign up to continue/:
+    //       setApiError(response.error)
+    //       break
+    //   }
+    // } else if (response.ok && response.headers.get('authorization') !== null) {
+    //   localStorage.setItem('token', response.headers.get('authorization'))
+    //   history.push('/dashboard')
+    // } else {
+    //   // TODO: Sentry
+    //   setApiError('An unknown error occurred - please try again later')
+    // }
   }
 
   return (
