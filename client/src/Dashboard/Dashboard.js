@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
-export function Dashboard({ token }) {
+export function Dashboard() {
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
   useEffect(() => {
@@ -12,13 +12,13 @@ export function Dashboard({ token }) {
         headers: {
           Accept: 'application/vnd.pieforproviders.v1+json',
           'Content-Type': 'application/json',
-          Authorization: token
+          Authorization: localStorage.getItem('token')
         }
       })
-      // const allBusinesses = await listOfBusinesses.json()
-      // if (!allBusinesses.error) {
-      //   setBusinessList(allBusinesses)
-      // }
+      const allBusinesses = await listOfBusinesses.json()
+      if (!allBusinesses.error) {
+        setBusinessList(allBusinesses)
+      }
     }
 
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576

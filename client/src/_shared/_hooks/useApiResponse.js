@@ -32,6 +32,7 @@ export const useApiResponse = () => {
           return await get(url, headers)
       }
     })()
+    console.log('response.headers:', result.headers.get('authorization'))
     return result
   }
 

@@ -9989,10 +9989,9 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-use-fetch-api@^2.0.1:
+"react-use-fetch-api@git+ssh://git@github.com:katelovescode/react-use-fetch-api.git":
   version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-use-fetch-api/-/react-use-fetch-api-2.0.1.tgz#fb21fd8598ab94ede46a546892ba8601396b2a55"
-  integrity sha512-O0NpmiDg4WPUzMa9c2VeUC+J/Fr02alIYAKsJ9eOQ9M85igC5BlC46zzoDiTr1ZnuslngVRcyj2zkCZY4rn+ZA==
+  resolved "git+ssh://git@github.com:katelovescode/react-use-fetch-api.git#c89ab772ea752fe5998fff95d0da1cf36f0159a1"
   dependencies:
     "@babel/runtime" "^7.8.4"
 

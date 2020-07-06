@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Checkbox } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
@@ -15,22 +15,20 @@ export function Login() {
       data: { user: values }
     })
     console.log('response:', response)
-    if (!response.ok) {
-      // TODO: Sentry
-      setApiError(response.json().error || 'error')
-    } else if (response.ok && response.headers.get('authorization') !== null) {
+    if (!response.ok || response.headers.get('authorization') === null) {
+      const errorMessage = await response.json()
+      setApiError({
+        status: response.status,
+        message: errorMessage.error
+      })
+    } else {
       localStorage.setItem('token', response.headers.get('authorization'))
       history.push('/dashboard')
-    } else {
-      // TODO: Sentry
-      // This is an OK response without an auth token
-      setApiError('An unknown error occurred - please try again later')
     }
   }
 
   return (
     <div className="login">
-      {apiError && <div>{apiError}</div>}
       <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
         <Form.Item
           label="Email"
@@ -42,7 +40,7 @@ export function Login() {
             }
           ]}
         >
-          <Input />
+          <Input autoComplete="username" />
         </Form.Item>
 
         <Form.Item
@@ -57,6 +55,15 @@ export function Login() {
         >
           <Input.Password autoComplete="current-password" />
         </Form.Item>
+
+        {apiError && (
+          <div>
+            <div>{apiError.message}</div>
+            {apiError.status === 401 && (
+              <Link to={'/reset-password'}>Reset Password?</Link>
+            )}
+          </div>
+        )}
 
         <Form.Item name="remember" valuePropName="checked">
           <Checkbox>Remember me</Checkbox>
