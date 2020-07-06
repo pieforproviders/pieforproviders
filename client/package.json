@@ -25,7 +25,6 @@
     "react-hook-form": "^5.7.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
-    "react-use-fetch-api": "git+ssh://git@github.com:katelovescode/react-use-fetch-api.git",
     "uuid": "^7.0.3",
     "xlsx": "^0.15.6"
   },

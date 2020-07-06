@@ -1,4 +1,4 @@
-import useApi from 'react-use-fetch-api'
+import useApi from '_shared/_hooks/useApi'
 import apiErrorHandler from '_utils/apiErrorHandler'
 import useUnauthorizedHandler from '_shared/_hooks/useUnauthorizedHandler'
 
@@ -32,7 +32,6 @@ export const useApiResponse = () => {
           return await get(url, headers)
       }
     })()
-    console.log('response.headers:', result.headers.get('authorization'))
     return result
   }
 

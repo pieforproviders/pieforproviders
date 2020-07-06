@@ -9989,12 +9989,6 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-"react-use-fetch-api@git+ssh://git@github.com:katelovescode/react-use-fetch-api.git":
-  version "2.0.1"
-  resolved "git+ssh://git@github.com:katelovescode/react-use-fetch-api.git#c89ab772ea752fe5998fff95d0da1cf36f0159a1"
-  dependencies:
-    "@babel/runtime" "^7.8.4"
-
 react@^16.12.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.13.1.tgz#2e818822f1a9743122c063d6410d85c1e3afe48e"

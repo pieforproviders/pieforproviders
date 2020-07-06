@@ -17,3 +17,9 @@ user = User.create!(
   service_agreement_accepted: false,
   timezone: "Central Time (US & Canada)"
 )
+
+business = Business.create!(
+  name: "Happy Seedlings Childcare",
+  category: "licensed_center_single",
+  user: user
+)
