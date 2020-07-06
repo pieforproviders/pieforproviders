@@ -5,7 +5,7 @@ export default function useUnauthorizedHandler() {
 
   const handler = response => {
     // TODO: Sentry
-    localStorage.removeItem('token')
+    localStorage.removeItem('pie-token')
     history.push('/login')
     return response
   }

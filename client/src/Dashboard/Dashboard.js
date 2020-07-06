@@ -12,7 +12,7 @@ export function Dashboard() {
         headers: {
           Accept: 'application/vnd.pieforproviders.v1+json',
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem('token')
+          Authorization: localStorage.getItem('pie-token')
         }
       })
       const allBusinesses = await businesses.json()

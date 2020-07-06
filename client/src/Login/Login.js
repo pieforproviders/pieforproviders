@@ -22,7 +22,7 @@ export function Login() {
         message: errorMessage.error
       })
     } else {
-      localStorage.setItem('token', response.headers.get('authorization'))
+      localStorage.setItem('pie-token', response.headers.get('authorization'))
       history.push('/dashboard')
     }
   }
