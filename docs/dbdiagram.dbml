@@ -37,8 +37,7 @@ Table sites [headercolor: #3498db] {
   id uuid [pk, unique, not null]
   business_id uuid [ref: > businesses.id, not null]
   name string [not null]
-  address_line_1 string [not null]
-  address_line_2 string [not null]
+  address string [not null]
   city string [not null]
   state string [not null]
   zip string [not null]
@@ -49,7 +48,6 @@ Table sites [headercolor: #3498db] {
 
 Table agencies [headercolor: #3498db] {
   id uuid [pk, unique, not null]
-  user_id uuid [ref: > users.id, not null]
   name string [not null]
   active boolean [not null, default: true]
 }

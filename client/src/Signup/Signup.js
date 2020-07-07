@@ -59,6 +59,7 @@ export function Signup() {
     if (Object.keys(response).length > 0) {
       history.push('/confirmation')
     } else {
+      // TODO: Sentry
       console.log('error creating')
     }
   }

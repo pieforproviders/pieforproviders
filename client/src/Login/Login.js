@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Col, Row } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import piefulltanlogo from '_assets/piefulltanlogo.svg'
 
 export function Login() {
   const [apiError, setApiError] = useState(null)
@@ -14,7 +15,6 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    console.log('response:', response)
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
       setApiError({
@@ -28,53 +28,63 @@ export function Login() {
   }
 
   return (
-    <div className="login">
-      <Form name="login" initialValues={{ remember: true }} onFinish={onFinish}>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[
-            {
-              required: true,
-              message: 'Email address is required'
-            }
-          ]}
+    <Row>
+      <Col />
+      <Col>
+        {/* TODO: language switcher */}
+        <p>English</p>
+        <img alt="Pie for Providers logo" src={piefulltanlogo} />
+        <h1>Log In</h1>
+        <p>
+          Sign Up or <Link to="/login">Log In</Link>
+        </p>
+        <Form
+          name="login"
+          initialValues={{ remember: true }}
+          onFinish={onFinish}
         >
-          <Input autoComplete="username" />
-        </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[
+              {
+                required: true,
+                message: 'Email address is required'
+              }
+            ]}
+          >
+            <Input autoComplete="username" />
+          </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Password is required'
-            }
-          ]}
-        >
-          <Input.Password autoComplete="current-password" />
-        </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: 'Password is required'
+              }
+            ]}
+          >
+            <Input.Password autoComplete="current-password" />
+          </Form.Item>
 
-        {apiError && (
-          <div>
-            <div>{apiError.message}</div>
-            {apiError.status === 401 && (
-              <Link to={'/reset-password'}>Reset Password?</Link>
-            )}
-          </div>
-        )}
+          {apiError && (
+            <div>
+              <div>{apiError.message}</div>
+              {apiError.status === 401 && (
+                <Link to={'/reset-password'}>Reset Password?</Link>
+              )}
+            </div>
+          )}
 
-        <Form.Item name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </Col>
+    </Row>
   )
 }
