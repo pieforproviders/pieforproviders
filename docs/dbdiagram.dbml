@@ -105,7 +105,6 @@ Table child_case_cycles [headercolor: #3498db] {
   case_cycle_id uuid [ref: > case_cycles.id, not null]
   part_days_allowed integer [not null]
   full_days_allowed integer [not null]
-  day_allowance_interval allowance_intervals [not null, default: "month"]
 }
 
 Table child_case_cycle_payments [headercolor: #3498db] {
