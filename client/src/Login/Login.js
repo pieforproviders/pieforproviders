@@ -28,11 +28,13 @@ export function Login() {
 
   return (
     <>
-      <h1>Log In</h1>
-      <p>
-        Sign Up or <Link to="/login">Log In</Link>
+      <p className="mb-4">
+        <span className="uppercase">Sign Up</span> or{' '}
+        <Link to="/login" className="uppercase">
+          Log In
+        </Link>
       </p>
-      <Form name="login" onFinish={onFinish}>
+      <Form layout="vertical" name="login" onFinish={onFinish}>
         <Form.Item
           label="Email"
           name="email"

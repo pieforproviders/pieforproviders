@@ -11,15 +11,15 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
         lg={{ span: 12 }}
         className={`h-screen block bg-no-repeat bg-cover ${backgroundImageClass}`}
       />
-      <Col lg={{ span: 12 }}>
+      <Col lg={{ span: 12 }} className="mx-auto">
         {/* TODO: language switcher */}
-        <p>English</p>
+        <p className="text-right">English</p>
         <img
           alt="Pie for Providers logo"
           src={piefulltanlogo}
-          className="w-24 medium:w-48 mx-auto"
+          className="w-24 medium:w-48 mx-auto m-12"
         />
-        {rightColumnContent()}
+        <div className="text-center">{rightColumnContent()}</div>
       </Col>
     </Row>
   )
