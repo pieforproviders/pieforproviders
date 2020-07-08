@@ -1,7 +1,7 @@
 /* background image must be set in CSS, tailwind and ant can't handle it */
-.kid-image {
+.auth-image {
   display: block;
-  background-image: url(../../kid1.png);
+  background-image: url(../kid1.png);
   background-repeat: no-repeat;
   background-size: cover;
 }

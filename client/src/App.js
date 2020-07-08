@@ -14,6 +14,7 @@ import Confirmation from './Signup/Confirmation'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CSVImport from './CSVImport'
+import { AuthLayout } from '_shared'
 
 const App = () => {
   useEffect(() => {
@@ -33,7 +34,10 @@ const App = () => {
               <Signup />
             </Route>
             <Route path="/login">
-              <Login />
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                rightColumnContent={Login}
+              />
             </Route>
             <AuthorizedRoute exact path="/dashboard">
               <Dashboard />

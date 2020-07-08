@@ -10,7 +10,7 @@ import ValidationError from '_shared/forms/ValidationError'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
 import { useForm } from 'react-hook-form'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import '_assets/styles/layouts/signup.css'
+import '_assets/styles/layouts.css'
 
 /**
  * User Signup Page
@@ -184,7 +184,7 @@ export function Signup() {
             required
           />
 
-          {/* 
+          {/*
             TODO: Refactor combo boxes into their own component
             Combo box input; dropdown on the left, text on the right
           */}
