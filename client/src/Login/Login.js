@@ -3,6 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Col, Row } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
+import kid1 from '_assets/kid1.png'
 
 export function Login() {
   const [apiError, setApiError] = useState(null)
@@ -29,8 +30,8 @@ export function Login() {
 
   return (
     <Row>
-      <Col />
-      <Col>
+      <Col xs={{ span: 0 }} lg={{ span: 12 }} className="h-screen kid-image" />
+      <Col lg={{ span: 12 }}>
         {/* TODO: language switcher */}
         <p>English</p>
         <img alt="Pie for Providers logo" src={piefulltanlogo} />
@@ -38,11 +39,7 @@ export function Login() {
         <p>
           Sign Up or <Link to="/login">Log In</Link>
         </p>
-        <Form
-          name="login"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-        >
+        <Form name="login" onFinish={onFinish}>
           <Form.Item
             label="Email"
             name="email"
