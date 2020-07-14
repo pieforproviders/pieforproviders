@@ -29,10 +29,10 @@ export function Login() {
   return (
     <>
       <p className="mb-4">
-        <span className="uppercase">Sign Up</span> or{' '}
-        <Link to="/login" className="uppercase">
-          Log In
-        </Link>
+        <Link to="/signup" className="uppercase">
+          Signup
+        </Link>{' '}
+        or <span className="uppercase font-bold">Log In</span>
       </p>
       <Form layout="vertical" name="login" onFinish={onFinish}>
         <Form.Item
