@@ -35,7 +35,7 @@ describe('<App />', () => {
 
   it('renders login form', () => {
     const { getByText } = render(<App />)
-    const content = getByText(/Email/i)
+    const content = getByText(/Log In/i)
     expect(content).toBeInTheDocument()
   })
 })
