@@ -26,11 +26,16 @@ export function Login() {
     }
   }
 
+  const onChooseReset = () => {
+    localStorage.removeItem('pie-token')
+    history.push('/dashboard')
+  }
+
   return (
     <>
       <p className="mb-4">
         <Link to="/signup" className="uppercase">
-          Signup
+          Sign Up
         </Link>{' '}
         or <span className="uppercase font-bold">Log In</span>
       </p>
@@ -71,8 +76,28 @@ export function Login() {
         )}
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" className="font-semibold">
             Submit
+          </Button>
+        </Form.Item>
+      </Form>
+      <Form
+        layout="vertical"
+        name="reset-password"
+        onFinish={onChooseReset}
+        className="mt-24"
+      >
+        <div className="mb-6">
+          <div className="text-2xl font-semibold mb-1">
+            Forgot your password?
+          </div>
+          <div>
+            No worries. Click the button below and check your email to reset it.
+          </div>
+        </div>
+        <Form.Item>
+          <Button type="primary" htmlType="button" className="font-semibold">
+            Reset Password
           </Button>
         </Form.Item>
       </Form>
