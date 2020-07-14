@@ -10,7 +10,7 @@ import ValidationError from '_shared/forms/ValidationError'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
 import { useForm } from 'react-hook-form'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import '_assets/styles/layouts/signup.css'
+import '_assets/styles/layouts.css'
 
 /**
  * User Signup Page
@@ -53,12 +53,13 @@ export function Signup() {
     localStorage.setItem('pieMultiBusiness', multiBusiness)
     const response = await makeRequest({
       type: 'post',
-      url: '/api/v1/users',
+      url: '/signup',
       data: { user: user }
     })
     if (Object.keys(response).length > 0) {
       history.push('/confirmation')
     } else {
+      // TODO: Sentry
       console.log('error creating')
     }
   }
@@ -183,7 +184,7 @@ export function Signup() {
             required
           />
 
-          {/* 
+          {/*
             TODO: Refactor combo boxes into their own component
             Combo box input; dropdown on the left, text on the right
           */}

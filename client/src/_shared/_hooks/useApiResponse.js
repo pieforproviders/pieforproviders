@@ -1,19 +1,12 @@
-import { useApi } from 'react-use-fetch-api'
+import useApi from '_shared/_hooks/useApi'
+import apiErrorHandler from '_utils/apiErrorHandler'
+import useUnauthorizedHandler from '_shared/_hooks/useUnauthorizedHandler'
 
 export const useApiResponse = () => {
-  function onUnauthorized(err) {
-    console.log('onUnauthorized', err)
-    // TODO: send to sentry
-    return err
-  }
-
-  function onError(err) {
-    console.log('onError', err)
-    // TODO: send to sentry
-    return err
-  }
-
-  const { get, post, put, del } = useApi(onUnauthorized, onError)
+  const { get, post, put, del } = useApi(
+    useUnauthorizedHandler(),
+    apiErrorHandler()
+  )
 
   const makeRequest = async request => {
     const {

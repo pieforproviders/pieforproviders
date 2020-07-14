@@ -5,6 +5,7 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
+import AuthorizedRoute from '_utils/_routes/AuthorizedRoute.js'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import Login from './Login'
@@ -13,6 +14,7 @@ import Confirmation from './Signup/Confirmation'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CSVImport from './CSVImport'
+import { AuthLayout } from '_shared'
 
 const App = () => {
   useEffect(() => {
@@ -32,14 +34,17 @@ const App = () => {
               <Signup />
             </Route>
             <Route path="/login">
-              <Login />
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                rightColumnContent={Login}
+              />
             </Route>
-            <Route path="/dashboard">
+            <AuthorizedRoute exact path="/dashboard">
               <Dashboard />
-            </Route>
-            <Route path="/csv-import">
+            </AuthorizedRoute>
+            <AuthorizedRoute exact path="/csv-import">
               <CSVImport />
-            </Route>
+            </AuthorizedRoute>
             <Route path="/confirmation">
               <Confirmation />
             </Route>

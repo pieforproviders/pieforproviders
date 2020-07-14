@@ -1,0 +1,4 @@
+/* background image must be set in CSS, tailwind and ant can't handle it */
+.auth-image {
+  background-image: url(../kid1.png);
+}

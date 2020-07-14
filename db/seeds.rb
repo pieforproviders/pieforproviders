@@ -1,3 +1,5 @@
+puts "seeding"
+
 user = User.create!(
   active: true,
   email: ENV.fetch("TESTUSER_EMAIL", "test@test.com"),
@@ -14,4 +16,10 @@ user = User.create!(
   phone_type: "cell",
   service_agreement_accepted: false,
   timezone: "Central Time (US & Canada)"
+)
+
+business = Business.create!(
+  name: "Happy Seedlings Childcare",
+  category: "licensed_center_single",
+  user: user
 )

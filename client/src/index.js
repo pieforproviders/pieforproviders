@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+import './App.less'
 import './tailwind.generated.css'
 import * as Sentry from '@sentry/browser'
 

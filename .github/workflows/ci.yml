@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Analyze code statically using Brakeman
-        uses: moneyforward/brakeman-action@v0
+        uses: artplan1/brakeman-action@v1.2.1
   lint_frontend:
     name: Frontend linting
     runs-on: ubuntu-latest    

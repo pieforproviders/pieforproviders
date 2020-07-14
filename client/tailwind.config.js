@@ -28,24 +28,9 @@ module.exports = {
       },
       screens: {
         medium: '768px',
-        large: '1440px'
+        large: '1200px'
       }
     }
   },
-  plugins: [
-    // base styles
-    require('./tailwind/plugins/base')(),
-
-    // components
-    require('./tailwind/plugins/components/button')(),
-    require('./tailwind/plugins/components/checkboxInput')(),
-    require('./tailwind/plugins/components/dropdownInput')(),
-    require('./tailwind/plugins/components/textInput')(),
-    require('./tailwind/plugins/components/toggleInput')(),
-    require('./tailwind/plugins/components/validationError')(),
-    require('./tailwind/plugins/components/visuallyHidden')(),
-
-    // utilities
-    require('./tailwind/plugins/utilities/required')()
-  ]
+  plugins: [require('./tailwind/plugins/base')()]
 }

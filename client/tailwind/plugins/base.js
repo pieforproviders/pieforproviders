@@ -1,7 +1,7 @@
 module.exports = function() {
   return function({ addBase, config }) {
     const baseStyles = {
-      html: {
+      a: {
         fontSize: '100%'
       },
       '*:focus': {
