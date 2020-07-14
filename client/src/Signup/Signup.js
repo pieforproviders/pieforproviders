@@ -191,7 +191,7 @@ export function Signup() {
           <div className="phone-input mb-4">
             <label
               htmlFor="phoneType"
-              className="block mb-4"
+              className="block mb-2"
               id="phone-type-label"
             >
               Phone number (we will only call or text if you want us to)

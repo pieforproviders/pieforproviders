@@ -48,6 +48,7 @@ Table sites [headercolor: #3498db] {
 
 Table agencies [headercolor: #3498db] {
   id uuid [pk, unique, not null]
+  state string [not null]
   name string [not null]
   active boolean [not null, default: true]
 }
