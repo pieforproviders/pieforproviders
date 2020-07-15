@@ -32,10 +32,4 @@ describe('<App />', () => {
   it('renders the App container', () => {
     expect(wrapper.contains(<App />)).toBe(true)
   })
-
-  it('renders login form', () => {
-    const { getByText } = render(<App />)
-    const content = getByText(/Log In/i)
-    expect(content).toBeInTheDocument()
-  })
 })
