@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { Form, Input, Button } from 'antd'
+import { Form, Input, Button, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 export function Login() {
@@ -39,8 +39,18 @@ export function Login() {
         </Link>{' '}
         or <span className="uppercase font-bold">Log In</span>
       </p>
+
+      {apiError && (
+        <Alert
+          className="mb-2"
+          message={`${apiError.message} Please try again, or reset your password below.`}
+          type="error"
+        />
+      )}
+
       <Form layout="vertical" name="login" onFinish={onFinish}>
         <Form.Item
+          className="text-primaryBlue"
           label="Email"
           name="email"
           rules={[
@@ -54,6 +64,7 @@ export function Login() {
         </Form.Item>
 
         <Form.Item
+          className="text-primaryBlue"
           label="Password"
           name="password"
           rules={[
@@ -66,18 +77,13 @@ export function Login() {
           <Input.Password autoComplete="current-password" />
         </Form.Item>
 
-        {apiError && (
-          <div>
-            <div>{apiError.message}</div>
-            {apiError.status === 401 && (
-              <Link to={'/reset-password'}>Reset Password?</Link>
-            )}
-          </div>
-        )}
-
         <Form.Item>
-          <Button type="primary" htmlType="submit" className="font-semibold">
-            Submit
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="mt-2 font-semibold uppercase"
+          >
+            Log In
           </Button>
         </Form.Item>
       </Form>
@@ -88,7 +94,7 @@ export function Login() {
         className="mt-24"
       >
         <div className="mb-6">
-          <div className="text-2xl font-semibold mb-1">
+          <div className="text-2xl font-semibold mb-1 text-primaryBlue">
             Forgot your password?
           </div>
           <div>
@@ -96,7 +102,11 @@ export function Login() {
           </div>
         </div>
         <Form.Item>
-          <Button type="primary" htmlType="button" className="font-semibold">
+          <Button
+            type="secondary"
+            htmlType="button"
+            className="font-semibold uppercase"
+          >
             Reset Password
           </Button>
         </Form.Item>
