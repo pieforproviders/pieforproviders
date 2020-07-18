@@ -143,7 +143,8 @@ export function Signup() {
           label="Are you managing subsidy cases for multiple child care businesses?"
           rules={[
             {
-              required: true
+              required: true,
+              message: 'Select your business type'
             }
           ]}
         >
