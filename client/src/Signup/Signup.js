@@ -121,6 +121,7 @@ export function Signup() {
             }
           />
         </Form.Item>
+
         <Form.Item
           className="text-primaryBlue"
           label="What should we call you?"
@@ -139,6 +140,7 @@ export function Signup() {
             }
           />
         </Form.Item>
+
         <Form.Item label="Are you managing subsidy cases for multiple child care businesses?">
           <Select
             style={{ textAlign: 'left' }}
@@ -197,18 +199,21 @@ export function Signup() {
           </Input.Group>
         </Form.Item>
 
-        <Form.Item label="Preferred Language">
+        <Form.Item label="Preferred Language" style={{ marginBottom: 0 }}>
           <Radio.Group
             value={user.language}
             optionType="button"
             name="language"
             buttonStyle="solid"
-            style={{ width: '100%', marginBottom: '0' }}
+            style={{ width: '100%' }}
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
           >
-            <Radio.Button value="en">
+            <Radio.Button
+              value="en"
+              style={{ width: '50%', textAlign: 'center' }}
+            >
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -230,7 +235,10 @@ export function Signup() {
               )}
               English
             </Radio.Button>
-            <Radio.Button value="es">
+            <Radio.Button
+              value="es"
+              style={{ width: '50%', textAlign: 'center' }}
+            >
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{
