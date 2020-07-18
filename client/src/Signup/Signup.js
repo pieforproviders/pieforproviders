@@ -3,8 +3,6 @@ import ReactGA from 'react-ga'
 import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Alert, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
-import piefulltanlogo from '_assets/piefulltanlogo.svg'
-import { useForm } from 'react-hook-form'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import '_assets/styles/layouts.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
@@ -33,21 +31,6 @@ export function Signup() {
   const [multiBusiness, setMultiBusiness] = useState(null)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-
-  // deconstructs the react-hook-form elements we need
-  const {
-    errors,
-    formState,
-    handleSubmit,
-    register,
-    triggerValidation,
-    watch
-  } = useForm({
-    mode: 'onBlur'
-  })
-
-  // we'll use isValid to see if we should allow the submit button to be pressed
-  const { isValid } = formState
 
   const onFinish = async () => {
     localStorage.setItem('pieMultiBusiness', multiBusiness)
@@ -310,9 +293,8 @@ export function Signup() {
           checked={user.serviceAgreementAccepted}
           name="serviceAgreementAccepted"
           onChange={() => {
-            // adds a validation trigger on change so the user doesn't have to
+            // TODO: adds a validation trigger on change so the user doesn't have to
             // click away from the checkbox before clicking the submit button
-            triggerValidation('serviceAgreementAccepted')
             setUser({
               ...user,
               serviceAgreementAccepted: !user.serviceAgreementAccepted
