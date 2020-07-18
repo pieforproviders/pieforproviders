@@ -46,7 +46,10 @@ const App = () => {
               <CSVImport />
             </AuthorizedRoute>
             <Route path="/confirmation">
-              <Confirmation />
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                rightColumnContent={Confirmation}
+              />
             </Route>
             <Route exact path="/">
               <Redirect to={'/login'} />
