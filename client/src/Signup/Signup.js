@@ -201,6 +201,8 @@ export function Signup() {
 
         <Form.Item
           label="Preferred Language"
+          name="language"
+          valuePropName="checked"
           rules={[
             { required: true, message: 'Preferred language is required' }
           ]}
@@ -208,7 +210,6 @@ export function Signup() {
           <Radio.Group
             value={user.language}
             optionType="button"
-            name="language"
             buttonStyle="solid"
             style={{ width: '100%', marginBottom: '0' }}
             onChange={event =>
