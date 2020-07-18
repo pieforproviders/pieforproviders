@@ -11,6 +11,8 @@ describe('<Confirmation />', () => {
         <Confirmation />
       </MemoryRouter>
     )
-    expect(wrapper.text()).toEqual(expect.stringContaining('Thanks for signing up'))
+    expect(wrapper.text()).toEqual(
+      expect.stringContaining('Thanks for signing up')
+    )
   })
 })
