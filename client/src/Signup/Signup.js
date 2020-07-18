@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import { Link, useHistory } from 'react-router-dom'
-import { Form, Input, Button, Alert, Select, Radio, Checkbox } from 'antd'
+import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import '_assets/styles/layouts.css'
@@ -102,24 +102,6 @@ export function Signup() {
             }
           />
         </Form.Item>
-        <Form.Item
-          className="text-primaryBlue"
-          label="Email"
-          name="email"
-          rules={[
-            {
-              type: 'email',
-              required: true,
-              message: 'Email address is required'
-            }
-          ]}
-        >
-          <Input
-            placeholder="amanda@gmail.com"
-            type="email"
-            onChange={event => setUser({ ...user, email: event.target.value })}
-          />
-        </Form.Item>
 
         <Form.Item
           className="text-primaryBlue"
@@ -159,6 +141,7 @@ export function Signup() {
         </Form.Item>
         <Form.Item label="Are you managing subsidy cases for multiple child care businesses?">
           <Select
+            style={{ textAlign: 'left' }}
             defaultValue={multiBusiness}
             placeholder="Choose one"
             onChange={value => {
@@ -183,7 +166,7 @@ export function Signup() {
         <Form.Item label="Phone number (we will only call or text if you want us to.)">
           <Input.Group compact>
             <Select
-              style={{ width: '30%' }}
+              style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
               placeholder="Choose one"
               onChange={value => {
@@ -218,28 +201,77 @@ export function Signup() {
           <Radio.Group
             value={user.language}
             optionType="button"
+            name="language"
             buttonStyle="solid"
+            style={{ width: '100%', marginBottom: '0' }}
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
           >
             <Radio.Button value="en">
               {user.language === 'en' ? (
-                <CheckCircleIcon />
+                <CheckCircleIcon
+                  style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    marginRight: '0.5rem',
+                    verticalAlign: 'text-bottom'
+                  }}
+                />
               ) : (
-                <RadioButtonUncheckedIcon />
+                <RadioButtonUncheckedIcon
+                  style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    marginRight: '0.5rem',
+                    verticalAlign: 'text-bottom'
+                  }}
+                />
               )}
               English
             </Radio.Button>
             <Radio.Button value="es">
               {user.language === 'es' ? (
-                <CheckCircleIcon />
+                <CheckCircleIcon
+                  style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    marginRight: '0.5rem',
+                    verticalAlign: 'text-bottom'
+                  }}
+                />
               ) : (
-                <RadioButtonUncheckedIcon />
+                <RadioButtonUncheckedIcon
+                  style={{
+                    width: '0.875rem',
+                    height: '0.875rem',
+                    marginRight: '0.5rem',
+                    verticalAlign: 'text-bottom'
+                  }}
+                />
               )}
               Español
             </Radio.Button>
           </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
+          className="text-primaryBlue"
+          label="Email"
+          name="email"
+          rules={[
+            {
+              type: 'email',
+              required: true,
+              message: 'Email address is required'
+            }
+          ]}
+        >
+          <Input
+            placeholder="amanda@gmail.com"
+            type="email"
+            onChange={event => setUser({ ...user, email: event.target.value })}
+          />
         </Form.Item>
 
         <Form.Item

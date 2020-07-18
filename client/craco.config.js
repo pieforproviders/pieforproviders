@@ -9,7 +9,13 @@ module.exports = {
           lessOptions: {
             modifyVars: {
               '@primary-color': '#006C9E',
-              '@font-family': 'Proxima Nova'
+              '@font-family': 'Proxima Nova',
+              '@input-border-color': '@primary-color',
+              '@select-border-color': '@primary-color',
+              '@select-background': '#E2EBF3',
+              '@select-item-selected-color': '#3B3B3B',
+              '@label-color': '@primary-color',
+              '@input-placeholder-color': '#676767'
             },
             javascriptEnabled: true
           }
