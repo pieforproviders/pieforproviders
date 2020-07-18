@@ -21,10 +21,6 @@ function ListItem({ children }) {
   )
 }
 
-ListItem.propTypes = {
-  children: PropTypes.element.isRequired
-}
-
 export default function Confirmation() {
   return (
     <>
@@ -37,7 +33,8 @@ export default function Confirmation() {
         </div>
         <ListItem>
           <Text>
-            {`Is ${userEmail} your correct email without typos? If not, you can restart the signup process.`}
+            Is {userEmail} your correct email without typos? If not, you can
+            restart the signup process.
           </Text>
         </ListItem>
         <ListItem>
@@ -56,4 +53,8 @@ export default function Confirmation() {
       </div>
     </>
   )
+}
+
+ListItem.propTypes = {
+  children: PropTypes.element.isRequired
 }
