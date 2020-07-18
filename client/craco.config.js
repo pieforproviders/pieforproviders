@@ -15,7 +15,9 @@ module.exports = {
               '@select-background': '#E2EBF3',
               '@select-item-selected-color': '#3B3B3B',
               '@label-color': '@primary-color',
-              '@input-placeholder-color': '#676767'
+              '@input-placeholder-color': '#676767',
+              '@error-color': '#D64B3A',
+              '@highlight-color': '#D64B3A'
             },
             javascriptEnabled: true
           }

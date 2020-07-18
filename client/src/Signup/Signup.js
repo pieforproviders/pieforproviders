@@ -85,7 +85,6 @@ export function Signup() {
 
       <Form layout="vertical" onFinish={onFinish}>
         <Form.Item
-          className="text-primaryBlue"
           label="Name of Organization"
           name="organization"
           rules={[
@@ -104,7 +103,6 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="text-primaryBlue"
           label="Full name"
           name="fullName"
           rules={[
@@ -122,7 +120,6 @@ export function Signup() {
           />
         </Form.Item>
         <Form.Item
-          className="text-primaryBlue"
           label="What should we call you?"
           name="greetingName"
           rules={[
@@ -133,13 +130,21 @@ export function Signup() {
           ]}
         >
           <Input
-            placeholder="Amanda Diaz"
+            placeholder="Amanda"
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
           />
         </Form.Item>
-        <Form.Item label="Are you managing subsidy cases for multiple child care businesses?">
+        <Form.Item
+          name="multiBusiness"
+          label="Are you managing subsidy cases for multiple child care businesses?"
+          rules={[
+            {
+              required: true
+            }
+          ]}
+        >
           <Select
             style={{ textAlign: 'left' }}
             defaultValue={multiBusiness}
@@ -147,12 +152,6 @@ export function Signup() {
             onChange={value => {
               setMultiBusiness(value)
             }}
-            rules={[
-              {
-                required: true,
-                message: 'Single or multi-business option is required'
-              }
-            ]}
           >
             <Option value="yes">
               Yes, managing multiple child care businesses
@@ -163,7 +162,16 @@ export function Signup() {
           </Select>
         </Form.Item>
 
-        <Form.Item label="Phone number (we will only call or text if you want us to.)">
+        <Form.Item
+          name="phone"
+          label="Phone number (we will only call or text if you want us to.)"
+          rules={[
+            {
+              required: true,
+              message: 'Select a phone type'
+            }
+          ]}
+        >
           <Input.Group compact>
             <Select
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
@@ -172,12 +180,6 @@ export function Signup() {
               onChange={value => {
                 setUser({ ...user, phoneType: value })
               }}
-              rules={[
-                {
-                  required: true,
-                  message: 'Select a phone type'
-                }
-              ]}
             >
               <Option value="cell">Cell</Option>
               <Option value="home">Home</Option>
@@ -197,7 +199,12 @@ export function Signup() {
           </Input.Group>
         </Form.Item>
 
-        <Form.Item label="Preferred Language">
+        <Form.Item
+          label="Preferred Language"
+          rules={[
+            { required: true, message: 'Preferred language is required' }
+          ]}
+        >
           <Radio.Group
             value={user.language}
             optionType="button"
@@ -256,7 +263,6 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="text-primaryBlue"
           label="Email"
           name="email"
           rules={[
@@ -278,20 +284,20 @@ export function Signup() {
           name="password"
           label="Password"
           rules={[
-            () => ({
-              validator(rule, value) {
-                if (value.match(/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/)) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(
-                  'Password must be a minimum of 8 characters, and include numbers and letters.'
-                )
-              }
-            })
+            {
+              required: true,
+              message: 'Password is required.'
+            },
+            {
+              pattern: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
+              message:
+                'Password must be a minimum of 8 characters, and include numbers and letters.'
+            }
           ]}
           hasFeedback
         >
           <Input.Password
+            placeholder="8+ characters, letters and numbers"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -303,6 +309,7 @@ export function Signup() {
           dependencies={['password']}
           hasFeedback
           rules={[
+            { required: true, message: 'Password confirmation is required' },
             ({ getFieldValue }) => ({
               validator(rule, value) {
                 if (!value || getFieldValue('password') === value) {
@@ -316,22 +323,15 @@ export function Signup() {
           ]}
         >
           <Input.Password
+            placeholder="Confirm your password"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
             }
           />
         </Form.Item>
-        <Checkbox
-          checked={user.serviceAgreementAccepted}
-          name="serviceAgreementAccepted"
-          onChange={() => {
-            // TODO: adds a validation trigger on change so the user doesn't have to
-            // click away from the checkbox before clicking the submit button
-            setUser({
-              ...user,
-              serviceAgreementAccepted: !user.serviceAgreementAccepted
-            })
-          }}
+        <Form.Item
+          name="terms"
+          valuePropName="checked"
           rules={[
             {
               required: true,
@@ -339,8 +339,22 @@ export function Signup() {
             }
           ]}
         >
-          <TermsLabel />
-        </Checkbox>
+          <Checkbox
+            style={{ textAlign: 'left' }}
+            checked={user.serviceAgreementAccepted}
+            name="serviceAgreementAccepted"
+            onChange={() => {
+              // TODO: adds a validation trigger on change so the user doesn't have to
+              // click away from the checkbox before clicking the submit button
+              setUser({
+                ...user,
+                serviceAgreementAccepted: !user.serviceAgreementAccepted
+              })
+            }}
+          >
+            <TermsLabel />
+          </Checkbox>
+        </Form.Item>
         <Form.Item>
           <Button
             type="primary"
