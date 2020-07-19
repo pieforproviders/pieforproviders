@@ -8,7 +8,7 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
       <div
         className={`hidden large:block h-screen block bg-no-repeat bg-cover ${backgroundImageClass}`}
       />
-      <div className="w-full medium:col-span-8 large:col-auto px-4 medium:px-8">
+      <div className="w-full medium:col-span-8 large:col-auto px-4 medium:px-8 mt-8">
         {/* TODO: language switcher */}
         <p className="text-right">English</p>
         <img
