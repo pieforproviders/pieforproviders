@@ -4,7 +4,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import '_assets/styles/layouts.css'
+import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 
@@ -206,24 +206,23 @@ export function Signup() {
           label="Preferred Language"
           name="language"
           valuePropName="checked"
+          // explicity styling around Ant's strong "width of radio buttons" opinion
+          className="mb-0"
+          style={{ marginBottom: '-6px' }}
           rules={[
             { required: true, message: 'Preferred language is required' }
           ]}
-          style={{ marginBottom: 0 }}
         >
           <Radio.Group
             value={user.language}
             optionType="button"
             buttonStyle="solid"
-            style={{ width: '100%' }}
+            className="w-full"
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
           >
-            <Radio.Button
-              value="en"
-              style={{ width: '50%', textAlign: 'center' }}
-            >
+            <Radio.Button value="en" className="w-1/2">
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -245,10 +244,7 @@ export function Signup() {
               )}
               English
             </Radio.Button>
-            <Radio.Button
-              value="es"
-              style={{ width: '50%', textAlign: 'center' }}
-            >
+            <Radio.Button value="es" className="w-1/2">
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{

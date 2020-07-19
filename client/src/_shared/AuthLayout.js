@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
+import '_assets/styles/layouts.css'
 
 export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
   return (
