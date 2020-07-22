@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import { Divider, Typography } from 'antd'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
-const { Title, Text } = Typography
+const { Title, Text, Link } = Typography
 
 const userEmail = 'chelsea@pieforproviders.com'
 const pieEmail = 'noreply@pieforproviders.com'
@@ -46,9 +45,7 @@ export default function Confirmation() {
           </Text>
         </ListItem>
         <ListItem>
-          <Link to="#" component={Typography.Link}>
-            Click here to resend the email.
-          </Link>
+          <Link to="#">Click here to resend the email.</Link>
         </ListItem>
       </div>
     </>
