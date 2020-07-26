@@ -29,7 +29,7 @@ const Confirmation = () => {
       <Divider />
       <div className="text-left">
         <div className="mb-2">
-          <Text>Didn't receive the email?</Text>
+          <Text>{"Didn't receive the email?"}</Text>
         </div>
         <ListItem>
           <Text>
