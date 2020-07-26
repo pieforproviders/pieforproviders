@@ -41,7 +41,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   - API Documentation with swagger
 - Frontend: React
   - ESLint/Prettier
-  - Jest/Enzyme
+  - Jest/React Testing Library
   - Husky for pre-commit hooks
   </details>
 

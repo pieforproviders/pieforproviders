@@ -1,21 +1,26 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { render } from '@testing-library/react'
 import { CSVImportReview } from '../CSVImportReview'
+
+const doRender = (overrideProps) => {
+  const defaultProps = {}
+  return render(
+    <CSVImportReview {...defaultProps} {...overrideProps} />
+  )
+}
 
 describe('<CSVImport />', () => {
   const kids = [['Harry', 'Potter', '07-31-1980']]
-  let wrapper
 
   it('renders the kids list if data is passed', () => {
-    wrapper = shallow(<CSVImportReview kids={kids} />)
-    expect(wrapper.find('.csv-import-review').exists()).toBe(true)
-    expect(wrapper.find('.kids-list').exists()).toBe(true)
-    expect(wrapper.find('.kids-list').text()).toMatch(/Potter/)
+    const { container } = doRender({ kids })
+    expect(container).toHaveTextContent('Review Imported CSV')
+    expect(container).toHaveTextContent('Harry Potter 07-31-1980')
   })
 
   it('does not render the kids list if data is not passed', () => {
-    wrapper = shallow(<CSVImportReview kids={null} />)
-    expect(wrapper.find('.csv-import-review').exists()).toBe(true)
-    expect(wrapper.find('.kids-list').exists()).toBe(false)
+    const { container } = doRender()
+    expect(container).toHaveTextContent('Review Imported CSV')
+    expect(container).not.toHaveTextContent('List of kids')
   })
 })
