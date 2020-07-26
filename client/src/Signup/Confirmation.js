@@ -20,7 +20,7 @@ function ListItem({ children }) {
   )
 }
 
-export default function Confirmation() {
+const Confirmation = () => {
   return (
     <>
       <Title>Thanks for signing up!</Title>
@@ -28,7 +28,7 @@ export default function Confirmation() {
       <Divider />
       <div className="text-left">
         <div className="mb-2">
-          <Text>{"Didn't receive the email?"}</Text>
+          <Text>Didn't receive the email?</Text>
         </div>
         <ListItem>
           <Text>
@@ -55,3 +55,5 @@ export default function Confirmation() {
 ListItem.propTypes = {
   children: PropTypes.element.isRequired
 }
+
+export default Confirmation
