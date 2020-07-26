@@ -5,6 +5,7 @@ import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
 const { Title, Text, Link } = Typography
 
+// TODO: placeholder for actual user's email that signed up
 const userEmail = 'chelsea@pieforproviders.com'
 const pieEmail = 'noreply@pieforproviders.com'
 
