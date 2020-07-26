@@ -5,7 +5,6 @@ import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
 
 const doRender = () => {
-  const defaultProps = {}
   return render(
     <MemoryRouter initialEntries={['/']} initialIndex={0}>
       <App />

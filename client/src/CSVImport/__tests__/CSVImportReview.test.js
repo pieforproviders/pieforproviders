@@ -2,11 +2,9 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { CSVImportReview } from '../CSVImportReview'
 
-const doRender = (overrideProps) => {
+const doRender = overrideProps => {
   const defaultProps = {}
-  return render(
-    <CSVImportReview {...defaultProps} {...overrideProps} />
-  )
+  return render(<CSVImportReview {...defaultProps} {...overrideProps} />)
 }
 
 describe('<CSVImport />', () => {

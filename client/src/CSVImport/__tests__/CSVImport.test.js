@@ -2,11 +2,8 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { CSVImport } from '../CSVImport'
 
-
 const doRender = () => {
-  return render(
-    <CSVImport />
-  )
+  return render(<CSVImport />)
 }
 
 describe('<CSVImport />', () => {

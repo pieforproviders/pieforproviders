@@ -12,7 +12,6 @@ const doRender = () => {
 }
 
 describe('<NotFound />', () => {
-
   it('renders the NotFound page', () => {
     const { container } = doRender()
     expect(container).toHaveTextContent('404: Not found')
