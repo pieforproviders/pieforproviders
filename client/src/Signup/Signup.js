@@ -207,7 +207,7 @@ export function Signup() {
           name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
-          className="mb-0"
+          className="mb-0 text-center"
           style={{ marginBottom: '-6px' }}
           rules={[
             { required: true, message: 'Preferred language is required' }
