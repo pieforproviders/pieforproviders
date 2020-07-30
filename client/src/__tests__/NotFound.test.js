@@ -1,11 +1,19 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import NotFound from '../NotFound'
 
-describe('<NotFound />', () => {
-  const wrapper = shallow(<NotFound />)
+const doRender = () => {
+  return render(
+    <MemoryRouter>
+      <NotFound />
+    </MemoryRouter>
+  )
+}
 
-  it('renders the NotFound container', () => {
-    expect(wrapper.find('.four-oh-four').exists()).toBe(true)
+describe('<NotFound />', () => {
+  it('renders the NotFound page', () => {
+    const { container } = doRender()
+    expect(container).toHaveTextContent('404: Not found')
   })
 })

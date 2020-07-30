@@ -1,22 +1,19 @@
 import React from 'react'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { Dashboard } from '../Dashboard'
 
-// mock useHistory#push.
-// can't make this global or into a helper
-// possibly because it's a hook
-// possibly because https://github.com/facebook/create-react-app/issues/7539
-const mockHistoryReplace = jest.fn()
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: mockHistoryReplace
-  })
-}))
+const doRender = () => {
+  return render(
+    <MemoryRouter>
+      <Dashboard />
+    </MemoryRouter>
+  )
+}
 
 describe('<Dashboard />', () => {
-  let wrapper
-  it('renders the Dashboard container', () => {
-    wrapper = mount(<Dashboard />)
-    expect(wrapper.find('.dashboard').exists()).toBe(true)
+  it('renders the Dashboard page', () => {
+    const { container } = doRender()
+    expect(container).toHaveTextContent('This is the dashboard')
   })
 })
