@@ -1,0 +1,18 @@
+.ant-select-selection-placeholder {
+  color: #676767;
+  opacity: 1 !important;
+}
+
+.ant-form-item-label > label.ant-form-item-required::before {
+  position: absolute;
+  top: 3px;
+  left: 0;
+}
+
+.ant-form-item-label > label {
+  padding-left: 8px;
+}
+
+.ant-form-item-explain {
+  text-align: left;
+}

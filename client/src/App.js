@@ -31,7 +31,10 @@ const App = () => {
         <Router>
           <Switch>
             <Route path="/signup">
-              <Signup />
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                rightColumnContent={Signup}
+              />
             </Route>
             <Route path="/login">
               <AuthLayout
