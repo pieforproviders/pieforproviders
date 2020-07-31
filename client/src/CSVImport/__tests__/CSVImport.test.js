@@ -1,11 +1,14 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { render } from '@testing-library/react'
 import { CSVImport } from '../CSVImport'
 
-describe('<CSVImport />', () => {
-  const wrapper = shallow(<CSVImport />)
+const doRender = () => {
+  return render(<CSVImport />)
+}
 
-  it('renders the CSVImport container', () => {
-    expect(wrapper.find('.csv-import').exists()).toBe(true)
+describe('<CSVImport />', () => {
+  it('renders the CSVImport page', () => {
+    const { container } = doRender()
+    expect(container).toHaveTextContent('Upload Cases')
   })
 })
