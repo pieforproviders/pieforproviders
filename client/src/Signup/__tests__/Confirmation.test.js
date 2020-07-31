@@ -1,18 +1,15 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { mount } from 'enzyme'
+import { render } from '@testing-library/react'
 import Confirmation from '../Confirmation'
 
 describe('<Confirmation />', () => {
-  let wrapper
   it('renders the signup confirmation page', () => {
-    wrapper = mount(
+    const { container } = render(
       <MemoryRouter initialEntries={['/']} initialIndex={0}>
         <Confirmation />
       </MemoryRouter>
     )
-    expect(wrapper.text()).toEqual(
-      expect.stringContaining('Thanks for signing up')
-    )
+    expect(container).toHaveTextContent('Thanks for signing up')
   })
 })
