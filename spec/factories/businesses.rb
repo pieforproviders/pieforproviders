@@ -2,8 +2,9 @@
 
 FactoryBot.define do
   factory :business do
-    name { Faker::ChildCareBusinesses.name }
+    name { Faker::Name.child_care_businesses }
     category { Business::CATEGORIES.sample }
+    user
   end
 end
 

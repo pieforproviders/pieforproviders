@@ -7,6 +7,10 @@ RSpec.describe Business, type: :model do
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:category) }
   it { should validate_inclusion_of(:category).in_array(Business::CATEGORIES) }
+  it 'validates uniqueness of business name' do
+    create(:business)
+    should validate_uniqueness_of(:name).scoped_to(:user_id)
+  end
 end
 
 # == Schema Information
