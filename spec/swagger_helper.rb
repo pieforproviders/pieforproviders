@@ -143,6 +143,51 @@ RSpec.configure do |config|
             }
           }
         }
+      },
+      createSite: {
+        type: :object,
+        properties: {
+          site: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Marberry Educational Center' },
+              address: { type: :string, example: '1100 Marks Ave' },
+              city: { type: :string, example: 'Galesburg' },
+              state: { type: :string, example: 'TX' },
+              zip: { type: :string, example: '54321' },
+              county: { type: :string, example: 'Tigh' },
+              qris_rating: { type: :string, example: '2' },
+              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+            },
+            required: %w[
+              name
+              address
+              city
+              state
+              zip
+              county
+              business_id
+            ]
+          }
+        }
+      },
+      updateSite: {
+        type: :object,
+        properties: {
+          site: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Marberry Educational Center' },
+              address: { type: :string, example: '1100 Marks Ave' },
+              city: { type: :string, example: 'Galesburg' },
+              state: { type: :string, example: 'TX' },
+              zip: { type: :string, example: '54321' },
+              county: { type: :string, example: 'Tigh' },
+              qris_rating: { type: :string, example: '2' },
+              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+            }
+          }
+        }
       }
     }
   }

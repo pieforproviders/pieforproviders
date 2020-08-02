@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_15_004546) do
+ActiveRecord::Schema.define(version: 2020_08_02_173943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -35,6 +35,11 @@ ActiveRecord::Schema.define(version: 2020_06_15_004546) do
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
 
+  create_table "child_sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.uuid "site_id", null: false
+  end
+
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "ccms_id"
@@ -50,6 +55,22 @@ ActiveRecord::Schema.define(version: 2020_06_15_004546) do
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "name", null: false
+    t.string "address", null: false
+    t.string "city", null: false
+    t.string "state", null: false
+    t.string "zip", null: false
+    t.string "county", null: false
+    t.string "slug", null: false
+    t.string "qris_rating"
+    t.uuid "business_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "business_id"], name: "index_sites_on_name_and_business_id", unique: true
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

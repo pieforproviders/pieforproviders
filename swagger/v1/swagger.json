@@ -383,6 +383,195 @@
         }
       }
     },
+    "/api/v1/sites": {
+      "get": {
+        "summary": "lists all sites for a user",
+        "tags": [
+          "sites"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "sites found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a site",
+        "tags": [
+          "sites"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "site",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createSite"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "site created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/sites/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "retrieves a site",
+        "tags": [
+          "sites"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "site found"
+          },
+          "404": {
+            "description": "site not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a site",
+        "tags": [
+          "sites"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "site",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/updateSite"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "site updated"
+          },
+          "422": {
+            "description": "site cannot be updated"
+          },
+          "404": {
+            "description": "site not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a site",
+        "tags": [
+          "sites"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "site deleted"
+          },
+          "404": {
+            "description": "site not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "lists all users",
@@ -799,6 +988,99 @@
           "full_name": {
             "type": "string",
             "example": "Sean Flannery"
+          }
+        }
+      }
+    }
+  },
+  "createSite": {
+    "type": "object",
+    "properties": {
+      "site": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Marberry Educational Center"
+          },
+          "address": {
+            "type": "string",
+            "example": "1100 Marks Ave"
+          },
+          "city": {
+            "type": "string",
+            "example": "Galesburg"
+          },
+          "state": {
+            "type": "string",
+            "example": "TX"
+          },
+          "zip": {
+            "type": "string",
+            "example": "54321"
+          },
+          "county": {
+            "type": "string",
+            "example": "Tigh"
+          },
+          "qris_rating": {
+            "type": "string",
+            "example": "2"
+          },
+          "business_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+          }
+        },
+        "required": [
+          "name",
+          "address",
+          "city",
+          "state",
+          "zip",
+          "county",
+          "business_id"
+        ]
+      }
+    }
+  },
+  "updateSite": {
+    "type": "object",
+    "properties": {
+      "site": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Marberry Educational Center"
+          },
+          "address": {
+            "type": "string",
+            "example": "1100 Marks Ave"
+          },
+          "city": {
+            "type": "string",
+            "example": "Galesburg"
+          },
+          "state": {
+            "type": "string",
+            "example": "TX"
+          },
+          "zip": {
+            "type": "string",
+            "example": "54321"
+          },
+          "county": {
+            "type": "string",
+            "example": "Tigh"
+          },
+          "qris_rating": {
+            "type": "string",
+            "example": "2"
+          },
+          "business_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           }
         }
       }

@@ -6,6 +6,8 @@ class Child < ApplicationRecord
   self.implicit_order_column = 'created_at'
 
   belongs_to :user
+  has_many :child_sites, dependent: :destroy
+  has_many :sites, through: :child_sites
 
   validates :active, inclusion: { in: [true, false] }
   validates :date_of_birth, presence: true
