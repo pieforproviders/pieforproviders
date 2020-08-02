@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :agency do
-    name { "Agency name" }
-    state { "IL" }
+    name { 'Agency name' }
+    state { 'IL' }
     active { true }
   end
 end
