@@ -2,7 +2,6 @@
 
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
-
   belongs_to :user
 
   validates :active, inclusion: { in: [true, false] }
