@@ -1,4 +1,4 @@
-Table users [headercolor: #3498db] {
+Table users {
   id uuid [pk, unique, not null]
   full_name string [not null]
   greeting_name string
@@ -14,6 +14,7 @@ Table users [headercolor: #3498db] {
   language string [not null]
   confirmed boolean [not null, default: false] // devise
   service_agreement_accepted boolean [not null, default: false]
+  slug string [not null]
   timezone string [not null]
 }
 
@@ -25,15 +26,16 @@ Enum license_types {
   license_exempt_center
 }
 
-Table businesses [headercolor: #3498db] {
+Table businesses {
   id uuid [pk, unique, not null]
   user_id uuid [ref: > users.id, not null]
   license license_types [not null]
   name string [not null]
+  slug string [not null]
   active boolean [not null, default: true]
 }
 
-Table sites [headercolor: #3498db] {
+Table sites {
   id uuid [pk, unique, not null]
   business_id uuid [ref: > businesses.id, not null]
   name string [not null]
@@ -42,27 +44,29 @@ Table sites [headercolor: #3498db] {
   state string [not null]
   zip string [not null]
   county string [not null]
+  slug string [not null]
   qris_rating string
   active boolean [not null, default: true]
 }
 
-Table agencies [headercolor: #3498db] {
+Table agencies {
   id uuid [pk, unique, not null]
   state string [not null]
   name string [not null]
   active boolean [not null, default: true]
 }
 
-Table children [headercolor: #3498db] {
+Table children {
   id uuid [pk, unique, not null]
   user_id uuid [ref: > users.id, not null]
   ccms_id string
   full_name string [not null]
   date_of_birth date [not null]
+  slug string [not null]
   active boolean [not null, default: true]
 }
 
-Table child_sites [headercolor: #3498db] {
+Table child_sites {
   id uuid [pk, unique, not null]
   child_id uuid [ref: > children.id, not null]
   sites_id uuid [ref: > sites.id, not null]
@@ -81,12 +85,13 @@ Enum case_statuses {
   denied
 }
 
-Table case_cycles [headercolor: #3498db] {
+Table case_cycles {
   id uuid [pk, unique, not null]
   case_number string
   copay monetize
   copay_frequency copay_frequencies
   status case_statuses
+  slug string [not null]
   submitted_on date
   effective_on date
   notified_on date
@@ -99,24 +104,26 @@ Enum allowance_intervals {
   annually
 }
 
-Table child_case_cycles [headercolor: #3498db] {
+Table child_case_cycles {
   id uuid [pk, unique, not null]
   child_id uuid [ref: > children.id, not null]
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   case_cycle_id uuid [ref: > case_cycles.id, not null]
+  slug string [not null]
   part_days_allowed integer [not null]
   full_days_allowed integer [not null]
 }
 
-Table child_case_cycle_payments [headercolor: #3498db] {
+Table child_case_cycle_payments {
   id uuid [pk, unique, not null]
+  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
   payment_id uuid [ref: > payments.id, not null]
+  slug string [not null]
   amount monetize [not null]
   discrepancy monetize
-  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
 }
 
-Table child_case_cycle_agencies [headercolor: #3498db] {
+Table child_case_cycle_agencies {
   id uuid [pk, unique, not null]
   agency_id uuid [ref: > agencies.id, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
@@ -129,14 +136,15 @@ Enum lengths_of_care {
   full_plus_full_day
 }
 
-Table attendances [headercolor: #3498db] {
+Table attendances {
   id uuid [pk, unique, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
   length_of_care lengths_of_care [not null]
+  slug string [not null]
   starts_on date [not null]
 }
 
-Table payments [headercolor: #3498db] {
+Table payments {
   id uuid [pk, unique, not null]
   agency_id uuid [ref: > agencies.id, not null]
   site_id uuid [ref: > sites.id, not null]
@@ -144,10 +152,11 @@ Table payments [headercolor: #3498db] {
   care_started_on date [not null]
   care_finished_on date [not null]
   amount monetize [not null]
+  slug string [not null]
   discrepancy monetize
 }
 
-Table subsidy_rules [headercolor: #3498db] {
+Table subsidy_rules {
   id uuid [pk, unique, not null]
   name string [not null]
   county string [not null]
