@@ -39,10 +39,11 @@ export function Signup() {
       url: '/signup',
       data: { user: user }
     })
-    if (Object.keys(response).length > 0) {
+    if (response.status === 201) {
       history.push('/confirmation')
     } else {
       // TODO: Sentry
+      // TODO: Display error to user
       console.log('error creating')
     }
   }
