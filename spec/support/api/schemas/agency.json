@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": [
+    "created_at",
+    "id",
+    "name",
+    "updated_at"
+  ],
+  "properties": {
+    "active": { "type": "boolean" },
+    "created_at": { "type": "string" , "format": "date-time" },
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "updated_at": { "type": "string" , "format": "date-time" }
+  }
+}
