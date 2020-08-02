@@ -23,3 +23,12 @@ business = Business.create!(
   category: "licensed_center_single",
   user: user
 )
+
+agency_1 = Agency.create!(
+    name: "Agency 1",
+    state: "IL"
+)
+agency_2 = Agency.create!(
+    name: "Agency 2",
+    state: "IL"
+)
