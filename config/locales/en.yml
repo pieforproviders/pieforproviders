@@ -32,8 +32,8 @@
 en:
   hello: "Hello world"
   faker:
-    child_care_businesses:
-      name:
+    name:
+      child_care_businesses:
         - Kids Clubhouse Pre-School
         - Creative Castle Nursery School
         - Dollhouse Daycare Center
