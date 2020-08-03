@@ -383,6 +383,195 @@
         }
       }
     },
+    "/api/v1/payments": {
+      "get": {
+        "summary": "lists all payments for a user",
+        "tags": [
+          "payments"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "payments found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a payment",
+        "tags": [
+          "payments"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "payment",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/createPayment"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "payment created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/payments/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "retrieves a payment",
+        "tags": [
+          "payments"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "payment found"
+          },
+          "404": {
+            "description": "payment not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a payment",
+        "tags": [
+          "payments"
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          },
+          {
+            "name": "payment",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/updatePayment"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "payment updated"
+          },
+          "422": {
+            "description": "payment cannot be updated"
+          },
+          "404": {
+            "description": "payment not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a payment",
+        "tags": [
+          "payments"
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "type": "string",
+            "default": "application/vnd.pieforproviders.v1+json"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "payment deleted"
+          },
+          "404": {
+            "description": "payment not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
     "/api/v1/sites": {
       "get": {
         "summary": "lists all sites for a user",
@@ -789,6 +978,51 @@
     }
   },
   "definitions": {
+    "payment": {
+      "type": "object",
+      "properties": {
+        "agency_id": {
+          "type": "string",
+          "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "example": "19999"
+        },
+        "amount_currency": {
+          "type": "string",
+          "example": "USD"
+        },
+        "care_finished_on": {
+          "type": "string",
+          "example": "2020-03-15"
+        },
+        "care_started_on": {
+          "type": "string",
+          "example": "2020-01-01"
+        },
+        "discrepancy_cents": {
+          "type": "integer",
+          "example": "456"
+        },
+        "discrepancy_currency": {
+          "type": "string",
+          "example": "USD"
+        },
+        "paid_on": {
+          "type": "string",
+          "example": "2020-05-20"
+        },
+        "site_id": {
+          "type": "string",
+          "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
+        }
+      },
+      "required": [
+        "agency_id",
+        "site_id"
+      ]
+    },
     "createUser": {
       "type": "object",
       "properties": {
@@ -1085,5 +1319,11 @@
         }
       }
     }
+  },
+  "createPayment": {
+    "$ref": "#/definitions/payment"
+  },
+  "updatePayment": {
+    "$ref": "#/definitions/payment"
   }
 }

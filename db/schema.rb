@@ -10,11 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_02_173943) do
+ActiveRecord::Schema.define(version: 2020_08_02_222331) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "agencies", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.string "state"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "blocked_tokens", force: :cascade do |t|
     t.string "jti", null: false
@@ -55,6 +63,23 @@ ActiveRecord::Schema.define(version: 2020_08_02_173943) do
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "paid_on"
+    t.date "care_started_on"
+    t.date "care_finished_on"
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "USD", null: false
+    t.string "slug", null: false
+    t.integer "discrepancy_cents", default: 0, null: false
+    t.string "discrepancy_currency", default: "USD", null: false
+    t.uuid "site_id", null: false
+    t.uuid "agency_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["site_id", "agency_id"], name: "index_payments_on_site_id_and_agency_id"
+    t.index ["site_id"], name: "index_payments_on_site_id"
   end
 
   create_table "sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
