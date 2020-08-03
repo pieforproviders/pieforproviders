@@ -28,9 +28,9 @@ RSpec.describe 'payments API', type: :request do
   let(:agency_id) { Agency.create!(agency_params).id }
   let(:business_params) do
     {
-        "name": 'Happy Hearts Child Care',
-        "category": 'licensed_center_single',
-        "user_id": user_id
+      "name": 'Happy Hearts Child Care',
+      "category": 'licensed_center_single',
+      "user_id": user_id
     }
   end
   let(:business_id) { Business.create!(business_params).id }

@@ -8,7 +8,7 @@ class Payment < ApplicationRecord
   belongs_to :agency
   belongs_to :site
 
-  # TODO what is the right way to construct the slug?  What if 2 (partial) payments are made on the same day for the same [care period + site] from an agency?
+  # TODO: what is the right way to construct the slug?  What if 2 (partial) payments are made on the same day for the same [care period + site] from an agency?
   before_validation { |payment| payment.slug = generate_slug("#{payment.care_started_on}#{payment.site_id}#{payment.agency_id}") }
 end
 
