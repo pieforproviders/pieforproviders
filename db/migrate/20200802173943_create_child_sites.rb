@@ -6,5 +6,6 @@ class CreateChildSites < ActiveRecord::Migration[6.0]
       t.uuid :child_id, null: false
       t.uuid :site_id, null: false
     end
+    add_index :child_sites, %i[child_id site_id]
   end
 end
