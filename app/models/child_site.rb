@@ -7,6 +7,12 @@ class ChildSite < ApplicationRecord
 
   belongs_to :child
   belongs_to :site
+
+  validates_each :started_care, :ended_care do |record, attr, value|
+    value.is_a?(Date) ? value : Date.parse(value)
+  rescue TypeError, ArgumentError
+    record.errors.add(attr, 'Invalid date')
+  end
 end
 
 # == Schema Information
