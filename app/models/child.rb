@@ -18,6 +18,8 @@ class Child < UuidApplicationRecord
   end
 
   before_validation { |child| child.slug = generate_slug("#{child.full_name}#{child.date_of_birth}#{child.user_id}") }
+
+  accepts_nested_attributes_for :child_sites
 end
 
 # == Schema Information

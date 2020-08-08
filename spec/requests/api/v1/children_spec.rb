@@ -4,7 +4,32 @@ require 'swagger_helper'
 
 RSpec.describe 'children API', type: :request do
   let(:user_id) { create(:user).id }
+  let(:site_id) { create(:site).id }
   let!(:child_params) do
+    {
+      "ccms_id": '1234567890',
+      "full_name": 'Parvati Patil',
+      "date_of_birth": '1981-04-09',
+      "user_id": user_id,
+      "child_sites_attributes": [{
+        "site_id": site_id,
+        "started_care": Time.zone.today - 3.years,
+        "ended_care": Time.zone.today - 1.year
+      }]
+    }
+  end
+  let!(:child_params_no_site_dates) do
+    {
+      "ccms_id": '1234567890',
+      "full_name": 'Parvati Patil',
+      "date_of_birth": '1981-04-09',
+      "user_id": user_id,
+      "child_sites_attributes": [{
+        "site_id": site_id
+      }]
+    }
+  end
+  let!(:child_params_no_site) do
     {
       "ccms_id": '1234567890',
       "full_name": 'Parvati Patil',
@@ -69,9 +94,26 @@ RSpec.describe 'children API', type: :request do
         context 'when authenticated' do
           include_context 'authenticated user'
           response '201', 'child created' do
-            let(:child) { { "child": child_params } }
-            run_test! do
-              expect(response).to match_response_schema('child')
+            context 'with child_site params including dates' do
+              let(:child) { { "child": child_params } }
+              run_test! do
+                expect(response).to match_response_schema('child')
+                expect(Child.last.child_sites.length).not_to be(0)
+              end
+            end
+            context 'with child_site params with no dates' do
+              let(:child) { { "child": child_params_no_site_dates } }
+              run_test! do
+                expect(response).to match_response_schema('child')
+                expect(Child.last.child_sites.length).not_to be(0)
+              end
+            end
+            context 'without child_site params' do
+              let(:child) { { "child": child_params_no_site } }
+              run_test! do
+                expect(response).to match_response_schema('child')
+                expect(Child.last.child_sites.length).to be(0)
+              end
             end
           end
           response '422', 'invalid request' do

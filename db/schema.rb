@@ -38,6 +38,9 @@ ActiveRecord::Schema.define(version: 2020_08_02_173943) do
   create_table "child_sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.uuid "site_id", null: false
+    t.date "started_care"
+    t.date "ended_care"
+    t.index ["child_id", "site_id"], name: "index_child_sites_on_child_id_and_site_id"
   end
 
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
