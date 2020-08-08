@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 # A child in care at businesses who need subsidy assistance
-class Child < ApplicationRecord
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
-
+class Child < UuidApplicationRecord
   belongs_to :user
 
   validates :active, inclusion: { in: [true, false] }

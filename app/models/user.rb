@@ -1,15 +1,12 @@
 # frozen_string_literal: true
 
 # Person responsible for subsidy management for one or more businesses
-class User < ApplicationRecord
+class User < UuidApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
   devise :confirmable, :database_authenticatable, :registerable,
          :recoverable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: BlockedToken
-
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
 
   has_many :businesses, dependent: :restrict_with_error
   has_many :children, dependent: :restrict_with_error

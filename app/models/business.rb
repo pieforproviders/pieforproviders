@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # The businesses for which users are responsible for keeping subsidy data
-class Business < ApplicationRecord
+class Business < UuidApplicationRecord
   CATEGORIES = %w[
     licensed_center_single
     licensed_center_multi
@@ -11,9 +11,6 @@ class Business < ApplicationRecord
     license_exempt_center_single
     license_exempt_center_multi
   ].freeze
-
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
 
   belongs_to :user
 
