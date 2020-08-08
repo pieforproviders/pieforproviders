@@ -971,7 +971,7 @@
                 "properties": {
                   "site_id": {
                     "type": "uuid",
-                    "example": "uuid string"
+                    "example": "a42270e4-e4d4-485c-a57d-ccbad5729030"
                   },
                   "started_care": {
                     "type": "string",
