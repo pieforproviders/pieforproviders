@@ -3,22 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'children API', type: :request do
-  let!(:user_params) do
-    {
-      "email": 'fake_email@fake_email.com',
-      "full_name": 'Oliver Twist',
-      "greeting_name": 'Oliver',
-      "language": 'English',
-      "password": 'password1234!',
-      "password_confirmation": 'password1234!',
-      "phone_number": '912-444-5555',
-      "phone_type": 'work',
-      "organization": 'Society for the Promotion of Elfish Welfare',
-      "service_agreement_accepted": 'true',
-      "timezone": 'Central Time (US & Canada)'
-    }
-  end
-  let(:user_id) { User.create(user_params).id }
+  let(:user_id) { create(:user).id }
   let!(:child_params) do
     {
       "ccms_id": '1234567890',
