@@ -12,7 +12,7 @@ class Child < UuidApplicationRecord
   validates :full_name, uniqueness: { scope: %i[date_of_birth user_id] }
 
   validates_each :date_of_birth do |record, attr, value|
-    value.is_a?(Date) ? value : Date.parse(value)
+    value&.is_a?(Date) ? value : Date.parse(value)
   rescue TypeError, ArgumentError
     record.errors.add(attr, 'Invalid date')
   end
