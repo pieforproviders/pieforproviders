@@ -172,6 +172,7 @@ export function Signup() {
         >
           <Input.Group compact>
             <Select
+              value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
               placeholder="Choose one"
