@@ -6,6 +6,7 @@
 class Agency < UuidApplicationRecord
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true
+  validates :state, presence: true
 end
 
 # == Schema Information
