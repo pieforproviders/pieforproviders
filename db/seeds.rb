@@ -25,10 +25,10 @@ business = Business.create!(
 )
 
 agency_1 = Agency.create!(
-    name: "Agency 1",
+    name: "Community Child Care Connection",
     state: "IL"
 )
 agency_2 = Agency.create!(
-    name: "Agency 2",
-    state: "IL"
+    name: "Children's Aid and Family Services",
+    state: "MA"
 )
