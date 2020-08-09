@@ -8,6 +8,7 @@ import {
 import AuthorizedRoute from '_utils/_routes/AuthorizedRoute.js'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
+import GettingStarted from './GettingStarted'
 import Login from './Login'
 import Signup from './Signup'
 import Confirmation from './Signup/Confirmation'
@@ -42,6 +43,9 @@ const App = () => {
                 rightColumnContent={Login}
               />
             </Route>
+            <AuthorizedRoute exact path="/getting-started">
+              <GettingStarted />
+            </AuthorizedRoute>
             <AuthorizedRoute exact path="/dashboard">
               <Dashboard />
             </AuthorizedRoute>
@@ -49,7 +53,10 @@ const App = () => {
               <CSVImport />
             </AuthorizedRoute>
             <Route path="/confirmation">
-              <Confirmation />
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                rightColumnContent={Confirmation}
+              />
             </Route>
             <Route exact path="/">
               <Redirect to={'/login'} />

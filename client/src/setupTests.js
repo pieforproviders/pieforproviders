@@ -4,8 +4,8 @@
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom/extend-expect'
 
-// TODO: I think window.matchMedia is part of the Ant React library but it's not
-// implemented in JSDOM so we have to mock it:
+// window.matchMedia isn't implemented by JSDOM, but the responsive parts of
+// the Antd React library make use of it, so we have to mock it:
 // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
