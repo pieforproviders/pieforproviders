@@ -61,9 +61,10 @@ export function Signup() {
 
   // Label for the Terms and Conditions checkbox with a link embedded
   const TermsLabel = () => {
+    // The span with the asterisk is to match Ant Design's built-in required styling
     return (
       <>
-        I have read and agree to the{' '}
+        <span className="text-red1">* </span>I have read and agree to the{' '}
         <a
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
@@ -199,12 +200,16 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
+          value={user.language}
           label="Preferred Language"
           name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
           className="mb-0 text-center"
           style={{ marginBottom: '-6px' }}
+          rules={[
+            { required: true, message: 'Preferred language is required' }
+          ]}
         >
           <Radio.Group
             value={user.language}
@@ -214,9 +219,6 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
-            rules={[
-              { required: true, message: 'Preferred language is required' }
-            ]}
           >
             <Radio.Button value="en" className="w-1/2">
               {user.language === 'en' ? (
