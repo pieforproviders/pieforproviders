@@ -7,5 +7,7 @@ class CreateAgencies < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_index :agencies, [:name, :state], unique: true
   end
 end
