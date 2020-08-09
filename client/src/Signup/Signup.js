@@ -169,12 +169,6 @@ export function Signup() {
         <Form.Item
           name="phone"
           label="Phone number (we will only call or text if you want us to.)"
-          rules={[
-            {
-              required: true,
-              message: 'Select a phone type'
-            }
-          ]}
         >
           <Input.Group compact>
             <Select
@@ -210,9 +204,6 @@ export function Signup() {
           // explicity styling around Ant's strong "width of radio buttons" opinion
           className="mb-0 text-center"
           style={{ marginBottom: '-6px' }}
-          rules={[
-            { required: true, message: 'Preferred language is required' }
-          ]}
         >
           <Radio.Group
             value={user.language}
@@ -222,6 +213,9 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
+            rules={[
+              { required: true, message: 'Preferred language is required' }
+            ]}
           >
             <Radio.Button value="en" className="w-1/2">
               {user.language === 'en' ? (
