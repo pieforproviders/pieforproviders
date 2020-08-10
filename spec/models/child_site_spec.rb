@@ -11,7 +11,13 @@ end
 #
 # Table name: child_sites
 #
-#  id       :uuid             not null, primary key
-#  child_id :uuid             not null
-#  site_id  :uuid             not null
+#  id           :uuid             not null, primary key
+#  ended_care   :date
+#  started_care :date
+#  child_id     :uuid             not null
+#  site_id      :uuid             not null
+#
+# Indexes
+#
+#  index_child_sites_on_child_id_and_site_id  (child_id,site_id)
 #

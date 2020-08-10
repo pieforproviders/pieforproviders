@@ -3,30 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'sites API', type: :request do
-  let!(:user_params) do
-    {
-      "email": 'fake_email@fake_email.com',
-      "full_name": 'Oliver Twist',
-      "greeting_name": 'Oliver',
-      "language": 'English',
-      "password": 'password1234!',
-      "password_confirmation": 'password1234!',
-      "phone_number": '912-444-5555',
-      "phone_type": 'home',
-      "organization": 'Society for the Promotion of Elfish Welfare',
-      "service_agreement_accepted": 'true',
-      "timezone": 'Central Time (US & Canada)'
-    }
-  end
-  let(:user_id) { User.create(user_params).id }
-  let!(:business_params) do
-    {
-      "name": 'Happy Hearts Child Care',
-      "category": 'licensed_center_single',
-      "user_id": user_id
-    }
-  end
-  let(:business_id) { Business.create(business_params).id }
+  let(:business_id) { create(:business).id }
   let!(:site_params) do
     {
       "name": 'Evesburg Educational Center',

@@ -18,7 +18,7 @@ RSpec.configure do |config|
     'v1/swagger.json' => {
       swagger: '2.0',
       info: {
-        title: 'API V1',
+        title: 'Pie for Providers API v1',
         version: 'v1'
       },
       paths: {},
@@ -94,112 +94,124 @@ RSpec.configure do |config|
               }
             }
           }
-        }
-      },
-      createBusiness: {
-        type: :object,
-        properties: {
-          business: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Harlequin Child Care' },
-              category: { type: :string, example: 'license_exempt_home' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            },
-            required: %w[
-              name
-              category
-              user_id
-            ]
-          }
-        }
-      },
-      updateBusiness: {
-        type: :object,
-        properties: {
-          business: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Harlequin Child Care' },
-              category: { type: :string, example: 'license_exempt_home' },
-              active: { type: :boolean, example: 'true' }
+        },
+        createBusiness: {
+          type: :object,
+          properties: {
+            business: {
+              type: :object,
+              properties: {
+                name: { type: :string, example: 'Harlequin Child Care' },
+                category: { type: :string, example: 'license_exempt_home' },
+                user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+              },
+              required: %w[
+                name
+                category
+                user_id
+              ]
             }
           }
-        }
-      },
-      createChild: {
-        type: :object,
-        properties: {
-          child: {
-            type: :object,
-            properties: {
-              ccms_id: { type: :string, example: '123456789' },
-              date_of_birth: { type: :string, example: '1991-11-01' },
-              full_name: { type: :string, example: 'Seamus Finnigan' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            },
-            required: %w[
-              full_name
-              date_of_birth
-              user_id
-            ]
-          }
-        }
-      },
-      updateChild: {
-        type: :object,
-        properties: {
-          child: {
-            type: :object,
-            properties: {
-              ccms_id: { type: :string, example: '987654321' },
-              date_of_birth: { type: :string, example: '1992-11-01' },
-              full_name: { type: :string, example: 'Sean Flannery' }
+        },
+        updateBusiness: {
+          type: :object,
+          properties: {
+            business: {
+              type: :object,
+              properties: {
+                name: { type: :string, example: 'Harlequin Child Care' },
+                category: { type: :string, example: 'license_exempt_home' },
+                active: { type: :boolean, example: 'true' }
+              }
             }
           }
-        }
-      },
-      createSite: {
-        type: :object,
-        properties: {
-          site: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Marberry Educational Center' },
-              address: { type: :string, example: '1100 Marks Ave' },
-              city: { type: :string, example: 'Galesburg' },
-              state: { type: :string, example: 'TX' },
-              zip: { type: :string, example: '54321' },
-              county: { type: :string, example: 'Tigh' },
-              qris_rating: { type: :string, example: '2' },
-              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            },
-            required: %w[
-              name
-              address
-              city
-              state
-              zip
-              county
-              business_id
-            ]
+        },
+        createChild: {
+          type: :object,
+          properties: {
+            child: {
+              type: :object,
+              properties: {
+                ccms_id: { type: :string, example: '123456789' },
+                date_of_birth: { type: :string, example: '1991-11-01' },
+                full_name: { type: :string, example: 'Seamus Finnigan' },
+                user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
+                child_sites_attributes: {
+                  type: :array,
+                  items: {
+                    type: :object,
+                    required: %w[site_id],
+                    properties: {
+                      site_id: { type: :uuid, example: 'a42270e4-e4d4-485c-a57d-ccbad5729030' },
+                      started_care: { type: :string, example: '2018-12-13' },
+                      ended_care: { type: :string, example: '2019-08-04' }
+                    }
+                  }
+                }
+              },
+              required: %w[
+                full_name
+                date_of_birth
+                user_id
+              ]
+            }
           }
-        }
-      },
-      updateSite: {
-        type: :object,
-        properties: {
-          site: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Marberry Educational Center' },
-              address: { type: :string, example: '1100 Marks Ave' },
-              city: { type: :string, example: 'Galesburg' },
-              state: { type: :string, example: 'TX' },
-              zip: { type: :string, example: '54321' },
-              county: { type: :string, example: 'Tigh' },
-              qris_rating: { type: :string, example: '2' },
-              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+        },
+        updateChild: {
+          type: :object,
+          properties: {
+            child: {
+              type: :object,
+              properties: {
+                ccms_id: { type: :string, example: '987654321' },
+                date_of_birth: { type: :string, example: '1992-11-01' },
+                full_name: { type: :string, example: 'Sean Flannery' }
+              }
+            }
+          }
+        },
+        createSite: {
+          type: :object,
+          properties: {
+            site: {
+              type: :object,
+              properties: {
+                name: { type: :string, example: 'Marberry Educational Center' },
+                address: { type: :string, example: '1100 Marks Ave' },
+                city: { type: :string, example: 'Galesburg' },
+                state: { type: :string, example: 'TX' },
+                zip: { type: :string, example: '54321' },
+                county: { type: :string, example: 'Tigh' },
+                qris_rating: { type: :string, example: '2' },
+                business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+              },
+              required: %w[
+                name
+                address
+                city
+                state
+                zip
+                county
+                business_id
+              ]
+            }
+          }
+        },
+        updateSite: {
+          type: :object,
+          properties: {
+            site: {
+              type: :object,
+              properties: {
+                name: { type: :string, example: 'Marberry Educational Center' },
+                address: { type: :string, example: '1100 Marks Ave' },
+                city: { type: :string, example: 'Galesburg' },
+                state: { type: :string, example: 'TX' },
+                zip: { type: :string, example: '54321' },
+                county: { type: :string, example: 'Tigh' },
+                qris_rating: { type: :string, example: '2' },
+                business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+              }
             }
           }
         }
