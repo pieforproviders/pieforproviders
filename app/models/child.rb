@@ -3,19 +3,19 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   belongs_to :user
+  has_many :child_sites, dependent: :destroy
+  has_many :sites, through: :child_sites
 
   validates :active, inclusion: { in: [true, false] }
   validates :date_of_birth, presence: true
   validates :full_name, presence: true
   validates :full_name, uniqueness: { scope: %i[date_of_birth user_id] }
 
-  validates_each :date_of_birth do |record, attr, value|
-    value.is_a?(Date) ? value : Date.parse(value)
-  rescue TypeError, ArgumentError
-    record.errors.add(attr, 'Invalid date')
-  end
+  validates :date_of_birth, date_param: true
 
   before_validation { |child| child.slug = generate_slug("#{child.full_name}#{child.date_of_birth}#{child.user_id}") }
+
+  accepts_nested_attributes_for :child_sites
 end
 
 # == Schema Information

@@ -17,7 +17,7 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
             <img
               alt="Pie for Providers logo"
               src={piefulltanlogo}
-              className="w-24 medium:w-48 mx-auto m-12"
+              className="w-24 medium:w-48 mt-0 mb-8 medium:mb-16 large:mb-12 mx-auto"
             />
             {rightColumnContent()}
           </div>

@@ -2,45 +2,24 @@
 
 require 'swagger_helper'
 
-RSpec.describe 'children API', type: :request do
-  let(:user_id) { create(:user).id }
-  let(:site_id) { create(:site).id }
-  let!(:child_params) do
+RSpec.describe 'sites API', type: :request do
+  let(:business_id) { create(:business).id }
+  let!(:site_params) do
     {
-      "ccms_id": '1234567890',
-      "full_name": 'Parvati Patil',
-      "date_of_birth": '1981-04-09',
-      "user_id": user_id,
-      "child_sites_attributes": [{
-        "site_id": site_id,
-        "started_care": Time.zone.today - 3.years,
-        "ended_care": Time.zone.today - 1.year
-      }]
-    }
-  end
-  let!(:child_params_no_site_dates) do
-    {
-      "ccms_id": '1234567890',
-      "full_name": 'Parvati Patil',
-      "date_of_birth": '1981-04-09',
-      "user_id": user_id,
-      "child_sites_attributes": [{
-        "site_id": site_id
-      }]
-    }
-  end
-  let!(:child_params_no_site) do
-    {
-      "ccms_id": '1234567890',
-      "full_name": 'Parvati Patil',
-      "date_of_birth": '1981-04-09',
-      "user_id": user_id
+      "name": 'Evesburg Educational Center',
+      "address": '1200 W Marberry Dr',
+      "city": 'Gatlinburg',
+      "state": 'TN',
+      "zip": '12345',
+      "county": 'Harrison',
+      "qris_rating": '4',
+      "business_id": business_id
     }
   end
 
-  path '/api/v1/children' do
-    get 'lists all children' do
-      tags 'children'
+  path '/api/v1/sites' do
+    get 'lists all sites for a user' do
+      tags 'sites'
       produces 'application/json'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
@@ -50,9 +29,9 @@ RSpec.describe 'children API', type: :request do
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '200', 'children found' do
+          response '200', 'sites found' do
             run_test! do
-              expect(response).to match_response_schema('children')
+              expect(response).to match_response_schema('sites')
             end
           end
         end
@@ -81,50 +60,33 @@ RSpec.describe 'children API', type: :request do
       end
     end
 
-    post 'creates a child' do
-      tags 'children'
+    post 'creates a site' do
+      tags 'sites'
       consumes 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :child, in: :body, schema: {
-        '$ref' => '#/definitions/createChild'
+      parameter name: :site, in: :body, schema: {
+        '$ref' => '#/definitions/createSite'
       }
 
       context 'on the right api version' do
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '201', 'child created' do
-            context 'with child_site params including dates' do
-              let(:child) { { "child": child_params } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).not_to be(0)
-              end
-            end
-            context 'with child_site params with no dates' do
-              let(:child) { { "child": child_params_no_site_dates } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).not_to be(0)
-              end
-            end
-            context 'without child_site params' do
-              let(:child) { { "child": child_params_no_site } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).to be(0)
-              end
+          response '201', 'site created' do
+            let(:site) { { "site": site_params } }
+            run_test! do
+              expect(response).to match_response_schema('site')
             end
           end
           response '422', 'invalid request' do
-            let(:child) { { "child": { "title": 'whatever' } } }
+            let(:site) { { "site": { "title": 'whatever' } } }
             run_test!
           end
         end
 
         context 'when not authenticated' do
           response '401', 'not authorized' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
@@ -135,14 +97,14 @@ RSpec.describe 'children API', type: :request do
         context 'when authenticated' do
           include_context 'authenticated user'
           response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
 
         context 'when not authenticated' do
           response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
@@ -150,12 +112,12 @@ RSpec.describe 'children API', type: :request do
     end
   end
 
-  path '/api/v1/children/{slug}' do
+  path '/api/v1/sites/{slug}' do
     parameter name: :slug, in: :path, type: :string
-    let(:slug) { Child.create!(child_params).slug }
+    let(:slug) { Site.create!(site_params).slug }
 
-    get 'retrieves a child' do
-      tags 'children'
+    get 'retrieves a site' do
+      tags 'sites'
       produces 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
@@ -165,13 +127,13 @@ RSpec.describe 'children API', type: :request do
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '200', 'child found' do
+          response '200', 'site found' do
             run_test! do
-              expect(response).to match_response_schema('child')
+              expect(response).to match_response_schema('site')
             end
           end
 
-          response '404', 'child not found' do
+          response '404', 'site not found' do
             let(:slug) { 'invalid' }
             run_test!
           end
@@ -201,14 +163,14 @@ RSpec.describe 'children API', type: :request do
       end
     end
 
-    put 'updates a child' do
-      tags 'children'
+    put 'updates a site' do
+      tags 'sites'
       consumes 'application/json', 'application/xml'
       produces 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :child, in: :body, schema: {
-        '$ref' => '#/definitions/updateChild'
+      parameter name: :site, in: :body, schema: {
+        '$ref' => '#/definitions/updateSite'
       }
       # security [{ token: [] }]
 
@@ -216,29 +178,29 @@ RSpec.describe 'children API', type: :request do
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '200', 'child updated' do
-            let(:child) { { "child": child_params.merge("full_name": 'Padma Patil') } }
+          response '200', 'site updated' do
+            let(:site) { { "site": site_params.merge("name": 'Hogwarts School') } }
             run_test! do
-              expect(response).to match_response_schema('child')
-              expect(response.parsed_body['full_name']).to eq('Padma Patil')
+              expect(response).to match_response_schema('site')
+              expect(response.parsed_body['name']).to eq('Hogwarts School')
             end
           end
 
-          response '422', 'child cannot be updated' do
-            let(:child) { { "child": { "full_name": nil } } }
+          response '422', 'site cannot be updated' do
+            let(:site) { { "site": { "name": nil } } }
             run_test!
           end
 
-          response '404', 'child not found' do
+          response '404', 'site not found' do
             let(:slug) { 'invalid' }
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
 
         context 'when not authenticated' do
           response '401', 'not authorized' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
@@ -249,22 +211,22 @@ RSpec.describe 'children API', type: :request do
         context 'when authenticated' do
           include_context 'authenticated user'
           response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
 
         context 'when not authenticated' do
           response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
+            let(:site) { { "site": site_params } }
             run_test!
           end
         end
       end
     end
 
-    delete 'deletes a child' do
-      tags 'children'
+    delete 'deletes a site' do
+      tags 'sites'
       produces 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
@@ -274,11 +236,11 @@ RSpec.describe 'children API', type: :request do
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '204', 'child deleted' do
+          response '204', 'site deleted' do
             run_test!
           end
 
-          response '404', 'child not found' do
+          response '404', 'site not found' do
             let(:slug) { 'invalid' }
             run_test!
           end

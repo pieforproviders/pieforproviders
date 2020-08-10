@@ -70,6 +70,8 @@ Table child_sites {
   id uuid [pk, unique, not null]
   child_id uuid [ref: > children.id, not null]
   sites_id uuid [ref: > sites.id, not null]
+  started_care date
+  ended_care date
 }
 
 Enum copay_frequencies {

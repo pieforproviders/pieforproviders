@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users, param: :slug
       resources :businesses, param: :slug
+      resources :sites, param: :slug
       resources :children, param: :slug
     end
   end
