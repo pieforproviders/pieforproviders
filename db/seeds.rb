@@ -31,90 +31,72 @@ site = Site.where(name: 'Prairie Center', business: business).first_or_create(
   zip: '89234'
 )
 
-
-
-site_happy_seeds_little_oaks = Site.create!(
-    business: business_happy_seedlings,
-    name: "Little Oaks Growing Center",
-    address: "8201 1st Street",
-    city: "La Grange",
-    state: "WI",
-    zip: "53190",
-    county: "Walworth",
+site_happy_seeds_little_oaks = Site.where(name:'Little Oaks Growing Center',
+                                          business: business).first_or_create(
+    address: '8201 1st Street',
+    city: 'La Grange',
+    state: 'WI',
+    zip: '53190',
+    county: 'Walworth',
     qris_rating: 3,
     active: true
 )
-site_happy_seeds_little_sprouts = Site.create!(
-    business: business_happy_seedlings,
-    name: "Little Sprouts Growing Center",
-    address: "123 Bighorn Lane",
-    city: "Elkhorn",
-    state: "WI",
-    zip: "53121",
-    county: "Walworth",
+site_happy_seeds_little_sprouts = Site.where(name:'Little Oaks Growing Center',
+                                            business: business).first_or_create(
+    address: '123 Bighorn Lane',
+    city: 'Elkhorn',
+    state: 'WI',
+    zip: '53121',
+    county: 'Walworth',
     qris_rating: 3,
     active: true
 )
 
-
-
-agency_WI_1 = Agency.create!(
-    name: "Wisconsin State Children's Services",
-    state: "WI"
+agency_WI_1 = Agency.where(name: "Wisconsin Children's Services",
+                           state: 'WI').first_or_create(
+    active: true
 )
-agency_2 = Agency.create!(
-    name: "Agency 2",
-    state: "IL"
+
+agency_2 = Agency.where(name: 'Agency 2', state: 'IL').first_or_create(
+    active: true
 )
 
 
 # ----------------------------------------------------
 # Payments
 
-
-payment_little_oaks_1 = Payment.create!(
-    agency: agency_WI_1,
-    site: site_happy_seeds_little_oaks,
-    paid_on: Date.new(2020,8,1),
+Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_oaks,
+              paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
-    amount: 850.00,
-    discrepancy: 250.00
+    amount_cents: 85_000,
+    discrepancy_cents: 25_000
 )
-payment_little_oaks_2 = Payment.create!(
-    agency: agency_WI_1,
-    site: site_happy_seeds_little_oaks,
-    paid_on: Date.new(2020,8,1),
+Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_oaks,
+              paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
-    amount: 850.00,
-    discrepancy: 250.00
+    amount_cents: 85_000,
+    discrepancy_cents: 25_000
 )
-
-payment_little_sprouts_1 = Payment.create!(
-    agency: agency_WI_1,
-    site: site_happy_seeds_little_sprouts,
-    paid_on: Date.new(2020,8,1),
+Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
+              paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
-    amount: 1000.00,
-    discrepancy: 0
+    amount_cents: 100_000,
+    discrepancy_cents: 0
 )
-payment_little_sprouts_2 = Payment.create!(
-    agency: agency_WI_1,
-    site: site_happy_seeds_little_sprouts,
-    paid_on: Date.new(2020,8,1),
+Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
+              paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
-    amount: 1000.00,
-    discrepancy: 0
+    amount_cents: 100_000,
+    discrepancy_cents: 0
 )
-sprouts_payment2 = Payment.create!(
-    agency: agency_WI_1,
-    site: site_happy_seeds_little_sprouts,
-    paid_on: Date.new(2020,8,1),
+Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
+              paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,5,15),
-    amount: 1400.00,
-    discrepancy: 27.50
+    amount_cents: 140_000,
+    discrepancy_cents: 2_750
 )
