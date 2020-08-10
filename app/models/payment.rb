@@ -6,10 +6,10 @@ class Payment < UuidApplicationRecord
   belongs_to :site
 
   validates :amount, numericality: { greater_than: 0.00 }
-  validates :care_finished_on, presence: true # TODO: use Date validator
-  validates :care_started_on, presence: true # TODO: use Date validator
+  validates :care_finished_on, date_param: true
+  validates :care_started_on, date_param: true
   validates :discrepancy, numericality: true
-  validates :paid_on, presence: true # TODO: use Date validator
+  validates :paid_on, date_param: true
 
   before_validation { |payment| payment.slug = generate_slug("#{payment.care_started_on}#{payment.site_id}#{payment.agency_id}") }
 
