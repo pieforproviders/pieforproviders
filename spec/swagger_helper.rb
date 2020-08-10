@@ -32,13 +32,12 @@ RSpec.configure do |config|
       #     scopes: {}
       #   }
       # },
-      # rubocop:disable Style/NumericLiterals
       definitions: {
         payment: {
           type: :object,
           properties: {
             agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-            amount: { type: :integer, minimum: 0, example: 19999 },
+            amount: { type: :integer, minimum: 0, example: 19_999 },
             care_finished_on: { type: :string, example: '2020-03-15' },
             care_started_on: { type: :string, example: '2020-01-01' },
             discrepancy: { type: :integer, example: 456 },
@@ -47,7 +46,6 @@ RSpec.configure do |config|
           },
           required: %w[agency_id site_id amount care_finished_on care_started_on discrepancy paid_on]
         },
-        # rubocop:enable Style/NumericLiterals
         createUser: {
           type: :object,
           properties: {

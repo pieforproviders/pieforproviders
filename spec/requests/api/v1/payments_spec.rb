@@ -221,10 +221,10 @@ RSpec.describe 'payments API', type: :request do
         context 'when authenticated' do
           include_context 'authenticated user'
           response '200', 'payment updated' do
-            let(:payment) { { "payment": payment_params.merge("amount_cents": 10000) } } # rubocop:disable Style/NumericLiterals
+            let(:payment) { { "payment": payment_params.merge("amount_cents": 10_000) } }
             run_test! do
               expect(response).to match_response_schema('payment')
-              expect(response.parsed_body['amount_cents']).to eq(10000) # rubocop:disable Style/NumericLiterals
+              expect(response.parsed_body['amount_cents']).to eq(10_000)
             end
           end
 
