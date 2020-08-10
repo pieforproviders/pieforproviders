@@ -32,6 +32,7 @@ RSpec.configure do |config|
       #     scopes: {}
       #   }
       # },
+      # rubocop:disable Style/NumericLiterals
       definitions: {
         payment: {
           type: :object,
@@ -46,6 +47,7 @@ RSpec.configure do |config|
           },
           required: %w[agency_id site_id amount care_finished_on care_started_on discrepancy paid_on]
         },
+        # rubocop:enable Style/NumericLiterals
         createUser: {
           type: :object,
           properties: {
