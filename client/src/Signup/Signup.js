@@ -61,9 +61,10 @@ export function Signup() {
 
   // Label for the Terms and Conditions checkbox with a link embedded
   const TermsLabel = () => {
+    // The span with the asterisk is to match Ant Design's built-in required styling
     return (
       <>
-        I have read and agree to the{' '}
+        <span className="text-red1">* </span>I have read and agree to the{' '}
         <a
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
@@ -97,6 +98,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda's Daycare"
+            autoComplete="organization"
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -115,6 +117,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda Diaz"
+            autoComplete="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -133,6 +136,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda"
+            autoComplete="nickname"
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
@@ -151,7 +155,7 @@ export function Signup() {
         >
           <Select
             style={{ textAlign: 'left' }}
-            defaultValue={multiBusiness}
+            value={multiBusiness}
             placeholder="Choose one"
             onChange={value => {
               setMultiBusiness(value)
@@ -169,15 +173,10 @@ export function Signup() {
         <Form.Item
           name="phone"
           label="Phone number (we will only call or text if you want us to.)"
-          rules={[
-            {
-              required: true,
-              message: 'Select a phone type'
-            }
-          ]}
         >
           <Input.Group compact>
             <Select
+              value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
               placeholder="Choose one"
@@ -190,10 +189,20 @@ export function Signup() {
               <Option value="work">Work</Option>
             </Select>
 
-            <Form.Item style={{ width: '70%', marginBottom: 0 }}>
+            <Form.Item
+              name="phoneNumber"
+              style={{ width: '70%', marginBottom: 0 }}
+              rules={[
+                {
+                  pattern: /^\d{3}-\d{3}-\d{4}$/,
+                  message: 'Phone number is invalid'
+                }
+                // TODO: these rules aren't working
+              ]}
+            >
               <MaskedInput
                 mask="111-111-1111"
-                name="phoneNumber"
+                placeholder="___-___-____"
                 size="10"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
@@ -210,9 +219,6 @@ export function Signup() {
           // explicity styling around Ant's strong "width of radio buttons" opinion
           className="mb-0 text-center"
           style={{ marginBottom: '-6px' }}
-          rules={[
-            { required: true, message: 'Preferred language is required' }
-          ]}
         >
           <Radio.Group
             value={user.language}
@@ -222,6 +228,9 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
+            rules={[
+              { required: true, message: 'Preferred language is required' }
+            ]}
           >
             <Radio.Button value="en" className="w-1/2">
               {user.language === 'en' ? (
@@ -276,6 +285,9 @@ export function Signup() {
           rules={[
             {
               type: 'email',
+              message: 'Email address is invalid'
+            },
+            {
               required: true,
               message: 'Email address is required'
             }
@@ -283,6 +295,7 @@ export function Signup() {
         >
           <Input
             placeholder="amanda@gmail.com"
+            autoComplete="email"
             type="email"
             onChange={event => setUser({ ...user, email: event.target.value })}
           />
@@ -306,6 +319,7 @@ export function Signup() {
         >
           <Input.Password
             placeholder="8+ characters, letters and numbers"
+            autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -333,6 +347,7 @@ export function Signup() {
         >
           <Input.Password
             placeholder="Confirm your password"
+            autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
             }
@@ -368,6 +383,8 @@ export function Signup() {
         <Form.Item>
           <Button
             type="primary"
+            shape="round"
+            size="large"
             htmlType="submit"
             className="mt-2 font-semibold uppercase"
           >
