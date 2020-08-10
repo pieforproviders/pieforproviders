@@ -1,12 +1,12 @@
 class CreatePayments < ActiveRecord::Migration[6.0]
   def change
     create_table :payments, id: :uuid do |t|
-      t.date :paid_on
-      t.date :care_started_on
-      t.date :care_finished_on
-      t.monetize :amount
+      t.date :paid_on, null: false
+      t.date :care_started_on, null: false
+      t.date :care_finished_on, null: false
+      t.monetize :amount, null: false, default: 0
       t.string :slug, null: false
-      t.monetize :discrepancy
+      t.monetize :discrepancy, default: 0
       t.uuid :site_id, null: false
       t.uuid :agency_id, null: false
 

@@ -1,34 +1,42 @@
 # frozen_string_literal: true
 
 # Payments made by an agency to a provide for a particular site
-class Payment < ApplicationRecord
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
-
+class Payment < UuidApplicationRecord
   belongs_to :agency
   belongs_to :site
 
-  # TODO: what is the right way to construct the slug?  What if 2 (partial) payments are made on the same day for the same [care period + site] from an agency?
+  validates :amount, numericality: { greater_than: 0.00 }
+  validates :care_finished_on, presence: true # TODO: use Date validator
+  validates :care_started_on, presence: true # TODO: use Date validator
+  validates :discrepancy, numericality: true
+  validates :paid_on, presence: true # TODO: use Date validator
+
   before_validation { |payment| payment.slug = generate_slug("#{payment.care_started_on}#{payment.site_id}#{payment.agency_id}") }
+
+  # The money-rails gem specifically requires that the '_cents' suffix be
+  # specified when using the "monetize" macro even though the attributes are
+  # referred to without the '_cents' suffix.
+  # IOW, you only need to refer to payment.amount or payment.discrepancy ,
+  # unlike the following statements.
+  monetize :amount_cents
+  monetize :discrepancy_cents
 end
 
 # == Schema Information
 #
 # Table name: payments
 #
-#  id                   :uuid             not null, primary key
-#  amount_cents         :integer          default(0), not null
-#  amount_currency      :string           default("USD"), not null
-#  care_finished_on     :date
-#  care_started_on      :date
-#  discrepancy_cents    :integer          default(0), not null
-#  discrepancy_currency :string           default("USD"), not null
-#  paid_on              :date
-#  slug                 :string           not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  agency_id            :uuid             not null
-#  site_id              :uuid             not null
+#  id                :uuid             not null, primary key
+#  amount_cents      :integer          default(0), not null
+#  care_finished_on  :date             not null
+#  care_started_on   :date             not null
+#  discrepancy_cents :integer          default(0), not null
+#  paid_on           :date             not null
+#  slug              :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  agency_id         :uuid             not null
+#  site_id           :uuid             not null
 #
 # Indexes
 #
