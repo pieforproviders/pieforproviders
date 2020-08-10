@@ -98,6 +98,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda's Daycare"
+            autoComplete="organization"
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -116,6 +117,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda Diaz"
+            autoComplete="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -134,6 +136,7 @@ export function Signup() {
         >
           <Input
             placeholder="Amanda"
+            autoComplete="nickname"
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
@@ -152,7 +155,7 @@ export function Signup() {
         >
           <Select
             style={{ textAlign: 'left' }}
-            defaultValue={multiBusiness}
+            value={multiBusiness}
             placeholder="Choose one"
             onChange={value => {
               setMultiBusiness(value)
@@ -186,11 +189,15 @@ export function Signup() {
               <Option value="work">Work</Option>
             </Select>
 
-            <Form.Item style={{ width: '70%', marginBottom: 0 }}>
-              <MaskedInput
-                mask="111-111-1111"
+            <Form.Item
+              style={{ width: '70%', marginBottom: 0 }}
+              rules={[
+                { pattern: /^\d{10}$/, message: 'Phone number is invalid' }
+                // TODO: these rules aren't working
+              ]}
+            >
+              <Input
                 name="phoneNumber"
-                size="10"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -200,16 +207,12 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          value={user.language}
           label="Preferred Language"
           name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
           className="mb-0 text-center"
           style={{ marginBottom: '-6px' }}
-          rules={[
-            { required: true, message: 'Preferred language is required' }
-          ]}
         >
           <Radio.Group
             value={user.language}
@@ -219,6 +222,9 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
+            rules={[
+              { required: true, message: 'Preferred language is required' }
+            ]}
           >
             <Radio.Button value="en" className="w-1/2">
               {user.language === 'en' ? (
@@ -280,6 +286,7 @@ export function Signup() {
         >
           <Input
             placeholder="amanda@gmail.com"
+            autoComplete="email"
             type="email"
             onChange={event => setUser({ ...user, email: event.target.value })}
           />
@@ -303,6 +310,7 @@ export function Signup() {
         >
           <Input.Password
             placeholder="8+ characters, letters and numbers"
+            autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -330,6 +338,7 @@ export function Signup() {
         >
           <Input.Password
             placeholder="Confirm your password"
+            autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
             }
