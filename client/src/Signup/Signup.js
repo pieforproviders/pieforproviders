@@ -190,14 +190,20 @@ export function Signup() {
             </Select>
 
             <Form.Item
+              name="phoneNumber"
               style={{ width: '70%', marginBottom: 0 }}
               rules={[
-                { pattern: /^\d{10}$/, message: 'Phone number is invalid' }
+                {
+                  pattern: /^\d{3}-\d{3}-\d{4}$/,
+                  message: 'Phone number is invalid'
+                }
                 // TODO: these rules aren't working
               ]}
             >
-              <Input
-                name="phoneNumber"
+              <MaskedInput
+                mask="111-111-1111"
+                placeholder="___-___-____"
+                size="10"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -279,6 +285,9 @@ export function Signup() {
           rules={[
             {
               type: 'email',
+              message: 'Email address is invalid'
+            },
+            {
               required: true,
               message: 'Email address is required'
             }
@@ -374,6 +383,8 @@ export function Signup() {
         <Form.Item>
           <Button
             type="primary"
+            shape="round"
+            size="large"
             htmlType="submit"
             className="mt-2 font-semibold uppercase"
           >
