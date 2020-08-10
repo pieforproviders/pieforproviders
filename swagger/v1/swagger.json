@@ -985,13 +985,10 @@
           "type": "string",
           "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
         },
-        "amount_cents": {
+        "amount": {
           "type": "integer",
-          "example": "19999"
-        },
-        "amount_currency": {
-          "type": "string",
-          "example": "USD"
+          "minimum": 0,
+          "example": 19999
         },
         "care_finished_on": {
           "type": "string",
@@ -1001,13 +998,9 @@
           "type": "string",
           "example": "2020-01-01"
         },
-        "discrepancy_cents": {
+        "discrepancy": {
           "type": "integer",
-          "example": "456"
-        },
-        "discrepancy_currency": {
-          "type": "string",
-          "example": "USD"
+          "example": 456
         },
         "paid_on": {
           "type": "string",
@@ -1020,7 +1013,12 @@
       },
       "required": [
         "agency_id",
-        "site_id"
+        "site_id",
+        "amount",
+        "care_finished_on",
+        "care_started_on",
+        "discrepancy",
+        "paid_on"
       ]
     },
     "createUser": {

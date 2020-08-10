@@ -156,7 +156,6 @@ RSpec.describe 'payments API', type: :request do
 
   path '/api/v1/payments/{slug}' do
     parameter name: :slug, in: :path, type: :string
-
     let(:slug) { Payment.create!(payment_params).slug }
 
     get 'retrieves a payment' do
@@ -222,10 +221,10 @@ RSpec.describe 'payments API', type: :request do
         context 'when authenticated' do
           include_context 'authenticated user'
           response '200', 'payment updated' do
-            let(:payment) { { "payment": payment_params.merge("amount_cents": '1000000') } }
+            let(:payment) { { "payment": payment_params.merge("amount_cents": 10000) } } # rubocop:disable Style/NumericLiterals
             run_test! do
               expect(response).to match_response_schema('payment')
-              expect(response.parsed_body['amount_cents']).to eq(1000000)
+              expect(response.parsed_body['amount_cents']).to eq(10000) # rubocop:disable Style/NumericLiterals
             end
           end
 
