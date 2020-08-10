@@ -27,6 +27,7 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     end
   end
 
+
   # PATCH/PUT /payments/:slug
   def update
     if @payment.update(payment_params)
@@ -53,9 +54,11 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     params.require(:payment).permit(:paid_on,
                                     :care_started_on,
                                     :care_finished_on,
+                                    :amount,
                                     :amount_cents,
                                     :amount_currency,
                                     :slug,
+                                    :discrepancy,
                                     :discrepancy_cents,
                                     :discrepancy_currency,
                                     :agency_id, :site_id)
