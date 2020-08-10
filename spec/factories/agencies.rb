@@ -19,3 +19,7 @@ end
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_agencies_on_name_and_state  (name,state) UNIQUE
+#
