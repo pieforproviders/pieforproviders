@@ -11,7 +11,7 @@ class Payment < UuidApplicationRecord
   validates :discrepancy, numericality: true
   validates :paid_on, date_param: true
 
-  before_validation { |payment| payment.slug = generate_slug("#{payment.care_started_on}#{payment.site_id}#{payment.agency_id}") }
+  before_validation { |payment| payment.slug = generate_slug("#{payment.site_id}#{payment.paid_on}#{payment.agency_id}") }
 
   # The money-rails gem specifically requires that the '_cents' suffix be
   # specified when using the "monetize" macro even though the attributes are
