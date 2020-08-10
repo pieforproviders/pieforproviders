@@ -48,6 +48,7 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     @payment = Payment.find_by!(slug: params[:slug])
   end
 
+  # rubocop:disable Metrics/MethodLength
   # Only allow a trusted parameter "white list" through.
   def payment_params
     params.require(:payment).permit(:paid_on,
@@ -62,4 +63,5 @@ class Api::V1::PaymentsController < Api::V1::ApiController
                                     :discrepancy_currency,
                                     :agency_id, :site_id)
   end
+  # rubocop:enable Metrics/MethodLength
 end
