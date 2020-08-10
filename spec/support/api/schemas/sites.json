@@ -1,0 +1,35 @@
+{
+  "type": "array",
+  "required": ["sites"],
+  "items": {
+    "type": "object",
+    "required": [
+      "created_at",
+      "id",
+      "name",
+      "slug",
+      "updated_at",
+      "business_id",
+      "address",
+      "city",
+      "state",
+      "zip",
+      "county"
+    ],
+    "properties": {
+      "active": { "type": "boolean" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "id": { "type": "string", "format": "uuid" },
+      "name": { "type": "string" },
+      "slug": { "type": "string" },
+      "updated_at": { "type": "string", "format": "date-time" },
+      "business_id": { "type": "string", "format": "uuid" },
+      "address": { "type": "string" },
+      "city": { "type": "string" },
+      "state": { "type": "string" },
+      "zip": { "type": "string" },
+      "county": { "type": "string" },
+      "qris_rating": { "type": "string" }
+    }
+  }
+}
