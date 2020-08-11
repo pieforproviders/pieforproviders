@@ -6,12 +6,35 @@ RSpec.describe Payment, type: :model do
   it { should belong_to(:site) }
   it { should belong_to(:agency) }
   it { should validate_numericality_of(:amount).is_greater_than(0.00) }
-  it { should validate_presence_of(:care_finished_on) }
-  it { should validate_presence_of(:care_started_on) }
   it { should validate_numericality_of(:discrepancy) }
-  it { should validate_presence_of(:paid_on) }
   it { is_expected.to monetize(:amount) }
   it { is_expected.to monetize(:discrepancy) }
+
+  let(:invalid_date_msg) { 'Invalid date' }
+  it 'care_finished_on is a valid Date' do
+    pay = build(:payment)
+    pay.valid?
+    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    pay.care_finished_on = nil
+    pay.valid?
+    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+  end
+  it 'care_started_on is a valid Date' do
+    pay = build(:payment)
+    pay.valid?
+    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    pay.care_started_on = nil
+    pay.valid?
+    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+  end
+  it 'paid_on is a valid Date' do
+    pay = build(:payment)
+    pay.valid?
+    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    pay.paid_on = nil
+    pay.valid?
+    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+  end
 end
 
 # == Schema Information
