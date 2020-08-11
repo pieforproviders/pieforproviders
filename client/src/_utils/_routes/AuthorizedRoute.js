@@ -32,8 +32,9 @@ export default function AuthorizedRoute({
 }
 
 AuthorizedRoute.propTypes = {
-  path: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
-  exact: PropTypes.bool
+  exact: PropTypes.bool,
+  path: PropTypes.string.isRequired,
+  title: PropTypes.string
   // permissions: PropTypes.arrayOf(PropTypes.string)
 }
