@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.index ["name", "state"], name: "index_agencies_on_name_and_state", unique: true
   end
 
-  create_table "blocked_tokens", force: :cascade do |t|
+  create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "jti", null: false
     t.datetime "expiration", null: false
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
@@ -66,9 +66,6 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.index ["user_id"], name: "index_children_on_user_id"
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
-  end
-
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "paid_on", null: false
     t.date "care_started_on", null: false
@@ -76,8 +73,8 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "USD", null: false
     t.string "slug", null: false
-    t.integer "discrepancy_cents", default: 0, null: false
-    t.string "discrepancy_currency", default: "USD", null: false
+    t.integer "discrepancy_cents"
+    t.string "discrepancy_currency"
     t.uuid "site_id", null: false
     t.uuid "agency_id", null: false
     t.datetime "created_at", precision: 6, null: false

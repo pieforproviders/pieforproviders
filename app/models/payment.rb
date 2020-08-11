@@ -8,7 +8,6 @@ class Payment < UuidApplicationRecord
   validates :amount, numericality: { greater_than: 0.00 }
   validates :care_finished_on, date_param: true
   validates :care_started_on, date_param: true
-  validates :discrepancy, numericality: true
   validates :paid_on, date_param: true
 
   before_validation { |payment| payment.slug = generate_slug("#{payment.site_id}#{payment.paid_on}#{payment.agency_id}") }
@@ -19,7 +18,7 @@ class Payment < UuidApplicationRecord
   # IOW, you only need to refer to payment.amount or payment.discrepancy ,
   # unlike the following statements.
   monetize :amount_cents
-  monetize :discrepancy_cents
+  monetize :discrepancy_cents, allow_nil: true
 end
 
 # == Schema Information
@@ -31,8 +30,8 @@ end
 #  amount_currency      :string           default("USD"), not null
 #  care_finished_on     :date             not null
 #  care_started_on      :date             not null
-#  discrepancy_cents    :integer          default(0), not null
-#  discrepancy_currency :string           default("USD"), not null
+#  discrepancy_cents    :integer
+#  discrepancy_currency :string
 #  paid_on              :date             not null
 #  slug                 :string           not null
 #  created_at           :datetime         not null

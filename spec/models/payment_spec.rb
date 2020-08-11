@@ -6,7 +6,6 @@ RSpec.describe Payment, type: :model do
   it { should belong_to(:site) }
   it { should belong_to(:agency) }
   it { should validate_numericality_of(:amount).is_greater_than(0.00) }
-  it { should validate_numericality_of(:discrepancy) }
   it { is_expected.to monetize(:amount) }
   it { is_expected.to monetize(:discrepancy) }
 
@@ -35,6 +34,14 @@ RSpec.describe Payment, type: :model do
     pay.valid?
     expect(pay.errors[:date_param]).to include(invalid_date_msg)
   end
+
+  it 'discrepancy can be nil' do
+    pay = create(:payment)
+    pay.update(discrepancy: 10.00)
+    expect(pay.valid?).to be_truthy
+    pay.discrepancy = nil
+    expect(pay.valid?).to be_truthy
+  end
 end
 
 # == Schema Information
@@ -46,8 +53,8 @@ end
 #  amount_currency      :string           default("USD"), not null
 #  care_finished_on     :date             not null
 #  care_started_on      :date             not null
-#  discrepancy_cents    :integer          default(0), not null
-#  discrepancy_currency :string           default("USD"), not null
+#  discrepancy_cents    :integer
+#  discrepancy_currency :string
 #  paid_on              :date             not null
 #  slug                 :string           not null
 #  created_at           :datetime         not null
