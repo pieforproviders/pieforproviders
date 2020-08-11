@@ -3,50 +3,10 @@
 require 'swagger_helper'
 
 RSpec.describe 'payments API', type: :request do
-  let!(:user_params) do
-    {
-      "email": 'fake_email@fake_email.com',
-      "full_name": 'Oliver Twist',
-      "greeting_name": 'Oliver',
-      "language": 'English',
-      "password": 'password1234!',
-      "password_confirmation": 'password1234!',
-      "phone_number": '912-444-5555',
-      "phone_type": 'home',
-      "organization": 'Society for the Promotion of Elfish Welfare',
-      "service_agreement_accepted": 'true',
-      "timezone": 'Central Time (US & Canada)'
-    }
-  end
-  let(:user_id) { User.create(user_params).id }
-  let!(:agency_params) do
-    {
-      "name": 'Agency 1',
-      "state": 'IL'
-    }
-  end
-  let(:agency_id) { Agency.create!(agency_params).id }
-  let(:business_params) do
-    {
-      "name": 'Happy Hearts Child Care',
-      "category": 'licensed_center_single',
-      "user_id": user_id
-    }
-  end
-  let(:business_id) { Business.create!(business_params).id }
-  let!(:site_params) do
-    {
-      "name": 'Evesburg Educational Center',
-      "address": '1200 W Marberry Dr',
-      "city": 'Gatlinburg',
-      "state": 'TN',
-      "zip": '12345',
-      "county": 'Harrison',
-      "qris_rating": '4',
-      "business_id": business_id
-    }
-  end
-  let(:site_id) { Site.create!(site_params).id }
+  let(:user_id) { build(:confirmed_user).id }
+  let(:agency_id) { create(:agency).id }
+  let(:business_id) { build(:business).id }
+  let(:site_id) { create(:site).id }
   let!(:payment_params) do
     {
       "agency_id": agency_id,
