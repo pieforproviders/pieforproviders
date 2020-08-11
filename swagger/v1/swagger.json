@@ -1007,8 +1007,15 @@
           "example": 456
         },
         "discrepancy_currency": {
-          "type": "string",
-          "example": "USD"
+          "anyOf": [
+            {
+              "type": "string",
+              "example": "USD"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "paid_on": {
           "type": "string",
@@ -1018,16 +1025,7 @@
           "type": "string",
           "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
         }
-      },
-      "required": [
-        "agency_id",
-        "site_id",
-        "amount_cents",
-        "care_finished_on",
-        "care_started_on",
-        "discrepancy_cents",
-        "paid_on"
-      ]
+      }
     },
     "createUser": {
       "type": "object",
@@ -1350,7 +1348,22 @@
     }
   },
   "createPayment": {
-    "$ref": "#/definitions/payment"
+    "allOf": [
+      {
+        "$ref": "#/definitions/payment"
+      },
+      {
+        "type": "object",
+        "required": [
+          "agency_id",
+          "site_id",
+          "amount_cents",
+          "care_finished_on",
+          "care_started_on",
+          "paid_on"
+        ]
+      }
+    ]
   },
   "updatePayment": {
     "$ref": "#/definitions/payment"
