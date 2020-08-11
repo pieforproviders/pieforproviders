@@ -26,17 +26,19 @@ end
 #
 # Table name: payments
 #
-#  id                :uuid             not null, primary key
-#  amount_cents      :integer          default(0), not null
-#  care_finished_on  :date             not null
-#  care_started_on   :date             not null
-#  discrepancy_cents :integer          default(0), not null
-#  paid_on           :date             not null
-#  slug              :string           not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  agency_id         :uuid             not null
-#  site_id           :uuid             not null
+#  id                   :uuid             not null, primary key
+#  amount_cents         :integer          default(0), not null
+#  amount_currency      :string           default("USD"), not null
+#  care_finished_on     :date             not null
+#  care_started_on      :date             not null
+#  discrepancy_cents    :integer          default(0), not null
+#  discrepancy_currency :string           default("USD"), not null
+#  paid_on              :date             not null
+#  slug                 :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  agency_id            :uuid             not null
+#  site_id              :uuid             not null
 #
 # Indexes
 #

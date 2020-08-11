@@ -30,17 +30,6 @@ site = Site.where(name: 'Prairie Center', business: business).first_or_create(
   state: 'MT',
   zip: '89234'
 )
-
-
-agency_1 = Agency.create!(
-    name: "Community Child Care Connection",
-    state: "IL"
-)
-agency_2 = Agency.create!(
-    name: "Children's Aid and Family Services",
-    state: "MA"
-)
-
 site_happy_seeds_little_oaks = Site.where(name:'Little Oaks Growing Center',
                                           business: business).first_or_create(
     address: '8201 1st Street',
@@ -51,7 +40,7 @@ site_happy_seeds_little_oaks = Site.where(name:'Little Oaks Growing Center',
     qris_rating: 3,
     active: true
 )
-site_happy_seeds_little_sprouts = Site.where(name:'Little Oaks Growing Center',
+site_happy_seeds_little_sprouts = Site.where(name:'Little Sprouts Growing Center',
                                             business: business).first_or_create(
     address: '123 Bighorn Lane',
     city: 'Elkhorn',
@@ -62,49 +51,38 @@ site_happy_seeds_little_sprouts = Site.where(name:'Little Oaks Growing Center',
     active: true
 )
 
-agency_WI_1 = Agency.where(name: "Wisconsin Children's Services",
+agency_WI = Agency.where(name: "Wisconsin Children's Services",
                            state: 'WI').first_or_create(
     active: true
 )
-
-agency_2 = Agency.where(name: 'Agency 2', state: 'IL').first_or_create(
+agency_1 = Agency.where(name: "Community Child Care Connection",
+                        state: "IL").first_or_create(
+    active: true
+  )
+agency_2 = Agency.where(name: "Children's Aid and Family Services",
+                        state: "MA").first_or_create(
     active: true
 )
 
-
 # ----------------------------------------------------
 # Payments
-
-Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_oaks,
+#
+Payment.where(agency: agency_WI, site: site_happy_seeds_little_oaks,
               paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
     amount_cents: 85_000,
     discrepancy_cents: 25_000
 )
-Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_oaks,
-              paid_on: Date.new(2020,8,1)).first_or_create(
-    care_started_on: Date.new(2020,1,1),
-    care_finished_on: Date.new(2020,3,30),
-    amount_cents: 85_000,
-    discrepancy_cents: 25_000
-)
-Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
+Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
               paid_on: Date.new(2020,8,1)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,3,30),
     amount_cents: 100_000,
     discrepancy_cents: 0
 )
-Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
-              paid_on: Date.new(2020,8,1)).first_or_create(
-    care_started_on: Date.new(2020,1,1),
-    care_finished_on: Date.new(2020,3,30),
-    amount_cents: 100_000,
-    discrepancy_cents: 0
-)
-Payment.where(agency: agency_WI_1, site: site_happy_seeds_little_sprouts,
-              paid_on: Date.new(2020,8,1)).first_or_create(
+Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
+              paid_on: Date.new(2020,8,10)).first_or_create(
     care_started_on: Date.new(2020,1,1),
     care_finished_on: Date.new(2020,5,15),
     amount_cents: 140_000,
