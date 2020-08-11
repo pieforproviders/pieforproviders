@@ -80,8 +80,24 @@ RSpec.describe 'payments API', type: :request do
               expect(response).to match_response_schema('payment')
             end
           end
+          response '201', 'payment created' do
+            let(:payment) do
+              payment_params.delete('discrepancy_cents')
+              { "payment": payment_params }
+            end
+            run_test! do
+              expect(response).to match_response_schema('payment')
+            end
+          end
           response '422', 'invalid request' do
             let(:payment) { { "payment": { "title": 'whatever' } } }
+            run_test!
+          end
+          response '422', 'invalid request' do
+            let(:payment) do
+              payment_params.delete(:amount_cents)
+              { "payment": payment_params }
+            end
             run_test!
           end
         end
@@ -185,6 +201,13 @@ RSpec.describe 'payments API', type: :request do
             run_test! do
               expect(response).to match_response_schema('payment')
               expect(response.parsed_body['amount_cents']).to eq(10_000)
+            end
+          end
+          response '200', 'payment updated' do
+            let(:payment) { { "payment": { "amount_cents": 999 } } }
+            run_test! do
+              expect(response).to match_response_schema('payment')
+              expect(response.parsed_body['amount_cents']).to eq(999)
             end
           end
 
