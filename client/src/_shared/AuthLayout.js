@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import piefulltanlogo from '_assets/piefulltanlogo.svg'
+import pieFullTanLogo from '_assets/pieFullTanLogo.svg'
 import '_assets/styles/layouts.css'
 
 export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
@@ -16,7 +16,7 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
           <div className="medium:col-start-3 medium:col-span-4 large:col-span-4">
             <img
               alt="Pie for Providers logo"
-              src={piefulltanlogo}
+              src={pieFullTanLogo}
               className="w-24 medium:w-48 mt-0 mb-8 medium:mb-16 large:mb-12 mx-auto"
             />
             {rightColumnContent()}
