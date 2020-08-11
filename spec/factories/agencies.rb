@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :agency do
-    name { 'Agency name' }
-    state { 'IL' }
+    name { Faker::Name.agencies }
+    state { Faker::Address.state_abbr }
     active { true }
   end
 end
@@ -15,7 +15,11 @@ end
 #  id         :uuid             not null, primary key
 #  active     :boolean          default(TRUE), not null
 #  name       :string           not null
-#  state      :string
+#  state      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_agencies_on_name_and_state  (name,state) UNIQUE
 #

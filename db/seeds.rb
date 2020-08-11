@@ -31,6 +31,16 @@ site = Site.where(name: 'Prairie Center', business: business).first_or_create(
   zip: '89234'
 )
 
+
+agency_1 = Agency.create!(
+    name: "Community Child Care Connection",
+    state: "IL"
+)
+agency_2 = Agency.create!(
+    name: "Children's Aid and Family Services",
+    state: "MA"
+)
+
 site_happy_seeds_little_oaks = Site.where(name:'Little Oaks Growing Center',
                                           business: business).first_or_create(
     address: '8201 1st Street',
