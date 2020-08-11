@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import '_assets/styles/layouts.css'
 import MenuIcon from '@material-ui/icons/Menu'
+import FaceIcon from '@material-ui/icons/Face'
 
 export function LoggedInLayout({ children, title }) {
   return (
@@ -11,12 +12,17 @@ export function LoggedInLayout({ children, title }) {
         <img
           alt="Pie for Providers logo"
           src={pieSliceLogo}
-          className="w-8 mr-2"
+          className="w-8 mr-2 medium:mr-4"
         />{' '}
-        <div className="text-2xl font-semibold flex-grow">
+        <div className="text-2xl font-semibold flex-grow medium:text-3xl">
           Pie for Providers
         </div>
-        <MenuIcon style={{ fontSize: '36px' }} />
+        <div className="block medium:hidden">
+          <MenuIcon style={{ fontSize: '36px' }} />
+        </div>
+        <div className="hidden medium:block">
+          <FaceIcon style={{ fontSize: '54px' }} />
+        </div>
       </div>
       <div className="w-full bg-mediumGray p-4">
         {title && <div className="text-black text-sm mb-2">{title}</div>}
