@@ -1,35 +1,5 @@
 {
   "type": "array",
   "required": ["payments"],
-  "items": {
-    "type": "object",
-    "required": [
-      "agency_id",
-      "amount_cents",
-      "care_finished_on",
-      "care_started_on",
-      "created_at",
-      "discrepancy_cents",
-      "id",
-      "paid_on",
-      "site_id",
-      "slug",
-      "updated_at"
-    ],
-    "properties": {
-      "agency_id": { "type": "string", "format": "uuid" },
-      "amount_cents": { "type": "integer", "minimum": 0 },
-      "amount_currency": { "type": "string" },
-      "care_finished_on": { "type": "string", "format": "date" },
-      "care_started_on": { "type": "string", "format": "date" },
-      "created_at": { "type": "string" , "format": "date-time" },
-      "discrepancy_cents": { "type": "integer", "minimum": 0 },
-      "discrepancy_currency": { "type": "string" },
-      "id": { "type": "string", "format": "uuid" },
-      "paid_on": { "type": "string", "format": "date" },
-      "site_id": { "type": "string", "format": "uuid" },
-      "slug": { "type": "string" },
-      "updated_at": { "type": "string" , "format": "date-time" }
-    }
-  }
+  "items": {"$ref":"payment.json"}
 }
