@@ -6,7 +6,6 @@
     "care_finished_on",
     "care_started_on",
     "created_at",
-    "discrepancy_cents",
     "id",
     "paid_on",
     "site_id",
@@ -20,8 +19,13 @@
     "care_finished_on": { "type": "string", "format": "date" },
     "care_started_on": { "type": "string", "format": "date" },
     "created_at": { "type": "string" , "format": "date-time" },
-    "discrepancy_cents": { "type": "integer", "minimum": 0 },
-    "discrepancy_currency": { "type": "string" },
+    "discrepancy_cents": { "type": "integer" },
+    "discrepancy_currency": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "null" }
+      ]
+    },
     "id": { "type": "string", "format": "uuid" },
     "paid_on": { "type": "string", "format": "date" },
     "site_id": { "type": "string", "format": "uuid" },

@@ -42,11 +42,15 @@ RSpec.configure do |config|
             care_finished_on: { type: :string, example: '2020-03-15' },
             care_started_on: { type: :string, example: '2020-01-01' },
             discrepancy_cents: { type: :integer, example: 456 },
-            discrepancy_currency: { type: :string, example: 'USD' },
+            discrepancy_currency: {
+              anyOf: [
+                { type: :string, example: 'USD' },
+                { type: :null }
+              ]
+            },
             paid_on: { type: :string, example: '2020-05-20' },
             site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
-          },
-          required: %w[agency_id site_id amount_cents care_finished_on care_started_on discrepancy_cents paid_on]
+          }
         },
         createUser: {
           type: :object,
@@ -216,7 +220,15 @@ RSpec.configure do |config|
           }
         }
       },
-      createPayment: { '$ref': '#/definitions/payment' },
+      createPayment: {
+        allOf: [
+          { '$ref': '#/definitions/payment' },
+          {
+            type: :object,
+            required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
+          }
+        ]
+      },
       updatePayment: { '$ref': '#/definitions/payment' }
     }
   }
