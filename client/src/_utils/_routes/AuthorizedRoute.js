@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
+import { LoggedInLayout } from '_shared'
 
 export default function AuthorizedRoute({
   children,
   exact,
   path,
+  title,
   // permissions,
   ...routeProps
 }) {
@@ -24,7 +26,7 @@ export default function AuthorizedRoute({
   }, [children])
   return (
     <Route exact={exact} path={path} {...routeProps}>
-      {content}
+      <LoggedInLayout title={title}>{content}</LoggedInLayout>
     </Route>
   )
 }

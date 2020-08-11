@@ -43,7 +43,7 @@ const App = () => {
                 rightColumnContent={Login}
               />
             </Route>
-            <AuthorizedRoute exact path="/getting-started">
+            <AuthorizedRoute exact path="/getting-started" title="Setup">
               <GettingStarted />
             </AuthorizedRoute>
             <AuthorizedRoute exact path="/dashboard">
