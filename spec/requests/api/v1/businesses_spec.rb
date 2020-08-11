@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'businesses API', type: :request do
-  let(:user_id) { create(:user).id }
+  let(:user_id) { create(:confirmed_user).id }
   let!(:business_params) do
     {
       "name": 'Happy Hearts Child Care',
@@ -12,257 +12,22 @@ RSpec.describe 'businesses API', type: :request do
     }
   end
 
-  path '/api/v1/businesses' do
-    get 'lists all businesses for a user' do
-      tags 'businesses'
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it lists all items for a user', 'business'
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'businesses found' do
-            run_test! do
-              expect(response).to match_response_schema('businesses')
-            end
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    post 'creates a business' do
-      tags 'businesses'
-      consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :business, in: :body, schema: {
-        '$ref' => '#/definitions/createBusiness'
-      }
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '201', 'business created' do
-            let(:business) { { "business": business_params } }
-            run_test! do
-              expect(response).to match_response_schema('business')
-            end
-          end
-          response '422', 'invalid request' do
-            let(:business) { { "business": { "title": 'whatever' } } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it creates an item for a user', Business, 'business' do
+    let(:item_params) { business_params }
   end
 
-  path '/api/v1/businesses/{slug}' do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { Business.create!(business_params).slug }
+  it_behaves_like 'it retrieves an item with a slug, for a user', Business, 'business' do
+    let(:item_params) { business_params }
+  end
 
-    get 'retrieves a business' do
-      tags 'businesses'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it updates an item with a slug, for a user', Business, 'business',
+                  'name', 'Hogwarts School', nil do
+    let(:item_params) { business_params }
+  end
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'business found' do
-            run_test! do
-              expect(response).to match_response_schema('business')
-            end
-          end
-
-          response '404', 'business not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    put 'updates a business' do
-      tags 'businesses'
-      consumes 'application/json', 'application/xml'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :business, in: :body, schema: {
-        '$ref' => '#/definitions/updateBusiness'
-      }
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'business updated' do
-            let(:business) { { "business": business_params.merge("name": 'Hogwarts School') } }
-            run_test! do
-              expect(response).to match_response_schema('business')
-              expect(response.parsed_body['name']).to eq('Hogwarts School')
-            end
-          end
-
-          response '422', 'business cannot be updated' do
-            let(:business) { { "business": { "name": nil } } }
-            run_test!
-          end
-
-          response '404', 'business not found' do
-            let(:slug) { 'invalid' }
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:business) { { "business": business_params } }
-            run_test!
-          end
-        end
-      end
-    end
-
-    delete 'deletes a business' do
-      tags 'businesses'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '204', 'business deleted' do
-            run_test!
-          end
-
-          response '404', 'business not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it deletes an item with a slug, for a user', Business, 'business' do
+    let(:item_params) { business_params }
   end
 end
