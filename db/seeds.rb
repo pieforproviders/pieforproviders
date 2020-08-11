@@ -30,3 +30,13 @@ site = Site.where(name: 'Prairie Center', business: business).first_or_create(
   state: 'MT',
   zip: '89234'
 )
+
+
+agency_1 = Agency.create!(
+    name: "Community Child Care Connection",
+    state: "IL"
+)
+agency_2 = Agency.create!(
+    name: "Children's Aid and Family Services",
+    state: "MA"
+)
