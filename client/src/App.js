@@ -27,7 +27,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className="text-primaryBlue font-proxima text-sm">
+    <div className="text-primaryBlue font-proxima text-sm h-screen">
       <ErrorBoundary>
         <Router>
           <Switch>
