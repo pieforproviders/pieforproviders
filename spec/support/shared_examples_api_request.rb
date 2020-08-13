@@ -13,7 +13,7 @@ VALID_API_PATH = '/api/v1'
 # Ex: Assume you are testing the API calls for creating a Payment. The
 #     item_params are the parameters needed to create a Payment.
 #
-#      it_behaves_like 'it creates an item for a user', Payment, 'payment' do
+#      it_behaves_like 'it creates an item', Payment, 'payment' do
 #        let(:item_params) {
 #          {
 #            "agency_id": agency_id,
@@ -200,7 +200,7 @@ end
 #      and as part of the schema name in the schema definitions.
 #      It is pluralized and used for the path and the tags.
 #
-RSpec.shared_examples 'it creates an item for a user' do |item_class, item_name|
+RSpec.shared_examples 'it creates an item' do |item_class, item_name|
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 
@@ -253,7 +253,7 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item with a slug, for a user' do |item_class, item_name, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'it updates an item with a slug' do |item_class, item_name, update_attribute, update_valid_value, update_invalid_value|
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 

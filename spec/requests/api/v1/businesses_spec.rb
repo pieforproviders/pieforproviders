@@ -14,7 +14,7 @@ RSpec.describe 'businesses API', type: :request do
 
   it_behaves_like 'it lists all items for a user', 'business'
 
-  it_behaves_like 'it creates an item for a user', Business, 'business' do
+  it_behaves_like 'it creates an item', Business, 'business' do
     let(:item_params) { business_params }
   end
 
@@ -22,7 +22,7 @@ RSpec.describe 'businesses API', type: :request do
     let(:item_params) { business_params }
   end
 
-  it_behaves_like 'it updates an item with a slug, for a user', Business, 'business',
+  it_behaves_like 'it updates an item with a slug', Business, 'business',
                   'name', 'Hogwarts School', nil do
     let(:item_params) { business_params }
   end

@@ -19,7 +19,7 @@ RSpec.describe 'sites API', type: :request do
 
   it_behaves_like 'it lists all items for a user', 'site'
 
-  it_behaves_like 'it creates an item for a user', Site, 'site' do
+  it_behaves_like 'it creates an item', Site, 'site' do
     let(:item_params) { site_params }
   end
 
@@ -27,7 +27,7 @@ RSpec.describe 'sites API', type: :request do
     let(:item_params) { site_params }
   end
 
-  it_behaves_like 'it updates an item with a slug, for a user', Site, 'site',
+  it_behaves_like 'it updates an item with a slug', Site, 'site',
                   'name', 'Hogwarts School', nil do
     let(:item_params) { site_params }
   end
