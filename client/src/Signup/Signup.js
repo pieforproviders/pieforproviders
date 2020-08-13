@@ -30,6 +30,7 @@ export function Signup() {
   })
   const [multiBusiness, setMultiBusiness] = useState(null)
   const { makeRequest } = useApiResponse()
+  const [errors, setErrors] = useState(null)
   let history = useHistory()
 
   const onFinish = async () => {
@@ -42,9 +43,9 @@ export function Signup() {
     if (response.status === 201) {
       history.push('/confirmation')
     } else {
+      const { errors } = await response.json()
+      setErrors(errors[0].detail)
       // TODO: Sentry
-      // TODO: Display error to user
-      console.log('error creating')
     }
   }
 
@@ -292,6 +293,9 @@ export function Signup() {
               message: 'Email address is required'
             }
           ]}
+          hasFeedback={!!errors?.email}
+          validateStatus={errors?.email && 'error'}
+          help={errors?.email && `Email ${errors.email.join(', ')}`}
         >
           <Input
             placeholder="amanda@gmail.com"
