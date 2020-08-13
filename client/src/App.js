@@ -34,13 +34,13 @@ const App = () => {
             <Route path="/signup">
               <AuthLayout
                 backgroundImageClass="auth-image"
-                rightColumnContent={Signup}
+                contentComponent={Signup}
               />
             </Route>
             <Route path="/login">
               <AuthLayout
                 backgroundImageClass="auth-image"
-                rightColumnContent={Login}
+                contentComponent={Login}
               />
             </Route>
             <AuthorizedRoute exact path="/getting-started">
@@ -55,7 +55,7 @@ const App = () => {
             <Route path="/confirmation">
               <AuthLayout
                 backgroundImageClass="auth-image"
-                rightColumnContent={Confirmation}
+                contentComponent={Confirmation}
               />
             </Route>
             <Route exact path="/">

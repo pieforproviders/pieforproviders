@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import piefulltanlogo from '_assets/piefulltanlogo.svg'
 import '_assets/styles/layouts.css'
 
-export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
+export function AuthLayout({
+  backgroundImageClass,
+  contentComponent: ContentComponent
+}) {
   return (
     <div className="grid grid-cols-1 medium:grid-cols-8 large:grid-cols-2 h-screen">
       <div
@@ -19,7 +22,7 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
               src={piefulltanlogo}
               className="w-24 medium:w-48 mt-0 mb-8 medium:mb-16 large:mb-12 mx-auto"
             />
-            {rightColumnContent()}
+            <ContentComponent />
           </div>
         </div>
       </div>
@@ -29,5 +32,5 @@ export function AuthLayout({ backgroundImageClass, rightColumnContent }) {
 
 AuthLayout.propTypes = {
   backgroundImageClass: PropTypes.string,
-  rightColumnContent: PropTypes.func
+  contentComponent: PropTypes.func
 }
