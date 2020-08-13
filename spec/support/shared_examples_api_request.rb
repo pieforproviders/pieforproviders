@@ -112,11 +112,16 @@ end
 
 # ------------------------------------------------------------------------------
 
+def name_from_class(item_class)
+  item_class.name.downcase
+end
+
 #  This is the parameter passed to this example:
 #    item_name [String] - the name of the item (singular).
 #      It is pluralized and used for the path, the tags, and the expected schema.
 #
-RSpec.shared_examples 'it lists all items for a user' do |item_name|
+RSpec.shared_examples 'it lists all items for a user' do |item_class|
+  item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
   path "#{VALID_API_PATH}/#{item_plural}" do
@@ -154,7 +159,8 @@ end
 #      with the item_params, and to get the slug for the created item.
 #    item_name [String] - the name of the item (singular). It will be pluralized to get a list of the items
 #      It is pluralized and used for the path and the tags.
-RSpec.shared_examples 'it retrieves an item with a slug, for a user' do |item_class, item_name|
+RSpec.shared_examples 'it retrieves an item with a slug, for a user' do |item_class|
+  item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
   path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
@@ -200,7 +206,8 @@ end
 #      and as part of the schema name in the schema definitions.
 #      It is pluralized and used for the path and the tags.
 #
-RSpec.shared_examples 'it creates an item' do |item_class, item_name|
+RSpec.shared_examples 'it creates an item' do |item_class|
+  item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 
@@ -253,7 +260,8 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item with a slug' do |item_class, item_name, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'it updates an item with a slug' do |item_class, update_attribute, update_valid_value, update_invalid_value|
+  item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 
@@ -309,7 +317,8 @@ end
 #      with the item_params, and to get the slug for the created item.
 #    item_name [String] - the name of the item (singular). It will be pluralized to get a list of the items
 #      It is pluralized and used for the path and the tags.
-RSpec.shared_examples 'it deletes an item with a slug, for a user' do |item_class, item_name|
+RSpec.shared_examples 'it deletes an item with a slug, for a user' do |item_class|
+  item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
   path "#{VALID_API_PATH}/#{item_plural}/{slug}" do

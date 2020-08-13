@@ -12,22 +12,21 @@ RSpec.describe 'businesses API', type: :request do
     }
   end
 
-  it_behaves_like 'it lists all items for a user', 'business'
+  it_behaves_like 'it lists all items for a user', Business
 
-  it_behaves_like 'it creates an item', Business, 'business' do
+  it_behaves_like 'it creates an item', Business do
     let(:item_params) { business_params }
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', Business, 'business' do
+  it_behaves_like 'it retrieves an item with a slug, for a user', Business do
     let(:item_params) { business_params }
   end
 
-  it_behaves_like 'it updates an item with a slug', Business, 'business',
-                  'name', 'Hogwarts School', nil do
+  it_behaves_like 'it updates an item with a slug', Business, 'name', 'Hogwarts School', nil do
     let(:item_params) { business_params }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', Business, 'business' do
+  it_behaves_like 'it deletes an item with a slug, for a user', Business do
     let(:item_params) { business_params }
   end
 end

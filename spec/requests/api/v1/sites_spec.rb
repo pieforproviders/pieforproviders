@@ -17,22 +17,21 @@ RSpec.describe 'sites API', type: :request do
     }
   end
 
-  it_behaves_like 'it lists all items for a user', 'site'
+  it_behaves_like 'it lists all items for a user', Site
 
-  it_behaves_like 'it creates an item', Site, 'site' do
+  it_behaves_like 'it creates an item', Site do
     let(:item_params) { site_params }
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', Site, 'site' do
+  it_behaves_like 'it retrieves an item with a slug, for a user', Site do
     let(:item_params) { site_params }
   end
 
-  it_behaves_like 'it updates an item with a slug', Site, 'site',
-                  'name', 'Hogwarts School', nil do
+  it_behaves_like 'it updates an item with a slug', Site, 'name', 'Hogwarts School', nil do
     let(:item_params) { site_params }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', Site, 'site' do
+  it_behaves_like 'it deletes an item with a slug, for a user', Site do
     let(:item_params) { site_params }
   end
 end
