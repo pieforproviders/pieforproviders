@@ -20,12 +20,7 @@
     "care_started_on": { "type": "string", "format": "date" },
     "created_at": { "type": "string" , "format": "date-time" },
     "discrepancy_cents": { "type": "integer" },
-    "discrepancy_currency": {
-      "anyOf": [
-        { "type": "string" },
-        { "type": "null" }
-      ]
-    },
+    "discrepancy_currency": { "$ref": "currency_or_null.json" },
     "id": { "type": "string", "format": "uuid" },
     "paid_on": { "type": "string", "format": "date" },
     "site_id": { "type": "string", "format": "uuid" },
