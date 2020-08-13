@@ -23,7 +23,7 @@ end
 #  care_finished_on     :date             not null
 #  care_started_on      :date             not null
 #  discrepancy_cents    :integer
-#  discrepancy_currency :string
+#  discrepancy_currency :string           default("USD")
 #  paid_on              :date             not null
 #  slug                 :string           not null
 #  created_at           :datetime         not null
@@ -33,6 +33,5 @@ end
 #
 # Indexes
 #
-#  index_payments_on_site_id                (site_id)
 #  index_payments_on_site_id_and_agency_id  (site_id,agency_id)
 #

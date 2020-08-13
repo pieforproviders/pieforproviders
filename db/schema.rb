@@ -74,13 +74,12 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.string "amount_currency", default: "USD", null: false
     t.string "slug", null: false
     t.integer "discrepancy_cents"
-    t.string "discrepancy_currency"
+    t.string "discrepancy_currency", default: "USD"
     t.uuid "site_id", null: false
     t.uuid "agency_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["site_id", "agency_id"], name: "index_payments_on_site_id_and_agency_id"
-    t.index ["site_id"], name: "index_payments_on_site_id"
   end
 
   create_table "sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
