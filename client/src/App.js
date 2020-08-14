@@ -16,6 +16,7 @@ import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CSVImport from './CSVImport'
 import { AuthLayout } from '_shared'
+import { isUserLoggedIn } from '_utils'
 
 const App = () => {
   useEffect(() => {
@@ -59,7 +60,7 @@ const App = () => {
               />
             </Route>
             <Route exact path="/">
-              <Redirect to={'/login'} />
+              <Redirect to={isUserLoggedIn ? '/dashboard' : '/login'} />
             </Route>
             <Route component={NotFound} />
           </Switch>
