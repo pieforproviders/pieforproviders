@@ -27,7 +27,7 @@ const App = () => {
   }, [])
 
   return (
-    <div className="text-primaryBlue font-proxima text-sm">
+    <div className="text-primaryBlue font-proxima text-sm h-screen">
       <ErrorBoundary>
         <Router>
           <Switch>
@@ -43,7 +43,7 @@ const App = () => {
                 contentComponent={Login}
               />
             </Route>
-            <AuthorizedRoute exact path="/getting-started">
+            <AuthorizedRoute exact path="/getting-started" title="Setup">
               <GettingStarted />
             </AuthorizedRoute>
             <AuthorizedRoute exact path="/dashboard">
