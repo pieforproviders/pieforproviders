@@ -14,7 +14,7 @@ import Signup from './Signup'
 import Confirmation from './Signup/Confirmation'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
-import CSVImport from './CSVImport'
+import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { isUserLoggedIn } from '_utils'
 
@@ -50,8 +50,8 @@ const App = () => {
             <AuthorizedRoute exact path="/dashboard">
               <Dashboard />
             </AuthorizedRoute>
-            <AuthorizedRoute exact path="/csv-import">
-              <CSVImport />
+            <AuthorizedRoute exact path="/cases/import">
+              <CasesImport />
             </AuthorizedRoute>
             <Route path="/confirmation">
               <AuthLayout
