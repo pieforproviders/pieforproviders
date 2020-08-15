@@ -25,7 +25,9 @@ const Confirmation = () => {
   return (
     <>
       <Title className="text-center">Thanks for signing up!</Title>
-      <Title level={3} className="text-center">We’ve sent you an email to verify your account.</Title>
+      <Title level={3} className="text-center">
+        We’ve sent you an email to verify your account.
+      </Title>
       <Divider />
       <div className="text-left">
         <div className="mb-2">
