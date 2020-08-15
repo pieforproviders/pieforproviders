@@ -1,0 +1,15 @@
+{
+  "welcome": "Welcome",
+  "english": "English",
+  "spanish": "Spanish",
+  "signup": "Sign Up",
+  "login": "Log In",
+  "email": "Email",
+  "password": "Password",
+  "emailAddressRequired": "Email address is required",
+  "passwordRequired": "Password is required",
+  "forgotPassword": "Forgot your password?",
+  "resetPasswordText": "No worries. Click the button below and check your email to reset it.",
+  "resetPassword": "Reset Password",
+  "pieforProvidersLogoAltText": "Pie for Providers logo"
+}

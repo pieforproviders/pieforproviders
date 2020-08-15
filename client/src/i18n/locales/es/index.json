@@ -1,0 +1,15 @@
+{
+  "welcome": "Bienvenida",
+  "english": "Inglés",
+  "spanish": "Español",
+  "signup": "Registrate",
+  "login": "Inicia sesión",
+  "email": "Correo",
+  "password": "Contraseña",
+  "emailAddressRequired": "Correo electrónico es requerido",
+  "passwordRequired": "Contraseña es requerido",
+  "forgotPassword": "Olvidaste tu contraseña?",
+  "resetPasswordText": "No te preocupes. Haz clic en el botón de abajo y revisa tu correo electrónico para restablecerlo.",
+  "resetPassword": "Restablecer la contraseña",
+  "pieforProvidersLogoAltText": "Logo de Pie for Providers"
+}
