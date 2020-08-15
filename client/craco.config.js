@@ -19,8 +19,10 @@ module.exports = {
               '@error-color': '#D64B3A',
               '@highlight-color': '#D64B3A',
               '@primary-4': '#F3F8FA',
-              '@heading-color': '@primary-color',
 
+              // Typography
+              'line-height-base': '1.14285',
+              '@heading-color': '@primary-color',
               '@heading-1-size': 'ceil(@font-size-base * 2.57)',
               '@heading-2-size': 'ceil(@font-size-base * 2)',
               '@heading-3-size': 'ceil(@font-size-base * 1.57)',
