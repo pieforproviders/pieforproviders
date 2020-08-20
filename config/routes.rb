@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       resources :businesses, param: :slug
       resources :sites, param: :slug
       resources :children, param: :slug
+      resources :payments, param: :slug
     end
   end
 

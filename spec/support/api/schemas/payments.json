@@ -1,0 +1,5 @@
+{
+  "type": "array",
+  "required": ["payments"],
+  "items": {"$ref":"payment.json"}
+}
