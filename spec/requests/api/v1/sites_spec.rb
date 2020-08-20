@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'sites API', type: :request do
-  let(:business_id) { create(:business).id }
+  let(:business_id) { create(:business, user: create(:confirmed_user)).id }
   let!(:site_params) do
     {
       "name": 'Evesburg Educational Center',
@@ -17,257 +17,21 @@ RSpec.describe 'sites API', type: :request do
     }
   end
 
-  path '/api/v1/sites' do
-    get 'lists all sites for a user' do
-      tags 'sites'
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it lists all items for a user', Site
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'sites found' do
-            run_test! do
-              expect(response).to match_response_schema('sites')
-            end
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    post 'creates a site' do
-      tags 'sites'
-      consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :site, in: :body, schema: {
-        '$ref' => '#/definitions/createSite'
-      }
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '201', 'site created' do
-            let(:site) { { "site": site_params } }
-            run_test! do
-              expect(response).to match_response_schema('site')
-            end
-          end
-          response '422', 'invalid request' do
-            let(:site) { { "site": { "title": 'whatever' } } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it creates an item', Site do
+    let(:item_params) { site_params }
   end
 
-  path '/api/v1/sites/{slug}' do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { Site.create!(site_params).slug }
+  it_behaves_like 'it retrieves an item with a slug, for a user', Site do
+    let(:item_params) { site_params }
+  end
 
-    get 'retrieves a site' do
-      tags 'sites'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it updates an item with a slug', Site, 'name', 'Hogwarts School', nil do
+    let(:item_params) { site_params }
+  end
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'site found' do
-            run_test! do
-              expect(response).to match_response_schema('site')
-            end
-          end
-
-          response '404', 'site not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    put 'updates a site' do
-      tags 'sites'
-      consumes 'application/json', 'application/xml'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :site, in: :body, schema: {
-        '$ref' => '#/definitions/updateSite'
-      }
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'site updated' do
-            let(:site) { { "site": site_params.merge("name": 'Hogwarts School') } }
-            run_test! do
-              expect(response).to match_response_schema('site')
-              expect(response.parsed_body['name']).to eq('Hogwarts School')
-            end
-          end
-
-          response '422', 'site cannot be updated' do
-            let(:site) { { "site": { "name": nil } } }
-            run_test!
-          end
-
-          response '404', 'site not found' do
-            let(:slug) { 'invalid' }
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:site) { { "site": site_params } }
-            run_test!
-          end
-        end
-      end
-    end
-
-    delete 'deletes a site' do
-      tags 'sites'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '204', 'site deleted' do
-            run_test!
-          end
-
-          response '404', 'site not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it deletes an item with a slug, for a user', Site do
+    let(:item_params) { site_params }
   end
 end
