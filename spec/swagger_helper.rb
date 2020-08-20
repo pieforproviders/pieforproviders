@@ -33,6 +33,25 @@ RSpec.configure do |config|
       #   }
       # },
       definitions: {
+        payment: {
+          type: :object,
+          properties: {
+            agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+            amount_cents: { type: :integer, minimum: 0, example: 19_999 },
+            amount_currency: { type: :string, example: 'USD' },
+            care_finished_on: { type: :string, example: '2020-03-15' },
+            care_started_on: { type: :string, example: '2020-01-01' },
+            discrepancy_cents: { type: :integer, example: 456 },
+            discrepancy_currency: {
+              anyOf: [
+                { type: :string, example: 'USD' },
+                { type: :null }
+              ]
+            },
+            paid_on: { type: :string, example: '2020-05-20' },
+            site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+          }
+        },
         createUser: {
           type: :object,
           properties: {
@@ -200,7 +219,17 @@ RSpec.configure do |config|
             }
           }
         }
-      }
+      },
+      createPayment: {
+        allOf: [
+          { '$ref': '#/definitions/payment' },
+          {
+            type: :object,
+            required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
+          }
+        ]
+      },
+      updatePayment: { '$ref': '#/definitions/payment' }
     }
   }
 
