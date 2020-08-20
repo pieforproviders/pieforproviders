@@ -5,6 +5,7 @@
   "signup": "Sign Up",
   "or": "or",
   "login": "Log In",
+  "logout": "Log Out",
   "email": "Email",
   "password": "Password",
   "emailAddressRequired": "Email address is required",
@@ -45,5 +46,17 @@
   "passwordConfirmationRequired": "Password confirmation is required",
   "passwordConfirmationMatch": "The two passwords that you entered do not match!",
   "passwordConfirmationPlaceholder": "Confirm your password",
-  "termsRequired": "Please read and agree to our Terms of Service"
+  "termsRequired": "Please read and agree to our Terms of Service",
+  "reportFeedback": "Report feedback",
+  "gettingStartedBusinesses": "Tell us about the businesses and sites you manage, so we know which subsidy payment rates to apply to your cases.",
+  "gettingStartedBusinessesTitle": "Add your business name",
+  "gettingStartedUpload": "Upload a spreadsheet with the names and birthdays of the subsidy-eligible children you serve. In most cases, you can download this from other software you use. This helps us calculate each child's subsidy payment rate.",
+  "gettingStartedUploadTitle": "Upload & review your cases",
+  "gettingStartedDetails": "We'll need some more details about each subsidy case, like how many days the child was approved for. You can find most of this on the approval letter from the state. After you enter this, you'll only have to update once a year for most children.",
+  "gettingStartedDetailsTitle": "Add your business info",
+  "gettingStartedAgencies": "Let us know which agencies provide subsidies for which children, so we can keep track of your monthly billing cycles.",
+  "gettingStartedAgenciesTitle": "Assign children to agencies",
+  "gettingStartedWelcome": "Welcome to Pie for Providers, ",
+  "gettingStartedTitle": "Get Started",
+  "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!"
 }

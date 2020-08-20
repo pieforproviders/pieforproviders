@@ -5,60 +5,47 @@ import AssignmentIcon from '@material-ui/icons/Assignment'
 import BusinessIcon from '@material-ui/icons/Business'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
+import { useTranslation } from 'react-i18next'
 
-const cards = [
-  {
-    description: `
-      Tell us about the businesses and sites you manage,
-      so we know which subsidy payment rates to apply to your cases.
-    `,
-    icon: <BusinessIcon />,
-    title: 'Add your business name'
-  },
-  {
-    description: `
-      Upload a spreadsheet with the names and birthdays of the subsidy-eligible children you serve.
-      In most cases, you can download this from other software you use.
-      This helps us calculate each child's subsidy payment rate.
-    `,
-    icon: <CloudUploadIcon />,
-    title: 'Upload & review your cases'
-  },
-  {
-    description: `
-      We'll need some more details about each subsidy case,
-      like how many days the child was approved for.
-      You can find most of this on the approval letter from the state.
-      After you enter this, you'll only have to update once a year for most children.
-    `,
-    icon: <PlaylistAddIcon />,
-    title: 'Add your business info'
-  },
-  {
-    description: `
-      Let us know which agencies provide subsidies for which children,
-      so we can keep track of your monthly billing cycles.
-    `,
-    icon: <AssignmentIcon />,
-    title: 'Assign children to agencies'
-  }
-]
+const userGreetingName = 'Amanda'
 
 export function GettingStarted() {
+  const { t } = useTranslation()
+  const cards = [
+    {
+      description: t('gettingStartedBusinesses'),
+      icon: <BusinessIcon />,
+      title: t('gettingStartedBusinessesTitle')
+    },
+    {
+      description: t('gettingStartedUpload'),
+      icon: <CloudUploadIcon />,
+      title: t('gettingStartedUploadTitle')
+    },
+    {
+      description: t('gettingStartedDetails'),
+      icon: <PlaylistAddIcon />,
+      title: t('gettingStartedDetailsTitle')
+    },
+    {
+      description: t('gettingStartedAgencies'),
+      icon: <AssignmentIcon />,
+      title: t('gettingStartedAgenciesTitle')
+    }
+  ]
   return (
     <div className="getting-started text-gray1">
       <div className="getting-started-content-area">
         <Typography.Title className="text-center">
-          Welcome to Pie for Providers, Amanda!
+          {t('gettingStartedWelcome')}
+          {userGreetingName}!
         </Typography.Title>
 
         <div className="mb-8">
-          <Typography.Title level={3}>Get Started</Typography.Title>
-          <p>
-            Follow these instructions to set up your case dashboard. This should
-            take about 15 minutes, and you&apos;ll only have to do this once.
-            Get ready to increase your slice of the pie!
-          </p>
+          <Typography.Title level={3}>
+            {t('gettingStartedTitle')}
+          </Typography.Title>
+          <p>{t('gettingStartedInstructions')}</p>
         </div>
 
         <Typography.Title level={3}>Steps</Typography.Title>
@@ -85,7 +72,7 @@ export function GettingStarted() {
             size="large"
             className="uppercase"
           >
-            Get started
+            {t('gettingStartedTitle')}
           </Button>
         </div>
       </div>
