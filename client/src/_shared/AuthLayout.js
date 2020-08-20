@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { Select } from 'antd'
 import pieFullTanLogo from '_assets/pieFullTanLogo.svg'
 import '_assets/styles/layouts.css'
-
-const { Option } = Select
+import { ActionLink } from '_shared/ActionLink'
 
 export function AuthLayout({
   backgroundImageClass,
@@ -20,15 +18,13 @@ export function AuthLayout({
       />
       <div className="w-full medium:col-span-8 large:col-auto px-4 medium:px-8 overflow-y-scroll mt-8">
         <div className="flex flex-col">
-          <Select
-            value={i18n.language}
-            onChange={language => i18n.changeLanguage(language)}
-            className="self-end"
-            bordered={false}
-          >
-            <Option value="en">{t('english')}</Option>
-            <Option value="es">{t('spanish')}</Option>
-          </Select>
+          <ActionLink
+            onClick={() =>
+              i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
+            }
+            text={i18n.language === 'en' ? 'Español' : 'English'}
+            classes="text-right no-underline"
+          />
         </div>
         <div className="text-center large:text-left large:col-span-3 medium:grid medium:grid-cols-8 large:grid-cols-6">
           <div className="medium:col-start-3 medium:col-span-4 large:col-span-4">

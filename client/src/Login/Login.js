@@ -82,6 +82,7 @@ export function Login() {
         <Form.Item>
           <Button
             type="primary"
+            shape="round"
             htmlType="submit"
             className="mt-2 font-semibold uppercase"
           >
@@ -105,6 +106,7 @@ export function Login() {
           <Button
             type="secondary"
             htmlType="button"
+            shape="round"
             className="font-semibold uppercase"
           >
             {t('resetPassword')}
