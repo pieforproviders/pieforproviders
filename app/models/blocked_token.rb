@@ -9,7 +9,7 @@ end
 #
 # Table name: blocked_tokens
 #
-#  id         :uuid             not null, primary key
+#  id         :bigint           not null, primary key
 #  expiration :datetime         not null
 #  jti        :string           not null
 #

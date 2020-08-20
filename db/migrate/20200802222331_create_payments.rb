@@ -4,7 +4,7 @@ class CreatePayments < ActiveRecord::Migration[6.0]
       t.date :paid_on, null: false
       t.date :care_started_on, null: false
       t.date :care_finished_on, null: false
-      t.monetize :amount, null: false, default: 0
+      t.monetize :amount, null: false
       t.string :slug, null: false
       t.monetize :discrepancy, amount: { null: true, default: nil }, currency: { null: true, default: 'USD' }
       t.uuid :site_id, null: false
