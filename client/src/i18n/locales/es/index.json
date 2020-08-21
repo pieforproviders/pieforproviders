@@ -38,7 +38,7 @@
   "phoneNumberInvalid": "El número de teléfono no es válido",
   "preferredLanguage": "Idioma preferido",
   "preferredLanguageRequired": "Se requiere el idioma preferido",
-  "emailInvalid": "La dirección de correo electrónico no es válida",
+  "emailInvalid": "El correo electrónico no es válido",
   "emailRequired": "Se requiere una dirección de correo electrónico",
   "passwordInvalid": "La contraseña debe tener un mínimo de 8 caracteres e incluir números y letras",
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
