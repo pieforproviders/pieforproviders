@@ -42,7 +42,7 @@
   "emailRequired": "Se requiere una dirección de correo electrónico",
   "passwordInvalid": "La contraseña debe tener un mínimo de 8 caracteres e incluir números y letras",
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
-  "passwordConfirmation": "Confirmar contraseña",
+  "passwordConfirmation": "Confirma la contraseña",
   "passwordConfirmationRequired": "Se requiere confirmación de contraseña",
   "passwordConfirmationMatch": "¡Las dos contraseñas que ingresó no coinciden!",
   "passwordConfirmationPlaceholder": "Confirme su contraseña",
