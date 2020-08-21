@@ -26,7 +26,7 @@
   "greetingNameRequired": "El nombre de saludo es obligatorio",
   "greetingNamePlaceholder": "Amanda",
   "multiBusiness": "¿Gestionas casos del subsidio para varias empresas de cuidado infantil?",
-  "multiBusinessRequired": "Seleccione su tipo de empresa",
+  "multiBusinessRequired": "Selecciona su tipo de empresa",
   "multiBusinessPlaceholder": "Elija uno",
   "multiBusinessFalse": "No, solo gestiono 1 negocio de cuidado infantil",
   "multiBusinessTrue": "Sí, gestiono varios negocios de cuidado infantil",
