@@ -3,10 +3,13 @@
 require 'swagger_helper'
 
 RSpec.describe 'payments API', type: :request do
-  let(:user_id) { build(:confirmed_user).id }
+  # Use confirmed_user so that no confirimation email is sent
+  let(:confirmed_user) { create(:confirmed_user) }
+  let(:user_id) { confirmed_user.id }
   let(:agency_id) { create(:agency).id }
-  let(:business_id) { build(:business).id }
-  let(:site_id) { create(:site).id }
+  let(:created_business) { create(:business, user: confirmed_user) }
+  let(:business_id) { created_business.id }
+  let(:site_id) { create(:site, business: created_business).id }
   let!(:payment_params) do
     {
       "agency_id": agency_id,
@@ -19,280 +22,30 @@ RSpec.describe 'payments API', type: :request do
     }
   end
 
-  path '/api/v1/payments' do
-    get 'lists all payments for a user' do
-      tags 'payments'
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it lists all items for a user', Payment
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'payments found' do
-            run_test! do
-              expect(response).to match_response_schema('payments')
-            end
-          end
-        end
+  it_behaves_like 'it creates an item', Payment do
+    let(:item_params) { payment_params }
+  end
 
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    post 'creates a payment' do
-      tags 'payments'
-      consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :payment, in: :body, schema: {
-        '$ref' => '#/definitions/createPayment'
-      }
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '201', 'payment created' do
-            let(:payment) { { "payment": payment_params } }
-            run_test! do
-              expect(response).to match_response_schema('payment')
-            end
-          end
-          response '201', 'payment created' do
-            let(:payment) do
-              payment_params.delete('discrepancy_cents')
-              { "payment": payment_params }
-            end
-            run_test! do
-              expect(response).to match_response_schema('payment')
-            end
-          end
-          response '422', 'invalid request' do
-            let(:payment) { { "payment": { "title": 'whatever' } } }
-            run_test!
-          end
-          response '422', 'invalid request' do
-            let(:payment) do
-              payment_params.delete(:amount_cents)
-              { "payment": payment_params }
-            end
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
+  describe 'creates a payment without discrepancy_cents param' do
+    it_behaves_like 'it creates an item', Payment do
+      let(:item_params) do
+        payment_params.delete('discrepancy_cents')
+        payment_params
       end
     end
   end
 
-  path '/api/v1/payments/{slug}' do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { Payment.create!(payment_params).slug }
+  it_behaves_like 'it retrieves an item with a slug, for a user', Payment do
+    let(:item_params) { payment_params }
+  end
 
-    get 'retrieves a payment' do
-      tags 'payments'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it updates an item with a slug', Payment, 'amount_cents', 99_999, nil do
+    let(:item_params) { payment_params }
+  end
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'payment found' do
-            run_test! do
-              expect(response).to match_response_schema('payment')
-            end
-          end
-
-          response '404', 'payment not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    put 'updates a payment' do
-      tags 'payments'
-      consumes 'application/json', 'application/xml'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :payment, in: :body, schema: {
-        '$ref' => '#/definitions/updatePayment'
-      }
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'payment updated' do
-            let(:payment) { { "payment": payment_params.merge("amount_cents": 10_000) } }
-            run_test! do
-              expect(response).to match_response_schema('payment')
-              expect(response.parsed_body['amount_cents']).to eq(10_000)
-            end
-          end
-          response '200', 'payment updated' do
-            let(:payment) { { "payment": { "amount_cents": 999 } } }
-            run_test! do
-              expect(response).to match_response_schema('payment')
-              expect(response.parsed_body['amount_cents']).to eq(999)
-            end
-          end
-
-          response '422', 'payment cannot be updated' do
-            let(:payment) { { "payment": { "agency_id": nil } } }
-            run_test!
-          end
-
-          response '404', 'payment not found' do
-            let(:slug) { 'invalid' }
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:payment) { { "payment": payment_params } }
-            run_test!
-          end
-        end
-      end
-    end
-
-    delete 'deletes a payment' do
-      tags 'payments'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '204', 'payment deleted' do
-            run_test!
-          end
-
-          response '404', 'payment not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it deletes an item with a slug, for a user', Payment do
+    let(:item_params) { payment_params }
   end
 end
