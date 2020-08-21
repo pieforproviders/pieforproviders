@@ -11,7 +11,7 @@ export function ActionLink({ onClick, text, classes }) {
     <>
       <Button
         onClick={handleClick}
-        className={`${classes} focus:shadow-none`}
+        className={`${classes ? classes : ''} focus:shadow-none`}
         type="link"
       >
         {text}
@@ -21,7 +21,7 @@ export function ActionLink({ onClick, text, classes }) {
 }
 
 ActionLink.propTypes = {
-  onClick: PropTypes.func,
-  text: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired,
   classes: PropTypes.string
 }

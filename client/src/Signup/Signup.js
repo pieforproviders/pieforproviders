@@ -8,6 +8,7 @@ import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import i18n from 'i18n'
 
 const { Option } = Select
 
@@ -20,7 +21,7 @@ export function Signup() {
     fullName: null,
     greetingName: null,
     email: null,
-    language: 'en',
+    language: i18n.language,
     organization: null,
     password: null,
     passwordConfirmation: null,
