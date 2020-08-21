@@ -44,7 +44,7 @@
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
   "passwordConfirmation": "Confirma la contraseña",
   "passwordConfirmationRequired": "Se requiere confirmación de contraseña",
-  "passwordConfirmationMatch": "¡Las dos contraseñas que ingresó no coinciden!",
+  "passwordConfirmationMatch": "¡Las dos contraseñas que ingresaste no coinciden!",
   "passwordConfirmationPlaceholder": "Confirme su contraseña",
   "termsRequired": "Lea y acepte nuestras Condiciones de servicio",
   "reportFeedback": "Informar comentarios",
