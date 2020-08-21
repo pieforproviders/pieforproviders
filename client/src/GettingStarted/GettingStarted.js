@@ -72,7 +72,7 @@ export function GettingStarted() {
             size="large"
             className="uppercase"
           >
-            {t('gettingStartedTitle')}
+            {t('gettingStartedButton')}
           </Button>
         </div>
       </div>

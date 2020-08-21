@@ -58,5 +58,6 @@
   "gettingStartedAgenciesTitle": "Assign children to agencies",
   "gettingStartedWelcome": "Welcome to Pie for Providers, ",
   "gettingStartedTitle": "Let's Get Started",
-  "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!"
+  "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!",
+  "gettingStartedButton": "Get Started"
 }
