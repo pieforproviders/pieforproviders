@@ -21,6 +21,7 @@ module.exports = {
               '@primary-4': '#F3F8FA',
 
               // Typography
+              'text-color': '#333333',
               'line-height-base': '1.14285',
               '@heading-color': '@primary-color',
               '@heading-1-size': 'ceil(@font-size-base * 2.57)',
