@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Form, Input, Button, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
@@ -7,6 +8,7 @@ export function Login() {
   const [apiError, setApiError] = useState(null)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
+  const { t } = useTranslation()
 
   const onFinish = async values => {
     const response = await makeRequest({
@@ -35,9 +37,9 @@ export function Login() {
     <>
       <p className="mb-4">
         <Link to="/signup" className="uppercase">
-          Sign Up
+          {t('signup')}
         </Link>{' '}
-        or <span className="uppercase font-bold">Log In</span>
+        or <span className="uppercase font-bold">{t('login')}</span>
       </p>
 
       {apiError && (
@@ -51,12 +53,12 @@ export function Login() {
       <Form layout="vertical" name="login" onFinish={onFinish}>
         <Form.Item
           className="text-primaryBlue"
-          label="Email"
+          label={t('email')}
           name="email"
           rules={[
             {
               required: true,
-              message: 'Email address is required'
+              message: t('emailAddressRequired')
             }
           ]}
         >
@@ -65,12 +67,12 @@ export function Login() {
 
         <Form.Item
           className="text-primaryBlue"
-          label="Password"
+          label={t('password')}
           name="password"
           rules={[
             {
               required: true,
-              message: 'Password is required'
+              message: t('passwordRequired')
             }
           ]}
         >
@@ -80,10 +82,11 @@ export function Login() {
         <Form.Item>
           <Button
             type="primary"
+            shape="round"
             htmlType="submit"
             className="mt-2 font-semibold uppercase"
           >
-            Log In
+            {t('login')}
           </Button>
         </Form.Item>
       </Form>
@@ -95,19 +98,18 @@ export function Login() {
       >
         <div className="mb-6">
           <div className="text-2xl font-semibold mb-1 text-primaryBlue">
-            Forgot your password?
+            {t('forgotPassword')}
           </div>
-          <div>
-            No worries. Click the button below and check your email to reset it.
-          </div>
+          <div>{t('resetPasswordText')}</div>
         </div>
         <Form.Item>
           <Button
             type="secondary"
             htmlType="button"
+            shape="round"
             className="font-semibold uppercase"
           >
-            Reset Password
+            {t('resetPassword')}
           </Button>
         </Form.Item>
       </Form>

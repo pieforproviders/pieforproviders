@@ -4,6 +4,7 @@ import App from './App'
 import './App.less'
 import './tailwind.generated.css'
 import * as Sentry from '@sentry/browser'
+import './i18n'
 
 if (process.env.NODE_ENV === 'production' && process.env.REACT_APP_SENTRY_DSN) {
   Sentry.init({

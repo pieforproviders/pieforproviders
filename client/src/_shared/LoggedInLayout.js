@@ -3,20 +3,22 @@ import PropTypes from 'prop-types'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Breadcrumb } from 'antd'
 import '_assets/styles/layouts.css'
+import { useTranslation } from 'react-i18next'
 
 export function LoggedInLayout({ children, title }) {
+  const { t } = useTranslation()
   return (
     <>
       <div className="w-full shadow p-4 flex items-center">
         <img
-          alt="Pie for Providers logo"
+          alt={t('pieforProvidersLogoAltText')}
           src={pieSliceLogo}
           className="w-8 mr-2"
-        />{' '}
+        />
         <div className="text-2xl font-semibold flex-grow">
           Pie for Providers
         </div>
-        <div>Logout</div>
+        <div>{t('logout')}</div>
       </div>
       <div className="w-full medium:h-full bg-mediumGray p-4">
         {title && (

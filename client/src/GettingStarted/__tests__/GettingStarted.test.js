@@ -1,10 +1,10 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import { GettingStarted } from '../GettingStarted'
+import { renderWithi18next } from 'setupTests'
 
 describe('<GettingStarted />', () => {
   it('renders the GettingStarted container', () => {
-    const { container } = render(<GettingStarted />)
+    const { container } = renderWithi18next(<GettingStarted />)
     expect(container).toHaveTextContent('Welcome to Pie for Providers')
   })
 })

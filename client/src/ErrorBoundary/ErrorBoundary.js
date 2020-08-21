@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as Sentry from '@sentry/browser'
+// TODO internationalization on "report feedback" button
 
 export class ErrorBoundary extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ export class ErrorBoundary extends Component {
             Sentry.showReportDialog({ eventId: this.state.eventId })
           }
         >
-          Report feedback
+          Report Feedback
         </button>
       )
     }

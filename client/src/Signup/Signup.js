@@ -3,10 +3,12 @@ import ReactGA from 'react-ga'
 import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
+import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import i18n from 'i18n'
 
 const { Option } = Select
 
@@ -19,7 +21,7 @@ export function Signup() {
     fullName: null,
     greetingName: null,
     email: null,
-    language: 'en',
+    language: i18n.language,
     organization: null,
     password: null,
     passwordConfirmation: null,
@@ -32,6 +34,7 @@ export function Signup() {
   const { makeRequest } = useApiResponse()
   const [errors, setErrors] = useState(null)
   let history = useHistory()
+  const { t } = useTranslation()
 
   const onFinish = async () => {
     localStorage.setItem('pieMultiBusiness', multiBusiness)
@@ -65,13 +68,14 @@ export function Signup() {
     // The span with the asterisk is to match Ant Design's built-in required styling
     return (
       <>
-        <span className="text-red1">* </span>I have read and agree to the{' '}
+        <span className="text-red1">* </span>
+        {t('agreeToTerms')}
         <a
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Pie for Providers Terms of Use
+          {t('termsOfUse')}
         </a>
       </>
     )
@@ -80,25 +84,26 @@ export function Signup() {
   return (
     <>
       <p className="mb-4">
-        <span className="uppercase font-bold">Sign Up</span> or{' '}
+        <span className="uppercase font-bold">{t('signup')}</span>
+        {` ${t('or')} `}
         <Link to="/login" className="uppercase">
-          Log in
+          {t('login')}
         </Link>
       </p>
 
       <Form layout="vertical" onFinish={onFinish}>
         <Form.Item
-          label="Name of Organization"
+          label={t('organization')}
           name="organization"
           rules={[
             {
               required: true,
-              message: 'Name of organization is required'
+              message: t('organizationRequired')
             }
           ]}
         >
           <Input
-            placeholder="Amanda's Daycare"
+            placeholder={t('organizationPlaceholder')}
             autoComplete="organization"
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
@@ -107,17 +112,17 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          label="Full name"
+          label={t('fullName')}
           name="fullName"
           rules={[
             {
               required: true,
-              message: 'Full name is required'
+              message: t('fullNameRequired')
             }
           ]}
         >
           <Input
-            placeholder="Amanda Diaz"
+            placeholder={t('fullNamePlaceholder')}
             autoComplete="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
@@ -126,17 +131,17 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          label="What should we call you?"
+          label={t('greetingName')}
           name="greetingName"
           rules={[
             {
               required: true,
-              message: 'Greeting name is required'
+              message: t('greetingNameRequired')
             }
           ]}
         >
           <Input
-            placeholder="Amanda"
+            placeholder={t('greetingNamePlaceholder')}
             autoComplete="nickname"
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
@@ -146,48 +151,41 @@ export function Signup() {
 
         <Form.Item
           name="multiBusiness"
-          label="Are you managing subsidy cases for multiple child care businesses?"
+          label={t('multiBusiness')}
           rules={[
             {
               required: true,
-              message: 'Select your business type'
+              message: t('multiBusinessRequired')
             }
           ]}
         >
           <Select
             style={{ textAlign: 'left' }}
             value={multiBusiness}
-            placeholder="Choose one"
+            placeholder={t('multiBusinessPlaceholder')}
             onChange={value => {
               setMultiBusiness(value)
             }}
           >
-            <Option value="yes">
-              Yes, managing multiple child care businesses
-            </Option>
-            <Option value="no">
-              No, I am managing 1 child care business only
-            </Option>
+            <Option value="yes">{t('multiBusinessTrue')}</Option>
+            <Option value="no">{t('multiBusinessFalse')}</Option>
           </Select>
         </Form.Item>
 
-        <Form.Item
-          name="phone"
-          label="Phone number (we will only call or text if you want us to.)"
-        >
+        <Form.Item name="phone" label={t('phone')}>
           <Input.Group compact>
             <Select
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
-              placeholder="Choose one"
+              placeholder={t('phoneTypePlaceholder')}
               onChange={value => {
                 setUser({ ...user, phoneType: value })
               }}
             >
-              <Option value="cell">Cell</Option>
-              <Option value="home">Home</Option>
-              <Option value="work">Work</Option>
+              <Option value="cell">{t('phoneTypeCell')}</Option>
+              <Option value="home">{t('phoneTypeHome')}</Option>
+              <Option value="work">{t('phoneTypeWork')}</Option>
             </Select>
 
             <Form.Item
@@ -196,7 +194,7 @@ export function Signup() {
               rules={[
                 {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
-                  message: 'Phone number is invalid'
+                  message: t('phoneNumberInvalid')
                 }
                 // TODO: these rules aren't working
               ]}
@@ -214,7 +212,7 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          label="Preferred Language"
+          label={t('preferredLanguage')}
           name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
@@ -230,7 +228,7 @@ export function Signup() {
               setUser({ ...user, language: event.target.value })
             }
             rules={[
-              { required: true, message: 'Preferred language is required' }
+              { required: true, message: t('preferredLanguageRequired') }
             ]}
           >
             <Radio.Button value="en" className="w-1/2">
@@ -253,7 +251,7 @@ export function Signup() {
                   }}
                 />
               )}
-              English
+              {t('english')}
             </Radio.Button>
             <Radio.Button value="es" className="w-1/2">
               {user.language === 'es' ? (
@@ -275,22 +273,22 @@ export function Signup() {
                   }}
                 />
               )}
-              Español
+              {t('spanish')}
             </Radio.Button>
           </Radio.Group>
         </Form.Item>
 
         <Form.Item
-          label="Email"
+          label={t('email')}
           name="email"
           rules={[
             {
               type: 'email',
-              message: 'Email address is invalid'
+              message: t('emailInvalid')
             },
             {
               required: true,
-              message: 'Email address is required'
+              message: t('emailRequired')
             }
           ]}
           hasFeedback={!!errors?.email}
@@ -307,22 +305,21 @@ export function Signup() {
 
         <Form.Item
           name="password"
-          label="Password"
+          label={t('password')}
           rules={[
             {
               required: true,
-              message: 'Password is required.'
+              message: t('passwordRequired')
             },
             {
               pattern: /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/,
-              message:
-                'Password must be a minimum of 8 characters, and include numbers and letters.'
+              message: t('passwordInvalid')
             }
           ]}
           hasFeedback
         >
           <Input.Password
-            placeholder="8+ characters, letters and numbers"
+            placeholder={t('passwordPlaceholder')}
             autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
@@ -332,25 +329,23 @@ export function Signup() {
 
         <Form.Item
           name="passwordConfirmation"
-          label="Confirm Password"
+          label={t('passwordConfirmation')}
           dependencies={['password']}
           hasFeedback
           rules={[
-            { required: true, message: 'Password confirmation is required' },
+            { required: true, message: t('passwordConfirmationRequired') },
             ({ getFieldValue }) => ({
               validator(rule, value) {
                 if (!value || getFieldValue('password') === value) {
                   return Promise.resolve()
                 }
-                return Promise.reject(
-                  'The two passwords that you entered do not match!'
-                )
+                return Promise.reject(t('passwordConfirmationMatch'))
               }
             })
           ]}
         >
           <Input.Password
-            placeholder="Confirm your password"
+            placeholder={t('passwordConfirmationPlaceholder')}
             autoComplete="new-password"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
@@ -364,7 +359,7 @@ export function Signup() {
           rules={[
             {
               required: true,
-              message: 'Please read and agree to our Terms of Service'
+              message: t('termsRequired')
             }
           ]}
         >
@@ -392,7 +387,7 @@ export function Signup() {
             htmlType="submit"
             className="mt-2 font-semibold uppercase"
           >
-            Sign Up
+            {t('signup')}
           </Button>
         </Form.Item>
       </Form>
