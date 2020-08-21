@@ -30,7 +30,7 @@
   "multiBusinessPlaceholder": "Elija uno",
   "multiBusinessFalse": "No, solo gestiono 1 negocio de cuidado infantil",
   "multiBusinessTrue": "Sí, gestiono varios negocios de cuidado infantil",
-  "phone": "Número de teléfono (solo llamaremos o enviaremos un mensaje de texto si así lo desea)",
+  "phone": "Número de teléfono (solo llamaremos o enviaremos un mensaje de texto si lo deseas)",
   "phoneTypePlaceholder": "Elija uno",
   "phoneTypeCell": "Celular",
   "phoneTypeHome": "Inicio",
