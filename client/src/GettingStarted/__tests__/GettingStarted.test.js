@@ -1,5 +1,4 @@
 import React from 'react'
-import { render } from '@testing-library/react'
 import { GettingStarted } from '../GettingStarted'
 import { renderWithi18next } from 'setupTests'
 
