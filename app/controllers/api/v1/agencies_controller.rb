@@ -2,7 +2,7 @@
 
 # API for agencies.  Note that this class is 'read only' for client apps.
 #   Data required for Agencies will be added to the db via rake tasks or other external means.
-class Api::V1::AgenciesController < Api::V1::ApplicationController
+class Api::V1::AgenciesController < Api::V1::ApiController
   before_action :set_agency, only: %i[show update destroy]
 
   # GET /agencies
