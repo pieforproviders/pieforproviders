@@ -196,7 +196,7 @@
     },
     "/api/v1/children": {
       "get": {
-        "summary": "lists all children",
+        "summary": "lists all children for a user",
         "tags": [
           "children"
         ],
@@ -763,7 +763,7 @@
     },
     "/api/v1/users": {
       "get": {
-        "summary": "lists all users",
+        "summary": "lists all users for a user",
         "tags": [
           "users"
         ],
@@ -820,9 +820,6 @@
           },
           "422": {
             "description": "invalid request"
-          },
-          "500": {
-            "description": "internal server error"
           }
         }
       }
