@@ -33,7 +33,7 @@
   "phone": "Número de teléfono (solo llamaremos o enviaremos un mensaje de texto si lo deseas)",
   "phoneTypePlaceholder": "Elija uno",
   "phoneTypeCell": "Celular",
-  "phoneTypeHome": "Inicio",
+  "phoneTypeHome": "Casa",
   "phoneTypeWork": "Trabajo",
   "phoneNumberInvalid": "El número de teléfono no es válido",
   "preferredLanguage": "Idioma preferido",
