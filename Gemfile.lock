@@ -131,6 +131,14 @@ GEM
     json-schema (2.8.1)
       addressable (>= 2.4)
     jwt (2.2.1)
+    launchy (2.5.0)
+      addressable (~> 2.7)
+    letter_opener (1.7.0)
+      launchy (~> 2.2)
+    letter_opener_web (1.4.0)
+      actionmailer (>= 3.2)
+      letter_opener (~> 1.0)
+      railties (>= 3.2)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -317,6 +325,7 @@ DEPENDENCIES
   faker
   guard-rspec
   json-schema
+  letter_opener_web (~> 1.4)
   listen (>= 3.0.5, < 3.2)
   money-rails
   pg (>= 0.18, < 2.0)
