@@ -11,7 +11,6 @@ import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
 import Login from './Login'
 import Signup from './Signup'
-import Confirmation from './Signup/Confirmation'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
@@ -53,12 +52,6 @@ const App = () => {
             <AuthorizedRoute exact path="/cases/import">
               <CasesImport />
             </AuthorizedRoute>
-            <Route path="/confirmation">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={Confirmation}
-              />
-            </Route>
             <Route exact path="/">
               <Redirect to={isUserLoggedIn ? '/dashboard' : '/login'} />
             </Route>
