@@ -3,7 +3,13 @@
 require 'swagger_helper'
 
 RSpec.describe 'users API', type: :request do
-  let!(:params) do
+  # Do not send any emails (no confirmation emails, no password was changed emails)
+  before(:each) do
+    allow_any_instance_of(User).to receive(:send_confirmation_notification?).and_return(false)
+    allow_any_instance_of(User).to receive(:send_password_change_notification?).and_return(false)
+  end
+
+  let!(:user_params) do
     {
       "email": 'fake_email@fake_email.com',
       "full_name": 'Oliver Twist',
@@ -19,263 +25,51 @@ RSpec.describe 'users API', type: :request do
     }
   end
 
-  path '/api/v1/users' do
-    get 'lists all users' do
-      tags 'users'
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it lists all items for a user', User
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'users found' do
-            run_test! do
-              expect(response).to match_response_schema('users')
+  it_behaves_like 'it creates an item with the right api version and is authenticated', User do
+    let(:item_params) { user_params }
+  end
+
+  describe 'creates a user' do
+    path '/api/v1/users' do
+      post 'creates a user' do
+        tags 'users'
+        consumes 'application/json', 'application/xml'
+        parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+        parameter name: :user, in: :body, schema: {
+          '$ref' => '#/definitions/createUser'
+        }
+
+        context 'on the right api version' do
+          include_context 'correct api version header'
+
+          context 'when not authenticated - CAN create a User' do
+            response '201', 'user created' do
+              let(:user) { { "user": user_params } }
+              run_test! do
+                expect(response).to match_response_schema('user')
+              end
             end
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    post 'creates a user' do
-      tags 'users'
-      consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :user, in: :body, schema: {
-        '$ref' => '#/definitions/createUser'
-      }
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '201', 'user created' do
-            let(:user) { { "user": params } }
-            run_test! do
-              expect(response).to match_response_schema('user')
+            response '422', 'invalid request' do
+              let(:user) { { "user": { "title": 'foo' } } }
+              run_test!
             end
-          end
-          response '422', 'invalid request' do
-            let(:user) { { "user": { "title": 'whatever' } } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '201', 'user created' do
-            let(:user) { { "user": params } }
-            run_test! do
-              expect(response).to match_response_schema('user')
-            end
-          end
-          response '422', 'invalid request' do
-            let(:user) { { "user": { "title": 'foo' } } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:user) { { "user": params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:user) { { "user": params } }
-            run_test!
           end
         end
       end
     end
   end
 
-  path '/api/v1/users/{slug}' do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { User.create!(params).slug }
+  it_behaves_like 'it retrieves an item with a slug, for a user', User do
+    let(:item_params) { user_params }
+  end
 
-    get 'retrieves a user' do
-      tags 'users'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it updates an item with a slug', User, 'full_name', 'Ron Weasley', nil do
+    let(:item_params) { user_params }
+  end
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'user found' do
-            run_test! do
-              expect(response).to match_response_schema('user')
-            end
-          end
-
-          response '404', 'user not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    put 'updates a user' do
-      tags 'users'
-      consumes 'application/json', 'application/xml'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :user, in: :body, schema: {
-        '$ref' => '#/definitions/updateUser'
-      }
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'user updated' do
-            let(:user) { { "user": params.merge("full_name": 'Ron Weasley') } }
-            run_test! do
-              expect(response).to match_response_schema('user')
-              expect(response.parsed_body['full_name']).to eq('Ron Weasley')
-            end
-          end
-
-          response '422', 'user cannot be updated' do
-            let(:user) { { "user": { "email": nil } } }
-            run_test!
-          end
-
-          response '404', 'user not found' do
-            let(:slug) { 'invalid' }
-            let(:user) { { "user": params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:user) { { "user": params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:user) { { "user": params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:user) { { "user": params } }
-            run_test!
-          end
-        end
-      end
-    end
-
-    delete 'deletes a user' do
-      tags 'users'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '204', 'user deleted' do
-            run_test!
-          end
-
-          response '404', 'user not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it deletes an item with a slug, for a user', User do
+    let(:item_params) { user_params }
   end
 end
