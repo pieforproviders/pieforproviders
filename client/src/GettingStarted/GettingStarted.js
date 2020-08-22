@@ -9,6 +9,9 @@ import { useTranslation } from 'react-i18next'
 import { PaddedButton } from '_shared/PaddedButton'
 
 const userGreetingName = 'Amanda'
+// NB: we're using CSS grid instead of Ant grid for these cards
+// because Ant grid doesn't flow into the next row when there are
+// more cards than columns
 
 export function GettingStarted() {
   const { t } = useTranslation()

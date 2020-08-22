@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Button } from 'antd'
 
 export function PaddedButton({
@@ -22,4 +23,13 @@ export function PaddedButton({
       {text}
     </Button>
   )
+}
+
+PaddedButton.propTypes = {
+  type: PropTypes.string,
+  text: PropTypes.string.isRequired,
+  classes: PropTypes.string,
+  shape: PropTypes.string,
+  size: PropTypes.string,
+  htmlType: PropTypes.string
 }
