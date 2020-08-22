@@ -21,6 +21,7 @@ Metrics/BlockLength:
     - lib/tasks/**
     - config/initializers/**
     - config/environments/**
+    - config/routes.rb
 
 # screens are bigger now and long lines are more acceptable
 Layout/LineLength:

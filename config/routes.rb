@@ -20,6 +20,8 @@ Rails.application.routes.draw do
              }
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
+  mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
+
   scope module: :api, defaults: { format: :json }, path: 'api' do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users, param: :slug
