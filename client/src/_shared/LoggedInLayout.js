@@ -20,7 +20,7 @@ export function LoggedInLayout({ children, title }) {
         </div>
         <div>{t('logout')}</div>
       </div>
-      <div className="w-full medium:h-full bg-mediumGray p-4">
+      <div className="w-full sm:h-full bg-mediumGray p-4">
         {title && (
           <Breadcrumb className="mb-4">
             <Breadcrumb.Item>{title}</Breadcrumb.Item>
