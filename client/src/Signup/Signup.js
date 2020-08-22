@@ -83,7 +83,7 @@ export function Signup() {
 
   return (
     <>
-      <p className="mb-4">
+      <p className="mb-8">
         <span className="uppercase font-bold">{t('signup')}</span>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -91,7 +91,12 @@ export function Signup() {
         </Link>
       </p>
 
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        labelCol={24}
+        wrapperCol={{ lg: 12 }}
+      >
         <Form.Item
           label={t('organization')}
           name="organization"
@@ -203,6 +208,7 @@ export function Signup() {
                 mask="111-111-1111"
                 placeholder="___-___-____"
                 size="10"
+                className="h-8"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -362,14 +368,14 @@ export function Signup() {
               message: t('termsRequired')
             }
           ]}
+          wrapperCol={{ lg: 24 }}
         >
           <Checkbox
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
+            className="flex"
             name="serviceAgreementAccepted"
             onChange={() => {
-              // TODO: adds a validation trigger on change so the user doesn't have to
-              // click away from the checkbox before clicking the submit button
               setUser({
                 ...user,
                 serviceAgreementAccepted: !user.serviceAgreementAccepted
@@ -379,7 +385,7 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item>
+        <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
           <Button
             type="primary"
             shape="round"
