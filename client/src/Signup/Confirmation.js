@@ -5,13 +5,11 @@ import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
 const { Title, Text, Link } = Typography
 
-// TODO: placeholder for actual user's email that signed up
-const userEmail = 'chelsea@pieforproviders.com'
-const pieEmail = 'noreply@pieforproviders.com'
+const pieEmail = 'tech@pieforproviders.com'
 
 function ListItem({ children }) {
   return (
-    <div className="flex align-center justify-left mb-1">
+    <div className="flex items-center justify-left mb-1">
       <LabelImportantIcon
         className="mr-1"
         style={{ color: '#000', width: '16px' }}
@@ -21,7 +19,11 @@ function ListItem({ children }) {
   )
 }
 
-const Confirmation = () => {
+ListItem.propTypes = {
+  children: PropTypes.element.isRequired
+}
+
+const Confirmation = ({ userEmail }) => {
   return (
     <>
       <Title className="text-center">Thanks for signing up!</Title>
@@ -55,8 +57,8 @@ const Confirmation = () => {
   )
 }
 
-ListItem.propTypes = {
-  children: PropTypes.element.isRequired
+Confirmation.propTypes = {
+  userEmail: PropTypes.string.isRequired
 }
 
 export default Confirmation
