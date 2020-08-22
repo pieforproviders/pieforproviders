@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
 import { Link, useHistory } from 'react-router-dom'
-import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
+import { Form, Input, Select, Radio, Checkbox } from 'antd'
+import { PaddedButton } from '_shared/PaddedButton'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -94,6 +95,7 @@ export function Signup() {
       <Form
         layout="vertical"
         onFinish={onFinish}
+        name="signup"
         labelCol={24}
         wrapperCol={{ lg: 12 }}
       >
@@ -386,15 +388,7 @@ export function Signup() {
           </Checkbox>
         </Form.Item>
         <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            htmlType="submit"
-            className="mt-2 font-semibold uppercase"
-          >
-            {t('signup')}
-          </Button>
+          <PaddedButton text={t('signup')} />
         </Form.Item>
       </Form>
     </>

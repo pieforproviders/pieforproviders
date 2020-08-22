@@ -1,11 +1,12 @@
 import React from 'react'
-import { Button, Card, Typography } from 'antd'
+import { Card, Typography } from 'antd'
 import Icon from '@material-ui/core/Icon'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import BusinessIcon from '@material-ui/icons/Business'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import { useTranslation } from 'react-i18next'
+import { PaddedButton } from '_shared/PaddedButton'
 
 const userGreetingName = 'Amanda'
 
@@ -66,14 +67,7 @@ export function GettingStarted() {
         </div>
 
         <div className="mt-8 text-center">
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            className="uppercase"
-          >
-            {t('gettingStartedButton')}
-          </Button>
+          <PaddedButton text={t('gettingStartedButton')} />
         </div>
       </div>
     </div>
