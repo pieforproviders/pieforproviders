@@ -48,8 +48,8 @@ export function Signup() {
       setSuccess(true)
     } else {
       const { errors } = await response.json()
-      setErrors(errors[0].detail)
-      // TODO: Sentry
+      errors && setErrors(errors[0].detail)
+      // TODO: Sentry else if response.status === 500 - server errors
     }
   }
 
