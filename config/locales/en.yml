@@ -31,6 +31,9 @@
 
 en:
   hello: "Hello world"
+  errors:
+    messages:
+      taken: "has already been taken"
   faker:
     name:
       child_care_businesses:
