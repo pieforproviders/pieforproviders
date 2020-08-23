@@ -201,8 +201,13 @@ export function Signup() {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
                   message: t('phoneNumberInvalid')
                 }
-                // TODO: these rules aren't working
               ]}
+              hasFeedback={!!errors?.phone_number}
+              validateStatus={errors?.phone_number && 'error'}
+              help={
+                errors?.phone_number &&
+                `Phone number ${errors.phone_number.join(', ')}`
+              }
             >
               <MaskedInput
                 mask="111-111-1111"
