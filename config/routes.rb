@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
+is_html_request = ->(request) { !request.xhr? && request.format.html? }
+
 Rails.application.routes.draw do
+  # This is required because the `devise_for` call generates a `GET /login`
+  # route which we don't want to expose.
+  get '/login', to: 'static#fallback_index_html', constraints: is_html_request
+
   devise_for :users,
              path: '',
              path_names: {
@@ -14,6 +20,8 @@ Rails.application.routes.draw do
              }
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
+  mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
+
   scope module: :api, defaults: { format: :json }, path: 'api' do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users, param: :slug
@@ -24,9 +32,7 @@ Rails.application.routes.draw do
     end
   end
 
-  get '*path', to: 'static#fallback_index_html', constraints: lambda { |request|
-    !request.xhr? && request.format.html?
-  }
+  get '*path', to: 'static#fallback_index_html', constraints: is_html_request
 end
 
 # rubocop:disable Layout/LineLength

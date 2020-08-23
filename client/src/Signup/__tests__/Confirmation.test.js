@@ -7,7 +7,7 @@ describe('<Confirmation />', () => {
   it('renders the signup confirmation page', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/']} initialIndex={0}>
-        <Confirmation />
+        <Confirmation userEmail="hey@hey.com" />
       </MemoryRouter>
     )
     expect(container).toHaveTextContent('Thanks for signing up')

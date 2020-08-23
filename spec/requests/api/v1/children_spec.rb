@@ -3,8 +3,11 @@
 require 'swagger_helper'
 
 RSpec.describe 'children API', type: :request do
-  let(:user_id) { create(:user).id }
-  let(:site_id) { create(:site).id }
+  # Use confirmed_user so that no confirmation email is sent
+  let(:confirmed_user) { create(:confirmed_user) }
+  let(:user_id) { confirmed_user.id }
+  let(:created_business) { create(:business, user: confirmed_user) }
+  let(:site_id) { create(:site, business: created_business).id }
   let!(:child_params) do
     {
       "ccms_id": '1234567890',
@@ -38,274 +41,33 @@ RSpec.describe 'children API', type: :request do
     }
   end
 
-  path '/api/v1/children' do
-    get 'lists all children' do
-      tags 'children'
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
+  it_behaves_like 'it lists all items for a user', Child
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'children found' do
-            run_test! do
-              expect(response).to match_response_schema('children')
-            end
-          end
-        end
+  it_behaves_like 'it creates an item', Child do
+    let(:item_params) { child_params }
+  end
 
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
-
-    post 'creates a child' do
-      tags 'children'
-      consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      parameter name: :child, in: :body, schema: {
-        '$ref' => '#/definitions/createChild'
-      }
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '201', 'child created' do
-            context 'with child_site params including dates' do
-              let(:child) { { "child": child_params } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).not_to be(0)
-              end
-            end
-            context 'with child_site params with no dates' do
-              let(:child) { { "child": child_params_no_site_dates } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).not_to be(0)
-              end
-            end
-            context 'without child_site params' do
-              let(:child) { { "child": child_params_no_site } }
-              run_test! do
-                expect(response).to match_response_schema('child')
-                expect(Child.last.child_sites.length).to be(0)
-              end
-            end
-          end
-          response '422', 'invalid request' do
-            let(:child) { { "child": { "title": 'whatever' } } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-      end
+  context 'with child_site params with no dates' do
+    it_behaves_like 'it creates an item', Child do
+      let(:item_params) { child_params_no_site_dates }
     end
   end
 
-  path '/api/v1/children/{slug}' do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { Child.create!(child_params).slug }
-
-    get 'retrieves a child' do
-      tags 'children'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'child found' do
-            run_test! do
-              expect(response).to match_response_schema('child')
-            end
-          end
-
-          response '404', 'child not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
+  context 'without child_site params' do
+    it_behaves_like 'it creates an item', Child do
+      let(:item_params) { child_params_no_site }
     end
+  end
 
-    put 'updates a child' do
-      tags 'children'
-      consumes 'application/json', 'application/xml'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      parameter name: :child, in: :body, schema: {
-        '$ref' => '#/definitions/updateChild'
-      }
-      # security [{ token: [] }]
+  it_behaves_like 'it retrieves an item with a slug, for a user', Child do
+    let(:item_params) { child_params }
+  end
 
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', 'child updated' do
-            let(:child) { { "child": child_params.merge("full_name": 'Padma Patil') } }
-            run_test! do
-              expect(response).to match_response_schema('child')
-              expect(response.parsed_body['full_name']).to eq('Padma Patil')
-            end
-          end
+  it_behaves_like 'it updates an item with a slug', Child, 'full_name', 'Padma Patil', nil do
+    let(:item_params) { child_params }
+  end
 
-          response '422', 'child cannot be updated' do
-            let(:child) { { "child": { "full_name": nil } } }
-            run_test!
-          end
-
-          response '404', 'child not found' do
-            let(:slug) { 'invalid' }
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            let(:child) { { "child": child_params } }
-            run_test!
-          end
-        end
-      end
-    end
-
-    delete 'deletes a child' do
-      tags 'children'
-      produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-      # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
-      # security [{ token: [] }]
-
-      context 'on the right api version' do
-        include_context 'correct api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '204', 'child deleted' do
-            run_test!
-          end
-
-          response '404', 'child not found' do
-            let(:slug) { 'invalid' }
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '401', 'not authorized' do
-            run_test!
-          end
-        end
-      end
-
-      context 'on the wrong api version' do
-        include_context 'incorrect api version header'
-        context 'when authenticated' do
-          include_context 'authenticated user'
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-
-        context 'when not authenticated' do
-          response '500', 'internal server error' do
-            run_test!
-          end
-        end
-      end
-    end
+  it_behaves_like 'it deletes an item with a slug, for a user', Child do
+    let(:item_params) { child_params }
   end
 end

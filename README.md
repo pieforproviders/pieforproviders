@@ -119,10 +119,6 @@ Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb
 - [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
 - [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
 
-## TODO
-
-- Friendly IDs so the UUIDs don't get in the way: https://github.com/norman/friendly_id
-
 ## Notes
 
 - re: names - `full_name` with a `greeting_name` is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name

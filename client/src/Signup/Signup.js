@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { Link, useHistory } from 'react-router-dom'
 import { Form, Input, Select, Radio, Checkbox } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
+import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -10,6 +10,7 @@ import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
+import Confirmation from './Confirmation'
 
 const { Option } = Select
 
@@ -32,9 +33,9 @@ export function Signup() {
     serviceAgreementAccepted: false
   })
   const [multiBusiness, setMultiBusiness] = useState(null)
-  const { makeRequest } = useApiResponse()
+  const [success, setSuccess] = useState(false)
   const [errors, setErrors] = useState(null)
-  let history = useHistory()
+  const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
 
   const onFinish = async () => {
@@ -45,7 +46,7 @@ export function Signup() {
       data: { user: user }
     })
     if (response.status === 201) {
-      history.push('/confirmation')
+      setSuccess(true)
     } else {
       const { errors } = await response.json()
       setErrors(errors[0].detail)
@@ -80,6 +81,10 @@ export function Signup() {
         </a>
       </>
     )
+  }
+
+  if (success) {
+    return <Confirmation userEmail={user.email} />
   }
 
   return (

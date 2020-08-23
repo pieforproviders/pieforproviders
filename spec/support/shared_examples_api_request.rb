@@ -117,8 +117,8 @@ def name_from_class(item_class)
 end
 
 #  This is the parameter passed to this example:
-#    item_name [String] - the name of the item (singular).
-#      It is pluralized and used for the path, the tags, and the expected schema.
+#    item_class [Class] - the class for the item; is used to create a new item
+#      with the item_params, and to get the slug for the created item.
 #
 RSpec.shared_examples 'it lists all items for a user' do |item_class|
   item_name = name_from_class(item_class)
@@ -157,8 +157,7 @@ end
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
 #      with the item_params, and to get the slug for the created item.
-#    item_name [String] - the name of the item (singular). It will be pluralized to get a list of the items
-#      It is pluralized and used for the path and the tags.
+#
 RSpec.shared_examples 'it retrieves an item with a slug, for a user' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
@@ -201,12 +200,8 @@ end
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
 #      with the item_params, and to get the slug for the created item.
-#    item_name [String] - the name of the item (singular).
-#      It is used as a key in the parameters sent to the server
-#      and as part of the schema name in the schema definitions.
-#      It is pluralized and used for the path and the tags.
 #
-RSpec.shared_examples 'it creates an item' do |item_class|
+RSpec.shared_examples 'it creates an item with the right api version and is authenticated' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
@@ -237,7 +232,36 @@ RSpec.shared_examples 'it creates an item' do |item_class|
             run_test!
           end
         end
+      end
+    end
+  end
+end
 
+# This example expects the following to be defined with a let(:) block:
+#  item_params - parameters to be passed to the server
+#
+#  These are the parameters passed to this example:
+#    item_class [Class] - the class for the item; is used to create a new item
+#      with the item_params, and to get the slug for the created item.
+#
+RSpec.shared_examples 'it creates an item' do |item_class|
+  item_name = name_from_class(item_class)
+  item_plural = item_name.pluralize
+  item_name_symbol = item_name.to_sym
+
+  it_behaves_like 'it creates an item with the right api version and is authenticated', item_class
+
+  path "#{VALID_API_PATH}/#{item_plural}" do
+    post "creates a #{item_name}" do
+      tags item_plural
+      consumes 'application/json', 'application/xml'
+      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+      parameter name: item_name_symbol, in: :body, schema: {
+        '$ref' => "#/definitions/create#{item_class}"
+      }
+
+      context 'on the right api version' do
+        include_context 'correct api version header'
         it_behaves_like '401 error if not authenticated with parameters', item_name
       end
 
@@ -315,8 +339,7 @@ end
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
 #      with the item_params, and to get the slug for the created item.
-#    item_name [String] - the name of the item (singular). It will be pluralized to get a list of the items
-#      It is pluralized and used for the path and the tags.
+#
 RSpec.shared_examples 'it deletes an item with a slug, for a user' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
