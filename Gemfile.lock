@@ -247,15 +247,15 @@ GEM
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
     rspec-support (3.9.2)
-    rswag-api (2.2.0)
-      railties (>= 3.1, < 6.1)
-    rswag-specs (2.2.0)
-      activesupport (>= 3.1, < 6.1)
+    rswag-api (2.3.1)
+      railties (>= 3.1, < 7.0)
+    rswag-specs (2.3.1)
+      activesupport (>= 3.1, < 7.0)
       json-schema (~> 2.2)
-      railties (>= 3.1, < 6.1)
-    rswag-ui (2.2.0)
-      actionpack (>= 3.1, < 6.1)
-      railties (>= 3.1, < 6.1)
+      railties (>= 3.1, < 7.0)
+    rswag-ui (2.3.1)
+      actionpack (>= 3.1, < 7.0)
+      railties (>= 3.1, < 7.0)
     rubocop (0.81.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
@@ -335,9 +335,9 @@ DEPENDENCIES
   puma (~> 4.3)
   rails (~> 6.0.3.2)
   rspec-rails
-  rswag-api
-  rswag-specs
-  rswag-ui
+  rswag-api (>= 2.3.0)
+  rswag-specs (>= 2.3.0)
+  rswag-ui (>= 2.3.0)
   rubocop-performance
   rubocop-rails
   shoulda-matchers
