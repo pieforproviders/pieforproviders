@@ -96,7 +96,6 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        labelCol={24}
         wrapperCol={{ lg: 12 }}
       >
         <Form.Item

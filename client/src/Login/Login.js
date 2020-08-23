@@ -55,7 +55,6 @@ export function Login() {
         layout="vertical"
         name="login"
         onFinish={onFinish}
-        labelCol={24}
         wrapperCol={{ lg: 12 }}
       >
         <Form.Item
