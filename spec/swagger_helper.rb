@@ -33,6 +33,49 @@ RSpec.configure do |config|
       #   }
       # },
       definitions: {
+        user: {
+          type: :object,
+          properties: {
+            email: { type: :string, example: 'user@user.com' },
+            password: { type: :string, example: 'badPassword123!' },
+            full_name: { type: :string, example: 'Marlee Matlin' },
+            greeting_name: { type: :string, example: 'Marlee' },
+            language: { type: :string, example: 'Farsi' },
+            organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
+            phone_number: { type: :string, example: '888-888-8888' },
+            service_agreement_accepted: { type: :boolean, example: 'true' },
+            timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
+          }
+        },
+        business: {
+          type: :object,
+          properties: {
+            name: { type: :string, example: 'Harlequin Child Care' },
+            category: { type: :string, example: 'license_exempt_home' },
+            active: { type: :boolean, example: 'true' }
+          }
+        },
+        child: {
+          type: :object,
+          properties: {
+            ccms_id: { type: :string, example: '987654321' },
+            date_of_birth: { type: :string, example: '1992-11-01' },
+            full_name: { type: :string, example: 'Sean Flannery' }
+          }
+        },
+        site: {
+          type: :object,
+          properties: {
+            name: { type: :string, example: 'Marberry Educational Center' },
+            address: { type: :string, example: '1100 Marks Ave' },
+            city: { type: :string, example: 'Galesburg' },
+            state: { type: :string, example: 'TX' },
+            zip: { type: :string, example: '54321' },
+            county: { type: :string, example: 'Tigh' },
+            qris_rating: { type: :string, example: '2' },
+            business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+          }
+        },
         payment: {
           type: :object,
           properties: {
@@ -56,27 +99,20 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             user: {
-              type: :object,
-              properties: {
-                email: { type: :string, example: 'user@user.com' },
-                full_name: { type: :string, example: 'Marlee Matlin' },
-                greeting_name: { type: :string, example: 'Marlee' },
-                language: { type: :string, example: 'Farsi' },
-                organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
-                password: { type: :string, example: 'password1234!' },
-                password_confirmation: { type: :string, example: 'password1234!' },
-                phone_number: { type: :string, example: '888-888-8888' },
-                service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Central Time (US & Canada)' }
-              },
-              required: %w[
-                email
-                full_name
-                language
-                password
-                password_confirmation
-                service_agreement_accepted
-                timezone
+              allOf: [
+                { '$ref': '#/definitions/user' },
+                {
+                  type: :object,
+                  required: %w[
+                    email
+                    full_name
+                    language
+                    password
+                    password_confirmation
+                    service_agreement_accepted
+                    timezone
+                  ]
+                }
               ]
             }
           }
@@ -85,17 +121,9 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             user: {
-              type: :object,
-              properties: {
-                email: { type: :string, example: 'user@user.com' },
-                full_name: { type: :string, example: 'Marlee Matlin' },
-                greeting_name: { type: :string, example: 'Marlee' },
-                language: { type: :string, example: 'Farsi' },
-                organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
-                phone_number: { type: :string, example: '888-888-8888' },
-                service_agreement_accepted: { type: :boolean, example: 'true' },
-                timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
-              }
+              allOf: [
+                { '$ref': '#/definitions/user' }
+              ]
             }
           }
         },
@@ -103,16 +131,16 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             business: {
-              type: :object,
-              properties: {
-                name: { type: :string, example: 'Harlequin Child Care' },
-                category: { type: :string, example: 'license_exempt_home' },
-                user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-              },
-              required: %w[
-                name
-                category
-                user_id
+              allOf: [
+                { '$ref': '#/definitions/business' },
+                {
+                  type: :object,
+                  required: %w[
+                    name
+                    category
+                    user_id
+                  ]
+                }
               ]
             }
           }
@@ -121,12 +149,9 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             business: {
-              type: :object,
-              properties: {
-                name: { type: :string, example: 'Harlequin Child Care' },
-                category: { type: :string, example: 'license_exempt_home' },
-                active: { type: :boolean, example: 'true' }
-              }
+              allOf: [
+                { '$ref': '#/definitions/business' }
+              ]
             }
           }
         },
@@ -165,12 +190,9 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             child: {
-              type: :object,
-              properties: {
-                ccms_id: { type: :string, example: '987654321' },
-                date_of_birth: { type: :string, example: '1992-11-01' },
-                full_name: { type: :string, example: 'Sean Flannery' }
-              }
+              allOf: [
+                { '$ref': '#/definitions/child' }
+              ]
             }
           }
         },
@@ -178,25 +200,20 @@ RSpec.configure do |config|
           type: :object,
           properties: {
             site: {
-              type: :object,
-              properties: {
-                name: { type: :string, example: 'Marberry Educational Center' },
-                address: { type: :string, example: '1100 Marks Ave' },
-                city: { type: :string, example: 'Galesburg' },
-                state: { type: :string, example: 'TX' },
-                zip: { type: :string, example: '54321' },
-                county: { type: :string, example: 'Tigh' },
-                qris_rating: { type: :string, example: '2' },
-                business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-              },
-              required: %w[
-                name
-                address
-                city
-                state
-                zip
-                county
-                business_id
+              allOf: [
+                { '$ref': '#/definitions/site' },
+                {
+                  type: :object,
+                  required: %w[
+                    name
+                    address
+                    city
+                    state
+                    zip
+                    county
+                    business_id
+                  ]
+                }
               ]
             }
           }
@@ -204,32 +221,34 @@ RSpec.configure do |config|
         updateSite: {
           type: :object,
           properties: {
-            site: {
-              type: :object,
-              properties: {
-                name: { type: :string, example: 'Marberry Educational Center' },
-                address: { type: :string, example: '1100 Marks Ave' },
-                city: { type: :string, example: 'Galesburg' },
-                state: { type: :string, example: 'TX' },
-                zip: { type: :string, example: '54321' },
-                county: { type: :string, example: 'Tigh' },
-                qris_rating: { type: :string, example: '2' },
-                business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-              }
+            site: { '$ref': '#/definitions/site' }
+          }
+        },
+        createPayment: {
+          type: :object,
+          properties: {
+            payment: {
+              allOf: [
+                { '$ref': '#/definitions/payment' },
+                {
+                  type: :object,
+                  required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
+                }
+              ]
+            }
+          }
+        },
+        updatePayment: {
+          type: :object,
+          properties: {
+            payment: {
+              allOf: [
+                { '$ref': '#/definitions/payment' }
+              ]
             }
           }
         }
-      },
-      createPayment: {
-        allOf: [
-          { '$ref': '#/definitions/payment' },
-          {
-            type: :object,
-            required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
-          }
-        ]
-      },
-      updatePayment: { '$ref': '#/definitions/payment' }
+      }
     }
   }
 
