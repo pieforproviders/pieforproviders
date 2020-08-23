@@ -1,6 +1,7 @@
 {
   "type": "object",
   "required": [
+    "active",
     "created_at",
     "id",
     "name",

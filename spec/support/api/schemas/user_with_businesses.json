@@ -1,68 +1,14 @@
 {
-  "type": "object",
-  "required": [
-    "active",
-    "businesses",
-    "created_at",
-    "email",
-    "full_name",
-    "greeting_name",
-    "id",
-    "language",
-    "opt_in_email",
-    "opt_in_phone",
-    "opt_in_text",
-    "organization",
-    "phone_number",
-    "phone_type",
-    "service_agreement_accepted",
-    "slug",
-    "timezone",
-    "updated_at"
-  ],
-  "properties": {
-    "active": { "type": "boolean" },
-    "businesses": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "active",
-          "category",
-          "created_at",
-          "id",
-          "name",
-          "slug",
-          "updated_at",
-          "user_id"
-        ],
-        "properties": {
-          "active": { "type": "boolean" },
-          "category": { "type": "string" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "id": { "type": "string" },
-          "name": { "type": "string" },
-          "slug": { "type": "string" },
-          "updated_at": { "type": "string", "format": "date-time" },
-          "user_id": { "type": "string", "format": "uuid" }
-        }
+  "allOf": [
+    {"$ref": "user.json"},
+    {
+      "properties": {
+        "businesses": {
+          "type": "array",
+          "items": { "$ref": "business.json" }
+        },
+        "required": ["businesses"]
       }
-    },
-    "created_at": { "type": "string", "format": "date-time" },
-    "email": { "type": "string" },
-    "full_name": { "type": "string" },
-    "greeting_name": { "type": "string" },
-    "id": { "type": "string" },
-    "language": { "type": "string" },
-    "opt_in_email": { "type": "boolean" },
-    "opt_in_phone": { "type": "boolean" },
-    "opt_in_text": { "type": "boolean" },
-    "organization": { "type": "string" },
-    "phone_number": { "type": "string" },
-    "phone_type": { "type": "string" },
-    "service_agreement_accepted": { "type": "boolean" },
-    "slug": { "type": "string" },
-    "timezone": { "type": "string" },
-    "updated_at": { "type": "string", "format": "date-time" }
-  }
+    }
+  ]
 }

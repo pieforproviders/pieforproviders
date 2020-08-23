@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Form, Input, Button, Alert } from 'antd'
+import { Form, Input, Alert } from 'antd'
+import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 export function Login() {
@@ -50,7 +51,12 @@ export function Login() {
         />
       )}
 
-      <Form layout="vertical" name="login" onFinish={onFinish}>
+      <Form
+        layout="vertical"
+        name="login"
+        onFinish={onFinish}
+        wrapperCol={{ lg: 12 }}
+      >
         <Form.Item
           className="text-primaryBlue"
           label={t('email')}
@@ -80,14 +86,7 @@ export function Login() {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            shape="round"
-            htmlType="submit"
-            className="mt-2 font-semibold uppercase"
-          >
-            {t('login')}
-          </Button>
+          <PaddedButton classes="mt-2" text={t('login')} />
         </Form.Item>
       </Form>
       <Form
@@ -103,14 +102,11 @@ export function Login() {
           <div>{t('resetPasswordText')}</div>
         </div>
         <Form.Item>
-          <Button
+          <PaddedButton
             type="secondary"
             htmlType="button"
-            shape="round"
-            className="font-semibold uppercase"
-          >
-            {t('resetPassword')}
-          </Button>
+            text={t('resetPassword')}
+          />
         </Form.Item>
       </Form>
     </>

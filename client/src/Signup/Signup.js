@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
+import { Form, Input, Select, Radio, Checkbox } from 'antd'
+import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
-import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -88,7 +89,7 @@ export function Signup() {
 
   return (
     <>
-      <p className="mb-4">
+      <p className="mb-8">
         <span className="uppercase font-bold">{t('signup')}</span>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -96,7 +97,12 @@ export function Signup() {
         </Link>
       </p>
 
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        name="signup"
+        wrapperCol={{ lg: 12 }}
+      >
         <Form.Item
           label={t('organization')}
           name="organization"
@@ -201,13 +207,19 @@ export function Signup() {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
                   message: t('phoneNumberInvalid')
                 }
-                // TODO: these rules aren't working
               ]}
+              hasFeedback={!!errors?.phone_number}
+              validateStatus={errors?.phone_number && 'error'}
+              help={
+                errors?.phone_number &&
+                `Phone number ${errors.phone_number.join(', ')}`
+              }
             >
               <MaskedInput
                 mask="111-111-1111"
                 placeholder="___-___-____"
                 size="10"
+                className="h-8"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -367,14 +379,14 @@ export function Signup() {
               message: t('termsRequired')
             }
           ]}
+          wrapperCol={{ lg: 24 }}
         >
           <Checkbox
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
+            className="flex"
             name="serviceAgreementAccepted"
             onChange={() => {
-              // TODO: adds a validation trigger on change so the user doesn't have to
-              // click away from the checkbox before clicking the submit button
               setUser({
                 ...user,
                 serviceAgreementAccepted: !user.serviceAgreementAccepted
@@ -384,16 +396,8 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            htmlType="submit"
-            className="mt-2 font-semibold uppercase"
-          >
-            {t('signup')}
-          </Button>
+        <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
+          <PaddedButton text={t('signup')} />
         </Form.Item>
       </Form>
     </>

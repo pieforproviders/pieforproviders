@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'sites API', type: :request do
-  # Use confirmed_user so that no confirimation email is sent
+  # Use confirmed_user so that no confirmation email is sent
   let(:business_id) { create(:business, user: create(:confirmed_user)).id }
   let!(:site_params) do
     {

@@ -26,10 +26,6 @@ module.exports = {
       },
       fontFamily: {
         proxima: 'Proxima Nova'
-      },
-      screens: {
-        medium: '768px',
-        large: '1200px'
       }
     }
   },
