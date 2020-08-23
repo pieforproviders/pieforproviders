@@ -4,6 +4,6 @@
 
 <p>Welcome to Pie for Providers! Get ready to increase your slice of the pie with simple child care subsidy management tools. To get started, please verify your email address by clicking the link below (you can also copy and paste it into your browser).</p>
 
-<p><%= link_to user_confirmation_url(@resource, confirmation_token: @token) %></p>
+<p><%= link_to 'Confirm Account', confirmation_url(@resource, confirmation_token: @token) %></p>
 
 <p>Questions? Email <%= mail_to 'tech@pieforproviders.com', 'tech@pieforproviders.com', subject: 'Pie for Providers: question after signup' %></p>
