@@ -8,7 +8,7 @@ export function PaddedButton({
   size = 'middle',
   htmlType = 'submit',
   classes = '',
-  text = 'Submit'
+  text
 }) {
   return (
     <Button
