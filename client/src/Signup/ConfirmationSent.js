@@ -23,7 +23,7 @@ ListItem.propTypes = {
   children: PropTypes.element.isRequired
 }
 
-const Confirmation = ({ userEmail }) => {
+const ConfirmationSent = ({ userEmail }) => {
   return (
     <>
       <Title className="text-center">Thanks for signing up!</Title>
@@ -57,8 +57,8 @@ const Confirmation = ({ userEmail }) => {
   )
 }
 
-Confirmation.propTypes = {
+ConfirmationSent.propTypes = {
   userEmail: PropTypes.string.isRequired
 }
 
-export default Confirmation
+export default ConfirmationSent
