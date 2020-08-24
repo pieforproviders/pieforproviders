@@ -127,8 +127,10 @@ RSpec.shared_examples 'it lists all items for a user' do |item_class|
   path "#{VALID_API_PATH}/#{item_plural}" do
     get "lists all #{item_plural} for a user" do
       tags item_plural
-      produces 'application/json'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
+      produces 'application/json', 'application/xml'
+
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]
 
@@ -168,8 +170,10 @@ RSpec.shared_examples 'it retrieves an item with a slug, for a user' do |item_cl
 
     get "retrieves a #{item_name}" do
       tags item_plural
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]
 
@@ -209,8 +213,11 @@ RSpec.shared_examples 'it creates an item with the right api version and is auth
   path "#{VALID_API_PATH}/#{item_plural}" do
     post "creates a #{item_name}" do
       tags item_plural
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
+      produces 'application/json', 'application/xml'
       consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+
       parameter name: item_name_symbol, in: :body, schema: {
         '$ref' => "#/components/schemas/create#{item_class}"
       }
@@ -254,8 +261,11 @@ RSpec.shared_examples 'it creates an item' do |item_class|
   path "#{VALID_API_PATH}/#{item_plural}" do
     post "creates a #{item_name}" do
       tags item_plural
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
+      produces 'application/json', 'application/xml'
       consumes 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+
       parameter name: item_name_symbol, in: :body, schema: {
         '$ref' => "#/components/schemas/create#{item_class}"
       }
@@ -295,9 +305,11 @@ RSpec.shared_examples 'it updates an item with a slug' do |item_class, update_at
 
     put "updates a #{item_name}" do
       tags item_plural
-      consumes 'application/json', 'application/xml'
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+      consumes 'application/json', 'application/xml'
+
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
 
       parameter name: item_name_symbol, in: :body, schema: {
@@ -350,8 +362,10 @@ RSpec.shared_examples 'it deletes an item with a slug, for a user' do |item_clas
 
     delete "deletes a #{item_name}" do
       tags item_plural
+
+      # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json', 'application/xml'
-      parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
+
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]
 
