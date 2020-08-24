@@ -2,6 +2,7 @@
 
 # Base controller methods for API controllers
 class ApplicationController < ActionController::API
+  before_action :set_raven_context
   around_action :collect_metrics
 
   def render_resource(resource)
@@ -23,6 +24,15 @@ class ApplicationController < ActionController::API
         }
       ]
     }, status: :unprocessable_entity
+  end
+
+  private
+
+  def set_raven_context
+    return unless Rails.env.production?
+
+    Raven.user_context(id: current_user.id) if current_user
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 
   def collect_metrics
