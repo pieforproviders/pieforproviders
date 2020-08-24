@@ -38,7 +38,7 @@ RSpec.describe 'users API', type: :request do
         consumes 'application/json', 'application/xml'
         parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
         parameter name: :user, in: :body, schema: {
-          '$ref' => '#/definitions/createUser'
+          '$ref' => '#/components/schemas/createUser'
         }
 
         context 'on the right api version' do

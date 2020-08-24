@@ -212,7 +212,7 @@ RSpec.shared_examples 'it creates an item with the right api version and is auth
       consumes 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/definitions/create#{item_class}"
+        '$ref' => "#/components/schemas/create#{item_class}"
       }
 
       context 'on the right api version' do
@@ -257,7 +257,7 @@ RSpec.shared_examples 'it creates an item' do |item_class|
       consumes 'application/json', 'application/xml'
       parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
       parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/definitions/create#{item_class}"
+        '$ref' => "#/components/schemas/create#{item_class}"
       }
 
       context 'on the right api version' do
@@ -301,7 +301,7 @@ RSpec.shared_examples 'it updates an item with a slug' do |item_class, update_at
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
 
       parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/definitions/update#{item_class}"
+        '$ref' => "#/components/schemas/update#{item_class}"
       }
       # security [{ token: [] }]
 

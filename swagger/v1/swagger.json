@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.3",
   "info": {
     "title": "Pie for Providers API v1",
     "version": "v1"
@@ -11,26 +11,21 @@
         "tags": [
           "businesses"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "businesses found"
+            "description": "businesses found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -39,37 +34,43 @@
         "tags": [
           "businesses"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "business",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createBusiness"
-            }
-          }
+
         ],
         "responses": {
           "201": {
-            "description": "business created"
+            "description": "business created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createBusiness"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createBusiness"
+              }
+            }
           }
         }
       }
@@ -79,8 +80,10 @@
         {
           "name": "slug",
           "in": "path",
-          "type": "string",
-          "required": true
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {
@@ -88,30 +91,26 @@
         "tags": [
           "businesses"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "business found"
+            "description": "business found",
+            "content": {
+            }
           },
           "404": {
-            "description": "business not found"
+            "description": "business not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -120,44 +119,48 @@
         "tags": [
           "businesses"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "business",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updateBusiness"
-            }
-          }
+
         ],
         "responses": {
           "200": {
-            "description": "business updated"
+            "description": "business updated",
+            "content": {
+            }
           },
           "422": {
-            "description": "business cannot be updated"
+            "description": "business cannot be updated",
+            "content": {
+            }
           },
           "404": {
-            "description": "business not found"
+            "description": "business not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateBusiness"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateBusiness"
+              }
+            }
           }
         }
       },
@@ -166,30 +169,26 @@
         "tags": [
           "businesses"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "business deleted"
+            "description": "business deleted",
+            "content": {
+            }
           },
           "404": {
-            "description": "business not found"
+            "description": "business not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       }
@@ -200,26 +199,21 @@
         "tags": [
           "children"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "children found"
+            "description": "children found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -228,37 +222,43 @@
         "tags": [
           "children"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "child",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createChild"
-            }
-          }
+
         ],
         "responses": {
           "201": {
-            "description": "child created"
+            "description": "child created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createChild"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createChild"
+              }
+            }
           }
         }
       }
@@ -268,8 +268,10 @@
         {
           "name": "slug",
           "in": "path",
-          "type": "string",
-          "required": true
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {
@@ -277,30 +279,26 @@
         "tags": [
           "children"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "child found"
+            "description": "child found",
+            "content": {
+            }
           },
           "404": {
-            "description": "child not found"
+            "description": "child not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -309,44 +307,48 @@
         "tags": [
           "children"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "child",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updateChild"
-            }
-          }
+
         ],
         "responses": {
           "200": {
-            "description": "child updated"
+            "description": "child updated",
+            "content": {
+            }
           },
           "422": {
-            "description": "child cannot be updated"
+            "description": "child cannot be updated",
+            "content": {
+            }
           },
           "404": {
-            "description": "child not found"
+            "description": "child not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChild"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChild"
+              }
+            }
           }
         }
       },
@@ -355,30 +357,26 @@
         "tags": [
           "children"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "child deleted"
+            "description": "child deleted",
+            "content": {
+            }
           },
           "404": {
-            "description": "child not found"
+            "description": "child not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       }
@@ -389,26 +387,21 @@
         "tags": [
           "payments"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "payments found"
+            "description": "payments found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -417,37 +410,43 @@
         "tags": [
           "payments"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "payment",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createPayment"
-            }
-          }
+
         ],
         "responses": {
           "201": {
-            "description": "payment created"
+            "description": "payment created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createPayment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createPayment"
+              }
+            }
           }
         }
       }
@@ -457,8 +456,10 @@
         {
           "name": "slug",
           "in": "path",
-          "type": "string",
-          "required": true
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {
@@ -466,30 +467,26 @@
         "tags": [
           "payments"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "payment found"
+            "description": "payment found",
+            "content": {
+            }
           },
           "404": {
-            "description": "payment not found"
+            "description": "payment not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -498,44 +495,48 @@
         "tags": [
           "payments"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "payment",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updatePayment"
-            }
-          }
+
         ],
         "responses": {
           "200": {
-            "description": "payment updated"
+            "description": "payment updated",
+            "content": {
+            }
           },
           "422": {
-            "description": "payment cannot be updated"
+            "description": "payment cannot be updated",
+            "content": {
+            }
           },
           "404": {
-            "description": "payment not found"
+            "description": "payment not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updatePayment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updatePayment"
+              }
+            }
           }
         }
       },
@@ -544,30 +545,26 @@
         "tags": [
           "payments"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "payment deleted"
+            "description": "payment deleted",
+            "content": {
+            }
           },
           "404": {
-            "description": "payment not found"
+            "description": "payment not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       }
@@ -578,26 +575,21 @@
         "tags": [
           "sites"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "sites found"
+            "description": "sites found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -606,37 +598,43 @@
         "tags": [
           "sites"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "site",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createSite"
-            }
-          }
+
         ],
         "responses": {
           "201": {
-            "description": "site created"
+            "description": "site created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createSite"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createSite"
+              }
+            }
           }
         }
       }
@@ -646,8 +644,10 @@
         {
           "name": "slug",
           "in": "path",
-          "type": "string",
-          "required": true
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {
@@ -655,30 +655,26 @@
         "tags": [
           "sites"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "site found"
+            "description": "site found",
+            "content": {
+            }
           },
           "404": {
-            "description": "site not found"
+            "description": "site not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -687,44 +683,48 @@
         "tags": [
           "sites"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "site",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updateSite"
-            }
-          }
+
         ],
         "responses": {
           "200": {
-            "description": "site updated"
+            "description": "site updated",
+            "content": {
+            }
           },
           "422": {
-            "description": "site cannot be updated"
+            "description": "site cannot be updated",
+            "content": {
+            }
           },
           "404": {
-            "description": "site not found"
+            "description": "site not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateSite"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateSite"
+              }
+            }
           }
         }
       },
@@ -733,30 +733,26 @@
         "tags": [
           "sites"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "site deleted"
+            "description": "site deleted",
+            "content": {
+            }
           },
           "404": {
-            "description": "site not found"
+            "description": "site not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       }
@@ -767,26 +763,21 @@
         "tags": [
           "users"
         ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "users found"
+            "description": "users found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -795,31 +786,40 @@
         "tags": [
           "users"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
           {
             "name": "Accept",
             "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "user",
-            "in": "body",
+            "default": "application/vnd.pieforproviders.v1+json",
             "schema": {
-              "$ref": "#/definitions/createUser"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "user created"
+            "description": "user created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
           }
         }
       }
@@ -829,8 +829,10 @@
         {
           "name": "slug",
           "in": "path",
-          "type": "string",
-          "required": true
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "get": {
@@ -838,30 +840,26 @@
         "tags": [
           "users"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "200": {
-            "description": "user found"
+            "description": "user found",
+            "content": {
+            }
           },
           "404": {
-            "description": "user not found"
+            "description": "user not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       },
@@ -870,44 +868,48 @@
         "tags": [
           "users"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          },
-          {
-            "name": "user",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/updateUser"
-            }
-          }
+
         ],
         "responses": {
           "200": {
-            "description": "user updated"
+            "description": "user updated",
+            "content": {
+            }
           },
           "422": {
-            "description": "user cannot be updated"
+            "description": "user cannot be updated",
+            "content": {
+            }
           },
           "404": {
-            "description": "user not found"
+            "description": "user not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateUser"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateUser"
+              }
+            }
           }
         }
       },
@@ -916,424 +918,434 @@
         "tags": [
           "users"
         ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "Accept",
-            "in": "header",
-            "type": "string",
-            "default": "application/vnd.pieforproviders.v1+json"
-          }
-        ],
         "responses": {
           "204": {
-            "description": "user deleted"
+            "description": "user deleted",
+            "content": {
+            }
           },
           "404": {
-            "description": "user not found"
+            "description": "user not found",
+            "content": {
+            }
           },
           "401": {
-            "description": "not authorized"
+            "description": "not authorized",
+            "content": {
+            }
           },
           "500": {
-            "description": "internal server error"
+            "description": "internal server error",
+            "content": {
+            }
           }
         }
       }
     },
     "/signup": {
       "post": {
-        "summary": "creates a user",
+        "summary": "Signs up a new user; creates the user.",
         "tags": [
           "users"
         ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
         "parameters": [
-          {
-            "name": "user",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/createUser"
-            }
-          }
+
         ],
         "responses": {
           "201": {
-            "description": "user created"
+            "description": "user created",
+            "content": {
+            }
           },
           "422": {
-            "description": "invalid request"
+            "description": "invalid request",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
           }
         }
       }
     }
   },
-  "definitions": {
-    "user": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string",
-          "example": "user@user.com"
-        },
-        "password": {
-          "type": "string",
-          "example": "badPassword123!"
-        },
-        "full_name": {
-          "type": "string",
-          "example": "Marlee Matlin"
-        },
-        "greeting_name": {
-          "type": "string",
-          "example": "Marlee"
-        },
-        "language": {
-          "type": "string",
-          "example": "Farsi"
-        },
-        "organization": {
-          "type": "string",
-          "example": "Society for the Promotion of Elfish Welfare"
-        },
-        "phone_number": {
-          "type": "string",
-          "example": "888-888-8888"
-        },
-        "service_agreement_accepted": {
-          "type": "boolean",
-          "example": "true"
-        },
-        "timezone": {
-          "type": "string",
-          "example": "Eastern Time (US & Canada)"
+  "components": {
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@user.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "badPassword123!"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Marlee Matlin"
+          },
+          "greeting_name": {
+            "type": "string",
+            "example": "Marlee"
+          },
+          "language": {
+            "type": "string",
+            "example": "Farsi"
+          },
+          "organization": {
+            "type": "string",
+            "example": "Society for the Promotion of Elfish Welfare"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "888-888-8888"
+          },
+          "service_agreement_accepted": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Eastern Time (US & Canada)"
+          }
         }
-      }
-    },
-    "business": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Harlequin Child Care"
-        },
-        "category": {
-          "type": "string",
-          "example": "license_exempt_home"
-        },
-        "active": {
-          "type": "boolean",
-          "example": "true"
+      },
+      "business": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Harlequin Child Care"
+          },
+          "category": {
+            "type": "string",
+            "example": "license_exempt_home"
+          },
+          "active": {
+            "type": "boolean",
+            "example": "true"
+          }
         }
-      }
-    },
-    "child": {
-      "type": "object",
-      "properties": {
-        "ccms_id": {
-          "type": "string",
-          "example": "987654321"
-        },
-        "date_of_birth": {
-          "type": "string",
-          "example": "1992-11-01"
-        },
-        "full_name": {
-          "type": "string",
-          "example": "Sean Flannery"
+      },
+      "child": {
+        "type": "object",
+        "properties": {
+          "ccms_id": {
+            "type": "string",
+            "example": "987654321"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "example": "1992-11-01"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Sean Flannery"
+          }
         }
-      }
-    },
-    "site": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "example": "Marberry Educational Center"
-        },
-        "address": {
-          "type": "string",
-          "example": "1100 Marks Ave"
-        },
-        "city": {
-          "type": "string",
-          "example": "Galesburg"
-        },
-        "state": {
-          "type": "string",
-          "example": "TX"
-        },
-        "zip": {
-          "type": "string",
-          "example": "54321"
-        },
-        "county": {
-          "type": "string",
-          "example": "Tigh"
-        },
-        "qris_rating": {
-          "type": "string",
-          "example": "2"
-        },
-        "business_id": {
-          "type": "uuid",
-          "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+      },
+      "site": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Marberry Educational Center"
+          },
+          "address": {
+            "type": "string",
+            "example": "1100 Marks Ave"
+          },
+          "city": {
+            "type": "string",
+            "example": "Galesburg"
+          },
+          "state": {
+            "type": "string",
+            "example": "TX"
+          },
+          "zip": {
+            "type": "string",
+            "example": "54321"
+          },
+          "county": {
+            "type": "string",
+            "example": "Tigh"
+          },
+          "qris_rating": {
+            "type": "string",
+            "example": "2"
+          },
+          "business_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+          }
         }
-      }
-    },
-    "payment": {
-      "type": "object",
-      "properties": {
-        "agency_id": {
-          "type": "string",
-          "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-        },
-        "amount_cents": {
-          "type": "integer",
-          "minimum": 0,
-          "example": 19999
-        },
-        "amount_currency": {
-          "type": "string",
-          "example": "USD"
-        },
-        "care_finished_on": {
-          "type": "string",
-          "example": "2020-03-15"
-        },
-        "care_started_on": {
-          "type": "string",
-          "example": "2020-01-01"
-        },
-        "discrepancy_cents": {
-          "type": "integer",
-          "example": 456
-        },
-        "discrepancy_currency": {
-          "anyOf": [
-            {
-              "type": "string",
-              "example": "USD"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "paid_on": {
-          "type": "string",
-          "example": "2020-05-20"
-        },
-        "site_id": {
-          "type": "string",
-          "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
+      },
+      "payment": {
+        "type": "object",
+        "properties": {
+          "agency_id": {
+            "type": "string",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "amount_cents": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 19999
+          },
+          "amount_currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "care_finished_on": {
+            "type": "string",
+            "example": "2020-03-15"
+          },
+          "care_started_on": {
+            "type": "string",
+            "example": "2020-01-01"
+          },
+          "discrepancy_cents": {
+            "type": "integer",
+            "example": 456
+          },
+          "discrepancy_currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "example": "USD"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "paid_on": {
+            "type": "string",
+            "example": "2020-05-20"
+          },
+          "site_id": {
+            "type": "string",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
+          }
         }
-      }
-    },
-    "createUser": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/user"
-            },
-            {
-              "type": "object",
-              "required": [
-                "email",
-                "full_name",
-                "language",
-                "password",
-                "password_confirmation",
-                "service_agreement_accepted",
-                "timezone"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    "updateUser": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/user"
-            }
-          ]
-        }
-      }
-    },
-    "createBusiness": {
-      "type": "object",
-      "properties": {
-        "business": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/business"
-            },
-            {
-              "type": "object",
-              "required": [
-                "name",
-                "category",
-                "user_id"
-              ]
-            }
-          ]
-        }
-      }
-    },
-    "updateBusiness": {
-      "type": "object",
-      "properties": {
-        "business": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/business"
-            }
-          ]
-        }
-      }
-    },
-    "createChild": {
-      "type": "object",
-      "properties": {
-        "child": {
-          "type": "object",
-          "properties": {
-            "ccms_id": {
-              "type": "string",
-              "example": "123456789"
-            },
-            "date_of_birth": {
-              "type": "string",
-              "example": "1991-11-01"
-            },
-            "full_name": {
-              "type": "string",
-              "example": "Seamus Finnigan"
-            },
-            "user_id": {
-              "type": "uuid",
-              "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
-            },
-            "child_sites_attributes": {
-              "type": "array",
-              "items": {
+      },
+      "createUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/user"
+              },
+              {
                 "type": "object",
                 "required": [
-                  "site_id"
-                ],
-                "properties": {
-                  "site_id": {
-                    "type": "uuid",
-                    "example": "a42270e4-e4d4-485c-a57d-ccbad5729030"
-                  },
-                  "started_care": {
-                    "type": "string",
-                    "example": "2018-12-13"
-                  },
-                  "ended_care": {
-                    "type": "string",
-                    "example": "2019-08-04"
+                  "email",
+                  "full_name",
+                  "language",
+                  "password",
+                  "password_confirmation",
+                  "service_agreement_accepted",
+                  "timezone"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/user"
+              }
+            ]
+          }
+        }
+      },
+      "createBusiness": {
+        "type": "object",
+        "properties": {
+          "business": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/business"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "name",
+                  "category",
+                  "user_id"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateBusiness": {
+        "type": "object",
+        "properties": {
+          "business": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/business"
+              }
+            ]
+          }
+        }
+      },
+      "createChild": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "type": "object",
+            "properties": {
+              "ccms_id": {
+                "type": "string",
+                "example": "123456789"
+              },
+              "date_of_birth": {
+                "type": "string",
+                "example": "1991-11-01"
+              },
+              "full_name": {
+                "type": "string",
+                "example": "Seamus Finnigan"
+              },
+              "user_id": {
+                "type": "uuid",
+                "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+              },
+              "child_sites_attributes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "site_id"
+                  ],
+                  "properties": {
+                    "site_id": {
+                      "type": "uuid",
+                      "example": "a42270e4-e4d4-485c-a57d-ccbad5729030"
+                    },
+                    "started_care": {
+                      "type": "string",
+                      "example": "2018-12-13"
+                    },
+                    "ended_care": {
+                      "type": "string",
+                      "example": "2019-08-04"
+                    }
                   }
                 }
               }
-            }
-          },
-          "required": [
-            "full_name",
-            "date_of_birth",
-            "user_id"
-          ]
-        }
-      }
-    },
-    "updateChild": {
-      "type": "object",
-      "properties": {
-        "child": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/child"
-            }
-          ]
-        }
-      }
-    },
-    "createSite": {
-      "type": "object",
-      "properties": {
-        "site": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/site"
             },
-            {
-              "type": "object",
-              "required": [
-                "name",
-                "address",
-                "city",
-                "state",
-                "zip",
-                "county",
-                "business_id"
-              ]
-            }
-          ]
+            "required": [
+              "full_name",
+              "date_of_birth",
+              "user_id"
+            ]
+          }
         }
-      }
-    },
-    "updateSite": {
-      "type": "object",
-      "properties": {
-        "site": {
-          "$ref": "#/definitions/site"
+      },
+      "updateChild": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/child"
+              }
+            ]
+          }
         }
-      }
-    },
-    "createPayment": {
-      "type": "object",
-      "properties": {
-        "payment": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/payment"
-            },
-            {
-              "type": "object",
-              "required": [
-                "agency_id",
-                "site_id",
-                "amount_cents",
-                "care_finished_on",
-                "care_started_on",
-                "paid_on"
-              ]
-            }
-          ]
+      },
+      "createSite": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/site"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "name",
+                  "address",
+                  "city",
+                  "state",
+                  "zip",
+                  "county",
+                  "business_id"
+                ]
+              }
+            ]
+          }
         }
-      }
-    },
-    "updatePayment": {
-      "type": "object",
-      "properties": {
-        "payment": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/payment"
-            }
-          ]
+      },
+      "updateSite": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/site"
+              }
+            ]
+          }
+        }
+      },
+      "createPayment": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/payment"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "agency_id",
+                  "site_id",
+                  "amount_cents",
+                  "care_finished_on",
+                  "care_started_on",
+                  "paid_on"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updatePayment": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/payment"
+              }
+            ]
+          }
         }
       }
     }
