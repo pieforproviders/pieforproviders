@@ -21,7 +21,7 @@ RSpec.describe 'POST /signup', type: :request do
   end
 
   path '/signup' do
-    post 'creates a user' do
+    post 'Signs up a new user; creates the user.' do
       tags 'users'
       consumes 'application/json', 'application/xml'
       parameter name: :user, in: :body, schema: {
