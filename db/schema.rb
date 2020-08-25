@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_02_222331) do
+ActiveRecord::Schema.define(version: 2020_08_25_200553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.index ["name", "state"], name: "index_agencies_on_name_and_state", unique: true
   end
 
-  create_table "blocked_tokens", force: :cascade do |t|
+  create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "jti", null: false
     t.datetime "expiration", null: false
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
@@ -66,7 +66,15 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.index ["user_id"], name: "index_children_on_user_id"
   end
 
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  create_table "counties", id: :serial, force: :cascade do |t|
+    t.integer "state_id"
+    t.string "abbr"
+    t.string "name"
+    t.string "county_seat"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_counties_on_name"
+    t.index ["state_id"], name: "index_counties_on_state_id"
   end
 
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -99,6 +107,14 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "business_id"], name: "index_sites_on_name_and_business_id", unique: true
+  end
+
+  create_table "states", id: :serial, force: :cascade do |t|
+    t.string "abbr", limit: 2
+    t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["abbr"], name: "index_states_on_abbr"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -140,6 +156,22 @@ ActiveRecord::Schema.define(version: 2020_08_02_222331) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["slug"], name: "index_users_on_slug", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
+  end
+
+  create_table "zipcodes", id: :serial, force: :cascade do |t|
+    t.string "code"
+    t.string "city"
+    t.integer "state_id"
+    t.integer "county_id"
+    t.string "area_code"
+    t.decimal "lat", precision: 15, scale: 10
+    t.decimal "lon", precision: 15, scale: 10
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["code"], name: "index_zipcodes_on_code"
+    t.index ["county_id"], name: "index_zipcodes_on_county_id"
+    t.index ["lat", "lon"], name: "index_zipcodes_on_lat_and_lon"
+    t.index ["state_id"], name: "index_zipcodes_on_state_id"
   end
 
 end
