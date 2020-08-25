@@ -10,6 +10,7 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'money-rails'
+gem 'my_zipcode_gem'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.3'
 gem 'rails', '~> 6.0.3.2'
@@ -60,3 +61,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem 'mocha', group: :test
