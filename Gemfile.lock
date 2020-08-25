@@ -107,7 +107,7 @@ GEM
       railties (>= 4.2.0)
     faker (2.13.0)
       i18n (>= 1.6, < 2)
-    ffi (1.12.2)
+    ffi (1.13.1)
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -138,10 +138,9 @@ GEM
       actionmailer (>= 3.2)
       letter_opener (~> 1.0)
       railties (>= 3.2)
-    listen (3.1.5)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
+    listen (3.2.1)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.6.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -218,7 +217,7 @@ GEM
       thor (>= 0.20.3, < 2.0)
     rainbow (3.0.0)
     rake (13.0.1)
-    rb-fsevent (0.10.3)
+    rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     regexp_parser (1.7.1)
@@ -274,7 +273,6 @@ GEM
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     ruby-progressbar (1.10.1)
-    ruby_dep (1.5.0)
     shellany (0.0.1)
     shoulda-matchers (4.3.0)
       activesupport (>= 4.2.0)
@@ -329,7 +327,7 @@ DEPENDENCIES
   guard-rspec
   json-schema
   letter_opener_web (~> 1.4)
-  listen (>= 3.0.5, < 3.2)
+  listen (>= 3.0.5, < 3.3)
   money-rails
   pg (>= 0.18, < 2.0)
   pgreset
