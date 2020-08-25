@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.6'
 
+gem 'activerecord-import'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'data_migrate'
 gem 'devise'
