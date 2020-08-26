@@ -4,6 +4,7 @@
 ## 🍂 Before You Submit
 <!-- Check steps as necessary - this list is a reminder -->
 * [ ] Did you write tests?
+* [ ] Did you run `bundle exec rspec` from the root?
 * [ ] Did you run `rails rswag` from the root?
 * [ ] Did you run `rubocop` from the root?
 * [ ] Did you run `yarn lint` in `/client`?
