@@ -1,27 +1,5 @@
 {
   "type": "array",
   "required": ["businesses"],
-  "items": {
-    "type": "object",
-    "required": [
-      "active",
-      "category",
-      "created_at",
-      "id",
-      "name",
-      "slug",
-      "updated_at",
-      "user_id"
-    ],
-    "properties": {
-      "active": { "type": "boolean" },
-      "category": { "type": "string" },
-      "created_at": { "type": "string" , "format": "date-time" },
-      "id": { "type": "string" },
-      "name": { "type": "string" },
-      "slug": { "type": "string" },
-      "updated_at": { "type": "string" , "format": "date-time" },
-      "user_id": { "type": "string", "format": "uuid" }
-    }
-  }
+  "items": {"$ref":"business.json"}
 }
