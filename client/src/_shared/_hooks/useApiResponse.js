@@ -9,15 +9,13 @@ export const useApiResponse = () => {
   )
 
   const makeRequest = async request => {
-    const {
-      type,
-      url,
-      data,
-      headers = {
-        Accept: 'application/vnd.pieforproviders.v1+json',
-        'Content-Type': 'application/json'
-      }
-    } = request
+    const { type, url, data, headers: requestHeaders = {} } = request
+
+    const headers = {
+      ...requestHeaders,
+      Accept: 'application/vnd.pieforproviders.v1+json',
+      'Content-Type': 'application/json'
+    }
 
     const result = (async () => {
       switch (type) {
