@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
-import { Form, Input, Select, Radio, Checkbox } from 'antd'
+import { Alert, Form, Input, Select, Radio, Checkbox } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
@@ -34,11 +34,15 @@ export function Signup() {
   })
   const [multiBusiness, setMultiBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
-  const [errors, setErrors] = useState(null)
+  const [validationErrors, setValidationErrors] = useState(null)
+  const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
 
   const onFinish = async () => {
+    setValidationErrors(null)
+    setError(false)
+
     localStorage.setItem('pieMultiBusiness', multiBusiness)
     const response = await makeRequest({
       type: 'post',
@@ -47,10 +51,11 @@ export function Signup() {
     })
     if (response.status === 201) {
       setSuccess(true)
-    } else {
+    } else if (response.status === 422) {
       const { errors } = await response.json()
-      setErrors(errors[0].detail)
-      // TODO: Sentry
+      setValidationErrors(errors[0].detail)
+    } else {
+      setError(true)
     }
   }
 
@@ -96,6 +101,14 @@ export function Signup() {
           {t('login')}
         </Link>
       </p>
+
+      {error && (
+        <Alert
+          className="mb-2"
+          message={t('genericErrorMessage')}
+          type="error"
+        />
+      )}
 
       <Form
         layout="vertical"
@@ -208,11 +221,11 @@ export function Signup() {
                   message: t('phoneNumberInvalid')
                 }
               ]}
-              hasFeedback={!!errors?.phone_number}
-              validateStatus={errors?.phone_number && 'error'}
+              hasFeedback={!!validationErrors?.phone_number}
+              validateStatus={validationErrors?.phone_number && 'error'}
               help={
-                errors?.phone_number &&
-                `Phone number ${errors.phone_number.join(', ')}`
+                validationErrors?.phone_number &&
+                `Phone number ${validationErrors.phone_number.join(', ')}`
               }
             >
               <MaskedInput
@@ -308,9 +321,12 @@ export function Signup() {
               message: t('emailRequired')
             }
           ]}
-          hasFeedback={!!errors?.email}
-          validateStatus={errors?.email && 'error'}
-          help={errors?.email && `Email ${errors.email.join(', ')}`}
+          hasFeedback={!!validationErrors?.email}
+          validateStatus={validationErrors?.email && 'error'}
+          help={
+            validationErrors?.email &&
+            `Email ${validationErrors.email.join(', ')}`
+          }
         >
           <Input
             placeholder="amanda@gmail.com"
