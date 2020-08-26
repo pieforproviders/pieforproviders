@@ -59,5 +59,7 @@
   "gettingStartedWelcome": "Bienvenidas a Pie for Providers, ",
   "gettingStartedTitle": "Comencemos",
   "gettingStartedInstructions": "Sigue estas instrucciones para configurar tu panel de caso. Esto debería tardar unos 15 minutos y solo tendrás que hacerlo una vez. ¡Prepárate para aumentar su porción del pastel!",
-  "gettingStartedButton": "Comienza"
+  "gettingStartedButton": "Comienza",
+
+  "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde."
 }

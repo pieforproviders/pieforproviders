@@ -14,6 +14,18 @@ When you start working on an issue:
 [ ] assign the ticket to yourself  
 [ ] visit the [project board](https://github.com/pieforproviders/pieforproviders/projects/1) and pull the ticket into "In Progress"  
 
+## Translations
+
+If you're working on any part of the code that needs translation (basically anything with display text), our workflow should be:
+
+- make a first pass with [https://www.deepl.com/translator](https://www.deepl.com/translator) or Google Translate
+- when you make a PR, tag Chelsea (@csprayregen) and ask her to review **and add the "translations" label**
+- Chelsea will make suggestions or comment ✅ or "approved" and will remove the translations label
+
+PRs with translation won't be merged until the suggestions have been merged and the translations label has been removed.
+
+Also if you notice something that isn't translated (i.e. the English text is hardcoded), make sure to call it out during code review, but I'm sure some stuff has been getting by us, or will in the future, so if you notice something, feel free to grab it as tech debt and make a PR (no ticket required)
+
 ## Pull Request Checklist
 
 [ ] Branch from the develop branch and, if needed, rebase to the current develop branch before submitting your pull request. If it doesn't merge cleanly with develop you may be asked to rebase your changes  

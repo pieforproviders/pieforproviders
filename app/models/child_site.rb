@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 # The sites where a child receives care
-class ChildSite < ApplicationRecord
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
-
+class ChildSite < UuidApplicationRecord
   belongs_to :child
   belongs_to :site
 

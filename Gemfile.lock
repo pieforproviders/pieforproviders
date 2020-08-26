@@ -281,11 +281,10 @@ GEM
       rack (>= 1.1)
       rubocop (>= 0.72.0)
     ruby-progressbar (1.10.1)
-    ruby_dep (1.5.0)
     shellany (0.0.1)
     shoulda-matchers (4.3.0)
       activesupport (>= 4.2.0)
-    simplecov (0.18.5)
+    simplecov (0.19.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
     simplecov-html (0.12.2)
@@ -337,7 +336,7 @@ DEPENDENCIES
   guard-rspec
   json-schema
   letter_opener_web (~> 1.4)
-  listen (>= 3.0.5, < 3.2)
+  listen (>= 3.0.5, < 3.3)
   mocha
   money-rails
   my_zipcode_gem
