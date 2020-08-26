@@ -9,13 +9,14 @@ export function Login() {
   const [apiError, setApiError] = useState(null)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const onFinish = async values => {
     const response = await makeRequest({
       type: 'post',
       url: '/login',
-      data: { user: values }
+      data: { user: values },
+      headers: { 'Accept-Language': i18n.language }
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
@@ -44,11 +45,7 @@ export function Login() {
       </p>
 
       {apiError && (
-        <Alert
-          className="mb-2"
-          message={`${apiError.message} Please try again, or reset your password below.`}
-          type="error"
-        />
+        <Alert className="mb-2" message={apiError.message} type="error" />
       )}
 
       <Form
