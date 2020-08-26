@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+ActionMailer::Base.perform_deliveries = false
+
 puts 'seeding'
 
 user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_create(
