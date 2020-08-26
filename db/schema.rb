@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_200553) do
+ActiveRecord::Schema.define(version: 2020_08_25_214731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -66,13 +66,26 @@ ActiveRecord::Schema.define(version: 2020_08_25_200553) do
     t.index ["user_id"], name: "index_children_on_user_id"
   end
 
-  create_table "counties", id: :serial, force: :cascade do |t|
-    t.integer "state_id"
+  create_table "cities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.uuid "state", null: false
+    t.uuid "county"
+    t.uuid "zipcode", null: false
+    t.index ["county"], name: "index_cities_on_county"
+    t.index ["name"], name: "index_cities_on_name"
+    t.index ["state", "county"], name: "index_cities_on_state_and_county"
+    t.index ["state", "zipcode"], name: "index_cities_on_state_and_zipcode"
+    t.index ["state"], name: "index_cities_on_state"
+    t.index ["zipcode"], name: "index_cities_on_zipcode"
+  end
+
+  create_table "counties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "state_id"
     t.string "abbr"
     t.string "name"
     t.string "county_seat"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["name"], name: "index_counties_on_name"
     t.index ["state_id"], name: "index_counties_on_state_id"
   end
@@ -109,11 +122,11 @@ ActiveRecord::Schema.define(version: 2020_08_25_200553) do
     t.index ["name", "business_id"], name: "index_sites_on_name_and_business_id", unique: true
   end
 
-  create_table "states", id: :serial, force: :cascade do |t|
+  create_table "states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "abbr", limit: 2
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["abbr"], name: "index_states_on_abbr"
   end
 
@@ -158,16 +171,16 @@ ActiveRecord::Schema.define(version: 2020_08_25_200553) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
-  create_table "zipcodes", id: :serial, force: :cascade do |t|
+  create_table "zipcodes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code"
     t.string "city"
-    t.integer "state_id"
-    t.integer "county_id"
+    t.uuid "state_id"
+    t.uuid "county_id"
     t.string "area_code"
     t.decimal "lat", precision: 15, scale: 10
     t.decimal "lon", precision: 15, scale: 10
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["code"], name: "index_zipcodes_on_code"
     t.index ["county_id"], name: "index_zipcodes_on_county_id"
     t.index ["lat", "lon"], name: "index_zipcodes_on_lat_and_lon"

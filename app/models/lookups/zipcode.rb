@@ -42,16 +42,16 @@ end
 #
 # Table name: zipcodes
 #
-#  id         :integer          not null, primary key
+#  id         :uuid             not null, primary key
 #  area_code  :string
 #  city       :string
 #  code       :string
 #  lat        :decimal(15, 10)
 #  lon        :decimal(15, 10)
-#  created_at :datetime
-#  updated_at :datetime
-#  county_id  :integer
-#  state_id   :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  county_id  :uuid
+#  state_id   :uuid
 #
 # Indexes
 #

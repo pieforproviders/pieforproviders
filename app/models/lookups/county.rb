@@ -36,13 +36,13 @@ end
 #
 # Table name: counties
 #
-#  id          :integer          not null, primary key
+#  id          :uuid             not null, primary key
 #  abbr        :string
 #  county_seat :string
 #  name        :string
-#  created_at  :datetime
-#  updated_at  :datetime
-#  state_id    :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  state_id    :uuid
 #
 # Indexes
 #
