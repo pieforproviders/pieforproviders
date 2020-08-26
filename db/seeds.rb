@@ -21,6 +21,8 @@ user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_
   timezone: 'Central Time (US & Canada)'
 )
 
+user.confirm
+
 business = Business.where(name: 'Happy Seedlings Childcare', user: user).first_or_create(
   category: 'licensed_center_single'
 )
