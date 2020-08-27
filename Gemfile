@@ -30,6 +30,7 @@ gem 'rswag-ui', '>= 2.3.0'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
+  gem 'cypress-on-rails', '~> 1.8'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'faker'
@@ -56,6 +57,10 @@ group :test do
   gem 'json-schema'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+end
+
+group :production do
+  gem 'sentry-raven'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

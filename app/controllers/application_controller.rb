@@ -2,6 +2,7 @@
 
 # Base controller methods for API controllers
 class ApplicationController < ActionController::API
+  before_action :set_raven_context
   before_action :set_locale
   around_action :collect_metrics
 
@@ -26,14 +27,21 @@ class ApplicationController < ActionController::API
     }, status: :unprocessable_entity
   end
 
+  private
+
+  def set_raven_context
+    return unless Rails.env.production?
+
+    Raven.user_context(id: current_user.id) if current_user
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+  end
+
   def collect_metrics
     start = Time.zone.now
     yield
     duration = Time.zone.now - start
     Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
   end
-
-  private
 
   def set_locale
     I18n.locale = locale
