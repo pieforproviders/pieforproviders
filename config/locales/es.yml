@@ -1,0 +1,4 @@
+es:
+  errors:
+    messages:
+      taken: "ya ha sido tomado"

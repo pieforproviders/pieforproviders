@@ -47,7 +47,8 @@ export function Signup() {
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
-      data: { user: user }
+      data: { user: user },
+      headers: { 'Accept-Language': i18n.language }
     })
     if (response.status === 201) {
       setSuccess(true)
@@ -196,7 +197,7 @@ export function Signup() {
           </Select>
         </Form.Item>
 
-        <Form.Item name="phone" label={t('phone')}>
+        <Form.Item name="phone" label={`${t('phone')} (${t('phoneNote')})`}>
           <Input.Group compact>
             <Select
               value={user.phoneType}
@@ -225,7 +226,7 @@ export function Signup() {
               validateStatus={validationErrors?.phone_number && 'error'}
               help={
                 validationErrors?.phone_number &&
-                `Phone number ${validationErrors.phone_number.join(', ')}`
+                `${t('phone')} ${validationErrors.phone_number.join(', ')}`
               }
             >
               <MaskedInput
@@ -325,7 +326,7 @@ export function Signup() {
           validateStatus={validationErrors?.email && 'error'}
           help={
             validationErrors?.email &&
-            `Email ${validationErrors.email.join(', ')}`
+            `${t('email')} ${validationErrors.email.join(', ')}`
           }
         >
           <Input

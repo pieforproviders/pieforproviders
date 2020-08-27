@@ -2,6 +2,7 @@
 
 # Base controller methods for API controllers
 class ApplicationController < ActionController::API
+  before_action :set_locale
   around_action :collect_metrics
 
   def render_resource(resource)
@@ -30,5 +31,19 @@ class ApplicationController < ActionController::API
     yield
     duration = Time.zone.now - start
     Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
+  end
+
+  private
+
+  def set_locale
+    I18n.locale = locale
+  end
+
+  def locale
+    LocaleExtractor.new(accept_lang_header).extract
+  end
+
+  def accept_lang_header
+    request.headers['Accept-Language'].presence || ''
   end
 end

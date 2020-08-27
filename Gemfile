@@ -14,8 +14,8 @@ gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.3'
 gem 'rails', '~> 6.0.3.2'
-gem 'rswag-api'
-gem 'rswag-ui'
+gem 'rswag-api', '>= 2.3.0'
+gem 'rswag-ui', '>= 2.3.0'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
@@ -37,7 +37,7 @@ group :development, :test do
   gem 'pry'
   gem 'pry-remote'
   gem 'rspec-rails'
-  gem 'rswag-specs'
+  gem 'rswag-specs', '>= 2.3.0'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
 end
