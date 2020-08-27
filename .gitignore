@@ -40,4 +40,7 @@ coverage
 
 # node/yarn packages in the root don't really do anything
 node_modules
-yarn.lock
+
+# cypress videos and screenshots
+spec/cypress/videos
+spec/cypress/screenshots
