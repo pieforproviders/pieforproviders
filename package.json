@@ -26,8 +26,8 @@
   },
   "engines": {
     "yarn": "1.22.4",
-    "npm": "6.13.4",
-    "node": "12.14.1"
+    "npm": ">=6.13.4",
+    "node": ">=12.14.1"
   },
   "devDependencies": {
     "cypress": "^5.0.0",
