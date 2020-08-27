@@ -43,8 +43,6 @@ class ApplicationController < ActionController::API
     Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
   end
 
-  private
-
   def set_locale
     I18n.locale = locale
   end
