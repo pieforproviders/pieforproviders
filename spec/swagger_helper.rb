@@ -16,7 +16,7 @@ RSpec.configure do |config|
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
     'v1/swagger.json' => {
-      swagger: '2.0',
+      openapi: '3.0.3',
       info: {
         title: 'Pie for Providers API v1',
         version: 'v1'
@@ -32,219 +32,225 @@ RSpec.configure do |config|
       #     scopes: {}
       #   }
       # },
-      definitions: {
-        user: {
-          type: :object,
-          properties: {
-            email: { type: :string, example: 'user@user.com' },
-            password: { type: :string, example: 'badPassword123!' },
-            full_name: { type: :string, example: 'Marlee Matlin' },
-            greeting_name: { type: :string, example: 'Marlee' },
-            language: { type: :string, example: 'Farsi' },
-            organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
-            phone_number: { type: :string, example: '888-888-8888' },
-            service_agreement_accepted: { type: :boolean, example: 'true' },
-            timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
-          }
-        },
-        business: {
-          type: :object,
-          properties: {
-            name: { type: :string, example: 'Harlequin Child Care' },
-            category: { type: :string, example: 'license_exempt_home' },
-            active: { type: :boolean, example: 'true' }
-          }
-        },
-        child: {
-          type: :object,
-          properties: {
-            ccms_id: { type: :string, example: '987654321' },
-            date_of_birth: { type: :string, example: '1992-11-01' },
-            full_name: { type: :string, example: 'Sean Flannery' }
-          }
-        },
-        site: {
-          type: :object,
-          properties: {
-            name: { type: :string, example: 'Marberry Educational Center' },
-            address: { type: :string, example: '1100 Marks Ave' },
-            city: { type: :string, example: 'Galesburg' },
-            state: { type: :string, example: 'TX' },
-            zip: { type: :string, example: '54321' },
-            county: { type: :string, example: 'Tigh' },
-            qris_rating: { type: :string, example: '2' },
-            business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-          }
-        },
-        payment: {
-          type: :object,
-          properties: {
-            agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-            amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-            amount_currency: { type: :string, example: 'USD' },
-            care_finished_on: { type: :string, example: '2020-03-15' },
-            care_started_on: { type: :string, example: '2020-01-01' },
-            discrepancy_cents: { type: :integer, example: 456 },
-            discrepancy_currency: {
-              anyOf: [
-                { type: :string, example: 'USD' },
-                { type: :null }
-              ]
-            },
-            paid_on: { type: :string, example: '2020-05-20' },
-            site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
-          }
-        },
-        createUser: {
-          type: :object,
-          properties: {
-            user: {
-              allOf: [
-                { '$ref': '#/definitions/user' },
-                {
-                  type: :object,
-                  required: %w[
-                    email
-                    full_name
-                    language
-                    password
-                    password_confirmation
-                    service_agreement_accepted
-                    timezone
-                  ]
-                }
-              ]
+      components: {
+        schemas: {
+          user: {
+            type: :object,
+            properties: {
+              email: { type: :string, example: 'user@user.com' },
+              password: { type: :string, example: 'badPassword123!' },
+              full_name: { type: :string, example: 'Marlee Matlin' },
+              greeting_name: { type: :string, example: 'Marlee' },
+              language: { type: :string, example: 'Farsi' },
+              organization: { type: :string, example: 'Society for the Promotion of Elfish Welfare' },
+              phone_number: { type: :string, example: '888-888-8888' },
+              service_agreement_accepted: { type: :boolean, example: 'true' },
+              timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
             }
-          }
-        },
-        updateUser: {
-          type: :object,
-          properties: {
-            user: {
-              allOf: [
-                { '$ref': '#/definitions/user' }
-              ]
+          },
+          business: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Harlequin Child Care' },
+              category: { type: :string, example: 'license_exempt_home' },
+              active: { type: :boolean, example: 'true' }
             }
-          }
-        },
-        createBusiness: {
-          type: :object,
-          properties: {
-            business: {
-              allOf: [
-                { '$ref': '#/definitions/business' },
-                {
-                  type: :object,
-                  required: %w[
-                    name
-                    category
-                    user_id
-                  ]
-                }
-              ]
+          },
+          child: {
+            type: :object,
+            properties: {
+              ccms_id: { type: :string, example: '987654321' },
+              date_of_birth: { type: :string, example: '1992-11-01' },
+              full_name: { type: :string, example: 'Sean Flannery' }
             }
-          }
-        },
-        updateBusiness: {
-          type: :object,
-          properties: {
-            business: {
-              allOf: [
-                { '$ref': '#/definitions/business' }
-              ]
+          },
+          site: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Marberry Educational Center' },
+              address: { type: :string, example: '1100 Marks Ave' },
+              city: { type: :string, example: 'Galesburg' },
+              state: { type: :string, example: 'TX' },
+              zip: { type: :string, example: '54321' },
+              county: { type: :string, example: 'Tigh' },
+              qris_rating: { type: :string, example: '2' },
+              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
             }
-          }
-        },
-        createChild: {
-          type: :object,
-          properties: {
-            child: {
-              type: :object,
-              properties: {
-                ccms_id: { type: :string, example: '123456789' },
-                date_of_birth: { type: :string, example: '1991-11-01' },
-                full_name: { type: :string, example: 'Seamus Finnigan' },
-                user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-                child_sites_attributes: {
-                  type: :array,
-                  items: {
+          },
+          payment: {
+            type: :object,
+            properties: {
+              agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
+              amount_currency: { type: :string, example: 'USD' },
+              care_finished_on: { type: :string, example: '2020-03-15' },
+              care_started_on: { type: :string, example: '2020-01-01' },
+              discrepancy_cents: { type: :integer, example: 456 },
+              discrepancy_currency: {
+                anyOf: [
+                  { type: :string, example: 'USD' },
+                  { type: :null }
+                ]
+              },
+              paid_on: { type: :string, example: '2020-05-20' },
+              site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+            }
+          },
+          createUser: {
+            type: :object,
+            properties: {
+              user: {
+                allOf: [
+                  { '$ref': '#/components/schemas/user' },
+                  {
                     type: :object,
-                    required: %w[site_id],
-                    properties: {
-                      site_id: { type: :uuid, example: 'a42270e4-e4d4-485c-a57d-ccbad5729030' },
-                      started_care: { type: :string, example: '2018-12-13' },
-                      ended_care: { type: :string, example: '2019-08-04' }
+                    required: %w[
+                      email
+                      full_name
+                      language
+                      password
+                      password_confirmation
+                      service_agreement_accepted
+                      timezone
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          updateUser: {
+            type: :object,
+            properties: {
+              user: {
+                allOf: [
+                  { '$ref': '#/components/schemas/user' }
+                ]
+              }
+            }
+          },
+          createBusiness: {
+            type: :object,
+            properties: {
+              business: {
+                allOf: [
+                  { '$ref': '#/components/schemas/business' },
+                  {
+                    type: :object,
+                    required: %w[
+                      name
+                      category
+                      user_id
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          updateBusiness: {
+            type: :object,
+            properties: {
+              business: {
+                allOf: [
+                  { '$ref': '#/components/schemas/business' }
+                ]
+              }
+            }
+          },
+          createChild: {
+            type: :object,
+            properties: {
+              child: {
+                type: :object,
+                properties: {
+                  ccms_id: { type: :string, example: '123456789' },
+                  date_of_birth: { type: :string, example: '1991-11-01' },
+                  full_name: { type: :string, example: 'Seamus Finnigan' },
+                  user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
+                  child_sites_attributes: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      required: %w[site_id],
+                      properties: {
+                        site_id: { type: :uuid, example: 'a42270e4-e4d4-485c-a57d-ccbad5729030' },
+                        started_care: { type: :string, example: '2018-12-13' },
+                        ended_care: { type: :string, example: '2019-08-04' }
+                      }
                     }
                   }
-                }
-              },
-              required: %w[
-                full_name
-                date_of_birth
-                user_id
-              ]
+                },
+                required: %w[
+                  full_name
+                  date_of_birth
+                  user_id
+                ]
+              }
             }
-          }
-        },
-        updateChild: {
-          type: :object,
-          properties: {
-            child: {
-              allOf: [
-                { '$ref': '#/definitions/child' }
-              ]
+          },
+          updateChild: {
+            type: :object,
+            properties: {
+              child: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child' }
+                ]
+              }
             }
-          }
-        },
-        createSite: {
-          type: :object,
-          properties: {
-            site: {
-              allOf: [
-                { '$ref': '#/definitions/site' },
-                {
-                  type: :object,
-                  required: %w[
-                    name
-                    address
-                    city
-                    state
-                    zip
-                    county
-                    business_id
-                  ]
-                }
-              ]
+          },
+          createSite: {
+            type: :object,
+            properties: {
+              site: {
+                allOf: [
+                  { '$ref': '#/components/schemas/site' },
+                  {
+                    type: :object,
+                    required: %w[
+                      name
+                      address
+                      city
+                      state
+                      zip
+                      county
+                      business_id
+                    ]
+                  }
+                ]
+              }
             }
-          }
-        },
-        updateSite: {
-          type: :object,
-          properties: {
-            site: { '$ref': '#/definitions/site' }
-          }
-        },
-        createPayment: {
-          type: :object,
-          properties: {
-            payment: {
-              allOf: [
-                { '$ref': '#/definitions/payment' },
-                {
-                  type: :object,
-                  required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
-                }
-              ]
+          },
+          updateSite: {
+            type: :object,
+            properties: {
+              site: {
+                allOf: [
+                  { '$ref': '#/components/schemas/site' }
+                ]
+              }
             }
-          }
-        },
-        updatePayment: {
-          type: :object,
-          properties: {
-            payment: {
-              allOf: [
-                { '$ref': '#/definitions/payment' }
-              ]
+          },
+          createPayment: {
+            type: :object,
+            properties: {
+              payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/payment' },
+                  {
+                    type: :object,
+                    required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
+                  }
+                ]
+              }
+            }
+          },
+          updatePayment: {
+            type: :object,
+            properties: {
+              payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/payment' }
+                ]
+              }
             }
           }
         }
