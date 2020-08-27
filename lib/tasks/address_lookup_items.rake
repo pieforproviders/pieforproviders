@@ -9,7 +9,6 @@ require 'activerecord-import'
 #
 namespace :pie4providers do
   namespace :address_lookups do
-    # DEFAULT_DATA_SOURCE_URI = 'https://github.com/midwire/free_zipcode_data/raw/master/'
     DEFAULT_INPUT_DIR = Rails.root.join('db/lookup_data')
     INPUT_FN_STATES = 'free_zipcode_data_all_us_states.csv'
     INPUT_FN_COUNTIES = 'free_zipcode_data_all_us_counties.csv'
@@ -27,32 +26,47 @@ namespace :pie4providers do
     ZIPCODES_CSV_COL_HEADERS = %w[code city state county area_code lat lon].freeze
     # -----------------------------------------------------------------
 
+    # import_all is about twice as fast
     desc 'Import states.'
-    task :import_states, [:append] => :environment do |_task, args|
-      args.with_defaults(append: 'false')
-      check_for_existing(Lookup::State, args)
+    task :import_states, %i[append use_insert_all] => :environment do |_task, args|
+      klass = Lookup::State
+      klass.delete_all
 
-      puts_start_import 'states'
+      args.with_defaults(default_import_args)
+      check_for_existing(klass, args)
+
+      start_time = Time.zone.now
+      puts_start_import 'states', time: start_time
       default_states_source = File.join(DEFAULT_INPUT_DIR, INPUT_FN_STATES)
-
       states = csv_rows_from_filenamed default_states_source
-      Lookup::State.import STATES_CSV_COLS, states, validate: true
-      puts_done_msg
+
+      insert_csv_info(klass, STATES_CSV_COLS, states, use_import_all?(args))
+      finished_time = Time.zone.now
+      puts_interstitial("#{klass.send(:count)} states now in the db.", time: finished_time)
+      puts_total_time(start_time, finished_time)
     end
 
+    # import_all time is about the same
     desc 'Import counties (assumes states have been imported'
-    task :import_counties, [:append] => :environment do |_task, args|
-      args.with_defaults(append: 'false')
+    task :import_counties, %i[append use_insert_all] => :environment do |_task, args|
+      klass = Lookup::County
+      klass.delete_all
+
+      args.with_defaults(default_import_args)
       check_for_existing(Lookup::County, args)
 
-      puts_start_import 'counties'
+      start_time = Time.zone.now
+      puts_start_import 'counties, time: start_time'
       state_column = COUNTIES_CSV_COL_VALUES.index(:state_id)
 
       default_counties_source = File.join(DEFAULT_INPUT_DIR, INPUT_FN_COUNTIES)
       counties = csv_rows_from_filenamed default_counties_source
       counties_with_state_uuids = set_state_uuids(counties, state_column)
 
-      Lookup::County.import COUNTIES_CSV_COL_VALUES, counties_with_state_uuids, validate: true
+      insert_csv_info(klass, COUNTIES_CSV_COL_VALUES, counties_with_state_uuids, use_import_all?(args))
+      finished_time = Time.zone.now
+      puts_interstitial("#{klass.send(:count)} counties now in the db.", time: finished_time)
+      puts_total_time(start_time, finished_time)
       puts_done_msg
     end
 
@@ -65,19 +79,28 @@ namespace :pie4providers do
     # Cities and Counties are imported at the same time because they use the same source file.
     # The source file is large and slow; doing cities and zipcode separately would be slow.
     #
+    # insert_all is about the same.
     desc 'Import cities zipcodes (assumes counties and states have been imported)'
-    task :import_cities_and_zipcodes, [:append] => :environment do |_task, args|
+    task :import_cities_and_zipcodes, %i[append use_insert_all] => :environment do |_task, args|
       raise "Expected at least #{MIN_STATES_EXPECTED} states. Please be sure the states are populated" if Lookup::State.count < MIN_STATES_EXPECTED
       raise "Expected at least #{MIN_COUNTIES_EXPECTED} counties. Please be sure the counties are populated" if Lookup::County.count < MIN_COUNTIES_EXPECTED
 
-      args.with_defaults(append: 'false')
+      city_klass = Lookup::City
+      city_klass.delete_all
+      zips_klass = Lookup::Zipcode
+      zips_klass.delete_all
+
+      args.with_defaults(default_import_args)
+      use_import_all = use_import_all?(args)
       check_for_existing(Lookup::City, args)
       check_for_existing(Lookup::Zipcode, args)
 
-      puts_start_import 'cities and zip codes'
       state_column = ZIPCODES_CSV_COL_VALUES.index(:state_id)
       county_column = ZIPCODES_CSV_COL_VALUES.index(:county_id)
       city_column = ZIPCODES_CSV_COL_VALUES.index(:city_id)
+
+      start_time = Time.zone.now
+      puts_start_import 'cities and zip codes', time: start_time
 
       default_zips_source = File.join(DEFAULT_INPUT_DIR, INPUT_FN_ZIPCODES)
       puts_interstitial "Reading #{default_zips_source}..."
@@ -86,19 +109,19 @@ namespace :pie4providers do
       puts_interstitial 'Setting UUIDs for states and counties...'
       rows_with_all_uuids = set_county_and_state_uuids(rows, state_column, county_column)
 
-      puts_interstitial 'Creating cities...'
       # remove rows duplicated because of multiple zipcodes per city:
       city_rows = rows_with_all_uuids.uniq { |row| row[city_column] + row[state_column] }
       city_rows = city_rows.map { |row| [row[city_column], row[state_column], row[county_column]] }
-      Lookup::City.import %i[name state_id county_id], city_rows, validate: true
-      puts_interstitial "   #{Lookup::City.count} cities now in the db."
-      puts_interstitial '  done.'
 
-      puts_interstitial 'Creating zipcodes...'
+      create_objects(Lookup::City, %i[name state_id county_id], city_rows, use_import_all)
+
       set_city_uuids_by_states(rows_with_all_uuids, state_column, city_column)
-      Lookup::Zipcode.import ZIPCODES_CSV_COL_VALUES, rows_with_all_uuids, validate: true
-      puts_interstitial "   #{Lookup::Zipcode.count} zipcodes now in the db."
+
+      create_objects(Lookup::Zipcode, ZIPCODES_CSV_COL_VALUES, rows_with_all_uuids, use_import_all)
+
+      finished_time = Time.zone.now
       puts_done_msg
+      puts_total_time(start_time, finished_time)
     end
 
     desc 'Import states, counties, cities, and zipcodes.'
@@ -106,6 +129,13 @@ namespace :pie4providers do
       Rake::Task['pie4providers:address_lookups:import_states'].invoke
       Rake::Task['pie4providers:address_lookups:import_counties'].invoke
       Rake::Task['pie4providers:address_lookups:import_cities_and_zipcodes'].invoke
+    end
+
+    desc 'Import all using import_all (states, counties, cities and zipcodes'
+    task import_all: :environment do
+      Rake::Task['pie4providers:address_lookups:import_states'].invoke(false, true)
+      Rake::Task['pie4providers:address_lookups:import_counties'].invoke(false, true)
+      Rake::Task['pie4providers:address_lookups:import_cities_and_zipcodes'].invoke(false, true)
     end
 
     # Export back into the same format that the free_zipcode_data gem uses
@@ -172,7 +202,11 @@ namespace :pie4providers do
     # ---------------------------------------------------------------------------
 
     def check_for_existing(klass, args)
-      raise "#{klass} already exist. If you want to import and add more, run this with [true]" unless klass.none? || (args[:append] == true.to_s)
+      raise "#{klass} already exist. If you want to import and add more, run this with [true]" unless klass.none? || (args[:append].to_s == true.to_s)
+    end
+
+    def default_import_args
+      { append: 'false', use_insert_all: false }
     end
 
     # Read a (text) csv file from the file named filename. Read it all into memory (!)
@@ -198,6 +232,7 @@ namespace :pie4providers do
         rows_in_state = grouped_by_states[state.abbr]
         rows_with_county_uuids = set_county_uuids(rows_in_state, county_column, counties)
         rows_with_county_uuids.each { |row| row[state_column] = state.id }
+        # Lookup::County.upsert_all()
       end
       grouped_by_states.values.flatten(1)
     end
@@ -242,10 +277,64 @@ namespace :pie4providers do
       grouped_by_refs.values.flatten(1)
     end
 
+    def create_objects(klass, col_headers = [], rows = [], use_import_all = false)
+      start_time = Time.zone.now
+      puts_interstitial "Creating #{klass}..."
+      insert_csv_info(klass, col_headers, rows, use_import_all)
+      finished_time = Time.zone.now
+      puts_interstitial "   #{klass.send(:count)} now in the db.", time: finished_time
+      puts_interstitial '  done.'
+      puts_total_time(start_time, finished_time, msg: "  Total time for #{klass}")
+    end
+
+    def insert_csv_info(klass, col_headers, rows, use_insert_all = false)
+      if use_insert_all
+        insert_all_from_csv(klass, col_headers, rows)
+      else
+        klass.send(:import, col_headers, rows, validate: true)
+      end
+    end
+
+    def use_import_all?(args)
+      args.fetch(:use_insert_all, false).to_s == true.to_s
+    end
+
+    def insert_all_from_csv(klass, col_headers = [], rows = [])
+      return [] if rows.empty?
+
+      verify_headers_and_cols_for_insert(col_headers, rows)
+
+      timestamp = Time.zone.now
+      items_to_insert = rows.map do |row|
+        new_item = {}
+        col_headers.each_with_index do |col_header, i|
+          new_item[col_header.to_sym] = row[i]
+          new_item[:created_at] = timestamp
+          new_item[:updated_at] = timestamp
+        end
+        new_item
+      end
+
+      klass.send(:insert_all!, items_to_insert)
+    end
+
+    def verify_headers_and_cols_for_insert(col_headers = [], rows = [])
+      raise 'No column headers. Nothing done' if col_headers.empty?
+
+      # rubocop complains if I make this 1 long guard clause
+      # rubocop:disable Style/GuardClause
+      unless col_headers.size == rows.first.size
+        raise "Number of headers columns does not match number of columns in the first row:\n" \
+              "  column headers: #{col_headers.inspect}\n" \
+              "  first row: #{rows.first.inspect}"
+      end
+      # rubocop:enable Style/GuardClause
+    end
+
     # @return [String] - full filename that was written to
     def write_to(filename, data, fn_ext = 'csv')
       mkdir_p(DEFAULT_EXPORT_DIR) unless Dir.exist? DEFAULT_EXPORT_DIR
-      export_fn = File.join(DEFAULT_EXPORT_DIR, "#{filename}-#{DateTime.now.strftime('%F-%H%M%S%L')}.#{fn_ext}")
+      export_fn = File.join(DEFAULT_EXPORT_DIR, "#{filename}-#{Time.zone.now.strftime('%F-%H%M%S%L')}.#{fn_ext}")
       File.open(export_fn, 'w') { |f| f.write(data) }
       export_fn
     end
@@ -259,25 +348,33 @@ namespace :pie4providers do
       end
     end
 
-    def puts_interstitial(msg)
-      puts "   #{msg} #{DateTime.now.iso8601(9)}"
+    def puts_interstitial(msg, time: Time.zone.now)
+      puts "   #{msg} #{formatted(time)}"
     end
 
-    def puts_start_import(component_name)
-      puts "Importing #{component_name}... (started at: #{DateTime.now.iso8601(9)} )"
+    def puts_start_import(component_name, time: Time.zone.now)
+      puts "Importing #{component_name}... (started at: #{formatted(time)} )"
     end
 
-    def puts_start_export(component_name)
-      puts "Exporting #{component_name}... (started at: #{DateTime.now.iso8601(9)} )"
+    def puts_start_export(component_name, time: Time.zone.now)
+      puts "Exporting #{component_name}... (started at: #{formatted(time)} )"
     end
 
-    def puts_exported_done(name, filename)
-      puts_done_msg("#{name} exported to #{filename} ")
+    def puts_exported_done(name, filename, time: Time.zone.now)
+      puts_done_msg("#{name} exported to #{filename} ( at: #{formatted(time)} )")
     end
 
-    def puts_done_msg(msg = '')
-      puts "...done. (finished at: #{DateTime.now.iso8601(9)} )"
+    def puts_done_msg(msg = '', time: Time.zone.now)
+      puts "...done. (finished at: #{formatted(time)} )"
       puts msg if msg.present?
+    end
+
+    def puts_total_time(start_time, end_time, msg: 'Total time')
+      puts format('  %<msg>s: %<total_time>2.6f', msg: msg, total_time: (end_time.to_f - start_time.to_f))
+    end
+
+    def formatted(time = Time.zone.now)
+      time.iso8601(9)
     end
   end
 end
