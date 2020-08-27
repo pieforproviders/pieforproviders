@@ -11,7 +11,7 @@ if (
   process.env.REACT_APP_SENTRY_DSN
 ) {
   Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN_FRONTEND
+    dsn: process.env.REACT_APP_SENTRY_DSN
   })
 }
 
