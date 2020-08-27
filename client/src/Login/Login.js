@@ -45,7 +45,12 @@ export function Login() {
       </p>
 
       {apiError && (
-        <Alert className="mb-2" message={apiError.message} type="error" />
+        <Alert
+          className="mb-2"
+          message={apiError.message}
+          type="error"
+          data-cy="loginError"
+        />
       )}
 
       <Form
@@ -65,7 +70,7 @@ export function Login() {
             }
           ]}
         >
-          <Input autoComplete="username" />
+          <Input autoComplete="username" data-cy="email" />
         </Form.Item>
 
         <Form.Item
@@ -79,11 +84,11 @@ export function Login() {
             }
           ]}
         >
-          <Input.Password autoComplete="current-password" />
+          <Input.Password autoComplete="current-password" data-cy="password" />
         </Form.Item>
 
         <Form.Item>
-          <PaddedButton classes="mt-2" text={t('login')} />
+          <PaddedButton classes="mt-2" text={t('login')} data-cy="loginBtn" />
         </Form.Item>
       </Form>
       <Form

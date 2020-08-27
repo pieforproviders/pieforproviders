@@ -9,6 +9,10 @@
   "private": false,
   "scripts": {
     "build": "yarn --cwd client install && yarn --cwd client build",
+    "start-server": "bin/rails server -e test -p 5017",
+    "cy:run": "cypress run --project ./spec --config video=false",
+    "cy:open": "cypress open --project ./spec",
+    "cy:ci": "start-server-and-test start-server http://localhost:5017 cy:run",
     "deploy": "cp -a client/build/. public/",
     "heroku-postbuild": "yarn build && yarn deploy",
     "start": "yarn --cwd client start",
@@ -22,7 +26,12 @@
   },
   "engines": {
     "yarn": "1.22.4",
-    "npm": "6.13.4",
-    "node": "12.14.1"
+    "npm": ">=6.13.4",
+    "node": ">=12.14.1"
+  },
+  "devDependencies": {
+    "cypress": "^5.0.0",
+    "faker": "^5.1.0",
+    "start-server-and-test": "^1.11.3"
   }
 }

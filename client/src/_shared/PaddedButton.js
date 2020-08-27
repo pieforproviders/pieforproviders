@@ -8,7 +8,8 @@ export function PaddedButton({
   size = 'middle',
   htmlType = 'submit',
   classes = '',
-  text
+  text,
+  ...props
 }) {
   return (
     <Button
@@ -17,6 +18,7 @@ export function PaddedButton({
       size={size}
       htmlType={htmlType}
       className={`${classes} py-4 px-8 h-auto w-auto font-semibold uppercase`}
+      {...props}
     >
       {text}
     </Button>
