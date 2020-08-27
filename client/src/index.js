@@ -8,7 +8,7 @@ import './i18n'
 
 if (
   process.env.NODE_ENV === 'production' &&
-  process.env.REACT_APP_SENTRY_DSN_FRONTEND
+  process.env.REACT_APP_SENTRY_DSN
 ) {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN_FRONTEND
