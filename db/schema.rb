@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_214731) do
+ActiveRecord::Schema.define(version: 2020_08_25_180300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -66,28 +66,52 @@ ActiveRecord::Schema.define(version: 2020_08_25_214731) do
     t.index ["user_id"], name: "index_children_on_user_id"
   end
 
-  create_table "cities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
-    t.uuid "state", null: false
-    t.uuid "county"
-    t.uuid "zipcode", null: false
-    t.index ["county"], name: "index_cities_on_county"
-    t.index ["name"], name: "index_cities_on_name"
-    t.index ["state", "county"], name: "index_cities_on_state_and_county"
-    t.index ["state", "zipcode"], name: "index_cities_on_state_and_zipcode"
-    t.index ["state"], name: "index_cities_on_state"
-    t.index ["zipcode"], name: "index_cities_on_zipcode"
+  create_table "lookup_cities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.uuid "state_id", null: false
+    t.uuid "county_id"
+    t.index ["county_id"], name: "index_lookup_cities_on_county_id"
+    t.index ["name", "state_id"], name: "index_lookup_cities_on_name_and_state_id", unique: true
+    t.index ["name"], name: "index_lookup_cities_on_name"
+    t.index ["state_id"], name: "index_lookup_cities_on_state_id"
   end
 
-  create_table "counties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "lookup_counties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "state_id"
     t.string "abbr"
-    t.string "name"
+    t.string "name", null: false
     t.string "county_seat"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["name"], name: "index_counties_on_name"
-    t.index ["state_id"], name: "index_counties_on_state_id"
+    t.index ["name"], name: "index_lookup_counties_on_name"
+    t.index ["state_id", "name"], name: "index_lookup_counties_on_state_id_and_name", unique: true
+    t.index ["state_id"], name: "index_lookup_counties_on_state_id"
+  end
+
+  create_table "lookup_states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "abbr", limit: 2, null: false
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["abbr"], name: "index_lookup_states_on_abbr", unique: true
+    t.index ["name"], name: "index_lookup_states_on_name", unique: true
+  end
+
+  create_table "lookup_zipcodes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "code", null: false
+    t.uuid "state_id"
+    t.uuid "county_id"
+    t.uuid "city_id"
+    t.string "area_code"
+    t.decimal "lat", precision: 15, scale: 10
+    t.decimal "lon", precision: 15, scale: 10
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["city_id"], name: "index_lookup_zipcodes_on_city_id"
+    t.index ["code"], name: "index_lookup_zipcodes_on_code", unique: true
+    t.index ["county_id"], name: "index_lookup_zipcodes_on_county_id"
+    t.index ["state_id", "city_id"], name: "index_lookup_zipcodes_on_state_id_and_city_id"
+    t.index ["state_id"], name: "index_lookup_zipcodes_on_state_id"
   end
 
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -120,14 +144,6 @@ ActiveRecord::Schema.define(version: 2020_08_25_214731) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["name", "business_id"], name: "index_sites_on_name_and_business_id", unique: true
-  end
-
-  create_table "states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "abbr", limit: 2
-    t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["abbr"], name: "index_states_on_abbr"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -169,22 +185,6 @@ ActiveRecord::Schema.define(version: 2020_08_25_214731) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["slug"], name: "index_users_on_slug", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
-  end
-
-  create_table "zipcodes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "code"
-    t.string "city"
-    t.uuid "state_id"
-    t.uuid "county_id"
-    t.string "area_code"
-    t.decimal "lat", precision: 15, scale: 10
-    t.decimal "lon", precision: 15, scale: 10
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["code"], name: "index_zipcodes_on_code"
-    t.index ["county_id"], name: "index_zipcodes_on_county_id"
-    t.index ["lat", "lon"], name: "index_zipcodes_on_lat_and_lon"
-    t.index ["state_id"], name: "index_zipcodes_on_state_id"
   end
 
 end
