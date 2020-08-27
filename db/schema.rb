@@ -70,6 +70,8 @@ ActiveRecord::Schema.define(version: 2020_08_25_180300) do
     t.string "name", null: false
     t.uuid "state_id", null: false
     t.uuid "county_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["county_id"], name: "index_lookup_cities_on_county_id"
     t.index ["name", "state_id"], name: "index_lookup_cities_on_name_and_state_id", unique: true
     t.index ["name"], name: "index_lookup_cities_on_name"

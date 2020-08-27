@@ -4,6 +4,8 @@ class CreateLookupCities < ActiveRecord::Migration[6.0]
       t.string :name, null: false
       t.uuid :state_id,  foreign_key: true, null: false
       t.uuid :county_id, foreign_key: true
+
+      t.timestamps
     end
 
     add_index :lookup_cities, :name

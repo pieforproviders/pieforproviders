@@ -11,10 +11,12 @@ end
 #
 # Table name: lookup_cities
 #
-#  id        :uuid             not null, primary key
-#  name      :string           not null
-#  county_id :uuid
-#  state_id  :uuid             not null
+#  id         :uuid             not null, primary key
+#  name       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  county_id  :uuid
+#  state_id   :uuid             not null
 #
 # Indexes
 #
