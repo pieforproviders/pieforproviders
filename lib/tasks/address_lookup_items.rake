@@ -8,7 +8,6 @@ require 'activerecord-import'
 # Taken and optimized from the 'my_zipcode_gem' gem rake file.
 #
 namespace :pie4providers do
-
   namespace :address_lookups do
     # DEFAULT_DATA_SOURCE_URI = 'https://github.com/midwire/free_zipcode_data/raw/master/'
     DEFAULT_INPUT_DIR = Rails.root.join('db/lookup_data')
