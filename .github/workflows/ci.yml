@@ -1,8 +1,8 @@
 name: CI
-on: 
+on:
   push:
     branches:
-    - master 
+    - master
     - develop
   pull_request:
     branches:
@@ -90,13 +90,15 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:schema:load
+          bundle exec rake db:structure:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
       - name: Run RSpec
-        run: bundle exec rspec --require rails_helper
+        run: |
+          bundle exec rails test:load_structure
+          bundle exec rspec --require rails_helper
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
@@ -155,7 +157,7 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:schema:load
+          bundle exec rake db:structure:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
