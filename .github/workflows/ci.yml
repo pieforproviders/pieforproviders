@@ -97,7 +97,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
       - name: Run RSpec
         run: |
-          bundle exec rails test:load_structure
+          bundle exec rails db:test:load_structure
           bundle exec rspec --require rails_helper
         env:
           RAILS_ENV: test
