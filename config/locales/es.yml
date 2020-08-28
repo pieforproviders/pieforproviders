@@ -1,4 +1,16 @@
 es:
+  license_types: &license_types
+    licensed_center: licensed center
+    licensed_family_home: licensed family home
+    licensed_group_home: licensed group home
+    license_exempt_home: license exempt home
+    license_exempt_center: license exempt center
+
+  activerecord:
+    attributes:
+      business:
+        categories: *license_types
+
   errors:
     messages:
       taken: "ya ha sido tomado"
