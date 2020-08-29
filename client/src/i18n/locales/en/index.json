@@ -30,7 +30,8 @@
   "multiBusinessPlaceholder": "Choose one",
   "multiBusinessFalse": "No, I am managing 1 child care business only",
   "multiBusinessTrue": "Yes, managing multiple child care businesses",
-  "phone": "Phone number (we will only call or text if you want us to)",
+  "phone": "Phone number",
+  "phoneNote": "we will only call or text if you want us to",
   "phoneTypePlaceholder": "Choose one",
   "phoneTypeCell": "Cell",
   "phoneTypeHome": "Home",
@@ -59,5 +60,7 @@
   "gettingStartedWelcome": "Welcome to Pie for Providers, ",
   "gettingStartedTitle": "Let's Get Started",
   "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!",
-  "gettingStartedButton": "Get Started"
+  "gettingStartedButton": "Get Started",
+
+  "genericErrorMessage": "Something went wrong, try again later."
 }

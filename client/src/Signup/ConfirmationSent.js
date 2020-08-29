@@ -9,10 +9,10 @@ const pieEmail = 'tech@pieforproviders.com'
 
 function ListItem({ children }) {
   return (
-    <div className="flex items-center justify-left mb-1">
+    <div className="flex justify-left mb-2">
       <LabelImportantIcon
         className="mr-1"
-        style={{ color: '#000', width: '16px' }}
+        style={{ color: '#000', fontSize: '16px' }}
       />
       {children}
     </div>

@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'payments API', type: :request do
-  # Use confirmed_user so that no confirimation email is sent
+  # Use confirmed_user so that no confirmation email is sent
   let(:confirmed_user) { create(:confirmed_user) }
   let(:user_id) { confirmed_user.id }
   let(:agency_id) { create(:agency).id }

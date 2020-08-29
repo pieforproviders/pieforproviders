@@ -27,6 +27,11 @@ module App
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    # Changes the schema format as the tables using Postgres enums aren't dumped
+    # properly when using the default of `:ruby`.
+    # Ref: https://sipsandbits.com/2018/04/30/using-database-native-enums-with-rails/
+    config.active_record.schema_format = :sql
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -37,16 +42,7 @@ module App
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    if Rails.env.development?
-      config.generators do |g|
-        g.test_framework :rspec,
-                         fixtures: true,
-                         view_specs: false,
-                         helper_specs: true,
-                         routing_specs: false,
-                         controller_specs: false,
-                         request_specs: true
-      end
-    end
+    config.i18n.available_locales = %i[en es]
+    config.i18n.default_locale = :en
   end
 end

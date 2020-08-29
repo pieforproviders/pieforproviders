@@ -13,26 +13,26 @@ RSpec.describe Payment, type: :model do
   it 'care_finished_on is a valid Date' do
     pay = build(:payment)
     pay.valid?
-    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    expect(pay.errors[:care_finished_on]).not_to include(invalid_date_msg)
     pay.care_finished_on = nil
     pay.valid?
-    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+    expect(pay.errors[:care_finished_on]).to include(invalid_date_msg)
   end
   it 'care_started_on is a valid Date' do
     pay = build(:payment)
     pay.valid?
-    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    expect(pay.errors[:care_started_on]).not_to include(invalid_date_msg)
     pay.care_started_on = nil
     pay.valid?
-    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+    expect(pay.errors[:care_started_on]).to include(invalid_date_msg)
   end
   it 'paid_on is a valid Date' do
     pay = build(:payment)
     pay.valid?
-    expect(pay.errors[:date_param]).not_to include(invalid_date_msg)
+    expect(pay.errors[:paid_on]).not_to include(invalid_date_msg)
     pay.paid_on = nil
     pay.valid?
-    expect(pay.errors[:date_param]).to include(invalid_date_msg)
+    expect(pay.errors[:paid_on]).to include(invalid_date_msg)
   end
 
   it 'discrepancy can be nil' do

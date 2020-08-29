@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 # The sites at which businesses have children in care
-class Site < ApplicationRecord
-  # Handles UUIDs breaking ActiveRecord's usual ".first" and ".last" behavior
-  self.implicit_order_column = 'created_at'
-
+class Site < UuidApplicationRecord
   belongs_to :business
   has_many :child_sites, dependent: :destroy
   has_many :children, through: :child_sites

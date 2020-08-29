@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import ReactGA from 'react-ga'
+import { Alert, Form, Input, Select, Radio, Checkbox } from 'antd'
+import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
-import { Form, Input, Button, Select, Radio, Checkbox } from 'antd'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -33,23 +34,29 @@ export function Signup() {
   })
   const [multiBusiness, setMultiBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
-  const [errors, setErrors] = useState(null)
+  const [validationErrors, setValidationErrors] = useState(null)
+  const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
 
   const onFinish = async () => {
+    setValidationErrors(null)
+    setError(false)
+
     localStorage.setItem('pieMultiBusiness', multiBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
-      data: { user: user }
+      data: { user: user },
+      headers: { 'Accept-Language': i18n.language }
     })
     if (response.status === 201) {
       setSuccess(true)
-    } else {
+    } else if (response.status === 422) {
       const { errors } = await response.json()
-      errors && setErrors(errors[0].detail)
-      // TODO: Sentry else if response.status === 500 - server errors
+      setValidationErrors(errors[0].detail)
+    } else {
+      setError(true)
     }
   }
 
@@ -88,7 +95,7 @@ export function Signup() {
 
   return (
     <>
-      <p className="mb-4">
+      <p className="mb-8">
         <span className="uppercase font-bold">{t('signup')}</span>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -96,7 +103,20 @@ export function Signup() {
         </Link>
       </p>
 
-      <Form layout="vertical" onFinish={onFinish}>
+      {error && (
+        <Alert
+          className="mb-2"
+          message={t('genericErrorMessage')}
+          type="error"
+        />
+      )}
+
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        name="signup"
+        wrapperCol={{ lg: 12 }}
+      >
         <Form.Item
           label={t('organization')}
           name="organization"
@@ -177,7 +197,7 @@ export function Signup() {
           </Select>
         </Form.Item>
 
-        <Form.Item name="phone" label={t('phone')}>
+        <Form.Item name="phone" label={`${t('phone')} (${t('phoneNote')})`}>
           <Input.Group compact>
             <Select
               value={user.phoneType}
@@ -201,13 +221,19 @@ export function Signup() {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
                   message: t('phoneNumberInvalid')
                 }
-                // TODO: these rules aren't working
               ]}
+              hasFeedback={!!validationErrors?.phone_number}
+              validateStatus={validationErrors?.phone_number && 'error'}
+              help={
+                validationErrors?.phone_number &&
+                `${t('phone')} ${validationErrors.phone_number.join(', ')}`
+              }
             >
               <MaskedInput
                 mask="111-111-1111"
                 placeholder="___-___-____"
                 size="10"
+                className="h-8"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -296,9 +322,12 @@ export function Signup() {
               message: t('emailRequired')
             }
           ]}
-          hasFeedback={!!errors?.email}
-          validateStatus={errors?.email && 'error'}
-          help={errors?.email && `Email ${errors.email.join(', ')}`}
+          hasFeedback={!!validationErrors?.email}
+          validateStatus={validationErrors?.email && 'error'}
+          help={
+            validationErrors?.email &&
+            `${t('email')} ${validationErrors.email.join(', ')}`
+          }
         >
           <Input
             placeholder="amanda@gmail.com"
@@ -367,14 +396,14 @@ export function Signup() {
               message: t('termsRequired')
             }
           ]}
+          wrapperCol={{ lg: 24 }}
         >
           <Checkbox
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
+            className="flex"
             name="serviceAgreementAccepted"
             onChange={() => {
-              // TODO: adds a validation trigger on change so the user doesn't have to
-              // click away from the checkbox before clicking the submit button
               setUser({
                 ...user,
                 serviceAgreementAccepted: !user.serviceAgreementAccepted
@@ -384,16 +413,8 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            shape="round"
-            size="large"
-            htmlType="submit"
-            className="mt-2 font-semibold uppercase"
-          >
-            {t('signup')}
-          </Button>
+        <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
+          <PaddedButton text={t('signup')} />
         </Form.Item>
       </Form>
     </>

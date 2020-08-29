@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 
-export function ActionLink({ onClick, text, classes }) {
+export function ActionLink({ onClick, text, classes = '' }) {
   const handleClick = e => {
     e.preventDefault()
     onClick()
@@ -11,7 +11,7 @@ export function ActionLink({ onClick, text, classes }) {
     <>
       <Button
         onClick={handleClick}
-        className={`${classes ? classes : ''} focus:shadow-none`}
+        className={`${classes} focus:shadow-none`}
         type="link"
       >
         {text}
