@@ -16,8 +16,11 @@ import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { isUserLoggedIn } from '_utils'
+import { useTranslation } from 'react-i18next'
 
 const App = () => {
+  const { t } = useTranslation()
+
   useEffect(() => {
     /* skip production code for coverage */
     /* istanbul ignore next */
@@ -43,7 +46,7 @@ const App = () => {
                 contentComponent={Login}
               />
             </Route>
-            <AuthorizedRoute exact path="/getting-started" title="Setup">
+            <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
               <GettingStarted />
             </AuthorizedRoute>
             <AuthorizedRoute exact path="/dashboard">

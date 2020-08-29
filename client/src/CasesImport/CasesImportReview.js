@@ -1,16 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Table } from 'antd'
-import { columns } from './utils'
+import { useTranslation } from 'react-i18next'
+import { getColumns } from './utils'
 
 export function CasesImportReview({ kids }) {
+  const { t } = useTranslation()
+
   return (
     <div>
-      <h1 className="sr-only">Review Imported Cases</h1>
+      <h1 className="sr-only">{t('reviewImportedCases')}</h1>
       {kids.length > 0 && (
         <Table
           dataSource={kids}
-          columns={columns}
+          columns={getColumns(t)}
           style={{ marginTop: '16px' }}
         />
       )}
