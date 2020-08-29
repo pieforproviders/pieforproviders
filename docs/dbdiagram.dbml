@@ -91,9 +91,9 @@ Table case_cycles {
   case_number string
   copay monetize
   copay_frequency copay_frequencies
-  status case_statuses
+  status case_statuses [not null, default: "submitted"]
   slug string [not null]
-  submitted_on date
+  submitted_on date [not null]
   effective_on date
   notified_on date
   expires_on date
