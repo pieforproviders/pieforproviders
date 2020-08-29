@@ -48,7 +48,7 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
@@ -227,7 +227,6 @@ CREATE TABLE public.users (
     language character varying NOT NULL,
     phone_type character varying,
     opt_in_email boolean DEFAULT true NOT NULL,
-    opt_in_phone boolean DEFAULT true NOT NULL,
     opt_in_text boolean DEFAULT true NOT NULL,
     phone_number character varying,
     service_agreement_accepted boolean DEFAULT false NOT NULL,
@@ -503,6 +502,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200802222331'),
 ('20200824023040'),
 ('20200824023511'),
-('20200824025129');
+('20200824025129'),
+('20200828013851');
 
 
