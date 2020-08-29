@@ -7,7 +7,6 @@ Table users {
   phone_type string
   opt_in_text boolean [not null, default: true]
   opt_in_email boolean [not null, default: true]
-  opt_in_phone boolean [not null, default: true]
   organization string [not null]
   password string [not null] // devise
   active boolean [not null, default: true]

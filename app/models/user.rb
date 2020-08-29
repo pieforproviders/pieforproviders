@@ -17,7 +17,6 @@ class User < UuidApplicationRecord
   validates :language, presence: true
   validates :organization, presence: true
   validates :opt_in_email, inclusion: { in: [true, false] }
-  validates :opt_in_phone, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
   validates :phone_number, uniqueness: true, allow_nil: true
   validates :service_agreement_accepted, inclusion: { in: [true, false] }
@@ -54,7 +53,6 @@ end
 #  last_sign_in_ip            :inet
 #  locked_at                  :datetime
 #  opt_in_email               :boolean          default(TRUE), not null
-#  opt_in_phone               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
 #  organization               :string           not null
 #  phone_number               :string
