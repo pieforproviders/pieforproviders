@@ -9,7 +9,6 @@ FactoryBot.define do
     greeting_name { Faker::Name.first_name }
     language { %w[English Spanish Russian].sample }
     opt_in_email { Faker::Boolean.boolean }
-    opt_in_phone { Faker::Boolean.boolean }
     opt_in_text { Faker::Boolean.boolean }
     organization { Faker::Company.name }
     password { password }
@@ -45,7 +44,6 @@ end
 #  last_sign_in_ip            :inet
 #  locked_at                  :datetime
 #  opt_in_email               :boolean          default(TRUE), not null
-#  opt_in_phone               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
 #  organization               :string           not null
 #  phone_number               :string

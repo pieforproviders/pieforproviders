@@ -10,7 +10,6 @@ user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_
   greeting_name: 'Kate',
   language: 'english',
   opt_in_email: true,
-  opt_in_phone: true,
   opt_in_text: true,
   organization: 'Pie for Providers',
   password: ENV.fetch('TESTUSER_PASS', 'testpass1234!'),

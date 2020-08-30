@@ -27,6 +27,11 @@ module App
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    # Changes the schema format as the tables using Postgres enums aren't dumped
+    # properly when using the default of `:ruby`.
+    # Ref: https://sipsandbits.com/2018/04/30/using-database-native-enums-with-rails/
+    config.active_record.schema_format = :sql
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

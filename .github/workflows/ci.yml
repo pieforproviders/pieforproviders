@@ -2,11 +2,11 @@ name: CI
 on:
   push:
     branches:
-    - master
+    - main
     - develop
   pull_request:
     branches:
-    - master
+    - main
     - develop
 jobs:
   lint_backend:
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11
+        image: postgres:12
         ports:
           - 5432:5432
         env:
@@ -96,9 +96,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
       - name: Run RSpec
-        run: |
-          bundle exec rails db:test:load_structure
-          bundle exec rspec --require rails_helper
+        run: bundle exec rspec --require rails_helper
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
@@ -126,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11
+        image: postgres:12
         ports:
           - 5432:5432
         env:

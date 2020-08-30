@@ -10,20 +10,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -38,21 +24,31 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- Name: license_types; Type: TYPE; Schema: public; Owner: -
+-- Name: case_status; Type: TYPE; Schema: public; Owner: -
 --
 
-CREATE TYPE public.license_types AS ENUM (
-    'licensed_center',
-    'licensed_family_home',
-    'licensed_group_home',
-    'license_exempt_home',
-    'license_exempt_center'
+CREATE TYPE public.case_status AS ENUM (
+    'submitted',
+    'pending',
+    'approved',
+    'denied'
+);
+
+
+--
+-- Name: copay_frequency; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.copay_frequency AS ENUM (
+    'daily',
+    'weekly',
+    'monthly'
 );
 
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
+SET default_table_access_method = heap;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
@@ -108,6 +104,27 @@ CREATE TABLE public.businesses (
 
 
 --
+-- Name: case_cycles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.case_cycles (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    case_number character varying,
+    copay_cents integer DEFAULT 0 NOT NULL,
+    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    slug character varying NOT NULL,
+    submitted_on date NOT NULL,
+    effective_on date,
+    notified_on date,
+    expires_on date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
+    copay_frequency public.copay_frequency NOT NULL
+);
+
+
+--
 -- Name: child_sites; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -134,6 +151,15 @@ CREATE TABLE public.children (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     slug character varying NOT NULL
+);
+
+
+--
+-- Name: data_migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.data_migrations (
+    version character varying NOT NULL
 );
 
 
@@ -201,7 +227,6 @@ CREATE TABLE public.users (
     language character varying NOT NULL,
     phone_type character varying,
     opt_in_email boolean DEFAULT true NOT NULL,
-    opt_in_phone boolean DEFAULT true NOT NULL,
     opt_in_text boolean DEFAULT true NOT NULL,
     phone_number character varying,
     service_agreement_accepted boolean DEFAULT false NOT NULL,
@@ -262,6 +287,14 @@ ALTER TABLE ONLY public.businesses
 
 
 --
+-- Name: case_cycles case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.case_cycles
+    ADD CONSTRAINT case_cycles_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: child_sites child_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -275,6 +308,14 @@ ALTER TABLE ONLY public.child_sites
 
 ALTER TABLE ONLY public.children
     ADD CONSTRAINT children_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: data_migrations data_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.data_migrations
+    ADD CONSTRAINT data_migrations_pkey PRIMARY KEY (version);
 
 
 --
@@ -342,6 +383,13 @@ CREATE UNIQUE INDEX index_businesses_on_slug ON public.businesses USING btree (s
 --
 
 CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_id);
+
+
+--
+-- Name: index_case_cycles_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree (slug);
 
 
 --
@@ -452,6 +500,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200802173943'),
 ('20200802210346'),
 ('20200802222331'),
-('20200814013700');
+('20200824023040'),
+('20200824023511'),
+('20200824025129'),
+('20200828013851');
 
 
