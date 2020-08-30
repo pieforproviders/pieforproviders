@@ -14,17 +14,19 @@ class ConfirmationsController < Devise::ConfirmationsController
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
 
     if resource.errors.empty?
-      sign_in(resource)
-      response.headers['authorization'] = current_token
-      render json: resource
+      sign_in_resource(resource)
     else
-      # TODO: Concatenate "email has already been confirmed"
-      # errorMessage: { error: { email: ["was already confirmed, please try signing in"] } }
       render json: { error: resource.errors }, status: :forbidden
     end
   end
 
   private
+
+  def sign_in_resource(resource)
+    sign_in(resource)
+    response.headers['authorization'] = current_token
+    render json: resource
+  end
 
   def current_token
     request.env['warden-jwt_auth.token']

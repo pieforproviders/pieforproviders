@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { Form, Button, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -17,27 +18,34 @@ export function Confirmation({ location }) {
   }
 
   useEffect(() => {
+    let isSubscribed = true
     const confirm = async () => {
       const token = location.search.split('=')[1]
       const response = await makeRequest({
         type: 'get',
         url: `${location.pathname}?confirmation_token=${token}`
       })
-      if (!response.ok || response.headers.get('authorization') === null) {
-        const errorMessage = await response.json()
-        setApiError({
-          status: response.status,
-          message: errorMessage.error
-        })
-        localStorage.removeItem('pie-token')
-        history.push('/login')
-      } else {
-        localStorage.setItem('pie-token', response.headers.get('authorization'))
-        history.push('/getting-started')
+      if (isSubscribed) {
+        if (!response.ok || response.headers.get('authorization') === null) {
+          const errorMessage = await response.json()
+          setApiError({
+            status: response.status,
+            message: errorMessage.error
+          })
+          localStorage.removeItem('pie-token')
+          history.push('/login')
+        } else {
+          localStorage.setItem(
+            'pie-token',
+            response.headers.get('authorization')
+          )
+          history.push('/getting-started')
+        }
       }
     }
     confirm()
-  }, [])
+    return () => (isSubscribed = false)
+  }, [history, location.pathname, location.search, makeRequest])
 
   return (
     <>
@@ -75,4 +83,8 @@ export function Confirmation({ location }) {
       )}
     </>
   )
+}
+
+Confirmation.propTypes = {
+  location: PropTypes.object.isRequired
 }
