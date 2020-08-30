@@ -173,7 +173,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Build frontend
         run: |
-          yarn postinstall
+          yarn heroku-postbuild
       - name: Run Cypress tests
         run: yarn cy:ci
         env:
