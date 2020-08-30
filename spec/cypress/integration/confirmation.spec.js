@@ -24,17 +24,17 @@ describe('Confirmation', () => {
             password,
             password_confirmation: password,
             confirmation_token: confirmationToken,
-            confirmed_at: confirmationDate,
+            confirmed_at: null,
           },
         ],
       ])
     })
 
     describe('valid confirmation link', () => {
-      it('allows a user to confirm and redirects them', () => {
+      it.only('allows a user to confirm and redirects them', () => {
         cy.server()
         cy.route({
-          method: 'POST',
+          method: 'GET',
           url: `/confirmation?confirmation_token=${confirmationToken}`,
         }).as('confirmation')
 
