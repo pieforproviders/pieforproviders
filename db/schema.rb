@@ -44,6 +44,9 @@ ActiveRecord::Schema.define(version: 2020_08_28_013851) do
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
 
+# Could not dump table "case_cycles" because of following StandardError
+#   Unknown type 'case_status' for column 'status'
+
   create_table "child_sites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.uuid "site_id", null: false
@@ -64,9 +67,6 @@ ActiveRecord::Schema.define(version: 2020_08_28_013851) do
     t.index ["full_name", "date_of_birth", "user_id"], name: "unique_children", unique: true
     t.index ["slug"], name: "index_children_on_slug", unique: true
     t.index ["user_id"], name: "index_children_on_user_id"
-  end
-
-  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
