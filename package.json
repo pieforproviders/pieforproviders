@@ -17,6 +17,7 @@
     "heroku-postbuild": "yarn build && yarn deploy",
     "start": "yarn --cwd client start",
     "test": "yarn --cwd client test",
+    "test-once": "yarn --cwd client test-once",
     "lint": "yarn --cwd client lint",
     "lint:fix": "yarn --cwd client lint --fix",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\"",

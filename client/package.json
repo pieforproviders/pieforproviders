@@ -43,7 +43,8 @@
     "prebuild": "yarn run build:style",
     "prestart": "yarn run build:style",
     "start": "craco start",
-    "test": "craco test --coverage --watchAll"
+    "test": "craco test --coverage --watchAll",
+    "test-once": "CI=true craco test"
   },
   "prettier": {
     "printWidth": 80,
