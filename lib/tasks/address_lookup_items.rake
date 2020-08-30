@@ -25,7 +25,6 @@ namespace :pie4providers do
     ZIPCODES_CSV_COL_HEADERS = %w[code city state county area_code lat lon].freeze
     # -----------------------------------------------------------------
 
-    # import_all is about twice as fast
     desc 'Import states.'
     task :import_states, %i[append] => :environment do |_task, args|
       klass = Lookup::State
@@ -39,7 +38,6 @@ namespace :pie4providers do
       puts_done_msg
     end
 
-    # import_all time is about the same
     desc 'Import counties (assumes states have been imported)'
     task :import_counties, %i[append use_insert_all] => :environment do |_task, args|
       klass = Lookup::County
@@ -65,7 +63,6 @@ namespace :pie4providers do
     # Cities and Counties are imported at the same time because they use the same source file.
     # The source file is large and slow; doing cities and zipcode separately would be slow.
     #
-    # insert_all is about the same.
     desc 'Import cities zipcodes (assumes counties and states have been imported)'
     task :import_cities_and_zipcodes, %i[append use_insert_all] => :environment do |_task, args|
       raise "Expected at least #{MIN_STATES_EXPECTED} states. Please be sure the states are populated" if Lookup::State.count < MIN_STATES_EXPECTED
