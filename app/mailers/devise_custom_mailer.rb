@@ -7,6 +7,7 @@ class DeviseCustomMailer < Devise::Mailer
 
   def confirmation_instructions(record, token, opts = {})
     @greeting_name = record.greeting_name || ''
+    @token = token
     opts[:subject] = 'Pie for Providers email verification'
     attachments.inline['pieFullTanLogo.svg'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pieFullTanLogo.svg'))
     super
