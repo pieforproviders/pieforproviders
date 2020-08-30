@@ -2,11 +2,11 @@ name: CI
 on: 
   push:
     branches:
-    - master 
+    - main 
     - develop
   pull_request:
     branches:
-    - master
+    - main
     - develop
 jobs:
   lint_backend:
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11
+        image: postgres:12
         ports:
           - 5432:5432
         env:
@@ -90,7 +90,7 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:schema:load
+          bundle exec rake db:structure:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
@@ -124,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:11
+        image: postgres:12
         ports:
           - 5432:5432
         env:
@@ -155,7 +155,7 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:schema:load
+          bundle exec rake db:structure:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres

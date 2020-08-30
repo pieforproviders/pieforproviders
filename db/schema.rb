@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_25_180300) do
+ActiveRecord::Schema.define(version: 2020_08_28_013851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -66,54 +66,7 @@ ActiveRecord::Schema.define(version: 2020_08_25_180300) do
     t.index ["user_id"], name: "index_children_on_user_id"
   end
 
-  create_table "lookup_cities", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.uuid "state_id", null: false
-    t.uuid "county_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["county_id"], name: "index_lookup_cities_on_county_id"
-    t.index ["name", "state_id"], name: "index_lookup_cities_on_name_and_state_id", unique: true
-    t.index ["name"], name: "index_lookup_cities_on_name"
-    t.index ["state_id"], name: "index_lookup_cities_on_state_id"
-  end
-
-  create_table "lookup_counties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "state_id"
-    t.string "abbr"
-    t.string "name", null: false
-    t.string "county_seat"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["name"], name: "index_lookup_counties_on_name"
-    t.index ["state_id", "name"], name: "index_lookup_counties_on_state_id_and_name", unique: true
-    t.index ["state_id"], name: "index_lookup_counties_on_state_id"
-  end
-
-  create_table "lookup_states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "abbr", limit: 2, null: false
-    t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["abbr"], name: "index_lookup_states_on_abbr", unique: true
-    t.index ["name"], name: "index_lookup_states_on_name", unique: true
-  end
-
-  create_table "lookup_zipcodes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "code", null: false
-    t.uuid "state_id"
-    t.uuid "county_id"
-    t.uuid "city_id"
-    t.string "area_code"
-    t.decimal "lat", precision: 15, scale: 10
-    t.decimal "lon", precision: 15, scale: 10
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["city_id"], name: "index_lookup_zipcodes_on_city_id"
-    t.index ["code"], name: "index_lookup_zipcodes_on_code", unique: true
-    t.index ["county_id"], name: "index_lookup_zipcodes_on_county_id"
-    t.index ["state_id", "city_id"], name: "index_lookup_zipcodes_on_state_id_and_city_id"
-    t.index ["state_id"], name: "index_lookup_zipcodes_on_state_id"
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
   create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -156,7 +109,6 @@ ActiveRecord::Schema.define(version: 2020_08_25_180300) do
     t.string "language", null: false
     t.string "phone_type"
     t.boolean "opt_in_email", default: true, null: false
-    t.boolean "opt_in_phone", default: true, null: false
     t.boolean "opt_in_text", default: true, null: false
     t.string "phone_number"
     t.boolean "service_agreement_accepted", default: false, null: false
