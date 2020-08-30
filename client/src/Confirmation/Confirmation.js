@@ -24,18 +24,14 @@ export function Confirmation({ location }) {
         url: `${location.pathname}?confirmation_token=${token}`
       })
       if (!response.ok || response.headers.get('authorization') === null) {
-        console.log('response not okay')
         const errorMessage = await response.json()
-        console.log('errorMessage:', errorMessage)
         setApiError({
           status: response.status,
           message: errorMessage.error
         })
         localStorage.removeItem('pie-token')
-        // history.push('/login')
+        history.push('/login')
       } else {
-        console.log('response okay')
-        console.log(response.headers.get('authorization'))
         localStorage.setItem('pie-token', response.headers.get('authorization'))
         history.push('/getting-started')
       }

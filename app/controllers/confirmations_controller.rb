@@ -27,7 +27,6 @@ class ConfirmationsController < Devise::ConfirmationsController
   private
 
   def current_token
-    binding.pry_remote
     request.env['warden-jwt_auth.token']
   end
 end
