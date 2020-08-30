@@ -55,7 +55,7 @@ describe('Confirmation', () => {
         cy.visit(`/confirmation?confirmation_token=cactus`)
         cy.wait('@confirmation')
         cy.get(
-          createSelector('loginError')
+          createSelector('confirmationError')
         ).contains('Invalid email or password', { matchCase: false })
       })
     })
@@ -90,7 +90,7 @@ describe('Confirmation', () => {
 
       cy.visit(`/confirmation?confirmation_token=${confirmationToken}`)
       cy.wait('@confirmation')
-      cy.get(createSelector('loginError')).contains(
+      cy.get(createSelector('confirmationError')).contains(
         'You have to confirm your email address before continuing',
         {
           matchCase: false,

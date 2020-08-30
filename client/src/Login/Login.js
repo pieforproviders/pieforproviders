@@ -1,15 +1,28 @@
-import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 export function Login() {
+  const location = useLocation()
+
   const [apiError, setApiError] = useState(null)
+
   const { makeRequest } = useApiResponse()
   let history = useHistory()
   const { t, i18n } = useTranslation()
+
+  useEffect(() => {
+    if (location?.state?.error?.status) {
+      setApiError({
+        status: location?.state?.error?.status,
+        message: location?.state?.error?.message
+      })
+      window.history.replaceState(null, '')
+    }
+  }, [])
 
   const onFinish = async values => {
     const response = await makeRequest({
@@ -44,7 +57,7 @@ export function Login() {
         or <span className="uppercase font-bold">{t('login')}</span>
       </p>
 
-      {apiError && (
+      {apiError?.status && (
         <Alert
           className="mb-2"
           message={apiError.message}
