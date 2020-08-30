@@ -31,7 +31,7 @@ describe('Confirmation', () => {
     })
 
     describe('valid confirmation link', () => {
-      it.only('allows a user to confirm and redirects them', () => {
+      it('allows a user to confirm and redirects them', () => {
         cy.server()
         cy.route({
           method: 'GET',
@@ -48,7 +48,7 @@ describe('Confirmation', () => {
       it('displays an error message', () => {
         cy.server()
         cy.route({
-          method: 'POST',
+          method: 'GET',
           url: `/confirmation?confirmation_token=cactus`,
         }).as('confirmation')
 
@@ -84,7 +84,7 @@ describe('Confirmation', () => {
     it('displays an error message', () => {
       cy.server()
       cy.route({
-        method: 'POST',
+        method: 'GET',
         url: `/confirmation?confirmation_token=${confirmationToken}`,
       }).as('confirmation')
 
