@@ -55,8 +55,24 @@ describe('Confirmation', () => {
         cy.visit(`/confirmation?confirmation_token=cactus`)
         cy.wait('@confirmation')
         cy.get(
-          createSelector('confirmationError')
-        ).contains('Invalid email or password', { matchCase: false })
+          createSelector('authError')
+        ).contains('Your confirmation token is invalid', { matchCase: false })
+      })
+    })
+
+    describe('no confirmation token provided', () => {
+      it('displays an error message', () => {
+        cy.server()
+        cy.route({
+          method: 'GET',
+          url: `/confirmation`,
+        }).as('confirmation')
+
+        cy.visit(`/confirmation`)
+        cy.wait('@confirmation')
+        cy.get(
+          createSelector('authError')
+        ).contains('Please provide a confirmation token', { matchCase: false })
       })
     })
   })
@@ -90,8 +106,8 @@ describe('Confirmation', () => {
 
       cy.visit(`/confirmation?confirmation_token=${confirmationToken}`)
       cy.wait('@confirmation')
-      cy.get(createSelector('confirmationError')).contains(
-        'You have to confirm your email address before continuing',
+      cy.get(createSelector('authError')).contains(
+        'This email has already been confirmed',
         {
           matchCase: false,
         }

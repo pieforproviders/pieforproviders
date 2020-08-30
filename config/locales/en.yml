@@ -34,6 +34,13 @@ en:
   errors:
     messages:
       taken: "has already been taken"
+      already_confirmed: This email has already been confirmed, please try logging in. If you've forgotten your password, please reset it below.
+      confirmation_period_expired: Your confirmation period has expired, please request another confirmation email.
+      generic_email_confirmation_error: We've run into a problem confirming your email.
+      confirmation_token_blank: Your confirmation token is blank. You must confirm your account using a confirmation link sent to your email address. Please check your email for this link or reset your password below.
+      confirmation_token_invalid: Your confirmation token is invalid. You must confirm your account using a confirmation link sent to your email address. Please check your email for this link or reset your password below.
+      generic_confirmation_token_error: We've run into a problem with your confirmation token.
+      generic_confirmation_error: There was an unknown problem with your confirmation token.
   faker:
     name:
       child_care_businesses:

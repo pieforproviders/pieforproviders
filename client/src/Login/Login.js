@@ -22,7 +22,7 @@ export function Login() {
       })
       window.history.replaceState(null, '')
     }
-  }, [])
+  }, [location])
 
   const onFinish = async values => {
     const response = await makeRequest({
@@ -62,7 +62,7 @@ export function Login() {
           className="mb-2"
           message={apiError.message}
           type="error"
-          data-cy="loginError"
+          data-cy="authError"
         />
       )}
 

@@ -15,7 +15,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     if resource.errors.empty?
       sign_in_resource(resource)
     else
-      render json: { error: error_message, status: :forbidden }
+      render json: { error: error_message(resource) }, status: :forbidden
     end
   end
 
@@ -31,13 +31,13 @@ class ConfirmationsController < Devise::ConfirmationsController
     request.env['warden-jwt_auth.token']
   end
 
-  def error_message
+  def error_message(resource)
     if email_error(resource).present?
-      email_error_handler(email_error)
+      email_error_handler(email_error(resource))
     elsif token_error(resource).present?
-      token_error_handler(token_error)
+      token_error_handler(token_error(resource))
     else
-      'theres a problem with your confirmation token, please contact us (but make it different)'
+      I18n.t('errors.messages.generic_confirmation_error')
     end
   end
 
@@ -50,26 +50,24 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def email_error_handler(email_error)
-    # TODO: Sentry also
     case email_error.first[:error]
     when :already_confirmed
-      'this email has already been confirmed (translation)'
+      I18n.t('errors.messages.already_confirmed')
     when :confirmation_period_expired
-      'your confirmation period has expired, please request another confirmation email (translation)'
+      I18n.t('errors.messages.confirmation_period_expired')
     else
-      "there's a problem with your email being confirmed, please contact us"
+      I18n.t('errors.messages.generic_email_confirmation_error')
     end
   end
 
   def token_error_handler(token_error)
-    # TODO: Sentry also
     case token_error.first[:error]
     when :blank
-      'please provide a confirmation token (translation)'
+      I18n.t('errors.messages.confirmation_token_blank')
     when :invalid
-      'your confirmation token is invalid, please request another confirmation email (translation)'
+      I18n.t('errors.messages.confirmation_token_invalid')
     else
-      "there's a problem with your confirmation token, please contact us"
+      I18n.t('errors.messages.generic_confirmation_error')
     end
   end
 end

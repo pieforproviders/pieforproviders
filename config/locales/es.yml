@@ -2,3 +2,10 @@ es:
   errors:
     messages:
       taken: "ya ha sido tomado"
+      already_confirmed: Este correo electrónico ya ha sido confirmado, por favor intente iniciar sesión. Si ha olvidado tu contraseña, por favor restáurela abajo.
+      confirmation_period_expired: Tu periodo de confirmación ha expirado, por favor solicita otro correo electrónico de confirmación.
+      generic_email_confirmation_error: Hemos tenido un problema al confirmar tu correo electrónico.
+      confirmation_token_blank: Tu ficha de confirmación está en blanco. Debes confirmar tu cuenta mediante un enlace de confirmación enviado a tu dirección de correo electrónico. Comprueba que tu correo electrónico contenga este enlace o restablece tu contraseña a continuación.
+      confirmation_token_invalid: Tu código de confirmación no es válido. Debes confirmar tu cuenta utilizando un enlace de confirmación enviado a tu dirección de correo electrónico. Comprueba que tu correo electrónico contenga este enlace o restablece tu contraseña a continuación.
+      generic_confirmation_token_error: Hemos tenido un problema con tu código de confirmación.
+      generic_confirmation_error: Ha habido un problema desconocido con tu ficha de confirmación.
