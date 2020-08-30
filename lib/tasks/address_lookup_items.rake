@@ -40,7 +40,7 @@ namespace :pie4providers do
     end
 
     # import_all time is about the same
-    desc 'Import counties (assumes states have been imported'
+    desc 'Import counties (assumes states have been imported)'
     task :import_counties, %i[append use_insert_all] => :environment do |_task, args|
       klass = Lookup::County
       args.with_defaults(default_import_args)
