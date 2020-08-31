@@ -26,7 +26,7 @@ export function LoggedInLayout({ children, title }) {
           src={pieSliceLogo}
           className="w-8 mr-2"
         />
-        { screens.lg && (
+        {screens.lg && (
           <div className="text-2xl font-semibold flex-grow">
             Pie for Providers
           </div>
