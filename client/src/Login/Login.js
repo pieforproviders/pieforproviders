@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
-import { ActionLink } from '_shared/ActionLink'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
@@ -51,44 +50,42 @@ export function Login() {
     history.push('/dashboard')
   }
 
-  const ContactUs = () => {
-    return (
-      <div>
-        {apiError?.message}{' '}
-        <a href="mailto:tech@pieforproviders.com">{t('contactUs')}</a>{' '}
-        {t('forSupport')}
-      </div>
-    )
+  const contactUs = ({ message }) => {
+    return `${message} <a href="mailto:tech@pieforproviders.com">${t(
+      'contactUs'
+    )}</a>{' '} ${t('forSupport')}`
   }
 
   const ResendToken = () => {
     return (
-      <ActionLink
-        onClick={() => console.log('Clicked Resend')}
-        text={`${t('yourConfirmationToken')} ${t(apiError?.type)}. ${t(
+      <div>
+        {`${t('yourConfirmationToken')} ${t(apiError?.type)}. ${t(
           'mustUseConfirmationEmail'
-        )} ${t('requestNewConfirmation')}`}
-      />
+        )} ${t('requestNewConfirmation')} `}
+        <a href="www.google.com" target="_blank">
+          Placeholder Link
+        </a>
+      </div>
     )
   }
 
   const errorMessage = ({ attribute, type }) => {
-    switch (attribute) {
-      case 'email':
-        switch (type) {
-          case 'already_confirmed':
+    switch (true) {
+      case attribute === 'email':
+        switch (true) {
+          case type === 'already_confirmed':
             return t('alreadyConfirmed')
-          case 'confirmation_period_expired':
+          case type === 'confirmation_period_expired':
             return t('confirmationPeriodExpired')
           default:
-            return <ContactUs message={t('genericEmailConfirmationError')} />
+            return contactUs({ message: t('genericEmailConfirmationError') })()
         }
-      case 'confirmation_token':
-        switch (type) {
-          case 'blank' || 'invalid':
+      case attribute === 'confirmation_token':
+        switch (true) {
+          case type === 'blank' || type === 'invalid':
             return <ResendToken type={type} />
           default:
-            return <ContactUs message={t('genericConfirmationTokenError')} />
+            return contactUs({ message: t('genericConfirmationTokenError') })()
         }
       default:
         return t('genericConfirmationError')
@@ -111,7 +108,10 @@ export function Login() {
           type="error"
           description={
             apiError?.attribute
-              ? errorMessage(apiError?.attribute, apiError?.type)
+              ? errorMessage({
+                  attribute: apiError?.attribute,
+                  type: apiError?.type
+                })
               : null
           }
           data-cy="authError"
@@ -179,3 +179,5 @@ export function Login() {
     </>
   )
 }
+
+Login.propTypes = {}

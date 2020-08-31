@@ -19,7 +19,7 @@
     "lint:fix": "yarn --cwd client lint --fix",
     "start": "yarn --cwd client start",
     "test": "yarn --cwd client test",
-    "test-once": "yarn --cwd client test -- --watchAll=false",
+    "test-once": "yarn --cwd client test --watchAll=false",
     "ad": "yarn --cwd client add",
     "rm": "yarn --cwd client remove",
     "install-all": "yarn install && yarn --cwd yarn install",

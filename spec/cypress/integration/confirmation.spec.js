@@ -57,6 +57,7 @@ describe('Confirmation', () => {
         cy.get(
           createSelector('authError')
         ).contains('Your confirmation token is invalid', { matchCase: false })
+        cy.location('pathname').should('eq', '/login')
       })
     })
 
@@ -73,6 +74,7 @@ describe('Confirmation', () => {
         cy.get(
           createSelector('authError')
         ).contains('Please provide a confirmation token', { matchCase: false })
+        cy.location('pathname').should('eq', '/login')
       })
     })
   })
@@ -112,6 +114,7 @@ describe('Confirmation', () => {
           matchCase: false,
         }
       )
+      cy.location('pathname').should('eq', '/login')
     })
   })
 })
