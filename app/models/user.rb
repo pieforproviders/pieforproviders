@@ -19,7 +19,7 @@ class User < UuidApplicationRecord
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
   validates :phone_number, uniqueness: true, allow_nil: true
-  validates :service_agreement_accepted, inclusion: { in: [true, false] }
+  validates :service_agreement_accepted, presence: true
   validates :timezone, presence: true
 
   scope :active, -> { where(active: true) }
