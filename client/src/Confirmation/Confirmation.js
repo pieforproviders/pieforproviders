@@ -24,7 +24,12 @@ export function Confirmation({ location }) {
           history.push({
             pathname: '/login',
             state: {
-              error: { status: response.status, message: errorMessage.error }
+              error: {
+                status: response.status,
+                message: errorMessage.error,
+                attribute: errorMessage.attribute,
+                type: errorMessage.type
+              }
             }
           })
         } else {

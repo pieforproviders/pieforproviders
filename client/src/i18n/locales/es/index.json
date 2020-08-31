@@ -61,6 +61,17 @@
   "gettingStartedTitle": "Comencemos",
   "gettingStartedInstructions": "Sigue estas instrucciones para configurar tu pantalla principal de casos. Esto debería tardar unos 15 minutos y solo tendrás que hacerlo una vez. ¡Prepárate para aumentar tu porción del pastel!",
   "gettingStartedButton": "Comienza",
-
-  "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde."
+  "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
+  "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intente iniciar sesión. Si ha olvidado tu contraseña, por favor restáurela abajo",
+  "confirmationPeriodExpired": "Tu período de confirmación ha expirado",
+  "genericEmailConfirmationError": "Hemos tenido un problema para confirmar tu correo electrónico",
+  "yourConfirmationToken": "Tu símbolo de confirmación es",
+  "blank": "en blanco",
+  "invalid": "inválido",
+  "mustUseConfirmationEmail": "Debe confirmar tu cuenta utilizando un enlace de confirmación enviado a tu dirección de correo electrónico",
+  "requestNewConfirmation": "Puede solicitar un nuevo correo electrónico de confirmación utilizando este enlace:",
+  "genericConfirmationTokenError": "Hemos tenido un problema con tu token de confirmación",
+  "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
+  "contactUs": "Contáctenos",
+  "forSupport": "para el apoyo"
 }

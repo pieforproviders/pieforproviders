@@ -61,6 +61,17 @@
   "gettingStartedTitle": "Let's Get Started",
   "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!",
   "gettingStartedButton": "Get Started",
-
-  "genericErrorMessage": "Something went wrong, try again later."
+  "genericErrorMessage": "Something went wrong, try again later.",
+  "alreadyConfirmed": "This email has already been confirmed, please try logging in. If you've forgotten your password, please reset it below.",
+  "confirmationPeriodExpired": "Your confirmation period has expired.",
+  "genericEmailConfirmationError": "We've run into a problem confirming your email",
+  "yourConfirmationToken": "Your confirmation token is",
+  "blank": "blank",
+  "invalid": "invalid",
+  "mustUseConfirmationEmail": "You must confirm your account using a confirmation link sent to your email address.",
+  "requestNewConfirmation": "You may request a new confirmation email using this link:",
+  "genericConfirmationTokenError": "We've run into a problem with your confirmation token.",
+  "genericConfirmationError": "There was an unknown problem with your confirmation.",
+  "contactUs": "Contact us",
+  "forSupport": "for support"
 }

@@ -15,11 +15,24 @@ class ConfirmationsController < Devise::ConfirmationsController
     if resource.errors.empty?
       sign_in_resource(resource)
     else
-      render json: { error: error_message(resource) }, status: :forbidden
+      errors(resource.errors.details)
+      render json: error_response, status: :forbidden
     end
   end
 
   private
+
+  def errors(details = nil)
+    @errors ||= details
+  end
+
+  def error_response
+    {
+      error: I18n.t("errors.messages.confirmation")
+      attribute: error_attribute.to_s,
+      type: error_type.to_s
+    }
+  end
 
   def sign_in_resource(resource)
     sign_in(resource)
@@ -31,43 +44,10 @@ class ConfirmationsController < Devise::ConfirmationsController
     request.env['warden-jwt_auth.token']
   end
 
-  def error_message(resource)
-    if email_error(resource).present?
-      email_error_handler(email_error(resource))
-    elsif token_error(resource).present?
-      token_error_handler(token_error(resource))
-    else
-      I18n.t('errors.messages.generic_confirmation_error')
-    end
+  def error_attribute
+    @error_attribute ||= @errors.keys.first
   end
 
-  def email_error(resource)
-    resource.errors.details[:email]
+  def error_type
+    @error_type ||= @errors[@errors.keys.first].first[:error]
   end
-
-  def token_error(resource)
-    resource.errors.details[:confirmation_token]
-  end
-
-  def email_error_handler(email_error)
-    case email_error.first[:error]
-    when :already_confirmed
-      I18n.t('errors.messages.already_confirmed')
-    when :confirmation_period_expired
-      I18n.t('errors.messages.confirmation_period_expired')
-    else
-      I18n.t('errors.messages.generic_email_confirmation_error')
-    end
-  end
-
-  def token_error_handler(token_error)
-    case token_error.first[:error]
-    when :blank
-      I18n.t('errors.messages.confirmation_token_blank')
-    when :invalid
-      I18n.t('errors.messages.confirmation_token_invalid')
-    else
-      I18n.t('errors.messages.generic_confirmation_error')
-    end
-  end
-end
