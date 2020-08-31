@@ -13,7 +13,7 @@
     "cy:open": "cypress open --project ./spec",
     "cy:ci": "start-server-and-test start-server http://localhost:5017 cy:run",
     "deploy": "cp -a client/build/. public/",
-    "heroku-postbuild": "yarn install-all && yarn build deploy",
+    "heroku-postbuild": "yarn install-all && yarn build && yarn deploy",
     "build": "yarn --cwd client build",
     "lint": "yarn --cwd client lint",
     "lint:fix": "yarn --cwd client lint --fix",
