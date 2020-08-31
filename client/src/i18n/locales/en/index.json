@@ -48,7 +48,19 @@
   "passwordConfirmationMatch": "The two passwords that you entered do not match!",
   "passwordConfirmationPlaceholder": "Confirm your password",
   "termsRequired": "Please read and agree to our Terms of Service",
+  "signupThanks": "Thanks for signing up!",
+  "emailVerificationText": "We’ve sent you an email to verify your account.",
+  "emailNotReceived": "Didn't receive the email?",
+  "restartSignup": "Is {userEmail} your correct email without typos? If not, you can restart the signup process.",
+  "checkSpam": "Check your spam folder",
+  "add": "Add",
+  "addToContacts": "to your contacts.",
+  "resendConfirmationEmail": "Click here to resend the email.",
+
   "reportFeedback": "Report feedback",
+
+  "setup": "Setup",
+  "steps": "Steps",
   "gettingStartedBusinesses": "Tell us about the businesses and sites you manage, so we know which subsidy payment rates to apply to your cases.",
   "gettingStartedBusinessesTitle": "Add your business name",
   "gettingStartedUpload": "Upload a spreadsheet with the names and birthdays of the subsidy-eligible children you serve. In most cases, you can download this from other software you use. This helps us calculate each child's subsidy payment rate.",
@@ -62,5 +74,27 @@
   "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!",
   "gettingStartedButton": "Get Started",
 
-  "genericErrorMessage": "Something went wrong, try again later."
+  "genericErrorMessage": "Something went wrong, try again later.",
+
+  "uploadCases": "Upload Cases",
+  "uploadCasesInvalidFileFormat": "Invalid file format. Supported formats: CSV, XLS, and XLSX",
+  "reviewImportedCases": "Review Imported Cases",
+
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "dateOfBirth": "Date of birth",
+  "siteId": "Site",
+  "caseStatus": "Case Status",
+  "caseNumber": "Case Number",
+  "fullDaysPerMonth": "Full days (per month)",
+  "partDaysPerMonth": "Part days (per month)",
+  "effectiveOn": "Effective On",
+  "expiresOn": "Expires on",
+  "copay": "Co-pay",
+  "copayFrequency": "Co-pay frequency",
+
+  "notFound": "404: Not found",
+  "goBackHome": "Back home",
+
+  "dashboardTitle": "This is the dashboard"
 }
