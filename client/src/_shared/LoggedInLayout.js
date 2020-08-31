@@ -20,7 +20,7 @@ export function LoggedInLayout({ children, title }) {
 
   return (
     <>
-      <div className="w-full shadow p-4 flex items-center">
+      <div className="w-full shadow-md px-4 my-4 flex items-center">
         <img
           alt={t('pieforProvidersLogoAltText')}
           src={pieSliceLogo}
@@ -35,13 +35,13 @@ export function LoggedInLayout({ children, title }) {
           {t('logout')}
         </Button>
       </div>
-      <div className="w-full sm:h-full bg-mediumGray p-4">
+      <div className="w-full sm:h-full bg-mediumGray px-4 my-4">
         {title && (
           <Breadcrumb className="mb-4">
             <Breadcrumb.Item>{title}</Breadcrumb.Item>
           </Breadcrumb>
         )}
-        <div className="bg-white px-4 pb-6 pt-8 shadow rounded-sm">
+        <div className="bg-white px-4 pb-6 pt-8 shadow-md rounded-sm">
           {children}
         </div>
       </div>
