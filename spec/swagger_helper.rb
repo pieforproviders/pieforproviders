@@ -34,6 +34,10 @@ RSpec.configure do |config|
       # },
       components: {
         schemas: {
+          confirmationToken: {
+            type: :string,
+            example: '12oiVhn23nEo2'
+          },
           user: {
             type: :object,
             properties: {

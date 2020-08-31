@@ -4,7 +4,6 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe 'POST /signup', type: :request do
-  let(:url) { '/signup' }
   let(:params) do
     {
       email: 'user@example.com',

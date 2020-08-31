@@ -12,8 +12,10 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
+    binding.pry
     if resource.errors.empty?
       sign_in_resource(resource)
+      render json: resource, status: :ok
     else
       errors(resource.errors.details)
       render json: error_response, status: :forbidden
@@ -28,7 +30,7 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def error_response
     {
-      error: I18n.t("errors.messages.confirmation")
+      error: I18n.t('errors.messages.confirmation'),
       attribute: error_attribute.to_s,
       type: error_type.to_s
     }
@@ -51,3 +53,4 @@ class ConfirmationsController < Devise::ConfirmationsController
   def error_type
     @error_type ||= @errors[@errors.keys.first].first[:error]
   end
+end
