@@ -51,20 +51,21 @@ export function Login() {
     history.push('/dashboard')
   }
 
-  const ContactUs = ({ message }) => {
+  const ContactUs = () => {
     return (
       <div>
-        {message} <a href="mailto:tech@pieforproviders.com">{t('contactUs')}</a>{' '}
+        {apiError?.message}{' '}
+        <a href="mailto:tech@pieforproviders.com">{t('contactUs')}</a>{' '}
         {t('forSupport')}
       </div>
     )
   }
 
-  const ResendToken = ({ type }) => {
+  const ResendToken = () => {
     return (
       <ActionLink
         onClick={() => console.log('Clicked Resend')}
-        text={`${t('yourConfirmationToken')} ${t(type)}. ${t(
+        text={`${t('yourConfirmationToken')} ${t(apiError?.type)}. ${t(
           'mustUseConfirmationEmail'
         )} ${t('requestNewConfirmation')}`}
       />
