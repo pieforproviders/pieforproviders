@@ -2,13 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Breadcrumb, Button } from 'antd'
+import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
+
+const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
   const { t } = useTranslation()
   const history = useHistory()
+  const screens = useBreakpoint()
 
   const logout = () => {
     localStorage.removeItem('pie-token')
@@ -23,9 +26,11 @@ export function LoggedInLayout({ children, title }) {
           src={pieSliceLogo}
           className="w-8 mr-2"
         />
-        <div className="text-2xl font-semibold flex-grow">
-          Pie for Providers
-        </div>
+        { screens.lg && (
+          <div className="text-2xl font-semibold flex-grow">
+            Pie for Providers
+          </div>
+        )}
         <Button type="link" onClick={logout}>
           {t('logout')}
         </Button>
