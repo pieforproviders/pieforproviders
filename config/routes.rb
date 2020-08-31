@@ -6,7 +6,6 @@ Rails.application.routes.draw do
   # This is required because the `devise_for` call generates a `GET /login`
   # route which we don't want to expose; same for confirmation
   get '/login', to: 'static#fallback_index_html', constraints: is_html_request
-  get '/confirmation', to: 'static#fallback_index_html', constraints: is_html_request
 
   devise_for :users,
              path: '',

@@ -2,6 +2,8 @@
 
 # Create Confirmations for Users
 class ConfirmationsController < Devise::ConfirmationsController
+  respond_to :json
+
   def new
     super
   end
@@ -12,10 +14,8 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
-    binding.pry
     if resource.errors.empty?
       sign_in_resource(resource)
-      render json: resource, status: :ok
     else
       errors(resource.errors.details)
       render json: error_response, status: :forbidden
