@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useTranslation } from 'react-i18next'
 import { Divider, Typography } from 'antd'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
@@ -24,33 +25,33 @@ ListItem.propTypes = {
 }
 
 const Confirmation = ({ userEmail }) => {
+  const { t } = useTranslation()
+
   return (
     <>
-      <Title className="text-center">Thanks for signing up!</Title>
+      <Title className="text-center">{t('signupThanks')}</Title>
       <Title level={3} className="text-center">
-        We’ve sent you an email to verify your account.
+        {t('emailVerificationText')}
       </Title>
       <Divider />
       <div className="text-left">
         <div className="mb-2">
-          <Text>{"Didn't receive the email?"}</Text>
+          <Text>{t('emailNotReceived')}</Text>
         </div>
         <ListItem>
-          <Text>
-            Is {userEmail} your correct email without typos? If not, you can
-            restart the signup process.
-          </Text>
+          <Text>{t('restartSignup', { userEmail })}</Text>
         </ListItem>
         <ListItem>
-          <Text>Check your spam folder</Text>
+          <Text>{t('checkSpam')}</Text>
         </ListItem>
         <ListItem>
           <Text>
-            Add <Text underline={true}>{pieEmail}</Text> to your contacts.
+            {t('add')} <Text underline={true}>{pieEmail}</Text>{' '}
+            {t('addToContacts')}
           </Text>
         </ListItem>
         <ListItem>
-          <Link to="#">Click here to resend the email.</Link>
+          <Link to="#">{t('resendConfirmationEmail')}</Link>
         </ListItem>
       </div>
     </>

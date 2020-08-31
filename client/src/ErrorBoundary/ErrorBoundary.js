@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import * as Sentry from '@sentry/browser'
-// TODO internationalization on "report feedback" button
+import { withTranslation } from 'react-i18next'
 
-export class ErrorBoundary extends Component {
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
     this.state = { eventId: null }
@@ -24,6 +24,8 @@ export class ErrorBoundary extends Component {
   }
 
   render() {
+    const { t } = this.props
+
     if (this.state.hasError) {
       // TODO: add some language here for error handling for users
       return (
@@ -33,7 +35,7 @@ export class ErrorBoundary extends Component {
             Sentry.showReportDialog({ eventId: this.state.eventId })
           }
         >
-          Report Feedback
+          {t('reportFeedback')}
         </button>
       )
     }
@@ -43,5 +45,8 @@ export class ErrorBoundary extends Component {
 }
 
 ErrorBoundary.propTypes = {
+  t: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired
 }
+
+export const ErrorBoundaryComponent = withTranslation()(ErrorBoundary)
