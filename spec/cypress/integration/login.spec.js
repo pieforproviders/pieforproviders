@@ -56,9 +56,7 @@ describe('Login', () => {
         cy.get(createSelector('password')).type(internet.password())
         cy.get(createSelector('loginBtn')).click()
         cy.wait('@login')
-        cy.get(
-          createSelector('authError')
-        ).contains('Invalid email or password', { matchCase: false })
+        cy.get(createSelector('authError')).should('exist')
       })
     })
   })
@@ -93,12 +91,7 @@ describe('Login', () => {
       cy.get(createSelector('password')).type(password)
       cy.get(createSelector('loginBtn')).click()
       cy.wait('@login')
-      cy.get(createSelector('authError')).contains(
-        'You have to confirm your email address before continuing',
-        {
-          matchCase: false,
-        }
-      )
+      cy.get(createSelector('authError')).should('exist')
     })
   })
 
@@ -115,10 +108,7 @@ describe('Login', () => {
       cy.get(createSelector('password')).type(internet.password())
       cy.get(createSelector('loginBtn')).click()
       cy.wait('@login')
-      cy.get(createSelector('authError')).contains(
-        'Invalid email or password',
-        { matchCase: false }
-      )
+      cy.get(createSelector('authError')).should('exist')
     })
   })
 })

@@ -54,9 +54,7 @@ describe('Confirmation', () => {
 
         cy.visit(`/confirm?confirmation_token=cactus`)
         cy.wait('@confirmation')
-        cy.get(
-          createSelector('authError')
-        ).contains('Your confirmation token is invalid', { matchCase: false })
+        cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
     })
@@ -71,9 +69,7 @@ describe('Confirmation', () => {
 
         cy.visit(`/confirm`)
         cy.wait('@confirmation')
-        cy.get(
-          createSelector('authError')
-        ).contains('Your confirmation token is blank', { matchCase: false })
+        cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
     })
@@ -108,12 +104,7 @@ describe('Confirmation', () => {
 
       cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
       cy.wait('@confirmation')
-      cy.get(createSelector('authError')).contains(
-        'This email has already been confirmed',
-        {
-          matchCase: false,
-        }
-      )
+      cy.get(createSelector('authError')).should('exist')
       cy.location('pathname').should('eq', '/login')
     })
   })

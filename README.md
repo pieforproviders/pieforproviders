@@ -114,9 +114,9 @@ Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
 
 - `yarn cy:ci` from the root directory
 
-### All tests and linting
+### Prep for Pull Request
 
-There's a helper rake task that runs all test suites and linting steps; use `rails ci` to run this command.
+There's a helper rake task that runs all test suites and linting steps, and generates the swagger documentation; use `rails prep` to run this command.
 
 ## Adding/Updating Models
 
