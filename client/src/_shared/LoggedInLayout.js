@@ -19,25 +19,23 @@ export function LoggedInLayout({ children, title }) {
   }
 
   return (
-    <>
-      <div className="w-full shadow-md px-4 my-4 flex items-center">
+    <div className="bg-mediumGray">
+      <div className="w-full shadow-md p-4 flex items-center bg-white">
         <img
           alt={t('pieforProvidersLogoAltText')}
           src={pieSliceLogo}
           className="w-8 mr-2"
         />
-        {screens.lg && (
-          <div className="text-2xl font-semibold flex-grow">
-            Pie for Providers
-          </div>
-        )}
+        <div className={`text-2xl font-semibold flex-grow ${screens.lg ? 'visible' : 'invisible'}`}>
+          Pie for Providers
+        </div>
         <Button type="link" onClick={logout}>
           {t('logout')}
         </Button>
       </div>
-      <div className="w-full sm:h-full bg-mediumGray px-4 my-4">
+      <div className="w-full sm:h-full px-4 mt-4">
         {title && (
-          <Breadcrumb className="mb-4">
+          <Breadcrumb className="mb-2">
             <Breadcrumb.Item>{title}</Breadcrumb.Item>
           </Breadcrumb>
         )}
@@ -45,7 +43,7 @@ export function LoggedInLayout({ children, title }) {
           {children}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
