@@ -4,6 +4,8 @@ ActionMailer::Base.perform_deliveries = false
 
 puts 'seeding'
 
+Rake::Task['pie4providers:address_lookups:import_all'].invoke
+
 user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_create(
   active: true,
   full_name: 'Kate Donaldson',
