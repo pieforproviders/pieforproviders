@@ -22,7 +22,7 @@
     "test-once": "yarn --cwd client test --watchAll=false",
     "ad": "yarn --cwd client add",
     "rm": "yarn --cwd client remove",
-    "install-all": "yarn install && yarn --cwd yarn install",
+    "install-all": "yarn install && yarn --cwd client install",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
   "engines": {
