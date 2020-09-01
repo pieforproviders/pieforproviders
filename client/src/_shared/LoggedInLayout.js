@@ -26,7 +26,11 @@ export function LoggedInLayout({ children, title }) {
           src={pieSliceLogo}
           className="w-8 mr-2"
         />
-        <div className={`text-2xl font-semibold flex-grow ${screens.lg ? 'visible' : 'invisible'}`}>
+        <div
+          className={`text-2xl font-semibold flex-grow ${
+            screens.lg ? 'visible' : 'invisible'
+          }`}
+        >
           Pie for Providers
         </div>
         <Button type="link" onClick={logout}>
