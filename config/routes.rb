@@ -4,7 +4,7 @@ is_html_request = ->(request) { !request.xhr? && request.format.html? }
 
 Rails.application.routes.draw do
   # This is required because the `devise_for` call generates a `GET /login`
-  # route which we don't want to expose; same for confirmation
+  # route which we don't want to expose
   get '/login', to: 'static#fallback_index_html', constraints: is_html_request
 
   devise_for :users,
