@@ -35,7 +35,7 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirm?confirmation_token=${confirmationToken}`,
+          url: `/confirmation?confirmation_token=${confirmationToken}`,
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
@@ -49,7 +49,7 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirm?confirmation_token=cactus`,
+          url: '/confirmation?confirmation_token=cactus',
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=cactus`)
@@ -66,14 +66,14 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirm`,
+          url: '/confirmation',
         }).as('confirmation')
 
         cy.visit(`/confirm`)
         cy.wait('@confirmation')
         cy.get(
           createSelector('authError')
-        ).contains('Please provide a confirmation token', { matchCase: false })
+        ).contains('Your confirmation token is blank', { matchCase: false })
         cy.location('pathname').should('eq', '/login')
       })
     })
@@ -103,7 +103,7 @@ describe('Confirmation', () => {
       cy.server()
       cy.route({
         method: 'GET',
-        url: `/confirm?confirmation_token=${confirmationToken}`,
+        url: `/confirmation?confirmation_token=${confirmationToken}`,
       }).as('confirmation')
 
       cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
