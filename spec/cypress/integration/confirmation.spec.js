@@ -35,10 +35,10 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`,
+          url: `/confirm?confirmation_token=${confirmationToken}`,
         }).as('confirmation')
 
-        cy.visit(`/confirmation?confirmation_token=${confirmationToken}`)
+        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
         cy.wait('@confirmation')
         cy.location('pathname').should('eq', '/getting-started')
       })
@@ -49,10 +49,10 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirmation?confirmation_token=cactus`,
+          url: `/confirm?confirmation_token=cactus`,
         }).as('confirmation')
 
-        cy.visit(`/confirmation?confirmation_token=cactus`)
+        cy.visit(`/confirm?confirmation_token=cactus`)
         cy.wait('@confirmation')
         cy.get(
           createSelector('authError')
@@ -66,10 +66,10 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirmation`,
+          url: `/confirm`,
         }).as('confirmation')
 
-        cy.visit(`/confirmation`)
+        cy.visit(`/confirm`)
         cy.wait('@confirmation')
         cy.get(
           createSelector('authError')
@@ -103,10 +103,10 @@ describe('Confirmation', () => {
       cy.server()
       cy.route({
         method: 'GET',
-        url: `/confirmation?confirmation_token=${confirmationToken}`,
+        url: `/confirm?confirmation_token=${confirmationToken}`,
       }).as('confirmation')
 
-      cy.visit(`/confirmation?confirmation_token=${confirmationToken}`)
+      cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
       cy.wait('@confirmation')
       cy.get(createSelector('authError')).contains(
         'This email has already been confirmed',

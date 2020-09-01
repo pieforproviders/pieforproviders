@@ -13,9 +13,7 @@ export function Confirmation({ location }) {
       const token = location.search.split('=')[1]
       const response = await makeRequest({
         type: 'get',
-        url: `${location.pathname}${
-          token ? `?confirmation_token=${token}` : ''
-        }`
+        url: `confirmation${token ? `?confirmation_token=${token}` : ''}`
       })
       if (isSubscribed) {
         if (!response.ok || response.headers.get('authorization') === null) {

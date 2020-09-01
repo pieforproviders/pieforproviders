@@ -45,7 +45,7 @@ const App = () => {
               />
             </Route>
             <Route
-              path="/confirmation"
+              path="/confirm"
               title="Confirm your Account"
               component={Confirmation}
             />
