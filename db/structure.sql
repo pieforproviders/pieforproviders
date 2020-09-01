@@ -48,7 +48,7 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -

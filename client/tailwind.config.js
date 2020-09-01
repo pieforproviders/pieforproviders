@@ -29,5 +29,8 @@ module.exports = {
       }
     }
   },
-  plugins: [require('./tailwind/plugins/base')()]
+  plugins: [require('./tailwind/plugins/base')()],
+  future: {
+    removeDeprecatedGapUtilities: true
+  }
 }

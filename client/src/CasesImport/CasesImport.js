@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 import { Alert, Typography } from 'antd'
 import { sha1 } from 'hash-anything'
+import { useTranslation } from 'react-i18next'
 import { CasesImportReview } from './CasesImportReview'
-import { parserTypes, columns } from './utils'
+import { parserTypes, getColumns } from './utils'
 
 const { Title } = Typography
 
 export function CasesImport() {
   const [kids, setKids] = useState([])
   const [error, setError] = useState('')
+  const { t } = useTranslation()
+
+  const columns = getColumns(t)
 
   const onFileChange = e => {
     setError('')
@@ -17,7 +21,7 @@ export function CasesImport() {
     const { type } = file
     if (!(type in parserTypes)) {
       setKids([])
-      setError('Invalid file format. Supported formats: CSV, XLS, and XLSX')
+      setError(t('uploadCasesInvalidFileFormat'))
       return
     }
 
@@ -56,7 +60,7 @@ export function CasesImport() {
 
   return (
     <div>
-      <Title>Upload Cases</Title>
+      <Title>{t('uploadCases')}</Title>
       {error && (
         <Alert
           message={error}

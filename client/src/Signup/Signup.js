@@ -392,8 +392,8 @@ export function Signup() {
           valuePropName="checked"
           rules={[
             {
-              required: true,
-              message: t('termsRequired')
+              validator: (_, value) =>
+                value ? Promise.resolve() : Promise.reject(t('termsRequired'))
             }
           ]}
           wrapperCol={{ lg: 24 }}
@@ -402,7 +402,6 @@ export function Signup() {
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
             className="flex"
-            name="serviceAgreementAccepted"
             onChange={() => {
               setUser({
                 ...user,

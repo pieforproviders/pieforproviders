@@ -15,7 +15,7 @@ FactoryBot.define do
     password_confirmation { password }
     phone_number { Faker::PhoneNumber.phone_number }
     phone_type { %w[cell home work].sample }
-    service_agreement_accepted { Faker::Boolean.boolean }
+    service_agreement_accepted { true }
     timezone { TimeZoneService.us_zones.sample }
     confirmation_token { Faker::Alphanumeric.alphanumeric(number: 10) }
     confirmed_at { [Time.zone.at(rand * Time.now.to_i), nil].sample }

@@ -31,75 +31,75 @@ export const parserTypes = {
   'application/vnd.ms-excel': parsers.xlsx
 }
 
-export const columns = [
+export const getColumns = t => [
   {
     dataIndex: 'firstName',
     key: 'firstName',
-    title: 'First Name'
+    title: t('firstName')
   },
   {
     dataIndex: 'lastName',
     key: 'lastName',
-    title: 'Last Name'
+    title: t('lastName')
   },
   {
     dataIndex: 'dateOfBirth',
     key: 'dateOfBirth',
-    title: 'Date of birth',
+    title: t('dateOfBirth'),
     render: text => XLSX.SSF.format('yyyy-mm-dd', text)
   },
   {
     dataIndex: 'siteId',
     key: 'siteId',
-    title: 'Site',
+    title: t('siteId'),
     responsive: ['sm']
   },
   {
     dataIndex: 'caseStatus',
     key: 'caseStatus',
-    title: 'Case Status',
+    title: t('caseStatus'),
     responsive: ['sm']
   },
   {
     dataIndex: 'caseNumber',
     key: 'caseNumber',
-    title: 'Case Number',
+    title: t('caseNumber'),
     responsive: ['sm']
   },
   {
     dataIndex: 'fullDaysPerMonth',
     key: 'fullDaysPerMonth',
-    title: 'Full days (per month)',
+    title: t('fullDaysPerMonth'),
     responsive: ['md']
   },
   {
     dataIndex: 'partDaysPerMonth',
     key: 'partDaysPerMonth',
-    title: 'Part days (per month)',
+    title: t('partDaysPerMonth'),
     responsive: ['md']
   },
   {
     dataIndex: 'effectiveOn',
     key: 'effectiveOn',
-    title: 'Effective On',
+    title: t('effectiveOn'),
     responsive: ['md']
   },
   {
     dataIndex: 'expiresOn',
     key: 'expiresOn',
-    title: 'Expires on',
+    title: t('expiresOn'),
     responsive: ['md']
   },
   {
     dataIndex: 'copay',
     key: 'copay',
-    title: 'Co-pay',
+    title: t('copay'),
     responsive: ['lg']
   },
   {
     dataIndex: 'copayFrequency',
     key: 'copayFrequency',
-    title: 'Co-pay frequency',
+    title: t('copayFrequency'),
     responsive: ['lg']
   }
 ]

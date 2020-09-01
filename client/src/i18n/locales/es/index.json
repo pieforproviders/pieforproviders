@@ -48,7 +48,19 @@
   "passwordConfirmationMatch": "¡Las dos contraseñas que ingresaste no coinciden!",
   "passwordConfirmationPlaceholder": "Confirma tu contraseña",
   "termsRequired": "Lee y acepta las Condiciones de Uso",
+  "signupThanks": "¡Gracias por registrarse!",
+  "emailVerificationText": "We’ve sent you an email to verify your account.",
+  "emailNotReceived": "Le hemos enviado un correo electrónico para verificar tu cuenta.",
+  "restartSignup": "¿Es {userEmail} tu correo electrónico correcto sin errores de escritura? Si no, puedes reiniciar el proceso de registro",
+  "checkSpam": "Revisa tu carpeta de spam.",
+  "add": "Añade",
+  "addToContacts": "a tus contactos.",
+  "resendConfirmationEmail": "Haga clic aquí para reenviar el correo electrónico.",
+
   "reportFeedback": "Da comentarios",
+
+  "setup": "Configuración",
+  "steps": "Pasos",
   "gettingStartedBusinesses": "Cuéntanos sobre las empresas y los sitios que gestionas, para que sepamos cuales tarifas del subsidio aplican a tus casos",
   "gettingStartedBusinessesTitle": "Agrega el nombre de tu empresa",
   "gettingStartedUpload": "Sube una hoja de cálculo con los nombres y los cumpleaños de los niños calificados para el subsidio bajo tu cuidado. En la mayoría de los casos, puedes descargarla de otro software que utilices. Esto nos ayuda a calcular la tarifa del subsidio de cada niño",
@@ -61,7 +73,9 @@
   "gettingStartedTitle": "Comencemos",
   "gettingStartedInstructions": "Sigue estas instrucciones para configurar tu pantalla principal de casos. Esto debería tardar unos 15 minutos y solo tendrás que hacerlo una vez. ¡Prepárate para aumentar tu porción del pastel!",
   "gettingStartedButton": "Comienza",
+
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
+
   "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intente iniciar sesión. Si ha olvidado tu contraseña, por favor restáurela abajo",
   "confirmationPeriodExpired": "Tu período de confirmación ha expirado",
   "genericEmailConfirmationError": "Hemos tenido un problema para confirmar tu correo electrónico",
@@ -73,5 +87,27 @@
   "genericConfirmationTokenError": "Hemos tenido un problema con tu token de confirmación",
   "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
   "contactUs": "Contáctenos",
-  "forSupport": "para el apoyo"
+  "forSupport": "para el apoyo",
+
+  "uploadCases": "Subir los casos",
+  "uploadCasesInvalidFileFormat": "Formato de archivo inválido. Formatos admitidos: CSV, XLS y XLSX",
+  "reviewImportedCases": "Revisar los casos importados",
+
+  "firstName": "Nombre",
+  "lastName": "Apellido",
+  "dateOfBirth": "Fecha de nacimiento",
+  "siteId": "Sitio",
+  "caseStatus": "Estado del caso",
+  "caseNumber": "Número de caso",
+  "fullDaysPerMonth": "Días completos (por mes)",
+  "partDaysPerMonth": "Días parciales (por mes)",
+  "effectiveOn": "Efectivo en",
+  "expiresOn": "Expira en",
+  "copay": "Copago",
+  "copayFrequency": "Frecuencia de copago",
+
+  "notFound": "404: No se encuentra",
+  "goBackHome": "Ir a inicio",
+
+  "dashboardTitle": "Este es el dashboard"
 }
