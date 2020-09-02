@@ -51,6 +51,6 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def error_type
-    @error_type ||= @errors[@errors.keys.first].first[:error]
+    @error_type ||= @errors[@error_attribute].first[:error]
   end
 end
