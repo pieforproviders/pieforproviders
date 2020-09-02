@@ -60,6 +60,19 @@ CREATE TYPE public.copay_frequency AS ENUM (
 );
 
 
+--
+-- Name: license_types; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.license_types AS ENUM (
+    'licensed_center',
+    'licensed_family_home',
+    'licensed_group_home',
+    'license_exempt_home',
+    'license_exempt_center'
+);
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -704,6 +717,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200802173943'),
 ('20200802210346'),
 ('20200802222331'),
+('20200814013700'),
 ('20200824023040'),
 ('20200824023511'),
 ('20200824025129'),
