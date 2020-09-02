@@ -26,7 +26,8 @@ class ConfirmationsController < Devise::ConfirmationsController
   private
 
   def concatenate_path
-    "#{ActionMailer::Base.default_url_options[:protocol]}#{ActionMailer::Base.default_url_options[:host]}#{ActionMailer::Base.default_url_options[:port]}"
+    options = ActionMailer::Base.default_url_options
+    "#{options[:protocol]}#{options[:host]}#{options[:port]}"
   end
 
   def errors(details = nil)
