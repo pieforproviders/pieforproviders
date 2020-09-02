@@ -10,6 +10,7 @@ class ConfirmationsController < Devise::ConfirmationsController
 
   def create
     super
+    @front_end_path = concatenate_path
   end
 
   def show
@@ -23,6 +24,10 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   private
+
+  def concatenate_path
+    "#{ActionMailer::Base.default_url_options[:protocol]}#{ActionMailer::Base.default_url_options[:host]}#{ActionMailer::Base.default_url_options[:port]}"
+  end
 
   def errors(details = nil)
     @errors ||= details
