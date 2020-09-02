@@ -15,8 +15,10 @@
     "deploy": "cp -a client/build/. public/",
     "heroku-postbuild": "yarn install-all && yarn build && yarn deploy",
     "build": "yarn --cwd client build",
-    "lint": "yarn --cwd client lint",
-    "lint:fix": "yarn --cwd client lint --fix",
+    "lint": "yarn eslint ./spec",
+    "lint:fix": "yarn lint --fix",
+    "lint-all": "yarn lint && yarn --cwd client lint",
+    "lint-all:fix": "yarn lint --fix && yarn --cwd client lint --fix",
     "start": "yarn --cwd client start",
     "test": "yarn --cwd client test",
     "test-once": "yarn --cwd client test --watchAll=false",
@@ -25,6 +27,29 @@
     "install-all": "yarn install && yarn --cwd client install",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "semi": false,
+    "useTabs": false,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid"
+  },
+  "eslintConfig": {
+    "plugins": [
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    }
+  },
   "engines": {
     "yarn": "1.22.4",
     "npm": ">=6.13.4",
@@ -32,7 +57,9 @@
   },
   "devDependencies": {
     "cypress": "^5.0.0",
+    "eslint": "^7.8.1",
     "faker": "^5.1.0",
+    "prettier": "^2.1.1",
     "start-server-and-test": "^1.11.3"
   }
 }

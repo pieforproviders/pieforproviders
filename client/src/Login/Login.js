@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
@@ -14,13 +15,30 @@ export function Login() {
   let history = useHistory()
   const { t, i18n } = useTranslation()
 
+  const ResendToken = ({ type }) => {
+    return (
+      <div>
+        {`${t('yourConfirmationToken')} ${t(type)}. ${t(
+          'mustUseConfirmationEmail'
+        )} ${t('requestNewConfirmation')} `}
+        <a href="www.google.com" target="_blank">
+          Placeholder Link
+        </a>
+      </div>
+    )
+  }
+
+  ResendToken.propTypes = {
+    type: PropTypes.string.isRequired
+  }
+
   useEffect(() => {
-    if (location?.state?.error?.status) {
+    if (location.state?.error?.status) {
       setApiError({
-        status: location?.state?.error?.status,
-        message: location?.state?.error?.message,
-        attribute: location?.state?.error?.attribute,
-        type: location?.state?.error?.type
+        status: location.state?.error?.status,
+        message: location.state?.error?.message,
+        attribute: location.state?.error?.attribute,
+        type: location.state?.error?.type
       })
       window.history.replaceState(null, '')
     }
@@ -56,40 +74,27 @@ export function Login() {
     )}</a>{' '} ${t('forSupport')}`
   }
 
-  const ResendToken = () => {
-    return (
-      <div>
-        {`${t('yourConfirmationToken')} ${t(apiError?.type)}. ${t(
-          'mustUseConfirmationEmail'
-        )} ${t('requestNewConfirmation')} `}
-        <a href="www.google.com" target="_blank">
-          Placeholder Link
-        </a>
-      </div>
-    )
+  const errorMessages = {
+    email: {
+      already_confirmed: () => t('alreadyConfirmed'),
+      confirmation_period_expired: () => t('confirmationPeriodExpired'),
+      default: () => contactUs({ message: t('genericEmailConfirmationError') })
+    },
+    confirmation_token: {
+      blank: () => ResendToken({ type: 'blank' }),
+      invalid: () => ResendToken({ type: 'invalid' }),
+      default: () => contactUs({ message: t('genericEmailConfirmationError') })
+    },
+    default: () => t('genericConfirmationError')
   }
 
-  const errorMessage = ({ attribute, type }) => {
-    switch (true) {
-      case attribute === 'email':
-        switch (true) {
-          case type === 'already_confirmed':
-            return t('alreadyConfirmed')
-          case type === 'confirmation_period_expired':
-            return t('confirmationPeriodExpired')
-          default:
-            return contactUs({ message: t('genericEmailConfirmationError') })()
-        }
-      case attribute === 'confirmation_token':
-        switch (true) {
-          case type === 'blank' || type === 'invalid':
-            return <ResendToken type={type} />
-          default:
-            return contactUs({ message: t('genericConfirmationTokenError') })()
-        }
-      default:
-        return t('genericConfirmationError')
+  const errorAlert = ({ attribute, type }) => {
+    const attributeError = errorMessages[attribute]
+    if (!attributeError) {
+      return errorMessages.default()
     }
+    const alert = attributeError[type] || attributeError.default
+    return alert()
   }
 
   return (
@@ -108,7 +113,7 @@ export function Login() {
           type="error"
           description={
             apiError?.attribute
-              ? errorMessage({
+              ? errorAlert({
                   attribute: apiError?.attribute,
                   type: apiError?.type
                 })
@@ -179,5 +184,3 @@ export function Login() {
     </>
   )
 }
-
-Login.propTypes = {}
