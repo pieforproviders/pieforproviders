@@ -112,6 +112,7 @@ Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
 
 ### End to End
 
+- `yarn build && yarn deploy`
 - `yarn cy:ci` from the root directory
 
 ### Prep for Pull Request
