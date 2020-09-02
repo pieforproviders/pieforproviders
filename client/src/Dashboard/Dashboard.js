@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 export function Dashboard() {
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
+  const { t } = useTranslation()
+
   useEffect(() => {
     const responseValue = async () => {
       const businesses = await makeRequest({
@@ -30,7 +33,7 @@ export function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h1>This is the dashboard</h1>
+      <h1>{t('dashboardTitle')}</h1>
       {businessList &&
         businessList.map(business => {
           return <div key={business.name}>{business.name}</div>

@@ -16,7 +16,8 @@ RSpec.describe 'POST /signup', type: :request do
       password_confirmation: 'password',
       phone_number: '888-888-8888',
       phone_type: 'cell',
-      timezone: 'Eastern Time (US & Canada)'
+      timezone: 'Eastern Time (US & Canada)',
+      service_agreement_accepted: true
     }
   end
 

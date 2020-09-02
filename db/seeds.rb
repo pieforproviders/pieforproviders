@@ -4,6 +4,8 @@ ActionMailer::Base.perform_deliveries = false
 
 puts 'seeding'
 
+Rake::Task['pie4providers:address_lookups:import_all'].invoke
+
 user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_create(
   active: true,
   full_name: 'Kate Donaldson',
@@ -16,7 +18,7 @@ user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_
   password_confirmation: ENV.fetch('TESTUSER_PASS', 'testpass1234!'),
   phone_number: '8888888888',
   phone_type: 'cell',
-  service_agreement_accepted: false,
+  service_agreement_accepted: true,
   timezone: 'Central Time (US & Canada)'
 )
 
