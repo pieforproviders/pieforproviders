@@ -93,3 +93,28 @@ Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
     amount_cents: 140_000,
     discrepancy_cents: 2_750
 )
+
+# -----------------------------------------------------------------------------
+# Subsidy Rules
+#  TODO: must first import states, counties, cities, zips?
+#
+state_il = Lookup::State.first_or_create!( abbr: 'IL', name: 'Illinois')
+county_il_cook = Lookup::County.first_or_create!(name: 'Cook', state: state_il)
+
+# TODO: after PR 252 is merged, replace the license_type line with: license_type: Licenses.types.values.sample,
+SubsidyRule.first_or_create!(
+    name: 'Rule 1',
+    county: county_il_cook,
+    state: state_il,
+    max_age: 18,
+    part_day_rate: 18.00,
+    full_day_rate: 32.00,
+    part_day_max_hours: 5,
+    full_day_max_hours: 12,
+    full_plus_part_day_max_hours: 18,
+    full_plus_full_day_max_hours: 24,
+    part_day_threshold: 5,
+    full_day_threshold: 6,
+    license_type: SubsidyRule::LICENSE_TYPES.sample,
+    qris_rating: '3'
+)
