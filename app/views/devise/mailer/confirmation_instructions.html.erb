@@ -1,9 +1,9 @@
 <%= image_tag attachments['pieFullTanLogo.svg'].url, width: '150', align: "middle" %>
 
-<p>Hi<%= @greeting_name ? " #{@greeting_name}," : ","%></p>
+<p><%= @hello %><%= @greeting_name ? " #{@greeting_name}," : ","%></p>
 
-<p>Welcome to Pie for Providers! Get ready to increase your slice of the pie with simple child care subsidy management tools. To get started, please verify your email address by clicking the link below (you can also copy and paste it into your browser).</p>
+<p><%= @body %></p>
 
-<p><%= link_to 'Confirm Account', "#{@front_end_path}/confirm?confirmation_token=#{@resource.confirmation_token}", target: "_blank" %></p>
+<p><%= link_to @confirm_account, @confirmation_path, target: "_blank" %></p>
 
-<p>Questions? Email <%= mail_to 'tech@pieforproviders.com', 'tech@pieforproviders.com', subject: 'Pie for Providers: question after signup' %></p>
+<p><%= @questions %><%= mail_to @sender, @sender, subject: @reply_subject %></p>

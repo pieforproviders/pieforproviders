@@ -8,16 +8,22 @@ class DeviseCustomMailer < Devise::Mailer
   def confirmation_instructions(record, token, opts = {})
     @greeting_name = record.greeting_name
     @token = token
-    @front_end_path = concatenate_path
-    opts[:subject] = 'Pie for Providers email verification'
+    @confirmation_path = confirmation_path
+    opts[:subject] = I18n.t('mailers.confirmation_instructions.subject')
+    @reply_subject = 'Pie for Providers: question after signup'
+    @body = I18n.t('mailers.confirmation_instructions.body')
+    @hello = I18n.t('mailers.confirmation_instructions.hello')
+    @confirm_account = I18n.t('mailers.confirmation_instructions.confirm_account')
+    @questions = I18n.t('mailers.confirmation_instructions.questions')
+    @sender = Devise.mailer_sender
     attachments.inline['pieFullTanLogo.svg'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pieFullTanLogo.svg'))
     super
   end
 
   private
 
-  def concatenate_path
+  def confirmation_path
     options = ActionMailer::Base.default_url_options
-    "#{options[:protocol]}#{options[:host]}#{options[:port]}"
+    "#{options[:protocol]}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
   end
 end
