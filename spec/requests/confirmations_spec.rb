@@ -7,11 +7,11 @@ RSpec.describe 'GET /confirmation', type: :request do
   let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
   let(:confirmed_user) { create(:confirmed_user) }
   path '/confirmation' do
-    get 'Signs up a new user; creates the user.' do
+    get "Confirms the user's account." do
       consumes 'application/json', 'application/xml'
       parameter name: 'confirmation_token', in: :query, type: :string
 
-      response '200', 'user created' do
+      response '200', 'user confirmed' do
         let(:confirmation_token) { unconfirmed_user.confirmation_token }
         run_test! do
           expect(response).to match_response_schema('user')
