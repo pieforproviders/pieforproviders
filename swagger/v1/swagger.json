@@ -944,7 +944,7 @@
     },
     "/confirmation": {
       "get": {
-        "summary": "Signs up a new user; creates the user.",
+        "summary": "Confirms the user's account.",
         "parameters": [
           {
             "name": "confirmation_token",
@@ -956,7 +956,7 @@
         ],
         "responses": {
           "200": {
-            "description": "user created",
+            "description": "user confirmed",
             "content": {
             }
           },
