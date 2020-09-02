@@ -1,6 +1,6 @@
 es:
   license_types: &license_types
-    licensed_center: licensed center
+    licensed_center: centro con licencia
     licensed_family_home: guardería en el hogar con licencia
     licensed_group_home: guardería de grupo en el hogar con licencia
     license_exempt_home: guardería en el hogar exento de licencia 
