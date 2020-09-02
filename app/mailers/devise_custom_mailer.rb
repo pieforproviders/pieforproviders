@@ -5,6 +5,7 @@ class DeviseCustomMailer < Devise::Mailer
   include Devise::Controllers::UrlHelpers # Optional. eg. `confirmation_url`
   default template_path: 'devise/mailer' # to make sure that your mailer uses the devise views
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def confirmation_instructions(record, token, opts = {})
     @greeting_name = record.greeting_name
     @token = token
@@ -19,6 +20,7 @@ class DeviseCustomMailer < Devise::Mailer
     attachments.inline['pieFullTanLogo.svg'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pieFullTanLogo.svg'))
     super
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
