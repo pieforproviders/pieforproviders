@@ -1,6 +1,6 @@
 # README
 
-[![CI][https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop]][https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop]
+[![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
 
 We help child care providers and families claim the government funding for which they are already eligible.
 
