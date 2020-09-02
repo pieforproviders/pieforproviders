@@ -4,7 +4,7 @@ es:
     licensed_family_home: licensed family home
     licensed_group_home: licensed group home
     license_exempt_home: license exempt home
-    license_exempt_center: license exempt center
+    license_exempt_center: centro exento de licencia
 
   activerecord:
     attributes:
