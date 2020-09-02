@@ -48,14 +48,14 @@
   "passwordConfirmationMatch": "¡Las dos contraseñas que ingresaste no coinciden!",
   "passwordConfirmationPlaceholder": "Confirma tu contraseña",
   "termsRequired": "Lee y acepta las Condiciones de Uso",
-  "signupThanks": "¡Gracias por registrarse!",
-  "emailVerificationText": "We’ve sent you an email to verify your account.",
+  "signupThanks": "¡Gracias por registrarte!",
+  "emailVerificationText": "Te hemos mandado un correo para verificar tu cuenta.",
   "emailNotReceived": "Le hemos enviado un correo electrónico para verificar tu cuenta.",
-  "restartSignup": "¿Es {userEmail} tu correo electrónico correcto sin errores de escritura? Si no, puedes reiniciar el proceso de registro",
+  "restartSignup": "¿Es {userEmail} tu correo correcto sin erratas? Si no, puedes reiniciar el proceso de registro",
   "checkSpam": "Revisa tu carpeta de spam.",
   "add": "Añade",
   "addToContacts": "a tus contactos.",
-  "resendConfirmationEmail": "Haga clic aquí para reenviar el correo electrónico.",
+  "resendConfirmationEmail": "Haga clic aquí para reenviar el correo.",
 
   "reportFeedback": "Da comentarios",
 
@@ -76,15 +76,15 @@
 
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
-  "uploadCases": "Subir los casos",
+  "uploadCases": "Sube tus casos",
   "uploadCasesInvalidFileFormat": "Formato de archivo inválido. Formatos admitidos: CSV, XLS y XLSX",
-  "reviewImportedCases": "Revisar los casos importados",
+  "reviewImportedCases": "Revisa los casos importados",
 
   "firstName": "Nombre",
   "lastName": "Apellido",
   "dateOfBirth": "Fecha de nacimiento",
   "siteId": "Sitio",
-  "caseStatus": "Estado del caso",
+  "caseStatus": "Estado de caso",
   "caseNumber": "Número de caso",
   "fullDaysPerMonth": "Días completos (por mes)",
   "partDaysPerMonth": "Días parciales (por mes)",
@@ -94,7 +94,7 @@
   "copayFrequency": "Frecuencia de copago",
 
   "notFound": "404: No se encuentra",
-  "goBackHome": "Ir a inicio",
+  "goBackHome": "Ve al inicio",
 
-  "dashboardTitle": "Este es el dashboard"
+  "dashboardTitle": "Este es la página principal"
 }
