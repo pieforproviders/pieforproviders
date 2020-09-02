@@ -133,7 +133,8 @@ CREATE TABLE public.case_cycles (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
-    copay_frequency public.copay_frequency NOT NULL
+    copay_frequency public.copay_frequency NOT NULL,
+    user_id uuid NOT NULL
 );
 
 
@@ -498,6 +499,13 @@ CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree 
 
 
 --
+-- Name: index_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
+
+
+--
 -- Name: index_child_sites_on_child_id_and_site_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -680,6 +688,14 @@ CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, d
 
 
 --
+-- Name: case_cycles fk_rails_02471acfd5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.case_cycles
+    ADD CONSTRAINT fk_rails_02471acfd5 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -712,6 +728,5 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200825180200'),
 ('20200825180300'),
 ('20200828013851'),
-('20200902182940');
-
-
+('20200902182940'),
+('20200902184516');

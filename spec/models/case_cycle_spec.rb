@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe CaseCycle, type: :model do
   let(:invalid_date_msg) { 'Invalid date' }
 
+  it { should belong_to(:user) }
   it { should validate_numericality_of(:copay).is_greater_than(0) }
 
   it {
@@ -94,8 +95,14 @@ end
 #  submitted_on    :date             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  user_id         :uuid             not null
 #
 # Indexes
 #
-#  index_case_cycles_on_slug  (slug) UNIQUE
+#  index_case_cycles_on_slug     (slug) UNIQUE
+#  index_case_cycles_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #
