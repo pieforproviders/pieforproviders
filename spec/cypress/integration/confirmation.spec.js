@@ -24,9 +24,9 @@ describe('Confirmation', () => {
             password,
             password_confirmation: password,
             confirmation_token: confirmationToken,
-            confirmed_at: null,
-          },
-        ],
+            confirmed_at: null
+          }
+        ]
       ])
     })
 
@@ -35,7 +35,7 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`,
+          url: `/confirmation?confirmation_token=${confirmationToken}`
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
@@ -49,7 +49,7 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: '/confirmation?confirmation_token=cactus',
+          url: '/confirmation?confirmation_token=cactus'
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=cactus`)
@@ -64,7 +64,7 @@ describe('Confirmation', () => {
         cy.server()
         cy.route({
           method: 'GET',
-          url: '/confirmation',
+          url: '/confirmation'
         }).as('confirmation')
 
         cy.visit(`/confirm`)
@@ -89,9 +89,9 @@ describe('Confirmation', () => {
             password,
             password_confirmation: password,
             confirmation_token: confirmationToken,
-            confirmed_at: confirmationDate,
-          },
-        ],
+            confirmed_at: confirmationDate
+          }
+        ]
       ])
     })
 
@@ -99,7 +99,7 @@ describe('Confirmation', () => {
       cy.server()
       cy.route({
         method: 'GET',
-        url: `/confirmation?confirmation_token=${confirmationToken}`,
+        url: `/confirmation?confirmation_token=${confirmationToken}`
       }).as('confirmation')
 
       cy.visit(`/confirm?confirmation_token=${confirmationToken}`)

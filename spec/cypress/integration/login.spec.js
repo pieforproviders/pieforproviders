@@ -20,9 +20,9 @@ describe('Login', () => {
             full_name: fullName,
             greeting_name: firstName,
             password,
-            password_confirmation: password,
-          },
-        ],
+            password_confirmation: password
+          }
+        ]
       ])
     })
 
@@ -31,7 +31,7 @@ describe('Login', () => {
         cy.server()
         cy.route({
           method: 'POST',
-          url: '/login',
+          url: '/login'
         }).as('login')
 
         cy.visit('/login')
@@ -48,7 +48,7 @@ describe('Login', () => {
         cy.server()
         cy.route({
           method: 'POST',
-          url: '/login',
+          url: '/login'
         }).as('login')
 
         cy.visit('/login')
@@ -73,9 +73,9 @@ describe('Login', () => {
             full_name: fullName,
             greeting_name: firstName,
             password,
-            password_confirmation: password,
-          },
-        ],
+            password_confirmation: password
+          }
+        ]
       ])
     })
 
@@ -83,7 +83,7 @@ describe('Login', () => {
       cy.server()
       cy.route({
         method: 'POST',
-        url: '/login',
+        url: '/login'
       }).as('login')
 
       cy.visit('/login')
@@ -100,7 +100,7 @@ describe('Login', () => {
       cy.server()
       cy.route({
         method: 'POST',
-        url: '/login',
+        url: '/login'
       }).as('login')
 
       cy.visit('/login')
