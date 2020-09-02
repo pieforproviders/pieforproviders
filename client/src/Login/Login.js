@@ -109,7 +109,7 @@ export function Login() {
       {apiError?.status && (
         <Alert
           className="mb-2"
-          message={apiError?.message}
+          message={apiError.message}
           type="error"
           description={
             apiError?.attribute
