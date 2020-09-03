@@ -30,13 +30,13 @@ end
 #  full_day_threshold           :decimal(, )      not null
 #  full_plus_full_day_max_hours :decimal(, )      not null
 #  full_plus_part_day_max_hours :decimal(, )      not null
+#  license_type                 :enum             not null
 #  max_age                      :decimal(, )      not null
 #  name                         :string           not null
 #  part_day_max_hours           :decimal(, )      not null
 #  part_day_rate_cents          :integer          default(0), not null
 #  part_day_rate_currency       :string           default("USD"), not null
 #  part_day_threshold           :decimal(, )      not null
-#  provider_type                :enum             not null
 #  qris_rating                  :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
