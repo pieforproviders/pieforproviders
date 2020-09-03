@@ -14,6 +14,7 @@ class User < UuidApplicationRecord
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
+  validates :greeting_name, presence: true
   validates :language, presence: true
   validates :organization, presence: true
   validates :opt_in_email, inclusion: { in: [true, false] }
@@ -47,7 +48,7 @@ end
 #  encrypted_password         :string           default(""), not null
 #  failed_attempts            :integer          default(0), not null
 #  full_name                  :string           not null
-#  greeting_name              :string
+#  greeting_name              :string           not null
 #  language                   :string           not null
 #  last_sign_in_at            :datetime
 #  last_sign_in_ip            :inet

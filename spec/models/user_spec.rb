@@ -6,6 +6,7 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:email) }
   it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
   it { should validate_presence_of(:full_name) }
+  it { should validate_presence_of(:greeting_name) }
   it { should validate_presence_of(:language) }
   it { should validate_presence_of(:organization) }
   it { should validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
@@ -32,7 +33,7 @@ end
 #  encrypted_password         :string           default(""), not null
 #  failed_attempts            :integer          default(0), not null
 #  full_name                  :string           not null
-#  greeting_name              :string
+#  greeting_name              :string           not null
 #  language                   :string           not null
 #  last_sign_in_at            :datetime
 #  last_sign_in_ip            :inet
