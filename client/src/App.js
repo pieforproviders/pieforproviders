@@ -9,6 +9,7 @@ import AuthorizedRoute from '_utils/_routes/AuthorizedRoute.js'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
+import Confirmation from './Confirmation'
 import Login from './Login'
 import Signup from './Signup'
 import NotFound from './NotFound'
@@ -46,6 +47,11 @@ const App = () => {
                 contentComponent={Login}
               />
             </Route>
+            <Route
+              path="/confirm"
+              title="Confirm your Account"
+              component={Confirmation}
+            />
             <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
               <GettingStarted />
             </AuthorizedRoute>

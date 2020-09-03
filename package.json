@@ -8,21 +8,35 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn --cwd client install && yarn --cwd client build",
     "start-server": "bin/rails server -e test -p 5017",
     "cy:run": "cypress run --project ./spec --config video=false",
     "cy:open": "cypress open --project ./spec",
     "cy:ci": "start-server-and-test start-server http://localhost:5017 cy:run",
     "deploy": "cp -a client/build/. public/",
-    "heroku-postbuild": "yarn build && yarn deploy",
+    "heroku-postbuild": "yarn install-all && yarn build && yarn deploy",
+    "build": "yarn --cwd client build",
+    "lint": "yarn eslint ./spec/cypress/integration",
+    "lint:fix": "yarn lint --fix",
+    "lint-all": "yarn lint && yarn --cwd client lint",
+    "lint-all:fix": "yarn lint --fix && yarn --cwd client lint --fix",
     "start": "yarn --cwd client start",
     "test": "yarn --cwd client test",
-    "lint": "yarn --cwd client lint",
-    "lint:fix": "yarn --cwd client lint --fix",
-    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\"",
-    "install": "yarn --cwd client install",
+    "test-once": "yarn --cwd client test --watchAll=false",
     "ad": "yarn --cwd client add",
-    "rm": "yarn --cwd client remove"
+    "rm": "yarn --cwd client remove",
+    "install-all": "yarn install && yarn --cwd client install",
+    "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "semi": false,
+    "useTabs": false,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid"
   },
   "engines": {
     "yarn": "1.22.4",
@@ -31,7 +45,12 @@
   },
   "devDependencies": {
     "cypress": "^5.0.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "faker": "^5.1.0",
+    "prettier": "^2.1.1",
     "start-server-and-test": "^1.11.3"
   }
 }

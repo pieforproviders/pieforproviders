@@ -21,7 +21,7 @@ Devise.setup do |config|
   config.mailer_sender = 'tech@pieforproviders.com'
 
   # Configure the class responsible to send e-mails.
-  # config.mailer = 'Devise::Mailer'
+  config.mailer = 'DeviseCustomMailer'
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
@@ -301,7 +301,8 @@ Devise.setup do |config|
   config.jwt do |jwt|
     jwt.secret = ENV['DEVISE_JWT_SECRET_KEY']
     jwt.dispatch_requests = [
-      ['POST', %r{^/login$}]
+      ['POST', %r{^/login$}],
+      ['GET', %r{^/confirmation}]
     ]
     jwt.revocation_requests = [
       ['DELETE', %r{^/logout$}]

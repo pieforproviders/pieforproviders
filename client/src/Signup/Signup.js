@@ -10,7 +10,7 @@ import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
-import Confirmation from './Confirmation'
+import ConfirmationSent from './ConfirmationSent'
 
 const { Option } = Select
 
@@ -90,7 +90,7 @@ export function Signup() {
   }
 
   if (success) {
-    return <Confirmation userEmail={user.email} />
+    return <ConfirmationSent userEmail={user.email} />
   }
 
   return (

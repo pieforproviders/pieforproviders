@@ -172,11 +172,10 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Deploy frontend
+      - name: Build frontend
         run: |
           yarn
-          yarn build
-          yarn deploy
+          yarn heroku-postbuild
       - name: Run Cypress tests
         run: yarn cy:ci
         env:

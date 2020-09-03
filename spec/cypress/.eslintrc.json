@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:cypress/recommended"
+  ],
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}

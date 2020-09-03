@@ -2,3 +2,11 @@ es:
   errors:
     messages:
       taken: "ya ha sido tomado"
+      confirmation: "Error de confirmación"
+  mailers:
+    confirmation_instructions:
+      hello: Hola
+      body: ¡Bienvenido a Pie for Providers! Prepárate para aumentar tu porción del pastel con simples herramientas de administración de subsidios de cuidado infantil. Para empezar, por favor verifique su dirección de correo electrónico haciendo clic en el siguiente enlace (también puede copiar y pegar en su navegador).
+      confirm_account: Confirmar la cuenta
+      questions: "¿Preguntas? Correo electrónico "
+      subject: Verificación del correo electrónico de Pie for Providers

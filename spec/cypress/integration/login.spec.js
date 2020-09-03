@@ -31,7 +31,7 @@ describe('Login', () => {
         cy.server()
         cy.route({
           method: 'POST',
-          url: '/login',
+          url: '/login'
         }).as('login')
 
         cy.visit('/login')
@@ -48,7 +48,7 @@ describe('Login', () => {
         cy.server()
         cy.route({
           method: 'POST',
-          url: '/login',
+          url: '/login'
         }).as('login')
 
         cy.visit('/login')
@@ -56,7 +56,7 @@ describe('Login', () => {
         cy.get(createSelector('password')).type(internet.password())
         cy.get(createSelector('loginBtn')).click()
         cy.wait('@login')
-        cy.get(createSelector('loginError')).contains('Invalid email or password', { matchCase: false })
+        cy.get(createSelector('authError')).should('exist')
       })
     })
   })
@@ -83,7 +83,7 @@ describe('Login', () => {
       cy.server()
       cy.route({
         method: 'POST',
-        url: '/login',
+        url: '/login'
       }).as('login')
 
       cy.visit('/login')
@@ -91,8 +91,7 @@ describe('Login', () => {
       cy.get(createSelector('password')).type(password)
       cy.get(createSelector('loginBtn')).click()
       cy.wait('@login')
-      cy.get(createSelector('loginError'))
-        .contains('You have to confirm your email address before continuing', { matchCase: false })
+      cy.get(createSelector('authError')).should('exist')
     })
   })
 
@@ -101,7 +100,7 @@ describe('Login', () => {
       cy.server()
       cy.route({
         method: 'POST',
-        url: '/login',
+        url: '/login'
       }).as('login')
 
       cy.visit('/login')
@@ -109,7 +108,7 @@ describe('Login', () => {
       cy.get(createSelector('password')).type(internet.password())
       cy.get(createSelector('loginBtn')).click()
       cy.wait('@login')
-      cy.get(createSelector('loginError')).contains('Invalid email or password', { matchCase: false })
+      cy.get(createSelector('authError')).should('exist')
     })
   })
 })

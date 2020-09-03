@@ -17,6 +17,8 @@ FactoryBot.define do
     phone_type { %w[cell home work].sample }
     service_agreement_accepted { true }
     timezone { TimeZoneService.us_zones.sample }
+    confirmation_token { Faker::Alphanumeric.alphanumeric(number: 10) }
+    confirmed_at { [Time.zone.at(rand * Time.now.to_i), nil].sample }
 
     factory :confirmed_user do
       before(:create, &:skip_confirmation!)

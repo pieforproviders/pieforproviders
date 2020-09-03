@@ -942,6 +942,32 @@
         }
       }
     },
+    "/confirmation": {
+      "get": {
+        "summary": "Confirms the user's account.",
+        "parameters": [
+          {
+            "name": "confirmation_token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user confirmed",
+            "content": {
+            }
+          },
+          "403": {
+            "description": "forbidden",
+            "content": {
+            }
+          }
+        }
+      }
+    },
     "/signup": {
       "post": {
         "summary": "Signs up a new user; creates the user.",

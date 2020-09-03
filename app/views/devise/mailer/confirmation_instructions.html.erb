@@ -1,0 +1,9 @@
+<%= image_tag attachments['pieFullTanLogo.svg'].url, width: '150', align: "middle" %>
+
+<p><%= @hello %><%= @greeting_name ? " #{@greeting_name}," : ","%></p>
+
+<p><%= @body %></p>
+
+<p><%= link_to @confirm_account, @confirmation_path, target: "_blank" %></p>
+
+<p><%= @questions %><%= mail_to @sender, @sender, subject: @reply_subject %></p>

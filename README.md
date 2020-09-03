@@ -73,7 +73,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - set up the database: `bundle exec rails db:setup`
 - install yarn globally if you don't have it yet: `npm install yarn -g`
 - `cd client`
-- install front-end packages: `yarn install`
+- install front-end and end-to-end packages: `yarn install`
 - `cd ../`
 
 ## Running the app locally
@@ -101,8 +101,23 @@ Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
 
 ## Running tests
 
+### API
+
 - `bundle exec rspec` or `bundle exec guard` to watch
 - When tests pass and you're ready for a PR, please run `rails rswag` to update the API documentation
+
+### Frontend
+
+- `yarn test` (auto-watch) or `yarn test-once` to run the suite one time only
+
+### End to End
+
+- `yarn build && yarn deploy`
+- `yarn cy:ci` from the root directory
+
+### Prep for Pull Request
+
+There's a helper rake task that runs all test suites and linting steps, and generates the swagger documentation; use `rails prep` to run this command.
 
 ## Adding/Updating Models
 

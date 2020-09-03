@@ -76,6 +76,19 @@
 
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
+  "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intente iniciar sesión. Si ha olvidado tu contraseña, por favor restáurela abajo",
+  "confirmationPeriodExpired": "Tu período de confirmación ha expirado",
+  "genericEmailConfirmationError": "Hemos tenido un problema para confirmar tu correo electrónico",
+  "yourConfirmationToken": "Tu símbolo de confirmación es",
+  "blank": "en blanco",
+  "invalid": "inválido",
+  "mustUseConfirmationEmail": "Debe confirmar tu cuenta utilizando un enlace de confirmación enviado a tu dirección de correo electrónico",
+  "requestNewConfirmation": "Puede solicitar un nuevo correo electrónico de confirmación utilizando este enlace:",
+  "genericConfirmationTokenError": "Hemos tenido un problema con tu token de confirmación",
+  "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
+  "contactUs": "Contáctenos",
+  "forSupport": "para el apoyo",
+
   "uploadCases": "Sube tus casos",
   "uploadCasesInvalidFileFormat": "Formato de archivo inválido. Formatos admitidos: CSV, XLS y XLSX",
   "reviewImportedCases": "Revisa los casos importados",
