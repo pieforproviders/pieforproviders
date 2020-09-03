@@ -10,19 +10,7 @@ class SubsidyRule < UuidApplicationRecord
   belongs_to :state, class_name: 'Lookup::State', foreign_key: 'state_id'
   # rubocop:enable Rails/InverseOf
 
-  # TODO: when PR 252 is merged, use the enum license_type: ... and get rid of LICENSE_TYPES
-  # enum license_type: Licenses.types
-  LICENSE_TYPES = %w[
-    licensed_center_single
-    licensed_center_multi
-    licensed_family_home
-    licensed_group_home
-    license_exempt_home
-    license_exempt_center_single
-    license_exempt_center_multi
-  ].freeze
-
-  enum license_type: LICENSE_TYPES.to_h { |s| [s, s] }
+  enum license_type: Licenses.types
 
   validates :name, presence: true
   validates :max_age, numericality: { greater_than_or_equal_to: 0.00 }
@@ -35,7 +23,7 @@ class SubsidyRule < UuidApplicationRecord
   validates :full_plus_full_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
   validates :full_plus_part_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
 
-  # validates :license_type, inclusion: { in: Licenses.types.values }  # TODO: use this when PR 252 is merged
+  validates :license_type, inclusion: { in: Licenses.types.values }
 
   # The money-rails gem specifically requires that the '_cents' suffix be
   # specified when using the "monetize" macro even though the attributes are

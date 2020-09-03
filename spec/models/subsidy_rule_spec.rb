@@ -20,15 +20,8 @@ RSpec.describe SubsidyRule, type: :model do
   it { is_expected.to validate_numericality_of(:full_plus_full_day_max_hours).is_greater_than_or_equal_to(0.00) }
   it { is_expected.to validate_numericality_of(:full_plus_part_day_max_hours).is_greater_than_or_equal_to(0.00) }
 
-  it {
+  it do
     should define_enum_for(:license_type).with_values(
-      described_class::LICENSE_TYPES.to_h { |s| [s, s] }
-    ).backed_by_column_of_type(:string)
-  }
-
-  # enable the example below when PR 252 is merged
-  xit do
-    should define_enum_for(:provider_type).with_values(
       Licenses.types
     ).backed_by_column_of_type(:enum)
   end

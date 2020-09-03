@@ -308,7 +308,7 @@ CREATE TABLE public.sites (
 CREATE TABLE public.subsidy_rules (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     name character varying NOT NULL,
-    license_type character varying NOT NULL,
+    license_type public.license_types NOT NULL,
     county_id uuid NOT NULL,
     state_id uuid NOT NULL,
     max_age numeric NOT NULL,

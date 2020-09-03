@@ -96,12 +96,10 @@ Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
 
 # -----------------------------------------------------------------------------
 # Subsidy Rules
-#  TODO: must first import states, counties, cities, zips?
 #
 state_il = Lookup::State.first_or_create!( abbr: 'IL', name: 'Illinois')
 county_il_cook = Lookup::County.first_or_create!(name: 'Cook', state: state_il)
 
-# TODO: after PR 252 is merged, replace the license_type line with: license_type: Licenses.types.values.sample,
 SubsidyRule.first_or_create!(
     name: 'Rule 1',
     county: county_il_cook,
@@ -115,6 +113,6 @@ SubsidyRule.first_or_create!(
     full_plus_full_day_max_hours: 24,
     part_day_threshold: 5,
     full_day_threshold: 6,
-    license_type: SubsidyRule::LICENSE_TYPES.sample,
+    license_type: Licenses.types.values.sample,
     qris_rating: '3'
 )

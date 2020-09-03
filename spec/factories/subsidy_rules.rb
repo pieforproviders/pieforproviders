@@ -14,8 +14,7 @@ FactoryBot.define do
     full_plus_full_day_max_hours { 24 }
     part_day_threshold { 5 }
     full_day_threshold { 6 }
-    license_type { SubsidyRule::LICENSE_TYPES.sample }
-    # provider_type { Licenses.types.values.sample }
+    license_type { Licenses.types.values.sample }
     qris_rating { Faker::Number.between(from: 1, to: 5).to_s }
   end
 end
