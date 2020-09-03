@@ -48,6 +48,15 @@ RSpec.configure do |config|
               timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
             }
           },
+          license_type: {
+            type: :string,
+            enum: %w[licensed_center
+                     licensed_family_home
+                     licensed_group_home
+                     license_exempt_home
+                     license_exempt_center],
+            example: 'license_exempt_home'
+          },
           business: {
             type: :object,
             properties: {
