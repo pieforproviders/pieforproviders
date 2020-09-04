@@ -26,6 +26,7 @@ class DeviseCustomMailer < Devise::Mailer
 
   def confirmation_path
     options = ActionMailer::Base.default_url_options
-    "#{options[:protocol]}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
+    protocol = options[:protocol] ? "#{options[:protocol]}://" : ''
+    "#{protocol}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
   end
 end
