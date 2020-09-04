@@ -47,8 +47,7 @@ export function Signup() {
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
-      data: { user: user },
-      headers: { 'Accept-Language': i18n.language }
+      data: { user: user }
     })
     if (response.status === 201) {
       setSuccess(true)
