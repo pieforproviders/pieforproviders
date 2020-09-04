@@ -59,7 +59,7 @@ export function Login() {
       })
     } else {
       localStorage.setItem('pie-token', response.headers.get('authorization'))
-      history.push('/dashboard')
+      history.push('/getting-started')
     }
   }
 
