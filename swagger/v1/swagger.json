@@ -824,30 +824,15 @@
         }
       }
     },
-    "/api/v1/users/{slug}": {
-      "parameters": [
-        {
-          "name": "slug",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
+    "/api/v1/profile": {
       "get": {
-        "summary": "retrieves a user",
+        "summary": "retrieves the user profile",
         "tags": [
           "users"
         ],
         "responses": {
           "200": {
-            "description": "user found",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "user not found",
+            "description": "profile found",
             "content": {
             }
           },
@@ -862,7 +847,19 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/v1/users/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
       "put": {
         "summary": "updates a user",
         "tags": [
