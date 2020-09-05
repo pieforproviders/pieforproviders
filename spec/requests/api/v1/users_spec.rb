@@ -61,8 +61,32 @@ RSpec.describe 'users API', type: :request do
     end
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', User do
-    let(:item_params) { user_params }
+  describe 'user profile' do
+    path '/api/v1/profile' do
+      let(:item_params) { user_params }
+
+      get 'retrieves the user profile' do
+        tags 'users'
+
+        produces 'application/json', 'application/xml'
+
+        context 'on the right api version' do
+          include_context 'correct api version header'
+          context 'when authenticated' do
+            include_context 'authenticated user'
+            response '200', 'profile found' do
+              run_test! do
+                expect(response).to match_response_schema('user')
+              end
+            end
+          end
+
+          it_behaves_like '401 error if not authenticated with parameters', 'user'
+        end
+
+        it_behaves_like 'server error responses for wrong api version with parameters', 'user'
+      end
+    end
   end
 
   it_behaves_like 'it updates an item with a slug', User, 'full_name', 'Ron Weasley', nil do
