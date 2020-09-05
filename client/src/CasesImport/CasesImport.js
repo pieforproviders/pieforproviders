@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Alert, Typography } from 'antd'
-import { sha1 } from 'hash-anything'
 import { useTranslation } from 'react-i18next'
 import { CasesImportReview } from './CasesImportReview'
-import { parserTypes, getColumns } from './utils'
+import { parserTypes, getColumns, randomHash } from './utils'
+import { random } from 'faker'
 
 const { Title } = Typography
 
@@ -45,7 +45,7 @@ export function CasesImport() {
         )
         .map(kid => ({
           ...kid,
-          key: sha1(kid.firstName, kid.lastName, kid.dateOfBirth)
+          key: randomHash([kid.firstName, kid.lastName, kid.dateOfBirth])
         }))
         .filter(kid => kid.firstName && kid.lastName && kid.dateOfBirth)
       setKids(kids)
