@@ -88,6 +88,7 @@ Enum case_statuses {
 
 Table case_cycles {
   id uuid [pk, unique, not null]
+  user_id uuid [ref: > users.id, not null]
   case_number string
   copay monetize
   copay_frequency copay_frequencies
