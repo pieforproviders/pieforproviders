@@ -38,7 +38,7 @@ export function CasesImport() {
           row.reduce(
             (acc, item, index) => ({
               ...acc,
-              [columns[index].key]: item
+              [columns[index]?.key]: item
             }),
             {}
           )

@@ -28,7 +28,8 @@ export const parserTypes = {
   'text/csv': parsers.csv,
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
     parsers.xlsx,
-  'application/vnd.ms-excel': parsers.xlsx
+  'application/vnd.ms-excel': parsers.xlsx,
+  '': parsers.xlsx
 }
 
 export const getColumns = t => [
