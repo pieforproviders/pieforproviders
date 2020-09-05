@@ -13,7 +13,7 @@ class DeviseCustomMailer < Devise::Mailer
     opts[:subject] = I18n.t('mailers.confirmation_instructions.subject')
     @reply_subject = 'Pie for Providers: question after signup'
     @body = I18n.t('mailers.confirmation_instructions.body')
-    @hello = I18n.t('mailers.confirmation_instructions.hello')
+    @hello = I18n.t('hello')
     @questions = I18n.t('mailers.confirmation_instructions.questions')
     @sender = Devise.mailer_sender
     attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
@@ -21,11 +21,29 @@ class DeviseCustomMailer < Devise::Mailer
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+  def reset_password_instructions(record, token, opts = {})
+    @token = token
+    @greeting_name = record.greeting_name
+    @password_update_path = password_update_path
+
+    opts[:subject] = I18n.t('mailers.reset_password_instructions.subject')
+    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    super
+  end
+
   private
 
   def confirmation_path
+    "#{domain}/confirm?confirmation_token=#{@token}"
+  end
+
+  def password_update_path
+    "#{domain}/password/update?reset_password_token=#{@token}"
+  end
+
+  def domain
     options = ActionMailer::Base.default_url_options
     protocol = options[:protocol] ? "#{options[:protocol]}://" : ''
-    "#{protocol}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
+    "#{protocol}#{options[:host]}#{options[:port]}"
   end
 end

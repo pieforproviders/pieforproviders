@@ -1,36 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
-import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { Form, Input, Alert } from 'antd'
+import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import ResetPassword from '../ResetPassword'
+import ErrorAlert from 'ErrorAlert'
 
 export function Login() {
   const location = useLocation()
-
   const [apiError, setApiError] = useState(null)
-
+  const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
   const { t } = useTranslation()
-
-  const ResendToken = ({ type }) => {
-    return (
-      <div>
-        {`${t('yourConfirmationToken')} ${t(type)}. ${t(
-          'mustUseConfirmationEmail'
-        )} ${t('requestNewConfirmation')} `}
-        <a href="www.google.com" target="_blank">
-          Placeholder Link
-        </a>
-      </div>
-    )
-  }
-
-  ResendToken.propTypes = {
-    type: PropTypes.string.isRequired
-  }
 
   useEffect(() => {
     if (location.state?.error?.status) {
@@ -67,35 +50,6 @@ export function Login() {
     history.push('/dashboard')
   }
 
-  const contactUs = ({ message }) => {
-    return `${message} <a href="mailto:tech@pieforproviders.com">${t(
-      'contactUs'
-    )}</a>{' '} ${t('forSupport')}`
-  }
-
-  const errorMessages = {
-    email: {
-      already_confirmed: () => t('alreadyConfirmed'),
-      confirmation_period_expired: () => t('confirmationPeriodExpired'),
-      default: () => contactUs({ message: t('genericEmailConfirmationError') })
-    },
-    confirmation_token: {
-      blank: () => ResendToken({ type: 'blank' }),
-      invalid: () => ResendToken({ type: 'invalid' }),
-      default: () => contactUs({ message: t('genericEmailConfirmationError') })
-    },
-    default: () => t('genericConfirmationError')
-  }
-
-  const errorAlert = ({ attribute, type }) => {
-    const attributeError = errorMessages[attribute]
-    if (!attributeError) {
-      return errorMessages.default()
-    }
-    const alert = attributeError[type] || attributeError.default
-    return alert()
-  }
-
   return (
     <>
       <p className="mb-4">
@@ -111,12 +65,9 @@ export function Login() {
           message={apiError.message}
           type="error"
           description={
-            apiError?.attribute
-              ? errorAlert({
-                  attribute: apiError?.attribute,
-                  type: apiError?.type
-                })
-              : null
+            apiError?.attribute ? (
+              <ErrorAlert attribute={apiError.attribute} type={apiError.type} />
+            ) : null
           }
           data-cy="authError"
         />
@@ -136,6 +87,10 @@ export function Login() {
             {
               required: true,
               message: t('emailAddressRequired')
+            },
+            {
+              type: 'email',
+              message: t('emailInvalid')
             }
           ]}
         >
@@ -177,9 +132,27 @@ export function Login() {
             type="secondary"
             htmlType="button"
             text={t('resetPassword')}
+            onClick={() => {
+              setShowResetPasswordDialog(true)
+            }}
+            data-cy="resetPasswordBtn"
           />
         </Form.Item>
       </Form>
+
+      {showResetPasswordDialog && (
+        <Modal
+          centered
+          visible
+          closable={false}
+          footer={null}
+          maskStyle={{
+            backgroundColor: 'rgba(0, 74, 110, 0.5)'
+          }}
+        >
+          <ResetPassword onClose={() => setShowResetPasswordDialog(false)} />
+        </Modal>
+      )}
     </>
   )
 }

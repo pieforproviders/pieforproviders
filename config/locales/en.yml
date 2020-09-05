@@ -30,6 +30,8 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  hello: Hi
+
   license_types: &license_types
     licensed_center: licensed center
     licensed_family_home: licensed family home
@@ -49,10 +51,16 @@ en:
       confirmation_resent: "Confirmation could not be resent"
   mailers:
     confirmation_instructions:
-      hello: Hi
       body: Welcome to Pie for Providers! Get ready to increase your slice of the pie with simple child care subsidy management tools. To get started, please verify your email address by clicking the link below (you can also copy and paste it into your browser).
       questions: "Questions? Email "
       subject: "Pie for Providers email verification"
+
+    reset_password_instructions:
+      subject: "Pie for Providers - reset password instructions"
+      body: "Someone has requested a link to change your password. You can do this through the link below."
+      update_password: "Change my password"
+      note: "If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one."
+
   faker:
     name:
       child_care_businesses:
