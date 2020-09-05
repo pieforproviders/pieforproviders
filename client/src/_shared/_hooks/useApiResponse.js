@@ -1,3 +1,4 @@
+import i18n from 'i18n'
 import useApi from '_shared/_hooks/useApi'
 import apiErrorHandler from '_utils/apiErrorHandler'
 import useUnauthorizedHandler from '_shared/_hooks/useUnauthorizedHandler'
@@ -14,7 +15,8 @@ export const useApiResponse = () => {
     const headers = {
       ...requestHeaders,
       Accept: 'application/vnd.pieforproviders.v1+json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Accept-Language': i18n.language
     }
 
     const result = (async () => {
