@@ -3,7 +3,6 @@ import { Alert, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { CasesImportReview } from './CasesImportReview'
 import { parserTypes, getColumns, randomHash } from './utils'
-import { random } from 'faker'
 
 const { Title } = Typography
 
