@@ -32,7 +32,7 @@ export function GettingStarted() {
     }
 
     getUser()
-  }, [])
+  }, [makeRequest])
 
   const cards = [
     {
