@@ -17,7 +17,7 @@ class DeviseCustomMailer < Devise::Mailer
     @confirm_account = I18n.t('mailers.confirmation_instructions.confirm_account')
     @questions = I18n.t('mailers.confirmation_instructions.questions')
     @sender = Devise.mailer_sender
-    attachments.inline['pieFullTanLogo.svg'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pieFullTanLogo.svg'))
+    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
     super
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -26,6 +26,7 @@ class DeviseCustomMailer < Devise::Mailer
 
   def confirmation_path
     options = ActionMailer::Base.default_url_options
-    "#{options[:protocol]}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
+    protocol = options[:protocol] ? "#{options[:protocol]}://" : ''
+    "#{protocol}#{options[:host]}#{options[:port]}/confirm?confirmation_token=#{@token}"
   end
 end
