@@ -18,22 +18,22 @@ export function GettingStarted() {
   const cards = [
     {
       description: t('gettingStartedBusinesses'),
-      icon: <BusinessIcon />,
+      icon: <BusinessIcon fontSize="large" />,
       title: t('gettingStartedBusinessesTitle')
     },
     {
       description: t('gettingStartedUpload'),
-      icon: <CloudUploadIcon />,
+      icon: <CloudUploadIcon fontSize="large" />,
       title: t('gettingStartedUploadTitle')
     },
     {
       description: t('gettingStartedDetails'),
-      icon: <PlaylistAddIcon />,
+      icon: <PlaylistAddIcon fontSize="large" />,
       title: t('gettingStartedDetailsTitle')
     },
     {
       description: t('gettingStartedAgencies'),
-      icon: <AssignmentIcon />,
+      icon: <AssignmentIcon fontSize="large" />,
       title: t('gettingStartedAgenciesTitle')
     }
   ]
