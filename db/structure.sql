@@ -289,6 +289,33 @@ CREATE TABLE public.sites (
 
 
 --
+-- Name: subsidy_rules; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subsidy_rules (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name character varying NOT NULL,
+    license_type public.license_types NOT NULL,
+    county_id uuid NOT NULL,
+    state_id uuid NOT NULL,
+    max_age numeric NOT NULL,
+    part_day_rate_cents integer DEFAULT 0 NOT NULL,
+    part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    full_day_rate_cents integer DEFAULT 0 NOT NULL,
+    full_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    part_day_max_hours numeric NOT NULL,
+    full_day_max_hours numeric NOT NULL,
+    full_plus_part_day_max_hours numeric NOT NULL,
+    full_plus_full_day_max_hours numeric NOT NULL,
+    part_day_threshold numeric NOT NULL,
+    full_day_threshold numeric NOT NULL,
+    qris_rating character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -446,6 +473,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.sites
     ADD CONSTRAINT sites_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: subsidy_rules subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT subsidy_rules_pkey PRIMARY KEY (id);
 
 
 --
@@ -639,6 +674,20 @@ CREATE UNIQUE INDEX index_sites_on_name_and_business_id ON public.sites USING bt
 
 
 --
+-- Name: index_subsidy_rules_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_county_id ON public.subsidy_rules USING btree (county_id);
+
+
+--
+-- Name: index_subsidy_rules_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_state_id ON public.subsidy_rules USING btree (state_id);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -729,4 +778,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200825180300'),
 ('20200828013851'),
 ('20200902182940'),
-('20200902184516');
+('20200902184516'),
+('20200903112138');
+
+
