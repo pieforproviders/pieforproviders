@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Typography } from 'antd'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import Icon from '@material-ui/core/Icon'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import BusinessIcon from '@material-ui/icons/Business'
@@ -8,32 +9,50 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import { useTranslation } from 'react-i18next'
 import { PaddedButton } from '_shared/PaddedButton'
 
-const userGreetingName = 'Amanda'
 // NB: we're using CSS grid instead of Ant grid for these cards
 // because Ant grid doesn't flow into the next row when there are
 // more cards than columns
 
 export function GettingStarted() {
+  const [user, setUser] = useState(null)
   const { t } = useTranslation()
+  const { makeRequest } = useApiResponse()
+
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/profile',
+        headers: {
+          Authorization: localStorage.getItem('pie-token')
+        }
+      })
+      const user = await response.json()
+      setUser(user)
+    }
+
+    getUser()
+  }, [])
+
   const cards = [
     {
       description: t('gettingStartedBusinesses'),
-      icon: <BusinessIcon />,
+      icon: <BusinessIcon fontSize="large" />,
       title: t('gettingStartedBusinessesTitle')
     },
     {
       description: t('gettingStartedUpload'),
-      icon: <CloudUploadIcon />,
+      icon: <CloudUploadIcon fontSize="large" />,
       title: t('gettingStartedUploadTitle')
     },
     {
       description: t('gettingStartedDetails'),
-      icon: <PlaylistAddIcon />,
+      icon: <PlaylistAddIcon fontSize="large" />,
       title: t('gettingStartedDetailsTitle')
     },
     {
       description: t('gettingStartedAgencies'),
-      icon: <AssignmentIcon />,
+      icon: <AssignmentIcon fontSize="large" />,
       title: t('gettingStartedAgenciesTitle')
     }
   ]
@@ -42,7 +61,7 @@ export function GettingStarted() {
       <div className="getting-started-content-area">
         <Typography.Title className="text-center">
           {t('gettingStartedWelcome')}
-          {userGreetingName}!
+          {user && `, ${user.greeting_name}!`}
         </Typography.Title>
 
         <div className="mb-8">

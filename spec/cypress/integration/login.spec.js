@@ -39,7 +39,7 @@ describe('Login', () => {
         cy.get(createSelector('password')).type(password)
         cy.get(createSelector('loginBtn')).click()
         cy.wait('@login')
-        cy.location('pathname').should('eq', '/dashboard')
+        cy.location('pathname').should('eq', '/getting-started')
       })
     })
 

@@ -13,7 +13,7 @@ export function Login() {
 
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const ResendToken = ({ type }) => {
     return (
@@ -48,8 +48,7 @@ export function Login() {
     const response = await makeRequest({
       type: 'post',
       url: '/login',
-      data: { user: values },
-      headers: { 'Accept-Language': i18n.language }
+      data: { user: values }
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
@@ -59,7 +58,7 @@ export function Login() {
       })
     } else {
       localStorage.setItem('pie-token', response.headers.get('authorization'))
-      history.push('/dashboard')
+      history.push('/getting-started')
     }
   }
 

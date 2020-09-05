@@ -10,20 +10,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
 --
 
@@ -147,7 +133,8 @@ CREATE TABLE public.case_cycles (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
-    copay_frequency public.copay_frequency NOT NULL
+    copay_frequency public.copay_frequency NOT NULL,
+    user_id uuid NOT NULL
 );
 
 
@@ -296,33 +283,6 @@ CREATE TABLE public.sites (
     slug character varying NOT NULL,
     qris_rating character varying,
     business_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: subsidy_rules; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.subsidy_rules (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
-    license_type public.license_types NOT NULL,
-    county_id uuid NOT NULL,
-    state_id uuid NOT NULL,
-    max_age numeric NOT NULL,
-    part_day_rate_cents integer DEFAULT 0 NOT NULL,
-    part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    full_day_rate_cents integer DEFAULT 0 NOT NULL,
-    full_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    part_day_max_hours numeric NOT NULL,
-    full_day_max_hours numeric NOT NULL,
-    full_plus_part_day_max_hours numeric NOT NULL,
-    full_plus_full_day_max_hours numeric NOT NULL,
-    part_day_threshold numeric NOT NULL,
-    full_day_threshold numeric NOT NULL,
-    qris_rating character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -489,14 +449,6 @@ ALTER TABLE ONLY public.sites
 
 
 --
--- Name: subsidy_rules subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subsidy_rules
-    ADD CONSTRAINT subsidy_rules_pkey PRIMARY KEY (id);
-
-
---
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -544,6 +496,13 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 --
 
 CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree (slug);
+
+
+--
+-- Name: index_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
 
 
 --
@@ -680,20 +639,6 @@ CREATE UNIQUE INDEX index_sites_on_name_and_business_id ON public.sites USING bt
 
 
 --
--- Name: index_subsidy_rules_on_county_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rules_on_county_id ON public.subsidy_rules USING btree (county_id);
-
-
---
--- Name: index_subsidy_rules_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rules_on_state_id ON public.subsidy_rules USING btree (state_id);
-
-
---
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -743,6 +688,14 @@ CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, d
 
 
 --
+-- Name: case_cycles fk_rails_02471acfd5; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.case_cycles
+    ADD CONSTRAINT fk_rails_02471acfd5 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -776,6 +729,4 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200825180300'),
 ('20200828013851'),
 ('20200902182940'),
-('20200903112138');
-
-
+('20200902184516');
