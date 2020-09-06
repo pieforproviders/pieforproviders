@@ -35,6 +35,7 @@ describe('CasesImport', () => {
     cy.get(createSelector('loginBtn')).click()
     cy.wait('@login')
     cy.visit('/cases/import')
+    cy.get(createSelector('case-upload')).should('exist')
   })
 
   describe('imports a file', () => {
