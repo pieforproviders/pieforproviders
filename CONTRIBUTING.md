@@ -40,5 +40,4 @@ Also if you notice something that isn't translated (i.e. the English text is har
 * We use uuids for the id primary key in API tables
 * We use rswag to generate docs, which means the request specs use the rswag DSL
 * We validate the JSON response of the API on every endpoint
-* We use a [postman collection for testing](https://www.getpostman.com/collections/f81af858440ca4549eba) - if you add endpoints, please add request mocks here
-* TODO: determine error handling when trying to destroy something that has dependents; if no dependents, should we allow destruction?  Soft delete?
+* A diagram of the db is saved using database markup language in [`/docs/dbdiagram.dbml`](/docs/dbdiagram.dbml) and a PDF version is available at [`/docs/dbdiagram.pdf`](/docs/dbdiagram.pdf).  A live version can be found here: [dbdiagram.io](https://dbdiagram.io/d/5f22e9597543d301bf5d5480).  When making changes to the schema, ensure they are also recorded here.
