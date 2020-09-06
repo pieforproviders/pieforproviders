@@ -39,10 +39,10 @@ Table sites {
   business_id uuid [ref: > businesses.id, not null]
   name string [not null]
   address string [not null]
-  city string [not null]
-  state string [not null]
-  zip string [not null]
-  county string [not null]
+  city_id uuid [not null]
+  state_id uuid [not null]
+  zip_id uuid [not null]
+  county_id uuid [not null]
   slug string [not null]
   qris_rating string
   active boolean [not null, default: true]
@@ -50,7 +50,7 @@ Table sites {
 
 Table agencies {
   id uuid [pk, unique, not null]
-  state string [not null]
+  state_id uuid [not null]
   name string [not null]
   active boolean [not null, default: true]
 }
@@ -161,8 +161,8 @@ Table payments {
 Table subsidy_rules {
   id uuid [pk, unique, not null]
   name string [not null]
-  county  uuid
-  state  uuid
+  county_id  uuid
+  state_id  uuid
   max_age decimal [not null]
   part_day_rate monetize [not null]
   full_day_rate monetize [not null]
@@ -174,4 +174,37 @@ Table subsidy_rules {
   full_day_threshold decimal [not null]
   license_type license_types [not null]
   qris_rating string
+}
+
+
+Table lookup_cities {
+  id uuid [not null, default: `gen_random_uuid()`]
+  name varchar [not null]
+  state_id uuid [not null]
+  county_id uuid
+}
+
+Table lookup_counties {
+  id uuid [not null, default: `gen_random_uuid()`]
+  state_id uuid
+  abbr varchar
+  name varchar [not null]
+  county_seat varchar
+}
+
+Table lookup_states {
+  id uuid [not null, default: `gen_random_uuid()`]
+  abbr varchar(2) [not null]
+  name varchar [not null]
+}
+
+Table lookup_zipcodes {
+  id uuid [not null, default: `gen_random_uuid()`]
+  code varchar [not null]
+  state_id uuid
+  county_id uuid
+  city_id uuid
+  area_code varchar
+  lat numeric(15, 10)
+  lon numeric(15, 10)
 }
