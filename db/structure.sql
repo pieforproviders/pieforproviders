@@ -107,12 +107,12 @@ CREATE TABLE public.blocked_tokens (
 CREATE TABLE public.businesses (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    category character varying NOT NULL,
     name character varying NOT NULL,
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying NOT NULL
+    slug character varying NOT NULL,
+    license_type public.license_types
 );
 
 
@@ -779,6 +779,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200828013851'),
 ('20200902182940'),
 ('20200902184516'),
-('20200903112138');
+('20200903112138'),
+('20200906195706');
 
 
