@@ -129,6 +129,7 @@ export function Signup() {
           <Input
             placeholder={t('organizationPlaceholder')}
             autoComplete="organization"
+            data-cy="organization"
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -148,6 +149,7 @@ export function Signup() {
           <Input
             placeholder={t('fullNamePlaceholder')}
             autoComplete="name"
+            data-cy="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -157,6 +159,7 @@ export function Signup() {
         <Form.Item
           label={t('greetingName')}
           name="greetingName"
+          data-cy="greetingName"
           rules={[
             {
               required: true,
@@ -187,6 +190,7 @@ export function Signup() {
             style={{ textAlign: 'left' }}
             value={multiBusiness}
             placeholder={t('multiBusinessPlaceholder')}
+            data-cy="multiBusiness"
             onChange={value => {
               setMultiBusiness(value)
             }}
@@ -233,6 +237,7 @@ export function Signup() {
                 placeholder="___-___-____"
                 size="10"
                 className="h-8"
+                data-cy="phone"
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -261,7 +266,7 @@ export function Signup() {
               { required: true, message: t('preferredLanguageRequired') }
             ]}
           >
-            <Radio.Button value="en" className="w-1/2">
+            <Radio.Button value="en" data-cy="languageEn" className="w-1/2">
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -283,7 +288,7 @@ export function Signup() {
               )}
               {t('english')}
             </Radio.Button>
-            <Radio.Button value="es" className="w-1/2">
+            <Radio.Button value="es" data-cy="languageEs" className="w-1/2">
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{
@@ -332,6 +337,7 @@ export function Signup() {
             placeholder="amanda@gmail.com"
             autoComplete="email"
             type="email"
+            data-cy="email"
             onChange={event => setUser({ ...user, email: event.target.value })}
           />
         </Form.Item>
@@ -354,6 +360,7 @@ export function Signup() {
           <Input.Password
             placeholder={t('passwordPlaceholder')}
             autoComplete="new-password"
+            data-cy="password"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -380,6 +387,7 @@ export function Signup() {
           <Input.Password
             placeholder={t('passwordConfirmationPlaceholder')}
             autoComplete="new-password"
+            data-cy="passwordConfirmation"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
             }
@@ -401,6 +409,7 @@ export function Signup() {
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
             className="flex"
+            data-cy="terms"
             onChange={() => {
               setUser({
                 ...user,
@@ -412,7 +421,7 @@ export function Signup() {
           </Checkbox>
         </Form.Item>
         <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
-          <PaddedButton text={t('signup')} />
+          <PaddedButton data-cy="signupBtn" text={t('signup')} />
         </Form.Item>
       </Form>
     </>
