@@ -1,16 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { Divider, Typography } from 'antd'
+import { Divider, Typography, message } from 'antd'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
 const { Title, Text, Link } = Typography
 
 const pieEmail = 'tech@pieforproviders.com'
 
-function ListItem({ children }) {
+function ListItem({ children, id = null }) {
   return (
-    <div className="flex justify-left mb-2">
+    <div id={id} className="flex justify-left mb-2">
       <LabelImportantIcon
         className="mr-1"
         style={{ color: '#000', fontSize: '16px' }}
@@ -21,11 +22,25 @@ function ListItem({ children }) {
 }
 
 ListItem.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
+  id: PropTypes.string
 }
 
 const ConfirmationSent = ({ userEmail }) => {
   const { t } = useTranslation()
+  const { makeRequest } = useApiResponse()
+
+  const resendConfirmation = async () => {
+    const response = await makeRequest({
+      type: 'post',
+      url: `confirmation?email=${userEmail}`
+    })
+    if (response?.error) {
+      message.error(response.error)
+    } else {
+      message.success('Email resent!')
+    }
+  }
 
   return (
     <>
@@ -50,8 +65,10 @@ const ConfirmationSent = ({ userEmail }) => {
             {t('addToContacts')}
           </Text>
         </ListItem>
-        <ListItem>
-          <Link to="#">{t('resendConfirmationEmail')}</Link>
+        <ListItem id="resend-link">
+          <Link onClick={resendConfirmation}>
+            {t('resendConfirmationEmail')}
+          </Link>
         </ListItem>
       </div>
     </>

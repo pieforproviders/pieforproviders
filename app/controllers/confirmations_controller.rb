@@ -9,7 +9,12 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def create
-    super
+    self.resource = resource_class.send_confirmation_instructions(email: params[:email])
+    if successfully_sent?(resource)
+      respond_with(resource)
+    else
+      respond_with({ error: 'Confirmation could not be resent' })
+    end
   end
 
   def show
