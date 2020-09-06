@@ -175,3 +175,36 @@ Table subsidy_rules {
   license_type license_types [not null]
   qris_rating string
 }
+
+
+Table lookup_cities {
+  id uuid [not null, default: `gen_random_uuid()`]
+  name varchar [not null]
+  state_id uuid [not null]
+  county_id uuid
+}
+
+Table lookup_counties {
+  id uuid [not null, default: `gen_random_uuid()`]
+  state_id uuid
+  abbr varchar
+  name varchar [not null]
+  county_seat varchar
+}
+
+Table lookup_states {
+  id uuid [not null, default: `gen_random_uuid()`]
+  abbr varchar(2) [not null]
+  name varchar [not null]
+}
+
+Table lookup_zipcodes {
+  id uuid [not null, default: `gen_random_uuid()`]
+  code varchar [not null]
+  state_id uuid
+  county_id uuid
+  city_id uuid
+  area_code varchar
+  lat numeric(15, 10)
+  lon numeric(15, 10)
+}
