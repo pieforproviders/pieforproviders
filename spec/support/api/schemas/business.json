@@ -1,7 +1,7 @@
 {
   "type": "object",
   "required": [
-    "category",
+    "license_type",
     "created_at",
     "id",
     "name",
@@ -11,7 +11,7 @@
   ],
   "properties": {
     "active": { "type": "boolean" },
-    "category": { "type": "string" },
+    "license_type": {"$ref":"license_types.json"},
     "created_at": { "type": "string" , "format": "date-time" },
     "id": { "type": "string" },
     "name": { "type": "string" },
