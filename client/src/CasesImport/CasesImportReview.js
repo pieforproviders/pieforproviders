@@ -15,6 +15,7 @@ export function CasesImportReview({ kids }) {
           dataSource={kids}
           columns={getColumns(t)}
           style={{ marginTop: '16px' }}
+          id="cases-table"
         />
       )}
     </div>
