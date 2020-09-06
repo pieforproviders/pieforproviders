@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import ResetPassword from '../ResetPassword'
+import { PasswordResetRequest } from '../PasswordReset'
 import ErrorAlert from 'ErrorAlert'
 
 export function Login() {
@@ -49,7 +49,6 @@ export function Login() {
     localStorage.removeItem('pie-token')
     history.push('/dashboard')
   }
-
   return (
     <>
       <p className="mb-4">
@@ -150,7 +149,9 @@ export function Login() {
             backgroundColor: 'rgba(0, 74, 110, 0.5)'
           }}
         >
-          <ResetPassword onClose={() => setShowResetPasswordDialog(false)} />
+          <PasswordResetRequest
+            onClose={() => setShowResetPasswordDialog(false)}
+          />
         </Modal>
       )}
     </>

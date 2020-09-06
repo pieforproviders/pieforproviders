@@ -18,6 +18,7 @@ export const ErrorAlert = ({ attribute, type }) => {
     email: {
       already_confirmed: () => t('alreadyConfirmed'),
       confirmation_period_expired: () => t('confirmationPeriodExpired'),
+      not_confirmed: () => t('emailUnconfirmed'),
       not_found: () => t('emailNotFound'),
       default: () =>
         contactUs({ t, message: t('genericEmailConfirmationError') })
@@ -27,6 +28,11 @@ export const ErrorAlert = ({ attribute, type }) => {
       invalid: () => resendToken('invalid'),
       default: () =>
         contactUs({ t, message: t('genericEmailConfirmationError') })
+    },
+    reset_password_token: {
+      blank: () => t('passwordResetTokenBlank'),
+      invalid: () => t('passwordResetTokenInvalid'),
+      expired: () => t('passwordResetTokenExpired')
     },
     default: () => t('genericConfirmationError')
   }

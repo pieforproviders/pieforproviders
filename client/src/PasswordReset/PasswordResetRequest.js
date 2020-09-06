@@ -8,7 +8,7 @@ import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { ActionLink } from '../_shared/ActionLink'
 import ErrorAlert from 'ErrorAlert'
 
-export function ResetPassword({ onClose }) {
+export function PasswordResetRequest({ onClose }) {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [apiError, setApiError] = useState(null)
@@ -110,6 +110,6 @@ export function ResetPassword({ onClose }) {
   )
 }
 
-ResetPassword.propTypes = {
+PasswordResetRequest.propTypes = {
   onClose: PropTypes.func.isRequired
 }

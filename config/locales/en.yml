@@ -58,9 +58,11 @@ en:
     reset_password_instructions:
       subject: "Pie for Providers - reset password instructions"
       body: "Someone has requested a link to change your password. You can do this through the link below."
-      update_password: "Change my password"
       note: "If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one."
 
+    password_change:
+      subject: "Pie for Providers - password changed"
+      body: "We're contacting you to notify you that your password has been changed."
   faker:
     name:
       child_care_businesses:

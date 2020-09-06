@@ -13,7 +13,28 @@ class PasswordsController < Devise::PasswordsController
     end
   end
 
+  def update
+    self.resource = resource_class.reset_password_by_token(resource_params)
+    if resource.errors.empty?
+      sign_in_resource
+      render json: resource
+    else
+      render json: error_response, status: :unprocessable_entity
+    end
+  end
+
   private
+
+  def sign_in_resource
+    return unless resource.confirmed?
+
+    sign_in(resource)
+    response.headers['authorization'] = current_token
+  end
+
+  def current_token
+    request.env['warden-jwt_auth.token']
+  end
 
   def error_response
     @errors = resource.errors.details
