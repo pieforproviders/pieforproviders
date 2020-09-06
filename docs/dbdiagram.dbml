@@ -28,7 +28,7 @@ Enum license_types {
 Table businesses {
   id uuid [pk, unique, not null]
   user_id uuid [ref: > users.id, not null]
-  license license_types [not null]
+  license_type license_types [not null]
   name string [not null]
   slug string [not null]
   active boolean [not null, default: true]

@@ -25,7 +25,7 @@ user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_
 user.confirm
 
 business = Business.where(name: 'Happy Seedlings Childcare', user: user).first_or_create(
-  category: 'licensed_center_single'
+  category: Licenses.types.keys.first
 )
 
 site = Site.where(name: 'Prairie Center', business: business).first_or_create(

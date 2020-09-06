@@ -61,7 +61,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               name: { type: :string, example: 'Harlequin Child Care' },
-              category: { type: :string, example: 'license_exempt_home' },
+              license_type: { '$ref': '#/components/schemas/license_type' },
               active: { type: :boolean, example: 'true' }
             }
           },
@@ -168,7 +168,7 @@ RSpec.configure do |config|
                     type: :object,
                     required: %w[
                       name
-                      category
+                      license_type
                       user_id
                     ]
                   }
