@@ -48,6 +48,15 @@ RSpec.configure do |config|
               timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
             }
           },
+          license_type: {
+            type: :string,
+            enum: %w[licensed_center
+                     licensed_family_home
+                     licensed_group_home
+                     license_exempt_home
+                     license_exempt_center],
+            example: 'license_exempt_home'
+          },
           business: {
             type: :object,
             properties: {
@@ -94,6 +103,27 @@ RSpec.configure do |config|
               },
               paid_on: { type: :string, example: '2020-05-20' },
               site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+            }
+          },
+          subsidy_rule: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Rule 1' },
+              county: { type: :string },
+              state: { type: :string },
+              max_age: { type: :number, example: 18 },
+              part_day_rate_cents: { type: :integer, minimum: 0, example: 2_500 },
+              part_day_rate_currency: { type: :string, example: 'USD' },
+              full_day_rate_cents: { type: :integer, minimum: 0, example: 3_000 },
+              full_day_rate_currency: { type: :string, example: 'USD' },
+              part_day_max_hours: { type: :number, example: 4 },
+              full_day_max_hours: { type: :number, example: 12 },
+              full_plus_part_day_max_hours: { type: :number, example: 18 },
+              full_plus_full_day_max_hours: { type: :number, example: 24 },
+              part_day_threshold: { type: :number, example: 12 },
+              full_day_threshold: { type: :number, example: 24 },
+              license_type: { '$ref': '#/components/schemas/license_type' },
+              qris_rating: { type: :string, example: '1' }
             }
           },
           createUser: {
