@@ -108,6 +108,7 @@ Enum allowance_intervals {
 
 Table child_case_cycles {
   id uuid [pk, unique, not null]
+  user_id uuid [ref: > users.id, not null]
   child_id uuid [ref: > children.id, not null]
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   case_cycle_id uuid [ref: > case_cycles.id, not null]
