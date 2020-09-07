@@ -48,7 +48,7 @@ RSpec.configure do |config|
               timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
             }
           },
-          case_status: {
+          case_statuses: {
             type: :string,
             enum: %w[submitted
                      pending
@@ -56,14 +56,14 @@ RSpec.configure do |config|
                      denied],
             example: 'submitted'
           },
-          copay_frequency: {
+          copay_frequencies: {
             type: :string,
             enum: %w[daily
                      weekly
                      monthly],
             example: 'weekly'
           },
-          license_type: {
+          license_types: {
             type: :string,
             enum: %w[licensed_center
                      licensed_family_home
@@ -76,7 +76,7 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               name: { type: :string, example: 'Harlequin Child Care' },
-              license_type: { '$ref': '#/components/schemas/license_type' },
+              license_type: { '$ref': '#/components/schemas/license_types' },
               active: { type: :boolean, example: 'true' }
             }
           },
@@ -137,7 +137,7 @@ RSpec.configure do |config|
               full_plus_full_day_max_hours: { type: :number, example: 24 },
               part_day_threshold: { type: :number, example: 12 },
               full_day_threshold: { type: :number, example: 24 },
-              license_type: { '$ref': '#/components/schemas/license_type' },
+              license_type: { '$ref': '#/components/schemas/license_types' },
               qris_rating: { type: :string, example: '1' }
             }
           },
@@ -154,7 +154,7 @@ RSpec.configure do |config|
               copay_currency: { type: :string, example: 'USD' },
               copay_frequency: {
                 anyOf: [
-                  { '$ref': '#/components/schemas/copay_frequency' },
+                  { '$ref': '#/components/schemas/copay_frequencies' },
                   { type: :null }
                 ]
               },
@@ -176,7 +176,7 @@ RSpec.configure do |config|
                   { type: :null }
                 ]
               },
-              status: { '$ref': '#/components/schemas/case_status' },
+              status: { '$ref': '#/components/schemas/case_statuses' },
               submitted_on: { type: :string, example: '2020-07-12' },
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
             }

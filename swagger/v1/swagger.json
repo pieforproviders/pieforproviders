@@ -1234,7 +1234,7 @@
           }
         }
       },
-      "case_status": {
+      "case_statuses": {
         "type": "string",
         "enum": [
           "submitted",
@@ -1244,7 +1244,7 @@
         ],
         "example": "submitted"
       },
-      "copay_frequency": {
+      "copay_frequencies": {
         "type": "string",
         "enum": [
           "daily",
@@ -1253,7 +1253,7 @@
         ],
         "example": "weekly"
       },
-      "license_type": {
+      "license_types": {
         "type": "string",
         "enum": [
           "licensed_center",
@@ -1272,7 +1272,7 @@
             "example": "Harlequin Child Care"
           },
           "license_type": {
-            "$ref": "#/components/schemas/license_type"
+            "$ref": "#/components/schemas/license_types"
           },
           "active": {
             "type": "boolean",
@@ -1445,7 +1445,7 @@
             "example": 24
           },
           "license_type": {
-            "$ref": "#/components/schemas/license_type"
+            "$ref": "#/components/schemas/license_types"
           },
           "qris_rating": {
             "type": "string",
@@ -1478,7 +1478,7 @@
           "copay_frequency": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/copay_frequency"
+                "$ref": "#/components/schemas/copay_frequencies"
               },
               {
                 "type": "null"
@@ -1519,7 +1519,7 @@
             ]
           },
           "status": {
-            "$ref": "#/components/schemas/case_status"
+            "$ref": "#/components/schemas/case_statuses"
           },
           "submitted_on": {
             "type": "string",
