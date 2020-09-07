@@ -11,12 +11,14 @@ export function CasesImportReview({ kids }) {
     <div>
       <h1 className="sr-only">{t('reviewImportedCases')}</h1>
       {kids.length > 0 && (
-        <Table
-          dataSource={kids}
-          columns={getColumns(t)}
-          style={{ marginTop: '16px' }}
-          id="cases-table"
-        />
+        <div data-cy="cases-table">
+          <Table
+            dataSource={kids}
+            columns={getColumns(t)}
+            style={{ marginTop: '16px' }}
+            id="cases-table"
+          />
+        </div>
       )}
     </div>
   )

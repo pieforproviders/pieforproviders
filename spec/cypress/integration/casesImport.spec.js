@@ -35,18 +35,14 @@ describe('CasesImport', () => {
     cy.get(createSelector('loginBtn')).click()
     cy.wait('@login')
     cy.visit('/cases/import')
-    cy.get(createSelector('case-upload')).should('exist')
+    cy.get(createSelector('cases-upload')).should('exist')
   })
 
   describe('imports a file', () => {
     ;['csv', 'xls', 'xlsx'].forEach(type => {
       it(`imports ${type} file`, () => {
-        cy.get('input[type="file"]').attachFile(`test.${type}`)
-        // it seems like we can't pass a data-cy attribute or an id to the antd Table element
-        // so I'm targeting an inline class auto-assigned by Ant.  I don't like this and would
-        // love for someone else to take a swing at this and see what I'm missing
-        cy.get('[class="ant-table-wrapper"]').should('exist')
-        cy.get('[class="ant-table-wrapper"]').should('exist')
+        cy.get(createSelector('cases-upload')).attachFile(`test.${type}`)
+        cy.get(createSelector('cases-table')).should('exist')
         cy.get('tbody')
           .first()
           .get('tr')

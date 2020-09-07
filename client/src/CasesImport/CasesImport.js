@@ -84,9 +84,9 @@ export function CasesImport() {
       )}
       <input
         type="file"
-        id="case-upload"
+        id="cases-upload"
         accept=".csv,.xls,.xlsx"
-        data-cy="case-upload"
+        data-cy="cases-upload"
         onChange={onFileChange}
       />
       <CasesImportReview kids={kids} />
