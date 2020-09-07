@@ -1,6 +1,5 @@
 import XLSX from 'xlsx'
 import Papa from 'papaparse'
-import { random } from 'faker'
 import { sha1 } from 'hash-anything'
 
 const parsers = {
@@ -107,5 +106,8 @@ export const getColumns = t => [
 ]
 
 export const randomHash = array => {
-  return sha1(`${array.join()}${random.number}`)
+  randomString =
+    Math.random().toString(36).substring(2, 5) +
+    Math.random().toString(36).substring(2, 5)
+  return sha1(`${array.join()}${randomString}`)
 }
