@@ -26,9 +26,9 @@ es:
 
     reset_password_instructions:
       subject: "Pie for Providers - instrucciones para restablecer la contraseña"
-      body: "Alguien ha solicitado un enlace para cambiar su contraseña. Puede hacerlo a través del siguiente enlace."
-      note: "Si no has solicitado esto, por favor, ignora este correo electrónico. Tu contraseña no cambiará hasta que accedas al enlace de arriba y crees una nueva."
+      body: "Alguien ha solicitado un enlace para cambiar tu contraseña. Puedes hacerlo usando el siguiente enlace."
+      note: "Si no has solicitado esto, por favor, ignora este correo. Tu contraseña no cambiará hasta que accedas al enlace de arriba y creas una nueva."
 
     password_change:
       subject: "Pie for Providers - contraseña cambiada"
-      body: "Nos contactamos contigo para notificarte que tu contraseña ha sido cambiada."
+      body: "Contactamos a ti para notificarte que tu contraseña ha sido cambiada."
