@@ -18,7 +18,7 @@ export function CasesImport() {
     const extension = nameArray[nameArray.length - 1]
     // sometimes xls files come in with an empty type so we want to parse
     // the extension to verify what parser to use
-    if (file.type === '' && (extension === 'xls' || 'xlsx')) {
+    if (file.type === '' && ['xls', 'xlsx'].includes(extension)) {
       return 'application/vnd.ms-excel'
     } else {
       return file.type
