@@ -130,6 +130,7 @@ export function Signup() {
             placeholder={t('organizationPlaceholder')}
             autoComplete="organization"
             data-cy="organization"
+            value={user.organization}
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -149,6 +150,7 @@ export function Signup() {
           <Input
             placeholder={t('fullNamePlaceholder')}
             autoComplete="name"
+            value={user.fullName}
             data-cy="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
@@ -159,7 +161,6 @@ export function Signup() {
         <Form.Item
           label={t('greetingName')}
           name="greetingName"
-          data-cy="greetingName"
           rules={[
             {
               required: true,
@@ -170,6 +171,8 @@ export function Signup() {
           <Input
             placeholder={t('greetingNamePlaceholder')}
             autoComplete="nickname"
+            data-cy="greetingName"
+            value={user.greetingName}
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
@@ -195,8 +198,12 @@ export function Signup() {
               setMultiBusiness(value)
             }}
           >
-            <Option value="yes">{t('multiBusinessTrue')}</Option>
-            <Option value="no">{t('multiBusinessFalse')}</Option>
+            <Option value="yes" data-cy="yesMultiBusiness">
+              {t('multiBusinessTrue')}
+            </Option>
+            <Option value="no" data-cy="noSingleBusiness">
+              {t('multiBusinessFalse')}
+            </Option>
           </Select>
         </Form.Item>
 
@@ -206,14 +213,21 @@ export function Signup() {
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
+              data-cy="phoneType"
               placeholder={t('phoneTypePlaceholder')}
               onChange={value => {
                 setUser({ ...user, phoneType: value })
               }}
             >
-              <Option value="cell">{t('phoneTypeCell')}</Option>
-              <Option value="home">{t('phoneTypeHome')}</Option>
-              <Option value="work">{t('phoneTypeWork')}</Option>
+              <Option value="cell" data-cy="cellPhone">
+                {t('phoneTypeCell')}
+              </Option>
+              <Option value="home" data-cy="homePhone">
+                {t('phoneTypeHome')}
+              </Option>
+              <Option value="work" data-cy="workPhone">
+                {t('phoneTypeWork')}
+              </Option>
             </Select>
 
             <Form.Item
@@ -238,6 +252,7 @@ export function Signup() {
                 size="10"
                 className="h-8"
                 data-cy="phone"
+                value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }

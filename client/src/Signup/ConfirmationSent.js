@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { Divider, Typography, message } from 'antd'
+import { Divider, Typography, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
@@ -29,6 +29,8 @@ ListItem.propTypes = {
 const ConfirmationSent = ({ userEmail }) => {
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
+  const [resent, setResent] = useState(null)
+  const [resentError, setResentError] = useState(null)
 
   const resendConfirmation = async () => {
     const response = await makeRequest({
@@ -36,9 +38,9 @@ const ConfirmationSent = ({ userEmail }) => {
       url: `confirmation?email=${userEmail}`
     })
     if (response?.error) {
-      message.error(response.error)
+      setResentError(response.error)
     } else {
-      message.success('Email resent!')
+      setResent(true)
     }
   }
 
@@ -70,6 +72,14 @@ const ConfirmationSent = ({ userEmail }) => {
             {t('resendConfirmationEmail')}
           </Link>
         </ListItem>
+        {resent && (
+          <Alert
+            message={t('confirmationEmailResent')}
+            type="success"
+            show-icon
+          />
+        )}
+        {resentError && <Alert message={resentError} type="error" show-icon />}
       </div>
     </>
   )
