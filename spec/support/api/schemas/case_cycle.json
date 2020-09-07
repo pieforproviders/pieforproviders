@@ -20,10 +20,10 @@
       ]
     },
     "created_at": { "type": "string", "format": "date-time" },
-    "effective_on": { "$ref": "currency_or_null.json" },
-    "expires_on": { "$ref": "currency_or_null.json" },
+    "effective_on": { "$ref": "date_or_null.json" },
+    "expires_on": { "$ref": "date_or_null.json" },
     "id": { "type": "string", "format": "uuid" },
-    "notified_on": { "$ref": "currency_or_null.json" },
+    "notified_on": { "$ref": "date_or_null.json" },
     "slug": { "type": "string" },
     "status": { "$ref":"case_statuses.json" },
     "submitted_on": { "type": "string", "format": "date" },
