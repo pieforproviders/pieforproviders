@@ -10,6 +10,6 @@ RSpec.describe Licenses do
                          licensed_group_home
                          license_exempt_home
                          license_exempt_center].freeze
-    expect(described_class.types).to match(expected_values.to_h { |value| [value.to_sym, value] })
+    expect(described_class.types).to match(expected_values.index_by(&:to_sym))
   end
 end
