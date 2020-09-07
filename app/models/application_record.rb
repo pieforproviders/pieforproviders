@@ -13,4 +13,10 @@ class ApplicationRecord < ActiveRecord::Base
   rescue ActiveRecord::RecordNotUnique
     Digest::SHA1.hexdigest("#{hash_string}#{SecureRandom.uuid}")[8..14] if hash_string
   end
+
+  protected
+
+  def set_slug_from_id
+    self.slug = generate_slug("#{SecureRandom.hex}#{id}")
+  end
 end
