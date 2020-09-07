@@ -4,6 +4,6 @@
 
 <p><%= @body %></p>
 
-<p><%= link_to @confirm_account, @confirmation_path, target: "_blank" %></p>
+<p><%= link_to @confirmation_path, @confirmation_path, target: "_blank" %></p>
 
 <p><%= @questions %><%= mail_to @sender, @sender, subject: @reply_subject %></p>
