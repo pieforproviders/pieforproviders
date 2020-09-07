@@ -14,7 +14,6 @@ class DeviseCustomMailer < Devise::Mailer
     @reply_subject = 'Pie for Providers: question after signup'
     @body = I18n.t('mailers.confirmation_instructions.body')
     @hello = I18n.t('mailers.confirmation_instructions.hello')
-    @confirm_account = I18n.t('mailers.confirmation_instructions.confirm_account')
     @questions = I18n.t('mailers.confirmation_instructions.questions')
     @sender = Devise.mailer_sender
     attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
