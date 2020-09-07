@@ -106,7 +106,7 @@ export const getColumns = t => [
 ]
 
 export const randomHash = array => {
-  randomString =
+  const randomString =
     Math.random().toString(36).substring(2, 5) +
     Math.random().toString(36).substring(2, 5)
   return sha1(`${array.join()}${randomString}`)
