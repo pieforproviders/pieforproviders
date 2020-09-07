@@ -32,6 +32,8 @@ export function GettingStarted() {
     }
 
     getUser()
+    // we only want this to run once; making the makeRequest hook a dependency causes an infinite re-run of this query
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const cards = [
