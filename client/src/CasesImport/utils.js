@@ -1,5 +1,6 @@
 import XLSX from 'xlsx'
 import Papa from 'papaparse'
+import { sha1 } from 'hash-anything'
 
 const parsers = {
   csv: {
@@ -103,3 +104,10 @@ export const getColumns = t => [
     responsive: ['lg']
   }
 ]
+
+export const randomHash = array => {
+  randomString =
+    Math.random().toString(36).substring(2, 5) +
+    Math.random().toString(36).substring(2, 5)
+  return sha1(`${array.join()}${randomString}`)
+}

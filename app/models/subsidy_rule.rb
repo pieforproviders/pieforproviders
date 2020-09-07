@@ -5,10 +5,8 @@
 # Only admins with direct access to the db will be able to update these records
 #
 class SubsidyRule < UuidApplicationRecord
-  # rubocop:disable Rails/InverseOf
-  belongs_to :county, class_name: 'Lookup::County', foreign_key: 'county_id'
-  belongs_to :state, class_name: 'Lookup::State', foreign_key: 'state_id'
-  # rubocop:enable Rails/InverseOf
+  belongs_to :county, class_name: 'Lookup::County'
+  belongs_to :state, class_name: 'Lookup::State'
 
   enum license_type: Licenses.types
 
