@@ -251,7 +251,7 @@ export function Signup() {
                 placeholder="___-___-____"
                 size="10"
                 className="h-8"
-                data-cy="phone"
+                data-cy="phoneNumber"
                 value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })

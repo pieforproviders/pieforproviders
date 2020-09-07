@@ -46,7 +46,9 @@ const ConfirmationSent = ({ userEmail }) => {
 
   return (
     <>
-      <Title className="text-center">{t('signupThanks')}</Title>
+      <Title className="text-center" data-cy="signupThanks">
+        {t('signupThanks')}
+      </Title>
       <Title level={3} className="text-center">
         {t('emailVerificationText')}
       </Title>
@@ -68,7 +70,7 @@ const ConfirmationSent = ({ userEmail }) => {
           </Text>
         </ListItem>
         <ListItem id="resend-link">
-          <Link onClick={resendConfirmation}>
+          <Link data-cy="resendConfirmation" onClick={resendConfirmation}>
             {t('resendConfirmationEmail')}
           </Link>
         </ListItem>
@@ -76,10 +78,18 @@ const ConfirmationSent = ({ userEmail }) => {
           <Alert
             message={t('confirmationEmailResent')}
             type="success"
+            data-cy="resent"
             show-icon
           />
         )}
-        {resentError && <Alert message={resentError} type="error" show-icon />}
+        {resentError && (
+          <Alert
+            data-cy="resentError"
+            message={resentError}
+            type="error"
+            show-icon
+          />
+        )}
       </div>
     </>
   )
