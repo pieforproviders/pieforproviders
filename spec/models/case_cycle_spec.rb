@@ -6,6 +6,8 @@ RSpec.describe CaseCycle, type: :model do
   let(:invalid_date_msg) { DateParamValidator.invalid_date_msg }
 
   it { should belong_to(:user) }
+
+  it { is_expected.to monetize(:copay) }
   it { should validate_numericality_of(:copay).is_greater_than(0) }
 
   it {
