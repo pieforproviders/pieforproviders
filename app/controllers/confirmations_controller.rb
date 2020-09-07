@@ -4,10 +4,6 @@
 class ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
-  def new
-    super
-  end
-
   def create
     self.resource = resource_class.send_confirmation_instructions(email: params[:email])
     if successfully_sent?(resource)

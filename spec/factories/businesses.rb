@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :business do
     name { Faker::Name.child_care_businesses }
-    category { Business::CATEGORIES.sample }
+    license_type { Licenses.types.keys.sample }
     user
   end
 end
@@ -12,14 +12,14 @@ end
 #
 # Table name: businesses
 #
-#  id         :uuid             not null, primary key
-#  active     :boolean          default(TRUE), not null
-#  category   :string           not null
-#  name       :string           not null
-#  slug       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :uuid             not null
+#  id           :uuid             not null, primary key
+#  active       :boolean          default(TRUE), not null
+#  license_type :enum
+#  name         :string           not null
+#  slug         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  user_id      :uuid             not null
 #
 # Indexes
 #

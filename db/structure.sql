@@ -107,12 +107,12 @@ CREATE TABLE public.blocked_tokens (
 CREATE TABLE public.businesses (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    category character varying NOT NULL,
     name character varying NOT NULL,
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying NOT NULL
+    slug character varying NOT NULL,
+    license_type public.license_types
 );
 
 
@@ -135,6 +135,24 @@ CREATE TABLE public.case_cycles (
     status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
     copay_frequency public.copay_frequency NOT NULL,
     user_id uuid NOT NULL
+);
+
+
+--
+-- Name: child_case_cycles; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.child_case_cycles (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    slug character varying NOT NULL,
+    part_days_allowed integer NOT NULL,
+    full_days_allowed integer NOT NULL,
+    user_id uuid NOT NULL,
+    child_id uuid NOT NULL,
+    subsidy_rule_id uuid NOT NULL,
+    case_cycle_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -289,6 +307,33 @@ CREATE TABLE public.sites (
 
 
 --
+-- Name: subsidy_rules; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subsidy_rules (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name character varying NOT NULL,
+    license_type public.license_types NOT NULL,
+    county_id uuid NOT NULL,
+    state_id uuid NOT NULL,
+    max_age numeric NOT NULL,
+    part_day_rate_cents integer DEFAULT 0 NOT NULL,
+    part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    full_day_rate_cents integer DEFAULT 0 NOT NULL,
+    full_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    part_day_max_hours numeric NOT NULL,
+    full_day_max_hours numeric NOT NULL,
+    full_plus_part_day_max_hours numeric NOT NULL,
+    full_plus_full_day_max_hours numeric NOT NULL,
+    part_day_threshold numeric NOT NULL,
+    full_day_threshold numeric NOT NULL,
+    qris_rating character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -366,6 +411,14 @@ ALTER TABLE ONLY public.businesses
 
 ALTER TABLE ONLY public.case_cycles
     ADD CONSTRAINT case_cycles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: child_case_cycles child_case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycles
+    ADD CONSTRAINT child_case_cycles_pkey PRIMARY KEY (id);
 
 
 --
@@ -449,6 +502,14 @@ ALTER TABLE ONLY public.sites
 
 
 --
+-- Name: subsidy_rules subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT subsidy_rules_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -503,6 +564,41 @@ CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree 
 --
 
 CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
+
+
+--
+-- Name: index_child_case_cycles_on_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycles_on_case_cycle_id ON public.child_case_cycles USING btree (case_cycle_id);
+
+
+--
+-- Name: index_child_case_cycles_on_child_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycles_on_child_id ON public.child_case_cycles USING btree (child_id);
+
+
+--
+-- Name: index_child_case_cycles_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_child_case_cycles_on_slug ON public.child_case_cycles USING btree (slug);
+
+
+--
+-- Name: index_child_case_cycles_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cycles USING btree (subsidy_rule_id);
+
+
+--
+-- Name: index_child_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycles_on_user_id ON public.child_case_cycles USING btree (user_id);
 
 
 --
@@ -639,6 +735,20 @@ CREATE UNIQUE INDEX index_sites_on_name_and_business_id ON public.sites USING bt
 
 
 --
+-- Name: index_subsidy_rules_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_county_id ON public.subsidy_rules USING btree (county_id);
+
+
+--
+-- Name: index_subsidy_rules_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_state_id ON public.subsidy_rules USING btree (state_id);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -696,6 +806,38 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
+-- Name: child_case_cycles fk_rails_612f9eee7b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycles
+    ADD CONSTRAINT fk_rails_612f9eee7b FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: child_case_cycles fk_rails_b4f3c7d474; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycles
+    ADD CONSTRAINT fk_rails_b4f3c7d474 FOREIGN KEY (child_id) REFERENCES public.children(id);
+
+
+--
+-- Name: child_case_cycles fk_rails_bd0bf4a589; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycles
+    ADD CONSTRAINT fk_rails_bd0bf4a589 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
+
+
+--
+-- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycles
+    ADD CONSTRAINT fk_rails_e441dceee7 FOREIGN KEY (case_cycle_id) REFERENCES public.case_cycles(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -729,4 +871,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200825180300'),
 ('20200828013851'),
 ('20200902182940'),
-('20200902184516');
+('20200902184516'),
+('20200903112138'),
+('20200906195706'),
+('20200906232048');
+
+

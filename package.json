@@ -44,7 +44,8 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
-    "cypress": "^5.0.0",
+    "cypress-file-upload": "^4.1.1",
+    "cypress": "^5.1.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-cypress": "^2.11.1",

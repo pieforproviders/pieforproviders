@@ -2,7 +2,7 @@
 
 # Blocked Tokens for forcing token revokation
 class BlockedToken < ApplicationRecord
-  include Devise::JWT::RevocationStrategies::Blacklist
+  include Devise::JWT::RevocationStrategies::Denylist
 end
 
 # == Schema Information
