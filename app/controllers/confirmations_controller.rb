@@ -9,7 +9,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     if successfully_sent?(resource)
       respond_with(resource)
     else
-      respond_with({ error: 'Confirmation could not be resent' })
+      respond_with({ error: I18n.t('errors.messages.confirmation_resent') })
     end
   end
 

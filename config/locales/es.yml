@@ -15,6 +15,7 @@ es:
     messages:
       taken: "ya ha sido tomado"
       confirmation: "Error de confirmación"
+      confirmation_resent: "No se pudo reenviar la confirmación"
   mailers:
     confirmation_instructions:
       hello: Hola

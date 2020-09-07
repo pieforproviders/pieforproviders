@@ -46,6 +46,7 @@ en:
     messages:
       taken: "has already been taken"
       confirmation: "Confirmation Error"
+      confirmation_resent: "Confirmation could not be resent"
   mailers:
     confirmation_instructions:
       hello: Hi
