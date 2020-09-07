@@ -5,7 +5,8 @@ const { name, internet, phone, company } = faker
 const firstName = name.firstName()
 const fullName = name.findName(firstName)
 const email = internet.email(firstName)
-const password = internet.password()
+// faker only allows for length and memorable options on its internet password object, so I can't guarantee there will be a number as well, so I'm hardcoding this
+const password = 'testpass1'
 // enforces XXX-XXX-XXXX format, which our front-end is enforcing in the application
 const phoneNumber = phone.phoneNumberFormat()
 const orgName = company.companyName()

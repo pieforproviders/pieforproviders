@@ -30,16 +30,13 @@ const ConfirmationSent = ({ userEmail }) => {
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
   const [resent, setResent] = useState(null)
-  const [resentError, setResentError] = useState(null)
 
   const resendConfirmation = async () => {
     const response = await makeRequest({
       type: 'post',
       url: `confirmation?email=${userEmail}`
     })
-    if (response?.error) {
-      setResentError(response.error)
-    } else {
+    if (response.ok) {
       setResent(true)
     }
   }
@@ -79,14 +76,6 @@ const ConfirmationSent = ({ userEmail }) => {
             message={t('confirmationEmailResent')}
             type="success"
             data-cy="resent"
-            show-icon
-          />
-        )}
-        {resentError && (
-          <Alert
-            data-cy="resentError"
-            message={resentError}
-            type="error"
             show-icon
           />
         )}
