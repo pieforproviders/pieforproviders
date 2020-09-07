@@ -25,7 +25,7 @@ user = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_
 user.confirm
 
 business = Business.where(name: 'Happy Seedlings Childcare', user: user).first_or_create(
-  category: 'licensed_center_single'
+  category: Licenses.types.keys.first
 )
 
 site = Site.where(name: 'Prairie Center', business: business).first_or_create(
@@ -92,4 +92,27 @@ Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
     care_finished_on: Date.new(2020,5,15),
     amount_cents: 140_000,
     discrepancy_cents: 2_750
+)
+
+# -----------------------------------------------------------------------------
+# Subsidy Rules
+#
+state_il = Lookup::State.first_or_create!( abbr: 'IL', name: 'Illinois')
+county_il_cook = Lookup::County.first_or_create!(name: 'Cook', state: state_il)
+
+SubsidyRule.first_or_create!(
+    name: 'Rule 1',
+    county: county_il_cook,
+    state: state_il,
+    max_age: 18,
+    part_day_rate: 18.00,
+    full_day_rate: 32.00,
+    part_day_max_hours: 5,
+    full_day_max_hours: 12,
+    full_plus_part_day_max_hours: 18,
+    full_plus_full_day_max_hours: 24,
+    part_day_threshold: 5,
+    full_day_threshold: 6,
+    license_type: Licenses.types.values.sample,
+    qris_rating: '3'
 )
