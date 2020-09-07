@@ -1,0 +1,11 @@
+{
+  "copay_frequencies": {
+    "type": "string",
+    "enum": [
+      "submitted",
+      "pending",
+      "approved",
+      "denied"
+    ]
+  }
+}
