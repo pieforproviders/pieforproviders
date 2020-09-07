@@ -4,14 +4,6 @@
 class ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
-  def new
-    super
-  end
-
-  def create
-    super
-  end
-
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
     if resource.errors.empty?

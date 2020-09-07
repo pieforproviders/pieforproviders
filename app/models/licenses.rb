@@ -11,6 +11,6 @@ class Licenses
                      license_exempt_center].freeze
 
   def self.types
-    LICENSE_TYPES.to_h { |s| [s.to_sym, s] }
+    LICENSE_TYPES.index_by(&:to_sym)
   end
 end
