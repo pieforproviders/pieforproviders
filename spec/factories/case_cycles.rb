@@ -5,7 +5,7 @@ FactoryBot.define do
     case_number { Faker::Alphanumeric.alpha(number: 10) }
     status { 'submitted' }
     submitted_on { Time.zone.today }
-    copay { Faker::Number.between(from: 0, to: 2000) }
+    copay { Faker::Number.between(from: 1, to: 2000) }
     copay_frequency { 'monthly' }
     user
 
