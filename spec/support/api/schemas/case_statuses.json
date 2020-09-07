@@ -1,5 +1,5 @@
 {
-  "copay_frequencies": {
+  "case_statuses": {
     "type": "string",
     "enum": [
       "submitted",
