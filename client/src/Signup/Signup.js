@@ -114,7 +114,7 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        wrapperCol={{ lg: 12 }}
+        wrapperCol={{ md: 12 }}
       >
         <Form.Item
           label={t('organization')}
@@ -395,7 +395,7 @@ export function Signup() {
                 value ? Promise.resolve() : Promise.reject(t('termsRequired'))
             }
           ]}
-          wrapperCol={{ lg: 24 }}
+          wrapperCol={{ md: 24 }}
         >
           <Checkbox
             style={{ textAlign: 'left' }}
@@ -411,7 +411,7 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item wrapperCol={{ lg: 8 }} className="text-center">
+        <Form.Item wrapperCol={{ md: 8 }} className="text-center">
           <PaddedButton text={t('signup')} />
         </Form.Item>
       </Form>

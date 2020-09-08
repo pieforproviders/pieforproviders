@@ -126,7 +126,7 @@ export function Login() {
         layout="vertical"
         name="login"
         onFinish={onFinish}
-        wrapperCol={{ lg: 12 }}
+        wrapperCol={{ md: 12 }}
       >
         <Form.Item
           className="text-primaryBlue"

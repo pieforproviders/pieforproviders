@@ -15,19 +15,19 @@ export function AuthLayout({
   return (
     <Row className="h-screen">
       <Col
-        lg={12}
+        md={12}
         className={`h-screen bg-no-repeat bg-cover ${backgroundImageClass}`}
       />
       <Col
         xs={24}
-        lg={12}
-        className="overflow-y-scroll mt-4 sm:mt-8 px-4 lg:px-8"
+        md={12}
+        className="overflow-y-scroll mt-4 xs:mt-8 px-4 md:px-8"
       >
-        <Row gutter={{ xs: 16, lg: 32 }}>
+        <Row gutter={{ xs: 16, md: 32 }}>
           <Col
             xs={24}
             sm={{ span: 12, offset: 6 }}
-            lg={{ span: 24, offset: 0 }}
+            md={{ span: 24, offset: 0 }}
           >
             <div className="text-right">
               <ActionLink
@@ -38,11 +38,11 @@ export function AuthLayout({
                 classes="text-right no-underline p-0 h-auto"
               />
             </div>
-            <div className="text-center lg:text-left">
+            <div className="text-center md:text-left">
               <img
                 alt={t('pieforProvidersLogoAltText')}
                 src={pieFullTanLogo}
-                className="w-24 sm:w-48 mt-0 mb-10 sm:mb-16 lg:mb-12 mx-auto"
+                className="w-24 xs:w-48 mt-0 mb-10 xs:mb-16 md:mb-12 mx-auto"
               />
               <ContentComponent />
             </div>
