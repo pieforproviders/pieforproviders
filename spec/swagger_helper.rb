@@ -63,6 +63,14 @@ RSpec.configure do |config|
                      monthly],
             example: 'weekly'
           },
+          lengths_of_care: {
+            type: :string,
+            enum: %w[part_day
+                     full_day
+                     full_plus_part_day
+                     full_plus_full_day],
+            example: 'full_day'
+          },
           license_types: {
             type: :string,
             enum: %w[licensed_center
@@ -179,6 +187,14 @@ RSpec.configure do |config|
               status: { '$ref': '#/components/schemas/case_statuses' },
               submitted_on: { type: :string, example: '2020-07-12' },
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
+            }
+          },
+          attendance: {
+            type: :object,
+            properties: {
+              child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              length_of_care: { '$ref': '#/components/schemas/lengths_of_care' },
+              starts_on: { type: :string, example: '2020-07-12' }
             }
           },
           createUser: {
@@ -358,6 +374,30 @@ RSpec.configure do |config|
               site: {
                 allOf: [
                   { '$ref': '#/components/schemas/case_cycle' }
+                ]
+              }
+            }
+          },
+          createAttendance: {
+            type: :object,
+            properties: {
+              payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/attendance' },
+                  {
+                    type: :object,
+                    required: %w[child_case_cycle_id length_of_care starts_on]
+                  }
+                ]
+              }
+            }
+          },
+          updateAttendance: {
+            type: :object,
+            properties: {
+              site: {
+                allOf: [
+                  { '$ref': '#/components/schemas/attendance' }
                 ]
               }
             }

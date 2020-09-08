@@ -5,6 +5,194 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/attendances": {
+      "get": {
+        "summary": "lists all attendances for a user",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "200": {
+            "description": "attendances found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "attendance created",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "invalid request",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createAttendance"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createAttendance"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/attendances/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "200": {
+            "description": "attendance found",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "attendance updated",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "attendance cannot be updated",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateAttendance"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateAttendance"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "204": {
+            "description": "attendance deleted",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      }
+    },
     "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
@@ -1253,6 +1441,16 @@
         ],
         "example": "weekly"
       },
+      "lengths_of_care": {
+        "type": "string",
+        "enum": [
+          "part_day",
+          "full_day",
+          "full_plus_part_day",
+          "full_plus_full_day"
+        ],
+        "example": "full_day"
+      },
       "license_types": {
         "type": "string",
         "enum": [
@@ -1531,6 +1729,22 @@
           }
         }
       },
+      "attendance": {
+        "type": "object",
+        "properties": {
+          "child_case_cycle_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "length_of_care": {
+            "$ref": "#/components/schemas/lengths_of_care"
+          },
+          "starts_on": {
+            "type": "string",
+            "example": "2020-07-12"
+          }
+        }
+      },
       "createUser": {
         "type": "object",
         "properties": {
@@ -1762,6 +1976,38 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/case_cycle"
+              }
+            ]
+          }
+        }
+      },
+      "createAttendance": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/attendance"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "child_case_cycle_id",
+                  "length_of_care",
+                  "starts_on"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateAttendance": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/attendance"
               }
             ]
           }

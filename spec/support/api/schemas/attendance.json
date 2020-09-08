@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required": [
+    "child_case_cycle_id",
+    "created_at",
+    "id",
+    "length_of_care",
+    "slug",
+    "starts_on",
+    "updated_at"
+  ],
+  "properties": {
+    "child_case_cycle_id": { "type": "string", "format": "uuid" },
+    "created_at": { "type": "string" , "format": "date-time" },
+    "id": { "type": "string", "format": "uuid"  },
+    "length_of_care": {"$ref":"lengths_of_care.json"},
+    "slug": { "type": "string" },
+    "starts_on": { "type": "string" , "format": "date" },
+    "updated_at": { "type": "string" , "format": "date-time" }
+  }
+}
