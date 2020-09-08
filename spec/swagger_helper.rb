@@ -63,17 +63,13 @@ RSpec.configure do |config|
                      monthly],
             example: 'weekly'
           },
-          currency_or_null: {
-            anyOf: [
-              { type: :string, example: 'USD' },
-              { type: :null }
-            ]
-          },
-          date_or_null: {
-            anyOf: [
-              { type: :string, example: '2019-06-27' },
-              { type: :null }
-            ]
+          lengths_of_care: {
+            type: :string,
+            enum: %w[part_day
+                     full_day
+                     full_plus_part_day
+                     full_plus_full_day],
+            example: 'full_day'
           },
           license_types: {
             type: :string,
@@ -181,26 +177,12 @@ RSpec.configure do |config|
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
             }
           },
-          child_case_cycle: {
+          attendance: {
             type: :object,
             properties: {
-              case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              child_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              full_days_allowed: { type: :integer, example: 21 },
-              part_days_allowed: { type: :integer, example: 18 },
-              subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
-          child_case_cycle_payment: {
-            type: :object,
-            properties: {
-              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-              amount_currency: { type: :string, example: 'USD' },
-              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
-              discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+              child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              length_of_care: { '$ref': '#/components/schemas/lengths_of_care' },
+              starts_on: { type: :string, example: '2020-07-12' }
             }
           },
           createUser: {
@@ -384,50 +366,26 @@ RSpec.configure do |config|
               }
             }
           },
-          createChildCaseCycle: {
+          createAttendance: {
             type: :object,
             properties: {
-              child_case_cycle: {
+              payment: {
                 allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' },
+                  { '$ref': '#/components/schemas/attendance' },
                   {
                     type: :object,
-                    required: %w[case_cycle_id child_id full_days_allowed part_days_allowed subsidy_rule_id user_id]
+                    required: %w[child_case_cycle_id length_of_care starts_on]
                   }
                 ]
               }
             }
           },
-          updateChildCaseCycle: {
+          updateAttendance: {
             type: :object,
             properties: {
-              child_case_cycle: {
+              site: {
                 allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' }
-                ]
-              }
-            }
-          },
-          createChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
-                  {
-                    type: :object,
-                    required: %w[amount_cents child_case_cycle_id payment_id]
-                  }
-                ]
-              }
-            }
-          },
-          updateChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
+                  { '$ref': '#/components/schemas/attendance' }
                 ]
               }
             }

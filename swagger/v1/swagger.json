@@ -5,6 +5,194 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/attendances": {
+      "get": {
+        "summary": "lists all attendances for a user",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "200": {
+            "description": "attendances found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "attendance created",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "invalid request",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createAttendance"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createAttendance"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/attendances/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "200": {
+            "description": "attendance found",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "attendance updated",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "attendance cannot be updated",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateAttendance"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateAttendance"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a attendance",
+        "tags": [
+          "attendances"
+        ],
+        "responses": {
+          "204": {
+            "description": "attendance deleted",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "attendance not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      }
+    },
     "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
@@ -1472,27 +1660,15 @@
         ],
         "example": "weekly"
       },
-      "currency_or_null": {
-        "anyOf": [
-          {
-            "type": "string",
-            "example": "USD"
-          },
-          {
-            "type": "null"
-          }
-        ]
-      },
-      "date_or_null": {
-        "anyOf": [
-          {
-            "type": "string",
-            "example": "2019-06-27"
-          },
-          {
-            "type": "null"
-          }
-        ]
+      "lengths_of_care": {
+        "type": "string",
+        "enum": [
+          "part_day",
+          "full_day",
+          "full_plus_part_day",
+          "full_plus_full_day"
+        ],
+        "example": "full_day"
       },
       "license_types": {
         "type": "string",
@@ -1757,61 +1933,19 @@
           }
         }
       },
-      "child_case_cycle": {
+      "attendance": {
         "type": "object",
         "properties": {
-          "case_cycle_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "child_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "full_days_allowed": {
-            "type": "integer",
-            "example": 21
-          },
-          "part_days_allowed": {
-            "type": "integer",
-            "example": 18
-          },
-          "subsidy_rule_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "user_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          }
-        }
-      },
-      "child_case_cycle_payment": {
-        "type": "object",
-        "properties": {
-          "amount_cents": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 19999
-          },
-          "amount_currency": {
-            "type": "string",
-            "example": "USD"
-          },
           "child_case_cycle_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "length_of_care": {
+            "$ref": "#/components/schemas/lengths_of_care"
+          },
+          "starts_on": {
             "type": "string",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
-          },
-          "discrepancy_cents": {
-            "type": "integer",
-            "example": 456
-          },
-          "discrepancy_currency": {
-            "$ref": "#/components/schemas/currency_or_null"
-          },
-          "payment_id": {
-            "type": "string",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
+            "example": "2020-07-12"
           }
         }
       },
@@ -2051,68 +2185,33 @@
           }
         }
       },
-      "createChildCaseCycle": {
+      "createAttendance": {
         "type": "object",
         "properties": {
-          "child_case_cycle": {
+          "payment": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/child_case_cycle"
+                "$ref": "#/components/schemas/attendance"
               },
               {
                 "type": "object",
                 "required": [
-                  "case_cycle_id",
-                  "child_id",
-                  "full_days_allowed",
-                  "part_days_allowed",
-                  "subsidy_rule_id",
-                  "user_id"
-                ]
-              }
-            ]
-          }
-        }
-      },
-      "updateChildCaseCycle": {
-        "type": "object",
-        "properties": {
-          "child_case_cycle": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/child_case_cycle"
-              }
-            ]
-          }
-        }
-      },
-      "createChildCaseCyclePayment": {
-        "type": "object",
-        "properties": {
-          "child_case_cycle_payment": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/child_case_cycle_payment"
-              },
-              {
-                "type": "object",
-                "required": [
-                  "amount_cents",
                   "child_case_cycle_id",
-                  "payment_id"
+                  "length_of_care",
+                  "starts_on"
                 ]
               }
             ]
           }
         }
       },
-      "updateChildCaseCyclePayment": {
+      "updateAttendance": {
         "type": "object",
         "properties": {
-          "child_case_cycle_payment": {
+          "site": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/child_case_cycle_payment"
+                "$ref": "#/components/schemas/attendance"
               }
             ]
           }
