@@ -47,6 +47,18 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
+-- Name: lengths_of_care; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.lengths_of_care AS ENUM (
+    'part_day',
+    'full_day',
+    'full_plus_part_day',
+    'full_plus_full_day'
+);
+
+
+--
 -- Name: license_types; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -61,7 +73,7 @@ CREATE TYPE public.license_types AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
@@ -86,6 +98,21 @@ CREATE TABLE public.ar_internal_metadata (
     value character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: attendances; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.attendances (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    child_case_cycle_id uuid NOT NULL,
+    slug character varying NOT NULL,
+    starts_on date NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    length_of_care public.lengths_of_care DEFAULT 'full_day'::public.lengths_of_care NOT NULL
 );
 
 
@@ -390,6 +417,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: attendances attendances_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT attendances_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: blocked_tokens blocked_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -522,6 +557,20 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX index_agencies_on_name_and_state ON public.agencies USING btree (name, state);
+
+
+--
+-- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
+
+
+--
+-- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
 
 
 --
@@ -830,6 +879,14 @@ ALTER TABLE ONLY public.child_case_cycles
 
 
 --
+-- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -874,6 +931,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200902184516'),
 ('20200903112138'),
 ('20200906195706'),
-('20200906232048');
+('20200906232048'),
+('20200907004651'),
+('20200907005807');
 
 
