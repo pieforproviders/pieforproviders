@@ -12,7 +12,10 @@
   "passwordRequired": "Password is required",
   "forgotPassword": "Forgot your password?",
   "resetPasswordText": "No worries. Click the button below and check your email to reset it.",
+  "resetPasswordInstructions": "Please enter the email address used to create this account. Click reset, and check your inbox for more instructions.",
   "resetPassword": "Reset Password",
+  "reset": "Reset",
+  "cancel": "Cancel",
   "pieforProvidersLogoAltText": "Pie for Providers logo",
   "agreeToTerms": "I have read and agree to the ",
   "termsOfUse": "Pie for Providers Terms of Use",
@@ -44,6 +47,8 @@
   "passwordInvalid": "Password must be a minimum of 8 characters, and include numbers and letters",
   "passwordPlaceholder": "8+ characters, letters and numbers",
   "passwordConfirmation": "Confirm Password",
+  "newPassword": "New password",
+  "confirmNewPassword": "Confirm new password",
   "passwordConfirmationRequired": "Password confirmation is required",
   "passwordConfirmationMatch": "The two passwords that you entered do not match!",
   "passwordConfirmationPlaceholder": "Confirm your password",
@@ -57,6 +62,8 @@
   "addToContacts": "to your contacts.",
   "resendConfirmationEmail": "Click here to resend the email.",
   "confirmationEmailResent": "Email resent",
+
+  "here": "here",
 
   "reportFeedback": "Report feedback",
 
@@ -78,8 +85,12 @@
   "genericErrorMessage": "Something went wrong, try again later.",
 
   "alreadyConfirmed": "This email has already been confirmed, please try logging in. If you've forgotten your password, please reset it below.",
+  "emailUnconfirmed": "You have to confirm your email address before continuing.",
   "confirmationPeriodExpired": "Your confirmation period has expired.",
-  "genericEmailConfirmationError": "We've run into a problem confirming your email",
+  "genericEmailConfirmationError": "We've run into a problem confirming your email.",
+  "emailNotFound": "Email address not found.",
+  "resetPasswordRequestSuccess": "You will receive an email with instructions on how to reset your password in a few minutes.",
+
   "yourConfirmationToken": "Your confirmation token is",
   "blank": "blank",
   "invalid": "invalid",
@@ -88,7 +99,12 @@
   "genericConfirmationTokenError": "We've run into a problem with your confirmation token.",
   "genericConfirmationError": "There was an unknown problem with your confirmation.",
   "contactUs": "Contact us",
-  "forSupport": "for support",
+  "forSupport": "for support.",
+
+  "passwordResetTokenBlank": "Your password reset token is blank. You must click on the reset password link sent to your email address.",
+  "passwordResetTokenInvalid": "Your password reset token is invalid. Please request a new one.",
+  "passwordResetTokenExpired": "Your password reset token has expired. Please request a new one.",
+  "passwordUpdated": "Password updated",
 
   "uploadCases": "Upload Cases",
   "uploadCasesInvalidFileFormat": "Invalid file format. Supported formats: CSV, XLS, and XLSX",

@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 
-export function ActionLink({ onClick, text, classes = '' }) {
+export function ActionLink({ onClick, text = '', classes = '', children }) {
   const handleClick = e => {
     e.preventDefault()
     onClick()
@@ -14,7 +14,7 @@ export function ActionLink({ onClick, text, classes = '' }) {
         className={`${classes} focus:shadow-none`}
         type="link"
       >
-        {text}
+        {text || children}
       </Button>
     </>
   )
@@ -22,6 +22,7 @@ export function ActionLink({ onClick, text, classes = '' }) {
 
 ActionLink.propTypes = {
   onClick: PropTypes.func.isRequired,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
+  children: PropTypes.node,
   classes: PropTypes.string
 }

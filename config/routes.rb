@@ -17,7 +17,8 @@ Rails.application.routes.draw do
              controllers: {
                sessions: 'sessions',
                registrations: 'registrations',
-               confirmations: 'confirmations'
+               confirmations: 'confirmations',
+               passwords: 'passwords'
              }
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
