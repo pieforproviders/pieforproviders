@@ -1,11 +1,11 @@
 import faker from 'faker'
 import { createSelector } from '../utils'
 
-const { name, internet, phone, company, number } = faker
+const { name, internet, phone, company, random } = faker
 const firstName = name.firstName()
 const fullName = name.findName(firstName)
 const email = internet.email(firstName)
-const password = number.alphaNumeric(15)
+const password = random.alphaNumeric(15)
 // enforces XXX-XXX-XXXX format, which our front-end is enforcing in the application
 const phoneNumber = phone.phoneNumberFormat()
 const orgName = company.companyName()
