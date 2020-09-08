@@ -10,7 +10,7 @@
 #   If we're calculating it, can the user change it, if for some reason our
 #   calculation gets it wrong?
 #
-#   2020-09-08: Answer from Casey S:
+#   2020-09-08: Answer from Chelsea S:
 #   Since we haven't designed these screens yet, I don't think we have clear
 #   answers. My assumption, though, is that we're calculating it for them based
 #   on the number of hours, as laid out in their subsidy rule.
