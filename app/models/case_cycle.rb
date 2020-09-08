@@ -9,8 +9,8 @@ class CaseCycle < UuidApplicationRecord
 
   monetize :copay_cents
 
-  enum status: STATUSES.to_h { |s| [s, s] }
-  enum copay_frequency: COPAY_FREQUENCIES.to_h { |f| [f, f] }, _suffix: true
+  enum status: STATUSES.index_by(&:to_sym)
+  enum copay_frequency: COPAY_FREQUENCIES.index_by(&:to_sym), _suffix: true
 
   before_save :set_slug
 
