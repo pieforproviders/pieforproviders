@@ -2,14 +2,25 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ResendToken from 'ResendToken'
 import { useTranslation } from 'react-i18next'
+import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
-const contactUs = ({ t, message }) => {
-  return `${message} <a href="mailto:tech@pieforproviders.com">${t(
-    'contactUs'
-  )}</a>{' '} ${t('forSupport')}`
+const ContactUs = ({ message }) => {
+  const { t } = useTranslation()
+  return (
+    <>
+      {message}{' '}
+      <a href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}>{t('contactUs')}</a>{' '}
+      {t('forSupport')}
+    </>
+  )
+}
+
+ContactUs.propTypes = {
+  message: PropTypes.string.isRequired
 }
 
 const resendToken = type => <ResendToken type={type} />
+const contactUs = message => <ContactUs message={message} />
 
 export const ErrorAlert = ({ attribute, type }) => {
   const { t } = useTranslation()
@@ -20,14 +31,12 @@ export const ErrorAlert = ({ attribute, type }) => {
       confirmation_period_expired: () => t('confirmationPeriodExpired'),
       not_confirmed: () => t('emailUnconfirmed'),
       not_found: () => t('emailNotFound'),
-      default: () =>
-        contactUs({ t, message: t('genericEmailConfirmationError') })
+      default: () => contactUs(t('genericEmailConfirmationError'))
     },
     confirmation_token: {
       blank: () => resendToken('blank'),
       invalid: () => resendToken('invalid'),
-      default: () =>
-        contactUs({ t, message: t('genericEmailConfirmationError') })
+      default: () => contactUs(t('genericEmailConfirmationError'))
     },
     reset_password_token: {
       blank: () => t('passwordResetTokenBlank'),

@@ -87,7 +87,7 @@
   "alreadyConfirmed": "This email has already been confirmed, please try logging in. If you've forgotten your password, please reset it below.",
   "emailUnconfirmed": "You have to confirm your email address before continuing.",
   "confirmationPeriodExpired": "Your confirmation period has expired.",
-  "genericEmailConfirmationError": "We've run into a problem confirming your email",
+  "genericEmailConfirmationError": "We've run into a problem confirming your email.",
   "emailNotFound": "Email address not found.",
   "resetPasswordRequestSuccess": "You will receive an email with instructions on how to reset your password in a few minutes.",
 
@@ -99,7 +99,7 @@
   "genericConfirmationTokenError": "We've run into a problem with your confirmation token.",
   "genericConfirmationError": "There was an unknown problem with your confirmation.",
   "contactUs": "Contact us",
-  "forSupport": "for support",
+  "forSupport": "for support.",
 
   "passwordResetTokenBlank": "Your password reset token is blank. You must click on the reset password link sent to your email address.",
   "passwordResetTokenInvalid": "Your password reset token is invalid. Please request a new one.",

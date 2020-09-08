@@ -87,7 +87,7 @@
   "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intenta iniciar sesión. Si has olvidado tu contraseña, por favor resetéala abajo",
   "emailUnconfirmed": "Tienes que confirmar tu correo antes de continuar.",
   "confirmationPeriodExpired": "Tu periodo de confirmación ha expirado",
-  "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo",
+  "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo.",
   "emailNotFound": "No se ha encontrado el correo.",
   "resetPasswordRequestSuccess": "Recibirás un correo con instrucciones para resetear tu contraseña en unos minutos.",
 
@@ -99,7 +99,7 @@
   "genericConfirmationTokenError": "Hemos tenido un problema con tu token de confirmación",
   "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
   "contactUs": "Contáctanos",
-  "forSupport": "para el soporte técnico",
+  "forSupport": "para el soporte técnico.",
 
   "passwordResetTokenBlank": "Tu token de resetear la contraseña está en blanco. Debes hacer clic en el enlace de resetear la contraseña enviado a tu correo.",
   "passwordResetTokenInvalid": "Tu token de resetear la contraseña es inválido. Por favor, solicita una nueva.",
