@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :child_case_cycle_payment do
     amount { Faker::Number.between(from: 0, to: 999_999) }
