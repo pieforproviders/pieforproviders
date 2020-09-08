@@ -74,7 +74,7 @@ export function GettingStarted() {
         </div>
 
         <Typography.Title level={3}>{t('steps')}</Typography.Title>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mx-4">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 mx-4">
           {cards.map((card, idx) => (
             <Card
               bordered={false}
