@@ -32,6 +32,7 @@ const ConfirmationSent = ({ userEmail }) => {
   const [resent, setResent] = useState(null)
 
   const resendConfirmation = async () => {
+    setResent(null)
     const response = await makeRequest({
       type: 'post',
       url: `confirmation?email=${userEmail}`

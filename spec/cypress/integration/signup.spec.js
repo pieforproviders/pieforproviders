@@ -1,12 +1,11 @@
 import faker from 'faker'
 import { createSelector } from '../utils'
 
-const { name, internet, phone, company } = faker
+const { name, internet, phone, company, number } = faker
 const firstName = name.firstName()
 const fullName = name.findName(firstName)
 const email = internet.email(firstName)
-// faker only allows for length and memorable options on its internet password object, so I can't guarantee there will be a number as well, so I'm hardcoding this
-const password = 'testpass1'
+const password = number.alphaNumeric(15)
 // enforces XXX-XXX-XXXX format, which our front-end is enforcing in the application
 const phoneNumber = phone.phoneNumberFormat()
 const orgName = company.companyName()
@@ -27,7 +26,7 @@ describe('Signup', () => {
     cy.get(createSelector('yesMultiBusiness')).click()
     cy.get(createSelector('phoneType')).click()
     cy.get(createSelector('homePhone')).click()
-    cy.get('[data-cy="languageEs"]').parent().click()
+    cy.get(createSelector('languageEs')).parent().click()
     cy.get(createSelector('password')).type(password)
     cy.get(createSelector('passwordConfirmation')).type(password)
     cy.get(createSelector('terms')).check()
