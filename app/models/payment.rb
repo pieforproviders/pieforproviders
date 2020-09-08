@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# Payments made by an agency to a provide for a particular site
+# Payments made by an agency to a provide for a particular site.
+#   One payment from an agency might apply to several children's cases
+#   (ChildCaseCycles).
 class Payment < UuidApplicationRecord
   belongs_to :agency
   belongs_to :site

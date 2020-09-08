@@ -63,6 +63,18 @@ RSpec.configure do |config|
                      monthly],
             example: 'weekly'
           },
+          currency_or_null: {
+            anyOf: [
+              { type: :string, example: 'USD' },
+              { type: :null }
+            ]
+          },
+          date_or_null: {
+            anyOf: [
+              { type: :string, example: '2019-06-27' },
+              { type: :null }
+            ]
+          },
           license_types: {
             type: :string,
             enum: %w[licensed_center
@@ -110,12 +122,7 @@ RSpec.configure do |config|
               care_finished_on: { type: :string, example: '2020-03-15' },
               care_started_on: { type: :string, example: '2020-01-01' },
               discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: {
-                anyOf: [
-                  { type: :string, example: 'USD' },
-                  { type: :null }
-                ]
-              },
+              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
               paid_on: { type: :string, example: '2020-05-20' },
               site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
             }
@@ -158,27 +165,23 @@ RSpec.configure do |config|
                   { type: :null }
                 ]
               },
-              effective_on: {
-                anyOf: [
-                  { type: :string, example: '2019-06-27' },
-                  { type: :null }
-                ]
-              },
-              expires_on: {
-                anyOf: [
-                  { type: :string, example: '2020-06-28' },
-                  { type: :null }
-                ]
-              },
-              notified_on: {
-                anyOf: [
-                  { type: :string, example: '2019-06-30' },
-                  { type: :null }
-                ]
-              },
+              effective_on: { '$ref': '#/components/schemas/date_or_null' },
+              expires_on: { '$ref': '#/components/schemas/date_or_null' },
+              notified_on: { '$ref': '#/components/schemas/date_or_null' },
               status: { '$ref': '#/components/schemas/case_statuses' },
               submitted_on: { type: :string, example: '2020-07-12' },
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
+            }
+          },
+          child_case_cycle_payment: {
+            type: :object,
+            properties: {
+              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
+              amount_currency: { type: :string, example: 'USD' },
+              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
+              discrepancy_cents: { type: :integer, example: 456 },
+              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
+              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
             }
           },
           createUser: {
@@ -341,7 +344,7 @@ RSpec.configure do |config|
           createCaseCycle: {
             type: :object,
             properties: {
-              payment: {
+              case_cycle: {
                 allOf: [
                   { '$ref': '#/components/schemas/case_cycle' },
                   {
@@ -355,9 +358,33 @@ RSpec.configure do |config|
           updateCaseCycle: {
             type: :object,
             properties: {
-              site: {
+              case_cycle: {
                 allOf: [
                   { '$ref': '#/components/schemas/case_cycle' }
+                ]
+              }
+            }
+          },
+          createChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
+                  {
+                    type: :object,
+                    required: %w[amount_cents child_case_cycle_id payment_id]
+                  }
+                ]
+              }
+            }
+          },
+          updateChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
                 ]
               }
             }
