@@ -51,7 +51,6 @@ en:
     confirmation_instructions:
       hello: Hi
       body: Welcome to Pie for Providers! Get ready to increase your slice of the pie with simple child care subsidy management tools. To get started, please verify your email address by clicking the link below (you can also copy and paste it into your browser).
-      confirm_account: Confirm Account
       questions: "Questions? Email "
       subject: "Pie for Providers email verification"
   faker:
