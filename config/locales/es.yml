@@ -19,7 +19,7 @@ es:
   mailers:
     confirmation_instructions:
       hello: Hola
-      body: ¡Bienvenido a Pie for Providers! Prepárate para aumentar tu porción del pastel con simples herramientas de administración de subsidios de cuidado infantil. Para empezar, por favor verifique su dirección de correo electrónico haciendo clic en el siguiente enlace (también puede copiar y pegar en su navegador).
-      confirm_account: Confirmar la cuenta
+      body: ¡Bienvenidas a Pie for Providers! Prepárate para aumentar tu porción del pastel con herramientas sencillas de administración del subsidio. Para empezar, por favor verifica tu dirección de correo haciendo clic en el enlace abajo (también puedes copiar y pegar en su navegador).
+      confirm_account: Confirma la cuenta
       questions: "¿Preguntas? Correo electrónico "
-      subject: Verificación del correo electrónico de Pie for Providers
+      subject: Verificación del correo de Pie for Providers
