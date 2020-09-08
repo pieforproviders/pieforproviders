@@ -15,6 +15,9 @@ Cypress.Commands.add('appCommands', function (body) {
     })
 })
 
+// We're snake casing the name passed to the app command to use the camelCase version
+// in Cypress specs (e.g. `cy.app('generateToken')`) and use the snake_case style
+// command names in Ruby (e.g. app_commands/generate_token.rb).
 Cypress.Commands.add('app', function (name, command_options) {
   return cy
     .appCommands({ name: camelToSnakeCase(name), options: command_options })
