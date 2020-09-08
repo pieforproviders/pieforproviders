@@ -173,6 +173,17 @@ RSpec.configure do |config|
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
             }
           },
+          child_case_cycle: {
+            type: :object,
+            properties: {
+              case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              child_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              full_days_allowed: { type: :integer, example: 21 },
+              part_days_allowed: { type: :integer, example: 18 },
+              subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
+            }
+          },
           child_case_cycle_payment: {
             type: :object,
             properties: {
@@ -361,6 +372,30 @@ RSpec.configure do |config|
               case_cycle: {
                 allOf: [
                   { '$ref': '#/components/schemas/case_cycle' }
+                ]
+              }
+            }
+          },
+          createChildCaseCycle: {
+            type: :object,
+            properties: {
+              child_case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle' },
+                  {
+                    type: :object,
+                    required: %w[case_cycle_id child_id full_days_allowed part_days_allowed subsidy_rule_id user_id]
+                  }
+                ]
+              }
+            }
+          },
+          updateChildCaseCycle: {
+            type: :object,
+            properties: {
+              child_case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle' }
                 ]
               }
             }

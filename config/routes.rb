@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       resources :children, param: :slug
       resources :payments, param: :slug
       resources :case_cycles, param: :slug
+      resources :child_case_cycles, param: :slug
       resources :child_case_cycle_payments, param: :slug
     end
   end
