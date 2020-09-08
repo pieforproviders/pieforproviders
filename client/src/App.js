@@ -10,7 +10,7 @@ import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
-import PasswordReset from './PasswordReset'
+import NewPassword from './PasswordReset'
 import Login from './Login'
 import Signup from './Signup'
 import NotFound from './NotFound'
@@ -51,7 +51,7 @@ const App = () => {
             <Route path="/password/update">
               <AuthLayout
                 backgroundImageClass="auth-image"
-                contentComponent={PasswordReset}
+                contentComponent={NewPassword}
               />
             </Route>
             <Route

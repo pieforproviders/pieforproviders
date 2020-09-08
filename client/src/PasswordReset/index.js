@@ -1,2 +1,2 @@
-export { PasswordReset as default } from './PasswordReset'
+export { NewPassword as default } from './NewPassword'
 export { PasswordResetRequest } from './PasswordResetRequest'

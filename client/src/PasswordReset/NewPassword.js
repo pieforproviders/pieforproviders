@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
-export const PasswordReset = () => {
+export const NewPassword = () => {
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
