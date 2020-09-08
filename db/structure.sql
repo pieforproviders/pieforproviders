@@ -600,6 +600,20 @@ CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree 
 
 
 --
+-- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
+
+
+--
+-- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
+
+
+--
 -- Name: index_blocked_tokens_on_jti; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -935,6 +949,14 @@ ALTER TABLE ONLY public.attendances
 
 
 --
+-- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -981,6 +1003,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200906195706'),
 ('20200906232048'),
 ('20200907004651'),
-('20200907005807');
+('20200907005807'),
+('20200907181541');
 
 

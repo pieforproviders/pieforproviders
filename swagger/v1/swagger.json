@@ -1670,6 +1670,16 @@
         ],
         "example": "full_day"
       },
+      "lengths_of_care": {
+        "type": "string",
+        "enum": [
+          "part_day",
+          "full_day",
+          "full_plus_part_day",
+          "full_plus_full_day"
+        ],
+        "example": "full_day"
+      },
       "license_types": {
         "type": "string",
         "enum": [
@@ -1949,6 +1959,22 @@
           }
         }
       },
+      "attendance": {
+        "type": "object",
+        "properties": {
+          "child_case_cycle_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "length_of_care": {
+            "$ref": "#/components/schemas/lengths_of_care"
+          },
+          "starts_on": {
+            "type": "string",
+            "example": "2020-07-12"
+          }
+        }
+      },
       "createUser": {
         "type": "object",
         "properties": {
@@ -2180,6 +2206,38 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/case_cycle"
+              }
+            ]
+          }
+        }
+      },
+      "createAttendance": {
+        "type": "object",
+        "properties": {
+          "payment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/attendance"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "child_case_cycle_id",
+                  "length_of_care",
+                  "starts_on"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateAttendance": {
+        "type": "object",
+        "properties": {
+          "site": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/attendance"
               }
             ]
           }
