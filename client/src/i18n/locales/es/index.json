@@ -12,7 +12,10 @@
   "passwordRequired": "Se requiere la contraseña",
   "forgotPassword": "¿Olvidaste tu contraseña?",
   "resetPasswordText": "No te preocupes. Haz clic en el botón abajo y revisa tu correo para resetearla.",
+  "resetPasswordInstructions": "Por favor, escribe el correo utilizado para crear esta cuenta. Haz clic en resetea y revisa tu buzón para obtener más instrucciones.",
   "resetPassword": "Resetea tu contraseña",
+  "reset": "Resetea",
+  "cancel": "Cancela",
   "pieforProvidersLogoAltText": "Logo de Pie for Providers",
   "agreeToTerms": "He leído y estoy de acuerdo con ",
   "termsOfUse": "Las condiciones de uso de Pie for Providers",
@@ -44,6 +47,8 @@
   "passwordInvalid": "La contraseña debe tener un mínimo de 8 caracteres e incluir números y letras",
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
   "passwordConfirmation": "Confirma la contraseña",
+  "newPassword": "Contraseña nueva",
+  "confirmNewPassword": "Confirma tu contraseña nueva",
   "passwordConfirmationRequired": "Se requiere la confirmación de contraseña",
   "passwordConfirmationMatch": "¡Las dos contraseñas que ingresaste no coinciden!",
   "passwordConfirmationPlaceholder": "Confirma tu contraseña",
@@ -57,6 +62,8 @@
   "addToContacts": "a tus contactos.",
   "resendConfirmationEmail": "Haga clic aquí para reenviar el correo.",
   "confirmationEmailResent": "Correo reenviado",
+
+  "here": "aquí",
 
   "reportFeedback": "Da comentarios",
 
@@ -78,8 +85,12 @@
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
   "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intenta iniciar sesión. Si has olvidado tu contraseña, por favor resetéala abajo",
+  "emailUnconfirmed": "Tienes que confirmar tu correo antes de continuar.",
   "confirmationPeriodExpired": "Tu periodo de confirmación ha expirado",
-  "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo",
+  "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo.",
+  "emailNotFound": "No se ha encontrado el correo.",
+  "resetPasswordRequestSuccess": "Recibirás un correo con instrucciones para resetear tu contraseña en unos minutos.",
+
   "yourConfirmationToken": "Tu token de confirmación es",
   "blank": "en blanco",
   "invalid": "inválido",
@@ -88,7 +99,12 @@
   "genericConfirmationTokenError": "Hemos tenido un problema con tu token de confirmación",
   "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
   "contactUs": "Contáctanos",
-  "forSupport": "para el soporte técnico",
+  "forSupport": "para el soporte técnico.",
+
+  "passwordResetTokenBlank": "Tu token de resetear la contraseña está en blanco. Debes hacer clic en el enlace de resetear la contraseña enviado a tu correo.",
+  "passwordResetTokenInvalid": "Tu token de resetear la contraseña es inválido. Por favor, solicita una nueva.",
+  "passwordResetTokenExpired": "Tu token de resetear la contraseña ha expirado. Por favor, solicita un token nuevo.",
+  "passwordUpdated": "Contraseña actualizada",
 
   "uploadCases": "Sube tus casos",
   "uploadCasesInvalidFileFormat": "Formato de archivo inválido. Formatos admitidos: CSV, XLS y XLSX",

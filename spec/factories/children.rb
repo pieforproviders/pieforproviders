@@ -5,7 +5,7 @@ FactoryBot.define do
     ccms_id { Faker::Number.number(digits: 10) }
     date_of_birth { Faker::Date.birthday(min_age: 18, max_age: 65).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
-    user
+    user factory: :confirmed_user
   end
 end
 

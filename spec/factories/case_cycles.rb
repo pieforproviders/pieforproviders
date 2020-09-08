@@ -7,7 +7,7 @@ FactoryBot.define do
     submitted_on { Time.zone.today }
     copay { Faker::Number.between(from: 1, to: 2000) }
     copay_frequency { 'monthly' }
-    user
+    user factory: :confirmed_user
 
     trait :pending do
       status { 'pending' }

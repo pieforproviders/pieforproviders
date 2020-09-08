@@ -5,194 +5,6 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/attendances": {
-      "get": {
-        "summary": "lists all attendances for a user",
-        "tags": [
-          "attendances"
-        ],
-        "responses": {
-          "200": {
-            "description": "attendances found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "creates a attendance",
-        "tags": [
-          "attendances"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "201": {
-            "description": "attendance created",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "invalid request",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createAttendance"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createAttendance"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/attendances/{slug}": {
-      "parameters": [
-        {
-          "name": "slug",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "retrieves a attendance",
-        "tags": [
-          "attendances"
-        ],
-        "responses": {
-          "200": {
-            "description": "attendance found",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "attendance not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "updates a attendance",
-        "tags": [
-          "attendances"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "200": {
-            "description": "attendance updated",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "attendance cannot be updated",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "attendance not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateAttendance"
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateAttendance"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "deletes a attendance",
-        "tags": [
-          "attendances"
-        ],
-        "responses": {
-          "204": {
-            "description": "attendance deleted",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "attendance not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      }
-    },
     "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
@@ -553,6 +365,194 @@
           },
           "404": {
             "description": "case_cycle not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/child_case_cycle_payments": {
+      "get": {
+        "summary": "lists all child_case_cycle_payments for a user",
+        "tags": [
+          "child_case_cycle_payments"
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycle_payments found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a child_case_cycle_payment",
+        "tags": [
+          "child_case_cycle_payments"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "child_case_cycle_payment created",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "invalid request",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createChildCaseCyclePayment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createChildCaseCyclePayment"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/child_case_cycle_payments/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a child_case_cycle_payment",
+        "tags": [
+          "child_case_cycle_payments"
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycle_payment found",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle_payment not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a child_case_cycle_payment",
+        "tags": [
+          "child_case_cycle_payments"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycle_payment updated",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "child_case_cycle_payment cannot be updated",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle_payment not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChildCaseCyclePayment"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChildCaseCyclePayment"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a child_case_cycle_payment",
+        "tags": [
+          "child_case_cycle_payments"
+        ],
+        "responses": {
+          "204": {
+            "description": "child_case_cycle_payment deleted",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle_payment not found",
             "content": {
             }
           },
@@ -1441,15 +1441,27 @@
         ],
         "example": "weekly"
       },
-      "lengths_of_care": {
-        "type": "string",
-        "enum": [
-          "part_day",
-          "full_day",
-          "full_plus_part_day",
-          "full_plus_full_day"
-        ],
-        "example": "full_day"
+      "currency_or_null": {
+        "anyOf": [
+          {
+            "type": "string",
+            "example": "USD"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "date_or_null": {
+        "anyOf": [
+          {
+            "type": "string",
+            "example": "2019-06-27"
+          },
+          {
+            "type": "null"
+          }
+        ]
       },
       "license_types": {
         "type": "string",
@@ -1561,15 +1573,7 @@
             "example": 456
           },
           "discrepancy_currency": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "USD"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/currency_or_null"
           },
           "paid_on": {
             "type": "string",
@@ -1684,37 +1688,13 @@
             ]
           },
           "effective_on": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "2019-06-27"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/date_or_null"
           },
           "expires_on": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "2020-06-28"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/date_or_null"
           },
           "notified_on": {
-            "anyOf": [
-              {
-                "type": "string",
-                "example": "2019-06-30"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "$ref": "#/components/schemas/date_or_null"
           },
           "status": {
             "$ref": "#/components/schemas/case_statuses"
@@ -1729,19 +1709,32 @@
           }
         }
       },
-      "attendance": {
+      "child_case_cycle_payment": {
         "type": "object",
         "properties": {
-          "child_case_cycle_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          "amount_cents": {
+            "type": "integer",
+            "minimum": 0,
+            "example": 19999
           },
-          "length_of_care": {
-            "$ref": "#/components/schemas/lengths_of_care"
-          },
-          "starts_on": {
+          "amount_currency": {
             "type": "string",
-            "example": "2020-07-12"
+            "example": "USD"
+          },
+          "child_case_cycle_id": {
+            "type": "string",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
+          },
+          "discrepancy_cents": {
+            "type": "integer",
+            "example": 456
+          },
+          "discrepancy_currency": {
+            "$ref": "#/components/schemas/currency_or_null"
+          },
+          "payment_id": {
+            "type": "string",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d51"
           }
         }
       },
@@ -1953,7 +1946,7 @@
       "createCaseCycle": {
         "type": "object",
         "properties": {
-          "payment": {
+          "case_cycle": {
             "allOf": [
               {
                 "$ref": "#/components/schemas/case_cycle"
@@ -1972,7 +1965,7 @@
       "updateCaseCycle": {
         "type": "object",
         "properties": {
-          "site": {
+          "case_cycle": {
             "allOf": [
               {
                 "$ref": "#/components/schemas/case_cycle"
@@ -1981,33 +1974,33 @@
           }
         }
       },
-      "createAttendance": {
+      "createChildCaseCyclePayment": {
         "type": "object",
         "properties": {
-          "payment": {
+          "child_case_cycle_payment": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/attendance"
+                "$ref": "#/components/schemas/child_case_cycle_payment"
               },
               {
                 "type": "object",
                 "required": [
+                  "amount_cents",
                   "child_case_cycle_id",
-                  "length_of_care",
-                  "starts_on"
+                  "payment_id"
                 ]
               }
             ]
           }
         }
       },
-      "updateAttendance": {
+      "updateChildCaseCyclePayment": {
         "type": "object",
         "properties": {
-          "site": {
+          "child_case_cycle_payment": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/attendance"
+                "$ref": "#/components/schemas/child_case_cycle_payment"
               }
             ]
           }

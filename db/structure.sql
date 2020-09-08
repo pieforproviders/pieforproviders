@@ -47,18 +47,6 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
--- Name: lengths_of_care; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.lengths_of_care AS ENUM (
-    'part_day',
-    'full_day',
-    'full_plus_part_day',
-    'full_plus_full_day'
-);
-
-
---
 -- Name: license_types; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -98,21 +86,6 @@ CREATE TABLE public.ar_internal_metadata (
     value character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: attendances; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.attendances (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_case_cycle_id uuid NOT NULL,
-    slug character varying NOT NULL,
-    starts_on date NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    length_of_care public.lengths_of_care DEFAULT 'full_day'::public.lengths_of_care NOT NULL
 );
 
 
@@ -162,6 +135,24 @@ CREATE TABLE public.case_cycles (
     status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
     copay_frequency public.copay_frequency NOT NULL,
     user_id uuid NOT NULL
+);
+
+
+--
+-- Name: child_case_cycle_payments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.child_case_cycle_payments (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    slug character varying NOT NULL,
+    amount_cents integer DEFAULT 0 NOT NULL,
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    discrepancy_cents integer,
+    discrepancy_currency character varying DEFAULT 'USD'::character varying,
+    payment_id uuid NOT NULL,
+    child_case_cycle_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -417,14 +408,6 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
--- Name: attendances attendances_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT attendances_pkey PRIMARY KEY (id);
-
-
---
 -- Name: blocked_tokens blocked_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -446,6 +429,14 @@ ALTER TABLE ONLY public.businesses
 
 ALTER TABLE ONLY public.case_cycles
     ADD CONSTRAINT case_cycles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: child_case_cycle_payments child_case_cycle_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT child_case_cycle_payments_pkey PRIMARY KEY (id);
 
 
 --
@@ -560,20 +551,6 @@ CREATE UNIQUE INDEX index_agencies_on_name_and_state ON public.agencies USING bt
 
 
 --
--- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
-
-
---
--- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
-
-
---
 -- Name: index_blocked_tokens_on_jti; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -613,6 +590,27 @@ CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree 
 --
 
 CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycle_payments_on_child_case_cycle_id ON public.child_case_cycle_payments USING btree (child_case_cycle_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_payment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycle_payments_on_payment_id ON public.child_case_cycle_payments USING btree (payment_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_child_case_cycle_payments_on_slug ON public.child_case_cycle_payments USING btree (slug);
 
 
 --
@@ -855,6 +853,22 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
+-- Name: child_case_cycle_payments fk_rails_3d2a50a86a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT fk_rails_3d2a50a86a FOREIGN KEY (payment_id) REFERENCES public.payments(id);
+
+
+--
+-- Name: child_case_cycle_payments fk_rails_5c19c31ce9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT fk_rails_5c19c31ce9 FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_612f9eee7b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -876,14 +890,6 @@ ALTER TABLE ONLY public.child_case_cycles
 
 ALTER TABLE ONLY public.child_case_cycles
     ADD CONSTRAINT fk_rails_bd0bf4a589 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
-
-
---
--- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
 
 
 --
@@ -932,7 +938,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200903112138'),
 ('20200906195706'),
 ('20200906232048'),
-('20200907004651'),
-('20200907005807');
+('20200907181541');
 
 

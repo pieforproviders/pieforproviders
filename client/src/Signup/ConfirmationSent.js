@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Divider, Typography, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
+import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
 const { Title, Text, Link } = Typography
-
-const pieEmail = 'tech@pieforproviders.com'
 
 function ListItem({ children, id = null }) {
   return (
@@ -63,7 +62,7 @@ const ConfirmationSent = ({ userEmail }) => {
         </ListItem>
         <ListItem>
           <Text>
-            {t('add')} <Text underline={true}>{pieEmail}</Text>{' '}
+            {t('add')} <Text underline={true}>{PIE_FOR_PROVIDERS_EMAIL}</Text>{' '}
             {t('addToContacts')}
           </Text>
         </ListItem>
