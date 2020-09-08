@@ -61,7 +61,7 @@ CREATE TYPE public.license_types AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_table_access_method = heap;
+SET default_with_oids = false;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
@@ -135,6 +135,24 @@ CREATE TABLE public.case_cycles (
     status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
     copay_frequency public.copay_frequency NOT NULL,
     user_id uuid NOT NULL
+);
+
+
+--
+-- Name: child_case_cycle_payments; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.child_case_cycle_payments (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    slug character varying NOT NULL,
+    amount_cents integer DEFAULT 0 NOT NULL,
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    discrepancy_cents integer,
+    discrepancy_currency character varying DEFAULT 'USD'::character varying,
+    payment_id uuid NOT NULL,
+    child_case_cycle_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -414,6 +432,14 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
+-- Name: child_case_cycle_payments child_case_cycle_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT child_case_cycle_payments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: child_case_cycles child_case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -564,6 +590,27 @@ CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree 
 --
 
 CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycle_payments_on_child_case_cycle_id ON public.child_case_cycle_payments USING btree (child_case_cycle_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_payment_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_case_cycle_payments_on_payment_id ON public.child_case_cycle_payments USING btree (payment_id);
+
+
+--
+-- Name: index_child_case_cycle_payments_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_child_case_cycle_payments_on_slug ON public.child_case_cycle_payments USING btree (slug);
 
 
 --
@@ -806,6 +853,22 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
+-- Name: child_case_cycle_payments fk_rails_3d2a50a86a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT fk_rails_3d2a50a86a FOREIGN KEY (payment_id) REFERENCES public.payments(id);
+
+
+--
+-- Name: child_case_cycle_payments fk_rails_5c19c31ce9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_case_cycle_payments
+    ADD CONSTRAINT fk_rails_5c19c31ce9 FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_612f9eee7b; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -874,6 +937,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200902184516'),
 ('20200903112138'),
 ('20200906195706'),
-('20200906232048');
+('20200906232048'),
+('20200907181541');
 
 
