@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :sites, param: :slug
       resources :children, param: :slug
       resources :payments, param: :slug
+      resources :case_cycles, param: :slug
     end
   end
 

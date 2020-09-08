@@ -1,0 +1,10 @@
+{
+  "copay_frequencies": {
+    "type": "string",
+    "enum": [
+      "daily",
+      "weekly",
+      "monthly"
+    ]
+  }
+}
