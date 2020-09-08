@@ -84,7 +84,7 @@
 
   "genericErrorMessage": "Something went wrong, try again later.",
 
-  "alreadyConfirmed": "This email has already been confirmed, please try logging in. If you've forgotten your password, please reset it below.",
+  "alreadyConfirmed": "You have already verified your account. You can now log in.",
   "emailUnconfirmed": "You have to confirm your email address before continuing.",
   "confirmationPeriodExpired": "Your confirmation period has expired.",
   "genericEmailConfirmationError": "We've run into a problem confirming your email.",

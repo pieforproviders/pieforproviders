@@ -17,7 +17,6 @@ es:
     messages:
       taken: "ya ha sido tomado"
       confirmation: "Error de confirmación"
-      confirmation_resent: "No se pudo reenviar la confirmación"
   mailers:
     confirmation_instructions:
       body: ¡Bienvenidas a Pie for Providers! Prepárate para aumentar tu porción del pastel con herramientas sencillas de administración del subsidio. Para empezar, por favor verifica tu dirección de correo haciendo clic en el enlace abajo (también puedes copiar y pegar en su navegador).
