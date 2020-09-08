@@ -41,7 +41,6 @@ Rails.application.routes.draw do
 end
 
 # rubocop:disable Layout/LineLength
-
 # == Route Map
 #
 #                                Prefix Verb   URI Pattern                                                                              Controller#Action
@@ -49,11 +48,11 @@ end
 #                      new_user_session GET    /login(.:format)                                                                         sessions#new
 #                          user_session POST   /login(.:format)                                                                         sessions#create
 #                  destroy_user_session DELETE /logout(.:format)                                                                        sessions#destroy
-#                     new_user_password GET    /password/new(.:format)                                                                  devise/passwords#new
-#                    edit_user_password GET    /password/edit(.:format)                                                                 devise/passwords#edit
-#                         user_password PATCH  /password(.:format)                                                                      devise/passwords#update
-#                                       PUT    /password(.:format)                                                                      devise/passwords#update
-#                                       POST   /password(.:format)                                                                      devise/passwords#create
+#                     new_user_password GET    /password/new(.:format)                                                                  passwords#new
+#                    edit_user_password GET    /password/edit(.:format)                                                                 passwords#edit
+#                         user_password PATCH  /password(.:format)                                                                      passwords#update
+#                                       PUT    /password(.:format)                                                                      passwords#update
+#                                       POST   /password(.:format)                                                                      passwords#create
 #              cancel_user_registration GET    /signup/cancel(.:format)                                                                 registrations#cancel
 #                 new_user_registration GET    /signup/sign_up(.:format)                                                                registrations#new
 #                edit_user_registration GET    /signup/edit(.:format)                                                                   registrations#edit
@@ -109,6 +108,12 @@ end
 #                                       PATCH  /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#update {:format=>:json}
 #                                       PUT    /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#update {:format=>:json}
 #                                       DELETE /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#destroy {:format=>:json}
+#                           attendances GET    /api/v1/attendances(.:format)                                                            api/v1/attendances#index {:format=>:json}
+#                                       POST   /api/v1/attendances(.:format)                                                            api/v1/attendances#create {:format=>:json}
+#                            attendance GET    /api/v1/attendances/:slug(.:format)                                                      api/v1/attendances#show {:format=>:json}
+#                                       PATCH  /api/v1/attendances/:slug(.:format)                                                      api/v1/attendances#update {:format=>:json}
+#                                       PUT    /api/v1/attendances/:slug(.:format)                                                      api/v1/attendances#update {:format=>:json}
+#                                       DELETE /api/v1/attendances/:slug(.:format)                                                      api/v1/attendances#destroy {:format=>:json}
 #                                       GET    /*path(.:format)                                                                         static#fallback_index_html
 #         rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
 #            rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create
