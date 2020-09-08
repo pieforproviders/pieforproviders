@@ -15,7 +15,6 @@ import Signup from './Signup'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
-import { Layout } from 'antd'
 import { AuthLayout } from '_shared'
 import { isUserLoggedIn } from '_utils'
 import { useTranslation } from 'react-i18next'
@@ -32,55 +31,44 @@ const App = () => {
   }, [])
 
   return (
-    <Layout
-      breakpoint={{
-        xs: '0px',
-        sm: '360px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px'
-      }}
-      className="bg-white"
-    >
-      <div className="text-primaryBlue font-proxima text-sm h-screen">
-        <ErrorBoundary>
-          <Router>
-            <Switch>
-              <Route path="/signup">
-                <AuthLayout
-                  backgroundImageClass="auth-image"
-                  contentComponent={Signup}
-                />
-              </Route>
-              <Route path="/login">
-                <AuthLayout
-                  backgroundImageClass="auth-image"
-                  contentComponent={Login}
-                />
-              </Route>
-              <Route
-                path="/confirm"
-                title="Confirm your Account"
-                component={Confirmation}
+    <div className="text-primaryBlue font-proxima text-sm h-screen">
+      <ErrorBoundary>
+        <Router>
+          <Switch>
+            <Route path="/signup">
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={Signup}
               />
-              <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
-                <GettingStarted />
-              </AuthorizedRoute>
-              <AuthorizedRoute exact path="/dashboard">
-                <Dashboard />
-              </AuthorizedRoute>
-              <AuthorizedRoute exact path="/cases/import">
-                <CasesImport />
-              </AuthorizedRoute>
-              <Route exact path="/">
-                <Redirect to={isUserLoggedIn ? '/dashboard' : '/login'} />
-              </Route>
-              <Route component={NotFound} />
-            </Switch>
-          </Router>
-        </ErrorBoundary>
-      </div>
-    </Layout>
+            </Route>
+            <Route path="/login">
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={Login}
+              />
+            </Route>
+            <Route
+              path="/confirm"
+              title="Confirm your Account"
+              component={Confirmation}
+            />
+            <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
+              <GettingStarted />
+            </AuthorizedRoute>
+            <AuthorizedRoute exact path="/dashboard">
+              <Dashboard />
+            </AuthorizedRoute>
+            <AuthorizedRoute exact path="/cases/import">
+              <CasesImport />
+            </AuthorizedRoute>
+            <Route exact path="/">
+              <Redirect to={isUserLoggedIn ? '/dashboard' : '/login'} />
+            </Route>
+            <Route component={NotFound} />
+          </Switch>
+        </Router>
+      </ErrorBoundary>
+    </div>
   )
 }
 

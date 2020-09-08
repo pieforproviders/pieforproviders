@@ -30,11 +30,10 @@ module.exports = {
     }
   },
   screens: {
-    xs: '0px',
-    sm: '360px',
-    md: '768px',
-    lg: '1024px',
-    xl: '1280px'
+    xs: '360px',
+    sm: '768px',
+    md: '1024px',
+    lg: '1280px'
   },
   plugins: [require('./tailwind/plugins/base')()],
   future: {
