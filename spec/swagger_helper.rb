@@ -173,6 +173,17 @@ RSpec.configure do |config|
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
             }
           },
+          child_case_cycle_payment: {
+            type: :object,
+            properties: {
+              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
+              amount_currency: { type: :string, example: 'USD' },
+              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
+              discrepancy_cents: { type: :integer, example: 456 },
+              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
+              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+            }
+          },
           createUser: {
             type: :object,
             properties: {
@@ -350,6 +361,30 @@ RSpec.configure do |config|
               case_cycle: {
                 allOf: [
                   { '$ref': '#/components/schemas/case_cycle' }
+                ]
+              }
+            }
+          },
+          createChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
+                  {
+                    type: :object,
+                    required: %w[amount_cents child_case_cycle_id payment_id]
+                  }
+                ]
+              }
+            }
+          },
+          updateChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
                 ]
               }
             }

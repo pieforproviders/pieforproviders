@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       resources :children, param: :slug
       resources :payments, param: :slug
       resources :case_cycles, param: :slug
+      resources :child_case_cycle_payments, param: :slug
     end
   end
 
@@ -43,31 +44,76 @@ end
 # == Route Map
 #
 #                                Prefix Verb   URI Pattern                                                                              Controller#Action
-#                           oauth_token POST   /oauth/token(.:format)                                                                   doorkeeper/tokens#create
-#                          oauth_revoke POST   /oauth/revoke(.:format)                                                                  doorkeeper/tokens#revoke
-#                      oauth_introspect POST   /oauth/introspect(.:format)                                                              doorkeeper/tokens#introspect
-#                      oauth_token_info GET    /oauth/token/info(.:format)                                                              doorkeeper/token_info#show
+#                                 login GET    /login(.:format)                                                                         static#fallback_index_html
+#                      new_user_session GET    /login(.:format)                                                                         sessions#new
+#                          user_session POST   /login(.:format)                                                                         sessions#create
+#                  destroy_user_session DELETE /logout(.:format)                                                                        sessions#destroy
+#                     new_user_password GET    /password/new(.:format)                                                                  devise/passwords#new
+#                    edit_user_password GET    /password/edit(.:format)                                                                 devise/passwords#edit
+#                         user_password PATCH  /password(.:format)                                                                      devise/passwords#update
+#                                       PUT    /password(.:format)                                                                      devise/passwords#update
+#                                       POST   /password(.:format)                                                                      devise/passwords#create
+#              cancel_user_registration GET    /signup/cancel(.:format)                                                                 registrations#cancel
+#                 new_user_registration GET    /signup/sign_up(.:format)                                                                registrations#new
+#                edit_user_registration GET    /signup/edit(.:format)                                                                   registrations#edit
+#                     user_registration PATCH  /signup(.:format)                                                                        registrations#update
+#                                       PUT    /signup(.:format)                                                                        registrations#update
+#                                       DELETE /signup(.:format)                                                                        registrations#destroy
+#                                       POST   /signup(.:format)                                                                        registrations#create
+#                 new_user_confirmation GET    /confirmation/new(.:format)                                                              confirmations#new
+#                     user_confirmation GET    /confirmation(.:format)                                                                  confirmations#show
+#                                       POST   /confirmation(.:format)                                                                  confirmations#create
+#                              rswag_ui        /api-docs                                                                                Rswag::Ui::Engine
+#                             rswag_api        /api-docs                                                                                Rswag::Api::Engine
+#                     letter_opener_web        /letter_opener                                                                           LetterOpenerWeb::Engine
+#                                 users GET    /api/v1/users(.:format)                                                                  api/v1/users#index {:format=>:json}
+#                                       POST   /api/v1/users(.:format)                                                                  api/v1/users#create {:format=>:json}
+#                                  user PATCH  /api/v1/users/:slug(.:format)                                                            api/v1/users#update {:format=>:json}
+#                                       PUT    /api/v1/users/:slug(.:format)                                                            api/v1/users#update {:format=>:json}
+#                                       DELETE /api/v1/users/:slug(.:format)                                                            api/v1/users#destroy {:format=>:json}
+#                               profile GET    /api/v1/profile(.:format)                                                                api/v1/users#show {:format=>:json}
+#                            businesses GET    /api/v1/businesses(.:format)                                                             api/v1/businesses#index {:format=>:json}
+#                                       POST   /api/v1/businesses(.:format)                                                             api/v1/businesses#create {:format=>:json}
+#                              business GET    /api/v1/businesses/:slug(.:format)                                                       api/v1/businesses#show {:format=>:json}
+#                                       PATCH  /api/v1/businesses/:slug(.:format)                                                       api/v1/businesses#update {:format=>:json}
+#                                       PUT    /api/v1/businesses/:slug(.:format)                                                       api/v1/businesses#update {:format=>:json}
+#                                       DELETE /api/v1/businesses/:slug(.:format)                                                       api/v1/businesses#destroy {:format=>:json}
+#                                 sites GET    /api/v1/sites(.:format)                                                                  api/v1/sites#index {:format=>:json}
+#                                       POST   /api/v1/sites(.:format)                                                                  api/v1/sites#create {:format=>:json}
+#                                  site GET    /api/v1/sites/:slug(.:format)                                                            api/v1/sites#show {:format=>:json}
+#                                       PATCH  /api/v1/sites/:slug(.:format)                                                            api/v1/sites#update {:format=>:json}
+#                                       PUT    /api/v1/sites/:slug(.:format)                                                            api/v1/sites#update {:format=>:json}
+#                                       DELETE /api/v1/sites/:slug(.:format)                                                            api/v1/sites#destroy {:format=>:json}
 #                              children GET    /api/v1/children(.:format)                                                               api/v1/children#index {:format=>:json}
 #                                       POST   /api/v1/children(.:format)                                                               api/v1/children#create {:format=>:json}
-#                                 child GET    /api/v1/children/:id(.:format)                                                           api/v1/children#show {:format=>:json}
-#                                       PATCH  /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
-#                                       PUT    /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
-#                                       DELETE /api/v1/children/:id(.:format)                                                           api/v1/children#destroy {:format=>:json}
-#                                 users GET    /api/v1/users(.:format)                                                                  api/v1/users#index {:format=>:json}
-#              cancel_user_registration GET    /api/v1/users/cancel(.:format)                                                           api/v1/users/registrations#cancel {:format=>:json}
-#                 new_user_registration GET    /api/v1/users/sign_up(.:format)                                                          api/v1/users/registrations#new {:format=>:json}
-#                edit_user_registration GET    /api/v1/users/edit(.:format)                                                             api/v1/users/registrations#edit {:format=>:json}
-#                     user_registration PATCH  /api/v1/users(.:format)                                                                  api/v1/users/registrations#update {:format=>:json}
-#                                       PUT    /api/v1/users(.:format)                                                                  api/v1/users/registrations#update {:format=>:json}
-#                                       DELETE /api/v1/users(.:format)                                                                  api/v1/users/registrations#destroy {:format=>:json}
-#                                       POST   /api/v1/users(.:format)                                                                  api/v1/users/registrations#create {:format=>:json}
-#                 new_user_confirmation GET    /api/v1/users/confirmation/new(.:format)                                                 api/v1/confirmations#new {:format=>:json}
-#                     user_confirmation GET    /api/v1/users/confirmation(.:format)                                                     api/v1/confirmations#show {:format=>:json}
-#                                       POST   /api/v1/users/confirmation(.:format)                                                     api/v1/confirmations#create {:format=>:json}
-#         rails_mandrill_inbound_emails POST   /rails/action_mailbox/mandrill/inbound_emails(.:format)                                  action_mailbox/ingresses/mandrill/inbound_emails#create
+#                                 child GET    /api/v1/children/:slug(.:format)                                                         api/v1/children#show {:format=>:json}
+#                                       PATCH  /api/v1/children/:slug(.:format)                                                         api/v1/children#update {:format=>:json}
+#                                       PUT    /api/v1/children/:slug(.:format)                                                         api/v1/children#update {:format=>:json}
+#                                       DELETE /api/v1/children/:slug(.:format)                                                         api/v1/children#destroy {:format=>:json}
+#                              payments GET    /api/v1/payments(.:format)                                                               api/v1/payments#index {:format=>:json}
+#                                       POST   /api/v1/payments(.:format)                                                               api/v1/payments#create {:format=>:json}
+#                               payment GET    /api/v1/payments/:slug(.:format)                                                         api/v1/payments#show {:format=>:json}
+#                                       PATCH  /api/v1/payments/:slug(.:format)                                                         api/v1/payments#update {:format=>:json}
+#                                       PUT    /api/v1/payments/:slug(.:format)                                                         api/v1/payments#update {:format=>:json}
+#                                       DELETE /api/v1/payments/:slug(.:format)                                                         api/v1/payments#destroy {:format=>:json}
+#                           case_cycles GET    /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#index {:format=>:json}
+#                                       POST   /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#create {:format=>:json}
+#                            case_cycle GET    /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#show {:format=>:json}
+#                                       PATCH  /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#update {:format=>:json}
+#                                       PUT    /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#update {:format=>:json}
+#                                       DELETE /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#destroy {:format=>:json}
+#             child_case_cycle_payments GET    /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#index {:format=>:json}
+#                                       POST   /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#create {:format=>:json}
+#              child_case_cycle_payment GET    /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#show {:format=>:json}
+#                                       PATCH  /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#update {:format=>:json}
+#                                       PUT    /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#update {:format=>:json}
+#                                       DELETE /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#destroy {:format=>:json}
+#                                       GET    /*path(.:format)                                                                         static#fallback_index_html
 #         rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
 #            rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create
 #         rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                  action_mailbox/ingresses/sendgrid/inbound_emails#create
+#   rails_mandrill_inbound_health_check GET    /rails/action_mailbox/mandrill/inbound_emails(.:format)                                  action_mailbox/ingresses/mandrill/inbound_emails#health_check
+#         rails_mandrill_inbound_emails POST   /rails/action_mailbox/mandrill/inbound_emails(.:format)                                  action_mailbox/ingresses/mandrill/inbound_emails#create
 #          rails_mailgun_inbound_emails POST   /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)                              action_mailbox/ingresses/mailgun/inbound_emails#create
 #        rails_conductor_inbound_emails GET    /rails/conductor/action_mailbox/inbound_emails(.:format)                                 rails/conductor/action_mailbox/inbound_emails#index
 #                                       POST   /rails/conductor/action_mailbox/inbound_emails(.:format)                                 rails/conductor/action_mailbox/inbound_emails#create
@@ -81,5 +127,18 @@ end
 #                    rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
 #             update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                      active_storage/disk#update
 #                  rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
+#
+# Routes for Rswag::Ui::Engine:
+#
+#
+# Routes for Rswag::Api::Engine:
+#
+#
+# Routes for LetterOpenerWeb::Engine:
+# clear_letters DELETE /clear(.:format)                 letter_opener_web/letters#clear
+# delete_letter DELETE /:id(.:format)                   letter_opener_web/letters#destroy
+#       letters GET    /                                letter_opener_web/letters#index
+#        letter GET    /:id(/:style)(.:format)          letter_opener_web/letters#show
+#               GET    /:id/attachments/:file(.:format) letter_opener_web/letters#attachment
 
 # rubocop:enable Layout/LineLength
