@@ -4,6 +4,15 @@
 class ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
+  def create
+    self.resource = resource_class.send_confirmation_instructions(email: params[:email])
+    if successfully_sent?(resource)
+      respond_with(resource)
+    else
+      respond_with({ error: I18n.t('errors.messages.confirmation_resent') })
+    end
+  end
+
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
     if resource.errors.empty?

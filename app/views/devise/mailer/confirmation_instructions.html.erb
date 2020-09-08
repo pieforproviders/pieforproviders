@@ -1,9 +1,9 @@
-<%= image_tag attachments['pielogo.png'].url, width: '150', align: "middle" %>
+<div style="text-align:center;width:100%;"><%= image_tag attachments['pielogo.png'].url, width: '150', margin: "0 auto" %></div>
 
 <p><%= @hello %><%= @greeting_name ? " #{@greeting_name}," : ","%></p>
 
 <p><%= @body %></p>
 
-<p><%= link_to @confirm_account, @confirmation_path, target: "_blank" %></p>
+<p><%= link_to @confirmation_path, @confirmation_path, target: "_blank" %></p>
 
 <p><%= @questions %><%= mail_to @sender, @sender, subject: @reply_subject %></p>
