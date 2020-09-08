@@ -1,0 +1,11 @@
+{
+  "case_statuses": {
+    "type": "string",
+    "enum": [
+      "submitted",
+      "pending",
+      "approved",
+      "denied"
+    ]
+  }
+}

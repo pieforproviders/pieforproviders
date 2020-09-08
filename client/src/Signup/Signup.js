@@ -129,6 +129,8 @@ export function Signup() {
           <Input
             placeholder={t('organizationPlaceholder')}
             autoComplete="organization"
+            data-cy="organization"
+            value={user.organization}
             onChange={event =>
               setUser({ ...user, organization: event.target.value })
             }
@@ -148,6 +150,8 @@ export function Signup() {
           <Input
             placeholder={t('fullNamePlaceholder')}
             autoComplete="name"
+            value={user.fullName}
+            data-cy="name"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -167,6 +171,8 @@ export function Signup() {
           <Input
             placeholder={t('greetingNamePlaceholder')}
             autoComplete="nickname"
+            data-cy="greetingName"
+            value={user.greetingName}
             onChange={event =>
               setUser({ ...user, greetingName: event.target.value })
             }
@@ -187,12 +193,17 @@ export function Signup() {
             style={{ textAlign: 'left' }}
             value={multiBusiness}
             placeholder={t('multiBusinessPlaceholder')}
+            data-cy="multiBusiness"
             onChange={value => {
               setMultiBusiness(value)
             }}
           >
-            <Option value="yes">{t('multiBusinessTrue')}</Option>
-            <Option value="no">{t('multiBusinessFalse')}</Option>
+            <Option value="yes" data-cy="yesMultiBusiness">
+              {t('multiBusinessTrue')}
+            </Option>
+            <Option value="no" data-cy="noSingleBusiness">
+              {t('multiBusinessFalse')}
+            </Option>
           </Select>
         </Form.Item>
 
@@ -202,14 +213,21 @@ export function Signup() {
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
               name="phoneType"
+              data-cy="phoneType"
               placeholder={t('phoneTypePlaceholder')}
               onChange={value => {
                 setUser({ ...user, phoneType: value })
               }}
             >
-              <Option value="cell">{t('phoneTypeCell')}</Option>
-              <Option value="home">{t('phoneTypeHome')}</Option>
-              <Option value="work">{t('phoneTypeWork')}</Option>
+              <Option value="cell" data-cy="cellPhone">
+                {t('phoneTypeCell')}
+              </Option>
+              <Option value="home" data-cy="homePhone">
+                {t('phoneTypeHome')}
+              </Option>
+              <Option value="work" data-cy="workPhone">
+                {t('phoneTypeWork')}
+              </Option>
             </Select>
 
             <Form.Item
@@ -233,6 +251,8 @@ export function Signup() {
                 placeholder="___-___-____"
                 size="10"
                 className="h-8"
+                data-cy="phoneNumber"
+                value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -261,7 +281,7 @@ export function Signup() {
               { required: true, message: t('preferredLanguageRequired') }
             ]}
           >
-            <Radio.Button value="en" className="w-1/2">
+            <Radio.Button value="en" data-cy="languageEn" className="w-1/2">
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -283,7 +303,7 @@ export function Signup() {
               )}
               {t('english')}
             </Radio.Button>
-            <Radio.Button value="es" className="w-1/2">
+            <Radio.Button value="es" data-cy="languageEs" className="w-1/2">
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{
@@ -332,6 +352,7 @@ export function Signup() {
             placeholder="amanda@gmail.com"
             autoComplete="email"
             type="email"
+            data-cy="email"
             onChange={event => setUser({ ...user, email: event.target.value })}
           />
         </Form.Item>
@@ -354,6 +375,7 @@ export function Signup() {
           <Input.Password
             placeholder={t('passwordPlaceholder')}
             autoComplete="new-password"
+            data-cy="password"
             onChange={event =>
               setUser({ ...user, password: event.target.value })
             }
@@ -380,6 +402,7 @@ export function Signup() {
           <Input.Password
             placeholder={t('passwordConfirmationPlaceholder')}
             autoComplete="new-password"
+            data-cy="passwordConfirmation"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
             }
@@ -401,6 +424,7 @@ export function Signup() {
             style={{ textAlign: 'left' }}
             checked={user.serviceAgreementAccepted}
             className="flex"
+            data-cy="terms"
             onChange={() => {
               setUser({
                 ...user,
@@ -412,7 +436,7 @@ export function Signup() {
           </Checkbox>
         </Form.Item>
         <Form.Item wrapperCol={{ md: 8 }} className="text-center">
-          <PaddedButton text={t('signup')} />
+          <PaddedButton data-cy="signupBtn" text={t('signup')} />
         </Form.Item>
       </Form>
     </>

@@ -113,7 +113,7 @@ end
 # ------------------------------------------------------------------------------
 
 def name_from_class(item_class)
-  item_class.name.downcase
+  item_class.name.underscore
 end
 
 #  This is the parameter passed to this example:

@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { Divider, Typography } from 'antd'
+import { Divider, Typography, Alert } from 'antd'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 
 const { Title, Text, Link } = Typography
 
 const pieEmail = 'tech@pieforproviders.com'
 
-function ListItem({ children }) {
+function ListItem({ children, id = null }) {
   return (
-    <div className="flex justify-left mb-2">
+    <div id={id} className="flex justify-left mb-2">
       <LabelImportantIcon
         className="mr-1"
         style={{ color: '#000', fontSize: '16px' }}
@@ -21,15 +22,31 @@ function ListItem({ children }) {
 }
 
 ListItem.propTypes = {
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
+  id: PropTypes.string
 }
 
 const ConfirmationSent = ({ userEmail }) => {
   const { t } = useTranslation()
+  const { makeRequest } = useApiResponse()
+  const [resent, setResent] = useState(null)
+
+  const resendConfirmation = async () => {
+    setResent(null)
+    const response = await makeRequest({
+      type: 'post',
+      url: `confirmation?email=${userEmail}`
+    })
+    if (response.ok) {
+      setResent(true)
+    }
+  }
 
   return (
     <>
-      <Title className="text-center">{t('signupThanks')}</Title>
+      <Title className="text-center" data-cy="signupThanks">
+        {t('signupThanks')}
+      </Title>
       <Title level={3} className="text-center">
         {t('emailVerificationText')}
       </Title>
@@ -50,9 +67,19 @@ const ConfirmationSent = ({ userEmail }) => {
             {t('addToContacts')}
           </Text>
         </ListItem>
-        <ListItem>
-          <Link to="#">{t('resendConfirmationEmail')}</Link>
+        <ListItem id="resend-link">
+          <Link data-cy="resendConfirmation" onClick={resendConfirmation}>
+            {t('resendConfirmationEmail')}
+          </Link>
         </ListItem>
+        {resent && (
+          <Alert
+            message={t('confirmationEmailResent')}
+            type="success"
+            data-cy="resent"
+            show-icon
+          />
+        )}
       </div>
     </>
   )
