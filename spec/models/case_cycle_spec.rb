@@ -13,20 +13,16 @@ RSpec.describe CaseCycle, type: :model do
   it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
   it {
     should define_enum_for(:status).with_values(
-      CaseCycle::STATUSES.to_h { |s| [s, s] }
+      CaseCycle::STATUSES.index_by(&:to_sym)
     ).backed_by_column_of_type(:enum)
   }
-
   it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
   it {
     should define_enum_for(:copay_frequency).with_values(
-      CaseCycle::COPAY_FREQUENCIES.to_h { |f| [f, f] }
+      CaseCycle::COPAY_FREQUENCIES.index_by(&:to_sym)
     ).with_suffix.backed_by_column_of_type(:enum)
   }
-
-  it 'factory should be valid (default; no args)' do
-    expect(build(:case_cycle)).to be_valid
-  end
+  it { should allow_values(:daily, :weekly, :monthly).for(:copay_frequency) }
 
   it 'validates uniqueness of slug' do
     create(:case_cycle)
