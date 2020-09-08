@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :business do
     name { Faker::Name.child_care_businesses }
     license_type { Licenses.types.keys.sample }
-    user
+    user factory: :confirmed_user
   end
 end
 

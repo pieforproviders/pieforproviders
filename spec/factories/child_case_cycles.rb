@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :child_case_cycle do
-    user
+    user factory: :confirmed_user
     child
     subsidy_rule
     case_cycle
