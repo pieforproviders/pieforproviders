@@ -4,6 +4,8 @@ FactoryBot.define do
   factory :attendance do
     child_case_cycle
     starts_on { Date.current }
+    # TODO: may need to change length_of_care later after it is calculated.
+    #   See the Attendance class more info
     length_of_care { Attendance::LENGTHS_OF_CARE.sample }
   end
 end

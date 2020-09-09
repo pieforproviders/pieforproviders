@@ -2255,7 +2255,6 @@
                 "type": "object",
                 "required": [
                   "child_case_cycle_id",
-                  "length_of_care",
                   "starts_on"
                 ]
               }
