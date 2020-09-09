@@ -102,6 +102,12 @@ end
 #                                       PATCH  /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#update {:format=>:json}
 #                                       PUT    /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#update {:format=>:json}
 #                                       DELETE /api/v1/case_cycles/:slug(.:format)                                                      api/v1/case_cycles#destroy {:format=>:json}
+#                     child_case_cycles GET    /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#index {:format=>:json}
+#                                       POST   /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#create {:format=>:json}
+#                      child_case_cycle GET    /api/v1/child_case_cycles/:slug(.:format)                                                api/v1/child_case_cycles#show {:format=>:json}
+#                                       PATCH  /api/v1/child_case_cycles/:slug(.:format)                                                api/v1/child_case_cycles#update {:format=>:json}
+#                                       PUT    /api/v1/child_case_cycles/:slug(.:format)                                                api/v1/child_case_cycles#update {:format=>:json}
+#                                       DELETE /api/v1/child_case_cycles/:slug(.:format)                                                api/v1/child_case_cycles#destroy {:format=>:json}
 #             child_case_cycle_payments GET    /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#index {:format=>:json}
 #                                       POST   /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#create {:format=>:json}
 #              child_case_cycle_payment GET    /api/v1/child_case_cycle_payments/:slug(.:format)                                        api/v1/child_case_cycle_payments#show {:format=>:json}
