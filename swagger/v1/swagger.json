@@ -569,6 +569,194 @@
         }
       }
     },
+    "/api/v1/child_case_cycles": {
+      "get": {
+        "summary": "lists all child_case_cycles for a user",
+        "tags": [
+          "child_case_cycles"
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycles found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a child_case_cycle",
+        "tags": [
+          "child_case_cycles"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "child_case_cycle created",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "invalid request",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createChildCaseCycle"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/createChildCaseCycle"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/child_case_cycles/{slug}": {
+      "parameters": [
+        {
+          "name": "slug",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a child_case_cycle",
+        "tags": [
+          "child_case_cycles"
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycle found",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a child_case_cycle",
+        "tags": [
+          "child_case_cycles"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "child_case_cycle updated",
+            "content": {
+            }
+          },
+          "422": {
+            "description": "child_case_cycle cannot be updated",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChildCaseCycle"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChildCaseCycle"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a child_case_cycle",
+        "tags": [
+          "child_case_cycles"
+        ],
+        "responses": {
+          "204": {
+            "description": "child_case_cycle deleted",
+            "content": {
+            }
+          },
+          "404": {
+            "description": "child_case_cycle not found",
+            "content": {
+            }
+          },
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+            }
+          }
+        }
+      }
+    },
     "/api/v1/children": {
       "get": {
         "summary": "lists all children for a user",
@@ -1709,6 +1897,35 @@
           }
         }
       },
+      "child_case_cycle": {
+        "type": "object",
+        "properties": {
+          "case_cycle_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "child_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "full_days_allowed": {
+            "type": "integer",
+            "example": 21
+          },
+          "part_days_allowed": {
+            "type": "integer",
+            "example": 18
+          },
+          "subsidy_rule_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
+          "user_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          }
+        }
+      },
       "child_case_cycle_payment": {
         "type": "object",
         "properties": {
@@ -1969,6 +2186,41 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/case_cycle"
+              }
+            ]
+          }
+        }
+      },
+      "createChildCaseCycle": {
+        "type": "object",
+        "properties": {
+          "child_case_cycle": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/child_case_cycle"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "case_cycle_id",
+                  "child_id",
+                  "full_days_allowed",
+                  "part_days_allowed",
+                  "subsidy_rule_id",
+                  "user_id"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateChildCaseCycle": {
+        "type": "object",
+        "properties": {
+          "child_case_cycle": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/child_case_cycle"
               }
             ]
           }
