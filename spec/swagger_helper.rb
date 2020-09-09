@@ -413,7 +413,7 @@ RSpec.configure do |config|
                   { '$ref': '#/components/schemas/attendance' },
                   {
                     type: :object,
-                    required: %w[child_case_cycle_id length_of_care starts_on]
+                    required: %w[child_case_cycle_id starts_on]
                   }
                 ]
               }

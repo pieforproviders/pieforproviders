@@ -17,6 +17,8 @@ class Api::V1::AttendancesController < Api::V1::ApiController
   end
 
   # POST /attendances
+  # TODO: need to calculate the length_of_care based on the subsidy_rule
+  # for the child_case_cycle
   def create
     @attendance = Attendance.new(attendance_params)
 
@@ -50,7 +52,7 @@ class Api::V1::AttendancesController < Api::V1::ApiController
   # Only allow a trusted parameter "white list" through.
   def attendance_params
     params.require(:attendance).permit(
-      :id, :child_case_cycle_id, :slug, :length_of_care, :starts_on
+      :id, :child_case_cycle_id, :slug, :starts_on
     )
   end
 end
