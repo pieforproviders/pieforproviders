@@ -3,4 +3,6 @@
 # base controller for the V1 API
 class Api::V1::ApiController < ApplicationController
   before_action :authenticate_user!
+
+  include Pundit
 end
