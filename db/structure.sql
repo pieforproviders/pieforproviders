@@ -61,8 +61,6 @@ CREATE TYPE public.license_types AS ENUM (
 
 SET default_tablespace = '';
 
-SET default_with_oids = false;
-
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
 --
@@ -387,7 +385,8 @@ CREATE TABLE public.users (
     unconfirmed_email character varying,
     failed_attempts integer DEFAULT 0 NOT NULL,
     unlock_token character varying,
-    locked_at timestamp without time zone
+    locked_at timestamp without time zone,
+    admin boolean DEFAULT false NOT NULL
 );
 
 
@@ -939,7 +938,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200906195706'),
 ('20200906232048'),
 ('20200907181541'),
+('20200910021812'),
 ('20200911180200'),
 ('20200911220200');
-
-
