@@ -23,6 +23,11 @@ FactoryBot.define do
     factory :confirmed_user do
       before(:create, &:skip_confirmation!)
     end
+
+    factory :admin do
+      before(:create, &:skip_confirmation!)
+      admin { true }
+    end
   end
 end
 # == Schema Information
@@ -31,6 +36,7 @@ end
 #
 #  id                         :uuid             not null, primary key
 #  active                     :boolean          default(TRUE), not null
+#  admin                      :boolean          default(FALSE), not null
 #  confirmation_sent_at       :datetime
 #  confirmation_token         :string
 #  confirmed_at               :datetime
