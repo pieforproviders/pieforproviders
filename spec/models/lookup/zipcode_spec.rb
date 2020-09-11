@@ -6,8 +6,8 @@ RSpec.describe Lookup::Zipcode do
   it { should belong_to(:state) }
   it { should validate_presence_of(:code) }
   it 'validates uniqueness of the code' do
-    create(:zipcode)
-    should validate_uniqueness_of(:code).case_insensitive
+    new_zipcode = CreateOrSampleLookup.zipcode
+    expect(new_zipcode).to validate_uniqueness_of(:code).case_insensitive
   end
 end
 
