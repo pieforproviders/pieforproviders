@@ -9,7 +9,8 @@ class ConfirmationsController < Devise::ConfirmationsController
     if successfully_sent?(resource)
       respond_with(resource)
     else
-      respond_with({ error: I18n.t('errors.messages.confirmation_resent') })
+      errors(resource.errors.details)
+      render json: error_response, status: :unprocessable_entity
     end
   end
 

@@ -84,7 +84,7 @@
 
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
-  "alreadyConfirmed": "Este correo electrónico ya ha sido confirmado, por favor intenta iniciar sesión. Si has olvidado tu contraseña, por favor resetéala abajo",
+  "alreadyConfirmed": "Ya has verificado tu cuenta. Ahora puedes iniciar sesión.",
   "emailUnconfirmed": "Tienes que confirmar tu correo antes de continuar.",
   "confirmationPeriodExpired": "Tu periodo de confirmación ha expirado",
   "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo.",
