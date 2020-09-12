@@ -52,15 +52,16 @@ export const NewPassword = () => {
 
     setLoading(false)
 
+    const data = await response.json()
+
     if (!response.ok) {
-      const errorMessage = await response.json()
       history.push({
         pathname: '/login',
         state: {
           error: {
             status: response.status,
-            attribute: errorMessage.attribute,
-            type: errorMessage.type
+            attribute: data.attribute,
+            type: data.type
           }
         }
       })
@@ -76,7 +77,8 @@ export const NewPassword = () => {
           error: {
             status: 401,
             attribute: 'email',
-            type: 'not_confirmed'
+            type: 'unconfirmed',
+            context: { email: data.email }
           }
         }
       })
