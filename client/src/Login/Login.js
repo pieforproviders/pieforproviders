@@ -96,6 +96,7 @@ export function Login() {
           message={apiSuccess.message}
           type="success"
           className="mb-2"
+          data-cy="successMessage"
         />
       )}
 
