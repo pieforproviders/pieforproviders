@@ -79,12 +79,16 @@ describe('Login', () => {
       ])
     })
 
-    it('displays an error message', () => {
+    it('displays an error message and allows the user to resend the confirmation email', () => {
       cy.server()
       cy.route({
         method: 'POST',
         url: '/login'
       }).as('login')
+      cy.route({
+        method: 'POST',
+        url: '/confirmation'
+      }).as('confirmation')
 
       cy.visit('/login')
       cy.get(createSelector('email')).type(email)
@@ -92,6 +96,10 @@ describe('Login', () => {
       cy.get(createSelector('loginBtn')).click()
       cy.wait('@login')
       cy.get(createSelector('authError')).should('exist')
+
+      cy.get(createSelector('resendConfirmationLink')).click()
+      cy.wait('@confirmation')
+      cy.get(createSelector('successMessage')).contains('Email resent')
     })
   })
 
