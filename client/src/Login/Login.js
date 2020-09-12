@@ -143,11 +143,12 @@ export function Login() {
         <Modal
           centered
           visible
-          closable={false}
+          maskClosable
           footer={null}
           maskStyle={{
             backgroundColor: 'rgba(0, 74, 110, 0.5)'
           }}
+          onCancel={() => setShowResetPasswordDialog(false)}
         >
           <PasswordResetRequest
             onClose={() => setShowResetPasswordDialog(false)}
