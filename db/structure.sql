@@ -312,15 +312,15 @@ CREATE TABLE public.sites (
     active boolean DEFAULT true NOT NULL,
     name character varying NOT NULL,
     address character varying NOT NULL,
-    city character varying NOT NULL,
-    state character varying NOT NULL,
-    zip character varying NOT NULL,
-    county character varying NOT NULL,
     slug character varying NOT NULL,
     qris_rating character varying,
     business_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    state_id uuid NOT NULL,
+    county_id uuid NOT NULL,
+    city_id uuid NOT NULL,
+    zip_id uuid NOT NULL
 );
 
 
@@ -938,6 +938,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200903112138'),
 ('20200906195706'),
 ('20200906232048'),
-('20200907181541');
+('20200907181541'),
+('20200911180200');
 
 

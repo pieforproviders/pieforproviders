@@ -6,13 +6,14 @@ class Site < UuidApplicationRecord
   has_many :child_sites, dependent: :destroy
   has_many :children, through: :child_sites
 
+  belongs_to :city, class_name: 'Lookup::City'
+  belongs_to :zip, class_name: 'Lookup::Zipcode'
+  belongs_to :county, class_name: 'Lookup::County'
+  belongs_to :state, class_name: 'Lookup::State'
+
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :business_id }
   validates :address, presence: true
-  validates :city, presence: true
-  validates :state, presence: true
-  validates :zip, presence: true
-  validates :county, presence: true
 
   before_validation { |site| site.slug = generate_slug("#{site.name}#{site.business_id}") }
 end
@@ -24,16 +25,16 @@ end
 #  id          :uuid             not null, primary key
 #  active      :boolean          default(TRUE), not null
 #  address     :string           not null
-#  city        :string           not null
-#  county      :string           not null
 #  name        :string           not null
 #  qris_rating :string
 #  slug        :string           not null
-#  state       :string           not null
-#  zip         :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  business_id :uuid             not null
+#  city_id     :uuid             not null
+#  county_id   :uuid             not null
+#  state_id    :uuid             not null
+#  zip_id      :uuid             not null
 #
 # Indexes
 #
