@@ -139,6 +139,10 @@ describe('Password update', () => {
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
+        cy.route({
+          method: 'POST',
+          url: '/confirmation'
+        }).as('confirmation')
 
         cy.visit(`/password/update?reset_password_token=${rawToken}`)
         cy.get(createSelector('password')).type(newPassword)
@@ -153,6 +157,10 @@ describe('Password update', () => {
             matchCase: false
           }
         )
+
+        cy.get(createSelector('resendConfirmationLink')).click()
+        cy.wait('@confirmation')
+        cy.get(createSelector('successMessage')).contains('Email resent')
       })
     })
   })

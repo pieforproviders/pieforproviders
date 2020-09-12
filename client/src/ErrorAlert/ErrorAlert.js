@@ -67,7 +67,11 @@ const ConfirmationAlert = ({ email }) => {
   return (
     <div>
       {t('emailUnconfirmed')}{' '}
-      <Link to="#" onClick={resendConfirmation}>
+      <Link
+        to="#"
+        onClick={resendConfirmation}
+        data-cy="resendConfirmationLink"
+      >
         {t('clickHere')}
       </Link>{' '}
       {t('toResendConfirmationEmail')}
