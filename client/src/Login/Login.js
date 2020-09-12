@@ -80,7 +80,7 @@ export function Login() {
         <Alert
           className="mb-2"
           message={
-            <AuthStatusAlert
+            <ErrorAlert
               attribute={apiError.attribute}
               type={apiError.type}
               context={apiError.context}
@@ -96,7 +96,6 @@ export function Login() {
           message={apiSuccess.message}
           type="success"
           className="mb-2"
-          data-cy="successMessage"
         />
       )}
 
