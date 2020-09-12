@@ -27,6 +27,8 @@ module App
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    config.autoload_paths << Rails.root.join('lib')
+
     # Changes the schema format as the tables using Postgres enums aren't dumped
     # properly when using the default of `:ruby`.
     # Ref: https://sipsandbits.com/2018/04/30/using-database-native-enums-with-rails/
