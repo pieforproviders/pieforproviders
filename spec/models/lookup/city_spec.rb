@@ -6,7 +6,7 @@ RSpec.describe Lookup::City do
   it { should belong_to(:state) }
   it { should validate_presence_of(:name) }
   it 'validates uniqueness of the name, scoped to a state and is not case sensitive' do
-    new_city = CreateOrSampleLookup.city
+    new_city = CreateOrSampleLookup.random_city_or_create
     expect(new_city).to validate_uniqueness_of(:name).scoped_to(:state_id)
                                                      .case_insensitive
   end
