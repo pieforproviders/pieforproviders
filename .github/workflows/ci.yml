@@ -1,13 +1,7 @@
 name: CI
 on:
-  push:
-    branches:
-    - main
-    - develop
   pull_request:
-    branches:
-    - main
-    - develop
+    types: [opened, edited]
 jobs:
   lint_backend:
     name: Backend linting
@@ -121,6 +115,7 @@ jobs:
           yarn test --watchAll=false
   e2e_tests:
     name: 'E2E tests'
+    if: github.event == 'deployment'
     runs-on: ubuntu-latest
     services:
       postgres:
