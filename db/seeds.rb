@@ -71,13 +71,13 @@ agency_WI = Agency.where(name: "Wisconsin Children's Services",
                            active: true
                          )
 illinois = Lookup::State.find_by(abbr: 'IL')
-agency_1 = Agency.where(name: 'Community Child Care Connection',
+agency_IL = Agency.where(name: 'Community Child Care Connection',
                         state: illinois).first_or_create(
                           active: true
                         )
-massachusettes = Lookup::State.find_by(abbr: 'MA')
-agency_2 = Agency.where(name: "Children's Aid and Family Services",
-                        state: massachusettes).first_or_create(
+massachusetts = Lookup::State.find_by(abbr: 'MA')
+agency_MA = Agency.where(name: "Children's Aid and Family Services",
+                        state: massachusetts).first_or_create(
                           active: true
                         )
 
