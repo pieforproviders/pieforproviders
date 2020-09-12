@@ -114,7 +114,7 @@ jobs:
           yarn
           yarn test --watchAll=false
   e2e_tests:
-    name: 'E2E tests'
+    name: E2E tests
     if: github.event == 'deployment'
     runs-on: ubuntu-latest
     services:
