@@ -50,7 +50,9 @@ class Api::V1::SitesController < Api::V1::ApiController
 
   def site_params
     params.require(:site).permit(
-      :active, :id, :name, :slug, :address, :city, :state, :zip, :county, :qris_rating, :business_id
+      :active, :id, :name, :slug, :address,
+      :city_id, :state_id, :zip_id, :county_id,
+      :qris_rating, :business_id
     )
   end
 end
