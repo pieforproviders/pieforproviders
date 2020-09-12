@@ -49,6 +49,6 @@ class Api::V1::AgenciesController < Api::V1::ApiController
   end
 
   def agency_params
-    params.require(:agency).permit(:name, :state, :active)
+    params.require(:agency).permit(:name, :state_id, :active)
   end
 end
