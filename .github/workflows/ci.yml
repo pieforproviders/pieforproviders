@@ -1,13 +1,7 @@
 name: CI
 on:
-  push:
-    branches:
-    - main
-    - develop
   pull_request:
-    branches:
-    - main
-    - develop
+    types: [opened, synchronize]
 jobs:
   lint_backend:
     name: Backend linting
@@ -120,8 +114,8 @@ jobs:
           yarn
           yarn test --watchAll=false
   e2e_tests:
-    name: 'E2E tests'
-    if: github.ref == 'refs/heads/main'
+    name: E2E tests
+    if: github.event == 'deployment'
     runs-on: ubuntu-latest
     services:
       postgres:
