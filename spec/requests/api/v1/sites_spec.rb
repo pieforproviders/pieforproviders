@@ -6,7 +6,7 @@ RSpec.describe 'sites API', type: :request do
   # Use confirmed_user so that no confirmation email is sent
   let(:business_id) { create(:business, user: create(:confirmed_user)).id }
   let(:tn) { CreateOrSampleLookup.state }
-  let(:tn_county)  { CreateOrSampleLookup.county(state: tn) }
+  let(:tn_county) { CreateOrSampleLookup.county(state: tn) }
   let(:tn_city) { CreateOrSampleLookup.city(state: tn, county: tn_county) }
   let(:tn_city_zip) { CreateOrSampleLookup.zipcode(state: tn, city: tn_city) }
 
