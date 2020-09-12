@@ -20,6 +20,10 @@ RSpec.describe SubsidyRule, type: :model do
   it { is_expected.to validate_numericality_of(:full_plus_full_day_max_hours).is_greater_than_or_equal_to(0.00) }
   it { is_expected.to validate_numericality_of(:full_plus_part_day_max_hours).is_greater_than_or_equal_to(0.00) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(build(:subsidy_rule)).to be_valid
+  end
+
   it do
     should define_enum_for(:license_type).with_values(
       Licenses.types

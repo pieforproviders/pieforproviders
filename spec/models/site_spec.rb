@@ -13,6 +13,10 @@ RSpec.describe Site, type: :model do
   it { should belong_to(:zip) }
   it { should belong_to(:county) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(build(:site)).to be_valid
+  end
+
   it 'validates uniqueness of site name' do
     create(:site)
     should validate_uniqueness_of(:name).scoped_to(:business_id)

@@ -10,6 +10,10 @@ RSpec.describe ChildCaseCyclePayment, type: :model do
   it { is_expected.to monetize(:amount) }
   it { is_expected.to monetize(:discrepancy) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(build(:child_case_cycle_payment)).to be_valid
+  end
+
   it 'discrepancy can be nil' do
     ccc_pay = create(:child_case_cycle_payment)
     ccc_pay.update(discrepancy: 10.00)
