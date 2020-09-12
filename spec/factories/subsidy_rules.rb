@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :subsidy_rule do
     sequence(:name) { |n| "Subsidy Rule #{n}" }
-    state { CreateOrSampleLookup.state }
-    county { CreateOrSampleLookup.county(state: state) }
+    state { CreateOrSampleLookup.random_state_or_create }
+    county { CreateOrSampleLookup.random_county_or_create(state: state) }
     max_age { 18 }
     part_day_rate { 18.00 }
     full_day_rate { 32.00 }

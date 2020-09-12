@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :agency do
     name { Faker::Name.agencies }
-    state { CreateOrSampleLookup.state }
+    state { CreateOrSampleLookup.random_state_or_create }
     active { true }
   end
 end

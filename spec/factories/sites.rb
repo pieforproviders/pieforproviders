@@ -4,10 +4,10 @@ FactoryBot.define do
   factory :site do
     name { Faker::Name.child_care_sites }
     address { Faker::Address.street_address }
-    state { CreateOrSampleLookup.state }
-    county { CreateOrSampleLookup.county(state: state) }
-    city { CreateOrSampleLookup.city(state: county.state, county: county) }
-    zip { CreateOrSampleLookup.zipcode(state: city.state, city: city) }
+    state { CreateOrSampleLookup.random_state_or_create }
+    county { CreateOrSampleLookup.random_county_or_create(state: state) }
+    city { CreateOrSampleLookup.random_city_or_create(state: county.state, county: county) }
+    zip { CreateOrSampleLookup.random_zipcode_or_create(state: city.state, city: city) }
 
     qris_rating { (1..5).to_a.push(nil).sample }
     business
