@@ -9,10 +9,10 @@
     "updated_at",
     "business_id",
     "address",
-    "city",
-    "state",
-    "zip",
-    "county"
+    "city_id",
+    "state_id",
+    "zip_id",
+    "county_id"
   ],
   "properties": {
     "active": { "type": "boolean" },
@@ -23,10 +23,10 @@
     "updated_at": { "type": "string", "format": "date-time" },
     "business_id": { "type": "string", "format": "uuid" },
     "address": { "type": "string" },
-    "city": { "type": "string" },
-    "state": { "type": "string" },
-    "zip": { "type": "string" },
-    "county": { "type": "string" },
+    "city_id": { "type": "string", "format": "uuid" },
+    "state_id": { "type": "string", "format": "uuid" },
+    "zip_id": { "type": "string", "format": "uuid" },
+    "county_id": { "type": "string", "format": "uuid" },
     "qris_rating": { "type": "string" }
   }
 }
