@@ -61,9 +61,11 @@
   "add": "Add",
   "addToContacts": "to your contacts.",
   "resendConfirmationEmail": "Click here to resend the email.",
+  "toResendConfirmationEmail": "to resend the confirmation email.",
   "confirmationEmailResent": "Email resent",
 
   "here": "here",
+  "clickHere": "Click here",
 
   "reportFeedback": "Report feedback",
 
@@ -84,6 +86,8 @@
 
   "genericErrorMessage": "Something went wrong, try again later.",
 
+  "invalidEmailOrPassword": "Invalid email or password.",
+  "unauthenticated": "You need to sign in or sign up before continuing.",
   "alreadyConfirmed": "You have already verified your account. You can now log in.",
   "emailUnconfirmed": "You have to confirm your email address before continuing.",
   "confirmationPeriodExpired": "Your confirmation period has expired.",
