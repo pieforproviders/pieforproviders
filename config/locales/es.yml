@@ -1,4 +1,33 @@
 es:
+  hello: Hola
+
+  license_types: &license_types
+    licensed_center: centro con licencia
+    licensed_family_home: guardería en el hogar con licencia
+    licensed_group_home: guardería de grupo en el hogar con licencia
+    license_exempt_home: guardería en el hogar exento de licencia 
+    license_exempt_center: centro exento de licencia
+
+  activerecord:
+    attributes:
+      business:
+        categories: *license_types
+
   errors:
     messages:
       taken: "ya ha sido tomado"
+      confirmation: "Error de confirmación"
+  mailers:
+    confirmation_instructions:
+      body: ¡Bienvenidas a Pie for Providers! Prepárate para aumentar tu porción del pastel con herramientas sencillas de administración del subsidio. Para empezar, por favor verifica tu dirección de correo haciendo clic en el enlace abajo (también puedes copiar y pegar en su navegador).
+      questions: "¿Preguntas? Correo electrónico "
+      subject: Verificación del correo de Pie for Providers
+
+    reset_password_instructions:
+      subject: "Pie for Providers - instrucciones para restablecer la contraseña"
+      body: "Alguien ha solicitado un enlace para cambiar tu contraseña. Puedes hacerlo usando el siguiente enlace."
+      note: "Si no has solicitado esto, por favor, ignora este correo. Tu contraseña no cambiará hasta que accedas al enlace de arriba y creas una nueva."
+
+    password_change:
+      subject: "Pie for Providers - contraseña cambiada"
+      body: "Contactamos a ti para notificarte que tu contraseña ha sido cambiada."

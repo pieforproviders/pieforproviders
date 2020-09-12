@@ -48,11 +48,47 @@ RSpec.configure do |config|
               timezone: { type: :string, example: 'Eastern Time (US & Canada)' }
             }
           },
+          case_statuses: {
+            type: :string,
+            enum: %w[submitted
+                     pending
+                     approved
+                     denied],
+            example: 'submitted'
+          },
+          copay_frequencies: {
+            type: :string,
+            enum: %w[daily
+                     weekly
+                     monthly],
+            example: 'weekly'
+          },
+          currency_or_null: {
+            anyOf: [
+              { type: :string, example: 'USD' },
+              { type: :null }
+            ]
+          },
+          date_or_null: {
+            anyOf: [
+              { type: :string, example: '2019-06-27' },
+              { type: :null }
+            ]
+          },
+          license_types: {
+            type: :string,
+            enum: %w[licensed_center
+                     licensed_family_home
+                     licensed_group_home
+                     license_exempt_home
+                     license_exempt_center],
+            example: 'license_exempt_home'
+          },
           business: {
             type: :object,
             properties: {
               name: { type: :string, example: 'Harlequin Child Care' },
-              category: { type: :string, example: 'license_exempt_home' },
+              license_type: { '$ref': '#/components/schemas/license_types' },
               active: { type: :boolean, example: 'true' }
             }
           },
@@ -86,14 +122,77 @@ RSpec.configure do |config|
               care_finished_on: { type: :string, example: '2020-03-15' },
               care_started_on: { type: :string, example: '2020-01-01' },
               discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: {
+              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
+              paid_on: { type: :string, example: '2020-05-20' },
+              site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+            }
+          },
+          subsidy_rule: {
+            type: :object,
+            properties: {
+              name: { type: :string, example: 'Rule 1' },
+              county_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              max_age: { type: :number, example: 18 },
+              part_day_rate_cents: { type: :integer, minimum: 0, example: 2_500 },
+              part_day_rate_currency: { type: :string, example: 'USD' },
+              full_day_rate_cents: { type: :integer, minimum: 0, example: 3_000 },
+              full_day_rate_currency: { type: :string, example: 'USD' },
+              part_day_max_hours: { type: :number, example: 4 },
+              full_day_max_hours: { type: :number, example: 12 },
+              full_plus_part_day_max_hours: { type: :number, example: 18 },
+              full_plus_full_day_max_hours: { type: :number, example: 24 },
+              part_day_threshold: { type: :number, example: 12 },
+              full_day_threshold: { type: :number, example: 24 },
+              license_type: { '$ref': '#/components/schemas/license_types' },
+              qris_rating: { type: :string, example: '1' }
+            }
+          },
+          case_cycle: {
+            type: :object,
+            properties: {
+              case_number: {
                 anyOf: [
-                  { type: :string, example: 'USD' },
+                  { type: :string, example: '123-45' },
                   { type: :null }
                 ]
               },
-              paid_on: { type: :string, example: '2020-05-20' },
-              site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+              copay_cents: { type: :integer, minimum: 0 },
+              copay_currency: { type: :string, example: 'USD' },
+              copay_frequency: {
+                anyOf: [
+                  { '$ref': '#/components/schemas/copay_frequencies' },
+                  { type: :null }
+                ]
+              },
+              effective_on: { '$ref': '#/components/schemas/date_or_null' },
+              expires_on: { '$ref': '#/components/schemas/date_or_null' },
+              notified_on: { '$ref': '#/components/schemas/date_or_null' },
+              status: { '$ref': '#/components/schemas/case_statuses' },
+              submitted_on: { type: :string, example: '2020-07-12' },
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
+            }
+          },
+          child_case_cycle: {
+            type: :object,
+            properties: {
+              case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              child_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              full_days_allowed: { type: :integer, example: 21 },
+              part_days_allowed: { type: :integer, example: 18 },
+              subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
+            }
+          },
+          child_case_cycle_payment: {
+            type: :object,
+            properties: {
+              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
+              amount_currency: { type: :string, example: 'USD' },
+              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
+              discrepancy_cents: { type: :integer, example: 456 },
+              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
+              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
             }
           },
           createUser: {
@@ -138,7 +237,7 @@ RSpec.configure do |config|
                     type: :object,
                     required: %w[
                       name
-                      category
+                      license_type
                       user_id
                     ]
                   }
@@ -249,6 +348,78 @@ RSpec.configure do |config|
               payment: {
                 allOf: [
                   { '$ref': '#/components/schemas/payment' }
+                ]
+              }
+            }
+          },
+          createCaseCycle: {
+            type: :object,
+            properties: {
+              case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/case_cycle' },
+                  {
+                    type: :object,
+                    required: %w[status submitted_on]
+                  }
+                ]
+              }
+            }
+          },
+          updateCaseCycle: {
+            type: :object,
+            properties: {
+              case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/case_cycle' }
+                ]
+              }
+            }
+          },
+          createChildCaseCycle: {
+            type: :object,
+            properties: {
+              child_case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle' },
+                  {
+                    type: :object,
+                    required: %w[case_cycle_id child_id full_days_allowed part_days_allowed subsidy_rule_id user_id]
+                  }
+                ]
+              }
+            }
+          },
+          updateChildCaseCycle: {
+            type: :object,
+            properties: {
+              child_case_cycle: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle' }
+                ]
+              }
+            }
+          },
+          createChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
+                  {
+                    type: :object,
+                    required: %w[amount_cents child_case_cycle_id payment_id]
+                  }
+                ]
+              }
+            }
+          },
+          updateChildCaseCyclePayment: {
+            type: :object,
+            properties: {
+              child_case_cycle_payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
                 ]
               }
             }

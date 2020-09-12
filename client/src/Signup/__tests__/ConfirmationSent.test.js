@@ -1,13 +1,13 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render } from '@testing-library/react'
-import Confirmation from '../Confirmation'
+import ConfirmationSent from '../ConfirmationSent'
 
-describe('<Confirmation />', () => {
+describe('<ConfirmationSent />', () => {
   it('renders the signup confirmation page', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/']} initialIndex={0}>
-        <Confirmation userEmail="hey@hey.com" />
+        <ConfirmationSent userEmail="hey@hey.com" />
       </MemoryRouter>
     )
     expect(container).toHaveTextContent('Thanks for signing up')

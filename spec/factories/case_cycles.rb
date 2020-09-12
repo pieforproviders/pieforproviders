@@ -5,8 +5,9 @@ FactoryBot.define do
     case_number { Faker::Alphanumeric.alpha(number: 10) }
     status { 'submitted' }
     submitted_on { Time.zone.today }
-    copay { Faker::Number.between(from: 0, to: 2000) }
+    copay { Faker::Number.between(from: 1, to: 2000) }
     copay_frequency { 'monthly' }
+    user factory: :confirmed_user
 
     trait :pending do
       status { 'pending' }
@@ -44,8 +45,14 @@ end
 #  submitted_on    :date             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  user_id         :uuid             not null
 #
 # Indexes
 #
-#  index_case_cycles_on_slug  (slug) UNIQUE
+#  index_case_cycles_on_slug     (slug) UNIQUE
+#  index_case_cycles_on_user_id  (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
 #

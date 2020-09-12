@@ -1,13 +1,7 @@
 name: CI
-on: 
-  push:
-    branches:
-    - main 
-    - develop
+on:
   pull_request:
-    branches:
-    - main
-    - develop
+    types: [opened, synchronize]
 jobs:
   lint_backend:
     name: Backend linting
@@ -121,7 +115,7 @@ jobs:
           yarn test --watchAll=false
   e2e_tests:
     name: 'E2E tests'
-    if: github.ref == 'refs/heads/main'
+    if: github.event == 'deployment'
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -172,11 +166,10 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Deploy frontend
+      - name: Build frontend
         run: |
           yarn
-          yarn build
-          yarn deploy
+          yarn heroku-postbuild
       - name: Run Cypress tests
         run: yarn cy:ci
         env:

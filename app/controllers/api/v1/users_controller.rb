@@ -2,7 +2,7 @@
 
 # API for application users
 class Api::V1::UsersController < Api::V1::ApiController
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, only: %i[update destroy]
   skip_before_action :authenticate_user!, only: %i[create]
 
   # GET /users
@@ -12,9 +12,9 @@ class Api::V1::UsersController < Api::V1::ApiController
     render json: @users
   end
 
-  # GET /users/:slug
+  # GET /profile
   def show
-    render json: @user
+    render json: current_user
   end
 
   # POST /users

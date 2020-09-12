@@ -25,6 +25,17 @@ namespace :pie4providers do
     ZIPCODES_CSV_COL_HEADERS = %w[code city state county area_code lat lon].freeze
     # -----------------------------------------------------------------
 
+    # For each item in the list, capitalize! the items with indices in the list given.
+    # @return Array[Array] - return the list, even though items were changed in place
+    def capitalize_cols(list, indices_to_capitalize = [])
+      list.each do |item|
+        indices_to_capitalize.each do |index|
+          item[index] = item[index].split(/\s/).map(&:capitalize).join(' ') if item[index].respond_to?(:capitalize)
+        end
+      end
+      list
+    end
+
     desc 'Import states.'
     task :import_states, %i[append] => :environment do |_task, args|
       klass = Lookup::State
@@ -34,7 +45,9 @@ namespace :pie4providers do
       default_states_source = File.join(DEFAULT_INPUT_DIR, INPUT_FN_STATES)
       states = CSV.read(default_states_source, headers: true).to_a.drop(1)
 
-      create_objects(klass, STATES_CSV_COLS, states)
+      # Change all state names to first letter capitalized to change for all UPPERCASE
+      states_caps_fixed = capitalize_cols(states, [1])
+      create_objects(klass, STATES_CSV_COLS, states_caps_fixed)
       puts_done_msg
     end
 
@@ -48,7 +61,9 @@ namespace :pie4providers do
       default_counties_source = File.join(DEFAULT_INPUT_DIR, INPUT_FN_COUNTIES)
 
       counties = CSV.read(default_counties_source, headers: true).to_a.drop(1)
-      counties_with_state_uuids = set_state_uuids(counties, state_column)
+      # Change all county names and county seat names to first letter capitalized to change for all UPPERCASE
+      counties_caps_fixed = capitalize_cols(counties, [0, 2])
+      counties_with_state_uuids = set_state_uuids(counties_caps_fixed, state_column)
 
       create_objects(klass, COUNTIES_CSV_COL_VALUES, counties_with_state_uuids)
       puts_done_msg
@@ -61,7 +76,7 @@ namespace :pie4providers do
     # 01001,Agawam,MA,HAMPDEN,,42.140549,-72.788661
     #
     # Cities and Counties are imported at the same time because they use the same source file.
-    # The source file is large and slow; doing cities and zipcode separately would be slow.
+    # The source file is large and slow; doing cities and zipcode separately would be even slower.
     #
     desc 'Import cities zipcodes (assumes counties and states have been imported)'
     task :import_cities_and_zipcodes, %i[append use_insert_all] => :environment do |_task, args|
@@ -87,14 +102,19 @@ namespace :pie4providers do
       puts_interstitial "Reading #{default_zips_source}..."
       rows = CSV.read(default_zips_source, headers: true).to_a.drop(1)
 
+      # Change all city and county names to first letter capitalized to change for all UPPERCASE
+      rows_capitalized = capitalize_cols(rows, [county_column, city_column])
+
       puts_interstitial 'Setting UUIDs for states and counties...'
-      rows_with_all_uuids = set_county_and_state_uuids(rows, state_column, county_column)
+      rows_with_all_uuids = set_county_and_state_uuids(rows_capitalized, state_column, county_column)
 
       # remove rows duplicated because of multiple zipcodes per city:
       city_rows = rows_with_all_uuids.uniq { |row| row[city_column] + row[state_column] }
       city_rows = city_rows.map { |row| [row[city_column], row[state_column], row[county_column]] }
 
-      create_objects(city_klass, %i[name state_id county_id], city_rows)
+      # Change all city and county names to first letter capitalized to change for all UPPERCASE
+      cities_caps_fixed = capitalize_cols(city_rows, [0, 2])
+      create_objects(city_klass, %i[name state_id county_id], cities_caps_fixed)
 
       set_city_uuids_by_states(rows_with_all_uuids, state_column, city_column)
 
@@ -264,7 +284,6 @@ namespace :pie4providers do
       return [] if rows.empty?
 
       check_headers_cols_for_insert(col_headers, rows)
-
       items_to_insert = rows_as_hashes(col_headers, rows)
       klass.send(:insert_all!, items_to_insert)
     end

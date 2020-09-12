@@ -1,22 +1,37 @@
-import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Form, Input, Alert } from 'antd'
+import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { PasswordResetRequest } from '../PasswordReset'
+import ErrorAlert from 'ErrorAlert'
 
 export function Login() {
+  const location = useLocation()
   const [apiError, setApiError] = useState(null)
+  const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    if (location.state?.error?.status) {
+      setApiError({
+        status: location.state?.error?.status,
+        message: location.state?.error?.message,
+        attribute: location.state?.error?.attribute,
+        type: location.state?.error?.type
+      })
+      window.history.replaceState(null, '')
+    }
+  }, [location])
 
   const onFinish = async values => {
     const response = await makeRequest({
       type: 'post',
       url: '/login',
-      data: { user: values },
-      headers: { 'Accept-Language': i18n.language }
+      data: { user: values }
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
@@ -26,7 +41,7 @@ export function Login() {
       })
     } else {
       localStorage.setItem('pie-token', response.headers.get('authorization'))
-      history.push('/dashboard')
+      history.push('/getting-started')
     }
   }
 
@@ -34,7 +49,6 @@ export function Login() {
     localStorage.removeItem('pie-token')
     history.push('/dashboard')
   }
-
   return (
     <>
       <p className="mb-4">
@@ -44,12 +58,17 @@ export function Login() {
         {t('or')} <span className="uppercase font-bold">{t('login')}</span>
       </p>
 
-      {apiError && (
+      {apiError?.status && (
         <Alert
           className="mb-2"
           message={apiError.message}
           type="error"
-          data-cy="loginError"
+          description={
+            apiError?.attribute ? (
+              <ErrorAlert attribute={apiError.attribute} type={apiError.type} />
+            ) : null
+          }
+          data-cy="authError"
         />
       )}
 
@@ -57,7 +76,7 @@ export function Login() {
         layout="vertical"
         name="login"
         onFinish={onFinish}
-        wrapperCol={{ lg: 12 }}
+        wrapperCol={{ md: 12 }}
       >
         <Form.Item
           className="text-primaryBlue"
@@ -67,6 +86,10 @@ export function Login() {
             {
               required: true,
               message: t('emailAddressRequired')
+            },
+            {
+              type: 'email',
+              message: t('emailInvalid')
             }
           ]}
         >
@@ -108,9 +131,29 @@ export function Login() {
             type="secondary"
             htmlType="button"
             text={t('resetPassword')}
+            onClick={() => {
+              setShowResetPasswordDialog(true)
+            }}
+            data-cy="resetPasswordBtn"
           />
         </Form.Item>
       </Form>
+
+      {showResetPasswordDialog && (
+        <Modal
+          centered
+          visible
+          closable={false}
+          footer={null}
+          maskStyle={{
+            backgroundColor: 'rgba(0, 74, 110, 0.5)'
+          }}
+        >
+          <PasswordResetRequest
+            onClose={() => setShowResetPasswordDialog(false)}
+          />
+        </Modal>
+      )}
     </>
   )
 }
