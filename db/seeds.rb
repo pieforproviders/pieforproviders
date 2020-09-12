@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+# This seeds the db with data. It is not used in production.
+# Use :find_or_create_by! or :first_or_create! when creating objects,
+#  or use the class methods in CreateOrSampleLookup for address Lookup:: classes.
+#   The address Lookup classes should be seeded by the
+#   Rake::Task below, but if they're not or if you need to create a different
+#   object, use the methods in CreateOrSampleLookup.
+
 ActionMailer::Base.perform_deliveries = false
 
 puts 'seeding'
@@ -28,40 +35,50 @@ business = Business.where(name: 'Happy Seedlings Childcare', user: user).first_o
   license_type: Licenses.types.keys.first
 )
 
-montana = Lookup::State.find_by(abbr: 'MT')
-hardin_mt = Lookup::City.find_by(state: montana, name: 'Hardin')
-hardin_zips = Lookup::Zipcode.where(city: hardin_mt)
+montana = Lookup::State.find_or_create_by!(name: 'Montana', abbr: 'MT')
+big_horn_cty_mt = Lookup::County.find_or_create_by!(name: 'Big Horn', state: montana)
+hardin_mt = Lookup::City.find_or_create_by!(state: montana, county: big_horn_cty_mt, name: 'Hardin')
+hardin_zip = Lookup::Zipcode.first_or_create!(city: hardin_mt)do
+  CreateOrSampleLookup.random_zipcode_or_create(city: hardin_mt)
+end
 
 Site.where(name: 'Prairie Center', business: business).first_or_create(
   address: '8238 Rhinebeck Dr',
   city: hardin_mt,
   county: hardin_mt.county,
   state: montana,
-  zip: hardin_zips.first
+  zip: hardin_zip
 )
 
-wisconsin = Lookup::State.find_by(abbr: 'WI')
-lac_du_flambeau = Lookup::City.find_by(state: wisconsin, name: 'Lac Du Flambeau')
-lac_du_flambeau_zips = Lookup::Zipcode.where(city: lac_du_flambeau)
+wisconsin = Lookup::State.find_or_create_by!(name: 'Wisconsin', abbr: 'WI')
+vilas_cty_wi = Lookup::County.find_or_create_by!(name: 'Vilas', state: wisconsin)
+lac_du_flambeau = Lookup::City.find_by(state: wisconsin, county: vilas_cty_wi, name: 'Lac Du Flambeau')
+lac_du_flambeau_zip = Lookup::Zipcode.first_or_create!(city: lac_du_flambeau) do
+  CreateOrSampleLookup.random_zipcode_or_create(city: lac_du_flambeau)
+end
 site_happy_seeds_little_oaks = Site.where(name: 'Little Oaks Growing Center',
                                           business: business).first_or_create(
                                             address: '8201 1st Street',
                                             city: lac_du_flambeau,
                                             state: wisconsin,
-                                            zip: lac_du_flambeau_zips.first,
-                                            county: lac_du_flambeau.county,
+                                            zip: lac_du_flambeau_zip,
+                                            county: vilas_cty_wi,
                                             qris_rating: 3,
                                             active: true
                                           )
-elkhorn_wi = Lookup::City.find_by(state: wisconsin, name: 'Elkhorn')
-elkhorn_wi_zips = Lookup::Zipcode.where(city: elkhorn_wi)
+
+walworth_cty_wi = Lookup::County.find_or_create_by!(name: 'Walworth', state: wisconsin)
+elkhorn_wi = Lookup::City.find_or_create_by!(name: 'Walworth', state: wisconsin, county: walworth_cty_wi)
+elkhorn_wi_zip = Lookup::Zipcode.first_or_create!(city: elkhorn_wi) do
+  CreateOrSampleLookup.random_zipcode_or_create(city: elkhorn_wi)
+end
 site_happy_seeds_little_sprouts = Site.where(name: 'Little Sprouts Growing Center',
                                              business: business).first_or_create(
                                                address: '123 Bighorn Lane',
                                                city: elkhorn_wi,
                                                state: wisconsin,
-                                               zip: elkhorn_wi_zips.first,
-                                               county: elkhorn_wi.county,
+                                               zip: elkhorn_wi_zip,
+                                               county: walworth_cty_wi,
                                                qris_rating: 3,
                                                active: true
                                              )
@@ -70,12 +87,12 @@ agency_WI = Agency.where(name: "Wisconsin Children's Services",
                          state: wisconsin).first_or_create(
                            active: true
                          )
-illinois = Lookup::State.find_by(abbr: 'IL')
+illinois = Lookup::State.find_or_create_by!(name: 'Illinois', abbr: 'IL')
 agency_IL = Agency.where(name: 'Community Child Care Connection',
                         state: illinois).first_or_create(
                           active: true
                         )
-massachusetts = Lookup::State.find_by(abbr: 'MA')
+massachusetts = Lookup::State.find_or_create_by!(name: 'Massachusetts', abbr: 'MA')
 agency_MA = Agency.where(name: "Children's Aid and Family Services",
                         state: massachusetts).first_or_create(
                           active: true
@@ -109,7 +126,7 @@ Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
 # -----------------------------------------------------------------------------
 # Subsidy Rules
 #
-county_il_cook = Lookup::County.find_by(state: illinois, name: 'COOK')
+county_il_cook = Lookup::County.find_or_create_by!(state: illinois, name: 'Cook')
 
 SubsidyRule.first_or_create!(
   name: 'Rule 1',
