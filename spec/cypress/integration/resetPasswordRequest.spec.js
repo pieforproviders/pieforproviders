@@ -7,7 +7,7 @@ const fullName = name.findName(firstName)
 const email = internet.email(firstName)
 const password = internet.password()
 
-describe('Reset password requests', () => {
+describe('Reset password request', () => {
   describe('existing users', () => {
     beforeEach(() => {
       cy.app('clean')
