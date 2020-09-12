@@ -15,11 +15,11 @@ end
 #  id         :uuid             not null, primary key
 #  active     :boolean          default(TRUE), not null
 #  name       :string           not null
-#  state      :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  state_id   :uuid             not null
 #
 # Indexes
 #
-#  index_agencies_on_name_and_state  (name,state) UNIQUE
+#  index_agencies_on_name_and_state_id  (name,state_id) UNIQUE
 #
