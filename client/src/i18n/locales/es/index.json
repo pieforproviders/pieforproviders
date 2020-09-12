@@ -61,9 +61,11 @@
   "add": "Añade",
   "addToContacts": "a tus contactos.",
   "resendConfirmationEmail": "Haga clic aquí para reenviar el correo.",
+  "toResendConfirmationEmail": "para reenviar el correo de confirmación.",
   "confirmationEmailResent": "Correo reenviado",
 
   "here": "aquí",
+  "clickHere": "Haga clic aquí",
 
   "reportFeedback": "Da comentarios",
 
@@ -84,6 +86,8 @@
 
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
+  "invalidEmailOrPassword": "Correo y/o contraseña inválido(s).",
+  "unauthenticated": "Tienes que registrarte o iniciar sesión antes de continuar.",
   "alreadyConfirmed": "Ya has verificado tu cuenta. Ahora puedes iniciar sesión.",
   "emailUnconfirmed": "Tienes que confirmar tu correo antes de continuar.",
   "confirmationPeriodExpired": "Tu periodo de confirmación ha expirado",
