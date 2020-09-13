@@ -6,13 +6,17 @@ RSpec.describe 'attendances API', type: :request do
   # Use confirmed_user so that no confirmation email is sent
   let(:confirmed_user) { create(:confirmed_user) }
   let(:user_id) { confirmed_user.id }
-  let(:child_case_cycle_id) { create(:child_case_cycle).id }
-
+  let(:child) { create(:child) }
+  let(:child_case_cycle_id) { create(:child_case_cycle, child: child).id }
+  let(:child_site_id) { create(:child_site, child: child).id }
   let!(:attendance_params) do
     {
       "child_case_cycle_id": child_case_cycle_id,
-      "starts_on": '2020-01-01',
-      "length_of_care": 'full_day'
+      "child_site_id": child_site_id,
+      "starts_on": Date.current.to_s,
+      "check_in": Time.zone.parse((Date.current + 7.hours).to_s).to_s,
+      'check_out': Time.zone.parse((Date.current + 20.hours).to_s).to_s,
+      "attendance_duration": 'full_day'
     }
   end
 
