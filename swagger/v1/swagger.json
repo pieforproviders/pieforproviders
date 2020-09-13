@@ -1691,22 +1691,16 @@
         ],
         "example": "license_exempt_home"
       },
-      "agency": {
-        "type": "object",
-        "properties": {
-          "active": {
-            "type": "boolean",
-            "example": "true"
-          },
-          "name": {
+      "time_or_null": {
+        "anyOf": [
+          {
             "type": "string",
-            "example": "Wisconsin Children's Services"
+            "example": "020-09-13 14:07:47 -0700"
           },
-          "state_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+          {
+            "type": "null"
           }
-        }
+        ]
       },
       "business": {
         "type": "object",
@@ -1962,12 +1956,27 @@
       "attendance": {
         "type": "object",
         "properties": {
+          "check_in": {
+            "type": "string",
+            "example": "020-09-13 14:07:47 -0700"
+          },
+          "check_out": {
+            "$ref": "#/components/schemas/time_or_null"
+          },
+          "child_site_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
+          },
           "child_case_cycle_id": {
             "type": "uuid",
             "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
           },
-          "length_of_care": {
+          "attendance_duration": {
             "$ref": "#/components/schemas/lengths_of_care"
+          },
+          "total_time_in_care": {
+            "type": "string",
+            "example": "360 minutes"
           },
           "starts_on": {
             "type": "string",
