@@ -287,6 +287,67 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to get the slug for the created item.
+#
+RSpec.shared_examples 'admins and resource owners can retrieve an item with a slug' do |item_class|
+  item_name = name_from_class(item_class)
+  item_plural = item_name.pluralize
+
+  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
+    parameter name: :slug, in: :path, type: :string
+    let(:slug) { item.slug }
+
+    get "retrieves a #{item_name}" do
+      tags item_plural
+
+      produces 'application/json'
+
+      context 'on the right api version' do
+        include_context 'correct api version header'
+        context 'when authenticated' do
+          context 'admin user' do
+            include_context 'admin user'
+            response '200', "#{item_name} found" do
+              run_test! do
+                expect(response).to match_response_schema(item_name)
+              end
+            end
+          end
+
+          context 'resource owner' do
+            before { sign_in owner }
+
+            response '200', "#{item_name} found" do
+              run_test! do
+                expect(response).to match_response_schema(item_name)
+              end
+            end
+
+            it_behaves_like '404 not found with parameters', item_name
+          end
+
+          context 'non-owner' do
+            include_context 'authenticated user'
+            response '404', "#{item_name} not found" do
+              run_test!
+            end
+          end
+        end
+
+        it_behaves_like '401 error if not authenticated with parameters', item_name
+      end
+
+      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+    end
+  end
+end
+
+# This example expects the following to be defined with a let(:) block:
+#  item_params - parameters to be passed to the server
+#  item - the resource
+#  owner - the user who owns the resource
+#
+#  These are the parameters passed to this example:
+#    item_class [Class] - the class for the item; is used to get the slug for the created item.
 #    item_name [String] - the name of the item (singular).
 #      It is used as a key in the parameters sent to the server
 #      and as part of the schema name in the schema definitions.
