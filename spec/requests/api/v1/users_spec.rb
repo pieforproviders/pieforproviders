@@ -25,7 +25,38 @@ RSpec.describe 'users API', type: :request do
     }
   end
 
-  it_behaves_like 'it lists all items for a user', User
+  describe 'list users' do
+    path '/api/v1/users' do
+      get 'retrieves all users' do
+        tags 'users'
+
+        produces 'application/json', 'application/xml'
+
+        context 'on the right api version' do
+          include_context 'correct api version header'
+          context 'admin users' do
+            include_context 'admin user'
+            response '200', 'users found' do
+              run_test! do
+                expect(response).to match_response_schema('users')
+              end
+            end
+          end
+
+          context 'non-admin users' do
+            include_context 'authenticated user'
+            response '403', 'forbidden' do
+              run_test!
+            end
+          end
+
+          it_behaves_like '401 error if not authenticated with parameters', 'user'
+        end
+
+        it_behaves_like 'server error responses for wrong api version with parameters', 'user'
+      end
+    end
+  end
 
   it_behaves_like 'it creates an item with the right api version and is authenticated', User do
     let(:item_params) { user_params }
@@ -89,11 +120,14 @@ RSpec.describe 'users API', type: :request do
     end
   end
 
-  it_behaves_like 'it updates an item with a slug', User, 'full_name', 'Ron Weasley', nil do
+  it_behaves_like 'admins and resource owners can update an item with a slug', User, 'full_name', 'Ron Weasley', nil do
     let(:item_params) { user_params }
+    let(:item) { User.create! user_params.merge(confirmed_at: DateTime.current) }
+    let(:owner) { item }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', User do
-    let(:item_params) { user_params }
+  it_behaves_like 'admins and resource owners can delete an item with a slug', User do
+    let(:item) { User.create! user_params.merge(confirmed_at: DateTime.current) }
+    let(:owner) { item }
   end
 end
