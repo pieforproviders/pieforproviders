@@ -338,11 +338,6 @@
               "schema": {
                 "$ref": "#/components/schemas/updateCaseCycle"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateCaseCycle"
-              }
             }
           }
         }
