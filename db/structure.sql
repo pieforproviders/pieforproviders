@@ -107,13 +107,24 @@ CREATE TABLE public.ar_internal_metadata (
 
 CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    child_site_id uuid NOT NULL,
     child_case_cycle_id uuid NOT NULL,
     slug character varying NOT NULL,
     starts_on date NOT NULL,
+    check_in time without time zone NOT NULL,
+    check_out time without time zone NOT NULL,
+    total_time_in_care interval NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    length_of_care public.lengths_of_care DEFAULT 'full_day'::public.lengths_of_care NOT NULL
+    attendance_duration public.lengths_of_care DEFAULT 'full_day'::public.lengths_of_care NOT NULL
 );
+
+
+--
+-- Name: COLUMN attendances.total_time_in_care; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_out time - check_in time';
 
 
 --
@@ -607,6 +618,13 @@ CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USIN
 
 
 --
+-- Name: index_attendances_on_child_site_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btree (child_site_id);
+
+
+--
 -- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -965,6 +983,14 @@ ALTER TABLE ONLY public.child_case_cycles
 
 
 --
+-- Name: attendances fk_rails_e61403eb2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT fk_rails_e61403eb2b FOREIGN KEY (child_site_id) REFERENCES public.child_sites(id);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -1002,8 +1028,9 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200903112138'),
 ('20200906195706'),
 ('20200906232048'),
-('20200907004651'),
-('20200907005807'),
-('20200907181541');
+('20200907181541'),
+('20200913004651'),
+('20200913005807'),
+('20200914140101');
 
 

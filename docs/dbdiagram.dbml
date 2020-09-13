@@ -1,3 +1,5 @@
+// This is the source file for generating ER diagrams on
+// https://dbdiagram.io/d/5f552f2e88d052352cb625e2
 Table users {
   id uuid [pk, unique, not null]
   full_name string [not null]
@@ -140,10 +142,14 @@ Enum lengths_of_care {
 
 Table attendances {
   id uuid [pk, unique, not null]
+  child_site uuid [ref: > child_site.id, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
-  length_of_care lengths_of_care [not null]
   slug string [not null]
   starts_on date [not null]
+  check_in time [not null]
+  check_out time [not null]
+  total_time_in_care duration [not null]
+  attendance_duration lengths_of_care [not null]
 }
 
 Table payments {
