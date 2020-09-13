@@ -1161,6 +1161,11 @@
 
         ],
         "responses": {
+          "401": {
+            "description": "not authorized",
+            "content": {
+            }
+          },
           "201": {
             "description": "site created",
             "content": {
@@ -1171,13 +1176,8 @@
             "content": {
             }
           },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
+          "403": {
+            "description": "Forbidden",
             "content": {
             }
           }
@@ -1185,11 +1185,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createSite"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/createSite"
               }
@@ -1275,11 +1270,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateSite"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updateSite"
               }

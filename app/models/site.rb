@@ -16,6 +16,10 @@ class Site < UuidApplicationRecord
   validates :address, presence: true
 
   before_validation { |site| site.slug = generate_slug("#{site.name}#{site.business_id}") }
+
+  scope :active, -> { where(active: true) }
+
+  delegate :user, to: :business
 end
 
 # == Schema Information
