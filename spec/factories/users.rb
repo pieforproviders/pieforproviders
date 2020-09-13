@@ -3,7 +3,7 @@
 FactoryBot.define do
   password = Faker::Internet.password
   factory :user do
-    active { Faker::Boolean.boolean }
+    active { true }
     email { Faker::Internet.email }
     full_name { Faker::Games::WorldOfWarcraft.hero }
     greeting_name { Faker::Name.first_name }

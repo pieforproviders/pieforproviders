@@ -3,10 +3,12 @@
 # API for application users
 class Api::V1::UsersController < Api::V1::ApiController
   before_action :set_user, only: %i[update destroy]
+  before_action :authorize_user, only: %i[update destroy]
   skip_before_action :authenticate_user!, only: %i[create]
 
   # GET /users
   def index
+    authorize User
     @users = User.all
 
     render json: @users
@@ -47,15 +49,21 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_user
-    @user = User.find_by!(slug: params[:slug])
+    @user = policy_scope(User).find_by!(slug: params[:slug])
+  end
+
+  def authorize_user
+    authorize @user
   end
 
   def user_params
-    params.require(:user).permit(
-      :active, :email, :full_name, :greeting_name, :id, :language,
-      :opt_in_email, :opt_in_text, :organization, :password,
-      :password_confirmation, :phone_number, :phone_type,
-      :service_agreement_accepted, :slug, :timezone
-    )
+    attributes = %i[
+      email full_name greeting_name language
+      opt_in_email opt_in_text organization password
+      password_confirmation phone_number phone_type
+      service_agreement_accepted timezone
+    ]
+    attributes << :active if current_user&.admin?
+    params.require(:user).permit(attributes)
   end
 end

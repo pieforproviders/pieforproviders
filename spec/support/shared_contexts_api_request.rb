@@ -20,3 +20,10 @@ RSpec.shared_context 'authenticated user' do
     sign_in logged_in_user
   end
 end
+
+RSpec.shared_context 'admin user' do
+  before do
+    admin = create(:admin)
+    sign_in admin
+  end
+end
