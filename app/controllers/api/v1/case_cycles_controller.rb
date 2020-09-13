@@ -3,10 +3,11 @@
 # API for user case cycles
 class Api::V1::CaseCyclesController < Api::V1::ApiController
   before_action :set_case_cycle, only: %i[show update destroy]
+  before_action :authorize_user, only: %i[update destroy]
 
   # GET /case_cycles
   def index
-    @case_cycles = CaseCycle.all
+    @case_cycles = policy_scope(CaseCycle)
 
     render json: @case_cycles
   end
@@ -18,7 +19,11 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
 
   # POST /case_cycles
   def create
-    @case_cycle = CaseCycle.new(case_cycle_params)
+    @case_cycle = if current_user.admin?
+                    CaseCycle.new(case_cycle_params)
+                  else
+                    current_user.case_cycles.new(case_cycle_params)
+                  end
 
     if @case_cycle.save
       render json: @case_cycle, status: :created, location: @case_cycle
@@ -44,26 +49,27 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
   private
 
   def set_case_cycle
-    @case_cycle = CaseCycle.find_by!(slug: params[:slug])
+    @case_cycle = policy_scope(CaseCycle).find_by!(slug: params[:slug])
+  end
+
+  def authorize_user
+    authorize @case_cycle
   end
 
   # rubocop:disable Metrics/MethodLength
   def case_cycle_params
-    params.require(:case_cycle).permit(
-      :case_number,
-      :copay,
-      :copay_cents,
-      :copay_currency,
-      :copay_frequency,
-      :effective_on,
-      :expires_on,
-      :id,
-      :notified_on,
-      :slug,
-      :status,
-      :submitted_on,
-      :user_id
-    )
+    attributes = %i[case_number
+                    copay
+                    copay_cents
+                    copay_currency
+                    copay_frequency
+                    effective_on
+                    expires_on
+                    notified_on
+                    status
+                    submitted_on]
+    attributes << :user_id if current_user.admin?
+    params.require(:case_cycle).permit(attributes)
   end
   # rubocop:enable Metrics/MethodLength
 end
