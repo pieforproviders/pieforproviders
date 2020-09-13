@@ -155,11 +155,6 @@
               "schema": {
                 "$ref": "#/components/schemas/updateBusiness"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateBusiness"
-              }
             }
           }
         }
