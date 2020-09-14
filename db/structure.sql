@@ -604,20 +604,6 @@ CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USIN
 
 
 --
--- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
-
-
---
--- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
-
-
---
 -- Name: index_attendances_on_child_site_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1029,6 +1015,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200906195706'),
 ('20200906232048'),
 ('20200907181541'),
+('20200911180200'),
+('20200911220200'),
 ('20200913004651'),
 ('20200913005807'),
 ('20200914140101');

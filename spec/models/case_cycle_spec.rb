@@ -22,7 +22,10 @@ RSpec.describe CaseCycle, type: :model do
       CaseCycle::COPAY_FREQUENCIES.index_by(&:to_sym)
     ).with_suffix.backed_by_column_of_type(:enum)
   }
-  it { should allow_values(:daily, :weekly, :monthly).for(:copay_frequency) }
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:case_cycle)).to be_valid
+  end
 
   it 'validates uniqueness of slug' do
     create(:case_cycle)
