@@ -17,6 +17,8 @@ class ChildCaseCycle < UuidApplicationRecord
   def set_slug
     self.slug = generate_slug("#{SecureRandom.hex}#{id}")
   end
+
+  delegate :user, to: :case_cycle
 end
 
 # == Schema Information

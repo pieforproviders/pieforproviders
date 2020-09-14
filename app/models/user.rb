@@ -11,6 +11,7 @@ class User < UuidApplicationRecord
   has_many :businesses, dependent: :restrict_with_error
   has_many :children, dependent: :restrict_with_error
   has_many :case_cycles, dependent: :restrict_with_error
+  has_many :child_case_cycles, through: :case_cycles
 
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
