@@ -28,7 +28,6 @@ RSpec.describe CaseCycle, type: :model do
     expect(build(:case_cycle)).to be_valid
   end
 
-
   it 'validates uniqueness of slug' do
     create(:case_cycle)
     should validate_uniqueness_of(:slug)
