@@ -40,7 +40,7 @@ const ConfirmationAlert = ({ email }) => {
       }
     })
     if (response.ok) {
-      history.push({
+      history.replace({
         pathname: '/login',
         state: {
           success: {
@@ -50,7 +50,7 @@ const ConfirmationAlert = ({ email }) => {
       })
     } else {
       const errorMessage = await response.json()
-      history.push({
+      history.replace({
         pathname: '/login',
         state: {
           error: {
