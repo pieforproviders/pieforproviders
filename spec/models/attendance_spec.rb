@@ -9,7 +9,7 @@ RSpec.describe Attendance, type: :model do
   it { should allow_values(:part_day, :full_day, :full_plus_part_day, :full_plus_full_day).for(:attendance_duration) }
   it {
     should define_enum_for(:attendance_duration).with_values(
-      described_class::LENGTHS_OF_CARE.index_by(&:to_sym)
+      described_class::DURATION_DEFINITIONS.index_by(&:to_sym)
     ).backed_by_column_of_type(:enum)
   }
 
