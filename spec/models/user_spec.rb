@@ -13,6 +13,10 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:timezone) }
   it { should validate_presence_of(:service_agreement_accepted) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(build(:user)).to be_valid
+  end
+
   let!(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')

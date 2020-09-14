@@ -5,12 +5,12 @@ require 'rails_helper'
 RSpec.describe Lookup::State do
   it { should validate_presence_of(:abbr) }
   it 'validates uniqueness of the state abbr' do
-    new_state = CreateOrSampleLookup.state
+    new_state = CreateOrSampleLookup.random_state_or_create
     expect(new_state).to validate_uniqueness_of(:abbr).case_insensitive
   end
   it { should validate_presence_of(:name) }
   it 'validates uniqueness of the name' do
-    new_state = CreateOrSampleLookup.state
+    new_state = CreateOrSampleLookup.random_state_or_create
     expect(new_state).to validate_uniqueness_of(:name).case_insensitive
   end
 end

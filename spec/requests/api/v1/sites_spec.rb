@@ -5,14 +5,19 @@ require 'swagger_helper'
 RSpec.describe 'sites API', type: :request do
   # Use confirmed_user so that no confirmation email is sent
   let(:business_id) { create(:business, user: create(:confirmed_user)).id }
+  let(:tn) { CreateOrSampleLookup.random_state_or_create }
+  let(:tn_county) { CreateOrSampleLookup.random_county_or_create(state: tn) }
+  let(:tn_city) { CreateOrSampleLookup.random_city_or_create(state: tn, county: tn_county) }
+  let(:tn_city_zip) { CreateOrSampleLookup.random_zipcode_or_create(state: tn, city: tn_city) }
+
   let!(:site_params) do
     {
       "name": 'Evesburg Educational Center',
       "address": '1200 W Marberry Dr',
-      "city": 'Gatlinburg',
-      "state": 'TN',
-      "zip": '12345',
-      "county": 'Harrison',
+      "city_id": tn_city.id,
+      "state_id": tn.id,
+      "zip_id": tn_city_zip.id,
+      "county_id": tn_county.id,
       "qris_rating": '4',
       "business_id": business_id
     }
