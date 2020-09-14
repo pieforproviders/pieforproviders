@@ -15,7 +15,7 @@ FactoryBot.define do
     starts_on { Date.current }
     # TODO: may need to change attendance_duration later after it is calculated.
     #   See the Attendance class more info
-    attendance_duration { Attendance::LENGTHS_OF_CARE.sample }
+    attendance_duration { Attendance.attendance_durations.values.sample }
 
     check_in { Faker::Time.between(from: site_opening_time, to: (site_opening_time + latest_check_in)) }
     check_out do

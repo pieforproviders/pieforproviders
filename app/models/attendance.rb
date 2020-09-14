@@ -21,10 +21,10 @@ class Attendance < UuidApplicationRecord
   has_one :child, through: :child_site
   has_one :site, through: :child_site
 
-  belongs_to :child_case_cycle # TODO: really?
+  belongs_to :child_case_cycle
 
-  LENGTHS_OF_CARE = %w[part_day full_day full_plus_part_day full_plus_full_day].freeze
-  enum attendance_duration: LENGTHS_OF_CARE.index_by(&:to_sym)
+  DURATION_DEFINITIONS = %w[part_day full_day full_plus_part_day full_plus_full_day].freeze
+  enum attendance_duration: DURATION_DEFINITIONS.index_by(&:to_sym)
 
   before_validation :calc_total_time_in_care
   before_save :set_slug
