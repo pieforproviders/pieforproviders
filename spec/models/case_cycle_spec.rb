@@ -10,19 +10,24 @@ RSpec.describe CaseCycle, type: :model do
   it { is_expected.to monetize(:copay) }
   it { should validate_numericality_of(:copay).is_greater_than(0) }
 
+  it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
   it {
     should define_enum_for(:status).with_values(
       CaseCycle::STATUSES.index_by(&:to_sym)
     ).backed_by_column_of_type(:enum)
   }
-  it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
 
+  it { should allow_values(:daily, :weekly, :monthly).for(:copay_frequency) }
   it {
     should define_enum_for(:copay_frequency).with_values(
       CaseCycle::COPAY_FREQUENCIES.index_by(&:to_sym)
     ).with_suffix.backed_by_column_of_type(:enum)
   }
-  it { should allow_values(:daily, :weekly, :monthly).for(:copay_frequency) }
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:case_cycle)).to be_valid
+  end
+
 
   it 'validates uniqueness of slug' do
     create(:case_cycle)

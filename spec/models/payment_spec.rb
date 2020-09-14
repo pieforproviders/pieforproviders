@@ -9,6 +9,10 @@ RSpec.describe Payment, type: :model do
   it { is_expected.to monetize(:amount) }
   it { is_expected.to monetize(:discrepancy) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(build(:payment)).to be_valid
+  end
+
   let(:invalid_date_msg) { DateParamValidator.invalid_date_msg }
 
   it 'care_finished_on is a valid Date' do

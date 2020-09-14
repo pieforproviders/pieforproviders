@@ -6,7 +6,7 @@ RSpec.describe Lookup::County do
   it { should belong_to(:state) }
   it { should validate_presence_of(:name) }
   it 'validates uniqueness of the name, scoped to a state and is not case sensitive' do
-    new_county = CreateOrSampleLookup.county
+    new_county = CreateOrSampleLookup.random_county_or_create
     expect(new_county).to validate_uniqueness_of(:name).scoped_to(:state_id)
                                                        .case_insensitive
   end

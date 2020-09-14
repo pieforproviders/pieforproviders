@@ -15,6 +15,10 @@ RSpec.describe ChildCaseCycle, type: :model do
 
   it { should validate_numericality_of(:part_days_allowed).is_greater_than(0) }
   it { should validate_numericality_of(:full_days_allowed).is_greater_than(0) }
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:child_case_cycle)).to be_valid
+  end
 end
 
 # == Schema Information
