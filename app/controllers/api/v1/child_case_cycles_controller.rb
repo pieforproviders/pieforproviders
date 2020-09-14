@@ -3,10 +3,11 @@
 # API for user children
 class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   before_action :set_child_case_cycle, only: %i[show update destroy]
+  before_action :authorize_user, only: %i[update destroy]
 
   # GET /child_case_cycles
   def index
-    @child_case_cycles = ChildCaseCycle.all
+    @child_case_cycles = policy_scope(ChildCaseCycle)
 
     render json: @child_case_cycles
   end
@@ -20,6 +21,7 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   def create
     @child_case_cycle = ChildCaseCycle.new(child_case_cycle_params)
 
+    authorize @child_case_cycle
     if @child_case_cycle.save
       render json: @child_case_cycle, status: :created, location: @child_case_cycle
     else
@@ -44,13 +46,15 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   private
 
   def set_child_case_cycle
-    @child_case_cycle = ChildCaseCycle.find_by!(slug: params[:slug])
+    @child_case_cycle = policy_scope(ChildCaseCycle).find_by!(slug: params[:slug])
+  end
+
+  def authorize_user
+    authorize @child_case_cycle
   end
 
   def child_case_cycle_params
-    params.require(:child_case_cycle).permit(:id,
-                                             :slug,
-                                             :child_id,
+    params.require(:child_case_cycle).permit(:child_id,
                                              :subsidy_rule_id,
                                              :case_cycle_id,
                                              :part_days_allowed,
