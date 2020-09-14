@@ -3,10 +3,11 @@
 # API for user children
 class Api::V1::ChildrenController < Api::V1::ApiController
   before_action :set_child, only: %i[show update destroy]
+  before_action :authorize_user, only: %i[update destroy]
 
   # GET /children
   def index
-    @children = Child.all
+    @children = policy_scope(Child)
 
     render json: @children
   end
@@ -18,7 +19,11 @@ class Api::V1::ChildrenController < Api::V1::ApiController
 
   # POST /children
   def create
-    @child = Child.new(child_params)
+    @child = if current_user.admin?
+               Child.new(child_params)
+             else
+               current_user.children.new(child_params)
+             end
 
     if @child.save
       render json: @child, status: :created, location: @child
@@ -45,12 +50,16 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   private
 
   def set_child
-    @child = Child.find_by!(slug: params[:slug])
+    @child = policy_scope(Child).find_by!(slug: params[:slug])
+  end
+
+  def authorize_user
+    authorize @child
   end
 
   def child_params
-    params.require(:child).permit(
-      :active, :ccms_id, :date_of_birth, :full_name, :id, :slug, :user_id, child_sites_attributes: %i[site_id started_care ended_care]
-    )
+    attributes = [:ccms_id, :date_of_birth, :full_name, { child_sites_attributes: %i[site_id started_care ended_care] }]
+    attributes += %i[user_id active] if current_user.admin?
+    params.require(:child).permit(attributes)
   end
 end

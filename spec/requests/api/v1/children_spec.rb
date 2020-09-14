@@ -59,15 +59,20 @@ RSpec.describe 'children API', type: :request do
     end
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', Child do
+  it_behaves_like 'admins and resource owners can retrieve an item with a slug', Child do
     let(:item_params) { child_params }
+    let(:item) { Child.create! child_params }
+    let(:owner) { confirmed_user }
   end
 
-  it_behaves_like 'it updates an item with a slug', Child, 'full_name', 'Padma Patil', nil do
+  it_behaves_like 'admins and resource owners can update an item with a slug', Child, 'full_name', 'Padma Patil', nil do
     let(:item_params) { child_params }
+    let(:item) { Child.create! child_params }
+    let(:owner) { confirmed_user }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', Child do
-    let(:item_params) { child_params }
+  it_behaves_like 'admins and resource owners can delete an item with a slug', Child do
+    let(:item) { Child.create! child_params }
+    let(:owner) { confirmed_user }
   end
 end
