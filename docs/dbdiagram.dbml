@@ -142,7 +142,7 @@ Enum lengths_of_care {
 
 Table attendances {
   id uuid [pk, unique, not null]
-  child_site uuid [ref: > child_site.id, not null]
+  child_site_id uuid [ref: > child_sites.id, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
   slug string [not null]
   starts_on date [not null]
