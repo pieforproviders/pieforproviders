@@ -9,7 +9,7 @@
 
 ActionMailer::Base.perform_deliveries = false
 
-puts 'seeding'
+puts 'Seeding.......'
 
 THIS_YEAR = Date.current.year
 JAN_1 = Date.new(THIS_YEAR, 1, 1)
@@ -17,10 +17,18 @@ MAR_31 = Date.new(THIS_YEAR, 3, 31)
 APR_1 = Date.new(THIS_YEAR, 4, 1)
 JUN_30 = Date.new(THIS_YEAR, 6, 30)
 
+# minimum birthdates (ages)
+MIN_BIRTHDAY = (Time.zone.now - 2.weeks)
+MAX_BIRTHDAY = (Time.zone.now - 14.years)
 
+# ---------------------------------------------
+
+# Use puts to show the number of records in the database for a given class
 def puts_records_in_db(klass)
   puts " ... #{klass.count} #{klass.name.pluralize} now in the db"
 end
+
+# ---------------------------------------------
 
 Rake::Task['pie4providers:address_lookups:import_all'].invoke
 puts_records_in_db(Lookup::State)
@@ -54,8 +62,8 @@ puts_records_in_db(User)
 
 # find_or_create_by! a Child with the full_name,
 #  and birthday set randomly between the min_age and max_age.
-def child_named(full_name, min_birthday: (Time.zone.now - 2.weeks),
-                max_birthday: (Time.zone.now - 14.years),
+def child_named(full_name, min_birthday: MIN_BIRTHDAY,
+                max_birthday: MAX_BIRTHDAY,
                 user: @user_kate
                 )
   Child.find_or_create_by!(user: @user_kate,
@@ -285,7 +293,7 @@ end
 # Attendance
 # ---------------------------------------------
 
-puts ' Now creating attendence records...'
+puts ' Now creating attendance records...'
 
 # @return [Array[Date]] - list of days, starting with the first date (inclusive),
 #   ending with the last_date (inclusive),
@@ -387,3 +395,7 @@ make_attendance(mubiru_at_prairie_ctr,
                 earliest_checkin_hour: 7)
 
 puts_records_in_db(Attendance)
+
+# ---------------------------------------------
+
+puts 'Seeding is done!'
