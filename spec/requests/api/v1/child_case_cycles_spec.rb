@@ -3,9 +3,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'child_case_cycles API', type: :request do
-  let(:user_id) { create(:confirmed_user).id }
-  let(:case_cycle_id) { create(:case_cycle).id }
-  let(:child_id) { create(:child).id }
+  let(:user) { create(:confirmed_user) }
+  let(:case_cycle_id) { create(:case_cycle, user: user).id }
+  let(:child_id) { create(:child, user: user).id }
   let(:subsidy_rule_id) { create(:subsidy_rule).id }
   let!(:child_case_cycle_params) do
     {
@@ -13,8 +13,7 @@ RSpec.describe 'child_case_cycles API', type: :request do
       "full_days_allowed": 15,
       "case_cycle_id": case_cycle_id,
       "child_id": child_id,
-      "subsidy_rule_id": subsidy_rule_id,
-      "user_id": user_id
+      "subsidy_rule_id": subsidy_rule_id
     }
   end
 

@@ -50,7 +50,6 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   def child_case_cycle_params
     params.require(:child_case_cycle).permit(:id,
                                              :slug,
-                                             :user_id,
                                              :child_id,
                                              :subsidy_rule_id,
                                              :case_cycle_id,
