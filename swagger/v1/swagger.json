@@ -902,11 +902,6 @@
               "schema": {
                 "$ref": "#/components/schemas/updateChild"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateChild"
-              }
             }
           }
         }
