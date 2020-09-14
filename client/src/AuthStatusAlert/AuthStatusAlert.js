@@ -83,7 +83,7 @@ ConfirmationAlert.propTypes = {
   email: PropTypes.string.isRequired
 }
 
-export const ErrorAlert = ({ attribute, context, type }) => {
+export const AuthStatusAlert = ({ attribute, context, type }) => {
   const { t } = useTranslation()
 
   const errorMessages = {
@@ -118,11 +118,11 @@ export const ErrorAlert = ({ attribute, context, type }) => {
   return alert()
 }
 
-ErrorAlert.defaultProps = {
+AuthStatusAlert.defaultProps = {
   context: null
 }
 
-ErrorAlert.propTypes = {
+AuthStatusAlert.propTypes = {
   attribute: PropTypes.string.isRequired,
   context: PropTypes.shape({
     email: PropTypes.string.isRequired

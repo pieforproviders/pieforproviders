@@ -6,7 +6,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { ActionLink } from '../_shared/ActionLink'
-import ErrorAlert from 'ErrorAlert'
+import AuthStatusAlert from 'AuthStatusAlert'
 
 export function PasswordResetRequest({ onClose }) {
   const [loading, setLoading] = useState(false)
@@ -49,7 +49,10 @@ export function PasswordResetRequest({ onClose }) {
         <Alert
           type="error"
           message={
-            <ErrorAlert attribute={apiError.attribute} type={apiError.type} />
+            <AuthStatusAlert
+              attribute={apiError.attribute}
+              type={apiError.type}
+            />
           }
           className="mb-2"
           data-cy="errorMessage"

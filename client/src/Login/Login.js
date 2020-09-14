@@ -5,7 +5,7 @@ import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
-import ErrorAlert from 'ErrorAlert'
+import AuthStatusAlert from 'AuthStatusAlert'
 
 export function Login() {
   const location = useLocation()
@@ -80,7 +80,7 @@ export function Login() {
         <Alert
           className="mb-2"
           message={
-            <ErrorAlert
+            <AuthStatusAlert
               attribute={apiError.attribute}
               type={apiError.type}
               context={apiError.context}
