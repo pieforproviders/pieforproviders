@@ -53,7 +53,7 @@ export function Signup() {
       setSuccess(true)
     } else if (response.status === 422) {
       const { errors } = await response.json()
-      setValidationErrors(errors[0].detail)
+      setValidationErrors(errors)
     } else {
       setError(true)
     }
@@ -243,7 +243,7 @@ export function Signup() {
               validateStatus={validationErrors?.phone_number && 'error'}
               help={
                 validationErrors?.phone_number &&
-                `${t('phone')} ${validationErrors.phone_number.join(', ')}`
+                `${t('phone')} ${t(validationErrors.phone_number[0].error)}`
               }
             >
               <MaskedInput
@@ -345,7 +345,7 @@ export function Signup() {
           validateStatus={validationErrors?.email && 'error'}
           help={
             validationErrors?.email &&
-            `${t('email')} ${validationErrors.email.join(', ')}`
+            `${t('email')} ${t(validationErrors.email[0].error)}`
           }
         >
           <Input
