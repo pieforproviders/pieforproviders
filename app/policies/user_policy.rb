@@ -2,6 +2,10 @@
 
 # Authorization policies for users
 class UserPolicy < ApplicationPolicy
+  def index?
+    admin?
+  end
+
   # Scope defining which users a user has access to
   class Scope < Scope
     def resolve
@@ -13,23 +17,7 @@ class UserPolicy < ApplicationPolicy
     end
   end
 
-  def index?
-    admin?
-  end
-
-  def update?
-    manage?
-  end
-
-  def destroy?
-    manage?
-  end
-
   private
-
-  def manage?
-    admin? || owner?
-  end
 
   def owner?
     user == record
