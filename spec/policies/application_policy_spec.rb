@@ -4,8 +4,14 @@ require 'rails_helper'
 
 RSpec.describe ApplicationPolicy do
   subject { described_class }
-  let(:user) { FactoryBot.build_stubbed(:confirmed_user) }
-  let(:admin) { FactoryBot.build_stubbed(:admin) }
+  let!(:user) { FactoryBot.create(:confirmed_user) }
+  let!(:admin) { FactoryBot.create(:admin) }
+  let!(:non_owner) { FactoryBot.create(:confirmed_user) }
+  let!(:business) { FactoryBot.create(:business, user: user) }
+
+  it 'raises an exception if user is nil' do
+    expect { ApplicationPolicy.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)
+  end
 
   permissions :index?, :create? do
     it 'grants access to all users' do
@@ -16,11 +22,21 @@ RSpec.describe ApplicationPolicy do
 
   permissions :update?, :destroy? do
     it 'grants access to admins' do
-      expect(subject).to permit(admin)
+      expect(subject).to permit(admin, business)
     end
 
-    it 'denies access to non-admin users' do
-      expect(subject).not_to permit(user)
+    it 'grants access to owners' do
+      expect(subject).to permit(user, business)
+    end
+
+    it 'denies access to non-owners' do
+      expect(subject).not_to permit(non_owner, business)
+    end
+  end
+
+  describe ApplicationPolicy::Scope do
+    it 'raises an exception if user is nil' do
+      expect { ApplicationPolicy::Scope.new(nil, Business) }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

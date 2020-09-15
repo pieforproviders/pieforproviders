@@ -12,22 +12,4 @@ class BusinessPolicy < ApplicationPolicy
       end
     end
   end
-
-  def update?
-    manage?
-  end
-
-  def destroy?
-    manage?
-  end
-
-  private
-
-  def manage?
-    admin? || owner?
-  end
-
-  def owner?
-    record.user == user
-  end
 end
