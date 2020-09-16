@@ -3,10 +3,11 @@
 # API for user businesses
 class Api::V1::BusinessesController < Api::V1::ApiController
   before_action :set_business, only: %i[show update destroy]
+  before_action :authorize_user, only: %i[update destroy]
 
   # GET /businesses
   def index
-    @businesses = Business.all
+    @businesses = policy_scope(Business)
 
     render json: @businesses
   end
@@ -18,7 +19,11 @@ class Api::V1::BusinessesController < Api::V1::ApiController
 
   # POST /businesses
   def create
-    @business = Business.new(business_params)
+    @business = if current_user.admin?
+                  Business.new(business_params)
+                else
+                  current_user.businesses.new(business_params)
+                end
 
     if @business.save
       render json: @business, status: :created, location: @business
@@ -45,12 +50,16 @@ class Api::V1::BusinessesController < Api::V1::ApiController
   private
 
   def set_business
-    @business = Business.find_by!(slug: params[:slug])
+    @business = policy_scope(Business).find_by!(slug: params[:slug])
+  end
+
+  def authorize_user
+    authorize @business
   end
 
   def business_params
-    params.require(:business).permit(
-      :active, :category, :id, :name, :slug, :user_id
-    )
+    attributes = %i[name category]
+    attributes += %i[user_id active] if current_user.admin?
+    params.require(:business).permit(attributes)
   end
 end

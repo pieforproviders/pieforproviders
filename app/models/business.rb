@@ -10,6 +10,8 @@ class Business < UuidApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :user_id }
 
   before_validation { |business| business.slug = generate_slug("#{business.name}#{business.user_id}") }
+
+  scope :active, -> { where(active: true) }
 end
 
 # == Schema Information

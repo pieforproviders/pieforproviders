@@ -155,11 +155,6 @@
               "schema": {
                 "$ref": "#/components/schemas/updateBusiness"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateBusiness"
-              }
             }
           }
         }
@@ -1323,13 +1318,18 @@
     },
     "/api/v1/users": {
       "get": {
-        "summary": "lists all users for a user",
+        "summary": "retrieves all users",
         "tags": [
           "users"
         ],
         "responses": {
           "200": {
             "description": "users found",
+            "content": {
+            }
+          },
+          "403": {
+            "description": "forbidden",
             "content": {
             }
           },
@@ -1462,11 +1462,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateUser"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updateUser"
               }
