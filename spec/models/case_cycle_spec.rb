@@ -8,6 +8,7 @@ RSpec.describe CaseCycle, type: :model do
   it { should belong_to(:user) }
   it { should validate_numericality_of(:copay).is_greater_than(0) }
 
+  it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
   it {
     should define_enum_for(:status).with_values(
       CaseCycle::STATUSES.to_h { |s| [s, s] }
@@ -15,14 +16,15 @@ RSpec.describe CaseCycle, type: :model do
   }
 
   it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
-
   it {
     should define_enum_for(:copay_frequency).with_values(
       CaseCycle::COPAY_FREQUENCIES.to_h { |f| [f, f] }
     ).with_suffix.backed_by_column_of_type(:enum)
   }
 
-  it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
+  it 'factory should be valid (default; no args)' do
+    expect(build(:case_cycle)).to be_valid
+  end
 
   it 'validates uniqueness of slug' do
     create(:case_cycle)

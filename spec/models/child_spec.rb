@@ -8,6 +8,11 @@ RSpec.describe Child, type: :model do
   it { should have_many(:sites).through(:child_sites) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:date_of_birth) }
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:child)).to be_valid
+  end
+
   it 'validates uniqueness of full name' do
     create(:child)
     should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :user_id)

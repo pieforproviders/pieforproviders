@@ -1662,6 +1662,23 @@
         ],
         "example": "license_exempt_home"
       },
+      "agency": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "name": {
+            "type": "string",
+            "example": "Wisconsin Children's Services"
+          },
+          "state_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+          }
+        }
+      },
       "business": {
         "type": "object",
         "properties": {
@@ -1706,21 +1723,21 @@
             "type": "string",
             "example": "1100 Marks Ave"
           },
-          "city": {
-            "type": "string",
-            "example": "Galesburg"
+          "city_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           },
-          "state": {
-            "type": "string",
-            "example": "TX"
+          "state_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           },
-          "zip": {
-            "type": "string",
-            "example": "54321"
+          "zip_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           },
-          "county": {
-            "type": "string",
-            "example": "Tigh"
+          "county_id": {
+            "type": "uuid",
+            "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
           },
           "qris_rating": {
             "type": "string",
@@ -2102,10 +2119,10 @@
                 "required": [
                   "name",
                   "address",
-                  "city",
-                  "state",
-                  "zip",
-                  "county",
+                  "city_id",
+                  "state_id",
+                  "zip_id",
+                  "county_id",
                   "business_id"
                 ]
               }

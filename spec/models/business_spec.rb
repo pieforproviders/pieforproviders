@@ -14,6 +14,10 @@ RSpec.describe Business, type: :model do
     create(:business)
     should validate_uniqueness_of(:name).scoped_to(:user_id)
   end
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:business)).to be_valid
+  end
 end
 
 # == Schema Information
