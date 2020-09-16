@@ -127,6 +127,10 @@ Please make sure you write specs that include JSON validation of the request out
 
 Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb) to include your controller actions
 
+## Data Model
+
+The data model is documented in Database Markup Language in [docs/dbdiagram.dbml](docs/dbdiagram.dbml), and as a [PDF](docs/dbdiagram.pdf).  We use [DBDiagram.io](https://dbdiagram.io/d/5f22e9597543d301bf5d5480) to update the PDF; you can copy changes to the [docs/dbdiagram.dbml](docs/dbdiagram.dbml) into the text field in [DBDiagram.io](https://dbdiagram.io/d/5f22e9597543d301bf5d5480), and then the diagram will update.  Then export the PDF and save it back to the repo.
+
 ## Resources/Further Reading
 
 - [Quickstart for Rails](https://docs.docker.com/compose/rails/)
