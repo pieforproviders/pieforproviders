@@ -9,8 +9,7 @@
     "part_days_allowed",
     "slug",
     "subsidy_rule_id",
-    "updated_at",
-    "user_id"
+    "updated_at"
   ],
   "properties": {
     "case_cycle_id": {  "type": "string", "format": "uuid" },
@@ -21,7 +20,6 @@
     "part_days_allowed": {  "type": "integer" },
     "slug": { "type": "string" },
     "subsidy_rule_id": { "type": "string", "format": "uuid" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "user_id": { "type": "string", "format": "uuid" }
+    "updated_at": { "type": "string", "format": "date-time" }
   }
 }

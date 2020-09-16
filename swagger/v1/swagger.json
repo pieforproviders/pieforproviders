@@ -338,11 +338,6 @@
               "schema": {
                 "$ref": "#/components/schemas/updateCaseCycle"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/updateCaseCycle"
-              }
             }
           }
         }
@@ -607,6 +602,11 @@
             "content": {
             }
           },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+            }
+          },
           "401": {
             "description": "not authorized",
             "content": {
@@ -621,11 +621,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createChildCaseCycle"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/createChildCaseCycle"
               }
@@ -711,11 +706,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateChildCaseCycle"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updateChildCaseCycle"
               }

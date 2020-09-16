@@ -6,6 +6,7 @@ class CaseCycle < UuidApplicationRecord
   COPAY_FREQUENCIES = %w[daily weekly monthly].freeze
 
   belongs_to :user
+  has_many :child_case_cycles, dependent: :restrict_with_error
 
   monetize :copay_cents
 

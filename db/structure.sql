@@ -163,7 +163,6 @@ CREATE TABLE public.child_case_cycles (
     slug character varying NOT NULL,
     part_days_allowed integer NOT NULL,
     full_days_allowed integer NOT NULL,
-    user_id uuid NOT NULL,
     child_id uuid NOT NULL,
     subsidy_rule_id uuid NOT NULL,
     case_cycle_id uuid NOT NULL,
@@ -641,13 +640,6 @@ CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cyc
 
 
 --
--- Name: index_child_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_user_id ON public.child_case_cycles USING btree (user_id);
-
-
---
 -- Name: index_child_sites_on_child_id_and_site_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -868,14 +860,6 @@ ALTER TABLE ONLY public.child_case_cycle_payments
 
 
 --
--- Name: child_case_cycles fk_rails_612f9eee7b; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_612f9eee7b FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: child_case_cycles fk_rails_b4f3c7d474; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -940,4 +924,5 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200907181541'),
 ('20200910021812'),
 ('20200911180200'),
-('20200911220200');
+('20200911220200'),
+('20200914030020');
