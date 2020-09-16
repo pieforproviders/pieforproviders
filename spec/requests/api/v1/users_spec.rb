@@ -58,40 +58,6 @@ RSpec.describe 'users API', type: :request do
     end
   end
 
-  it_behaves_like 'it creates an item with the right api version and is authenticated', User do
-    let(:item_params) { user_params }
-  end
-
-  describe 'creates a user' do
-    path '/api/v1/users' do
-      post 'creates a user' do
-        tags 'users'
-        consumes 'application/json', 'application/xml'
-        parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-        parameter name: :user, in: :body, schema: {
-          '$ref' => '#/components/schemas/createUser'
-        }
-
-        context 'on the right api version' do
-          include_context 'correct api version header'
-
-          context 'when not authenticated - CAN create a User' do
-            response '201', 'user created' do
-              let(:user) { { "user": user_params } }
-              run_test! do
-                expect(response).to match_response_schema('user')
-              end
-            end
-            response '422', 'invalid request' do
-              let(:user) { { "user": { "title": 'foo' } } }
-              run_test!
-            end
-          end
-        end
-      end
-    end
-  end
-
   describe 'user profile' do
     path '/api/v1/profile' do
       let(:item_params) { user_params }
@@ -118,16 +84,5 @@ RSpec.describe 'users API', type: :request do
         it_behaves_like 'server error responses for wrong api version with parameters', 'user'
       end
     end
-  end
-
-  it_behaves_like 'admins and resource owners can update an item with a slug', User, 'full_name', 'Ron Weasley', nil do
-    let(:item_params) { user_params }
-    let(:item) { User.create! user_params.merge(confirmed_at: DateTime.current) }
-    let(:owner) { item }
-  end
-
-  it_behaves_like 'admins and resource owners can delete an item with a slug', User do
-    let(:item) { User.create! user_params.merge(confirmed_at: DateTime.current) }
-    let(:owner) { item }
   end
 end
