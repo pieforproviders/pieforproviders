@@ -1682,7 +1682,7 @@
           }
         ]
       },
-      "lengths_of_care": {
+      "duration_definitions": {
         "type": "string",
         "enum": [
           "part_day",
@@ -2043,7 +2043,7 @@
             "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
           },
           "attendance_duration": {
-            "$ref": "#/components/schemas/lengths_of_care"
+            "$ref": "#/components/schemas/duration_definitions"
           },
           "total_time_in_care": {
             "type": "string",
