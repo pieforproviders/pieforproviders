@@ -47,10 +47,10 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
--- Name: lengths_of_care; Type: TYPE; Schema: public; Owner: -
+-- Name: duration_definitions; Type: TYPE; Schema: public; Owner: -
 --
 
-CREATE TYPE public.lengths_of_care AS ENUM (
+CREATE TYPE public.duration_definitions AS ENUM (
     'part_day',
     'full_day',
     'full_plus_part_day',
@@ -116,7 +116,7 @@ CREATE TABLE public.attendances (
     total_time_in_care interval NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    attendance_duration public.lengths_of_care DEFAULT 'full_day'::public.lengths_of_care NOT NULL
+    duration_definition public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
 );
 
 
@@ -1012,7 +1012,6 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200911220200'),
 ('20200913004651'),
 ('20200913005807'),
-('20200914030020'),
-('20200914140101');
+('20200914030020');
 
 
