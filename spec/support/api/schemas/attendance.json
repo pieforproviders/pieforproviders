@@ -12,16 +12,16 @@
     "updated_at"
   ],
   "properties": {
-    "check_in": { "type": "string" , "format": "time" },
-    "check_out": { "type": "string" , "format": "time" },
+    "check_in": { "type": "string", "format": "time" },
+    "check_out": { "type": "string", "format": "time" },
     "child_case_cycle_id": { "type": "string", "format": "uuid" },
     "child_site_id": { "type": "string", "format": "uuid" },
-    "created_at": { "type": "string" , "format": "date-time" },
-    "id": { "type": "string", "format": "uuid"  },
-    "attendance_duration": {"$ref":"lengths_of_care.json"},
+    "created_at": { "type": "string", "format": "date-time" },
+    "id": { "type": "string", "format": "uuid" },
+    "attendance_duration": { "$ref": "duration_definitions.json" },
     "slug": { "type": "string" },
-    "starts_on": { "type": "string" , "format": "date" },
-    "total_time_in_care": { "type": "string" , "format": "interval" },
-    "updated_at": { "type": "string" , "format": "date-time" }
+    "starts_on": { "type": "string", "format": "date" },
+    "total_time_in_care": { "type": "string", "format": "interval" },
+    "updated_at": { "type": "string", "format": "date-time" }
   }
 }

@@ -1,17 +1,17 @@
 class AddLengthOfCareToAttendance < ActiveRecord::Migration[6.0]
   def up
-    execute <<-SQL
-      create type lengths_of_care as enum ('part_day', 'full_day', 'full_plus_part_day', 'full_plus_full_day');
+    execute <<-SQL.squish
+      create type duration_definitions as enum ('part_day', 'full_day', 'full_plus_part_day', 'full_plus_full_day');
     SQL
 
-    add_column :attendances, :length_of_care, :lengths_of_care, null: false, default: 'full_day'
+    add_column :attendances, :duration_definition, :duration_definitions, null: false, default: 'full_day'
   end
 
   def down
-    remove_column :attendances, :length_of_care
+    remove_column :attendances, :duration_definition
 
-    execute <<-SQL
-      drop type lengths_of_care;
+    execute <<-SQL.squish
+      drop type duration_definitions;
     SQL
   end
 end

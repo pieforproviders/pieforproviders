@@ -133,7 +133,7 @@ Table child_case_cycle_agencies {
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
 }
 
-Enum lengths_of_care {
+Enum duration_definitions {
   part_day
   full_day
   full_plus_part_day
@@ -149,7 +149,7 @@ Table attendances {
   check_in time [not null]
   check_out time [not null]
   total_time_in_care duration [not null]
-  attendance_duration lengths_of_care [not null]
+  attendance_duration duration_definitions [not null]
 }
 
 Table payments {

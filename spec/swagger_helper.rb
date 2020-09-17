@@ -63,7 +63,19 @@ RSpec.configure do |config|
                      monthly],
             example: 'weekly'
           },
-          lengths_of_care: {
+          currency_or_null: {
+            anyOf: [
+              { type: :string, example: 'USD' },
+              { type: :null }
+            ]
+          },
+          date_or_null: {
+            anyOf: [
+              { type: :string, example: '2019-06-27' },
+              { type: :null }
+            ]
+          },
+          duration_definitions: {
             type: :string,
             enum: %w[part_day
                      full_day
@@ -182,7 +194,7 @@ RSpec.configure do |config|
               check_out: { '$ref': '#/components/schemas/time_or_null' },
               child_site_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              attendance_duration: { '$ref': '#/components/schemas/lengths_of_care' },
+              attendance_duration: { '$ref': '#/components/schemas/duration_definitions' },
               total_time_in_care: { type: :string, example: '360 minutes' },
               starts_on: { type: :string, example: '2020-07-12' }
             }
