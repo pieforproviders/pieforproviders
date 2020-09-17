@@ -5,7 +5,7 @@ FactoryBot.define do
     paid_on { Faker::Date.between(from: care_finished_on, to: Time.zone.today) }
     care_started_on { Faker::Date.backward(days: 365) }
     care_finished_on { Faker::Date.between(from: care_started_on, to: Time.zone.today) }
-    amount { Faker::Number.between(from: 0, to: 999_999) }
+    amount { Faker::Number.between(from: 1, to: 999_999) }
     # Set a discrepancy value about 20% of the time:
     discrepancy { Faker::Boolean.boolean(true_ratio: 0.2) ? Faker::Number.between(from: 0, to: amount) : nil }
     agency

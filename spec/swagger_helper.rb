@@ -75,6 +75,14 @@ RSpec.configure do |config|
               { type: :null }
             ]
           },
+          lengths_of_care: {
+            type: :string,
+            enum: %w[part_day
+                     full_day
+                     full_plus_part_day
+                     full_plus_full_day],
+            example: 'full_day'
+          },
           license_types: {
             type: :string,
             enum: %w[licensed_center
@@ -83,6 +91,12 @@ RSpec.configure do |config|
                      license_exempt_home
                      license_exempt_center],
             example: 'license_exempt_home'
+          },
+          time_or_null: {
+            anyOf: [
+              { type: :string, example: '020-09-13 14:07:47 -0700' },
+              { type: :null }
+            ]
           },
           agency: {
             type: :object,
@@ -201,6 +215,18 @@ RSpec.configure do |config|
               discrepancy_cents: { type: :integer, example: 456 },
               discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
               payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+            }
+          },
+          attendance: {
+            type: :object,
+            properties: {
+              check_in: { type: :string, example: '020-09-13 14:07:47 -0700' },
+              check_out: { '$ref': '#/components/schemas/time_or_null' },
+              child_site_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
+              attendance_duration: { '$ref': '#/components/schemas/lengths_of_care' },
+              total_time_in_care: { type: :string, example: '360 minutes' },
+              starts_on: { type: :string, example: '2020-07-12' }
             }
           },
           createUser: {
@@ -428,6 +454,30 @@ RSpec.configure do |config|
               child_case_cycle_payment: {
                 allOf: [
                   { '$ref': '#/components/schemas/child_case_cycle_payment' }
+                ]
+              }
+            }
+          },
+          createAttendance: {
+            type: :object,
+            properties: {
+              payment: {
+                allOf: [
+                  { '$ref': '#/components/schemas/attendance' },
+                  {
+                    type: :object,
+                    required: %w[child_case_cycle_id starts_on]
+                  }
+                ]
+              }
+            }
+          },
+          updateAttendance: {
+            type: :object,
+            properties: {
+              site: {
+                allOf: [
+                  { '$ref': '#/components/schemas/attendance' }
                 ]
               }
             }
