@@ -58,7 +58,6 @@ class Api::V1::AttendancesController < Api::V1::ApiController
                                        :starts_on,
                                        :check_in,
                                        :check_out,
-                                       :total_time_in_care,
-                                       :attendance_duration)
+                                       :total_time_in_care)
   end
 end

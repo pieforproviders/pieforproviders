@@ -1,4 +1,4 @@
-class AddLengthOfCareToAttendance < ActiveRecord::Migration[6.0]
+class AddDurationDefinitionsToAttendance < ActiveRecord::Migration[6.0]
   def up
     execute <<-SQL.squish
       create type duration_definitions as enum ('part_day', 'full_day', 'full_plus_part_day', 'full_plus_full_day');
