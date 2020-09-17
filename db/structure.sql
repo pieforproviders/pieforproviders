@@ -116,7 +116,7 @@ CREATE TABLE public.attendances (
     total_time_in_care interval NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    duration_definition public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
+    attendance_duration public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
 );
 
 
