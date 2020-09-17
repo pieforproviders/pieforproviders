@@ -13,7 +13,8 @@ RSpec.describe Payment, type: :model do
     expect(build(:payment)).to be_valid
   end
 
-  let(:invalid_date_msg) { 'Invalid date' }
+  let(:invalid_date_msg) { DateParamValidator.invalid_date_msg }
+
   it 'care_finished_on is a valid Date' do
     pay = build(:payment)
     pay.valid?

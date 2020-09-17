@@ -47,6 +47,18 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
+-- Name: duration_definitions; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE public.duration_definitions AS ENUM (
+    'part_day',
+    'full_day',
+    'full_plus_part_day',
+    'full_plus_full_day'
+);
+
+
+--
 -- Name: license_types; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -60,6 +72,8 @@ CREATE TYPE public.license_types AS ENUM (
 
 
 SET default_tablespace = '';
+
+SET default_table_access_method = heap;
 
 --
 -- Name: agencies; Type: TABLE; Schema: public; Owner: -
@@ -85,6 +99,32 @@ CREATE TABLE public.ar_internal_metadata (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: attendances; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.attendances (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    child_site_id uuid NOT NULL,
+    child_case_cycle_id uuid NOT NULL,
+    slug character varying NOT NULL,
+    starts_on date NOT NULL,
+    check_in time without time zone NOT NULL,
+    check_out time without time zone NOT NULL,
+    total_time_in_care interval NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    attendance_duration public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
+);
+
+
+--
+-- Name: COLUMN attendances.total_time_in_care; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_out time - check_in time';
 
 
 --
@@ -406,6 +446,14 @@ ALTER TABLE ONLY public.ar_internal_metadata
 
 
 --
+-- Name: attendances attendances_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT attendances_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: blocked_tokens blocked_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -546,6 +594,27 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX index_agencies_on_name_and_state_id ON public.agencies USING btree (name, state_id);
+
+
+--
+-- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
+
+
+--
+-- Name: index_attendances_on_child_site_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btree (child_site_id);
+
+
+--
+-- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
 
 
 --
@@ -876,11 +945,27 @@ ALTER TABLE ONLY public.child_case_cycles
 
 
 --
+-- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.child_case_cycles
     ADD CONSTRAINT fk_rails_e441dceee7 FOREIGN KEY (case_cycle_id) REFERENCES public.case_cycles(id);
+
+
+--
+-- Name: attendances fk_rails_e61403eb2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.attendances
+    ADD CONSTRAINT fk_rails_e61403eb2b FOREIGN KEY (child_site_id) REFERENCES public.child_sites(id);
 
 
 --
@@ -925,4 +1010,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200910021812'),
 ('20200911180200'),
 ('20200911220200'),
+('20200913004651'),
+('20200913005807'),
 ('20200914030020');
+
+

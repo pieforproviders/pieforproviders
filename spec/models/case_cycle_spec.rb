@@ -3,22 +3,24 @@
 require 'rails_helper'
 
 RSpec.describe CaseCycle, type: :model do
-  let(:invalid_date_msg) { 'Invalid date' }
+  let(:invalid_date_msg) { DateParamValidator.invalid_date_msg }
 
   it { should belong_to(:user) }
+
+  it { is_expected.to monetize(:copay) }
   it { should validate_numericality_of(:copay).is_greater_than(0) }
 
   it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
   it {
     should define_enum_for(:status).with_values(
-      CaseCycle::STATUSES.to_h { |s| [s, s] }
+      CaseCycle::STATUSES.index_by(&:to_sym)
     ).backed_by_column_of_type(:enum)
   }
 
-  it { should allow_values(:submitted, :pending, :approved, :denied).for(:status) }
+  it { should allow_values(:daily, :weekly, :monthly).for(:copay_frequency) }
   it {
     should define_enum_for(:copay_frequency).with_values(
-      CaseCycle::COPAY_FREQUENCIES.to_h { |f| [f, f] }
+      CaseCycle::COPAY_FREQUENCIES.index_by(&:to_sym)
     ).with_suffix.backed_by_column_of_type(:enum)
   }
 

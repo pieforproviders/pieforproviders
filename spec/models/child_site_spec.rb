@@ -5,6 +5,8 @@ require 'rails_helper'
 RSpec.describe ChildSite, type: :model do
   it { should belong_to(:child) }
   it { should belong_to(:site) }
+
+  # TODO: validate started_care, ended_care
 end
 
 # == Schema Information

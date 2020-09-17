@@ -1,0 +1,6 @@
+{
+  "duration_definitions": {
+    "type": "string",
+    "enum": ["part_day", "full_day", "full_plus_part_day", "full_plus_full_day"]
+  }
+}
