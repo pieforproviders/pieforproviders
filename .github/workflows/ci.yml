@@ -11,35 +11,7 @@ jobs:
     steps:
       - name: Dump GitHub event
         env:
-          GITHUB_CONTEXT: ${{ toJson(github.event) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub event path
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.event_path) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub event name
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.event_name) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub ref
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.ref) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub head ref
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.head_ref) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub base ref
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.base_ref) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub action
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.action) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump GitHub action path
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github.action_path) }}
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Dump job context
         env:
