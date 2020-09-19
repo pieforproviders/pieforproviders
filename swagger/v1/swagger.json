@@ -75,10 +75,10 @@
         }
       }
     },
-    "/api/v1/attendances/{slug}": {
+    "/api/v1/attendances/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -263,10 +263,10 @@
         }
       }
     },
-    "/api/v1/businesses/{slug}": {
+    "/api/v1/businesses/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -446,10 +446,10 @@
         }
       }
     },
-    "/api/v1/case_cycles/{slug}": {
+    "/api/v1/case_cycles/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -629,10 +629,10 @@
         }
       }
     },
-    "/api/v1/child_case_cycle_payments/{slug}": {
+    "/api/v1/child_case_cycle_payments/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -817,10 +817,10 @@
         }
       }
     },
-    "/api/v1/child_case_cycles/{slug}": {
+    "/api/v1/child_case_cycles/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -1000,10 +1000,10 @@
         }
       }
     },
-    "/api/v1/children/{slug}": {
+    "/api/v1/children/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -1183,10 +1183,10 @@
         }
       }
     },
-    "/api/v1/payments/{slug}": {
+    "/api/v1/payments/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
@@ -1366,10 +1366,10 @@
         }
       }
     },
-    "/api/v1/sites/{slug}": {
+    "/api/v1/sites/{id}": {
       "parameters": [
         {
-          "name": "slug",
+          "name": "id",
           "in": "path",
           "required": true,
           "schema": {
