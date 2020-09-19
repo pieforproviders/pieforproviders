@@ -40,7 +40,6 @@ end
 #  effective_on    :date
 #  expires_on      :date
 #  notified_on     :date
-#  slug            :string           not null
 #  status          :enum             default("submitted"), not null
 #  submitted_on    :date             not null
 #  created_at      :datetime         not null
@@ -49,7 +48,6 @@ end
 #
 # Indexes
 #
-#  index_case_cycles_on_slug     (slug) UNIQUE
 #  index_case_cycles_on_user_id  (user_id)
 #
 # Foreign Keys
