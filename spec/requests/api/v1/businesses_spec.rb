@@ -18,19 +18,19 @@ RSpec.describe 'businesses API', type: :request do
     let(:item_params) { business_params }
   end
 
-  it_behaves_like 'admins and resource owners can retrieve an item with a slug', Business do
+  it_behaves_like 'admins and resource owners can retrieve an item', Business do
     let(:item_params) { business_params }
     let(:item) { Business.create! business_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can update an item with a slug', Business, 'name', 'Hogwarts School', nil do
+  it_behaves_like 'admins and resource owners can update an item', Business, 'name', 'Hogwarts School', nil do
     let(:item_params) { business_params }
     let(:item) { Business.create! business_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can delete an item with a slug', Business do
+  it_behaves_like 'admins and resource owners can delete an item', Business do
     let(:item) { Business.create! business_params }
     let(:owner) { user }
   end

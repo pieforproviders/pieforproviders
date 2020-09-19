@@ -37,15 +37,15 @@ RSpec.describe 'payments API', type: :request do
     end
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', Payment do
+  it_behaves_like 'it retrieves an item for a user', Payment do
     let(:item_params) { payment_params }
   end
 
-  it_behaves_like 'it updates an item with a slug', Payment, 'amount_cents', 99_999, nil do
+  it_behaves_like 'it updates an item', Payment, 'amount_cents', 99_999, nil do
     let(:item_params) { payment_params }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', Payment do
+  it_behaves_like 'it deletes an item for a user', Payment do
     let(:item_params) { payment_params }
   end
 end
