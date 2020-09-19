@@ -12,7 +12,7 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
     render json: @child_case_cycles
   end
 
-  # GET /child_case_cycles/:slug
+  # GET /child_case_cycles/:id
   def show
     render json: @child_case_cycle
   end
@@ -29,7 +29,7 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /child_case_cycles/:slug
+  # PATCH/PUT /child_case_cycles/:id
   def update
     if @child_case_cycle.update(child_case_cycle_params)
       render json: @child_case_cycle
@@ -38,7 +38,7 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
     end
   end
 
-  # DELETE /child_case_cycles/:slug
+  # DELETE /child_case_cycles/:id
   def destroy
     @child_case_cycle.destroy
   end
@@ -46,7 +46,7 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   private
 
   def set_child_case_cycle
-    @child_case_cycle = policy_scope(ChildCaseCycle).find_by!(slug: params[:slug])
+    @child_case_cycle = policy_scope(ChildCaseCycle).find(params[:id])
   end
 
   def authorize_user
@@ -54,10 +54,10 @@ class Api::V1::ChildCaseCyclesController < Api::V1::ApiController
   end
 
   def child_case_cycle_params
-    params.require(:child_case_cycle).permit(:child_id,
-                                             :subsidy_rule_id,
-                                             :case_cycle_id,
+    params.require(:child_case_cycle).permit(:case_cycle_id,
+                                             :child_id,
+                                             :full_days_allowed,
                                              :part_days_allowed,
-                                             :full_days_allowed)
+                                             :subsidy_rule_id)
   end
 end

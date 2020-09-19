@@ -11,7 +11,7 @@ class Api::V1::AttendancesController < Api::V1::ApiController
     render json: @attendances
   end
 
-  # GET /attendances/:slug
+  # GET /attendances/:id
   def show
     render json: @attendance
   end
@@ -29,7 +29,7 @@ class Api::V1::AttendancesController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /attendances/:slug
+  # PATCH/PUT /attendances/:id
   def update
     if @attendance.update(attendance_params)
       render json: @attendance
@@ -38,7 +38,7 @@ class Api::V1::AttendancesController < Api::V1::ApiController
     end
   end
 
-  # DELETE /attendances/:slug
+  # DELETE /attendances/:id
   def destroy
     @attendance.destroy
   end
@@ -46,18 +46,16 @@ class Api::V1::AttendancesController < Api::V1::ApiController
   private
 
   def set_attendance
-    @attendance = Attendance.find_by!(slug: params[:slug])
+    @attendance = Attendance.find(params[:id])
   end
 
   # Only allow a trusted parameter "white list" through.
   def attendance_params
-    params.require(:attendance).permit(:id,
-                                       :child_site_id,
-                                       :child_case_cycle_id,
-                                       :slug,
-                                       :starts_on,
-                                       :check_in,
+    params.require(:attendance).permit(:check_in,
                                        :check_out,
+                                       :child_case_cycle_id,
+                                       :child_site_id,
+                                       :starts_on,
                                        :total_time_in_care)
   end
 end
