@@ -32,15 +32,15 @@ RSpec.describe 'child_case_cycle_payments API', type: :request do
     end
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', ChildCaseCyclePayment do
+  it_behaves_like 'it retrieves an item for a user', ChildCaseCyclePayment do
     let(:item_params) { ccc_payment_params }
   end
 
-  it_behaves_like 'it updates an item with a slug', ChildCaseCyclePayment, 'amount_cents', 99_999, nil do
+  it_behaves_like 'it updates an item', ChildCaseCyclePayment, 'amount_cents', 99_999, nil do
     let(:item_params) { ccc_payment_params }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', ChildCaseCyclePayment do
+  it_behaves_like 'it deletes an item for a user', ChildCaseCyclePayment do
     let(:item_params) { ccc_payment_params }
   end
 end

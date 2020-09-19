@@ -21,19 +21,19 @@ RSpec.describe 'case_cycles API', type: :request do
     let(:item_params) { case_cycle_params }
   end
 
-  it_behaves_like 'admins and resource owners can retrieve an item with a slug', CaseCycle do
+  it_behaves_like 'admins and resource owners can retrieve an item', CaseCycle do
     let(:item_params) { case_cycle_params }
     let(:item) { CaseCycle.create! case_cycle_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can update an item with a slug', CaseCycle, 'effective_on', '2020-06-18', 7 do
+  it_behaves_like 'admins and resource owners can update an item', CaseCycle, 'effective_on', '2020-06-18', 7 do
     let(:item_params) { case_cycle_params }
     let(:item) { CaseCycle.create! case_cycle_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can delete an item with a slug', CaseCycle do
+  it_behaves_like 'admins and resource owners can delete an item', CaseCycle do
     let(:item) { CaseCycle.create! case_cycle_params }
     let(:owner) { user }
   end

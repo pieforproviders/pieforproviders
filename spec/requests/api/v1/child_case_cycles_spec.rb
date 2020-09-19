@@ -78,19 +78,19 @@ RSpec.describe 'child_case_cycles API', type: :request do
     end
   end
 
-  it_behaves_like 'admins and resource owners can retrieve an item with a slug', ChildCaseCycle do
+  it_behaves_like 'admins and resource owners can retrieve an item', ChildCaseCycle do
     let(:item_params) { child_case_cycle_params }
     let(:item) { ChildCaseCycle.create! child_case_cycle_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can update an item with a slug', ChildCaseCycle, 'full_days_allowed', 100, 'strings are invalid' do
+  it_behaves_like 'admins and resource owners can update an item', ChildCaseCycle, 'full_days_allowed', 100, 'strings are invalid' do
     let(:item_params) { child_case_cycle_params }
     let(:item) { ChildCaseCycle.create! child_case_cycle_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can delete an item with a slug', ChildCaseCycle do
+  it_behaves_like 'admins and resource owners can delete an item', ChildCaseCycle do
     let(:item) { ChildCaseCycle.create! child_case_cycle_params }
     let(:owner) { user }
   end

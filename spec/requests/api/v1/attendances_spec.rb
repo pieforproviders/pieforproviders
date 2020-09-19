@@ -26,15 +26,15 @@ RSpec.describe 'attendances API', type: :request do
     let(:item_params) { attendance_params }
   end
 
-  it_behaves_like 'it retrieves an item with a slug, for a user', Attendance do
+  it_behaves_like 'it retrieves an item for a user', Attendance do
     let(:item_params) { attendance_params }
   end
 
-  it_behaves_like 'it updates an item with a slug', Attendance, 'starts_on', Date.current.to_s, nil do
+  it_behaves_like 'it updates an item', Attendance, 'starts_on', Date.current.to_s, nil do
     let(:item_params) { attendance_params }
   end
 
-  it_behaves_like 'it deletes an item with a slug, for a user', Attendance do
+  it_behaves_like 'it deletes an item for a user', Attendance do
     let(:item_params) { attendance_params }
   end
 end
