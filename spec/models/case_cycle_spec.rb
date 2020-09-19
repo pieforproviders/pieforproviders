@@ -27,11 +27,6 @@ RSpec.describe CaseCycle, type: :model do
     expect(build(:case_cycle)).to be_valid
   end
 
-  it 'validates uniqueness of slug' do
-    create(:case_cycle)
-    should validate_uniqueness_of(:slug)
-  end
-
   it 'validates submitted_on date if present' do
     cycle = build(:case_cycle, submitted_on: nil)
     expect(cycle).to be_valid
@@ -93,7 +88,6 @@ end
 #  effective_on    :date
 #  expires_on      :date
 #  notified_on     :date
-#  slug            :string           not null
 #  status          :enum             default("submitted"), not null
 #  submitted_on    :date             not null
 #  created_at      :datetime         not null
@@ -102,7 +96,6 @@ end
 #
 # Indexes
 #
-#  index_case_cycles_on_slug     (slug) UNIQUE
 #  index_case_cycles_on_user_id  (user_id)
 #
 # Foreign Keys
