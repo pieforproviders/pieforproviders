@@ -27,18 +27,12 @@ class Attendance < UuidApplicationRecord
   enum attendance_duration: DURATION_DEFINITIONS.index_by(&:to_sym)
 
   before_validation :calc_total_time_in_care
-  before_save :set_slug
 
-  validates :slug, uniqueness: true
   validates :starts_on, date_param: true
   validates :check_in, time_param: true
   validates :check_out, time_param: true
 
   private
-
-  def set_slug
-    self.slug = generate_slug("#{SecureRandom.hex}#{id}")
-  end
 
   def calc_total_time_in_care
     self.total_time_in_care = (check_out.nil? || check_in.nil? ? 0 : check_out - check_in)
@@ -53,7 +47,6 @@ end
 #  attendance_duration                                            :enum             default("full_day"), not null
 #  check_in                                                       :time             not null
 #  check_out                                                      :time             not null
-#  slug                                                           :string           not null
 #  starts_on                                                      :date             not null
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
@@ -65,7 +58,6 @@ end
 #
 #  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
 #  index_attendances_on_child_site_id        (child_site_id)
-#  index_attendances_on_slug                 (slug) UNIQUE
 #
 # Foreign Keys
 #

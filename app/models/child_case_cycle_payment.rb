@@ -8,9 +8,6 @@ class ChildCaseCyclePayment < UuidApplicationRecord
   monetize :amount_cents
   monetize :discrepancy_cents, allow_nil: true
 
-  before_save :set_slug_from_id
-
-  validates :slug, uniqueness: true
   validates :amount, numericality: { greater_than: 0 }
 end
 
@@ -23,7 +20,6 @@ end
 #  amount_currency      :string           default("USD"), not null
 #  discrepancy_cents    :integer
 #  discrepancy_currency :string           default("USD")
-#  slug                 :string           not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  child_case_cycle_id  :uuid             not null
@@ -33,7 +29,6 @@ end
 #
 #  index_child_case_cycle_payments_on_child_case_cycle_id  (child_case_cycle_id)
 #  index_child_case_cycle_payments_on_payment_id           (payment_id)
-#  index_child_case_cycle_payments_on_slug                 (slug) UNIQUE
 #
 # Foreign Keys
 #

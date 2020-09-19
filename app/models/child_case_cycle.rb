@@ -6,17 +6,8 @@ class ChildCaseCycle < UuidApplicationRecord
   belongs_to :subsidy_rule
   belongs_to :case_cycle
 
-  before_save :set_slug
-
-  validates :slug, uniqueness: { case_sensitive: false }
   validates :part_days_allowed, numericality: { greater_than: 0 }
   validates :full_days_allowed, numericality: { greater_than: 0 }
-
-  private
-
-  def set_slug
-    self.slug = generate_slug("#{SecureRandom.hex}#{id}")
-  end
 
   delegate :user, to: :case_cycle
 end
@@ -28,7 +19,6 @@ end
 #  id                :uuid             not null, primary key
 #  full_days_allowed :integer          not null
 #  part_days_allowed :integer          not null
-#  slug              :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  case_cycle_id     :uuid             not null
@@ -39,7 +29,6 @@ end
 #
 #  index_child_case_cycles_on_case_cycle_id    (case_cycle_id)
 #  index_child_case_cycles_on_child_id         (child_id)
-#  index_child_case_cycles_on_slug             (slug) UNIQUE
 #  index_child_case_cycles_on_subsidy_rule_id  (subsidy_rule_id)
 #
 # Foreign Keys
