@@ -12,7 +12,7 @@ class Api::V1::SitesController < Api::V1::ApiController
     render json: @sites
   end
 
-  # GET /sites/:slug
+  # GET /sites/:id
   def show
     render json: @site
   end
@@ -29,7 +29,7 @@ class Api::V1::SitesController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /sites/:slug
+  # PATCH/PUT /sites/:id
   def update
     if @site.update(site_params)
       render json: @site
@@ -38,7 +38,7 @@ class Api::V1::SitesController < Api::V1::ApiController
     end
   end
 
-  # DELETE /sites/:slug
+  # DELETE /sites/:id
   def destroy
     # soft delete
     @site.update!(active: false)
@@ -47,7 +47,7 @@ class Api::V1::SitesController < Api::V1::ApiController
   private
 
   def set_site
-    @site = policy_scope(Site).find_by!(slug: params[:slug])
+    @site = policy_scope(Site).find(params[:id])
   end
 
   def authorize_user
@@ -55,7 +55,14 @@ class Api::V1::SitesController < Api::V1::ApiController
   end
 
   def site_params
-    attribues = %i[name address city_id state_id zip_id county_id qris_rating business_id]
+    attribues = %i[address
+                   business_id
+                   city_id
+                   county_id
+                   name
+                   qris_rating
+                   state_id
+                   zip_id]
     attribues << :active if current_user&.admin?
     params.require(:site).permit(attribues)
   end

@@ -11,7 +11,7 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     render json: @payments
   end
 
-  # GET /payments/:slug
+  # GET /payments/:id
   def show
     render json: @payment
   end
@@ -27,7 +27,7 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /payments/:slug
+  # PATCH/PUT /payments/:id
   def update
     if @payment.update(payment_params)
       render json: @payment
@@ -36,7 +36,7 @@ class Api::V1::PaymentsController < Api::V1::ApiController
     end
   end
 
-  # DELETE /payments/:slug
+  # DELETE /payments/:id
   def destroy
     @payment.destroy
   end
@@ -45,23 +45,23 @@ class Api::V1::PaymentsController < Api::V1::ApiController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_payment
-    @payment = Payment.find_by!(slug: params[:slug])
+    @payment = Payment.find(params[:id])
   end
 
   # rubocop:disable Metrics/MethodLength
   # Only allow a trusted parameter "white list" through.
   def payment_params
-    params.require(:payment).permit(:paid_on,
-                                    :care_started_on,
-                                    :care_finished_on,
+    params.require(:payment).permit(:agency_id,
                                     :amount,
                                     :amount_cents,
                                     :amount_currency,
-                                    :slug,
+                                    :care_started_on,
+                                    :care_finished_on,
                                     :discrepancy,
                                     :discrepancy_cents,
                                     :discrepancy_currency,
-                                    :agency_id, :site_id)
+                                    :paid_on,
+                                    :site_id)
   end
   # rubocop:enable Metrics/MethodLength
 end

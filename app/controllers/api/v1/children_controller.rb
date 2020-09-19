@@ -12,7 +12,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     render json: @children
   end
 
-  # GET /children/:slug
+  # GET /children/:id
   def show
     render json: @child
   end
@@ -32,7 +32,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /children/:slug
+  # PATCH/PUT /children/:id
   def update
     if @child.update(child_params)
       render json: @child
@@ -41,7 +41,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     end
   end
 
-  # DELETE /children/:slug
+  # DELETE /children/:id
   def destroy
     # soft delete
     @child.update!(active: false)
@@ -50,7 +50,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   private
 
   def set_child
-    @child = policy_scope(Child).find_by!(slug: params[:slug])
+    @child = policy_scope(Child).find(params[:id])
   end
 
   def authorize_user
@@ -58,7 +58,12 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   end
 
   def child_params
-    attributes = [:ccms_id, :date_of_birth, :full_name, { child_sites_attributes: %i[site_id started_care ended_care] }]
+    attributes = [:ccms_id,
+                  :date_of_birth,
+                  :full_name,
+                  { child_sites_attributes: %i[site_id
+                                               started_care
+                                               ended_care] }]
     attributes += %i[user_id active] if current_user.admin?
     params.require(:child).permit(attributes)
   end

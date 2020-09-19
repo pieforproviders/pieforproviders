@@ -12,7 +12,7 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
     render json: @case_cycles
   end
 
-  # GET /case_cycles/:slug
+  # GET /case_cycles/:id
   def show
     render json: @case_cycle
   end
@@ -32,7 +32,7 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /case_cycles/:slug
+  # PATCH/PUT /case_cycles/:id
   def update
     if @case_cycle.update(case_cycle_params)
       render json: @case_cycle
@@ -41,7 +41,7 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
     end
   end
 
-  # DELETE /case_cycles/:slug
+  # DELETE /case_cycles/:id
   def destroy
     @case_cycle.destroy
   end
@@ -49,7 +49,7 @@ class Api::V1::CaseCyclesController < Api::V1::ApiController
   private
 
   def set_case_cycle
-    @case_cycle = policy_scope(CaseCycle).find_by!(slug: params[:slug])
+    @case_cycle = policy_scope(CaseCycle).find(params[:id])
   end
 
   def authorize_user
