@@ -10,7 +10,7 @@ if Rails.env.development?
     # same name.
     Annotate.set_defaults(
       'additional_file_patterns' => [],
-      'routes' => 'false',
+      'routes' => 'true',
       'models' => 'true',
       'position_in_routes' => 'after',
       'position_in_class' => 'after',
