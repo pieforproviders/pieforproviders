@@ -32,7 +32,6 @@ end
 #  address     :string           not null
 #  name        :string           not null
 #  qris_rating :string
-#  slug        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  business_id :uuid             not null

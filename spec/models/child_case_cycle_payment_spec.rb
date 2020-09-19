@@ -32,7 +32,6 @@ end
 #  amount_currency      :string           default("USD"), not null
 #  discrepancy_cents    :integer
 #  discrepancy_currency :string           default("USD")
-#  slug                 :string           not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  child_case_cycle_id  :uuid             not null
@@ -42,7 +41,6 @@ end
 #
 #  index_child_case_cycle_payments_on_child_case_cycle_id  (child_case_cycle_id)
 #  index_child_case_cycle_payments_on_payment_id           (payment_id)
-#  index_child_case_cycle_payments_on_slug                 (slug) UNIQUE
 #
 # Foreign Keys
 #

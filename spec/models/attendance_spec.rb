@@ -13,11 +13,6 @@ RSpec.describe Attendance, type: :model do
     ).backed_by_column_of_type(:enum)
   }
 
-  it 'validates uniqueness of slug' do
-    create(:attendance)
-    should validate_uniqueness_of(:slug)
-  end
-
   it 'validates starts_on date if present' do
     attend = build(:attendance)
     expect(attend).to be_valid
@@ -44,7 +39,6 @@ end
 #  attendance_duration                                            :enum             default("full_day"), not null
 #  check_in                                                       :time             not null
 #  check_out                                                      :time             not null
-#  slug                                                           :string           not null
 #  starts_on                                                      :date             not null
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
@@ -56,7 +50,6 @@ end
 #
 #  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
 #  index_attendances_on_child_site_id        (child_site_id)
-#  index_attendances_on_slug                 (slug) UNIQUE
 #
 # Foreign Keys
 #
