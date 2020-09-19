@@ -15,7 +15,6 @@ Table users {
   language string [not null]
   confirmed boolean [not null, default: false] // devise
   service_agreement_accepted boolean [not null, default: false]
-  slug string [not null]
   timezone string [not null]
 }
 
@@ -32,7 +31,6 @@ Table businesses {
   user_id uuid [ref: > users.id, not null]
   license_type license_types [not null]
   name string [not null]
-  slug string [not null]
   active boolean [not null, default: true]
 }
 
@@ -45,7 +43,6 @@ Table sites {
   state_id uuid [not null]
   zip_id uuid [not null]
   county_id uuid [not null]
-  slug string [not null]
   qris_rating string
   active boolean [not null, default: true]
 }
@@ -63,7 +60,6 @@ Table children {
   ccms_id string
   full_name string [not null]
   date_of_birth date [not null]
-  slug string [not null]
   active boolean [not null, default: true]
 }
 
@@ -95,7 +91,6 @@ Table case_cycles {
   copay monetize
   copay_frequency copay_frequencies
   status case_statuses [not null, default: "submitted"]
-  slug string [not null]
   submitted_on date [not null]
   effective_on date
   notified_on date
@@ -113,7 +108,6 @@ Table child_case_cycles {
   child_id uuid [ref: > children.id, not null]
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   case_cycle_id uuid [ref: > case_cycles.id, not null]
-  slug string [not null]
   part_days_allowed integer [not null]
   full_days_allowed integer [not null]
 }
@@ -122,7 +116,6 @@ Table child_case_cycle_payments {
   id uuid [pk, unique, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
   payment_id uuid [ref: > payments.id, not null]
-  slug string [not null]
   amount monetize [not null]
   discrepancy monetize
 }
@@ -144,7 +137,6 @@ Table attendances {
   id uuid [pk, unique, not null]
   child_site_id uuid [ref: > child_sites.id, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
-  slug string [not null]
   starts_on date [not null]
   check_in time [not null]
   check_out time [not null]
@@ -160,7 +152,6 @@ Table payments {
   care_started_on date [not null]
   care_finished_on date [not null]
   amount monetize [not null]
-  slug string [not null]
   discrepancy monetize
 }
 

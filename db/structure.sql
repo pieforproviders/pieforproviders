@@ -109,7 +109,6 @@ CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     child_site_id uuid NOT NULL,
     child_case_cycle_id uuid NOT NULL,
-    slug character varying NOT NULL,
     starts_on date NOT NULL,
     check_in time without time zone NOT NULL,
     check_out time without time zone NOT NULL,
@@ -149,7 +148,6 @@ CREATE TABLE public.businesses (
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying NOT NULL,
     license_type public.license_types
 );
 
@@ -163,7 +161,6 @@ CREATE TABLE public.case_cycles (
     case_number character varying,
     copay_cents integer DEFAULT 0 NOT NULL,
     copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    slug character varying NOT NULL,
     submitted_on date NOT NULL,
     effective_on date,
     notified_on date,
@@ -182,7 +179,6 @@ CREATE TABLE public.case_cycles (
 
 CREATE TABLE public.child_case_cycle_payments (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    slug character varying NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
     amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     discrepancy_cents integer,
@@ -200,7 +196,6 @@ CREATE TABLE public.child_case_cycle_payments (
 
 CREATE TABLE public.child_case_cycles (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    slug character varying NOT NULL,
     part_days_allowed integer NOT NULL,
     full_days_allowed integer NOT NULL,
     child_id uuid NOT NULL,
@@ -236,8 +231,7 @@ CREATE TABLE public.children (
     date_of_birth date NOT NULL,
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -321,7 +315,6 @@ CREATE TABLE public.payments (
     care_finished_on date NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
     amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    slug character varying NOT NULL,
     discrepancy_cents integer,
     discrepancy_currency character varying DEFAULT 'USD'::character varying,
     site_id uuid NOT NULL,
@@ -349,7 +342,6 @@ CREATE TABLE public.sites (
     active boolean DEFAULT true NOT NULL,
     name character varying NOT NULL,
     address character varying NOT NULL,
-    slug character varying NOT NULL,
     qris_rating character varying,
     business_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
@@ -407,7 +399,6 @@ CREATE TABLE public.users (
     timezone character varying NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    slug character varying NOT NULL,
     organization character varying NOT NULL,
     encrypted_password character varying DEFAULT ''::character varying NOT NULL,
     reset_password_token character varying,
@@ -611,13 +602,6 @@ CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btre
 
 
 --
--- Name: index_attendances_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_attendances_on_slug ON public.attendances USING btree (slug);
-
-
---
 -- Name: index_blocked_tokens_on_jti; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -632,24 +616,10 @@ CREATE UNIQUE INDEX index_businesses_on_name_and_user_id ON public.businesses US
 
 
 --
--- Name: index_businesses_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_businesses_on_slug ON public.businesses USING btree (slug);
-
-
---
 -- Name: index_businesses_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_id);
-
-
---
--- Name: index_case_cycles_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_case_cycles_on_slug ON public.case_cycles USING btree (slug);
 
 
 --
@@ -674,13 +644,6 @@ CREATE INDEX index_child_case_cycle_payments_on_payment_id ON public.child_case_
 
 
 --
--- Name: index_child_case_cycle_payments_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_child_case_cycle_payments_on_slug ON public.child_case_cycle_payments USING btree (slug);
-
-
---
 -- Name: index_child_case_cycles_on_case_cycle_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -695,13 +658,6 @@ CREATE INDEX index_child_case_cycles_on_child_id ON public.child_case_cycles USI
 
 
 --
--- Name: index_child_case_cycles_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_child_case_cycles_on_slug ON public.child_case_cycles USING btree (slug);
-
-
---
 -- Name: index_child_case_cycles_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -713,13 +669,6 @@ CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cyc
 --
 
 CREATE INDEX index_child_sites_on_child_id_and_site_id ON public.child_sites USING btree (child_id, site_id);
-
-
---
--- Name: index_children_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_children_on_slug ON public.children USING btree (slug);
 
 
 --
@@ -884,13 +833,6 @@ CREATE UNIQUE INDEX index_users_on_reset_password_token ON public.users USING bt
 
 
 --
--- Name: index_users_on_slug; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_users_on_slug ON public.users USING btree (slug);
-
-
---
 -- Name: index_users_on_unlock_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1019,6 +961,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200911220200'),
 ('20200913004651'),
 ('20200913005807'),
-('20200914030020');
+('20200914030020'),
+('20200918232336');
 
 
