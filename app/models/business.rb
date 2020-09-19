@@ -9,8 +9,6 @@ class Business < UuidApplicationRecord
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :user_id }
 
-  before_validation { |business| business.slug = generate_slug("#{business.name}#{business.user_id}") }
-
   scope :active, -> { where(active: true) }
 end
 
@@ -22,7 +20,6 @@ end
 #  active       :boolean          default(TRUE), not null
 #  license_type :enum
 #  name         :string           not null
-#  slug         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  user_id      :uuid             not null
@@ -30,6 +27,5 @@ end
 # Indexes
 #
 #  index_businesses_on_name_and_user_id  (name,user_id) UNIQUE
-#  index_businesses_on_slug              (slug) UNIQUE
 #  index_businesses_on_user_id           (user_id)
 #
