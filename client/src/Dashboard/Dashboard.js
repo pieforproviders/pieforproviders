@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 
-export function Dashboard() {
+export function Dashboard({ userToken }) {
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
@@ -15,7 +16,7 @@ export function Dashboard() {
         headers: {
           Accept: 'application/vnd.pieforproviders.v1+json',
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem('pie-token')
+          Authorization: userToken
         }
       })
       const allBusinesses = await businesses.json()
@@ -40,4 +41,8 @@ export function Dashboard() {
         })}
     </div>
   )
+}
+
+Dashboard.propTypes = {
+  userToken: PropTypes.string
 }

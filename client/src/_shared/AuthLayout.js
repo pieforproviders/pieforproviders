@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import pieFullTanLogo from '_assets/pieFullTanLogo.svg'
 import '_assets/styles/layouts.css'
 import { ActionLink } from '_shared/ActionLink'
+import { AuthContext } from '_contexts/AuthContext'
 import { Row, Col } from 'antd'
 
 export function AuthLayout({
@@ -11,6 +12,9 @@ export function AuthLayout({
   contentComponent: ContentComponent
 }) {
   const { t, i18n } = useTranslation()
+  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
+    AuthContext
+  )
 
   return (
     <Row className="h-screen">
@@ -44,7 +48,11 @@ export function AuthLayout({
                 src={pieFullTanLogo}
                 className="w-24 xs:w-48 mt-0 mb-10 xs:mb-16 md:mb-12 mx-auto"
               />
-              <ContentComponent />
+              <ContentComponent
+                setAuthenticated={setAuthenticated}
+                setUserToken={setUserToken}
+                setTokenExpiration={setTokenExpiration}
+              />
             </div>
           </Col>
         </Row>

@@ -8,13 +8,21 @@ import { useTranslation } from 'react-i18next'
 
 const { useBreakpoint } = Grid
 
-export function LoggedInLayout({ children, title }) {
+export function LoggedInLayout({
+  children,
+  title,
+  setAuthorized,
+  setUserToken,
+  setTokenExpiration
+}) {
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
 
   const logout = () => {
-    localStorage.removeItem('pie-token')
+    setUserToken(null)
+    setAuthorized(false)
+    setTokenExpiration(Date.now())
     history.push('/login')
   }
 
@@ -53,5 +61,8 @@ export function LoggedInLayout({ children, title }) {
 
 LoggedInLayout.propTypes = {
   children: PropTypes.element,
-  title: PropTypes.string
+  title: PropTypes.string,
+  setAuthorized: PropTypes.func.isRequired,
+  setUserToken: PropTypes.func.isRequired,
+  setTokenExpiration: PropTypes.func.isRequired
 }

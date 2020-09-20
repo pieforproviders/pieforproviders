@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react'
+import React, { useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
+import { AuthContext } from '_contexts/AuthContext'
 
 export default function AuthorizedRoute({
-  children,
+  component: Component,
   exact,
   path,
   title,
@@ -12,8 +13,16 @@ export default function AuthorizedRoute({
   ...routeProps
 }) {
   exact = !!exact
+  const {
+    authenticated,
+    setAuthenticated,
+    userToken,
+    setUserToken,
+    tokenExpiration,
+    setTokenExpiration
+  } = useContext(AuthContext)
   const content = useMemo(() => {
-    if (!localStorage.getItem('pie-token')) {
+    if (!authenticated) {
       return <Redirect to="/login" />
       // TODO: Permissions & expired passwords?
       // } else if (SessionService.getNeedsPasswordChange()) {
@@ -21,18 +30,41 @@ export default function AuthorizedRoute({
       // } else if (!PermissionService.can(...permissions)) {
       //   return <Redirect to="/" />
     } else {
-      return children
+      return (
+        <Component
+          authenticated={authenticated}
+          setAuthenticated={setAuthenticated}
+          userToken={userToken}
+          setUserToken={setUserToken}
+          tokenExpiration={tokenExpiration}
+          setTokenExpiration={setTokenExpiration}
+        />
+      )
     }
-  }, [children])
+  }, [
+    authenticated,
+    setAuthenticated,
+    userToken,
+    setUserToken,
+    tokenExpiration,
+    setTokenExpiration
+  ])
   return (
     <Route exact={exact} path={path} {...routeProps}>
-      <LoggedInLayout title={title}>{content}</LoggedInLayout>
+      <LoggedInLayout
+        title={title}
+        setAuthenticated={setAuthenticated}
+        setUserToken={setUserToken}
+        setTokenExpiration={setTokenExpiration}
+      >
+        {content}
+      </LoggedInLayout>
     </Route>
   )
 }
 
 AuthorizedRoute.propTypes = {
-  children: PropTypes.element.isRequired,
+  component: PropTypes.element.isRequired,
   exact: PropTypes.bool,
   path: PropTypes.string.isRequired,
   title: PropTypes.string

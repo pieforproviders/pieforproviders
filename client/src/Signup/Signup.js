@@ -5,12 +5,13 @@ import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
 import ConfirmationSent from './ConfirmationSent'
+import useMultiBusiness from '_shared/_hooks/useMultiBusiness'
 
 const { Option } = Select
 
@@ -32,18 +33,19 @@ export function Signup() {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     serviceAgreementAccepted: false
   })
-  const [multiBusiness, setMultiBusiness] = useState(null)
+  const [moreThanOneBusiness, setMoreThanOneBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const { setMultiBusiness } = useMultiBusiness()
 
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
 
-    localStorage.setItem('pieMultiBusiness', multiBusiness)
+    setMultiBusiness(moreThanOneBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -180,29 +182,29 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          name="multiBusiness"
-          label={t('multiBusiness')}
+          name="moreThanOneBusiness"
+          label={t('moreThanOneBusiness')}
           rules={[
             {
               required: true,
-              message: t('multiBusinessRequired')
+              message: t('moreThanOneBusinessRequired')
             }
           ]}
         >
           <Select
             style={{ textAlign: 'left' }}
-            value={multiBusiness}
-            placeholder={t('multiBusinessPlaceholder')}
-            data-cy="multiBusiness"
+            value={moreThanOneBusiness}
+            placeholder={t('moreThanOneBusinessPlaceholder')}
+            data-cy="moreThanOneBusiness"
             onChange={value => {
-              setMultiBusiness(value)
+              setMoreThanOneBusiness(value)
             }}
           >
             <Option value="yes" data-cy="yesMultiBusiness">
-              {t('multiBusinessTrue')}
+              {t('moreThanOneBusinessTrue')}
             </Option>
             <Option value="no" data-cy="noSingleBusiness">
-              {t('multiBusinessFalse')}
+              {t('moreThanOneBusinessFalse')}
             </Option>
           </Select>
         </Form.Item>

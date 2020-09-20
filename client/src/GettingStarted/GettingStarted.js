@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Typography } from 'antd'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 import Icon from '@material-ui/core/Icon'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import BusinessIcon from '@material-ui/icons/Business'
@@ -8,12 +8,13 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import { useTranslation } from 'react-i18next'
 import { PaddedButton } from '_shared/PaddedButton'
+import { PropTypes } from 'prop-types'
 
 // NB: we're using CSS grid instead of Ant grid for these cards
 // because Ant grid doesn't flow into the next row when there are
 // more cards than columns
 
-export function GettingStarted() {
+export function GettingStarted({ userToken }) {
   const [user, setUser] = useState(null)
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
@@ -24,7 +25,7 @@ export function GettingStarted() {
         type: 'get',
         url: '/api/v1/profile',
         headers: {
-          Authorization: localStorage.getItem('pie-token')
+          Authorization: userToken
         }
       })
       const user = await response.json()
@@ -96,4 +97,8 @@ export function GettingStarted() {
       </div>
     </div>
   )
+}
+
+GettingStarted.propTypes = {
+  userToken: PropTypes.string
 }

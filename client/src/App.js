@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Redirect,
@@ -17,11 +17,12 @@ import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
-import { isUserLoggedIn } from '_utils'
+import { AuthContext } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
 
 const App = () => {
   const { t } = useTranslation()
+  const { authenticated } = useContext(AuthContext)
 
   useEffect(() => {
     /* skip production code for coverage */
@@ -35,6 +36,7 @@ const App = () => {
     <div className="text-primaryBlue font-proxima text-sm h-screen">
       <ErrorBoundary>
         <Router>
+          {/* <AuthContext> */}
           <Switch>
             <Route path="/signup">
               <AuthLayout
@@ -59,20 +61,24 @@ const App = () => {
               title="Confirm your Account"
               component={Confirmation}
             />
-            <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
-              <GettingStarted />
-            </AuthorizedRoute>
-            <AuthorizedRoute exact path="/dashboard">
-              <Dashboard />
-            </AuthorizedRoute>
-            <AuthorizedRoute exact path="/cases/import">
-              <CasesImport />
-            </AuthorizedRoute>
+            <AuthorizedRoute
+              exact
+              path="/getting-started"
+              title={t('setup')}
+              component={GettingStarted}
+            />
+            <AuthorizedRoute exact path="/dashboard" component={Dashboard} />
+            <AuthorizedRoute
+              exact
+              path="/cases/import"
+              component={CasesImport}
+            />
             <Route exact path="/">
-              <Redirect to={isUserLoggedIn ? '/dashboard' : '/login'} />
+              <Redirect to={authenticated ? '/dashboard' : '/login'} />
             </Route>
             <Route component={NotFound} />
           </Switch>
+          {/* </AuthContext> */}
         </Router>
       </ErrorBoundary>
     </div>

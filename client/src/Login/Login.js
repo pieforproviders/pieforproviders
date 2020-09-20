@@ -3,11 +3,12 @@ import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
+import { PropTypes } from 'prop-types'
 import AuthStatusAlert from 'AuthStatusAlert'
 
-export function Login() {
+export function Login({ setAuthenticated, setUserToken, setTokenExpiration }) {
   const location = useLocation()
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
@@ -50,6 +51,9 @@ export function Login() {
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
+      setAuthenticated(false)
+      setUserToken(null)
+      setTokenExpiration(Date.now())
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -58,13 +62,17 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      localStorage.setItem('pie-token', response.headers.get('authorization'))
+      setAuthenticated(true)
+      setUserToken(response.headers.get('authorization'))
+      setTokenExpiration(/* Parse JWT to get expiration date */)
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    localStorage.removeItem('pie-token')
+    setAuthenticated(false)
+    setUserToken(null)
+    setTokenExpiration(Date.now())
     history.push('/dashboard')
   }
   return (
@@ -185,4 +193,10 @@ export function Login() {
       )}
     </>
   )
+}
+
+Login.propTypes = {
+  setAuthenticated: PropTypes.func.isRequired,
+  setUserToken: PropTypes.func.isRequired,
+  setTokenExpiration: PropTypes.func.isRequired
 }
