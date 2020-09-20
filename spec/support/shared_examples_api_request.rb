@@ -97,7 +97,7 @@ end
 #  item_params - parameters to be passed to the server
 RSpec.shared_examples '404 not found with parameters' do |item_name|
   response '404', "#{item_name} not found" do
-    let(:slug) { 'invalid' }
+    let(:id) { 'invalid' }
     let(item_name.to_sym) { { item_name => item_params } }
     run_test!
   end
@@ -105,7 +105,7 @@ end
 
 RSpec.shared_examples '404 not found' do |item_name|
   response '404', "#{item_name} not found" do
-    let(:slug) { 'invalid' }
+    let(:id) { 'invalid' }
     run_test!
   end
 end
@@ -118,7 +118,7 @@ end
 
 #  This is the parameter passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params
 #
 RSpec.shared_examples 'it lists all items for a user' do |item_class|
   item_name = name_from_class(item_class)
@@ -158,15 +158,15 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params
 #
-RSpec.shared_examples 'it retrieves an item with a slug, for a user' do |item_class|
+RSpec.shared_examples 'it retrieves an item for a user' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { (item_class.send :create!, item_params).slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { (item_class.send :create!, item_params).id }
 
     get "retrieves a #{item_name}" do
       tags item_plural
@@ -203,7 +203,7 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params
 #
 RSpec.shared_examples 'it creates an item with the right api version and is authenticated' do |item_class|
   item_name = name_from_class(item_class)
@@ -249,7 +249,7 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params.
 #
 RSpec.shared_examples 'it creates an item' do |item_class|
   item_name = name_from_class(item_class)
@@ -286,15 +286,17 @@ end
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to get the slug for the created item.
+#    item_class [Class] - the class for the item.
 #
-RSpec.shared_examples 'admins and resource owners can retrieve an item with a slug' do |item_class|
+RSpec.shared_examples 'admins and resource owners can retrieve an item' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { item.slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) do
+      item.id
+    end
 
     get "retrieves a #{item_name}" do
       tags item_plural
@@ -347,7 +349,7 @@ end
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to get the slug for the created item.
+#    item_class [Class] - the class for the item
 #    item_name [String] - the name of the item (singular).
 #      It is used as a key in the parameters sent to the server
 #      and as part of the schema name in the schema definitions.
@@ -356,14 +358,14 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'admins and resource owners can update an item with a slug' do |item_class, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'admins and resource owners can update an item' do |item_class, update_attribute, update_valid_value, update_invalid_value|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { item.slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { item.id }
 
     put "updates a #{item_name}" do
       tags item_plural
@@ -429,15 +431,15 @@ end
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to get the slug for the created item.
+#    item_class [Class] - the class for the item.
 #
-RSpec.shared_examples 'admins and resource owners can delete an item with a slug' do |item_class|
+RSpec.shared_examples 'admins and resource owners can delete an item' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { item.slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { item.id }
 
     delete "deletes a #{item_name}" do
       tags item_plural
@@ -485,7 +487,7 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params
 #    item_name [String] - the name of the item (singular).
 #      It is used as a key in the parameters sent to the server
 #      and as part of the schema name in the schema definitions.
@@ -494,14 +496,14 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item with a slug' do |item_class, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { (item_class.send :create!, item_params).slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { (item_class.send :create!, item_params).id }
 
     put "updates a #{item_name}" do
       tags item_plural
@@ -550,15 +552,15 @@ end
 #
 #  These are the parameters passed to this example:
 #    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params, and to get the slug for the created item.
+#      with the item_params
 #
-RSpec.shared_examples 'it deletes an item with a slug, for a user' do |item_class|
+RSpec.shared_examples 'it deletes an item for a user' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{slug}" do
-    parameter name: :slug, in: :path, type: :string
-    let(:slug) { (item_class.send :create!, item_params).slug }
+  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { (item_class.send :create!, item_params).id }
 
     delete "deletes a #{item_name}" do
       tags item_plural

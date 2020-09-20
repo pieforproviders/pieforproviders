@@ -1,5 +1,36 @@
 {
-  "type": "object",
+  "properties": {
+    "case_cycle_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "child_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "full_days_allowed": {
+      "type": "integer"
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "part_days_allowed": {
+      "type": "integer"
+    },
+    "subsidy_rule_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
   "required": [
     "case_cycle_id",
     "child_id",
@@ -7,19 +38,8 @@
     "full_days_allowed",
     "id",
     "part_days_allowed",
-    "slug",
     "subsidy_rule_id",
     "updated_at"
   ],
-  "properties": {
-    "case_cycle_id": {  "type": "string", "format": "uuid" },
-    "child_id": {  "type": "string", "format": "uuid" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "full_days_allowed": { "type": "integer" },
-    "id": { "type": "string", "format": "uuid" },
-    "part_days_allowed": {  "type": "integer" },
-    "slug": { "type": "string" },
-    "subsidy_rule_id": { "type": "string", "format": "uuid" },
-    "updated_at": { "type": "string", "format": "date-time" }
-  }
+  "type": "object"
 }

@@ -27,8 +27,6 @@ class User < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  before_validation { |user| user.slug = generate_slug(user.email) }
-
   # format phone numbers - remove any non-digit characters
   def phone_number=(value)
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
@@ -70,7 +68,6 @@ end
 #  reset_password_token       :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  sign_in_count              :integer          default(0), not null
-#  slug                       :string           not null
 #  timezone                   :string           not null
 #  unconfirmed_email          :string
 #  unlock_token               :string
@@ -83,6 +80,5 @@ end
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_phone_number          (phone_number) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_slug                  (slug) UNIQUE
 #  index_users_on_unlock_token          (unlock_token) UNIQUE
 #

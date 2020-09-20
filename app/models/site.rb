@@ -15,8 +15,6 @@ class Site < UuidApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :business_id }
   validates :address, presence: true
 
-  before_validation { |site| site.slug = generate_slug("#{site.name}#{site.business_id}") }
-
   scope :active, -> { where(active: true) }
 
   delegate :user, to: :business
@@ -31,7 +29,6 @@ end
 #  address     :string           not null
 #  name        :string           not null
 #  qris_rating :string
-#  slug        :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  business_id :uuid             not null

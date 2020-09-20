@@ -12,7 +12,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
     render json: @businesses
   end
 
-  # GET /businesses/:slug
+  # GET /businesses/:id
   def show
     render json: @business
   end
@@ -32,7 +32,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /businesses/:slug
+  # PATCH/PUT /businesses/:id
   def update
     if @business.update(business_params)
       render json: @business
@@ -41,7 +41,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
     end
   end
 
-  # DELETE /businesses/:slug
+  # DELETE /businesses/:id
   def destroy
     # soft delete
     @business.update!(active: false)
@@ -50,7 +50,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
   private
 
   def set_business
-    @business = policy_scope(Business).find_by!(slug: params[:slug])
+    @business = policy_scope(Business).find(params[:id])
   end
 
   def authorize_user
@@ -58,7 +58,8 @@ class Api::V1::BusinessesController < Api::V1::ApiController
   end
 
   def business_params
-    attributes = %i[name category]
+    attributes = %i[category
+                    name]
     attributes += %i[user_id active] if current_user.admin?
     params.require(:business).permit(attributes)
   end

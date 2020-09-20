@@ -11,7 +11,7 @@ class Api::V1::ChildCaseCyclePaymentsController < Api::V1::ApiController
     render json: @child_case_cycle_payments
   end
 
-  # GET /child_case_cycle_payments/:slug
+  # GET /child_case_cycle_payments/:id
   def show
     render json: @child_case_cycle_payment
   end
@@ -27,7 +27,7 @@ class Api::V1::ChildCaseCyclePaymentsController < Api::V1::ApiController
     end
   end
 
-  # PATCH/PUT /child_case_cycle_payments/:slug
+  # PATCH/PUT /child_case_cycle_payments/:id
   def update
     if @child_case_cycle_payment.update(child_case_cycle_payment_params)
       render json: @child_case_cycle_payment
@@ -36,7 +36,7 @@ class Api::V1::ChildCaseCyclePaymentsController < Api::V1::ApiController
     end
   end
 
-  # DELETE /child_case_cycle_payments/:slug
+  # DELETE /child_case_cycle_payments/:id
   def destroy
     @child_case_cycle_payment.destroy
   end
@@ -44,18 +44,17 @@ class Api::V1::ChildCaseCyclePaymentsController < Api::V1::ApiController
   private
 
   def set_child_case_cycle_payment
-    @child_case_cycle_payment = ChildCaseCyclePayment.find_by!(slug: params[:slug])
+    @child_case_cycle_payment = ChildCaseCyclePayment.find(params[:id])
   end
 
   def child_case_cycle_payment_params
-    params.require(:child_case_cycle_payment).permit(:slug,
-                                                     :amount,
+    params.require(:child_case_cycle_payment).permit(:amount,
                                                      :amount_cents,
                                                      :amount_currency,
+                                                     :child_case_cycle_id,
                                                      :discrepancy,
                                                      :discrepancy_cents,
                                                      :discrepancy_currency,
-                                                     :payment_id,
-                                                     :child_case_cycle_id)
+                                                     :payment_id)
   end
 end

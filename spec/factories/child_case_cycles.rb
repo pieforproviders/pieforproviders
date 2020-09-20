@@ -17,7 +17,6 @@ end
 #  id                :uuid             not null, primary key
 #  full_days_allowed :integer          not null
 #  part_days_allowed :integer          not null
-#  slug              :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  case_cycle_id     :uuid             not null
@@ -28,7 +27,6 @@ end
 #
 #  index_child_case_cycles_on_case_cycle_id    (case_cycle_id)
 #  index_child_case_cycles_on_child_id         (child_id)
-#  index_child_case_cycles_on_slug             (slug) UNIQUE
 #  index_child_case_cycles_on_subsidy_rule_id  (subsidy_rule_id)
 #
 # Foreign Keys

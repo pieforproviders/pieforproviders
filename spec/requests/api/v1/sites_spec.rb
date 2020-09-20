@@ -84,19 +84,19 @@ RSpec.describe 'sites API', type: :request do
     end
   end
 
-  it_behaves_like 'admins and resource owners can retrieve an item with a slug', Site do
+  it_behaves_like 'admins and resource owners can retrieve an item', Site do
     let(:item_params) { site_params }
     let(:item) { Site.create! site_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can update an item with a slug', Site, 'name', 'Hogwarts School', nil do
+  it_behaves_like 'admins and resource owners can update an item', Site, 'name', 'Hogwarts School', nil do
     let(:item_params) { site_params }
     let(:item) { Site.create! site_params }
     let(:owner) { user }
   end
 
-  it_behaves_like 'admins and resource owners can delete an item with a slug', Site do
+  it_behaves_like 'admins and resource owners can delete an item', Site do
     let(:item) { Site.create! site_params }
     let(:owner) { user }
   end

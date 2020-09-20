@@ -61,7 +61,6 @@ end
 #  discrepancy_cents    :integer
 #  discrepancy_currency :string           default("USD")
 #  paid_on              :date             not null
-#  slug                 :string           not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  agency_id            :uuid             not null

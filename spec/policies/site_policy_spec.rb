@@ -10,7 +10,7 @@ RSpec.describe SitePolicy do
   let!(:business) { FactoryBot.create(:business, user: user) }
   let!(:site) { FactoryBot.create(:site, business: business) }
   let!(:inactive_site) { FactoryBot.create(:site, name: 'Test Educational Center', business: business, active: false) }
-  let(:valid_site) { Site.new(**site.attributes.symbolize_keys.except('id', 'slug'), name: 'Johnson Elementary School') }
+  let(:valid_site) { Site.new(**site.attributes.symbolize_keys.except('id'), name: 'Johnson Elementary School') }
 
   permissions :create? do
     it 'grants access to admins' do

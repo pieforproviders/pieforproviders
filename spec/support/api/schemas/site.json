@@ -1,32 +1,62 @@
 {
-  "type": "object",
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "address": {
+      "type": "string"
+    },
+    "business_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "city_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "county_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "type": "string"
+    },
+    "qris_rating": {
+      "type": "string"
+    },
+    "state_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "zip_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
   "required": [
     "active",
+    "address",
+    "business_id",
+    "city_id",
+    "county_id",
     "created_at",
     "id",
     "name",
-    "slug",
-    "updated_at",
-    "business_id",
-    "address",
-    "city_id",
     "state_id",
-    "zip_id",
-    "county_id"
+    "updated_at",
+    "zip_id"
   ],
-  "properties": {
-    "active": { "type": "boolean" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "id": { "type": "string", "format": "uuid" },
-    "name": { "type": "string" },
-    "slug": { "type": "string" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "business_id": { "type": "string", "format": "uuid" },
-    "address": { "type": "string" },
-    "city_id": { "type": "string", "format": "uuid" },
-    "state_id": { "type": "string", "format": "uuid" },
-    "zip_id": { "type": "string", "format": "uuid" },
-    "county_id": { "type": "string", "format": "uuid" },
-    "qris_rating": { "type": "string" }
-  }
+  "type": "object"
 }
