@@ -1,14 +1,23 @@
+import { useContext } from 'react'
+import { AuthContext } from '_contexts/AuthContext'
 import { useHistory } from 'react-router-dom'
 
-export default function useUnauthorizedHandler() {
+const useUnauthorizedHandler = () => {
   let history = useHistory()
+  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
+    AuthContext
+  )
 
   const handler = response => {
     // TODO: Sentry
-    localStorage.removeItem('pie-token')
+    setAuthenticated(false)
+    setUserToken(null)
+    setTokenExpiration(Date.now())
     history.push('/login')
     return response
   }
 
   return handler
 }
+
+export default useUnauthorizedHandler
