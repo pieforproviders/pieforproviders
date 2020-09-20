@@ -17,7 +17,7 @@ import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
-import { AuthContext } from '_contexts/AuthContext'
+import { AuthProvider, AuthContext } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
 
 const App = () => {
@@ -36,49 +36,49 @@ const App = () => {
     <div className="text-primaryBlue font-proxima text-sm h-screen">
       <ErrorBoundary>
         <Router>
-          {/* <AuthContext> */}
-          <Switch>
-            <Route path="/signup">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={Signup}
+          <AuthProvider>
+            <Switch>
+              <Route path="/signup">
+                <AuthLayout
+                  backgroundImageClass="auth-image"
+                  contentComponent={Signup}
+                />
+              </Route>
+              <Route path="/login">
+                <AuthLayout
+                  backgroundImageClass="auth-image"
+                  contentComponent={Login}
+                />
+              </Route>
+              <Route path="/password/update">
+                <AuthLayout
+                  backgroundImageClass="auth-image"
+                  contentComponent={NewPassword}
+                />
+              </Route>
+              <Route
+                path="/confirm"
+                title="Confirm your Account"
+                component={Confirmation}
               />
-            </Route>
-            <Route path="/login">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={Login}
+              <AuthorizedRoute
+                exact
+                path="/getting-started"
+                title={t('setup')}
+                component={GettingStarted}
               />
-            </Route>
-            <Route path="/password/update">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={NewPassword}
+              <AuthorizedRoute exact path="/dashboard" component={Dashboard} />
+              <AuthorizedRoute
+                exact
+                path="/cases/import"
+                component={CasesImport}
               />
-            </Route>
-            <Route
-              path="/confirm"
-              title="Confirm your Account"
-              component={Confirmation}
-            />
-            <AuthorizedRoute
-              exact
-              path="/getting-started"
-              title={t('setup')}
-              component={GettingStarted}
-            />
-            <AuthorizedRoute exact path="/dashboard" component={Dashboard} />
-            <AuthorizedRoute
-              exact
-              path="/cases/import"
-              component={CasesImport}
-            />
-            <Route exact path="/">
-              <Redirect to={authenticated ? '/dashboard' : '/login'} />
-            </Route>
-            <Route component={NotFound} />
-          </Switch>
-          {/* </AuthContext> */}
+              <Route exact path="/">
+                <Redirect to={authenticated ? '/dashboard' : '/login'} />
+              </Route>
+              <Route component={NotFound} />
+            </Switch>
+          </AuthProvider>
         </Router>
       </ErrorBoundary>
     </div>

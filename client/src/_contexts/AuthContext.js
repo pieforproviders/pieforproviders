@@ -23,22 +23,18 @@ export function AuthProvider({ children }) {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      {isAuthenticated && (
-        <AuthContext.Provider
-          value={{
-            authenticated: authentication,
-            setAuthenticated: setAuthentication,
-            userToken: token,
-            tokenExpiration: expiration,
-            setUserToken: setToken,
-            setTokenExpiration: setExpiration
-          }}
-        >
-          {children}
-        </AuthContext.Provider>
-      )}
-    </>
+    <AuthContext.Provider
+      value={{
+        authenticated: authentication,
+        setAuthenticated: setAuthentication,
+        userToken: token,
+        tokenExpiration: expiration,
+        setUserToken: setToken,
+        setTokenExpiration: setExpiration
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   )
 }
 
