@@ -65,13 +65,17 @@ const App = () => {
                 exact
                 path="/getting-started"
                 title={t('setup')}
-                component={GettingStarted}
+                component={<GettingStarted />}
               />
-              <AuthorizedRoute exact path="/dashboard" component={Dashboard} />
+              <AuthorizedRoute
+                exact
+                path="/dashboard"
+                component={<Dashboard />}
+              />
               <AuthorizedRoute
                 exact
                 path="/cases/import"
-                component={CasesImport}
+                component={<CasesImport />}
               />
               <Route exact path="/">
                 <Redirect to={authenticated ? '/dashboard' : '/login'} />
