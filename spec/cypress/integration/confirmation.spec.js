@@ -67,9 +67,30 @@ describe('Confirmation', () => {
           url: '/confirmation'
         }).as('confirmation')
 
-        cy.visit(`/confirm`)
+        cy.visit('/confirm')
         cy.wait('@confirmation')
         cy.get(createSelector('authError')).should('exist')
+        cy.location('pathname').should('eq', '/login')
+      })
+    })
+
+    describe('expired confirmation token', () => {
+      it('displays an error message', () => {
+        cy.appScenario('confirmationTokenExpired')
+        cy.server()
+        cy.route({
+          method: 'GET',
+          url: `/confirmation?confirmation_token=${confirmationToken}`
+        }).as('confirmation')
+
+        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+        cy.wait('@confirmation')
+        cy.get(createSelector('authError')).contains(
+          'Your confirmation period has expired.',
+          {
+            matchCase: false
+          }
+        )
         cy.location('pathname').should('eq', '/login')
       })
     })
