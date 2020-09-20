@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Divider, Typography, Alert } from 'antd'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 import LabelImportantIcon from '@material-ui/icons/LabelImportant'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 

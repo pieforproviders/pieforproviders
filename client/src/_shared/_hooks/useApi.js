@@ -35,7 +35,7 @@ async function fetchData({
   return response
 }
 
-export function useApi(onUnauthorized, onError) {
+export default function useApi(onUnauthorized, onError) {
   return {
     get: (path, headers) =>
       fetchData({
@@ -75,5 +75,3 @@ export function useApi(onUnauthorized, onError) {
       })
   }
 }
-
-export default useApi

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert } from 'antd'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import { PaddedButton } from '_shared/PaddedButton'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 import { ActionLink } from '../_shared/ActionLink'
 import AuthStatusAlert from 'AuthStatusAlert'
 

@@ -3,7 +3,7 @@ import useApi from '_shared/_hooks/useApi'
 import apiErrorHandler from '_utils/apiErrorHandler'
 import useUnauthorizedHandler from '_shared/_hooks/useUnauthorizedHandler'
 
-export const useApiResponse = () => {
+const useApiResponse = () => {
   const { get, post, put, del } = useApi(
     useUnauthorizedHandler(),
     apiErrorHandler()
@@ -39,3 +39,5 @@ export const useApiResponse = () => {
     makeRequest: makeRequest
   }
 }
+
+export default useApiResponse
