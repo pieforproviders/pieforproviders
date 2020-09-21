@@ -7,9 +7,7 @@ import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 
 export const NewPassword = () => {
-  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
-    AuthContext
-  )
+  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
@@ -74,7 +72,6 @@ export const NewPassword = () => {
 
     const authorizationHeader = response.headers.get('authorization')
     if (!authorizationHeader) {
-      setAuthenticated(false)
       setUserToken(null)
       setTokenExpiration(Date.now())
       // Unconfirmed users
@@ -90,7 +87,6 @@ export const NewPassword = () => {
         }
       })
     } else {
-      setAuthenticated(true)
       setUserToken(authorizationHeader)
       // setTokenExpiration(/* parse JWT (authorization header) for expiration */)
       history.push('/getting-started')

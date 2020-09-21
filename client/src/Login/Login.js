@@ -10,9 +10,7 @@ import AuthStatusAlert from 'AuthStatusAlert'
 
 export function Login() {
   const location = useLocation()
-  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
-    AuthContext
-  )
+  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
@@ -54,7 +52,6 @@ export function Login() {
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
-      setAuthenticated(false)
       setUserToken(null)
       setTokenExpiration(Date.now())
       setApiError({
@@ -65,7 +62,6 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      setAuthenticated(true)
       setUserToken(response.headers.get('authorization'))
       // setTokenExpiration(/* Parse JWT to get expiration date */)
       history.push('/getting-started')
@@ -73,7 +69,6 @@ export function Login() {
   }
 
   const onChooseReset = () => {
-    setAuthenticated(false)
     setUserToken(null)
     setTokenExpiration(Date.now())
     history.push('/dashboard')

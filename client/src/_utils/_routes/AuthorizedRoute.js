@@ -15,10 +15,12 @@ export default function AuthorizedRoute({
 }) {
   exact = !!exact
   let history = useHistory()
-  const { authenticated } = useContext(AuthContext)
+  // TODO: expiration
+  // const { userToken, tokenExpiration } = useContext(AuthContext)
+  const { userToken } = useContext(AuthContext)
 
   useEffect(() => {
-    !authenticated && history.push('/login')
+    !userToken && history.push('/login')
   })
 
   return (

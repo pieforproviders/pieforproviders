@@ -6,9 +6,7 @@ import { AuthContext } from '_contexts/AuthContext'
 
 export function Confirmation({ location }) {
   const { makeRequest } = useApiResponse()
-  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
-    AuthContext
-  )
+  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   let history = useHistory()
 
   useEffect(() => {
@@ -26,7 +24,6 @@ export function Confirmation({ location }) {
           const errorMessage = await response.json()
           setTokenExpiration(Date.now)
           setUserToken(null)
-          setAuthenticated(false)
           history.push({
             pathname: '/login',
             state: {
@@ -41,7 +38,6 @@ export function Confirmation({ location }) {
         } else {
           setUserToken(response.headers.get('authorization'))
           // setTokenExpiration(/* implementation: parse the JWT for its expiration time */)
-          setAuthenticated(true)
           history.push('/getting-started')
         }
       }
@@ -53,7 +49,6 @@ export function Confirmation({ location }) {
     location.pathname,
     location.search,
     makeRequest,
-    setAuthenticated,
     setUserToken,
     setTokenExpiration
   ])

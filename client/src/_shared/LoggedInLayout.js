@@ -12,9 +12,7 @@ const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
   const { makeRequest } = useApiResponse()
-  const { setUserToken, setAuthenticated, setTokenExpiration } = useContext(
-    AuthContext
-  )
+  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
@@ -28,7 +26,6 @@ export function LoggedInLayout({ children, title }) {
       // TODO: sentry - post error for admins
     }
     setUserToken(null)
-    setAuthenticated(false)
     setTokenExpiration(Date.now())
     history.push('/login')
   }
