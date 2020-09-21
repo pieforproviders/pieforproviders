@@ -12,7 +12,7 @@ const { useBreakpoint } = Grid
 export function LoggedInLayout({
   children,
   title,
-  setAuthorized,
+  setAuthenticated,
   setUserToken,
   setTokenExpiration
 }) {
@@ -22,16 +22,16 @@ export function LoggedInLayout({
   const screens = useBreakpoint()
 
   const logout = async () => {
-    setUserToken(null)
-    setAuthorized(false)
-    setTokenExpiration(Date.now())
     const response = await makeRequest({
-      type: 'delete',
+      type: 'del',
       url: '/logout'
     })
     if (!response.ok) {
       // TODO: sentry - post error for admins
     }
+    setUserToken(null)
+    setAuthenticated(false)
+    setTokenExpiration(Date.now())
     history.push('/login')
   }
 
@@ -71,7 +71,7 @@ export function LoggedInLayout({
 LoggedInLayout.propTypes = {
   children: PropTypes.element,
   title: PropTypes.string,
-  setAuthorized: PropTypes.func.isRequired,
+  setAuthenticated: PropTypes.func.isRequired,
   setUserToken: PropTypes.func.isRequired,
   setTokenExpiration: PropTypes.func.isRequired
 }

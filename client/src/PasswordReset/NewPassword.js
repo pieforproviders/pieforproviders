@@ -93,7 +93,7 @@ export const NewPassword = ({
     } else {
       setAuthenticated(true)
       setUserToken(authorizationHeader)
-      setTokenExpiration(/* parse JWT (authorization header) for expiration */)
+      // setTokenExpiration(/* parse JWT (authorization header) for expiration */)
       history.push('/getting-started')
     }
   }

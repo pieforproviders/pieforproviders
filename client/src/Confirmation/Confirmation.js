@@ -40,7 +40,7 @@ export function Confirmation({ location }) {
           })
         } else {
           setUserToken(response.headers.get('authorization'))
-          setTokenExpiration(/* implementation: parse the JWT for its expiration time */)
+          // setTokenExpiration(/* implementation: parse the JWT for its expiration time */)
           setAuthenticated(true)
           history.push('/getting-started')
         }

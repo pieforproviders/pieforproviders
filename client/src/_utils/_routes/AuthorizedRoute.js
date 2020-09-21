@@ -1,11 +1,12 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { Redirect, Route } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
 import { AuthContext } from '_contexts/AuthContext'
+import { useHistory } from 'react-router-dom'
 
 export default function AuthorizedRoute({
-  component: Component,
+  contentComponent: ContentComponent,
   exact,
   path,
   title,
@@ -13,6 +14,7 @@ export default function AuthorizedRoute({
   ...routeProps
 }) {
   exact = !!exact
+  let history = useHistory()
   const {
     authenticated,
     setAuthenticated,
@@ -21,34 +23,11 @@ export default function AuthorizedRoute({
     tokenExpiration,
     setTokenExpiration
   } = useContext(AuthContext)
-  const content = useMemo(() => {
-    if (!authenticated) {
-      return <Redirect to="/login" />
-      // TODO: Permissions & expired passwords?
-      // } else if (SessionService.getNeedsPasswordChange()) {
-      //   return <Redirect to="/expired-password" />
-      // } else if (!PermissionService.can(...permissions)) {
-      //   return <Redirect to="/" />
-    } else {
-      return (
-        <Component
-          authenticated={authenticated}
-          setAuthenticated={setAuthenticated}
-          userToken={userToken}
-          setUserToken={setUserToken}
-          tokenExpiration={tokenExpiration}
-          setTokenExpiration={setTokenExpiration}
-        />
-      )
-    }
-  }, [
-    authenticated,
-    setAuthenticated,
-    userToken,
-    setUserToken,
-    tokenExpiration,
-    setTokenExpiration
-  ])
+
+  useEffect(() => {
+    !authenticated && history.push('/login')
+  })
+
   return (
     <Route exact={exact} path={path} {...routeProps}>
       <LoggedInLayout
@@ -57,14 +36,21 @@ export default function AuthorizedRoute({
         setUserToken={setUserToken}
         setTokenExpiration={setTokenExpiration}
       >
-        {content}
+        <ContentComponent
+          authenticated={authenticated}
+          setAuthenticated={setAuthenticated}
+          userToken={userToken}
+          setUserToken={setUserToken}
+          tokenExpiration={tokenExpiration}
+          setTokenExpiration={setTokenExpiration}
+        />
       </LoggedInLayout>
     </Route>
   )
 }
 
 AuthorizedRoute.propTypes = {
-  component: PropTypes.element.isRequired,
+  contentComponent: PropTypes.func.isRequired,
   exact: PropTypes.bool,
   path: PropTypes.string.isRequired,
   title: PropTypes.string

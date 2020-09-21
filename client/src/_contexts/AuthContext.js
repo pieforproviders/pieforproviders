@@ -11,7 +11,8 @@ export function AuthProvider({ children }) {
   const [authentication, setAuthentication] = useState(false)
   const { token, expiration, setToken, setExpiration } = useAuthentication()
 
-  const isAuthenticated = !!(token !== null && expiration > Date.now())
+  // const isAuthenticated = !!(token !== null && expiration > Date.now())
+  const isAuthenticated = !!(token !== null)
 
   useEffect(() => {
     if (isAuthenticated) {

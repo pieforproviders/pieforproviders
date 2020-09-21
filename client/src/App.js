@@ -58,29 +58,30 @@ const App = () => {
               </Route>
               <Route
                 path="/confirm"
+                // TODO: needs translation
                 title="Confirm your Account"
-                component={Confirmation}
+                contentComponent={Confirmation}
               />
               <AuthorizedRoute
                 exact
                 path="/getting-started"
                 title={t('setup')}
-                component={<GettingStarted />}
+                contentComponent={GettingStarted}
               />
               <AuthorizedRoute
                 exact
                 path="/dashboard"
-                component={<Dashboard />}
+                contentComponent={Dashboard}
               />
               <AuthorizedRoute
                 exact
                 path="/cases/import"
-                component={<CasesImport />}
+                contentComponent={CasesImport}
               />
               <Route exact path="/">
                 <Redirect to={authenticated ? '/dashboard' : '/login'} />
               </Route>
-              <Route component={NotFound} />
+              <Route contentComponent={NotFound} />
             </Switch>
           </AuthProvider>
         </Router>

@@ -64,7 +64,7 @@ export function Login({ setAuthenticated, setUserToken, setTokenExpiration }) {
     } else {
       setAuthenticated(true)
       setUserToken(response.headers.get('authorization'))
-      setTokenExpiration(/* Parse JWT to get expiration date */)
+      // setTokenExpiration(/* Parse JWT to get expiration date */)
       history.push('/getting-started')
     }
   }

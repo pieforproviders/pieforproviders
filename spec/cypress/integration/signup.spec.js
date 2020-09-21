@@ -22,7 +22,7 @@ describe('Signup', () => {
     cy.get(createSelector('organization')).type(orgName)
     cy.get(createSelector('name')).type(fullName)
     cy.get(createSelector('greetingName')).type(firstName)
-    cy.get(createSelector('multiBusiness')).click()
+    cy.get(createSelector('moreThanOneBusiness')).click()
     cy.get(createSelector('yesMultiBusiness')).click()
     cy.get(createSelector('phoneType')).click()
     cy.get(createSelector('homePhone')).click()
