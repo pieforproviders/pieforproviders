@@ -17,7 +17,7 @@ export default function AuthorizedRoute({
   let history = useHistory()
 
   useEffect(() => {
-    !isAuthenticated && history.push('/login')
+    !isAuthenticated() && history.push('/login')
   })
 
   return (

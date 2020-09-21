@@ -81,7 +81,7 @@ const App = () => {
               <Route exact path="/">
                 <Redirect
                   to={
-                    isAuthenticated /* TODO: expiration */
+                    isAuthenticated() /* TODO: expiration */
                       ? '/dashboard'
                       : '/login'
                   }
