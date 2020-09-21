@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
-import { AuthContext } from '_contexts/AuthContext'
 import { useHistory } from 'react-router-dom'
+import { isAuthenticated } from '_utils/isAuthenticated'
 
 export default function AuthorizedRoute({
   contentComponent: ContentComponent,
@@ -15,12 +15,9 @@ export default function AuthorizedRoute({
 }) {
   exact = !!exact
   let history = useHistory()
-  // TODO: expiration
-  // const { userToken, tokenExpiration } = useContext(AuthContext)
-  const { userToken } = useContext(AuthContext)
 
   useEffect(() => {
-    !userToken && history.push('/login')
+    !isAuthenticated && history.push('/login')
   })
 
   return (

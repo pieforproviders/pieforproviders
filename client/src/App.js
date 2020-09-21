@@ -17,12 +17,12 @@ import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
-import { AuthProvider, AuthContext } from '_contexts/AuthContext'
+import { AuthProvider } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
+import { isAuthenticated } from '_utils/isAuthenticated'
 
 const App = () => {
   const { t } = useTranslation()
-  const { authenticated } = useContext(AuthContext)
 
   useEffect(() => {
     /* skip production code for coverage */
@@ -79,7 +79,13 @@ const App = () => {
                 contentComponent={CasesImport}
               />
               <Route exact path="/">
-                <Redirect to={authenticated ? '/dashboard' : '/login'} />
+                <Redirect
+                  to={
+                    isAuthenticated /* TODO: expiration */
+                      ? '/dashboard'
+                      : '/login'
+                  }
+                />
               </Route>
               <Route contentComponent={NotFound} />
             </Switch>
