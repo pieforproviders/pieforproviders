@@ -30,7 +30,7 @@ RSpec.describe 'users API', type: :request do
       get 'retrieves all users' do
         tags 'users'
 
-        produces 'application/json', 'application/xml'
+        produces 'application/json'
 
         context 'on the right api version' do
           include_context 'correct api version header'
@@ -65,7 +65,7 @@ RSpec.describe 'users API', type: :request do
       get 'retrieves the user profile' do
         tags 'users'
 
-        produces 'application/json', 'application/xml'
+        produces 'application/json'
 
         context 'on the right api version' do
           include_context 'correct api version header'
