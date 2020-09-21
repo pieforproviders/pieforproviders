@@ -5,6 +5,7 @@ import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
+import useApiResponse from '_shared/_hooks/useApiResponse'
 
 const { useBreakpoint } = Grid
 
@@ -15,14 +16,22 @@ export function LoggedInLayout({
   setUserToken,
   setTokenExpiration
 }) {
+  const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
 
-  const logout = () => {
+  const logout = async () => {
     setUserToken(null)
     setAuthorized(false)
     setTokenExpiration(Date.now())
+    const response = await makeRequest({
+      type: 'delete',
+      url: '/logout'
+    })
+    if (!response.ok) {
+      // TODO: sentry - post error for admins
+    }
     history.push('/login')
   }
 
