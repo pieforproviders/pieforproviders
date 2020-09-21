@@ -78,13 +78,7 @@ const App = () => {
                 contentComponent={CasesImport}
               />
               <Route exact path="/">
-                <Redirect
-                  to={
-                    isAuthenticated() /* TODO: expiration */
-                      ? '/dashboard'
-                      : '/login'
-                  }
-                />
+                <Redirect to={isAuthenticated() ? '/dashboard' : '/login'} />
               </Route>
               <Route contentComponent={NotFound} />
             </Switch>
