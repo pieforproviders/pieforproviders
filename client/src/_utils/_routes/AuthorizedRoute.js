@@ -15,14 +15,7 @@ export default function AuthorizedRoute({
 }) {
   exact = !!exact
   let history = useHistory()
-  const {
-    authenticated,
-    setAuthenticated,
-    userToken,
-    setUserToken,
-    tokenExpiration,
-    setTokenExpiration
-  } = useContext(AuthContext)
+  const { authenticated } = useContext(AuthContext)
 
   useEffect(() => {
     !authenticated && history.push('/login')
@@ -30,20 +23,8 @@ export default function AuthorizedRoute({
 
   return (
     <Route exact={exact} path={path} {...routeProps}>
-      <LoggedInLayout
-        title={title}
-        setAuthenticated={setAuthenticated}
-        setUserToken={setUserToken}
-        setTokenExpiration={setTokenExpiration}
-      >
-        <ContentComponent
-          authenticated={authenticated}
-          setAuthenticated={setAuthenticated}
-          userToken={userToken}
-          setUserToken={setUserToken}
-          tokenExpiration={tokenExpiration}
-          setTokenExpiration={setTokenExpiration}
-        />
+      <LoggedInLayout title={title}>
+        <ContentComponent />
       </LoggedInLayout>
     </Route>
   )
