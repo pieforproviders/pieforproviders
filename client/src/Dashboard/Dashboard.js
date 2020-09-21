@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 
-export function Dashboard({ userToken }) {
+export function Dashboard() {
+  const { userToken } = useContext(AuthContext)
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
@@ -41,8 +42,4 @@ export function Dashboard({ userToken }) {
         })}
     </div>
   )
-}
-
-Dashboard.propTypes = {
-  userToken: PropTypes.string
 }
