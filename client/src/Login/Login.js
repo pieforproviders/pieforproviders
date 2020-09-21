@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
+import { AuthContext } from '_contexts/AuthContext'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
-import { PropTypes } from 'prop-types'
 import AuthStatusAlert from 'AuthStatusAlert'
 
-export function Login({ setAuthenticated, setUserToken, setTokenExpiration }) {
+export function Login() {
   const location = useLocation()
+  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
+    AuthContext
+  )
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
@@ -193,10 +196,4 @@ export function Login({ setAuthenticated, setUserToken, setTokenExpiration }) {
       )}
     </>
   )
-}
-
-Login.propTypes = {
-  setAuthenticated: PropTypes.func.isRequired,
-  setUserToken: PropTypes.func.isRequired,
-  setTokenExpiration: PropTypes.func.isRequired
 }

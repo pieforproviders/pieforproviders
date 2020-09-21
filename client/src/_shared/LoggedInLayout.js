@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { AuthContext } from '_contexts/AuthContext'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
@@ -9,14 +10,11 @@ import useApiResponse from '_shared/_hooks/useApiResponse'
 
 const { useBreakpoint } = Grid
 
-export function LoggedInLayout({
-  children,
-  title,
-  setAuthenticated,
-  setUserToken,
-  setTokenExpiration
-}) {
+export function LoggedInLayout({ children, title }) {
   const { makeRequest } = useApiResponse()
+  const { setUserToken, setAuthenticated, setTokenExpiration } = useContext(
+    AuthContext
+  )
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
@@ -70,8 +68,5 @@ export function LoggedInLayout({
 
 LoggedInLayout.propTypes = {
   children: PropTypes.element,
-  title: PropTypes.string,
-  setAuthenticated: PropTypes.func.isRequired,
-  setUserToken: PropTypes.func.isRequired,
-  setTokenExpiration: PropTypes.func.isRequired
+  title: PropTypes.string
 }

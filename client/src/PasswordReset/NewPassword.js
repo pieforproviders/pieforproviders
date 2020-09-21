@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '_contexts/AuthContext'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
-import { PropTypes } from 'prop-types'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 
-export const NewPassword = ({
-  setAuthenticated,
-  setUserToken,
-  setTokenExpiration
-}) => {
+export const NewPassword = () => {
+  const { setAuthenticated, setUserToken, setTokenExpiration } = useContext(
+    AuthContext
+  )
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
@@ -165,10 +164,4 @@ export const NewPassword = ({
       </Form>
     </>
   )
-}
-
-NewPassword.propTypes = {
-  setAuthenticated: PropTypes.func.isRequired,
-  setUserToken: PropTypes.func.isRequired,
-  setTokenExpiration: PropTypes.func.isRequired
 }

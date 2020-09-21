@@ -26,7 +26,6 @@ export function Dashboard() {
       }
     }
 
-    // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     responseValue()
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
