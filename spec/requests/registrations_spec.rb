@@ -23,7 +23,7 @@ RSpec.describe 'POST /signup', type: :request do
   path '/signup' do
     post 'Signs up a new user; creates the user.' do
       tags 'users'
-      consumes 'application/json', 'application/xml'
+      consumes 'application/json'
       parameter name: :user, in: :body, schema: {
         '$ref' => '#/components/schemas/createUser'
       }

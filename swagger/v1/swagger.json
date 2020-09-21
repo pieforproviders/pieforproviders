@@ -65,11 +65,6 @@
               "schema": {
                 "$ref": "#/components/schemas/createAttendance"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createAttendance"
-              }
             }
           }
         }
@@ -152,11 +147,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateAttendance"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updateAttendance"
               }
@@ -250,11 +240,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createBusiness"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/createBusiness"
               }
@@ -436,11 +421,6 @@
               "schema": {
                 "$ref": "#/components/schemas/createCaseCycle"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createCaseCycle"
-              }
             }
           }
         }
@@ -619,11 +599,6 @@
               "schema": {
                 "$ref": "#/components/schemas/createChildCaseCyclePayment"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createChildCaseCyclePayment"
-              }
             }
           }
         }
@@ -706,11 +681,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateChildCaseCyclePayment"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updateChildCaseCyclePayment"
               }
@@ -990,11 +960,6 @@
               "schema": {
                 "$ref": "#/components/schemas/createChild"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createChild"
-              }
             }
           }
         }
@@ -1173,11 +1138,6 @@
               "schema": {
                 "$ref": "#/components/schemas/createPayment"
               }
-            },
-            "application/xml": {
-              "schema": {
-                "$ref": "#/components/schemas/createPayment"
-              }
             }
           }
         }
@@ -1260,11 +1220,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updatePayment"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/updatePayment"
               }
@@ -1584,11 +1539,6 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createUser"
-              }
-            },
-            "application/xml": {
               "schema": {
                 "$ref": "#/components/schemas/createUser"
               }
