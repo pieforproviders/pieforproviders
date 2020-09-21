@@ -1,10 +1,11 @@
-import createPersistedState from 'use-persisted-state'
-const useTokenState = createPersistedState('pie-token')
-const useExpirationState = createPersistedState('pie-expiration')
+import useLocalStorageState from 'use-local-storage-state'
 
 const useAuthentication = () => {
-  const [token, setToken] = useTokenState(null)
-  const [expiration, setExpiration] = useExpirationState(Date.now())
+  const [token, setToken] = useLocalStorageState('pie-token', null)
+  const [expiration, setExpiration] = useLocalStorageState(
+    'pie-expiration',
+    Date.now()
+  )
 
   return {
     token: token,

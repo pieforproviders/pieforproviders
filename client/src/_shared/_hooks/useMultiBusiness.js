@@ -1,8 +1,10 @@
-import createPersistedState from 'use-persisted-state'
-const useMultiBusinessState = createPersistedState('pie-multiBusiness')
+import useLocalStorageState from 'use-local-storage-state'
 
 const useMultiBusiness = () => {
-  const [multiBusiness, setMultiBusiness] = useMultiBusinessState(null)
+  const [multiBusiness, setMultiBusiness] = useLocalStorageState(
+    'pie-multiBusiness',
+    null
+  )
 
   return {
     multiBusiness,
