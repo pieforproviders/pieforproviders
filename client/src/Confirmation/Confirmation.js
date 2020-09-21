@@ -1,12 +1,14 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import useApiResponse from '_shared/_hooks/useApiResponse'
-import { AuthContext } from '_contexts/AuthContext'
+import {
+  revokeAuthentication,
+  setAuthentication
+} from '_utils/authenticationHandler'
 
 export function Confirmation({ location }) {
   const { makeRequest } = useApiResponse()
-  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   let history = useHistory()
 
   useEffect(() => {
@@ -19,11 +21,11 @@ export function Confirmation({ location }) {
           confirmationToken ? `?confirmation_token=${confirmationToken}` : ''
         }`
       })
+      const authorizationHeader = response.headers.get('authorization')
       if (isSubscribed) {
-        if (!response.ok || response.headers.get('authorization') === null) {
+        if (!response.ok || authorizationHeader === null) {
           const errorMessage = await response.json()
-          setTokenExpiration(Date.now)
-          setUserToken(null)
+          revokeAuthentication()
           history.push({
             pathname: '/login',
             state: {
@@ -36,8 +38,9 @@ export function Confirmation({ location }) {
             }
           })
         } else {
-          setUserToken(response.headers.get('authorization'))
-          // setTokenExpiration(/* implementation: parse the JWT for its expiration time */)
+          setAuthentication(
+            authorizationHeader /*, expiration: parse the JWT for its expiration time */
+          )
           history.push('/getting-started')
         }
       }
@@ -49,8 +52,8 @@ export function Confirmation({ location }) {
     location.pathname,
     location.search,
     makeRequest,
-    setUserToken,
-    setTokenExpiration
+    revokeAuthentication,
+    setAuthentication
   ])
 
   return null

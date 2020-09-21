@@ -5,7 +5,7 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
-import AuthorizedRoute from '_utils/_routes/AuthorizedRoute.js'
+import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
@@ -19,7 +19,7 @@ import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { AuthProvider } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
-import { isAuthenticated } from '_utils/isAuthenticated'
+import { isAuthenticated } from '_utils/authenticationHandler'
 
 const App = () => {
   const { t } = useTranslation()
@@ -61,18 +61,18 @@ const App = () => {
                 title={t('confirmYourAccount')}
                 component={Confirmation}
               />
-              <AuthorizedRoute
+              <AuthenticatedRoute
                 exact
                 path="/getting-started"
                 title={t('setup')}
                 contentComponent={GettingStarted}
               />
-              <AuthorizedRoute
+              <AuthenticatedRoute
                 exact
                 path="/dashboard"
                 contentComponent={Dashboard}
               />
-              <AuthorizedRoute
+              <AuthenticatedRoute
                 exact
                 path="/cases/import"
                 contentComponent={CasesImport}

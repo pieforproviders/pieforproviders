@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { AuthContext } from '_contexts/AuthContext'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
@@ -7,12 +6,12 @@ import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
 import useApiResponse from '_shared/_hooks/useApiResponse'
+import { revokeAuthentication } from '_utils/authenticationHandler'
 
 const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
   const { makeRequest } = useApiResponse()
-  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
@@ -25,8 +24,7 @@ export function LoggedInLayout({ children, title }) {
     if (!response.ok) {
       // TODO: sentry - post error for admins
     }
-    setUserToken(null)
-    setTokenExpiration(Date.now())
+    revokeAuthentication()
     history.push('/login')
   }
 

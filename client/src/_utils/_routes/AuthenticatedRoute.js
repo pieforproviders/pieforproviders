@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
 import { useHistory } from 'react-router-dom'
-import { isAuthenticated } from '_utils/isAuthenticated'
+import { isAuthenticated } from '_utils/authenticationHandler'
 
-export default function AuthorizedRoute({
+export default function AuthenticatedRoute({
   contentComponent: ContentComponent,
   exact,
   path,
@@ -29,7 +29,7 @@ export default function AuthorizedRoute({
   )
 }
 
-AuthorizedRoute.propTypes = {
+AuthenticatedRoute.propTypes = {
   contentComponent: PropTypes.func.isRequired,
   exact: PropTypes.bool,
   path: PropTypes.string.isRequired,

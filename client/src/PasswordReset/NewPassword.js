@@ -1,13 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '_contexts/AuthContext'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
+import {
+  revokeAuthentication,
+  setAuthentication
+} from '_utils/authenticationHandler'
 
 export const NewPassword = () => {
-  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
@@ -72,8 +74,7 @@ export const NewPassword = () => {
 
     const authorizationHeader = response.headers.get('authorization')
     if (!authorizationHeader) {
-      setUserToken(null)
-      setTokenExpiration(Date.now())
+      revokeAuthentication()
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -87,8 +88,9 @@ export const NewPassword = () => {
         }
       })
     } else {
-      setUserToken(authorizationHeader)
-      // setTokenExpiration(/* parse JWT (authorization header) for expiration */)
+      setAuthentication(
+        authorizationHeader /*, expiration: parse the JWT for its expiration time */
+      )
       history.push('/getting-started')
     }
   }

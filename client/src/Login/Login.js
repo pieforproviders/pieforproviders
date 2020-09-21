@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { AuthContext } from '_contexts/AuthContext'
+import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
@@ -7,10 +6,13 @@ import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
+import {
+  revokeAuthentication,
+  setAuthentication
+} from '_utils/authenticationHandler'
 
 export function Login() {
   const location = useLocation()
-  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
@@ -50,10 +52,10 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    if (!response.ok || response.headers.get('authorization') === null) {
+    const authorizationHeader = response.headers.get('authorization')
+    if (!response.ok || authorizationHeader === null) {
       const errorMessage = await response.json()
-      setUserToken(null)
-      setTokenExpiration(Date.now())
+      revokeAuthentication()
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -62,15 +64,15 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      setUserToken(response.headers.get('authorization'))
-      // setTokenExpiration(/* Parse JWT to get expiration date */)
+      setAuthentication(
+        authorizationHeader /*, expiration: parse the JWT for its expiration time */
+      )
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    setUserToken(null)
-    setTokenExpiration(Date.now())
+    revokeAuthentication()
     history.push('/dashboard')
   }
   return (

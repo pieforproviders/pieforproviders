@@ -1,15 +1,12 @@
-import { useContext } from 'react'
-import { AuthContext } from '_contexts/AuthContext'
 import { useHistory } from 'react-router-dom'
+import { revokeAuthentication } from '_utils/authenticationHandler'
 
 const useUnauthorizedHandler = () => {
   let history = useHistory()
-  const { setUserToken, setTokenExpiration } = useContext(AuthContext)
 
   const handler = response => {
     // TODO: Sentry
-    setUserToken(null)
-    setTokenExpiration(Date.now())
+    revokeAuthentication()
     history.push('/login')
     return response
   }
