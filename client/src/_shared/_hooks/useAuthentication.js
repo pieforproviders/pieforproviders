@@ -7,10 +7,10 @@ const useAuthentication = () => {
   const [expiration, setExpiration] = useExpirationState(Date.now())
 
   return {
-    token,
-    setToken,
-    expiration,
-    setExpiration
+    token: token,
+    setToken: setToken,
+    expiration: expiration,
+    setExpiration: setExpiration
   }
 }
 
