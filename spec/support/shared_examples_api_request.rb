@@ -129,7 +129,7 @@ RSpec.shared_examples 'it lists all items for a user' do |item_class|
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
+      produces 'application/json'
 
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]
@@ -172,7 +172,7 @@ RSpec.shared_examples 'it retrieves an item for a user' do |item_class|
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
+      produces 'application/json'
 
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]
@@ -215,8 +215,8 @@ RSpec.shared_examples 'it creates an item with the right api version and is auth
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
-      consumes 'application/json', 'application/xml'
+      produces 'application/json'
+      consumes 'application/json'
 
       parameter name: item_name_symbol, in: :body, schema: {
         '$ref' => "#/components/schemas/create#{item_class}"
@@ -263,8 +263,8 @@ RSpec.shared_examples 'it creates an item' do |item_class|
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
-      consumes 'application/json', 'application/xml'
+      produces 'application/json'
+      consumes 'application/json'
 
       parameter name: item_name_symbol, in: :body, schema: {
         '$ref' => "#/components/schemas/create#{item_class}"
@@ -509,8 +509,8 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
-      consumes 'application/json', 'application/xml'
+      produces 'application/json'
+      consumes 'application/json'
 
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
 
@@ -566,7 +566,7 @@ RSpec.shared_examples 'it deletes an item for a user' do |item_class|
       tags item_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
-      produces 'application/json', 'application/xml'
+      produces 'application/json'
 
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
       # security [{ token: [] }]

@@ -8,7 +8,7 @@ RSpec.describe 'GET /confirmation', type: :request do
   let(:confirmed_user) { create(:confirmed_user) }
   path '/confirmation' do
     get "Confirms the user's account." do
-      consumes 'application/json', 'application/xml'
+      consumes 'application/json'
       parameter name: 'confirmation_token', in: :query, type: :string
 
       response '200', 'user confirmed' do
