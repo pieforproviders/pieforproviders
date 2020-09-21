@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { AuthContext } from '_contexts/AuthContext'
 
-export const isAuthenticated = () => {
+export function IsAuthenticated() {
   // TODO: expiration
   // const { userToken, tokenExpiration } = useContext(AuthContext)
   const { userToken } = useContext(AuthContext)
@@ -9,16 +9,18 @@ export const isAuthenticated = () => {
   return !!userToken
 }
 
-export const revokeAuthentication = () => {
+export function RevokeAuthentication() {
   const { setUserToken, setTokenExpiration } = useContext(AuthContext)
 
   setUserToken(null)
   setTokenExpiration(Date.now())
+  return null
 }
 
-export const setAuthentication = (token, expiration = null) => {
+export function SetAuthentication(token, expiration = null) {
   const { setUserToken, setTokenExpiration } = useContext(AuthContext)
 
   setUserToken(token)
   setTokenExpiration(expiration)
+  return null
 }

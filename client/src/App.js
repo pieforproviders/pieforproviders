@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
   Redirect,
@@ -19,10 +19,12 @@ import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { AuthProvider } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
-import { isAuthenticated } from '_utils/authenticationHandler'
+import { IsAuthenticated } from '_utils/authenticationHandler'
 
 const App = () => {
   const { t } = useTranslation()
+
+  const authenticated = IsAuthenticated
 
   useEffect(() => {
     /* skip production code for coverage */
@@ -78,7 +80,7 @@ const App = () => {
                 contentComponent={CasesImport}
               />
               <Route exact path="/">
-                <Redirect to={isAuthenticated() ? '/dashboard' : '/login'} />
+                <Redirect to={authenticated() ? '/dashboard' : '/login'} />
               </Route>
               <Route contentComponent={NotFound} />
             </Switch>

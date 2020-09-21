@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
 import { useHistory } from 'react-router-dom'
-import { isAuthenticated } from '_utils/authenticationHandler'
+import { IsAuthenticated } from '_utils/authenticationHandler'
 
 export default function AuthenticatedRoute({
   contentComponent: ContentComponent,
@@ -15,9 +15,10 @@ export default function AuthenticatedRoute({
 }) {
   exact = !!exact
   let history = useHistory()
+  const authenticated = IsAuthenticated
 
   useEffect(() => {
-    !isAuthenticated() && history.push('/login')
+    !authenticated() && history.push('/login')
   })
 
   return (

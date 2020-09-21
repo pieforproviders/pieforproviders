@@ -7,8 +7,8 @@ import useApiResponse from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
 import {
-  revokeAuthentication,
-  setAuthentication
+  RevokeAuthentication,
+  SetAuthentication
 } from '_utils/authenticationHandler'
 
 export function Login() {
@@ -18,6 +18,8 @@ export function Login() {
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
+  const revocation = RevokeAuthentication
+  const setAuth = SetAuthentication
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export function Login() {
     const authorizationHeader = response.headers.get('authorization')
     if (!response.ok || authorizationHeader === null) {
       const errorMessage = await response.json()
-      revokeAuthentication()
+      revocation()
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -64,7 +66,7 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      setAuthentication(
+      setAuth(
         authorizationHeader /*, expiration: parse the JWT for its expiration time */
       )
       history.push('/getting-started')
@@ -72,7 +74,7 @@ export function Login() {
   }
 
   const onChooseReset = () => {
-    revokeAuthentication()
+    revocation()
     history.push('/dashboard')
   }
   return (

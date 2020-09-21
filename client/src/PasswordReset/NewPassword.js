@@ -5,8 +5,8 @@ import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
 import {
-  revokeAuthentication,
-  setAuthentication
+  RevokeAuthentication,
+  SetAuthentication
 } from '_utils/authenticationHandler'
 
 export const NewPassword = () => {
@@ -15,6 +15,8 @@ export const NewPassword = () => {
   let history = useHistory()
   const location = useLocation()
   const { t } = useTranslation()
+  const revocation = RevokeAuthentication
+  const setAuth = SetAuthentication
 
   useEffect(() => {
     const verifyPasswordToken = async () => {
@@ -74,7 +76,7 @@ export const NewPassword = () => {
 
     const authorizationHeader = response.headers.get('authorization')
     if (!authorizationHeader) {
-      revokeAuthentication()
+      revocation()
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -88,7 +90,7 @@ export const NewPassword = () => {
         }
       })
     } else {
-      setAuthentication(
+      setAuth(
         authorizationHeader /*, expiration: parse the JWT for its expiration time */
       )
       history.push('/getting-started')
