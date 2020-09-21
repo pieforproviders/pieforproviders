@@ -60,7 +60,7 @@ const App = () => {
                 path="/confirm"
                 // TODO: needs translation
                 title="Confirm your Account"
-                contentComponent={Confirmation}
+                component={Confirmation}
               />
               <AuthorizedRoute
                 exact

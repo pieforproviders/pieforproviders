@@ -183,28 +183,28 @@ export function Signup() {
 
         <Form.Item
           name="moreThanOneBusiness"
-          label={t('moreThanOneBusiness')}
+          label={t('multiBusiness')}
           rules={[
             {
               required: true,
-              message: t('moreThanOneBusinessRequired')
+              message: t('multiBusinessRequired')
             }
           ]}
         >
           <Select
             style={{ textAlign: 'left' }}
             value={moreThanOneBusiness}
-            placeholder={t('moreThanOneBusinessPlaceholder')}
+            placeholder={t('multiBusinessPlaceholder')}
             data-cy="moreThanOneBusiness"
             onChange={value => {
               setMoreThanOneBusiness(value)
             }}
           >
             <Option value="yes" data-cy="yesMultiBusiness">
-              {t('moreThanOneBusinessTrue')}
+              {t('multiBusinessTrue')}
             </Option>
             <Option value="no" data-cy="noSingleBusiness">
-              {t('moreThanOneBusinessFalse')}
+              {t('multiBusinessFalse')}
             </Option>
           </Select>
         </Form.Item>
