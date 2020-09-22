@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useAuthToken } from '_shared/_hooks/useAuthToken'
+import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 export function Confirmation({ location }) {
   const { makeRequest } = useApiResponse()
-  const [, setAuthToken] = useAuthToken()
+  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function Confirmation({ location }) {
       if (isSubscribed) {
         if (!response.ok || response.headers.get('authorization') === null) {
           const errorMessage = await response.json()
-          setAuthToken(null)
+          removeToken()
           history.push({
             pathname: '/login',
             state: {
@@ -35,14 +35,21 @@ export function Confirmation({ location }) {
             }
           })
         } else {
-          setAuthToken(response.headers.get('authorization'))
+          setToken(response.headers.get('authorization'))
           history.push('/getting-started')
         }
       }
     }
     confirm()
     return () => (isSubscribed = false)
-  }, [history, location.pathname, location.search, makeRequest, setAuthToken])
+  }, [
+    history,
+    location.pathname,
+    location.search,
+    makeRequest,
+    setToken,
+    removeToken
+  ])
 
   return null
 }
