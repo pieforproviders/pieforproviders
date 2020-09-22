@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
+import { useAuthToken } from '_shared/_hooks/useAuthToken'
 
 export default function AuthorizedRoute({
   children,
@@ -11,9 +12,10 @@ export default function AuthorizedRoute({
   // permissions,
   ...routeProps
 }) {
+  const [authToken] = useAuthToken()
   exact = !!exact
   const content = useMemo(() => {
-    if (!localStorage.getItem('pie-token')) {
+    if (!authToken) {
       return <Redirect to="/login" />
       // TODO: Permissions & expired passwords?
       // } else if (SessionService.getNeedsPasswordChange()) {
@@ -23,7 +25,7 @@ export default function AuthorizedRoute({
     } else {
       return children
     }
-  }, [children])
+  }, [authToken, children])
   return (
     <Route exact={exact} path={path} {...routeProps}>
       <LoggedInLayout title={title}>{content}</LoggedInLayout>
