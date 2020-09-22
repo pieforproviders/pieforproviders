@@ -55,7 +55,7 @@ class Api::V1::SitesController < Api::V1::ApiController
   end
 
   def site_params
-    attribues = %i[address
+    attributes = %i[address
                    business_id
                    city_id
                    county_id
@@ -63,7 +63,7 @@ class Api::V1::SitesController < Api::V1::ApiController
                    qris_rating
                    state_id
                    zip_id]
-    attribues << :active if current_user&.admin?
-    params.require(:site).permit(attribues)
+    attributes << :active if current_user&.admin?
+    params.require(:site).permit(attributes)
   end
 end
