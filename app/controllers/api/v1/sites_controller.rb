@@ -56,13 +56,13 @@ class Api::V1::SitesController < Api::V1::ApiController
 
   def site_params
     attributes = %i[address
-                   business_id
-                   city_id
-                   county_id
-                   name
-                   qris_rating
-                   state_id
-                   zip_id]
+                    business_id
+                    city_id
+                    county_id
+                    name
+                    qris_rating
+                    state_id
+                    zip_id]
     attributes << :active if current_user&.admin?
     params.require(:site).permit(attributes)
   end
