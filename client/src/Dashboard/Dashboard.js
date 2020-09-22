@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useAuthToken } from '_shared/_hooks/useAuthToken'
 
 export function Dashboard() {
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const [authToken] = useAuthToken()
 
   useEffect(() => {
     const responseValue = async () => {
@@ -15,7 +17,7 @@ export function Dashboard() {
         headers: {
           Accept: 'application/vnd.pieforproviders.v1+json',
           'Content-Type': 'application/json',
-          Authorization: localStorage.getItem('pie-token')
+          Authorization: authToken
         }
       })
       const allBusinesses = await businesses.json()
