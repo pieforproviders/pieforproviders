@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
-import {
-  RevokeAuthentication,
-  SetAuthentication
-} from '_utils/authenticationHandler'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 export const NewPassword = () => {
   const [loading, setLoading] = useState(false)
@@ -15,8 +12,7 @@ export const NewPassword = () => {
   let history = useHistory()
   const location = useLocation()
   const { t } = useTranslation()
-  const revocation = RevokeAuthentication
-  const setAuth = SetAuthentication
+  const { revokeAuthentication, setAuthentication } = useAuthentication()
 
   useEffect(() => {
     const verifyPasswordToken = async () => {
@@ -76,7 +72,7 @@ export const NewPassword = () => {
 
     const authorizationHeader = response.headers.get('authorization')
     if (!authorizationHeader) {
-      revocation()
+      revokeAuthentication()
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -90,7 +86,7 @@ export const NewPassword = () => {
         }
       })
     } else {
-      setAuth(
+      setAuthentication(
         authorizationHeader /*, expiration: parse the JWT for its expiration time */
       )
       history.push('/getting-started')

@@ -4,12 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import useApiResponse from '_shared/_hooks/useApiResponse'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
-import {
-  RevokeAuthentication,
-  SetAuthentication
-} from '_utils/authenticationHandler'
 
 export function Login() {
   const location = useLocation()
@@ -18,8 +15,7 @@ export function Login() {
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-  const revocation = RevokeAuthentication
-  const setAuth = SetAuthentication
+  const { revokeAuthentication, setAuthentication } = useAuthentication
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -57,7 +53,7 @@ export function Login() {
     const authorizationHeader = response.headers.get('authorization')
     if (!response.ok || authorizationHeader === null) {
       const errorMessage = await response.json()
-      revocation()
+      revokeAuthentication()
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -66,7 +62,7 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      setAuth(
+      setAuthentication(
         authorizationHeader /*, expiration: parse the JWT for its expiration time */
       )
       history.push('/getting-started')
@@ -74,7 +70,7 @@ export function Login() {
   }
 
   const onChooseReset = () => {
-    revocation()
+    revokeAuthentication()
     history.push('/dashboard')
   }
   return (

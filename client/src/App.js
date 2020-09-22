@@ -17,14 +17,13 @@ import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
-import { AuthProvider } from '_contexts/AuthContext'
 import { useTranslation } from 'react-i18next'
-import { IsAuthenticated } from '_utils/authenticationHandler'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 const App = () => {
   const { t } = useTranslation()
 
-  const authenticated = IsAuthenticated
+  const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
     /* skip production code for coverage */
@@ -38,53 +37,51 @@ const App = () => {
     <div className="text-primaryBlue font-proxima text-sm h-screen">
       <ErrorBoundary>
         <Router>
-          <AuthProvider>
-            <Switch>
-              <Route path="/signup">
-                <AuthLayout
-                  backgroundImageClass="auth-image"
-                  contentComponent={Signup}
-                />
-              </Route>
-              <Route path="/login">
-                <AuthLayout
-                  backgroundImageClass="auth-image"
-                  contentComponent={Login}
-                />
-              </Route>
-              <Route path="/password/update">
-                <AuthLayout
-                  backgroundImageClass="auth-image"
-                  contentComponent={NewPassword}
-                />
-              </Route>
-              <Route
-                path="/confirm"
-                title={t('confirmYourAccount')}
-                component={Confirmation}
+          <Switch>
+            <Route path="/signup">
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={Signup}
               />
-              <AuthenticatedRoute
-                exact
-                path="/getting-started"
-                title={t('setup')}
-                contentComponent={GettingStarted}
+            </Route>
+            <Route path="/login">
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={Login}
               />
-              <AuthenticatedRoute
-                exact
-                path="/dashboard"
-                contentComponent={Dashboard}
+            </Route>
+            <Route path="/password/update">
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={NewPassword}
               />
-              <AuthenticatedRoute
-                exact
-                path="/cases/import"
-                contentComponent={CasesImport}
-              />
-              <Route exact path="/">
-                <Redirect to={authenticated() ? '/dashboard' : '/login'} />
-              </Route>
-              <Route contentComponent={NotFound} />
-            </Switch>
-          </AuthProvider>
+            </Route>
+            <Route
+              path="/confirm"
+              title={t('confirmYourAccount')}
+              component={Confirmation}
+            />
+            <AuthenticatedRoute
+              exact
+              path="/getting-started"
+              title={t('setup')}
+              contentComponent={GettingStarted}
+            />
+            <AuthenticatedRoute
+              exact
+              path="/dashboard"
+              contentComponent={Dashboard}
+            />
+            <AuthenticatedRoute
+              exact
+              path="/cases/import"
+              contentComponent={CasesImport}
+            />
+            <Route exact path="/">
+              <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
+            </Route>
+            <Route contentComponent={NotFound} />
+          </Switch>
         </Router>
       </ErrorBoundary>
     </div>

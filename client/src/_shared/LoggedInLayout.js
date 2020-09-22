@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
 import useApiResponse from '_shared/_hooks/useApiResponse'
-import { RevokeAuthentication } from '_utils/authenticationHandler'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 const { useBreakpoint } = Grid
 
@@ -15,7 +15,7 @@ export function LoggedInLayout({ children, title }) {
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
-  const revocation = RevokeAuthentication
+  const { revokeAuthentication } = useAuthentication
 
   const logout = async () => {
     const response = await makeRequest({
@@ -25,7 +25,7 @@ export function LoggedInLayout({ children, title }) {
     if (!response.ok) {
       // TODO: sentry - post error for admins
     }
-    revocation()
+    revokeAuthentication()
     history.push('/login')
   }
 

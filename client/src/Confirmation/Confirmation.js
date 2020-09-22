@@ -2,16 +2,12 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import useApiResponse from '_shared/_hooks/useApiResponse'
-import {
-  RevokeAuthentication,
-  SetAuthentication
-} from '_utils/authenticationHandler'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 export function Confirmation({ location }) {
   const { makeRequest } = useApiResponse()
   let history = useHistory()
-  const revocation = RevokeAuthentication
-  const setAuth = SetAuthentication
+  const { revokeAuthentication, setAuthentication } = useAuthentication()
 
   useEffect(() => {
     let isSubscribed = true
@@ -27,7 +23,7 @@ export function Confirmation({ location }) {
       if (isSubscribed) {
         if (!response.ok || authorizationHeader === null) {
           const errorMessage = await response.json()
-          revocation()
+          revokeAuthentication()
           history.push({
             pathname: '/login',
             state: {
@@ -40,7 +36,7 @@ export function Confirmation({ location }) {
             }
           })
         } else {
-          setAuth(
+          setAuthentication(
             authorizationHeader /*, expiration: parse the JWT for its expiration time */
           )
           history.push('/getting-started')
@@ -54,8 +50,8 @@ export function Confirmation({ location }) {
     location.pathname,
     location.search,
     makeRequest,
-    revocation,
-    setAuth
+    revokeAuthentication,
+    setAuthentication
   ])
 
   return null

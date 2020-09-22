@@ -1,13 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from '_contexts/AuthContext'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useApiResponse from '_shared/_hooks/useApiResponse'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 export function Dashboard() {
-  const { userToken } = useContext(AuthContext)
   const [businessList, setBusinessList] = useState([])
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const { userToken } = useAuthentication()
 
   useEffect(() => {
     const responseValue = async () => {

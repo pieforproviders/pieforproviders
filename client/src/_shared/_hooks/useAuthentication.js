@@ -1,12 +1,15 @@
 import dayjs from 'dayjs'
-import useLocalStorageState from 'use-local-storage-state'
+import { createLocalStorageStateHook } from 'use-local-storage-state'
 
 const useAuthentication = () => {
-  const [token, setToken] = useLocalStorageState('pie-token', null)
-  const [expiration, setExpiration] = useLocalStorageState(
+  const useToken = createLocalStorageStateHook('pie-token', null)
+  const useExpiration = createLocalStorageStateHook(
     'pie-expiration',
     Date.now()
   )
+
+  const [token, setToken] = useToken()
+  const [expiration, setExpiration] = useExpiration()
 
   const revokeAuthentication = () => {
     setToken(null)
@@ -22,6 +25,7 @@ const useAuthentication = () => {
     userToken: token,
     setUserToken: setToken,
     tokenExpiration: expiration,
+    isAuthenticated: token !== null,
     setTokenExpiration: setExpiration,
     setAuthentication: setAuthentication,
     revokeAuthentication: revokeAuthentication

@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Typography } from 'antd'
 import useApiResponse from '_shared/_hooks/useApiResponse'
-import { AuthContext } from '_contexts/AuthContext'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 import Icon from '@material-ui/core/Icon'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import BusinessIcon from '@material-ui/icons/Business'
@@ -15,7 +15,7 @@ import { PaddedButton } from '_shared/PaddedButton'
 // more cards than columns
 
 export function GettingStarted() {
-  const { userToken } = useContext(AuthContext)
+  const { userToken } = useAuthentication()
   const [user, setUser] = useState(null)
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()

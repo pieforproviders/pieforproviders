@@ -1,13 +1,13 @@
 import { useHistory } from 'react-router-dom'
-import { RevokeAuthentication } from '_utils/authenticationHandler'
+import useAuthentication from '_shared/_hooks/useAuthentication'
 
 const useUnauthorizedHandler = () => {
   let history = useHistory()
-  let revocation = RevokeAuthentication
+  const { revokeAuthentication } = useAuthentication()
 
   const handler = response => {
     // TODO: Sentry
-    revocation()
+    revokeAuthentication()
     history.push('/login')
     return response
   }
