@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import useLocalStorageState from 'use-local-storage-state'
 
 const useAuthentication = () => {
@@ -7,11 +8,23 @@ const useAuthentication = () => {
     Date.now()
   )
 
+  const revokeAuthentication = () => {
+    setToken(null)
+    setExpiration(dayjs())
+  }
+
+  const setAuthentication = (token, expiration = dayjs().add('1', 'day')) => {
+    setToken(token)
+    setExpiration(expiration)
+  }
+
   return {
-    token: token,
-    setToken: setToken,
-    expiration: expiration,
-    setExpiration: setExpiration
+    userToken: token,
+    setUserToken: setToken,
+    tokenExpiration: expiration,
+    setTokenExpiration: setExpiration,
+    setAuthentication: setAuthentication,
+    revokeAuthentication: revokeAuthentication
   }
 }
 
