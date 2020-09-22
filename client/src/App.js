@@ -18,11 +18,11 @@ import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
-import { useAuthToken } from '_shared/_hooks/useAuthToken'
+import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 const App = () => {
   const { t } = useTranslation()
-  const [authToken] = useAuthToken()
+  const { isAuthenticated } = useAuthentication()
 
   useEffect(() => {
     /* skip production code for coverage */
@@ -70,7 +70,7 @@ const App = () => {
               <CasesImport />
             </AuthorizedRoute>
             <Route exact path="/">
-              <Redirect to={authToken ? '/dashboard' : '/login'} />
+              <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
             </Route>
             <Route component={NotFound} />
           </Switch>

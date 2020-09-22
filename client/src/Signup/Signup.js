@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useUserMultiBusiness } from '_shared/_hooks/useUserMultiBusiness'
+import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
@@ -38,14 +38,14 @@ export function Signup() {
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
-  const [, setUserMultiBusiness] = useUserMultiBusiness()
+  const { setIsMultiBusiness } = useMultiBusiness()
   const { t } = useTranslation()
 
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
 
-    setUserMultiBusiness(multiBusiness)
+    setIsMultiBusiness(multiBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
