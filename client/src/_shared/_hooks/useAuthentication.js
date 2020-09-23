@@ -8,7 +8,7 @@ export function useAuthentication() {
 
   const isAuthenticated =
     !!localStorage.getItem('pie-token') &&
-    localStorage.getItem('pie-expiration') > dayjs()
+    dayjs(localStorage.getItem('pie-expiration')).isAfter(dayjs())
 
   const removeToken = () => {
     localStorage.removeItem('pie-token')
