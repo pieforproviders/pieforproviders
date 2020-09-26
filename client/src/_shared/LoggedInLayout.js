@@ -5,16 +5,18 @@ import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
+import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
+  const { removeToken } = useAuthentication()
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
 
   const logout = () => {
-    localStorage.removeItem('pie-token')
+    removeToken()
     history.push('/login')
   }
 

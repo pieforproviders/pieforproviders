@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useAuthentication } from '_shared/_hooks/useAuthentication'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
 
@@ -13,6 +14,7 @@ export function Login() {
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
+  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
   const { t } = useTranslation()
 
@@ -58,13 +60,13 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      localStorage.setItem('pie-token', response.headers.get('authorization'))
+      setToken(response.headers.get('authorization'))
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    localStorage.removeItem('pie-token')
+    removeToken()
     history.push('/dashboard')
   }
   return (

@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 export const NewPassword = () => {
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
+  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
   const location = useLocation()
   const { t } = useTranslation()
@@ -55,6 +57,7 @@ export const NewPassword = () => {
     const data = await response.json()
 
     if (!response.ok) {
+      removeToken()
       history.push({
         pathname: '/login',
         state: {
@@ -70,6 +73,7 @@ export const NewPassword = () => {
 
     const authorizationHeader = response.headers.get('authorization')
     if (!authorizationHeader) {
+      removeToken()
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -83,7 +87,7 @@ export const NewPassword = () => {
         }
       })
     } else {
-      localStorage.setItem('pie-token', authorizationHeader)
+      setToken(authorizationHeader)
       history.push('/getting-started')
     }
   }
