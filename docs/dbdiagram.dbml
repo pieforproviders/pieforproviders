@@ -100,6 +100,7 @@ Table subsidy_rules {
   state_id  uuid
   max_age decimal [not null]
   hourly_rate monetize
+  max_subsidy_hours decimal
   part_day_rate monetize
   full_day_rate monetize
   part_day_max_hours decimal
