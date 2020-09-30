@@ -1,5 +1,5 @@
 // This is the source file for generating ER diagrams on
-// https://dbdiagram.io/d/5f552f2e88d052352cb625e2
+// https://dbdiagram.io/d/5f22e9597543d301bf5d5480
 Table users {
   id uuid [pk, unique, not null]
   full_name string [not null]
