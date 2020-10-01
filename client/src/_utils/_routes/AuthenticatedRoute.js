@@ -4,7 +4,7 @@ import { Redirect, Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
-export default function AuthorizedRoute({
+export default function AuthenticatedRoute({
   children,
   exact,
   path,
@@ -33,7 +33,7 @@ export default function AuthorizedRoute({
   )
 }
 
-AuthorizedRoute.propTypes = {
+AuthenticatedRoute.propTypes = {
   children: PropTypes.element.isRequired,
   exact: PropTypes.bool,
   path: PropTypes.string.isRequired,

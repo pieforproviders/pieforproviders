@@ -5,7 +5,7 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
-import AuthorizedRoute from '_utils/_routes/AuthorizedRoute.js'
+import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
@@ -60,15 +60,19 @@ const App = () => {
               title="Confirm your Account"
               component={Confirmation}
             />
-            <AuthorizedRoute exact path="/getting-started" title={t('setup')}>
+            <AuthenticatedRoute
+              exact
+              path="/getting-started"
+              title={t('setup')}
+            >
               <GettingStarted />
-            </AuthorizedRoute>
-            <AuthorizedRoute exact path="/dashboard">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/dashboard">
               <Dashboard />
-            </AuthorizedRoute>
-            <AuthorizedRoute exact path="/cases/import">
+            </AuthenticatedRoute>
+            <AuthenticatedRoute exact path="/cases/import">
               <CasesImport />
-            </AuthorizedRoute>
+            </AuthenticatedRoute>
             <Route exact path="/">
               <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
             </Route>
