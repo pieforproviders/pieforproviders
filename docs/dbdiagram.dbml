@@ -1,5 +1,3 @@
-// This is the source file for generating ER diagrams on
-// https://dbdiagram.io/d/5f22e9597543d301bf5d5480
 Table users {
   id uuid [pk, unique, not null]
   full_name string [not null]
@@ -32,14 +30,15 @@ Table businesses {
   license_type license_types [not null]
   name string [not null]
   active boolean [not null, default: true]
-  qris_rating string
+  // fix this
+  qris_rating state_qris_ratings
   zip_id uuid [not null]
   county_id uuid [not null]
 }
 
 Table children {
   id uuid [pk, unique, not null]
-  user_id uuid [ref: > users.id, not null]
+  business_id uuid [ref: > businesses.id, not null]
   full_name string [not null]
   date_of_birth date [not null]
   active boolean [not null, default: true]
@@ -53,7 +52,7 @@ Enum copay_frequencies {
 
 Table case_cycles {
   id uuid [pk, unique, not null]
-  user_id uuid [ref: > users.id, not null]
+  business_id uuid [ref: > businesses.id, not null]
   case_number string
   copay monetize
   copay_frequency copay_frequencies
@@ -69,9 +68,9 @@ Enum allowance_intervals {
 
 Table child_case_cycles {
   id uuid [pk, unique, not null]
-  child_id uuid [ref: > children.id, not null]
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   case_cycle_id uuid [ref: > case_cycles.id, not null]
+  child_id uuid [ref: > children.id, not null]
   part_days_allowed integer [not null]
   full_days_allowed integer [not null]
 }
@@ -93,35 +92,73 @@ Table attendances {
   attendance_duration duration_definitions [not null]
 }
 
-Table subsidy_rules {
+Table subsidy_rules [headercolor: #c0392b] {
   id uuid [pk, unique, not null]
+  
+  Note: "Polymorphic"
+}
+
+Table illinois_subsidy_rules {
+  subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   name string [not null]
-  county_id  uuid
-  state_id  uuid
+  county_id  uuid [not null]
   max_age decimal [not null]
+  part_day_rate monetize [not null]
+  full_day_rate monetize [not null]
+  part_day_max_hours decimal [not null]
+  full_day_max_hours decimal [not null]
+  full_plus_part_day_max_hours decimal [not null]
+  full_plus_full_day_max_hours decimal [not null]
+  // might just be attendance threshold
+  part_day_threshold decimal [not null]
+  full_day_threshold decimal [not null]
+  bronze_percentage decimal [not null]
+  silver_percentage decimal [not null]
+  gold_percentage decimal [not null]
+  license_type license_types [not null]
+  
+  Note: "Illinois might just have 'attendance threshold' rather than a different one for full and part days"
+}
+
+Enum state_qris_ratings {
+  illinois_qris_ratings
+  nebraska_qris_ratings
+}
+
+Enum illinois_qris_ratings {
+  na
+  bronze
+  silver
+  gold
+}
+
+Enum nebraska_qris_ratings {
+  1
+  2
+  3
+  4
+  5
+}
+
+Table nebraska_subsidy_rules {
+  subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
+  name string [not null]
+  county_id uuid
   hourly_rate monetize
   max_subsidy_hours decimal
-  part_day_rate monetize
-  full_day_rate monetize
-  part_day_max_hours decimal
-  full_day_max_hours decimal
-  full_plus_part_day_max_hours decimal
-  full_plus_full_day_max_hours decimal
-  part_day_threshold decimal
-  full_day_threshold decimal
-  license_type license_types [not null]
-  qris_rating string
+  
+  Note: "still in reserach"
 }
 
 
-Table lookup_cities {
+Table lookup_cities [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   name varchar [not null]
   state_id uuid [not null]
   county_id uuid
 }
 
-Table lookup_counties {
+Table lookup_counties [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   state_id uuid
   abbr varchar
@@ -129,13 +166,13 @@ Table lookup_counties {
   county_seat varchar
 }
 
-Table lookup_states {
+Table lookup_states [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   abbr varchar(2) [not null]
   name varchar [not null]
 }
 
-Table lookup_zipcodes {
+Table lookup_zipcodes [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   code varchar [not null]
   state_id uuid

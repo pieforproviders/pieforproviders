@@ -133,7 +133,7 @@ Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb
 
 ## Data Model
 
-The data model is documented in Database Markup Language in [docs/dbdiagram.dbml](docs/dbdiagram.dbml), and as a [PDF](docs/dbdiagram.pdf).  We use [DBDiagram.io](https://dbdiagram.io/d/5f22e9597543d301bf5d5480) to update the PDF; you can copy changes to the [docs/dbdiagram.dbml](docs/dbdiagram.dbml) into the text field in [DBDiagram.io](https://dbdiagram.io/d/5f22e9597543d301bf5d5480), and then the diagram will update.  Then export the PDF and save it back to the repo.
+The data model is documented in Database Markup Language in [docs/dbdiagram.dbml](docs/dbdiagram.dbml), and as a [PDF](docs/dbdiagram.pdf).  We use [DBDiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120) to update the PDF; you can copy changes to the [docs/dbdiagram.dbml](docs/dbdiagram.dbml) into the text field in [DBDiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120), and then the diagram will update.  Then export the PDF and save it back to the repo.
 
 ## Resources/Further Reading
 
