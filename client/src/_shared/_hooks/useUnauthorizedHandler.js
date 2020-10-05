@@ -1,13 +1,14 @@
 import { useHistory } from 'react-router-dom'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { useDispatch } from 'react-redux'
+import { removeAuth } from '_actions/auth'
 
 export default function useUnauthorizedHandler() {
+  const dispatch = useDispatch()
   let history = useHistory()
-  const { removeToken } = useAuthentication()
 
   const handler = response => {
     // TODO: Sentry
-    removeToken()
+    dispatch(removeAuth())
     history.push('/login')
     return response
   }

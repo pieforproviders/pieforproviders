@@ -7,8 +7,8 @@ import BusinessIcon from '@material-ui/icons/Business'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import { useTranslation } from 'react-i18next'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
 import { PaddedButton } from '_shared/PaddedButton'
+import { useSelector } from 'react-redux'
 
 // NB: we're using CSS grid instead of Ant grid for these cards
 // because Ant grid doesn't flow into the next row when there are
@@ -16,9 +16,9 @@ import { PaddedButton } from '_shared/PaddedButton'
 
 export function GettingStarted() {
   const [user, setUser] = useState(null)
+  const token = useSelector(state => state.auth.token)
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
-  const { storedToken } = useAuthentication()
 
   useEffect(() => {
     const getUser = async () => {
@@ -26,7 +26,7 @@ export function GettingStarted() {
         type: 'get',
         url: '/api/v1/profile',
         headers: {
-          Authorization: storedToken
+          Authorization: token
         }
       })
       const user = await response.json()

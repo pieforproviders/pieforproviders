@@ -5,18 +5,19 @@ import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { useDispatch } from 'react-redux'
+import { removeAuth } from '_actions/auth'
 
 const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
-  const { removeToken } = useAuthentication()
+  const dispatch = useDispatch()
   const { t } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
 
   const logout = () => {
-    removeToken()
+    dispatch(removeAuth())
     history.push('/login')
   }
 

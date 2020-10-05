@@ -4,17 +4,18 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_actions/auth'
 
 export function Login() {
+  const dispatch = useDispatch()
   const location = useLocation()
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
-  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
   const { t } = useTranslation()
 
@@ -52,6 +53,7 @@ export function Login() {
     })
     if (!response.ok || response.headers.get('authorization') === null) {
       const errorMessage = await response.json()
+      dispatch(removeAuth())
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -59,14 +61,15 @@ export function Login() {
         type: errorMessage.type,
         context: { email: values.email }
       })
+      history.push('/login')
     } else {
-      setToken(response.headers.get('authorization'))
+      dispatch(addAuth(response.headers.get('authorization')))
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    removeToken()
+    dispatch(removeAuth())
     history.push('/dashboard')
   }
   return (
