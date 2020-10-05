@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render } from 'setupTests'
 import { CasesImportReview } from '../CasesImportReview'
 
 const doRender = overrideProps => {
