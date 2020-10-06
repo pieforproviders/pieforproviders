@@ -96,25 +96,34 @@ Table rate_types {
   threshold decimal
 }
 
-Table attendances {
+Table line_items {
   id uuid [pk, unique, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
   starts_on date [not null]
-  check_in time [not null]
-  check_out time [not null]
-  total_time_in_care duration [not null]
 }
 
-Table attendance_rate_types {
+Table attendances {
   id uuid [pk, unique, not null]
-  attendance_id uuid [ref: > attendances.id, not null]
+  line_item_id uuid [ref: > line_items.id, not null]
+  check_in time
+  check_out time
+  total_time_in_care duration
+}
+
+Table line_item_rate_types {
+  id uuid [pk, unique, not null]
+  line_item_id uuid [ref: > line_items.id, not null]
   rate_type_id uuid [ref: > rate_types.id, not null]
 }
 
-Table subsidy_rules {
+Table subsidy_rules [headercolor: #8e44ad] {
   id uuid [pk, unique, not null]
+  name string [not null]
+  county_id uuid
+  max_age decimal
+  license_type license_types [not null]
   
-  Note: "Polymorphic"
+  Note: "Multiple table inheritance to the states"
 }
 
 Table subsidy_rule_rate_types {
@@ -125,15 +134,9 @@ Table subsidy_rule_rate_types {
 
 Table illinois_subsidy_rules {
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
-  name string [not null]
-  county_id  uuid [not null]
-  max_age decimal [not null]
   bronze_percentage decimal [not null]
   silver_percentage decimal [not null]
   gold_percentage decimal [not null]
-  license_type license_types [not null]
-  
-  Note: "Illinois might just have 'attendance threshold' rather than a different one for full and part days"
 }
 
 Enum state_qris_ratings {
@@ -158,10 +161,6 @@ Enum nebraska_qris_ratings {
 
 Table nebraska_subsidy_rules {
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
-  name string [not null]
-  county_id uuid
-  hourly_rate monetize
-  max_subsidy_hours decimal
   qris_1_percentage decimal
   qris_2_percentage decimal
   qris_3_percentage decimal
@@ -171,14 +170,14 @@ Table nebraska_subsidy_rules {
   Note: "still in reserach"
 }
 
-Table lookup_cities {
+Table lookup_cities [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   name varchar [not null]
   state_id uuid [not null]
   county_id uuid
 }
 
-Table lookup_counties {
+Table lookup_counties [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   state_id uuid
   abbr varchar
@@ -186,13 +185,13 @@ Table lookup_counties {
   county_seat varchar
 }
 
-Table lookup_states {
+Table lookup_states [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   abbr varchar(2) [not null]
   name varchar [not null]
 }
 
-Table lookup_zipcodes {
+Table lookup_zipcodes [headercolor: #27ae60] {
   id uuid [not null, default: `gen_random_uuid()`]
   code varchar [not null]
   state_id uuid
