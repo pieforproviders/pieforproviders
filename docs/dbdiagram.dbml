@@ -71,8 +71,13 @@ Table child_case_cycles {
   subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
   case_cycle_id uuid [ref: > case_cycles.id, not null]
   child_id uuid [ref: > children.id, not null]
-  part_days_allowed integer [not null]
-  full_days_allowed integer [not null]
+}
+
+Table child_case_cycle_rate_types {
+  id uuid [pk, unique, not null]
+  child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
+  rate_type_id uuid [ref: > rate_types.id, not null]
+  approved_amount decimal [not null]
 }
 
 Enum duration_definitions {
@@ -82,6 +87,15 @@ Enum duration_definitions {
   full_plus_full_day
 }
 
+Table rate_types {
+  id uuid [pk, unique, not null]
+  name string [not null]
+  state_id uuid [ref: > lookup_states.id, not null]
+  amount monetize [not null]
+  max_duration decimal
+  threshold decimal
+}
+
 Table attendances {
   id uuid [pk, unique, not null]
   child_case_cycle_id uuid [ref: > child_case_cycles.id, not null]
@@ -89,13 +103,24 @@ Table attendances {
   check_in time [not null]
   check_out time [not null]
   total_time_in_care duration [not null]
-  attendance_duration duration_definitions [not null]
 }
 
-Table subsidy_rules [headercolor: #c0392b] {
+Table attendance_rate_types {
+  id uuid [pk, unique, not null]
+  attendance_id uuid [ref: > attendances.id, not null]
+  rate_type_id uuid [ref: > rate_types.id, not null]
+}
+
+Table subsidy_rules {
   id uuid [pk, unique, not null]
   
   Note: "Polymorphic"
+}
+
+Table subsidy_rule_rate_types {
+  id uuid [pk, unique, not null]
+  subsidy_rule_id uuid [ref: > subsidy_rules.id, not null]
+  rate_type_id uuid [ref: > rate_types.id, not null]
 }
 
 Table illinois_subsidy_rules {
@@ -103,15 +128,6 @@ Table illinois_subsidy_rules {
   name string [not null]
   county_id  uuid [not null]
   max_age decimal [not null]
-  part_day_rate monetize [not null]
-  full_day_rate monetize [not null]
-  part_day_max_hours decimal [not null]
-  full_day_max_hours decimal [not null]
-  full_plus_part_day_max_hours decimal [not null]
-  full_plus_full_day_max_hours decimal [not null]
-  // might just be attendance threshold
-  part_day_threshold decimal [not null]
-  full_day_threshold decimal [not null]
   bronze_percentage decimal [not null]
   silver_percentage decimal [not null]
   gold_percentage decimal [not null]
@@ -146,19 +162,23 @@ Table nebraska_subsidy_rules {
   county_id uuid
   hourly_rate monetize
   max_subsidy_hours decimal
+  qris_1_percentage decimal
+  qris_2_percentage decimal
+  qris_3_percentage decimal
+  qris_4_percentage decimal
+  qris_5_percentage decimal
   
   Note: "still in reserach"
 }
 
-
-Table lookup_cities [headercolor: #27ae60] {
+Table lookup_cities {
   id uuid [not null, default: `gen_random_uuid()`]
   name varchar [not null]
   state_id uuid [not null]
   county_id uuid
 }
 
-Table lookup_counties [headercolor: #27ae60] {
+Table lookup_counties {
   id uuid [not null, default: `gen_random_uuid()`]
   state_id uuid
   abbr varchar
@@ -166,13 +186,13 @@ Table lookup_counties [headercolor: #27ae60] {
   county_seat varchar
 }
 
-Table lookup_states [headercolor: #27ae60] {
+Table lookup_states {
   id uuid [not null, default: `gen_random_uuid()`]
   abbr varchar(2) [not null]
   name varchar [not null]
 }
 
-Table lookup_zipcodes [headercolor: #27ae60] {
+Table lookup_zipcodes {
   id uuid [not null, default: `gen_random_uuid()`]
   code varchar [not null]
   state_id uuid
