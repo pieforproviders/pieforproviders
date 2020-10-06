@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
+import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import { CasesImportReview } from './CasesImportReview'
 import { parserTypes, getColumns, randomHash } from './utils'
 
@@ -71,6 +72,20 @@ export function CasesImport() {
     }
   }
 
+  const sampleSpreadsheets = [
+    {
+      language: 'en',
+      name: 'Pie.for.Providers.Template.Spreadsheet.English.v.10.5.xlsx',
+      text: 'Download our sample spreadsheet in English'
+    },
+    {
+      language: 'es',
+      name:
+        'Pie.for.Providers.Plantilla.de.Hoja.de.Calculo.Espanol.v.10.5.xlsx',
+      text: 'Baja nuestra plantilla de hoja de cálculo en español'
+    }
+  ]
+
   return (
     <div>
       <Title>{t('uploadCases')}</Title>
@@ -89,6 +104,19 @@ export function CasesImport() {
         data-cy="cases-upload"
         onChange={onFileChange}
       />
+      <div className="mt-2">
+        {sampleSpreadsheets.map(spreadsheet => (
+          <a
+            href={`/${spreadsheet.name}`}
+            download={spreadsheet.name}
+            className="no-underline font-bold flex items-center mt-4"
+            key={spreadsheet.language}
+          >
+            <CloudUploadIcon fontSize="small" />
+            <span className="ml-2">{spreadsheet.text}</span>
+          </a>
+        ))}
+      </div>
       <CasesImportReview kids={kids} />
     </div>
   )
