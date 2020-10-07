@@ -122,19 +122,6 @@ RSpec.configure do |config|
               full_name: { type: :string, example: 'Sean Flannery' }
             }
           },
-          payment: {
-            type: :object,
-            properties: {
-              agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-              amount_currency: { type: :string, example: 'USD' },
-              care_finished_on: { type: :string, example: '2020-03-15' },
-              care_started_on: { type: :string, example: '2020-01-01' },
-              discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              paid_on: { type: :string, example: '2020-05-20' }
-            }
-          },
           subsidy_rule: {
             type: :object,
             properties: {
@@ -190,17 +177,6 @@ RSpec.configure do |config|
               part_days_allowed: { type: :integer, example: 18 },
               subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
-          child_case_cycle_payment: {
-            type: :object,
-            properties: {
-              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-              amount_currency: { type: :string, example: 'USD' },
-              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
-              discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
             }
           },
           attendance: {
@@ -303,30 +279,6 @@ RSpec.configure do |config|
               }
             }
           },
-          createPayment: {
-            type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/payment' },
-                  {
-                    type: :object,
-                    required: %w[agency_id amount_cents care_finished_on care_started_on paid_on]
-                  }
-                ]
-              }
-            }
-          },
-          updatePayment: {
-            type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/payment' }
-                ]
-              }
-            }
-          },
           createCaseCycle: {
             type: :object,
             properties: {
@@ -375,43 +327,9 @@ RSpec.configure do |config|
               }
             }
           },
-          createChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
-                  {
-                    type: :object,
-                    required: %w[amount_cents child_case_cycle_id payment_id]
-                  }
-                ]
-              }
-            }
-          },
-          updateChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
-                ]
-              }
-            }
-          },
           createAttendance: {
             type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/attendance' },
-                  {
-                    type: :object,
-                    required: %w[child_case_cycle_id starts_on]
-                  }
-                ]
-              }
-            }
+            properties: {}
           },
           updateAttendance: {
             type: :object,

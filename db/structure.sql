@@ -173,23 +173,6 @@ CREATE TABLE public.case_cycles (
 
 
 --
--- Name: child_case_cycle_payments; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_case_cycle_payments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    discrepancy_cents integer,
-    discrepancy_currency character varying DEFAULT 'USD'::character varying,
-    payment_id uuid NOT NULL,
-    child_case_cycle_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
 -- Name: child_case_cycles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -285,25 +268,6 @@ CREATE TABLE public.lookup_zipcodes (
     area_code character varying,
     lat numeric(15,10),
     lon numeric(15,10),
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: payments; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.payments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    paid_on date NOT NULL,
-    care_started_on date NOT NULL,
-    care_finished_on date NOT NULL,
-    amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    discrepancy_cents integer,
-    discrepancy_currency character varying DEFAULT 'USD'::character varying,
-    agency_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -434,14 +398,6 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
--- Name: child_case_cycle_payments child_case_cycle_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT child_case_cycle_payments_pkey PRIMARY KEY (id);
-
-
---
 -- Name: child_case_cycles child_case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -495,14 +451,6 @@ ALTER TABLE ONLY public.lookup_states
 
 ALTER TABLE ONLY public.lookup_zipcodes
     ADD CONSTRAINT lookup_zipcodes_pkey PRIMARY KEY (id);
-
-
---
--- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.payments
-    ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
 
 
 --
@@ -569,20 +517,6 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 --
 
 CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
-
-
---
--- Name: index_child_case_cycle_payments_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycle_payments_on_child_case_cycle_id ON public.child_case_cycle_payments USING btree (child_case_cycle_id);
-
-
---
--- Name: index_child_case_cycle_payments_on_payment_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycle_payments_on_payment_id ON public.child_case_cycle_payments USING btree (payment_id);
 
 
 --
@@ -776,22 +710,6 @@ ALTER TABLE ONLY public.case_cycles
 
 
 --
--- Name: child_case_cycle_payments fk_rails_3d2a50a86a; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT fk_rails_3d2a50a86a FOREIGN KEY (payment_id) REFERENCES public.payments(id);
-
-
---
--- Name: child_case_cycle_payments fk_rails_5c19c31ce9; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT fk_rails_5c19c31ce9 FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
-
-
---
 -- Name: child_case_cycles fk_rails_b4f3c7d474; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -869,6 +787,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200913005807'),
 ('20200914030020'),
 ('20200918232336'),
-('20201007145834');
+('20201007145834'),
+('20201007161749');
 
 

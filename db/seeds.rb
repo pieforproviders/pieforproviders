@@ -130,34 +130,6 @@ agency_MA = Agency.where(name: "Children's Aid and Family Services",
 puts_records_in_db(Agency)
 
 # ---------------------------------------------
-# Payments
-# ---------------------------------------------
-
-Payment.where(agency: agency_WI,
-              paid_on: Date.new(THIS_YEAR, 8, 1)).first_or_create(
-                care_started_on: JAN_1,
-                care_finished_on: MAR_31,
-                amount_cents: 85_000,
-                discrepancy_cents: 25_000
-              )
-Payment.where(agency: agency_WI,
-              paid_on: Date.new(THIS_YEAR, 8, 1)).first_or_create(
-                care_started_on: JAN_1,
-                care_finished_on: MAR_31,
-                amount_cents: 100_000,
-                discrepancy_cents: 0
-              )
-Payment.where(agency: agency_WI,
-              paid_on: Date.new(THIS_YEAR, 8, 10)).first_or_create(
-                care_started_on: JAN_1,
-                care_finished_on: Date.new(THIS_YEAR, 5, 15),
-                amount_cents: 140_000,
-                discrepancy_cents: 2_750
-              )
-
-puts_records_in_db(Payment)
-
-# ---------------------------------------------
 # Subsidy Rules
 #
 # ---------------------------------------------
