@@ -109,27 +109,6 @@ elkhorn_wi_zip = Lookup::Zipcode.first_or_create!(city: elkhorn_wi) do
 end
 
 # ---------------------------------------------
-# Agencies
-# ---------------------------------------------
-
-agency_WI = Agency.where(name: "Wisconsin Children's Services",
-                         state: wisconsin).first_or_create(
-                           active: true
-                         )
-illinois = Lookup::State.find_or_create_by!(name: 'Illinois', abbr: 'IL')
-agency_IL = Agency.where(name: 'Community Child Care Connection',
-                         state: illinois).first_or_create(
-                           active: true
-                         )
-massachusetts = Lookup::State.find_or_create_by!(name: 'Massachusetts', abbr: 'MA')
-agency_MA = Agency.where(name: "Children's Aid and Family Services",
-                         state: massachusetts).first_or_create(
-                           active: true
-                         )
-
-puts_records_in_db(Agency)
-
-# ---------------------------------------------
 # Subsidy Rules
 #
 # ---------------------------------------------

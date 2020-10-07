@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["agencies"],
-  "items": {"$ref":"agency.json"}
-}

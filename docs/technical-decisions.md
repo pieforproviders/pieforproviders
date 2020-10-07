@@ -20,21 +20,3 @@ This is a format that can be used to document each main decision. Copy, paste, a
 Author:  
 Date:    
 ---
-
----
-
-
-
-### Decision: No Rails Controller for Agencies
-
-#### Why? (Rationales, Goals, Limitations, Risks, Unknowns, etc.):
-I think for now we should remove the controller actions because we'll be using rake tasks to manage all data for Agencies. If we need routes later on, I'd rather add them in then.
-
-##### Keywords / Areas affected:   
-Rails, backend, db, models, agency
-
-Author:  Kate Donaldson 
-
-Date:  2020-08-08
-
----

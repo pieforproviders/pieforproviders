@@ -76,20 +76,6 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: agencies; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.agencies (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    state_id uuid NOT NULL
-);
-
-
---
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -350,14 +336,6 @@ CREATE TABLE public.users (
 
 
 --
--- Name: agencies agencies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.agencies
-    ADD CONSTRAINT agencies_pkey PRIMARY KEY (id);
-
-
---
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -475,13 +453,6 @@ ALTER TABLE ONLY public.subsidy_rules
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_agencies_on_name_and_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_agencies_on_name_and_state_id ON public.agencies USING btree (name, state_id);
 
 
 --
@@ -788,6 +759,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200914030020'),
 ('20200918232336'),
 ('20201007145834'),
-('20201007161749');
+('20201007161749'),
+('20201007165331');
 
 

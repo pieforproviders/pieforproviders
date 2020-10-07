@@ -98,14 +98,6 @@ RSpec.configure do |config|
               { type: :null }
             ]
           },
-          agency: {
-            type: :object,
-            properties: {
-              active: { type: :boolean, example: 'true' },
-              name: { type: :string, example: "Wisconsin Children's Services" },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            }
-          },
           business: {
             type: :object,
             properties: {
