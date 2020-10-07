@@ -3,7 +3,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'case_cycles API', type: :request do
-  let(:user) { create(:confirmed_user) }
+  let!(:user) { create(:confirmed_user) }
   let!(:case_cycle_params) do
     {
       "case_number": '123-45-6789',

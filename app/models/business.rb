@@ -3,6 +3,8 @@
 # The businesses for which users are responsible for keeping subsidy data
 class Business < UuidApplicationRecord
   belongs_to :user
+  belongs_to :zipcode
+  belongs_to :county
 
   enum license_type: Licenses.types
 
@@ -22,10 +24,19 @@ end
 #  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
+#  county_id    :uuid             not null
 #  user_id      :uuid             not null
+#  zipcode_id   :uuid             not null
 #
 # Indexes
 #
+#  index_businesses_on_county_id         (county_id)
 #  index_businesses_on_name_and_user_id  (name,user_id) UNIQUE
 #  index_businesses_on_user_id           (user_id)
+#  index_businesses_on_zipcode_id        (zipcode_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (zipcode_id => zipcodes.id)
 #

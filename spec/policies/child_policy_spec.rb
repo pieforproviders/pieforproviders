@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe ChildPolicy do
   subject { described_class }
-  let!(:user) { FactoryBot.create(:confirmed_user) }
-  let!(:non_owner) { FactoryBot.create(:confirmed_user) }
-  let!(:admin) { FactoryBot.create(:admin) }
-  let!(:child) { FactoryBot.create(:child, user: user) }
+  let(:user) { create(:confirmed_user) }
+  let(:non_owner) { create(:confirmed_user) }
+  let(:admin) { create(:admin) }
+  let(:child) { create(:child, user: user) }
 
   describe ChildPolicy::Scope do
     context 'admin user' do

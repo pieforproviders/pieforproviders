@@ -6,7 +6,7 @@ VALID_ACCEPT_V1 = 'application/vnd.pieforproviders.v1+json'
 
 RSpec.shared_context 'correct api version header' do
   let!(:Accept) { VALID_ACCEPT_V1 }
-  let(:headers) { { 'HTTP_ACCEPT' => VALID_ACCEPT_V1 } }
+  let!(:headers) { { 'HTTP_ACCEPT' => VALID_ACCEPT_V1 } }
 end
 
 RSpec.shared_context 'incorrect api version header' do

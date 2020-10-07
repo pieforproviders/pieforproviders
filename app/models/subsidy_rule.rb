@@ -5,6 +5,9 @@
 # Only admins with direct access to the db will be able to update these records
 #
 class SubsidyRule < UuidApplicationRecord
+  belongs_to :county, optional: true
+  belongs_to :state
+
   enum license_type: Licenses.types
 
   validates :name, presence: true
@@ -50,4 +53,16 @@ end
 #  qris_rating                  :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
+#  county_id                    :uuid
+#  state_id                     :uuid             not null
+#
+# Indexes
+#
+#  index_subsidy_rules_on_county_id  (county_id)
+#  index_subsidy_rules_on_state_id   (state_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (state_id => states.id)
 #

@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe UserPolicy do
   subject { described_class }
-  let!(:user) { FactoryBot.create(:confirmed_user) }
-  let!(:non_owner) { FactoryBot.create(:confirmed_user) }
-  let!(:admin) { FactoryBot.create(:admin) }
+  let(:user) { create(:confirmed_user) }
+  let(:non_owner) { create(:confirmed_user) }
+  let(:admin) { create(:admin) }
 
   permissions :index? do
     it 'grants access to admins' do

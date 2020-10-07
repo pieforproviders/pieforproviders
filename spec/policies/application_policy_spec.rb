@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe ApplicationPolicy do
   subject { described_class }
-  let!(:user) { FactoryBot.create(:confirmed_user) }
-  let!(:admin) { FactoryBot.create(:admin) }
-  let!(:non_owner) { FactoryBot.create(:confirmed_user) }
-  let!(:business) { FactoryBot.create(:business, user: user) }
+  let(:user) { create(:confirmed_user) }
+  let(:admin) { create(:admin) }
+  let(:non_owner) { create(:confirmed_user) }
+  let(:business) { create(:business, user: user) }
 
   it 'raises an exception if user is nil' do
     expect { ApplicationPolicy.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)
