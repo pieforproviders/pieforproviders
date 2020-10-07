@@ -8,11 +8,9 @@ RSpec.describe 'attendances API', type: :request do
   let(:user_id) { confirmed_user.id }
   let(:child) { create(:child) }
   let(:child_case_cycle_id) { create(:child_case_cycle, child: child).id }
-  let(:child_site_id) { create(:child_site, child: child).id }
   let!(:attendance_params) do
     {
       "child_case_cycle_id": child_case_cycle_id,
-      "child_site_id": child_site_id,
       "starts_on": Date.current.to_s,
       "check_in": Time.zone.parse((Date.current + 7.hours).to_s).to_s,
       'check_out': Time.zone.parse((Date.current + 20.hours).to_s).to_s,

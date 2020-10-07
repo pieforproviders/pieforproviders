@@ -9,7 +9,6 @@ RSpec.describe 'payments API', type: :request do
   let(:agency_id) { create(:agency).id }
   let(:created_business) { create(:business, user: confirmed_user) }
   let(:business_id) { created_business.id }
-  let(:site_id) { create(:site, business: created_business).id }
   let!(:payment_params) do
     {
       "agency_id": agency_id,
@@ -17,8 +16,7 @@ RSpec.describe 'payments API', type: :request do
       "care_finished_on": '2020-06-01',
       "care_started_on": '2020-01-01',
       "discrepancy_cents": '7890',
-      "paid_on": '2020-07-07',
-      "site_id": site_id
+      "paid_on": '2020-07-07'
     }
   end
 

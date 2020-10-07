@@ -29,7 +29,6 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show]
       get 'profile', to: 'users#show'
       resources :businesses
-      resources :sites
       resources :children
       resources :payments
       resources :case_cycles
@@ -68,11 +67,7 @@ end
 #                             rswag_api        /api-docs                                                                                Rswag::Api::Engine
 #                     letter_opener_web        /letter_opener                                                                           LetterOpenerWeb::Engine
 #                                 users GET    /api/v1/users(.:format)                                                                  api/v1/users#index {:format=>:json}
-#                                       POST   /api/v1/users(.:format)                                                                  api/v1/users#create {:format=>:json}
 #                                  user GET    /api/v1/users/:id(.:format)                                                              api/v1/users#show {:format=>:json}
-#                                       PATCH  /api/v1/users/:id(.:format)                                                              api/v1/users#update {:format=>:json}
-#                                       PUT    /api/v1/users/:id(.:format)                                                              api/v1/users#update {:format=>:json}
-#                                       DELETE /api/v1/users/:id(.:format)                                                              api/v1/users#destroy {:format=>:json}
 #                               profile GET    /api/v1/profile(.:format)                                                                api/v1/users#show {:format=>:json}
 #                            businesses GET    /api/v1/businesses(.:format)                                                             api/v1/businesses#index {:format=>:json}
 #                                       POST   /api/v1/businesses(.:format)                                                             api/v1/businesses#create {:format=>:json}
@@ -80,12 +75,6 @@ end
 #                                       PATCH  /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#update {:format=>:json}
 #                                       PUT    /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#update {:format=>:json}
 #                                       DELETE /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#destroy {:format=>:json}
-#                                 sites GET    /api/v1/sites(.:format)                                                                  api/v1/sites#index {:format=>:json}
-#                                       POST   /api/v1/sites(.:format)                                                                  api/v1/sites#create {:format=>:json}
-#                                  site GET    /api/v1/sites/:id(.:format)                                                              api/v1/sites#show {:format=>:json}
-#                                       PATCH  /api/v1/sites/:id(.:format)                                                              api/v1/sites#update {:format=>:json}
-#                                       PUT    /api/v1/sites/:id(.:format)                                                              api/v1/sites#update {:format=>:json}
-#                                       DELETE /api/v1/sites/:id(.:format)                                                              api/v1/sites#destroy {:format=>:json}
 #                              children GET    /api/v1/children(.:format)                                                               api/v1/children#index {:format=>:json}
 #                                       POST   /api/v1/children(.:format)                                                               api/v1/children#create {:format=>:json}
 #                                 child GET    /api/v1/children/:id(.:format)                                                           api/v1/children#show {:format=>:json}

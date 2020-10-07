@@ -4,8 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Child, type: :model do
   it { should belong_to(:user) }
-  it { should have_many(:child_sites) }
-  it { should have_many(:sites).through(:child_sites) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:date_of_birth) }
 

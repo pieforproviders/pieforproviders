@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Payment, type: :model do
-  it { should belong_to(:site) }
   it { should belong_to(:agency) }
   it { should validate_numericality_of(:amount).is_greater_than(0.00) }
   it { is_expected.to monetize(:amount) }
@@ -64,9 +63,4 @@ end
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  agency_id            :uuid             not null
-#  site_id              :uuid             not null
-#
-# Indexes
-#
-#  index_payments_on_site_id_and_agency_id  (site_id,agency_id)
 #

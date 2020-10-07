@@ -9,7 +9,6 @@ FactoryBot.define do
     # Set a discrepancy value about 20% of the time:
     discrepancy { Faker::Boolean.boolean(true_ratio: 0.2) ? Faker::Number.between(from: 0, to: amount) : nil }
     agency
-    site
   end
 end
 
@@ -28,9 +27,4 @@ end
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  agency_id            :uuid             not null
-#  site_id              :uuid             not null
-#
-# Indexes
-#
-#  index_payments_on_site_id_and_agency_id  (site_id,agency_id)
 #

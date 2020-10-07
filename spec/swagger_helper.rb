@@ -122,19 +122,6 @@ RSpec.configure do |config|
               full_name: { type: :string, example: 'Sean Flannery' }
             }
           },
-          site: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Marberry Educational Center' },
-              address: { type: :string, example: '1100 Marks Ave' },
-              city_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              zip_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              county_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              qris_rating: { type: :string, example: '2' },
-              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            }
-          },
           payment: {
             type: :object,
             properties: {
@@ -145,8 +132,7 @@ RSpec.configure do |config|
               care_started_on: { type: :string, example: '2020-01-01' },
               discrepancy_cents: { type: :integer, example: 456 },
               discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              paid_on: { type: :string, example: '2020-05-20' },
-              site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
+              paid_on: { type: :string, example: '2020-05-20' }
             }
           },
           subsidy_rule: {
@@ -222,7 +208,6 @@ RSpec.configure do |config|
             properties: {
               check_in: { type: :string, example: '020-09-13 14:07:47 -0700' },
               check_out: { '$ref': '#/components/schemas/time_or_null' },
-              child_site_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               attendance_duration: { '$ref': '#/components/schemas/duration_definitions' },
               total_time_in_care: { type: :string, example: '360 minutes' },
@@ -298,19 +283,7 @@ RSpec.configure do |config|
                   ccms_id: { type: :string, example: '123456789' },
                   date_of_birth: { type: :string, example: '1991-11-01' },
                   full_name: { type: :string, example: 'Seamus Finnigan' },
-                  user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-                  child_sites_attributes: {
-                    type: :array,
-                    items: {
-                      type: :object,
-                      required: %w[site_id],
-                      properties: {
-                        site_id: { type: :uuid, example: 'a42270e4-e4d4-485c-a57d-ccbad5729030' },
-                        started_care: { type: :string, example: '2018-12-13' },
-                        ended_care: { type: :string, example: '2019-08-04' }
-                      }
-                    }
-                  }
+                  user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
                 },
                 required: %w[
                   full_name
@@ -330,38 +303,6 @@ RSpec.configure do |config|
               }
             }
           },
-          createSite: {
-            type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/site' },
-                  {
-                    type: :object,
-                    required: %w[
-                      name
-                      address
-                      city_id
-                      state_id
-                      zip_id
-                      county_id
-                      business_id
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          updateSite: {
-            type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/site' }
-                ]
-              }
-            }
-          },
           createPayment: {
             type: :object,
             properties: {
@@ -370,7 +311,7 @@ RSpec.configure do |config|
                   { '$ref': '#/components/schemas/payment' },
                   {
                     type: :object,
-                    required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
+                    required: %w[agency_id amount_cents care_finished_on care_started_on paid_on]
                   }
                 ]
               }
@@ -474,13 +415,7 @@ RSpec.configure do |config|
           },
           updateAttendance: {
             type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/attendance' }
-                ]
-              }
-            }
+            properties: {}
           }
         }
       }

@@ -54,7 +54,6 @@ class Api::V1::AttendancesController < Api::V1::ApiController
     params.require(:attendance).permit(:check_in,
                                        :check_out,
                                        :child_case_cycle_id,
-                                       :child_site_id,
                                        :starts_on,
                                        :total_time_in_care)
   end

@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
   it { should belong_to(:child_case_cycle) }
-  it { should belong_to(:child_site) }
 
   it { should allow_values(:part_day, :full_day, :full_plus_part_day, :full_plus_full_day).for(:attendance_duration) }
   it {
@@ -44,15 +43,12 @@ end
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_case_cycle_id                                            :uuid             not null
-#  child_site_id                                                  :uuid             not null
 #
 # Indexes
 #
 #  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
-#  index_attendances_on_child_site_id        (child_site_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_case_cycle_id => child_case_cycles.id)
-#  fk_rails_...  (child_site_id => child_sites.id)
 #

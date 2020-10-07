@@ -95,63 +95,18 @@ hardin_zip = Lookup::Zipcode.first_or_create!(city: hardin_mt) do
   CreateOrSampleLookup.random_zipcode_or_create(city: hardin_mt)
 end
 
-site_prairie_ctr = Site.where(name: 'Prairie Center', business: business).first_or_create(
-  address: '8238 Rhinebeck Dr',
-  city: hardin_mt,
-  county: hardin_mt.county,
-  state: montana,
-  zip: hardin_zip
-)
-
 wisconsin = Lookup::State.find_or_create_by!(name: 'Wisconsin', abbr: 'WI')
 vilas_cty_wi = Lookup::County.find_or_create_by!(name: 'Vilas', state: wisconsin)
 lac_du_flambeau = Lookup::City.find_by(state: wisconsin, county: vilas_cty_wi, name: 'Lac Du Flambeau')
 lac_du_flambeau_zip = Lookup::Zipcode.first_or_create!(city: lac_du_flambeau) do
   CreateOrSampleLookup.random_zipcode_or_create(city: lac_du_flambeau)
 end
-site_happy_seeds_little_oaks = Site.where(name: 'Little Oaks Growing Center',
-                                          business: business).first_or_create(
-                                            address: '8201 1st Street',
-                                            city: lac_du_flambeau,
-                                            state: wisconsin,
-                                            zip: lac_du_flambeau_zip,
-                                            county: vilas_cty_wi,
-                                            qris_rating: 3,
-                                            active: true
-                                          )
 
 walworth_cty_wi = Lookup::County.find_or_create_by!(name: 'Walworth', state: wisconsin)
 elkhorn_wi = Lookup::City.find_or_create_by!(name: 'Walworth', state: wisconsin, county: walworth_cty_wi)
 elkhorn_wi_zip = Lookup::Zipcode.first_or_create!(city: elkhorn_wi) do
   CreateOrSampleLookup.random_zipcode_or_create(city: elkhorn_wi)
 end
-
-site_happy_seeds_little_sprouts = Site.where(name: 'Little Sprouts Growing Center',
-                                             business: business).first_or_create(
-                                               address: '123 Bighorn Lane',
-                                               city: elkhorn_wi,
-                                               state: wisconsin,
-                                               zip: elkhorn_wi_zip,
-                                               county: walworth_cty_wi,
-                                               qris_rating: 3,
-                                               active: true
-                                             )
-puts_records_in_db(Site)
-
-# ---------------------------------------------
-# Children at a Child Care Site
-# ---------------------------------------------
-# TODO: make sure that care did not start before a child was born.
-maria_at_prairie_ctr = ChildSite.find_or_create_by!(child: maria, site: site_prairie_ctr,
-                                                    started_care: Date.new(THIS_YEAR - 1, 6, 13))
-kshawn_at_prairie_ctr = ChildSite.find_or_create_by!(child: kshawn, site: site_prairie_ctr,
-                                                     started_care: Date.new(THIS_YEAR - 1, 12, 12))
-marcus_at_prairie_ctr = ChildSite.find_or_create_by!(child: marcus, site: site_prairie_ctr,
-                                                     started_care: Date.new(THIS_YEAR - 1, 12, 18))
-mubiru_at_prairie_ctr = ChildSite.find_or_create_by!(child: mubiru, site: site_prairie_ctr,
-                                                     started_care: Date.new(THIS_YEAR, 4, 18))
-
-puts_records_in_db(ChildSite)
 
 # ---------------------------------------------
 # Agencies
@@ -178,21 +133,21 @@ puts_records_in_db(Agency)
 # Payments
 # ---------------------------------------------
 
-Payment.where(agency: agency_WI, site: site_happy_seeds_little_oaks,
+Payment.where(agency: agency_WI,
               paid_on: Date.new(THIS_YEAR, 8, 1)).first_or_create(
                 care_started_on: JAN_1,
                 care_finished_on: MAR_31,
                 amount_cents: 85_000,
                 discrepancy_cents: 25_000
               )
-Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
+Payment.where(agency: agency_WI,
               paid_on: Date.new(THIS_YEAR, 8, 1)).first_or_create(
                 care_started_on: JAN_1,
                 care_finished_on: MAR_31,
                 amount_cents: 100_000,
                 discrepancy_cents: 0
               )
-Payment.where(agency: agency_WI, site: site_happy_seeds_little_sprouts,
+Payment.where(agency: agency_WI,
               paid_on: Date.new(THIS_YEAR, 8, 10)).first_or_create(
                 care_started_on: JAN_1,
                 care_finished_on: Date.new(THIS_YEAR, 5, 15),
@@ -304,8 +259,7 @@ RAND_CHECKIN_HRS_RANGE = 3 # checkin will be within 3 hours of the earliest chec
 RAND_CHECKOUT_HRS_RANGE = 18 # checkout will be within 18 hours of checkin
 
 # create Attendance records, some random amount of part and full days.
-def make_attendance(childsite,
-                    childcasecycle,
+def make_attendance(childcasecycle,
                     first_date: Date.current - 10,
                     last_date: Date.current,
                     earliest_checkin_hour: 7)
@@ -315,8 +269,7 @@ def make_attendance(childsite,
     random_checkin_time = (earliest_checkin_hour * 60) + Random.rand(60 * RAND_CHECKIN_HRS_RANGE).minutes
     random_checkout_time = random_checkin_time + Random.rand(60 * RAND_CHECKOUT_HRS_RANGE).minutes
 
-    Attendance.find_or_create_by!(child_site: childsite,
-                                  child_case_cycle: childcasecycle,
+    Attendance.find_or_create_by!(child_case_cycle: childcasecycle,
                                   starts_on: day_attended,
                                   check_in: day_attended + random_checkin_time,
                                   check_out: day_attended + random_checkout_time)

@@ -15,10 +15,6 @@
       "type": "string",
       "format": "uuid"
     },
-    "child_site_id": {
-      "type": "string",
-      "format": "uuid"
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -44,7 +40,6 @@
     "attendance_duration",
     "check_in",
     "child_case_cycle_id",
-    "child_site_id",
     "created_at",
     "id",
     "starts_on",

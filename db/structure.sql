@@ -107,7 +107,6 @@ CREATE TABLE public.ar_internal_metadata (
 
 CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_site_id uuid NOT NULL,
     child_case_cycle_id uuid NOT NULL,
     starts_on date NOT NULL,
     check_in time without time zone NOT NULL,
@@ -203,19 +202,6 @@ CREATE TABLE public.child_case_cycles (
     case_cycle_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: child_sites; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_sites (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_id uuid NOT NULL,
-    site_id uuid NOT NULL,
-    started_care date,
-    ended_care date
 );
 
 
@@ -317,7 +303,6 @@ CREATE TABLE public.payments (
     amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     discrepancy_cents integer,
     discrepancy_currency character varying DEFAULT 'USD'::character varying,
-    site_id uuid NOT NULL,
     agency_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
@@ -330,26 +315,6 @@ CREATE TABLE public.payments (
 
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
-);
-
-
---
--- Name: sites; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.sites (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    name character varying NOT NULL,
-    address character varying NOT NULL,
-    qris_rating character varying,
-    business_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    state_id uuid NOT NULL,
-    county_id uuid NOT NULL,
-    city_id uuid NOT NULL,
-    zip_id uuid NOT NULL
 );
 
 
@@ -485,14 +450,6 @@ ALTER TABLE ONLY public.child_case_cycles
 
 
 --
--- Name: child_sites child_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_sites
-    ADD CONSTRAINT child_sites_pkey PRIMARY KEY (id);
-
-
---
 -- Name: children children_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -557,14 +514,6 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: sites sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.sites
-    ADD CONSTRAINT sites_pkey PRIMARY KEY (id);
-
-
---
 -- Name: subsidy_rules subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -592,13 +541,6 @@ CREATE UNIQUE INDEX index_agencies_on_name_and_state_id ON public.agencies USING
 --
 
 CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
-
-
---
--- Name: index_attendances_on_child_site_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btree (child_site_id);
 
 
 --
@@ -662,13 +604,6 @@ CREATE INDEX index_child_case_cycles_on_child_id ON public.child_case_cycles USI
 --
 
 CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cycles USING btree (subsidy_rule_id);
-
-
---
--- Name: index_child_sites_on_child_id_and_site_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_sites_on_child_id_and_site_id ON public.child_sites USING btree (child_id, site_id);
 
 
 --
@@ -774,20 +709,6 @@ CREATE INDEX index_lookup_zipcodes_on_state_id ON public.lookup_zipcodes USING b
 --
 
 CREATE INDEX index_lookup_zipcodes_on_state_id_and_city_id ON public.lookup_zipcodes USING btree (state_id, city_id);
-
-
---
--- Name: index_payments_on_site_id_and_agency_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_payments_on_site_id_and_agency_id ON public.payments USING btree (site_id, agency_id);
-
-
---
--- Name: index_sites_on_name_and_business_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_sites_on_name_and_business_id ON public.sites USING btree (name, business_id);
 
 
 --
@@ -903,14 +824,6 @@ ALTER TABLE ONLY public.child_case_cycles
 
 
 --
--- Name: attendances fk_rails_e61403eb2b; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT fk_rails_e61403eb2b FOREIGN KEY (child_site_id) REFERENCES public.child_sites(id);
-
-
---
 -- PostgreSQL database dump complete
 --
 
@@ -955,6 +868,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200913004651'),
 ('20200913005807'),
 ('20200914030020'),
-('20200918232336');
+('20200918232336'),
+('20201007145834');
 
 
