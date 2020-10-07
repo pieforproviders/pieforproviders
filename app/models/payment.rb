@@ -5,7 +5,6 @@
 #   (ChildCaseCycles).
 class Payment < UuidApplicationRecord
   belongs_to :agency
-  belongs_to :site
 
   validates :amount, numericality: { greater_than: 0.00 }
   validates :care_finished_on, date_param: true
@@ -36,9 +35,4 @@ end
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  agency_id            :uuid             not null
-#  site_id              :uuid             not null
-#
-# Indexes
-#
-#  index_payments_on_site_id_and_agency_id  (site_id,agency_id)
 #

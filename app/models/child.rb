@@ -3,8 +3,6 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   belongs_to :user
-  has_many :child_sites, dependent: :destroy
-  has_many :sites, through: :child_sites
 
   validates :active, inclusion: { in: [true, false] }
   validates :date_of_birth, presence: true
@@ -12,8 +10,6 @@ class Child < UuidApplicationRecord
   validates :full_name, uniqueness: { scope: %i[date_of_birth user_id] }
 
   validates :date_of_birth, date_param: true
-
-  accepts_nested_attributes_for :child_sites
 end
 
 # == Schema Information

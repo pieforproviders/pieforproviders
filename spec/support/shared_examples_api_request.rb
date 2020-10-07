@@ -21,13 +21,12 @@ VALID_API_PATH = '/api/v1'
 #            "care_finished_on": '2020-06-01',
 #            "care_started_on": '2020-01-01',
 #            "discrepancy_cents": '7890',
-#            "paid_on": '2020-07-07',
-#            "site_id": site_id
+#            "paid_on": '2020-07-07'
 #          }
 #        }
 #      end
 #
-#     You should define 'agency_id' and 'site_id' and any other values/variables
+#     You should define 'agency_id' and any other values/variables
 #     as needed.
 # ------------------------------------------------------------------------------
 
