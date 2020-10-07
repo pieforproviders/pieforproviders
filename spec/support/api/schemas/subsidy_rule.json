@@ -1,8 +1,5 @@
 {
   "properties": {
-    "county": {
-      "type": "string"
-    },
     "full_day_max_hours": {
       "type": "number"
     },
@@ -44,13 +41,9 @@
     },
     "qris_rating": {
       "type": "string"
-    },
-    "state": {
-      "type": "string"
     }
   },
   "required": [
-    "county",
     "created_at",
     "full_day_max_hours",
     "full_day_rate_cents",
@@ -63,7 +56,6 @@
     "part_day_max_hours",
     "part_day_rate_cents",
     "part_day_threshold",
-    "state",
     "updated_at"
   ],
   "type": "object"

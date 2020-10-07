@@ -118,8 +118,6 @@ RSpec.configure do |config|
             type: :object,
             properties: {
               name: { type: :string, example: 'Rule 1' },
-              county_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               max_age: { type: :number, example: 18 },
               part_day_rate_cents: { type: :integer, minimum: 0, example: 2_500 },
               part_day_rate_currency: { type: :string, example: 'USD' },
