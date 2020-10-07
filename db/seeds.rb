@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 # This seeds the db with data. It is not used in production.
-# Use :find_or_create_by! or :first_or_create! when creating objects,
-#  or use the class methods in CreateOrSampleLookup for address Lookup:: classes.
-#   The address Lookup classes should be seeded by the
-#   Rake::Task below, but if they're not or if you need to create a different
-#   object, use the methods in CreateOrSampleLookup.
+# Use :find_or_create_by! or :first_or_create! when creating objects
 
 ActionMailer::Base.perform_deliveries = false
 
@@ -29,12 +25,6 @@ def puts_records_in_db(klass)
 end
 
 # ---------------------------------------------
-
-Rake::Task['pie4providers:address_lookups:import_all'].invoke
-puts_records_in_db(Lookup::State)
-puts_records_in_db(Lookup::County)
-puts_records_in_db(Lookup::City)
-puts_records_in_db(Lookup::Zipcode)
 
 @user_kate = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_create(
   active: true,
@@ -79,7 +69,7 @@ tarq = child_named('Tarquinius Kelly')
 puts_records_in_db(Child)
 
 # ---------------------------------------------
-# Businesses and Sites
+# Businesses
 # ---------------------------------------------
 
 business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
@@ -88,37 +78,13 @@ business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).f
 
 puts_records_in_db(Business)
 
-montana = Lookup::State.find_or_create_by!(name: 'Montana', abbr: 'MT')
-big_horn_cty_mt = Lookup::County.find_or_create_by!(name: 'Big Horn', state: montana)
-hardin_mt = Lookup::City.find_or_create_by!(state: montana, county: big_horn_cty_mt, name: 'Hardin')
-hardin_zip = Lookup::Zipcode.first_or_create!(city: hardin_mt) do
-  CreateOrSampleLookup.random_zipcode_or_create(city: hardin_mt)
-end
-
-wisconsin = Lookup::State.find_or_create_by!(name: 'Wisconsin', abbr: 'WI')
-vilas_cty_wi = Lookup::County.find_or_create_by!(name: 'Vilas', state: wisconsin)
-lac_du_flambeau = Lookup::City.find_by(state: wisconsin, county: vilas_cty_wi, name: 'Lac Du Flambeau')
-lac_du_flambeau_zip = Lookup::Zipcode.first_or_create!(city: lac_du_flambeau) do
-  CreateOrSampleLookup.random_zipcode_or_create(city: lac_du_flambeau)
-end
-
-walworth_cty_wi = Lookup::County.find_or_create_by!(name: 'Walworth', state: wisconsin)
-elkhorn_wi = Lookup::City.find_or_create_by!(name: 'Walworth', state: wisconsin, county: walworth_cty_wi)
-elkhorn_wi_zip = Lookup::Zipcode.first_or_create!(city: elkhorn_wi) do
-  CreateOrSampleLookup.random_zipcode_or_create(city: elkhorn_wi)
-end
-
 # ---------------------------------------------
 # Subsidy Rules
 #
 # ---------------------------------------------
 
-county_il_cook = Lookup::County.find_or_create_by!(state: illinois, name: 'Cook')
-
 sr_rule_1 = SubsidyRule.first_or_create!(
   name: 'Rule 1',
-  county: county_il_cook,
-  state: illinois,
   max_age: 18,
   part_day_rate: 18.00,
   full_day_rate: 32.00,

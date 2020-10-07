@@ -200,66 +200,6 @@ CREATE TABLE public.data_migrations (
 
 
 --
--- Name: lookup_cities; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_cities (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
-    state_id uuid NOT NULL,
-    county_id uuid,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_counties; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_counties (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    state_id uuid,
-    abbr character varying,
-    name character varying NOT NULL,
-    county_seat character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_states; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_states (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    abbr character varying(2) NOT NULL,
-    name character varying NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_zipcodes; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_zipcodes (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    code character varying NOT NULL,
-    state_id uuid,
-    county_id uuid,
-    city_id uuid,
-    area_code character varying,
-    lat numeric(15,10),
-    lon numeric(15,10),
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -276,8 +216,6 @@ CREATE TABLE public.subsidy_rules (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     name character varying NOT NULL,
     license_type public.license_types NOT NULL,
-    county_id uuid NOT NULL,
-    state_id uuid NOT NULL,
     max_age numeric NOT NULL,
     part_day_rate_cents integer DEFAULT 0 NOT NULL,
     part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
@@ -400,38 +338,6 @@ ALTER TABLE ONLY public.data_migrations
 
 
 --
--- Name: lookup_cities lookup_cities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_cities
-    ADD CONSTRAINT lookup_cities_pkey PRIMARY KEY (id);
-
-
---
--- Name: lookup_counties lookup_counties_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_counties
-    ADD CONSTRAINT lookup_counties_pkey PRIMARY KEY (id);
-
-
---
--- Name: lookup_states lookup_states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_states
-    ADD CONSTRAINT lookup_states_pkey PRIMARY KEY (id);
-
-
---
--- Name: lookup_zipcodes lookup_zipcodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_zipcodes
-    ADD CONSTRAINT lookup_zipcodes_pkey PRIMARY KEY (id);
-
-
---
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -516,118 +422,6 @@ CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cyc
 --
 
 CREATE INDEX index_children_on_user_id ON public.children USING btree (user_id);
-
-
---
--- Name: index_lookup_cities_on_county_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_cities_on_county_id ON public.lookup_cities USING btree (county_id);
-
-
---
--- Name: index_lookup_cities_on_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_cities_on_name ON public.lookup_cities USING btree (name);
-
-
---
--- Name: index_lookup_cities_on_name_and_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_cities_on_name_and_state_id ON public.lookup_cities USING btree (name, state_id);
-
-
---
--- Name: index_lookup_cities_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_cities_on_state_id ON public.lookup_cities USING btree (state_id);
-
-
---
--- Name: index_lookup_counties_on_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_counties_on_name ON public.lookup_counties USING btree (name);
-
-
---
--- Name: index_lookup_counties_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_counties_on_state_id ON public.lookup_counties USING btree (state_id);
-
-
---
--- Name: index_lookup_counties_on_state_id_and_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_counties_on_state_id_and_name ON public.lookup_counties USING btree (state_id, name);
-
-
---
--- Name: index_lookup_states_on_abbr; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_states_on_abbr ON public.lookup_states USING btree (abbr);
-
-
---
--- Name: index_lookup_states_on_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_states_on_name ON public.lookup_states USING btree (name);
-
-
---
--- Name: index_lookup_zipcodes_on_city_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_city_id ON public.lookup_zipcodes USING btree (city_id);
-
-
---
--- Name: index_lookup_zipcodes_on_code; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_zipcodes_on_code ON public.lookup_zipcodes USING btree (code);
-
-
---
--- Name: index_lookup_zipcodes_on_county_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_county_id ON public.lookup_zipcodes USING btree (county_id);
-
-
---
--- Name: index_lookup_zipcodes_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_state_id ON public.lookup_zipcodes USING btree (state_id);
-
-
---
--- Name: index_lookup_zipcodes_on_state_id_and_city_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_state_id_and_city_id ON public.lookup_zipcodes USING btree (state_id, city_id);
-
-
---
--- Name: index_subsidy_rules_on_county_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rules_on_county_id ON public.subsidy_rules USING btree (county_id);
-
-
---
--- Name: index_subsidy_rules_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rules_on_state_id ON public.subsidy_rules USING btree (state_id);
 
 
 --
@@ -760,6 +554,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200918232336'),
 ('20201007145834'),
 ('20201007161749'),
-('20201007165331');
+('20201007165331'),
+('20201007200557');
 
 

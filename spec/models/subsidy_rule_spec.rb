@@ -3,9 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe SubsidyRule, type: :model do
-  it { should belong_to(:county) }
-  it { should belong_to(:state) }
-
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
   it { is_expected.to monetize(:full_day_rate) }
@@ -60,11 +57,4 @@ end
 #  qris_rating                  :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
-#  county_id                    :uuid             not null
-#  state_id                     :uuid             not null
-#
-# Indexes
-#
-#  index_subsidy_rules_on_county_id  (county_id)
-#  index_subsidy_rules_on_state_id   (state_id)
 #

@@ -1170,14 +1170,6 @@
             "type": "string",
             "example": "Rule 1"
           },
-          "county_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "state_id": {
-            "type": "uuid",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
           "max_age": {
             "type": "number",
             "example": 18
