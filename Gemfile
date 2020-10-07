@@ -49,6 +49,7 @@ group :development do
   gem 'letter_opener_web', '~> 1.4'
   gem 'listen', '>= 3.0.5', '< 3.3'
   gem 'pgreset'
+  gem 'rails-erd'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end

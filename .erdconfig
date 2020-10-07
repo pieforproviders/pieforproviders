@@ -1,0 +1,13 @@
+attributes:
+  - content
+  - foreign_key
+  - inheritance
+  - primary_key
+disconnected: true
+filename: pie_erd
+filetype: pdf
+indirect: true
+inheritance: true
+notation: simple
+orientation: horizontal
+polymorphism: true
