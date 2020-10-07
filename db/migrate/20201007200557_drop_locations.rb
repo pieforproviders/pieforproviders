@@ -1,8 +1,15 @@
 class DropLocations < ActiveRecord::Migration[6.0]
-  def change
-    remove_column :subsidy_rules, :county_id, type: :uuid, null: false, foreign_key: { to_table: :lookup_counties }, index: true
-    remove_column :subsidy_rules, :state_id, type: :uuid, null: false, foreign_key: { to_table: :lookup_counties }, index: true
-    drop_table :lookup_states, id: :uuid do |t|
+  def up
+    remove_column :subsidy_rules, :county_id
+    remove_column :subsidy_rules, :state_id
+    drop_table :lookup_states
+    drop_table :lookup_counties
+    drop_table :lookup_cities
+    drop_table :lookup_zipcodes
+  end
+
+  def down
+    create_table :lookup_states, id: :uuid do |t|
       t.string :abbr, limit: 2, null: false
       t.string :name, null: false
 
@@ -12,7 +19,7 @@ class DropLocations < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    drop_table :lookup_counties, id: :uuid do |t|
+    create_table :lookup_counties, id: :uuid do |t|
       t.uuid :state_id
       t.string :abbr
       t.string :name, null: false
@@ -25,7 +32,7 @@ class DropLocations < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    drop_table :lookup_cities, id: :uuid do |t|
+    create_table :lookup_cities, id: :uuid do |t|
       t.string :name, null: false
       t.uuid :state_id,  foreign_key: true, null: false
       t.uuid :county_id, foreign_key: true
@@ -38,7 +45,7 @@ class DropLocations < ActiveRecord::Migration[6.0]
       t.timestamps
     end
 
-    drop_table :lookup_zipcodes, id: :uuid do |t|
+    create_table :lookup_zipcodes, id: :uuid do |t|
       t.string :code, null: false
       t.uuid :state_id
       t.uuid :county_id
@@ -55,5 +62,15 @@ class DropLocations < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    # if we roll this back, we'll need to add values and then change these columns to null false
+
+    # add_column :subsidy_rules, :county_id, type: :uuid, foreign_key: { to_table: :lookup_counties }, index: true
+    # add_column :subsidy_rules, :state_id, type: :uuid, foreign_key: { to_table: :lookup_states }, index: true
+
+    # I can't get the above to work, it doesn't like the foreign key hash, I think
+
+    add_column :subsidy_rules, :county_id, :uuid
+    add_column :subsidy_rules, :state_id, :uuid
   end
 end

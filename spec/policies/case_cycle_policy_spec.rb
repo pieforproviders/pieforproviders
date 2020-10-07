@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe CaseCyclePolicy do
   subject { described_class }
-  let!(:user) { FactoryBot.create(:confirmed_user) }
-  let!(:non_owner) { FactoryBot.create(:confirmed_user) }
-  let!(:admin) { FactoryBot.create(:admin) }
-  let!(:case_cycle) { FactoryBot.create(:case_cycle, user: user) }
+  let(:user) { create(:confirmed_user) }
+  let(:non_owner) { create(:confirmed_user) }
+  let(:admin) { create(:admin) }
+  let(:case_cycle) { create(:case_cycle, user: user) }
 
   describe CaseCyclePolicy::Scope do
     context 'admin user' do

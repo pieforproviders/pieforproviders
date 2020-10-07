@@ -4,10 +4,7 @@ require 'swagger_helper'
 
 RSpec.describe 'attendances API', type: :request do
   # Use confirmed_user so that no confirmation email is sent
-  let(:confirmed_user) { create(:confirmed_user) }
-  let(:user_id) { confirmed_user.id }
-  let(:child) { create(:child) }
-  let(:child_case_cycle_id) { create(:child_case_cycle, child: child).id }
+  let!(:child_case_cycle_id) { create(:child_case_cycle).id }
   let!(:attendance_params) do
     {
       "child_case_cycle_id": child_case_cycle_id,

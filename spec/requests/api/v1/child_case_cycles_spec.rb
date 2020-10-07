@@ -3,10 +3,10 @@
 require 'swagger_helper'
 
 RSpec.describe 'child_case_cycles API', type: :request do
-  let(:user) { create(:confirmed_user) }
-  let(:case_cycle_id) { create(:case_cycle, user: user).id }
-  let(:child_id) { create(:child, user: user).id }
-  let(:subsidy_rule_id) { create(:subsidy_rule).id }
+  let!(:user) { create(:confirmed_user) }
+  let!(:case_cycle_id) { create(:case_cycle, user: user).id }
+  let!(:child_id) { create(:child, user: user).id }
+  let!(:subsidy_rule_id) { create(:subsidy_rule).id }
   let!(:child_case_cycle_params) do
     {
       "part_days_allowed": 35,

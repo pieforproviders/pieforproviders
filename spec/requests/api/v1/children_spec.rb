@@ -4,9 +4,9 @@ require 'swagger_helper'
 
 RSpec.describe 'children API', type: :request do
   # Use confirmed_user so that no confirmation email is sent
-  let(:confirmed_user) { create(:confirmed_user) }
-  let(:user_id) { confirmed_user.id }
-  let(:created_business) { create(:business, user: confirmed_user) }
+  let!(:confirmed_user) { create(:confirmed_user) }
+  let!(:user_id) { confirmed_user.id }
+  let!(:created_business) { create(:business, user: confirmed_user) }
   let!(:child_params) do
     {
       "ccms_id": '1234567890',

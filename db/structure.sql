@@ -133,7 +133,9 @@ CREATE TABLE public.businesses (
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    license_type public.license_types
+    license_type public.license_types,
+    county_id uuid NOT NULL,
+    zipcode_id uuid NOT NULL
 );
 
 
@@ -191,6 +193,21 @@ CREATE TABLE public.children (
 
 
 --
+-- Name: counties; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.counties (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    state_id uuid NOT NULL,
+    abbr character varying,
+    name character varying,
+    county_seat character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: data_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -205,6 +222,19 @@ CREATE TABLE public.data_migrations (
 
 CREATE TABLE public.schema_migrations (
     version character varying NOT NULL
+);
+
+
+--
+-- Name: states; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.states (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    abbr character varying(2),
+    name character varying,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -229,7 +259,9 @@ CREATE TABLE public.subsidy_rules (
     full_day_threshold numeric NOT NULL,
     qris_rating character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    county_id uuid,
+    state_id uuid NOT NULL
 );
 
 
@@ -270,6 +302,24 @@ CREATE TABLE public.users (
     unlock_token character varying,
     locked_at timestamp without time zone,
     admin boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: zipcodes; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.zipcodes (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    code character varying NOT NULL,
+    city character varying,
+    state_id uuid NOT NULL,
+    county_id uuid NOT NULL,
+    area_code character varying,
+    lat numeric(15,10),
+    lon numeric(15,10),
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -330,6 +380,14 @@ ALTER TABLE ONLY public.children
 
 
 --
+-- Name: counties counties_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT counties_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: data_migrations data_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -343,6 +401,14 @@ ALTER TABLE ONLY public.data_migrations
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: states states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.states
+    ADD CONSTRAINT states_pkey PRIMARY KEY (id);
 
 
 --
@@ -362,6 +428,14 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: zipcodes zipcodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT zipcodes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -376,6 +450,13 @@ CREATE INDEX index_blocked_tokens_on_jti ON public.blocked_tokens USING btree (j
 
 
 --
+-- Name: index_businesses_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_businesses_on_county_id ON public.businesses USING btree (county_id);
+
+
+--
 -- Name: index_businesses_on_name_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -387,6 +468,13 @@ CREATE UNIQUE INDEX index_businesses_on_name_and_user_id ON public.businesses US
 --
 
 CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_id);
+
+
+--
+-- Name: index_businesses_on_zipcode_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zipcode_id);
 
 
 --
@@ -425,6 +513,41 @@ CREATE INDEX index_children_on_user_id ON public.children USING btree (user_id);
 
 
 --
+-- Name: index_counties_on_name; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_counties_on_name ON public.counties USING btree (name);
+
+
+--
+-- Name: index_counties_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_counties_on_state_id ON public.counties USING btree (state_id);
+
+
+--
+-- Name: index_states_on_abbr; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_states_on_abbr ON public.states USING btree (abbr);
+
+
+--
+-- Name: index_subsidy_rules_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_county_id ON public.subsidy_rules USING btree (county_id);
+
+
+--
+-- Name: index_subsidy_rules_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rules_on_state_id ON public.subsidy_rules USING btree (state_id);
+
+
+--
 -- Name: index_users_on_confirmation_token; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -460,6 +583,34 @@ CREATE UNIQUE INDEX index_users_on_unlock_token ON public.users USING btree (unl
 
 
 --
+-- Name: index_zipcodes_on_code; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_zipcodes_on_code ON public.zipcodes USING btree (code);
+
+
+--
+-- Name: index_zipcodes_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_county_id ON public.zipcodes USING btree (county_id);
+
+
+--
+-- Name: index_zipcodes_on_lat_and_lon; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_lat_and_lon ON public.zipcodes USING btree (lat, lon);
+
+
+--
+-- Name: index_zipcodes_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_state_id ON public.zipcodes USING btree (state_id);
+
+
+--
 -- Name: unique_children; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -472,6 +623,46 @@ CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, d
 
 ALTER TABLE ONLY public.case_cycles
     ADD CONSTRAINT fk_rails_02471acfd5 FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: counties fk_rails_028abb0ec1; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT fk_rails_028abb0ec1 FOREIGN KEY (state_id) REFERENCES public.states(id);
+
+
+--
+-- Name: businesses fk_rails_25d0b15649; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.businesses
+    ADD CONSTRAINT fk_rails_25d0b15649 FOREIGN KEY (county_id) REFERENCES public.counties(id);
+
+
+--
+-- Name: subsidy_rules fk_rails_2bb2a806ed; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT fk_rails_2bb2a806ed FOREIGN KEY (county_id) REFERENCES public.counties(id);
+
+
+--
+-- Name: businesses fk_rails_48152d6e55; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.businesses
+    ADD CONSTRAINT fk_rails_48152d6e55 FOREIGN KEY (zipcode_id) REFERENCES public.zipcodes(id);
+
+
+--
+-- Name: zipcodes fk_rails_4916202daf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT fk_rails_4916202daf FOREIGN KEY (state_id) REFERENCES public.states(id);
 
 
 --
@@ -499,11 +690,27 @@ ALTER TABLE ONLY public.attendances
 
 
 --
+-- Name: zipcodes fk_rails_c1f1e8d4c3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT fk_rails_c1f1e8d4c3 FOREIGN KEY (county_id) REFERENCES public.counties(id);
+
+
+--
 -- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.child_case_cycles
     ADD CONSTRAINT fk_rails_e441dceee7 FOREIGN KEY (case_cycle_id) REFERENCES public.case_cycles(id);
+
+
+--
+-- Name: subsidy_rules fk_rails_eac641c57e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT fk_rails_eac641c57e FOREIGN KEY (state_id) REFERENCES public.states(id);
 
 
 --
@@ -555,6 +762,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201007145834'),
 ('20201007161749'),
 ('20201007165331'),
-('20201007200557');
+('20201007200557'),
+('20201007202953'),
+('20201007203150');
 
 

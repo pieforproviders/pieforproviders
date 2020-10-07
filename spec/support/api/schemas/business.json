@@ -3,6 +3,10 @@
     "active": {
       "type": "boolean"
     },
+    "county_id": {
+      "type": "string",
+      "format": "uuid"
+    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -23,15 +27,21 @@
     "user_id": {
       "type": "string",
       "format": "uuid"
+    },
+    "zipcode_id": {
+      "type": "string",
+      "format": "uuid"
     }
   },
   "required": [
+    "county_id",
     "created_at",
     "id",
     "license_type",
     "name",
     "updated_at",
-    "user_id"
+    "user_id",
+    "zipcode_id"
   ],
   "type": "object"
 }

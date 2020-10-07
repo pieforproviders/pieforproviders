@@ -36,11 +36,11 @@ class RemoveAllSlugs < ActiveRecord::Migration[6.0]
     Attendance.update_all(slug: SecureRandom.hex)
     Business.update_all(slug: SecureRandom.hex)
     CaseCycle.update_all(slug: SecureRandom.hex)
-    ChildCaseCyclePayment.update_all(slug: SecureRandom.hex)
+    # ChildCaseCyclePayment.update_all(slug: SecureRandom.hex) - this class doesn't exist so this fails
     ChildCaseCycle.update_all(slug: SecureRandom.hex)
     Child.update_all(slug: SecureRandom.hex)
-    Payment.update_all(slug: SecureRandom.hex)
-    Site.update_all(slug: SecureRandom.hex)
+    # Payment.update_all(slug: SecureRandom.hex) - this class doesn't exist so this fails
+    # Site.update_all(slug: SecureRandom.hex) - this class doesn't exist so this fails
     User.update_all(slug: SecureRandom.hex)
     change_column :attendances, :slug, :string, null: false
     change_column :businesses, :slug, :string, null: false

@@ -14,6 +14,8 @@ FactoryBot.define do
     full_day_threshold { 6 }
     license_type { Licenses.types.values.sample }
     qris_rating { Faker::Number.between(from: 1, to: 5).to_s }
+    county
+    state { county.state }
   end
 end
 
@@ -38,4 +40,16 @@ end
 #  qris_rating                  :string
 #  created_at                   :datetime         not null
 #  updated_at                   :datetime         not null
+#  county_id                    :uuid
+#  state_id                     :uuid             not null
+#
+# Indexes
+#
+#  index_subsidy_rules_on_county_id  (county_id)
+#  index_subsidy_rules_on_state_id   (state_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (state_id => states.id)
 #

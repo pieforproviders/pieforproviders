@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["subsidy_rules"],
-  "items": {"$ref":"subsidy_rule.json"}
-}

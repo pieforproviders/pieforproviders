@@ -69,11 +69,21 @@ tarq = child_named('Tarquinius Kelly')
 puts_records_in_db(Child)
 
 # ---------------------------------------------
+# Locations
+# ---------------------------------------------
+
+montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
+big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
+hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
+
+# ---------------------------------------------
 # Businesses
 # ---------------------------------------------
 
 business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
-  license_type: Licenses.types.keys.first
+  license_type: Licenses.types.keys.first,
+  county: big_horn_cty_mt,
+  zipcode: hardin_zipcode
 )
 
 puts_records_in_db(Business)
@@ -95,7 +105,9 @@ sr_rule_1 = SubsidyRule.first_or_create!(
   part_day_threshold: 5,
   full_day_threshold: 6,
   license_type: Licenses.types.values.sample,
-  qris_rating: '3'
+  qris_rating: '3',
+  county: big_horn_cty_mt,
+  state: big_horn_cty_mt.state
 )
 
 puts_records_in_db(SubsidyRule)
@@ -197,57 +209,42 @@ def latest_date(date1, date2)
   [date1, date2].compact.max
 end
 
-# Attendance for Maria at the prairie_center between January 1 and March 31
+# Attendance for Maria between January 1 and March 31
 maria_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: jan_q1_casecycle)
-start_date = latest_date(maria_at_prairie_ctr.started_care, JAN_1)
-latest_date = latest_date(maria_at_prairie_ctr.ended_care, MAR_31)
 
-make_attendance(maria_at_prairie_ctr,
-                maria_q1_casecycle,
-                first_date: start_date,
-                last_date: latest_date,
+make_attendance(maria_q1_casecycle,
+                first_date: JAN_1,
+                last_date: MAR_31,
                 earliest_checkin_hour: 7)
 
-# Attendance for K'Shawn at the prairie_center between January 1 and March 31
+# Attendance for K'Shawn between January 1 and March 31
 kshawn_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: jan_q1_casecycle)
-start_date = latest_date(kshawn_at_prairie_ctr.started_care, JAN_1)
-latest_date = latest_date(kshawn_at_prairie_ctr.ended_care, MAR_31)
-make_attendance(kshawn_at_prairie_ctr,
-                kshawn_q1_casecycle,
-                first_date: start_date,
-                last_date: latest_date,
+make_attendance(kshawn_q1_casecycle,
+                first_date: JAN_1,
+                last_date: MAR_31,
                 earliest_checkin_hour: 7)
 
 # ------------
 
-# Attendance for Maria at the prairie_center between April 1 and June 30
-maria_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: jan_q1_casecycle)
-start_date = latest_date(maria_at_prairie_ctr.started_care, APR_1)
-latest_date = latest_date(maria_at_prairie_ctr.ended_care, JUN_30)
-make_attendance(maria_at_prairie_ctr,
-                maria_q1_casecycle,
-                first_date: start_date,
-                last_date: latest_date,
+# Attendance for Maria between April 1 and June 30
+maria_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: apr_q2_casecycle)
+make_attendance(maria_q1_casecycle,
+                first_date: APR_1,
+                last_date: JUN_30,
                 earliest_checkin_hour: 7)
 
-# Attendance for K'Shawn at the prairie_center between April 1 and June 30
+# Attendance for K'Shawn between April 1 and June 30
 kshawn_q1_casecycle = ChildCaseCycle.find_by(child: kshawn, case_cycle: apr_q2_casecycle)
-start_date = latest_date(kshawn_at_prairie_ctr.started_care, APR_1)
-latest_date = latest_date(kshawn_at_prairie_ctr.ended_care, JUN_30)
-make_attendance(kshawn_at_prairie_ctr,
-                kshawn_q1_casecycle,
-                first_date: start_date,
-                last_date: latest_date,
+make_attendance(kshawn_q1_casecycle,
+                first_date: APR_1,
+                last_date: JUN_30,
                 earliest_checkin_hour: 7)
 
-# Attendance for mubiru at the prairie_center between April 1 and June 30
+# Attendance for mubiru between April 1 and June 30
 mubiru_q1_casecycle = ChildCaseCycle.find_by(child: mubiru, case_cycle: apr_q2_casecycle)
-start_date = latest_date(mubiru_at_prairie_ctr.started_care, APR_1)
-latest_date = latest_date(mubiru_at_prairie_ctr.ended_care, JUN_30)
-make_attendance(mubiru_at_prairie_ctr,
-                mubiru_q1_casecycle,
-                first_date: start_date,
-                last_date: latest_date,
+make_attendance(mubiru_q1_casecycle,
+                first_date: APR_1,
+                last_date: JUN_30,
                 earliest_checkin_hour: 7)
 
 puts_records_in_db(Attendance)
