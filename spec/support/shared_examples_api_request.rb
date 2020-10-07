@@ -10,23 +10,22 @@ VALID_API_PATH = '/api/v1'
 # to be used as parameters that are sent to the server.
 # The examples that expect item_params to be defined end with '... with parameters'.
 #
-# Ex: Assume you are testing the API calls for creating a Payment. The
-#     item_params are the parameters needed to create a Payment.
+# Ex: Assume you are testing the API calls for creating a Business. The
+#     item_params are the parameters needed to create a Business.
 #
-#      it_behaves_like 'it creates an item', Payment, 'payment' do
-#        let(:item_params) {
-#          {
-#            "agency_id": agency_id,
-#            "amount_cents": '123400',
-#            "care_finished_on": '2020-06-01',
-#            "care_started_on": '2020-01-01',
-#            "discrepancy_cents": '7890',
-#            "paid_on": '2020-07-07'
-#          }
-#        }
-#      end
+#     let!(:business_params) do
+#       {
+#         "name": 'Happy Hearts Child Care',
+#         "license_type": 'licensed_center',
+#         "user_id": user.id
+#       }
+#     end
 #
-#     You should define 'agency_id' and any other values/variables
+#     it_behaves_like 'it creates an item', Business do
+#       let(:item_params) { business_params }
+#     end
+#
+#     You should define 'user_id' and any other values/variables
 #     as needed.
 # ------------------------------------------------------------------------------
 

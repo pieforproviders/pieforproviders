@@ -539,184 +539,6 @@
         }
       }
     },
-    "/api/v1/child_case_cycle_payments": {
-      "get": {
-        "summary": "lists all child_case_cycle_payments for a user",
-        "tags": [
-          "child_case_cycle_payments"
-        ],
-        "responses": {
-          "200": {
-            "description": "child_case_cycle_payments found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "creates a child_case_cycle_payment",
-        "tags": [
-          "child_case_cycle_payments"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "201": {
-            "description": "child_case_cycle_payment created",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "invalid request",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createChildCaseCyclePayment"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/child_case_cycle_payments/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "retrieves a child_case_cycle_payment",
-        "tags": [
-          "child_case_cycle_payments"
-        ],
-        "responses": {
-          "200": {
-            "description": "child_case_cycle_payment found",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "child_case_cycle_payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "updates a child_case_cycle_payment",
-        "tags": [
-          "child_case_cycle_payments"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "200": {
-            "description": "child_case_cycle_payment updated",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "child_case_cycle_payment cannot be updated",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "child_case_cycle_payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updateChildCaseCyclePayment"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "deletes a child_case_cycle_payment",
-        "tags": [
-          "child_case_cycle_payments"
-        ],
-        "responses": {
-          "204": {
-            "description": "child_case_cycle_payment deleted",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "child_case_cycle_payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      }
-    },
     "/api/v1/child_case_cycles": {
       "get": {
         "summary": "lists all child_case_cycles for a user",
@@ -1078,184 +900,6 @@
         }
       }
     },
-    "/api/v1/payments": {
-      "get": {
-        "summary": "lists all payments for a user",
-        "tags": [
-          "payments"
-        ],
-        "responses": {
-          "200": {
-            "description": "payments found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "creates a payment",
-        "tags": [
-          "payments"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "201": {
-            "description": "payment created",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "invalid request",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/createPayment"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/v1/payments/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "retrieves a payment",
-        "tags": [
-          "payments"
-        ],
-        "responses": {
-          "200": {
-            "description": "payment found",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "updates a payment",
-        "tags": [
-          "payments"
-        ],
-        "parameters": [
-
-        ],
-        "responses": {
-          "200": {
-            "description": "payment updated",
-            "content": {
-            }
-          },
-          "422": {
-            "description": "payment cannot be updated",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/updatePayment"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "deletes a payment",
-        "tags": [
-          "payments"
-        ],
-        "responses": {
-          "204": {
-            "description": "payment deleted",
-            "content": {
-            }
-          },
-          "404": {
-            "description": "payment not found",
-            "content": {
-            }
-          },
-          "401": {
-            "description": "not authorized",
-            "content": {
-            }
-          },
-          "500": {
-            "description": "internal server error",
-            "content": {
-            }
-          }
-        }
-      }
-    },
     "/api/v1/users": {
       "get": {
         "summary": "retrieves all users",
@@ -1524,43 +1168,6 @@
           }
         }
       },
-      "payment": {
-        "type": "object",
-        "properties": {
-          "agency_id": {
-            "type": "string",
-            "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "amount_cents": {
-            "type": "integer",
-            "minimum": 0,
-            "example": 19999
-          },
-          "amount_currency": {
-            "type": "string",
-            "example": "USD"
-          },
-          "care_finished_on": {
-            "type": "string",
-            "example": "2020-03-15"
-          },
-          "care_started_on": {
-            "type": "string",
-            "example": "2020-01-01"
-          },
-          "discrepancy_cents": {
-            "type": "integer",
-            "example": 456
-          },
-          "discrepancy_currency": {
-            "$ref": "#/components/schemas/currency_or_null"
-          },
-          "paid_on": {
-            "type": "string",
-            "example": "2020-05-20"
-          }
-        }
-      },
       "subsidy_rule": {
         "type": "object",
         "properties": {
@@ -1691,13 +1298,6 @@
           "child_case_cycle_id": {
             "type": "uuid",
             "example": "3fa57706-f5bb-4d40-9350-85871f698d52"
-          },
-          "length_of_care": {
-            "$ref": "#/components/schemas/lengths_of_care"
-          },
-          "starts_on": {
-            "type": "string",
-            "example": "2020-07-12"
           }
         }
       },
@@ -1839,40 +1439,6 @@
           }
         }
       },
-      "createPayment": {
-        "type": "object",
-        "properties": {
-          "payment": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/payment"
-              },
-              {
-                "type": "object",
-                "required": [
-                  "agency_id",
-                  "amount_cents",
-                  "care_finished_on",
-                  "care_started_on",
-                  "paid_on"
-                ]
-              }
-            ]
-          }
-        }
-      },
-      "updatePayment": {
-        "type": "object",
-        "properties": {
-          "payment": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/payment"
-              }
-            ]
-          }
-        }
-      },
       "createCaseCycle": {
         "type": "object",
         "properties": {
@@ -1904,33 +1470,36 @@
           }
         }
       },
-      "createAttendance": {
+      "createChildCaseCycle": {
         "type": "object",
         "properties": {
-          "payment": {
+          "child_case_cycle": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/attendance"
+                "$ref": "#/components/schemas/child_case_cycle"
               },
               {
                 "type": "object",
                 "required": [
-                  "child_case_cycle_id",
-                  "length_of_care",
-                  "starts_on"
+                  "case_cycle_id",
+                  "child_id",
+                  "full_days_allowed",
+                  "part_days_allowed",
+                  "subsidy_rule_id",
+                  "user_id"
                 ]
               }
             ]
           }
         }
       },
-      "updateAttendance": {
+      "updateChildCaseCycle": {
         "type": "object",
         "properties": {
-          "site": {
+          "child_case_cycle": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/attendance"
+                "$ref": "#/components/schemas/child_case_cycle"
               }
             ]
           }
@@ -1939,20 +1508,6 @@
       "createAttendance": {
         "type": "object",
         "properties": {
-          "payment": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/attendance"
-              },
-              {
-                "type": "object",
-                "required": [
-                  "child_case_cycle_id",
-                  "starts_on"
-                ]
-              }
-            ]
-          }
         }
       },
       "updateAttendance": {
