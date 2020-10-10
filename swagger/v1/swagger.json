@@ -1149,10 +1149,6 @@
       "child": {
         "type": "object",
         "properties": {
-          "ccms_id": {
-            "type": "string",
-            "example": "987654321"
-          },
           "date_of_birth": {
             "type": "string",
             "example": "1992-11-01"
@@ -1349,10 +1345,6 @@
           "child": {
             "type": "object",
             "properties": {
-              "ccms_id": {
-                "type": "string",
-                "example": "123456789"
-              },
               "date_of_birth": {
                 "type": "string",
                 "example": "1991-11-01"
@@ -1361,7 +1353,7 @@
                 "type": "string",
                 "example": "Seamus Finnigan"
               },
-              "user_id": {
+              "business_id": {
                 "type": "uuid",
                 "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
               }
@@ -1369,7 +1361,7 @@
             "required": [
               "full_name",
               "date_of_birth",
-              "user_id"
+              "business_id"
             ]
           }
         }

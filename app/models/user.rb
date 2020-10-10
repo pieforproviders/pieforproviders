@@ -9,7 +9,6 @@ class User < UuidApplicationRecord
          jwt_revocation_strategy: BlockedToken
 
   has_many :businesses, dependent: :restrict_with_error
-  has_many :children, dependent: :restrict_with_error
   has_many :case_cycles, dependent: :restrict_with_error
   has_many :child_case_cycles, through: :case_cycles
 

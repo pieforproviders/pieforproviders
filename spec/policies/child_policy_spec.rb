@@ -6,8 +6,9 @@ RSpec.describe ChildPolicy do
   subject { described_class }
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
+  let(:business) { create(:business, user: user) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, user: user) }
+  let(:child) { create(:child, business: business) }
 
   describe ChildPolicy::Scope do
     context 'admin user' do

@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :child_case_cycle do
-    child
     subsidy_rule
+    child { association :child, business: create(:business, county: subsidy_rule.county) }
     case_cycle
     part_days_allowed { 1 }
     full_days_allowed { 1 }

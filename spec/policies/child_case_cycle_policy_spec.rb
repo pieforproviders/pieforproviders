@@ -4,12 +4,13 @@ require 'rails_helper'
 
 RSpec.describe ChildCaseCyclePolicy do
   subject { described_class }
-  let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, user: user) }
+  let(:child) { create(:child) }
+  let(:user) { child.user }
   let(:case_cycle) { create(:case_cycle, user: user) }
-  let(:child_case_cycle) { create(:child_case_cycle, child: child, case_cycle: case_cycle) }
+  let(:subsidy_rule) { create(:subsidy_rule, state: child.business.county.state, county: child.business.county) }
+  let(:child_case_cycle) { create(:child_case_cycle, child: child, case_cycle: case_cycle, subsidy_rule: subsidy_rule) }
   let(:child_case_cycle_attributes) { child_case_cycle.attributes.except('id') }
   let(:valid_child_case_cycle) { ChildCaseCycle.new(child_case_cycle_attributes) }
 

@@ -2,10 +2,9 @@
 
 FactoryBot.define do
   factory :child do
-    ccms_id { Faker::Number.number(digits: 10) }
     date_of_birth { Faker::Date.birthday(min_age: 18, max_age: 65).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
-    user factory: :confirmed_user
+    business
   end
 end
 
@@ -19,11 +18,14 @@ end
 #  full_name     :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  ccms_id       :string
-#  user_id       :uuid             not null
+#  business_id   :uuid             not null
 #
 # Indexes
 #
-#  index_children_on_user_id  (user_id)
-#  unique_children            (full_name,date_of_birth,user_id) UNIQUE
+#  index_children_on_business_id  (business_id)
+#  unique_children                (full_name,date_of_birth,business_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (business_id => businesses.id)
 #

@@ -183,12 +183,11 @@ CREATE TABLE public.child_case_cycles (
 CREATE TABLE public.children (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    ccms_id character varying,
     full_name character varying NOT NULL,
     date_of_birth date NOT NULL,
-    user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    business_id uuid NOT NULL
 );
 
 
@@ -506,10 +505,10 @@ CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cyc
 
 
 --
--- Name: index_children_on_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_children_on_business_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_children_on_user_id ON public.children USING btree (user_id);
+CREATE INDEX index_children_on_business_id ON public.children USING btree (business_id);
 
 
 --
@@ -614,7 +613,7 @@ CREATE INDEX index_zipcodes_on_state_id ON public.zipcodes USING btree (state_id
 -- Name: unique_children; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, date_of_birth, user_id);
+CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, date_of_birth, business_id);
 
 
 --
@@ -671,6 +670,14 @@ ALTER TABLE ONLY public.zipcodes
 
 ALTER TABLE ONLY public.child_case_cycles
     ADD CONSTRAINT fk_rails_b4f3c7d474 FOREIGN KEY (child_id) REFERENCES public.children(id);
+
+
+--
+-- Name: children fk_rails_b51aaa1e8e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.children
+    ADD CONSTRAINT fk_rails_b51aaa1e8e FOREIGN KEY (business_id) REFERENCES public.businesses(id);
 
 
 --
@@ -764,6 +771,8 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201007165331'),
 ('20201007200557'),
 ('20201007202953'),
-('20201007203150');
+('20201007203150'),
+('20201009020636'),
+('20201010022135');
 
 

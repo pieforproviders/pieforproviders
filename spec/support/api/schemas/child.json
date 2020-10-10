@@ -3,9 +3,6 @@
     "active": {
       "type": "boolean"
     },
-    "ccms_id": {
-      "type": "string"
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -24,20 +21,19 @@
       "type": "string",
       "format": "date-time"
     },
-    "user_id": {
+    "business_id": {
       "type": "string",
       "format": "uuid"
     }
   },
   "required": [
     "active",
-    "ccms_id",
     "created_at",
     "date_of_birth",
     "full_name",
     "id",
     "updated_at",
-    "user_id"
+    "business_id"
   ],
   "type": "object"
 }

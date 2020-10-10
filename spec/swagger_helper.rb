@@ -109,7 +109,6 @@ RSpec.configure do |config|
           child: {
             type: :object,
             properties: {
-              ccms_id: { type: :string, example: '987654321' },
               date_of_birth: { type: :string, example: '1992-11-01' },
               full_name: { type: :string, example: 'Sean Flannery' }
             }
@@ -229,15 +228,14 @@ RSpec.configure do |config|
               child: {
                 type: :object,
                 properties: {
-                  ccms_id: { type: :string, example: '123456789' },
                   date_of_birth: { type: :string, example: '1991-11-01' },
                   full_name: { type: :string, example: 'Seamus Finnigan' },
-                  user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
+                  business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
                 },
                 required: %w[
                   full_name
                   date_of_birth
-                  user_id
+                  business_id
                 ]
               }
             }

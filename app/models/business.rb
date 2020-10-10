@@ -6,6 +6,8 @@ class Business < UuidApplicationRecord
   belongs_to :zipcode
   belongs_to :county
 
+  has_many :children, dependent: :restrict_with_error
+
   enum license_type: Licenses.types
 
   validates :active, inclusion: { in: [true, false] }

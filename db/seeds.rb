@@ -46,6 +46,26 @@ end
 puts_records_in_db(User)
 
 # ---------------------------------------------
+# Locations
+# ---------------------------------------------
+
+montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
+big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
+hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
+
+# ---------------------------------------------
+# Businesses
+# ---------------------------------------------
+
+@business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
+  license_type: Licenses.types.keys.first,
+  county: big_horn_cty_mt,
+  zipcode: hardin_zipcode
+)
+
+puts_records_in_db(Business)
+
+# ---------------------------------------------
 # Children
 # ---------------------------------------------
 
@@ -53,8 +73,8 @@ puts_records_in_db(User)
 #  and birthday set randomly between the min_age and max_age.
 def child_named(full_name, min_birthday: MIN_BIRTHDAY,
                 max_birthday: MAX_BIRTHDAY,
-                user: @user_kate)
-  Child.find_or_create_by!(user: @user_kate,
+                business: @business)
+  Child.find_or_create_by!(business: business,
                            full_name: full_name,
                            date_of_birth: Faker::Date.between(from: max_birthday, to: min_birthday))
 end
@@ -69,28 +89,7 @@ tarq = child_named('Tarquinius Kelly')
 puts_records_in_db(Child)
 
 # ---------------------------------------------
-# Locations
-# ---------------------------------------------
-
-montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
-big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
-hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
-
-# ---------------------------------------------
-# Businesses
-# ---------------------------------------------
-
-business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
-  license_type: Licenses.types.keys.first,
-  county: big_horn_cty_mt,
-  zipcode: hardin_zipcode
-)
-
-puts_records_in_db(Business)
-
-# ---------------------------------------------
 # Subsidy Rules
-#
 # ---------------------------------------------
 
 sr_rule_1 = SubsidyRule.first_or_create!(

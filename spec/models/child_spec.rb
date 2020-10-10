@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Child, type: :model do
-  it { should belong_to(:user) }
+  it { should belong_to(:business) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:date_of_birth) }
 
@@ -13,7 +13,7 @@ RSpec.describe Child, type: :model do
 
   it 'validates uniqueness of full name' do
     create(:child)
-    should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :user_id)
+    should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :business_id)
   end
 end
 
@@ -27,11 +27,14 @@ end
 #  full_name     :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  ccms_id       :string
-#  user_id       :uuid             not null
+#  business_id   :uuid             not null
 #
 # Indexes
 #
-#  index_children_on_user_id  (user_id)
-#  unique_children            (full_name,date_of_birth,user_id) UNIQUE
+#  index_children_on_business_id  (business_id)
+#  unique_children                (full_name,date_of_birth,business_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (business_id => businesses.id)
 #
