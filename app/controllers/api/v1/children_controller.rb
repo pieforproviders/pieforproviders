@@ -19,11 +19,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
 
   # POST /children
   def create
-    @child = if current_user.admin?
-               Child.new(child_params)
-             else
-               current_user.children.new(child_params)
-             end
+    @child = Child.new(child_params)
 
     if @child.save
       render json: @child, status: :created, location: @child
@@ -58,10 +54,10 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   end
 
   def child_params
-    attributes = %i[ccms_id
-                    date_of_birth
-                    full_name]
-    attributes += %i[user_id active] if current_user.admin?
+    attributes = %i[date_of_birth
+                    full_name
+                    business_id]
+    attributes += %i[active] if current_user.admin?
     params.require(:child).permit(attributes)
   end
 end
