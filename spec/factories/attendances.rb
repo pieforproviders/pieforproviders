@@ -2,8 +2,6 @@
 
 FactoryBot.define do
   factory :attendance do
-    child_case_cycle
-
     latest_opening_time = (6 * 60).minutes # 6:00 am
     site_opening_time = Time.zone.parse(Date.current.to_s) + Random.rand(latest_opening_time).minutes # opens between midnight and 6 a.m.
     latest_check_in = (8 * 60).minutes # 8 hours after opening time
@@ -36,13 +34,4 @@ end
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
-#  child_case_cycle_id                                            :uuid             not null
-#
-# Indexes
-#
-#  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (child_case_cycle_id => child_case_cycles.id)
 #

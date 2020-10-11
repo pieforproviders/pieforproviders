@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
-  it { should belong_to(:child_case_cycle) }
-
   it { should allow_values(:part_day, :full_day, :full_plus_part_day, :full_plus_full_day).for(:attendance_duration) }
   it {
     should define_enum_for(:attendance_duration).with_values(
@@ -42,13 +40,4 @@ end
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
-#  child_case_cycle_id                                            :uuid             not null
-#
-# Indexes
-#
-#  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (child_case_cycle_id => child_case_cycles.id)
 #

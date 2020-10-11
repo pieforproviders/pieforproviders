@@ -30,8 +30,6 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
-      resources :case_cycles
-      resources :child_case_cycles
       resources :attendances
     end
   end
@@ -79,18 +77,6 @@ end
 #                                       PATCH  /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       PUT    /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       DELETE /api/v1/children/:id(.:format)                                                           api/v1/children#destroy {:format=>:json}
-#                           case_cycles GET    /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#index {:format=>:json}
-#                                       POST   /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#create {:format=>:json}
-#                            case_cycle GET    /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#show {:format=>:json}
-#                                       PATCH  /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#update {:format=>:json}
-#                                       PUT    /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#update {:format=>:json}
-#                                       DELETE /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#destroy {:format=>:json}
-#                     child_case_cycles GET    /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#index {:format=>:json}
-#                                       POST   /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#create {:format=>:json}
-#                      child_case_cycle GET    /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#show {:format=>:json}
-#                                       PATCH  /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#update {:format=>:json}
-#                                       PUT    /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#update {:format=>:json}
-#                                       DELETE /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#destroy {:format=>:json}
 #                           attendances GET    /api/v1/attendances(.:format)                                                            api/v1/attendances#index {:format=>:json}
 #                                       POST   /api/v1/attendances(.:format)                                                            api/v1/attendances#create {:format=>:json}
 #                            attendance GET    /api/v1/attendances/:id(.:format)                                                        api/v1/attendances#show {:format=>:json}
