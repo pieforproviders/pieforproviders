@@ -93,7 +93,6 @@ CREATE TABLE public.ar_internal_metadata (
 
 CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_case_cycle_id uuid NOT NULL,
     starts_on date NOT NULL,
     check_in time without time zone NOT NULL,
     check_out time without time zone NOT NULL,
@@ -136,43 +135,6 @@ CREATE TABLE public.businesses (
     license_type public.license_types,
     county_id uuid NOT NULL,
     zipcode_id uuid NOT NULL
-);
-
-
---
--- Name: case_cycles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.case_cycles (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    case_number character varying,
-    copay_cents integer DEFAULT 0 NOT NULL,
-    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    submitted_on date NOT NULL,
-    effective_on date,
-    notified_on date,
-    expires_on date,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
-    copay_frequency public.copay_frequency NOT NULL,
-    user_id uuid NOT NULL
-);
-
-
---
--- Name: child_case_cycles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_case_cycles (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    part_days_allowed integer NOT NULL,
-    full_days_allowed integer NOT NULL,
-    child_id uuid NOT NULL,
-    subsidy_rule_id uuid NOT NULL,
-    case_cycle_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -355,22 +317,6 @@ ALTER TABLE ONLY public.businesses
 
 
 --
--- Name: case_cycles case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.case_cycles
-    ADD CONSTRAINT case_cycles_pkey PRIMARY KEY (id);
-
-
---
--- Name: child_case_cycles child_case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT child_case_cycles_pkey PRIMARY KEY (id);
-
-
---
 -- Name: children children_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -435,13 +381,6 @@ ALTER TABLE ONLY public.zipcodes
 
 
 --
--- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
-
-
---
 -- Name: index_blocked_tokens_on_jti; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -474,34 +413,6 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 --
 
 CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zipcode_id);
-
-
---
--- Name: index_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
-
-
---
--- Name: index_child_case_cycles_on_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_case_cycle_id ON public.child_case_cycles USING btree (case_cycle_id);
-
-
---
--- Name: index_child_case_cycles_on_child_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_child_id ON public.child_case_cycles USING btree (child_id);
-
-
---
--- Name: index_child_case_cycles_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cycles USING btree (subsidy_rule_id);
 
 
 --
@@ -617,14 +528,6 @@ CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, d
 
 
 --
--- Name: case_cycles fk_rails_02471acfd5; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.case_cycles
-    ADD CONSTRAINT fk_rails_02471acfd5 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: counties fk_rails_028abb0ec1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -665,14 +568,6 @@ ALTER TABLE ONLY public.zipcodes
 
 
 --
--- Name: child_case_cycles fk_rails_b4f3c7d474; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_b4f3c7d474 FOREIGN KEY (child_id) REFERENCES public.children(id);
-
-
---
 -- Name: children fk_rails_b51aaa1e8e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -681,35 +576,11 @@ ALTER TABLE ONLY public.children
 
 
 --
--- Name: child_case_cycles fk_rails_bd0bf4a589; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_bd0bf4a589 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
-
-
---
--- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
-
-
---
 -- Name: zipcodes fk_rails_c1f1e8d4c3; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT fk_rails_c1f1e8d4c3 FOREIGN KEY (county_id) REFERENCES public.counties(id);
-
-
---
--- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_e441dceee7 FOREIGN KEY (case_cycle_id) REFERENCES public.case_cycles(id);
 
 
 --
@@ -773,6 +644,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201007202953'),
 ('20201007203150'),
 ('20201009020636'),
-('20201010022135');
+('20201010022135'),
+('20201011174541');
 
 

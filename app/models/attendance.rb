@@ -17,8 +17,6 @@
 #   I'm not sure if we'll let them change it.
 #
 class Attendance < UuidApplicationRecord
-  belongs_to :child_case_cycle
-
   DURATION_DEFINITIONS = %w[part_day full_day full_plus_part_day full_plus_full_day].freeze
   enum attendance_duration: DURATION_DEFINITIONS.index_by(&:to_sym)
 
@@ -47,13 +45,4 @@ end
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
-#  child_case_cycle_id                                            :uuid             not null
-#
-# Indexes
-#
-#  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (child_case_cycle_id => child_case_cycles.id)
 #

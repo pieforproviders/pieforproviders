@@ -112,55 +112,6 @@ sr_rule_1 = SubsidyRule.first_or_create!(
 puts_records_in_db(SubsidyRule)
 
 # ---------------------------------------------
-# CaseCycles
-# ---------------------------------------------
-
-jan_q1_casecycle = CaseCycle.find_or_create_by!(user: @user_kate,
-                                                effective_on: JAN_1,
-                                                expires_on: Date.new(THIS_YEAR, 3, 30),
-                                                submitted_on: Date.new(THIS_YEAR, 5, 12),
-                                                status: :submitted,
-                                                copay_frequency: :weekly) do |new_case_cycle|
-  # the Monetize attribute must be set within a block; it cannot be set in the find_or_create_by! arguments
-  new_case_cycle.copay = 10
-end
-
-apr_q2_casecycle = CaseCycle.find_or_create_by!(user: @user_kate,
-                                                effective_on: APR_1,
-                                                expires_on: Date.new(THIS_YEAR, 6, 30),
-                                                submitted_on: Date.new(THIS_YEAR, 7, 15),
-                                                status: :submitted,
-                                                copay_frequency: :weekly) do |new_case_cycle|
-  # the Monetize attribute must be set within a block; it cannot be set in the find_or_create_by! arguments
-  new_case_cycle.copay = 10
-end
-
-puts_records_in_db(CaseCycle)
-
-# ---------------------------------------------
-# Children in a Case Cycle:  ChildCaseCycle
-# ---------------------------------------------
-
-jan_q1_kids = [maria, kshawn, marcus]
-apr_q2_kids = [maria, kshawn, marcus, mubiru]
-
-jan_q1_kids.each do |kid|
-  ChildCaseCycle.find_or_create_by!(child: kid,
-                                    case_cycle: jan_q1_casecycle,
-                                    subsidy_rule: sr_rule_1,
-                                    part_days_allowed: 89,
-                                    full_days_allowed: 89)
-end
-
-apr_q2_kids.each do |kid|
-  ChildCaseCycle.find_or_create_by!(child: kid,
-                                    case_cycle: apr_q2_casecycle,
-                                    subsidy_rule: sr_rule_1,
-                                    part_days_allowed: 90,
-                                    full_days_allowed: 90)
-end
-
-# ---------------------------------------------
 # Attendance
 # ---------------------------------------------
 
@@ -187,8 +138,7 @@ RAND_CHECKIN_HRS_RANGE = 3 # checkin will be within 3 hours of the earliest chec
 RAND_CHECKOUT_HRS_RANGE = 18 # checkout will be within 18 hours of checkin
 
 # create Attendance records, some random amount of part and full days.
-def make_attendance(childcasecycle,
-                    first_date: Date.current - 10,
+def make_attendance(first_date: Date.current - 10,
                     last_date: Date.current,
                     earliest_checkin_hour: 7)
 
@@ -197,8 +147,7 @@ def make_attendance(childcasecycle,
     random_checkin_time = (earliest_checkin_hour * 60) + Random.rand(60 * RAND_CHECKIN_HRS_RANGE).minutes
     random_checkout_time = random_checkin_time + Random.rand(60 * RAND_CHECKOUT_HRS_RANGE).minutes
 
-    Attendance.find_or_create_by!(child_case_cycle: childcasecycle,
-                                  starts_on: day_attended,
+    Attendance.find_or_create_by!(starts_on: day_attended,
                                   check_in: day_attended + random_checkin_time,
                                   check_out: day_attended + random_checkout_time)
   end
@@ -209,40 +158,29 @@ def latest_date(date1, date2)
 end
 
 # Attendance for Maria between January 1 and March 31
-maria_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: jan_q1_casecycle)
-
-make_attendance(maria_q1_casecycle,
-                first_date: JAN_1,
+make_attendance(first_date: JAN_1,
                 last_date: MAR_31,
                 earliest_checkin_hour: 7)
 
 # Attendance for K'Shawn between January 1 and March 31
-kshawn_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: jan_q1_casecycle)
-make_attendance(kshawn_q1_casecycle,
-                first_date: JAN_1,
+make_attendance(first_date: JAN_1,
                 last_date: MAR_31,
                 earliest_checkin_hour: 7)
 
 # ------------
 
 # Attendance for Maria between April 1 and June 30
-maria_q1_casecycle = ChildCaseCycle.find_by(child: maria, case_cycle: apr_q2_casecycle)
-make_attendance(maria_q1_casecycle,
-                first_date: APR_1,
+make_attendance(first_date: APR_1,
                 last_date: JUN_30,
                 earliest_checkin_hour: 7)
 
 # Attendance for K'Shawn between April 1 and June 30
-kshawn_q1_casecycle = ChildCaseCycle.find_by(child: kshawn, case_cycle: apr_q2_casecycle)
-make_attendance(kshawn_q1_casecycle,
-                first_date: APR_1,
+make_attendance(first_date: APR_1,
                 last_date: JUN_30,
                 earliest_checkin_hour: 7)
 
 # Attendance for mubiru between April 1 and June 30
-mubiru_q1_casecycle = ChildCaseCycle.find_by(child: mubiru, case_cycle: apr_q2_casecycle)
-make_attendance(mubiru_q1_casecycle,
-                first_date: APR_1,
+make_attendance(first_date: APR_1,
                 last_date: JUN_30,
                 earliest_checkin_hour: 7)
 

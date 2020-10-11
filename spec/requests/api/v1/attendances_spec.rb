@@ -4,11 +4,8 @@ require 'swagger_helper'
 
 RSpec.describe 'attendances API', type: :request do
   let(:child) { create(:child) }
-  let(:subsidy_rule) { create(:subsidy_rule, state: child.business.county.state, county: child.business.county) }
-  let(:child_case_cycle_id) { create(:child_case_cycle, child: child, subsidy_rule: subsidy_rule).id }
   let(:attendance_params) do
     {
-      "child_case_cycle_id": child_case_cycle_id,
       "starts_on": Date.current.to_s,
       "check_in": Time.zone.parse((Date.current + 7.hours).to_s).to_s,
       'check_out': Time.zone.parse((Date.current + 20.hours).to_s).to_s,

@@ -113,48 +113,11 @@ RSpec.configure do |config|
               full_name: { type: :string, example: 'Sean Flannery' }
             }
           },
-          case_cycle: {
-            type: :object,
-            properties: {
-              case_number: {
-                anyOf: [
-                  { type: :string, example: '123-45' },
-                  { type: :null }
-                ]
-              },
-              copay_cents: { type: :integer, minimum: 0 },
-              copay_currency: { type: :string, example: 'USD' },
-              copay_frequency: {
-                anyOf: [
-                  { '$ref': '#/components/schemas/copay_frequencies' },
-                  { type: :null }
-                ]
-              },
-              effective_on: { '$ref': '#/components/schemas/date_or_null' },
-              expires_on: { '$ref': '#/components/schemas/date_or_null' },
-              notified_on: { '$ref': '#/components/schemas/date_or_null' },
-              status: { '$ref': '#/components/schemas/case_statuses' },
-              submitted_on: { type: :string, example: '2020-07-12' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
-          child_case_cycle: {
-            type: :object,
-            properties: {
-              case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              child_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              full_days_allowed: { type: :integer, example: 21 },
-              part_days_allowed: { type: :integer, example: 18 },
-              subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
           attendance: {
             type: :object,
             properties: {
               check_in: { type: :string, example: '020-09-13 14:07:47 -0700' },
               check_out: { '$ref': '#/components/schemas/time_or_null' },
-              child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               attendance_duration: { '$ref': '#/components/schemas/duration_definitions' },
               total_time_in_care: { type: :string, example: '360 minutes' },
               starts_on: { type: :string, example: '2020-07-12' }
@@ -246,54 +209,6 @@ RSpec.configure do |config|
               child: {
                 allOf: [
                   { '$ref': '#/components/schemas/child' }
-                ]
-              }
-            }
-          },
-          createCaseCycle: {
-            type: :object,
-            properties: {
-              case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/case_cycle' },
-                  {
-                    type: :object,
-                    required: %w[status submitted_on]
-                  }
-                ]
-              }
-            }
-          },
-          updateCaseCycle: {
-            type: :object,
-            properties: {
-              case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/case_cycle' }
-                ]
-              }
-            }
-          },
-          createChildCaseCycle: {
-            type: :object,
-            properties: {
-              child_case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' },
-                  {
-                    type: :object,
-                    required: %w[case_cycle_id child_id full_days_allowed part_days_allowed subsidy_rule_id user_id]
-                  }
-                ]
-              }
-            }
-          },
-          updateChildCaseCycle: {
-            type: :object,
-            properties: {
-              child_case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' }
                 ]
               }
             }

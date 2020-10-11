@@ -18,7 +18,6 @@ class Api::V1::AttendancesController < Api::V1::ApiController
 
   # POST /attendances
   # TODO: need to calculate the attendance_duration based on the subsidy_rule
-  # for the child_case_cycle
   def create
     @attendance = Attendance.new(attendance_params)
 
@@ -53,7 +52,6 @@ class Api::V1::AttendancesController < Api::V1::ApiController
   def attendance_params
     params.require(:attendance).permit(:check_in,
                                        :check_out,
-                                       :child_case_cycle_id,
                                        :starts_on,
                                        :total_time_in_care)
   end
