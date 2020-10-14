@@ -9,11 +9,7 @@ export function ActionLink({ onClick, text = '', classes = '', children }) {
   }
   return (
     <>
-      <Button
-        onClick={handleClick}
-        className={`${classes} mt-1`}
-        type="link"
-      >
+      <Button onClick={handleClick} className={`${classes} mt-1`} type="link">
         {text || children}
       </Button>
     </>

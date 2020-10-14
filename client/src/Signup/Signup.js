@@ -97,9 +97,7 @@ export function Signup() {
   return (
     <main>
       <div className="mb-8">
-        <h1 className="uppercase font-bold inline-block">
-          {t('signup')}
-        </h1>
+        <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
           {t('login')}
@@ -213,7 +211,7 @@ export function Signup() {
 
         <Form.Item name="phone" label={`${t('phone')} (${t('phoneNote')})`}>
           <Input.Group compact>
-            <label for="rc_select_1" className="sr-only">
+            <label htmlFor="rc_select_1" className="sr-only">
               {t('phoneType')}
             </label>
             <Select
@@ -237,7 +235,7 @@ export function Signup() {
               </Option>
             </Select>
 
-            <label for="signup_phoneNumber" className="sr-only">
+            <label htmlFor="signup_phoneNumber" className="sr-only">
               {t('phone')}
             </label>
             <Form.Item
