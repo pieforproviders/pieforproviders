@@ -39,10 +39,17 @@ en:
     license_exempt_home: license exempt home
     license_exempt_center: license exempt center
 
+  copay_frequencies: &copay_frequencies
+    daily: daily
+    weekly: weekly
+    monthly: monthly
+
   activerecord:
     attributes:
       business:
-        categories: *license_types
+        license_types: *license_types
+      approval:
+        copay_frequencies: *copay_frequencies
 
   errors:
     messages:

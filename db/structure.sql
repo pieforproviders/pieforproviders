@@ -76,6 +76,23 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: approvals; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.approvals (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    case_number character varying,
+    copay_cents integer DEFAULT 0 NOT NULL,
+    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    copay_frequency public.copay_frequency,
+    effective_on date,
+    expires_on date,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -135,6 +152,18 @@ CREATE TABLE public.businesses (
     license_type public.license_types,
     county_id uuid NOT NULL,
     zipcode_id uuid NOT NULL
+);
+
+
+--
+-- Name: child_approvals; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.child_approvals (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    subsidy_rule_id uuid,
+    approval_id uuid NOT NULL,
+    child_id uuid NOT NULL
 );
 
 
@@ -285,6 +314,14 @@ CREATE TABLE public.zipcodes (
 
 
 --
+-- Name: approvals approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.approvals
+    ADD CONSTRAINT approvals_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -314,6 +351,14 @@ ALTER TABLE ONLY public.blocked_tokens
 
 ALTER TABLE ONLY public.businesses
     ADD CONSTRAINT businesses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: child_approvals child_approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT child_approvals_pkey PRIMARY KEY (id);
 
 
 --
@@ -413,6 +458,27 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 --
 
 CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zipcode_id);
+
+
+--
+-- Name: index_child_approvals_on_approval_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_approvals_on_approval_id ON public.child_approvals USING btree (approval_id);
+
+
+--
+-- Name: index_child_approvals_on_child_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_approvals_on_child_id ON public.child_approvals USING btree (child_id);
+
+
+--
+-- Name: index_child_approvals_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_approvals_on_subsidy_rule_id ON public.child_approvals USING btree (subsidy_rule_id);
 
 
 --
@@ -544,6 +610,14 @@ ALTER TABLE ONLY public.businesses
 
 
 --
+-- Name: child_approvals fk_rails_2af12c67c9; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_2af12c67c9 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
+
+
+--
 -- Name: subsidy_rules fk_rails_2bb2a806ed; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -565,6 +639,22 @@ ALTER TABLE ONLY public.businesses
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT fk_rails_4916202daf FOREIGN KEY (state_id) REFERENCES public.states(id);
+
+
+--
+-- Name: child_approvals fk_rails_6a1cefaf48; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_6a1cefaf48 FOREIGN KEY (child_id) REFERENCES public.children(id);
+
+
+--
+-- Name: child_approvals fk_rails_b4c39906ee; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_b4c39906ee FOREIGN KEY (approval_id) REFERENCES public.approvals(id);
 
 
 --
@@ -645,6 +735,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201007203150'),
 ('20201009020636'),
 ('20201010022135'),
-('20201011174541');
+('20201011174541'),
+('20201011184243');
 
 

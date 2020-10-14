@@ -66,7 +66,7 @@ hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_m
 puts_records_in_db(Business)
 
 # ---------------------------------------------
-# Children
+# Children w/ Required Approvals
 # ---------------------------------------------
 
 # find_or_create_by! a Child with the full_name,
@@ -74,9 +74,19 @@ puts_records_in_db(Business)
 def child_named(full_name, min_birthday: MIN_BIRTHDAY,
                 max_birthday: MAX_BIRTHDAY,
                 business: @business)
+  effective_date = Faker::Date.between(from: 1.year.ago, to: Time.zone.today)
   Child.find_or_create_by!(business: business,
                            full_name: full_name,
-                           date_of_birth: Faker::Date.between(from: max_birthday, to: min_birthday))
+                           date_of_birth: Faker::Date.between(from: max_birthday, to: min_birthday),
+                           approvals: [
+                             Approval.create!(
+                               case_number: Faker::Number.number(digits: 10),
+                               copay: Faker::Number.decimal(l_digits: 3, r_digits: 2),
+                               copay_frequency: [nil].concat(Approval::COPAY_FREQUENCIES).sample,
+                               effective_on: effective_date,
+                               expires_on: effective_date + 1.year
+                             )
+                           ])
 end
 
 maria = child_named('Maria Baca')
