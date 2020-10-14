@@ -70,13 +70,14 @@ export function Login() {
     history.push('/dashboard')
   }
   return (
-    <>
-      <p className="mb-4">
+    <main>
+      <div className="mb-4">
         <Link to="/signup" className="uppercase">
           {t('signup')}
         </Link>{' '}
-        {t('or')} <span className="uppercase font-bold">{t('login')}</span>
-      </p>
+        {t('or ')}
+        <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+      </div>
 
       {apiError && (
         <Alert
@@ -185,6 +186,6 @@ export function Login() {
           />
         </Modal>
       )}
-    </>
+    </main>
   )
 }

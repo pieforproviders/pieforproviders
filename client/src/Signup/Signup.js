@@ -95,14 +95,14 @@ export function Signup() {
   }
 
   return (
-    <>
-      <p className="mb-8">
-        <span className="uppercase font-bold">{t('signup')}</span>
+    <main>
+      <div className="mb-8">
+        <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
           {t('login')}
         </Link>
-      </p>
+      </div>
 
       {error && (
         <Alert
@@ -211,6 +211,9 @@ export function Signup() {
 
         <Form.Item name="phone" label={`${t('phone')} (${t('phoneNote')})`}>
           <Input.Group compact>
+            <label htmlFor="rc_select_1" className="sr-only">
+              {t('phoneType')}
+            </label>
             <Select
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
@@ -232,6 +235,9 @@ export function Signup() {
               </Option>
             </Select>
 
+            <label htmlFor="signup_phoneNumber" className="sr-only">
+              {t('phone')}
+            </label>
             <Form.Item
               name="phoneNumber"
               style={{ width: '70%', marginBottom: 0 }}
@@ -441,6 +447,6 @@ export function Signup() {
           <PaddedButton data-cy="signupBtn" text={t('signup')} />
         </Form.Item>
       </Form>
-    </>
+    </main>
   )
 }

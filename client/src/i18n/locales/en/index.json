@@ -35,6 +35,7 @@
   "multiBusinessTrue": "Yes, managing multiple child care businesses",
   "phone": "Phone number",
   "phoneNote": "we will only call or text if you want us to",
+  "phoneType": "Phone Type",
   "phoneTypePlaceholder": "Choose one",
   "phoneTypeCell": "Cell",
   "phoneTypeHome": "Home",
