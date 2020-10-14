@@ -10,7 +10,8 @@ RSpec.describe 'children API', type: :request do
     {
       "full_name": 'Parvati Patil',
       "date_of_birth": '1981-04-09',
-      "business_id": created_business.id
+      "business_id": created_business.id,
+      "approvals_attributes": [attributes_for(:approval)]
     }
   end
 

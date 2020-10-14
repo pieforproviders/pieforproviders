@@ -5,6 +5,7 @@ FactoryBot.define do
     date_of_birth { Faker::Date.birthday(min_age: 18, max_age: 65).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
+    approvals { create_list(:approval, rand(1..3), create_children: false) }
   end
 end
 

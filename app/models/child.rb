@@ -4,12 +4,19 @@
 class Child < UuidApplicationRecord
   belongs_to :business
 
+  has_many :child_approvals, dependent: :destroy
+  has_many :approvals, through: :child_approvals
+
   validates :active, inclusion: { in: [true, false] }
   validates :date_of_birth, presence: true
   validates :full_name, presence: true
   validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }
 
+  validates :approvals, presence: true
+
   validates :date_of_birth, date_param: true
+
+  accepts_nested_attributes_for :approvals
 
   delegate :user, to: :business
 end

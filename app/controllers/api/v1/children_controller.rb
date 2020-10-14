@@ -54,10 +54,9 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   end
 
   def child_params
-    attributes = %i[date_of_birth
-                    full_name
-                    business_id]
+    attributes = []
     attributes += %i[active] if current_user.admin?
+    attributes += [:date_of_birth, :full_name, :business_id, { approvals_attributes: %i[case_number copay copay_frequency effective_on expires_on] }]
     params.require(:child).permit(attributes)
   end
 end
