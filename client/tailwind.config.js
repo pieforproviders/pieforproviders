@@ -16,11 +16,11 @@ module.exports = {
         mediumGray: '#F2F2F2',
         lightGray: '#979797',
         white: '#FFFFFF',
-        red1: '#D64B3A',
+        red1: '#D23C2A',
         red2: '#F9E4E1',
         orange1: '#F8921F',
         orange2: '#FAE7D1',
-        green1: '#179D57',
+        green1: '#00853D',
         green2: '#DCFAEA',
         blueOverlay: '#004A6E80'
       },
