@@ -75,10 +75,8 @@ export function Login() {
         <Link to="/signup" className="uppercase">
           {t('signup')}
         </Link>{' '}
-        {t('or ')} 
-        <h1 className="uppercase font-bold inline-block">
-          {t('login')}
-        </h1>
+        {t('or ')}
+        <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
       </div>
 
       {apiError && (
