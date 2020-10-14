@@ -29,7 +29,7 @@ export function AuthLayout({
             sm={{ span: 12, offset: 6 }}
             md={{ span: 24, offset: 0 }}
           >
-            <div className="text-right">
+            <header className="text-right">
               <ActionLink
                 onClick={() =>
                   i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
@@ -37,13 +37,13 @@ export function AuthLayout({
                 text={i18n.language === 'en' ? 'Español' : 'English'}
                 classes="text-right no-underline p-0 h-auto"
               />
-            </div>
-            <div className="text-center md:text-left">
               <img
                 alt={t('pieforProvidersLogoAltText')}
                 src={pieFullTanLogo}
                 className="w-24 xs:w-48 mt-0 mb-10 xs:mb-16 md:mb-12 mx-auto"
               />
+            </header>
+            <div className="text-center md:text-left">
               <ContentComponent />
             </div>
           </Col>

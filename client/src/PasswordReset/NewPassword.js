@@ -94,9 +94,11 @@ export const NewPassword = () => {
 
   return (
     <>
-      <p className="mb-8">
-        <span className="uppercase font-bold">{t('resetPassword')}</span>
-      </p>
+      <div className="mb-8">
+        <h1 className="uppercase font-bold inline-block">
+          {t('resetPassword')}
+        </h1>
+      </div>
 
       <Form
         layout="vertical"

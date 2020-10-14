@@ -35,6 +35,7 @@
   "multiBusinessTrue": "Sí, gestiono varios negocios de cuidado infantil",
   "phone": "Número de teléfono",
   "phoneNote": "solo llamaremos o enviaremos un mensaje de texto si lo deseas",
+  "phoneType": "Tipo de telefono",
   "phoneTypePlaceholder": "Elija uno",
   "phoneTypeCell": "Celular",
   "phoneTypeHome": "Casa",

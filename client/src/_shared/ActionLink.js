@@ -11,7 +11,7 @@ export function ActionLink({ onClick, text = '', classes = '', children }) {
     <>
       <Button
         onClick={handleClick}
-        className={`${classes} focus:shadow-none`}
+        className={`${classes} mt-1`}
         type="link"
       >
         {text || children}

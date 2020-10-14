@@ -16,8 +16,8 @@ module.exports = {
               '@select-item-selected-color': '#3B3B3B',
               '@label-color': '@primary-color',
               '@input-placeholder-color': '#676767',
-              '@error-color': '#D64B3A',
-              '@highlight-color': '#D64B3A',
+              '@error-color': '#D23C2A',
+              '@highlight-color': '#D23C2A',
               '@primary-4': '#F3F8FA',
 
               // Typography
