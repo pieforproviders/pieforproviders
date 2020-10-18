@@ -15,21 +15,21 @@ function TestComponent() {
 const setupAuthenticated = () => {
   return render(<TestComponent />, {
     initialState: {
-      auth: { token: 'whatever', expiration: dayjs().add('2', 'days').toDate() }
+      auth: { token: 'whatever', expiration: dayjs().add('2', 'days').format() }
     }
   })
 }
 
 const setupExpired = () => {
   return render(<TestComponent />, {
-    initialState: { auth: { token: 'whatever', expiration: dayjs().toDate() } }
+    initialState: { auth: { token: 'whatever', expiration: dayjs().format() } }
   })
 }
 
 const setupNoToken = () => {
   return render(<TestComponent />, {
     initialState: {
-      auth: { token: null, expiration: dayjs().add('2', 'days').toDate() }
+      auth: { token: null, expiration: dayjs().add('2', 'days').format() }
     }
   })
 }
