@@ -6,7 +6,7 @@ import { Breadcrumb, Button, Grid } from 'antd'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { removeAuth } from '_actions/auth'
+import { removeAuth } from '_reducers/authReducer'
 
 const { useBreakpoint } = Grid
 

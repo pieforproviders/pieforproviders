@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch } from 'react-redux'
-import { addAuth, removeAuth } from '_actions/auth'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export function Confirmation({ location }) {
   const dispatch = useDispatch()
@@ -20,8 +20,9 @@ export function Confirmation({ location }) {
           confirmationToken ? `?confirmation_token=${confirmationToken}` : ''
         }`
       })
+      const authToken = response.headers.get('authorization')
       if (isSubscribed) {
-        if (!response.ok || response.headers.get('authorization') === null) {
+        if (!response.ok || authToken === null) {
           const errorMessage = await response.json()
           dispatch(removeAuth())
           history.push({
@@ -36,7 +37,7 @@ export function Confirmation({ location }) {
             }
           })
         } else {
-          dispatch(addAuth(response.headers.get('authorization')))
+          dispatch(addAuth(authToken))
           history.push('/getting-started')
         }
       }

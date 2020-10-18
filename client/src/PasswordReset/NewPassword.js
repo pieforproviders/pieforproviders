@@ -5,7 +5,7 @@ import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch } from 'react-redux'
-import { addAuth, removeAuth } from '_actions/auth'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export const NewPassword = () => {
   const dispatch = useDispatch()
@@ -18,8 +18,8 @@ export const NewPassword = () => {
   useEffect(() => {
     const verifyPasswordToken = async () => {
       const params = new URLSearchParams(location.search)
-      const token = params.get('reset_password_token')
-      if (!token) {
+      const resetToken = params.get('reset_password_token')
+      if (!resetToken) {
         history.push({
           pathname: '/login',
           state: {
@@ -38,7 +38,7 @@ export const NewPassword = () => {
   const onFinish = async values => {
     const { password } = values
     const params = new URLSearchParams(location.search)
-    const token = params.get('reset_password_token')
+    const resetToken = params.get('reset_password_token')
     setLoading(true)
 
     const response = await makeRequest({
@@ -46,7 +46,7 @@ export const NewPassword = () => {
       url: '/password',
       data: {
         user: {
-          reset_password_token: token,
+          reset_password_token: resetToken,
           password: password,
           password_confirmation: password
         }
@@ -72,8 +72,8 @@ export const NewPassword = () => {
       return
     }
 
-    const authorizationHeader = response.headers.get('authorization')
-    if (!authorizationHeader) {
+    const authToken = response.headers.get('authorization')
+    if (!authToken) {
       dispatch(removeAuth())
       // Unconfirmed users
       history.push({
@@ -88,7 +88,7 @@ export const NewPassword = () => {
         }
       })
     } else {
-      dispatch(addAuth(authorizationHeader))
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }

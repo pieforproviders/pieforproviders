@@ -7,7 +7,7 @@ import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
 import { useDispatch } from 'react-redux'
-import { addAuth, removeAuth } from '_actions/auth'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export function Login() {
   const dispatch = useDispatch()
@@ -51,9 +51,9 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    if (!response.ok || response.headers.get('authorization') === null) {
+    const authToken = response.headers.get('authorization')
+    if (!response.ok || authToken === null) {
       const errorMessage = await response.json()
-      dispatch(removeAuth())
       setApiError({
         status: response.status,
         message: errorMessage.error,
@@ -61,9 +61,8 @@ export function Login() {
         type: errorMessage.type,
         context: { email: values.email }
       })
-      history.push('/login')
     } else {
-      dispatch(addAuth(response.headers.get('authorization')))
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }
@@ -72,6 +71,7 @@ export function Login() {
     dispatch(removeAuth())
     history.push('/dashboard')
   }
+
   return (
     <>
       <p className="mb-4">

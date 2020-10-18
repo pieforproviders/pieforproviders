@@ -9,7 +9,7 @@ import i18n from 'i18n'
 import PropTypes from 'prop-types'
 import { render as rtlRender } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import { createStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from '_reducers/rootReducer'
 import dayjs from 'dayjs'
 
@@ -33,8 +33,11 @@ Object.defineProperty(window, 'matchMedia', {
 function render(
   ui,
   {
-    initialState = { auth: { token: null, expiration: dayjs().toDate() } },
-    store = createStore(rootReducer, initialState),
+    initialState = { auth: { token: null, expiration: dayjs().format() } },
+    store = configureStore({
+      reducer: rootReducer,
+      preloadedState: initialState
+    }),
     ...renderOptions
   } = {}
 ) {

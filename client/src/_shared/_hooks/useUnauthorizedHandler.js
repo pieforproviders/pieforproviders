@@ -1,6 +1,6 @@
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { removeAuth } from '_actions/auth'
+import { removeAuth } from '_reducers/authReducer'
 
 export default function useUnauthorizedHandler() {
   const dispatch = useDispatch()
