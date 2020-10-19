@@ -104,21 +104,19 @@ puts_records_in_db(Child)
 # Subsidy Rules
 # ---------------------------------------------
 
+rule_effective_date = Faker::Date.between(from: 10.years.ago, to: Time.zone.today)
+
+il_sr_rule = IllinoisSubsidyRule.first_or_create!
+
 sr_rule_1 = SubsidyRule.first_or_create!(
   name: 'Rule 1',
   max_age: 18,
-  part_day_rate: 18.00,
-  full_day_rate: 32.00,
-  part_day_max_hours: 5,
-  full_day_max_hours: 12,
-  full_plus_part_day_max_hours: 18,
-  full_plus_full_day_max_hours: 24,
-  part_day_threshold: 5,
-  full_day_threshold: 6,
   license_type: Licenses.types.values.sample,
-  qris_rating: '3',
   county: big_horn_cty_mt,
-  state: big_horn_cty_mt.state
+  state: big_horn_cty_mt.state,
+  effective_on: rule_effective_date,
+  expires_on: rule_effective_date + rand(1..10).years,
+  subsidy_ruleable: il_sr_rule
 )
 
 puts_records_in_db(SubsidyRule)
@@ -161,8 +159,7 @@ def make_attendance(first_date: Date.current - 10,
     random_checkin_time = (earliest_checkin_hour * 60) + Random.rand(60 * RAND_CHECKIN_HRS_RANGE).minutes
     random_checkout_time = random_checkin_time + Random.rand(60 * RAND_CHECKOUT_HRS_RANGE).minutes
 
-    Attendance.find_or_create_by!(starts_on: day_attended,
-                                  check_in: day_attended + random_checkin_time,
+    Attendance.find_or_create_by!(check_in: day_attended + random_checkin_time,
                                   check_out: day_attended + random_checkout_time)
   end
 end
