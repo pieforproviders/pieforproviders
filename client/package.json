@@ -14,7 +14,7 @@
     "@reduxjs/toolkit": "^1.4.0",
     "@sentry/browser": "^5.24.2",
     "antd": "^4.6.6",
-    "antd-mask-input": "^0.1.13",
+    "antd-mask-input": "^0.1.14",
     "craco-less": "^1.17.0",
     "csv": "^5.3.2",
     "eslint-config-prettier": "^6.13.0",
