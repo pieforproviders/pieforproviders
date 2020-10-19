@@ -4,17 +4,18 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export function Login() {
+  const dispatch = useDispatch()
   const location = useLocation()
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
-  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
   const { t } = useTranslation()
 
@@ -50,7 +51,8 @@ export function Login() {
       url: '/login',
       data: { user: values }
     })
-    if (!response.ok || response.headers.get('authorization') === null) {
+    const authToken = response.headers.get('authorization')
+    if (!response.ok || authToken === null) {
       const errorMessage = await response.json()
       setApiError({
         status: response.status,
@@ -60,15 +62,16 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      setToken(response.headers.get('authorization'))
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    removeToken()
+    dispatch(removeAuth())
     history.push('/dashboard')
   }
+
   return (
     <main>
       <div className="mb-4">

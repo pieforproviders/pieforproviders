@@ -10,7 +10,7 @@
   "scripts": {
     "start-server": "bin/rails server -e test -p 5017",
     "cy:run": "cypress run --project ./spec --config video=false",
-    "cy:open": "cypress open --project ./spec",
+    "cy:open": "yarn heroku-postbuild && cypress open --project ./spec",
     "cy:ci": "yarn heroku-postbuild && start-server-and-test start-server http://localhost:5017 cy:run",
     "deploy": "cp -a client/build/. public/",
     "heroku-postbuild": "yarn install-all && yarn build && yarn deploy",

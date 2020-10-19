@@ -22,7 +22,7 @@ import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 const App = () => {
   const { t } = useTranslation()
-  const { isAuthenticated } = useAuthentication()
+  const isAuthenticated = useAuthentication()
 
   useEffect(() => {
     /* skip production code for coverage */

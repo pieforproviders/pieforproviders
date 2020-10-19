@@ -1,24 +1,15 @@
 import dayjs from 'dayjs'
+import { useSelector } from 'react-redux'
 
+// TODO: Something isn't working here, if I hit an authenticated route directly, it logs me out
 export function useAuthentication() {
-  const setToken = (token, expiration = dayjs().add('1', 'day')) => {
-    localStorage.setItem('pie-token', token)
-    localStorage.setItem('pie-expiration', expiration)
-  }
-
-  const isAuthenticated =
-    !!localStorage.getItem('pie-token') &&
-    dayjs(localStorage.getItem('pie-expiration')).isAfter(dayjs())
-
-  const removeToken = () => {
-    localStorage.removeItem('pie-token')
-    localStorage.removeItem('pie-expiration')
-  }
-
-  return {
-    isAuthenticated: isAuthenticated,
-    storedToken: localStorage.getItem('pie-token'),
-    setToken: setToken,
-    removeToken: removeToken
-  }
+  const auth = useSelector(state => state.auth)
+  /*
+    if the token exists and the expiration is not later than today, we're
+    going to let the user visit any page that uses this hook as a gatekeeper;
+    any page that has an API call will return a 403 Forbidden, which will
+    trigger a logout (see any call of removeAuth() that happens after an API
+    call, as well as in the useUnauthorizedHandler hook)
+  */
+  return !!auth.token && !!auth.expiration && dayjs(auth.expiration) > dayjs()
 }

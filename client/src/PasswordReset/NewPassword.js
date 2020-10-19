@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export const NewPassword = () => {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
-  const { removeToken, setToken } = useAuthentication()
   let history = useHistory()
   const location = useLocation()
   const { t } = useTranslation()
@@ -17,8 +18,8 @@ export const NewPassword = () => {
   useEffect(() => {
     const verifyPasswordToken = async () => {
       const params = new URLSearchParams(location.search)
-      const token = params.get('reset_password_token')
-      if (!token) {
+      const resetToken = params.get('reset_password_token')
+      if (!resetToken) {
         history.push({
           pathname: '/login',
           state: {
@@ -37,7 +38,7 @@ export const NewPassword = () => {
   const onFinish = async values => {
     const { password } = values
     const params = new URLSearchParams(location.search)
-    const token = params.get('reset_password_token')
+    const resetToken = params.get('reset_password_token')
     setLoading(true)
 
     const response = await makeRequest({
@@ -45,7 +46,7 @@ export const NewPassword = () => {
       url: '/password',
       data: {
         user: {
-          reset_password_token: token,
+          reset_password_token: resetToken,
           password: password,
           password_confirmation: password
         }
@@ -57,7 +58,7 @@ export const NewPassword = () => {
     const data = await response.json()
 
     if (!response.ok) {
-      removeToken()
+      dispatch(removeAuth())
       history.push({
         pathname: '/login',
         state: {
@@ -71,9 +72,9 @@ export const NewPassword = () => {
       return
     }
 
-    const authorizationHeader = response.headers.get('authorization')
-    if (!authorizationHeader) {
-      removeToken()
+    const authToken = response.headers.get('authorization')
+    if (!authToken) {
+      dispatch(removeAuth())
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -87,7 +88,7 @@ export const NewPassword = () => {
         }
       })
     } else {
-      setToken(authorizationHeader)
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }

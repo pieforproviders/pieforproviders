@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { GettingStarted } from '../GettingStarted'
 
@@ -10,6 +10,7 @@ const doRender = () => {
     </MemoryRouter>
   )
 }
+
 describe('<GettingStarted />', () => {
   it('renders the GettingStarted container', () => {
     const { container } = doRender()

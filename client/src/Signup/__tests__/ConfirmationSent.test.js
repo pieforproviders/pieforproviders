@@ -1,6 +1,6 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { render } from '@testing-library/react'
+import { render } from 'setupTests'
 import ConfirmationSent from '../ConfirmationSent'
 
 describe('<ConfirmationSent />', () => {

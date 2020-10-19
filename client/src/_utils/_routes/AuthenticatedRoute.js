@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { Redirect, Route } from 'react-router-dom'
 import { LoggedInLayout } from '_shared'
@@ -12,25 +12,23 @@ export default function AuthenticatedRoute({
   // permissions,
   ...routeProps
 }) {
-  const { isAuthenticated } = useAuthentication()
+  const isAuthenticated = useAuthentication()
+  // debugger
   exact = !!exact
-  const content = useMemo(() => {
-    if (!isAuthenticated) {
-      return <Redirect to="/login" />
-      // TODO: Permissions & expired passwords?
-      // } else if (SessionService.getNeedsPasswordChange()) {
-      //   return <Redirect to="/expired-password" />
-      // } else if (!PermissionService.can(...permissions)) {
-      //   return <Redirect to="/" />
-    } else {
-      return children
-    }
-  }, [isAuthenticated, children])
-  return (
-    <Route exact={exact} path={path} {...routeProps}>
-      <LoggedInLayout title={title}>{content}</LoggedInLayout>
-    </Route>
-  )
+  if (!isAuthenticated) {
+    return <Redirect to="/login" />
+    // TODO: Permissions & expired passwords?
+    // } else if (SessionService.getNeedsPasswordChange()) {
+    //   return <Redirect to="/expired-password" />
+    // } else if (!PermissionService.can(...permissions)) {
+    //   return <Redirect to="/" />
+  } else {
+    return (
+      <Route exact={exact} path={path} {...routeProps}>
+        <LoggedInLayout title={title}>{children}</LoggedInLayout>
+      </Route>
+    )
+  }
 }
 
 AuthenticatedRoute.propTypes = {

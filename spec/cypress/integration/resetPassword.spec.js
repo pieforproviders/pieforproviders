@@ -183,7 +183,7 @@ describe('Password update', () => {
               password_confirmation: password,
               confirmed_at: null,
               reset_password_token: tokens[1],
-              reset_password_sent_at: dayjs().subtract('7', 'months').toDate()
+              reset_password_sent_at: dayjs().subtract('7', 'months').format()
             }
           ]
         ])
