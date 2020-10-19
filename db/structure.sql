@@ -156,6 +156,17 @@ CREATE TABLE public.businesses (
 
 
 --
+-- Name: child_approval_rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.child_approval_rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    child_approval_id uuid,
+    rate_type_id uuid NOT NULL
+);
+
+
+--
 -- Name: child_approvals; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -207,6 +218,36 @@ CREATE TABLE public.data_migrations (
 
 
 --
+-- Name: illinois_subsidy_rules; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.illinois_subsidy_rules (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    bronze_percentage numeric,
+    silver_percentage numeric,
+    gold_percentage numeric,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    name character varying NOT NULL,
+    amount_cents integer DEFAULT 0 NOT NULL,
+    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    max_duration numeric,
+    threshold numeric,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -229,6 +270,17 @@ CREATE TABLE public.states (
 
 
 --
+-- Name: subsidy_rule_rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subsidy_rule_rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    subsidy_rule_id uuid,
+    rate_type_id uuid NOT NULL
+);
+
+
+--
 -- Name: subsidy_rules; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -240,7 +292,11 @@ CREATE TABLE public.subsidy_rules (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     county_id uuid,
-    state_id uuid NOT NULL
+    state_id uuid NOT NULL,
+    subsidy_ruleable_type character varying,
+    subsidy_ruleable_id bigint,
+    effective_on date,
+    expires_on date
 );
 
 
@@ -343,6 +399,14 @@ ALTER TABLE ONLY public.businesses
 
 
 --
+-- Name: child_approval_rate_types child_approval_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT child_approval_rate_types_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: child_approvals child_approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -375,6 +439,22 @@ ALTER TABLE ONLY public.data_migrations
 
 
 --
+-- Name: illinois_subsidy_rules illinois_subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.illinois_subsidy_rules
+    ADD CONSTRAINT illinois_subsidy_rules_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rate_types rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.rate_types
+    ADD CONSTRAINT rate_types_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -388,6 +468,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.states
     ADD CONSTRAINT states_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: subsidy_rule_rate_types subsidy_rule_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT subsidy_rule_rate_types_pkey PRIMARY KEY (id);
 
 
 --
@@ -450,6 +538,20 @@ CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zi
 
 
 --
+-- Name: index_child_approval_rate_types_on_child_approval_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_approval_rate_types_on_child_approval_id ON public.child_approval_rate_types USING btree (child_approval_id);
+
+
+--
+-- Name: index_child_approval_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_child_approval_rate_types_on_rate_type_id ON public.child_approval_rate_types USING btree (rate_type_id);
+
+
+--
 -- Name: index_child_approvals_on_approval_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -496,6 +598,20 @@ CREATE INDEX index_counties_on_state_id ON public.counties USING btree (state_id
 --
 
 CREATE INDEX index_states_on_abbr ON public.states USING btree (abbr);
+
+
+--
+-- Name: index_subsidy_rule_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rule_rate_types_on_rate_type_id ON public.subsidy_rule_rate_types USING btree (rate_type_id);
+
+
+--
+-- Name: index_subsidy_rule_rate_types_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_subsidy_rule_rate_types_on_subsidy_rule_id ON public.subsidy_rule_rate_types USING btree (subsidy_rule_id);
 
 
 --
@@ -576,6 +692,13 @@ CREATE INDEX index_zipcodes_on_state_id ON public.zipcodes USING btree (state_id
 
 
 --
+-- Name: subsidy_ruleable_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX subsidy_ruleable_index ON public.subsidy_rules USING btree (subsidy_ruleable_type, subsidy_ruleable_id);
+
+
+--
 -- Name: unique_children; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -615,6 +738,14 @@ ALTER TABLE ONLY public.subsidy_rules
 
 
 --
+-- Name: subsidy_rule_rate_types fk_rails_2c8ca83220; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT fk_rails_2c8ca83220 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
 -- Name: businesses fk_rails_48152d6e55; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -628,6 +759,14 @@ ALTER TABLE ONLY public.businesses
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT fk_rails_4916202daf FOREIGN KEY (state_id) REFERENCES public.states(id);
+
+
+--
+-- Name: subsidy_rule_rate_types fk_rails_56583d3a66; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT fk_rails_56583d3a66 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
 
 
 --
@@ -660,6 +799,22 @@ ALTER TABLE ONLY public.children
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT fk_rails_c1f1e8d4c3 FOREIGN KEY (county_id) REFERENCES public.counties(id);
+
+
+--
+-- Name: child_approval_rate_types fk_rails_d3d552ef33; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT fk_rails_d3d552ef33 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
+-- Name: child_approval_rate_types fk_rails_dbacd97c03; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT fk_rails_dbacd97c03 FOREIGN KEY (child_approval_id) REFERENCES public.child_approvals(id);
 
 
 --
@@ -726,6 +881,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201010022135'),
 ('20201011174541'),
 ('20201011184243'),
-('20201019013322');
+('20201019013322'),
+('20201019020032');
 
 
