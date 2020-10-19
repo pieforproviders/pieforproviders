@@ -9,11 +9,6 @@ FactoryBot.define do
     min_time_in_care = 60.minutes
     max_time_in_care = (18 * 60).minutes
 
-    starts_on { Date.current }
-    # TODO: may need to change attendance_duration later after it is calculated.
-    #   See the Attendance class more info
-    attendance_duration { Attendance.attendance_durations.values.sample }
-
     check_in { Faker::Time.between(from: site_opening_time, to: (site_opening_time + latest_check_in)) }
     check_out do
       Faker::Time.between(from: check_in,
@@ -27,10 +22,8 @@ end
 # Table name: attendances
 #
 #  id                                                             :uuid             not null, primary key
-#  attendance_duration                                            :enum             default("full_day"), not null
-#  check_in                                                       :time             not null
-#  check_out                                                      :time             not null
-#  starts_on                                                      :date             not null
+#  check_in                                                       :datetime
+#  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null

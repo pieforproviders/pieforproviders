@@ -47,18 +47,6 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
--- Name: duration_definitions; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.duration_definitions AS ENUM (
-    'part_day',
-    'full_day',
-    'full_plus_part_day',
-    'full_plus_full_day'
-);
-
-
---
 -- Name: license_types; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -110,13 +98,11 @@ CREATE TABLE public.ar_internal_metadata (
 
 CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    starts_on date NOT NULL,
-    check_in time without time zone NOT NULL,
-    check_out time without time zone NOT NULL,
     total_time_in_care interval NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    attendance_duration public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
+    check_in timestamp without time zone,
+    check_out timestamp without time zone
 );
 
 
@@ -125,6 +111,31 @@ CREATE TABLE public.attendances (
 --
 
 COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_out time - check_in time';
+
+
+--
+-- Name: billable_occurrence_rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.billable_occurrence_rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    billable_occurrence_id uuid,
+    rate_type_id uuid NOT NULL
+);
+
+
+--
+-- Name: billable_occurrences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.billable_occurrences (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    billable_type character varying,
+    billable_id bigint,
+    child_approval_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
 
 
 --
@@ -383,6 +394,22 @@ ALTER TABLE ONLY public.attendances
 
 
 --
+-- Name: billable_occurrence_rate_types billable_occurrence_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT billable_occurrence_rate_types_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: billable_occurrences billable_occurrences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrences
+    ADD CONSTRAINT billable_occurrences_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: blocked_tokens blocked_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -500,6 +527,34 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT zipcodes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: billable_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX billable_index ON public.billable_occurrences USING btree (billable_type, billable_id);
+
+
+--
+-- Name: index_billable_occurrence_rate_types_on_billable_occurrence_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrence_rate_types_on_billable_occurrence_id ON public.billable_occurrence_rate_types USING btree (billable_occurrence_id);
+
+
+--
+-- Name: index_billable_occurrence_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrence_rate_types_on_rate_type_id ON public.billable_occurrence_rate_types USING btree (rate_type_id);
+
+
+--
+-- Name: index_billable_occurrences_on_child_approval_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrences_on_child_approval_id ON public.billable_occurrences USING btree (child_approval_id);
 
 
 --
@@ -746,6 +801,22 @@ ALTER TABLE ONLY public.subsidy_rule_rate_types
 
 
 --
+-- Name: billable_occurrence_rate_types fk_rails_39b46a8efd; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT fk_rails_39b46a8efd FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
+-- Name: billable_occurrence_rate_types fk_rails_3ecc6abdd0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT fk_rails_3ecc6abdd0 FOREIGN KEY (billable_occurrence_id) REFERENCES public.billable_occurrences(id);
+
+
+--
 -- Name: businesses fk_rails_48152d6e55; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -767,6 +838,14 @@ ALTER TABLE ONLY public.zipcodes
 
 ALTER TABLE ONLY public.subsidy_rule_rate_types
     ADD CONSTRAINT fk_rails_56583d3a66 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
+
+
+--
+-- Name: billable_occurrences fk_rails_5b2fd4e167; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrences
+    ADD CONSTRAINT fk_rails_5b2fd4e167 FOREIGN KEY (child_approval_id) REFERENCES public.child_approvals(id);
 
 
 --
@@ -882,6 +961,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201011174541'),
 ('20201011184243'),
 ('20201019013322'),
-('20201019020032');
+('20201019020032'),
+('20201019035426');
 
 

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisSubsidyRule, type: :model do
-  it { should have_one(:subsidy_rule) }
+  it { should have_one(:subsidy_rule).dependent(:restrict_with_error) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:illinois_subsidy_rule)).to be_valid

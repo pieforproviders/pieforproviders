@@ -1,8 +1,5 @@
 {
   "properties": {
-    "attendance_duration": {
-      "$ref": "duration_definitions.json"
-    },
     "check_in": {
       "type": "string",
       "format": "time"
@@ -19,10 +16,6 @@
       "type": "string",
       "format": "uuid"
     },
-    "starts_on": {
-      "type": "string",
-      "format": "date"
-    },
     "total_time_in_care": {
       "type": "string",
       "format": "interval"
@@ -33,11 +26,9 @@
     }
   },
   "required": [
-    "attendance_duration",
     "check_in",
     "created_at",
     "id",
-    "starts_on",
     "updated_at"
   ],
   "type": "object"
