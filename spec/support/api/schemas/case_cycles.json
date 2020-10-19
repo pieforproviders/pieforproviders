@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["case_cycles"],
-  "items": {"$ref":"case_cycle.json"}
-}

@@ -29,12 +29,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show]
       get 'profile', to: 'users#show'
       resources :businesses
-      resources :sites
       resources :children
-      resources :payments
-      resources :case_cycles
-      resources :child_case_cycles
-      resources :child_case_cycle_payments
       resources :attendances
     end
   end
@@ -68,11 +63,7 @@ end
 #                             rswag_api        /api-docs                                                                                Rswag::Api::Engine
 #                     letter_opener_web        /letter_opener                                                                           LetterOpenerWeb::Engine
 #                                 users GET    /api/v1/users(.:format)                                                                  api/v1/users#index {:format=>:json}
-#                                       POST   /api/v1/users(.:format)                                                                  api/v1/users#create {:format=>:json}
 #                                  user GET    /api/v1/users/:id(.:format)                                                              api/v1/users#show {:format=>:json}
-#                                       PATCH  /api/v1/users/:id(.:format)                                                              api/v1/users#update {:format=>:json}
-#                                       PUT    /api/v1/users/:id(.:format)                                                              api/v1/users#update {:format=>:json}
-#                                       DELETE /api/v1/users/:id(.:format)                                                              api/v1/users#destroy {:format=>:json}
 #                               profile GET    /api/v1/profile(.:format)                                                                api/v1/users#show {:format=>:json}
 #                            businesses GET    /api/v1/businesses(.:format)                                                             api/v1/businesses#index {:format=>:json}
 #                                       POST   /api/v1/businesses(.:format)                                                             api/v1/businesses#create {:format=>:json}
@@ -80,42 +71,12 @@ end
 #                                       PATCH  /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#update {:format=>:json}
 #                                       PUT    /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#update {:format=>:json}
 #                                       DELETE /api/v1/businesses/:id(.:format)                                                         api/v1/businesses#destroy {:format=>:json}
-#                                 sites GET    /api/v1/sites(.:format)                                                                  api/v1/sites#index {:format=>:json}
-#                                       POST   /api/v1/sites(.:format)                                                                  api/v1/sites#create {:format=>:json}
-#                                  site GET    /api/v1/sites/:id(.:format)                                                              api/v1/sites#show {:format=>:json}
-#                                       PATCH  /api/v1/sites/:id(.:format)                                                              api/v1/sites#update {:format=>:json}
-#                                       PUT    /api/v1/sites/:id(.:format)                                                              api/v1/sites#update {:format=>:json}
-#                                       DELETE /api/v1/sites/:id(.:format)                                                              api/v1/sites#destroy {:format=>:json}
 #                              children GET    /api/v1/children(.:format)                                                               api/v1/children#index {:format=>:json}
 #                                       POST   /api/v1/children(.:format)                                                               api/v1/children#create {:format=>:json}
 #                                 child GET    /api/v1/children/:id(.:format)                                                           api/v1/children#show {:format=>:json}
 #                                       PATCH  /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       PUT    /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       DELETE /api/v1/children/:id(.:format)                                                           api/v1/children#destroy {:format=>:json}
-#                              payments GET    /api/v1/payments(.:format)                                                               api/v1/payments#index {:format=>:json}
-#                                       POST   /api/v1/payments(.:format)                                                               api/v1/payments#create {:format=>:json}
-#                               payment GET    /api/v1/payments/:id(.:format)                                                           api/v1/payments#show {:format=>:json}
-#                                       PATCH  /api/v1/payments/:id(.:format)                                                           api/v1/payments#update {:format=>:json}
-#                                       PUT    /api/v1/payments/:id(.:format)                                                           api/v1/payments#update {:format=>:json}
-#                                       DELETE /api/v1/payments/:id(.:format)                                                           api/v1/payments#destroy {:format=>:json}
-#                           case_cycles GET    /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#index {:format=>:json}
-#                                       POST   /api/v1/case_cycles(.:format)                                                            api/v1/case_cycles#create {:format=>:json}
-#                            case_cycle GET    /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#show {:format=>:json}
-#                                       PATCH  /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#update {:format=>:json}
-#                                       PUT    /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#update {:format=>:json}
-#                                       DELETE /api/v1/case_cycles/:id(.:format)                                                        api/v1/case_cycles#destroy {:format=>:json}
-#                     child_case_cycles GET    /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#index {:format=>:json}
-#                                       POST   /api/v1/child_case_cycles(.:format)                                                      api/v1/child_case_cycles#create {:format=>:json}
-#                      child_case_cycle GET    /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#show {:format=>:json}
-#                                       PATCH  /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#update {:format=>:json}
-#                                       PUT    /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#update {:format=>:json}
-#                                       DELETE /api/v1/child_case_cycles/:id(.:format)                                                  api/v1/child_case_cycles#destroy {:format=>:json}
-#             child_case_cycle_payments GET    /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#index {:format=>:json}
-#                                       POST   /api/v1/child_case_cycle_payments(.:format)                                              api/v1/child_case_cycle_payments#create {:format=>:json}
-#              child_case_cycle_payment GET    /api/v1/child_case_cycle_payments/:id(.:format)                                          api/v1/child_case_cycle_payments#show {:format=>:json}
-#                                       PATCH  /api/v1/child_case_cycle_payments/:id(.:format)                                          api/v1/child_case_cycle_payments#update {:format=>:json}
-#                                       PUT    /api/v1/child_case_cycle_payments/:id(.:format)                                          api/v1/child_case_cycle_payments#update {:format=>:json}
-#                                       DELETE /api/v1/child_case_cycle_payments/:id(.:format)                                          api/v1/child_case_cycle_payments#destroy {:format=>:json}
 #                           attendances GET    /api/v1/attendances(.:format)                                                            api/v1/attendances#index {:format=>:json}
 #                                       POST   /api/v1/attendances(.:format)                                                            api/v1/attendances#create {:format=>:json}
 #                            attendance GET    /api/v1/attendances/:id(.:format)                                                        api/v1/attendances#show {:format=>:json}

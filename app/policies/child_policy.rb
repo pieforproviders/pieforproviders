@@ -8,7 +8,7 @@ class ChildPolicy < ApplicationPolicy
       if user.admin?
         scope.all
       else
-        scope.where(user: user)
+        scope.joins(:business).where(businesses: { user: user })
       end
     end
   end

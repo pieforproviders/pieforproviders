@@ -3,12 +3,15 @@
 require 'swagger_helper'
 
 RSpec.describe 'businesses API', type: :request do
-  let(:user) { create(:confirmed_user) }
+  let!(:user) { create(:confirmed_user) }
+  let!(:zipcode) { create(:zipcode) }
   let!(:business_params) do
     {
       "name": 'Happy Hearts Child Care',
       "license_type": 'licensed_center',
-      "user_id": user.id
+      "user_id": user.id,
+      "zipcode_id": zipcode.id,
+      "county_id": zipcode.county.id
     }
   end
 

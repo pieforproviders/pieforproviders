@@ -47,18 +47,6 @@ CREATE TYPE public.copay_frequency AS ENUM (
 
 
 --
--- Name: duration_definitions; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE public.duration_definitions AS ENUM (
-    'part_day',
-    'full_day',
-    'full_plus_part_day',
-    'full_plus_full_day'
-);
-
-
---
 -- Name: license_types; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -76,16 +64,19 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: agencies; Type: TABLE; Schema: public; Owner: -
+-- Name: approvals; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.agencies (
+CREATE TABLE public.approvals (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
-    active boolean DEFAULT true NOT NULL,
+    case_number character varying,
+    copay_cents integer DEFAULT 0 NOT NULL,
+    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    copay_frequency public.copay_frequency,
+    effective_on date,
+    expires_on date,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    state_id uuid NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -107,15 +98,11 @@ CREATE TABLE public.ar_internal_metadata (
 
 CREATE TABLE public.attendances (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_site_id uuid NOT NULL,
-    child_case_cycle_id uuid NOT NULL,
-    starts_on date NOT NULL,
-    check_in time without time zone NOT NULL,
-    check_out time without time zone NOT NULL,
     total_time_in_care interval NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    attendance_duration public.duration_definitions DEFAULT 'full_day'::public.duration_definitions NOT NULL
+    check_in timestamp without time zone,
+    check_out timestamp without time zone
 );
 
 
@@ -124,6 +111,31 @@ CREATE TABLE public.attendances (
 --
 
 COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_out time - check_in time';
+
+
+--
+-- Name: billable_occurrence_rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.billable_occurrence_rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    billable_occurrence_id uuid,
+    rate_type_id uuid NOT NULL
+);
+
+
+--
+-- Name: billable_occurrences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.billable_occurrences (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    billable_type character varying,
+    billable_id bigint,
+    child_approval_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
 
 
 --
@@ -148,74 +160,32 @@ CREATE TABLE public.businesses (
     user_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
-    license_type public.license_types
+    license_type public.license_types,
+    county_id uuid NOT NULL,
+    zipcode_id uuid NOT NULL
 );
 
 
 --
--- Name: case_cycles; Type: TABLE; Schema: public; Owner: -
+-- Name: child_approval_rate_types; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.case_cycles (
+CREATE TABLE public.child_approval_rate_types (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    case_number character varying,
-    copay_cents integer DEFAULT 0 NOT NULL,
-    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    submitted_on date NOT NULL,
-    effective_on date,
-    notified_on date,
-    expires_on date,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    status public.case_status DEFAULT 'submitted'::public.case_status NOT NULL,
-    copay_frequency public.copay_frequency NOT NULL,
-    user_id uuid NOT NULL
+    child_approval_id uuid,
+    rate_type_id uuid NOT NULL
 );
 
 
 --
--- Name: child_case_cycle_payments; Type: TABLE; Schema: public; Owner: -
+-- Name: child_approvals; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.child_case_cycle_payments (
+CREATE TABLE public.child_approvals (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    discrepancy_cents integer,
-    discrepancy_currency character varying DEFAULT 'USD'::character varying,
-    payment_id uuid NOT NULL,
-    child_case_cycle_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: child_case_cycles; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_case_cycles (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    part_days_allowed integer NOT NULL,
-    full_days_allowed integer NOT NULL,
-    child_id uuid NOT NULL,
-    subsidy_rule_id uuid NOT NULL,
-    case_cycle_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: child_sites; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_sites (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_id uuid NOT NULL,
-    site_id uuid NOT NULL,
-    started_care date,
-    ended_care date
+    subsidy_rule_id uuid,
+    approval_id uuid NOT NULL,
+    child_id uuid NOT NULL
 );
 
 
@@ -226,10 +196,24 @@ CREATE TABLE public.child_sites (
 CREATE TABLE public.children (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     active boolean DEFAULT true NOT NULL,
-    ccms_id character varying,
     full_name character varying NOT NULL,
     date_of_birth date NOT NULL,
-    user_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    business_id uuid NOT NULL
+);
+
+
+--
+-- Name: counties; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.counties (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    state_id uuid NOT NULL,
+    abbr character varying,
+    name character varying,
+    county_seat character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -245,80 +229,30 @@ CREATE TABLE public.data_migrations (
 
 
 --
--- Name: lookup_cities; Type: TABLE; Schema: public; Owner: -
+-- Name: illinois_subsidy_rules; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.lookup_cities (
+CREATE TABLE public.illinois_subsidy_rules (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    bronze_percentage numeric,
+    silver_percentage numeric,
+    gold_percentage numeric,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.rate_types (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     name character varying NOT NULL,
-    state_id uuid NOT NULL,
-    county_id uuid,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_counties; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_counties (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    state_id uuid,
-    abbr character varying,
-    name character varying NOT NULL,
-    county_seat character varying,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_states; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_states (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    abbr character varying(2) NOT NULL,
-    name character varying NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: lookup_zipcodes; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.lookup_zipcodes (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    code character varying NOT NULL,
-    state_id uuid,
-    county_id uuid,
-    city_id uuid,
-    area_code character varying,
-    lat numeric(15,10),
-    lon numeric(15,10),
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: payments; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.payments (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    paid_on date NOT NULL,
-    care_started_on date NOT NULL,
-    care_finished_on date NOT NULL,
     amount_cents integer DEFAULT 0 NOT NULL,
     amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    discrepancy_cents integer,
-    discrepancy_currency character varying DEFAULT 'USD'::character varying,
-    site_id uuid NOT NULL,
-    agency_id uuid NOT NULL,
+    max_duration numeric,
+    threshold numeric,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
@@ -334,22 +268,26 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: sites; Type: TABLE; Schema: public; Owner: -
+-- Name: states; Type: TABLE; Schema: public; Owner: -
 --
 
-CREATE TABLE public.sites (
+CREATE TABLE public.states (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    active boolean DEFAULT true NOT NULL,
-    name character varying NOT NULL,
-    address character varying NOT NULL,
-    qris_rating character varying,
-    business_id uuid NOT NULL,
+    abbr character varying(2),
+    name character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    state_id uuid NOT NULL,
-    county_id uuid NOT NULL,
-    city_id uuid NOT NULL,
-    zip_id uuid NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: subsidy_rule_rate_types; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.subsidy_rule_rate_types (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    subsidy_rule_id uuid,
+    rate_type_id uuid NOT NULL
 );
 
 
@@ -361,22 +299,15 @@ CREATE TABLE public.subsidy_rules (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     name character varying NOT NULL,
     license_type public.license_types NOT NULL,
-    county_id uuid NOT NULL,
-    state_id uuid NOT NULL,
     max_age numeric NOT NULL,
-    part_day_rate_cents integer DEFAULT 0 NOT NULL,
-    part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    full_day_rate_cents integer DEFAULT 0 NOT NULL,
-    full_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    part_day_max_hours numeric NOT NULL,
-    full_day_max_hours numeric NOT NULL,
-    full_plus_part_day_max_hours numeric NOT NULL,
-    full_plus_full_day_max_hours numeric NOT NULL,
-    part_day_threshold numeric NOT NULL,
-    full_day_threshold numeric NOT NULL,
-    qris_rating character varying,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    county_id uuid,
+    state_id uuid NOT NULL,
+    subsidy_ruleable_type character varying,
+    subsidy_ruleable_id bigint,
+    effective_on date,
+    expires_on date
 );
 
 
@@ -421,11 +352,29 @@ CREATE TABLE public.users (
 
 
 --
--- Name: agencies agencies_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: zipcodes; Type: TABLE; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.agencies
-    ADD CONSTRAINT agencies_pkey PRIMARY KEY (id);
+CREATE TABLE public.zipcodes (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    code character varying NOT NULL,
+    city character varying,
+    state_id uuid NOT NULL,
+    county_id uuid NOT NULL,
+    area_code character varying,
+    lat numeric(15,10),
+    lon numeric(15,10),
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: approvals approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.approvals
+    ADD CONSTRAINT approvals_pkey PRIMARY KEY (id);
 
 
 --
@@ -445,6 +394,22 @@ ALTER TABLE ONLY public.attendances
 
 
 --
+-- Name: billable_occurrence_rate_types billable_occurrence_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT billable_occurrence_rate_types_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: billable_occurrences billable_occurrences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrences
+    ADD CONSTRAINT billable_occurrences_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: blocked_tokens blocked_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -461,35 +426,19 @@ ALTER TABLE ONLY public.businesses
 
 
 --
--- Name: case_cycles case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: child_approval_rate_types child_approval_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.case_cycles
-    ADD CONSTRAINT case_cycles_pkey PRIMARY KEY (id);
-
-
---
--- Name: child_case_cycle_payments child_case_cycle_payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT child_case_cycle_payments_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT child_approval_rate_types_pkey PRIMARY KEY (id);
 
 
 --
--- Name: child_case_cycles child_case_cycles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: child_approvals child_approvals_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT child_case_cycles_pkey PRIMARY KEY (id);
-
-
---
--- Name: child_sites child_sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_sites
-    ADD CONSTRAINT child_sites_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT child_approvals_pkey PRIMARY KEY (id);
 
 
 --
@@ -501,6 +450,14 @@ ALTER TABLE ONLY public.children
 
 
 --
+-- Name: counties counties_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT counties_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: data_migrations data_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -509,43 +466,19 @@ ALTER TABLE ONLY public.data_migrations
 
 
 --
--- Name: lookup_cities lookup_cities_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: illinois_subsidy_rules illinois_subsidy_rules_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.lookup_cities
-    ADD CONSTRAINT lookup_cities_pkey PRIMARY KEY (id);
-
-
---
--- Name: lookup_counties lookup_counties_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_counties
-    ADD CONSTRAINT lookup_counties_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.illinois_subsidy_rules
+    ADD CONSTRAINT illinois_subsidy_rules_pkey PRIMARY KEY (id);
 
 
 --
--- Name: lookup_states lookup_states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: rate_types rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.lookup_states
-    ADD CONSTRAINT lookup_states_pkey PRIMARY KEY (id);
-
-
---
--- Name: lookup_zipcodes lookup_zipcodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.lookup_zipcodes
-    ADD CONSTRAINT lookup_zipcodes_pkey PRIMARY KEY (id);
-
-
---
--- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.payments
-    ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.rate_types
+    ADD CONSTRAINT rate_types_pkey PRIMARY KEY (id);
 
 
 --
@@ -557,11 +490,19 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- Name: sites sites_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- Name: states states_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.sites
-    ADD CONSTRAINT sites_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.states
+    ADD CONSTRAINT states_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: subsidy_rule_rate_types subsidy_rule_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT subsidy_rule_rate_types_pkey PRIMARY KEY (id);
 
 
 --
@@ -581,24 +522,39 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: index_agencies_on_name_and_state_id; Type: INDEX; Schema: public; Owner: -
+-- Name: zipcodes zipcodes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_agencies_on_name_and_state_id ON public.agencies USING btree (name, state_id);
-
-
---
--- Name: index_attendances_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_attendances_on_child_case_cycle_id ON public.attendances USING btree (child_case_cycle_id);
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT zipcodes_pkey PRIMARY KEY (id);
 
 
 --
--- Name: index_attendances_on_child_site_id; Type: INDEX; Schema: public; Owner: -
+-- Name: billable_index; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btree (child_site_id);
+CREATE INDEX billable_index ON public.billable_occurrences USING btree (billable_type, billable_id);
+
+
+--
+-- Name: index_billable_occurrence_rate_types_on_billable_occurrence_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrence_rate_types_on_billable_occurrence_id ON public.billable_occurrence_rate_types USING btree (billable_occurrence_id);
+
+
+--
+-- Name: index_billable_occurrence_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrence_rate_types_on_rate_type_id ON public.billable_occurrence_rate_types USING btree (rate_type_id);
+
+
+--
+-- Name: index_billable_occurrences_on_child_approval_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_billable_occurrences_on_child_approval_id ON public.billable_occurrences USING btree (child_approval_id);
 
 
 --
@@ -606,6 +562,13 @@ CREATE INDEX index_attendances_on_child_site_id ON public.attendances USING btre
 --
 
 CREATE INDEX index_blocked_tokens_on_jti ON public.blocked_tokens USING btree (jti);
+
+
+--
+-- Name: index_businesses_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_businesses_on_county_id ON public.businesses USING btree (county_id);
 
 
 --
@@ -623,171 +586,87 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 
 
 --
--- Name: index_case_cycles_on_user_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_businesses_on_zipcode_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_case_cycles_on_user_id ON public.case_cycles USING btree (user_id);
-
-
---
--- Name: index_child_case_cycle_payments_on_child_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycle_payments_on_child_case_cycle_id ON public.child_case_cycle_payments USING btree (child_case_cycle_id);
+CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zipcode_id);
 
 
 --
--- Name: index_child_case_cycle_payments_on_payment_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_child_approval_rate_types_on_child_approval_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_child_case_cycle_payments_on_payment_id ON public.child_case_cycle_payments USING btree (payment_id);
-
-
---
--- Name: index_child_case_cycles_on_case_cycle_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_case_cycle_id ON public.child_case_cycles USING btree (case_cycle_id);
+CREATE INDEX index_child_approval_rate_types_on_child_approval_id ON public.child_approval_rate_types USING btree (child_approval_id);
 
 
 --
--- Name: index_child_case_cycles_on_child_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_child_approval_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_child_case_cycles_on_child_id ON public.child_case_cycles USING btree (child_id);
-
-
---
--- Name: index_child_case_cycles_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_case_cycles_on_subsidy_rule_id ON public.child_case_cycles USING btree (subsidy_rule_id);
+CREATE INDEX index_child_approval_rate_types_on_rate_type_id ON public.child_approval_rate_types USING btree (rate_type_id);
 
 
 --
--- Name: index_child_sites_on_child_id_and_site_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_child_approvals_on_approval_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_child_sites_on_child_id_and_site_id ON public.child_sites USING btree (child_id, site_id);
-
-
---
--- Name: index_children_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_children_on_user_id ON public.children USING btree (user_id);
+CREATE INDEX index_child_approvals_on_approval_id ON public.child_approvals USING btree (approval_id);
 
 
 --
--- Name: index_lookup_cities_on_county_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_child_approvals_on_child_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_lookup_cities_on_county_id ON public.lookup_cities USING btree (county_id);
-
-
---
--- Name: index_lookup_cities_on_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_cities_on_name ON public.lookup_cities USING btree (name);
+CREATE INDEX index_child_approvals_on_child_id ON public.child_approvals USING btree (child_id);
 
 
 --
--- Name: index_lookup_cities_on_name_and_state_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_child_approvals_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lookup_cities_on_name_and_state_id ON public.lookup_cities USING btree (name, state_id);
-
-
---
--- Name: index_lookup_cities_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_cities_on_state_id ON public.lookup_cities USING btree (state_id);
+CREATE INDEX index_child_approvals_on_subsidy_rule_id ON public.child_approvals USING btree (subsidy_rule_id);
 
 
 --
--- Name: index_lookup_counties_on_name; Type: INDEX; Schema: public; Owner: -
+-- Name: index_children_on_business_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_lookup_counties_on_name ON public.lookup_counties USING btree (name);
-
-
---
--- Name: index_lookup_counties_on_state_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_counties_on_state_id ON public.lookup_counties USING btree (state_id);
+CREATE INDEX index_children_on_business_id ON public.children USING btree (business_id);
 
 
 --
--- Name: index_lookup_counties_on_state_id_and_name; Type: INDEX; Schema: public; Owner: -
+-- Name: index_counties_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lookup_counties_on_state_id_and_name ON public.lookup_counties USING btree (state_id, name);
-
-
---
--- Name: index_lookup_states_on_abbr; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_lookup_states_on_abbr ON public.lookup_states USING btree (abbr);
+CREATE INDEX index_counties_on_name ON public.counties USING btree (name);
 
 
 --
--- Name: index_lookup_states_on_name; Type: INDEX; Schema: public; Owner: -
+-- Name: index_counties_on_state_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lookup_states_on_name ON public.lookup_states USING btree (name);
-
-
---
--- Name: index_lookup_zipcodes_on_city_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_city_id ON public.lookup_zipcodes USING btree (city_id);
+CREATE INDEX index_counties_on_state_id ON public.counties USING btree (state_id);
 
 
 --
--- Name: index_lookup_zipcodes_on_code; Type: INDEX; Schema: public; Owner: -
+-- Name: index_states_on_abbr; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX index_lookup_zipcodes_on_code ON public.lookup_zipcodes USING btree (code);
-
-
---
--- Name: index_lookup_zipcodes_on_county_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_county_id ON public.lookup_zipcodes USING btree (county_id);
+CREATE INDEX index_states_on_abbr ON public.states USING btree (abbr);
 
 
 --
--- Name: index_lookup_zipcodes_on_state_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_subsidy_rule_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_lookup_zipcodes_on_state_id ON public.lookup_zipcodes USING btree (state_id);
-
-
---
--- Name: index_lookup_zipcodes_on_state_id_and_city_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_lookup_zipcodes_on_state_id_and_city_id ON public.lookup_zipcodes USING btree (state_id, city_id);
+CREATE INDEX index_subsidy_rule_rate_types_on_rate_type_id ON public.subsidy_rule_rate_types USING btree (rate_type_id);
 
 
 --
--- Name: index_payments_on_site_id_and_agency_id; Type: INDEX; Schema: public; Owner: -
+-- Name: index_subsidy_rule_rate_types_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE INDEX index_payments_on_site_id_and_agency_id ON public.payments USING btree (site_id, agency_id);
-
-
---
--- Name: index_sites_on_name_and_business_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_sites_on_name_and_business_id ON public.sites USING btree (name, business_id);
+CREATE INDEX index_subsidy_rule_rate_types_on_subsidy_rule_id ON public.subsidy_rule_rate_types USING btree (subsidy_rule_id);
 
 
 --
@@ -840,74 +719,189 @@ CREATE UNIQUE INDEX index_users_on_unlock_token ON public.users USING btree (unl
 
 
 --
+-- Name: index_zipcodes_on_code; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_zipcodes_on_code ON public.zipcodes USING btree (code);
+
+
+--
+-- Name: index_zipcodes_on_county_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_county_id ON public.zipcodes USING btree (county_id);
+
+
+--
+-- Name: index_zipcodes_on_lat_and_lon; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_lat_and_lon ON public.zipcodes USING btree (lat, lon);
+
+
+--
+-- Name: index_zipcodes_on_state_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_zipcodes_on_state_id ON public.zipcodes USING btree (state_id);
+
+
+--
+-- Name: subsidy_ruleable_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX subsidy_ruleable_index ON public.subsidy_rules USING btree (subsidy_ruleable_type, subsidy_ruleable_id);
+
+
+--
 -- Name: unique_children; Type: INDEX; Schema: public; Owner: -
 --
 
-CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, date_of_birth, user_id);
+CREATE UNIQUE INDEX unique_children ON public.children USING btree (full_name, date_of_birth, business_id);
 
 
 --
--- Name: case_cycles fk_rails_02471acfd5; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: counties fk_rails_028abb0ec1; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.case_cycles
-    ADD CONSTRAINT fk_rails_02471acfd5 FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: child_case_cycle_payments fk_rails_3d2a50a86a; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT fk_rails_3d2a50a86a FOREIGN KEY (payment_id) REFERENCES public.payments(id);
+ALTER TABLE ONLY public.counties
+    ADD CONSTRAINT fk_rails_028abb0ec1 FOREIGN KEY (state_id) REFERENCES public.states(id);
 
 
 --
--- Name: child_case_cycle_payments fk_rails_5c19c31ce9; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: businesses fk_rails_25d0b15649; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.child_case_cycle_payments
-    ADD CONSTRAINT fk_rails_5c19c31ce9 FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
-
-
---
--- Name: child_case_cycles fk_rails_b4f3c7d474; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_b4f3c7d474 FOREIGN KEY (child_id) REFERENCES public.children(id);
+ALTER TABLE ONLY public.businesses
+    ADD CONSTRAINT fk_rails_25d0b15649 FOREIGN KEY (county_id) REFERENCES public.counties(id);
 
 
 --
--- Name: child_case_cycles fk_rails_bd0bf4a589; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: child_approvals fk_rails_2af12c67c9; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_bd0bf4a589 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
-
-
---
--- Name: attendances fk_rails_c1c1bbb16f; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT fk_rails_c1c1bbb16f FOREIGN KEY (child_case_cycle_id) REFERENCES public.child_case_cycles(id);
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_2af12c67c9 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
 
 
 --
--- Name: child_case_cycles fk_rails_e441dceee7; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: subsidy_rules fk_rails_2bb2a806ed; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.child_case_cycles
-    ADD CONSTRAINT fk_rails_e441dceee7 FOREIGN KEY (case_cycle_id) REFERENCES public.case_cycles(id);
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT fk_rails_2bb2a806ed FOREIGN KEY (county_id) REFERENCES public.counties(id);
 
 
 --
--- Name: attendances fk_rails_e61403eb2b; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: subsidy_rule_rate_types fk_rails_2c8ca83220; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.attendances
-    ADD CONSTRAINT fk_rails_e61403eb2b FOREIGN KEY (child_site_id) REFERENCES public.child_sites(id);
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT fk_rails_2c8ca83220 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
+-- Name: billable_occurrence_rate_types fk_rails_39b46a8efd; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT fk_rails_39b46a8efd FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
+-- Name: billable_occurrence_rate_types fk_rails_3ecc6abdd0; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrence_rate_types
+    ADD CONSTRAINT fk_rails_3ecc6abdd0 FOREIGN KEY (billable_occurrence_id) REFERENCES public.billable_occurrences(id);
+
+
+--
+-- Name: businesses fk_rails_48152d6e55; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.businesses
+    ADD CONSTRAINT fk_rails_48152d6e55 FOREIGN KEY (zipcode_id) REFERENCES public.zipcodes(id);
+
+
+--
+-- Name: zipcodes fk_rails_4916202daf; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT fk_rails_4916202daf FOREIGN KEY (state_id) REFERENCES public.states(id);
+
+
+--
+-- Name: subsidy_rule_rate_types fk_rails_56583d3a66; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rule_rate_types
+    ADD CONSTRAINT fk_rails_56583d3a66 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
+
+
+--
+-- Name: billable_occurrences fk_rails_5b2fd4e167; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.billable_occurrences
+    ADD CONSTRAINT fk_rails_5b2fd4e167 FOREIGN KEY (child_approval_id) REFERENCES public.child_approvals(id);
+
+
+--
+-- Name: child_approvals fk_rails_6a1cefaf48; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_6a1cefaf48 FOREIGN KEY (child_id) REFERENCES public.children(id);
+
+
+--
+-- Name: child_approvals fk_rails_b4c39906ee; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approvals
+    ADD CONSTRAINT fk_rails_b4c39906ee FOREIGN KEY (approval_id) REFERENCES public.approvals(id);
+
+
+--
+-- Name: children fk_rails_b51aaa1e8e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.children
+    ADD CONSTRAINT fk_rails_b51aaa1e8e FOREIGN KEY (business_id) REFERENCES public.businesses(id);
+
+
+--
+-- Name: zipcodes fk_rails_c1f1e8d4c3; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.zipcodes
+    ADD CONSTRAINT fk_rails_c1f1e8d4c3 FOREIGN KEY (county_id) REFERENCES public.counties(id);
+
+
+--
+-- Name: child_approval_rate_types fk_rails_d3d552ef33; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT fk_rails_d3d552ef33 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
+
+
+--
+-- Name: child_approval_rate_types fk_rails_dbacd97c03; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.child_approval_rate_types
+    ADD CONSTRAINT fk_rails_dbacd97c03 FOREIGN KEY (child_approval_id) REFERENCES public.child_approvals(id);
+
+
+--
+-- Name: subsidy_rules fk_rails_eac641c57e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.subsidy_rules
+    ADD CONSTRAINT fk_rails_eac641c57e FOREIGN KEY (state_id) REFERENCES public.states(id);
 
 
 --
@@ -955,6 +949,19 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20200913004651'),
 ('20200913005807'),
 ('20200914030020'),
-('20200918232336');
+('20200918232336'),
+('20201007145834'),
+('20201007161749'),
+('20201007165331'),
+('20201007200557'),
+('20201007202953'),
+('20201007203150'),
+('20201009020636'),
+('20201010022135'),
+('20201011174541'),
+('20201011184243'),
+('20201019013322'),
+('20201019020032'),
+('20201019035426');
 
 

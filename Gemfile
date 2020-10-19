@@ -10,6 +10,7 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'money-rails'
+gem 'my_zipcode_gem'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 4.3'
 gem 'pundit', '~> 2.1'
@@ -49,6 +50,7 @@ group :development do
   gem 'letter_opener_web', '~> 1.4'
   gem 'listen', '>= 3.0.5', '< 3.3'
   gem 'pgreset'
+  gem 'rails-erd'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
@@ -66,3 +68,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+gem 'mocha', group: :test

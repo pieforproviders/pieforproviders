@@ -1,8 +1,5 @@
 {
   "properties": {
-    "attendance_duration": {
-      "$ref": "duration_definitions.json"
-    },
     "check_in": {
       "type": "string",
       "format": "time"
@@ -11,14 +8,6 @@
       "type": "string",
       "format": "time"
     },
-    "child_case_cycle_id": {
-      "type": "string",
-      "format": "uuid"
-    },
-    "child_site_id": {
-      "type": "string",
-      "format": "uuid"
-    },
     "created_at": {
       "type": "string",
       "format": "date-time"
@@ -26,10 +15,6 @@
     "id": {
       "type": "string",
       "format": "uuid"
-    },
-    "starts_on": {
-      "type": "string",
-      "format": "date"
     },
     "total_time_in_care": {
       "type": "string",
@@ -41,13 +26,9 @@
     }
   },
   "required": [
-    "attendance_duration",
     "check_in",
-    "child_case_cycle_id",
-    "child_site_id",
     "created_at",
     "id",
-    "starts_on",
     "updated_at"
   ],
   "type": "object"

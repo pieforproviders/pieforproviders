@@ -98,14 +98,6 @@ RSpec.configure do |config|
               { type: :null }
             ]
           },
-          agency: {
-            type: :object,
-            properties: {
-              active: { type: :boolean, example: 'true' },
-              name: { type: :string, example: "Wisconsin Children's Services" },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            }
-          },
           business: {
             type: :object,
             properties: {
@@ -117,104 +109,8 @@ RSpec.configure do |config|
           child: {
             type: :object,
             properties: {
-              ccms_id: { type: :string, example: '987654321' },
               date_of_birth: { type: :string, example: '1992-11-01' },
               full_name: { type: :string, example: 'Sean Flannery' }
-            }
-          },
-          site: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Marberry Educational Center' },
-              address: { type: :string, example: '1100 Marks Ave' },
-              city_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              zip_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              county_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-              qris_rating: { type: :string, example: '2' },
-              business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
-            }
-          },
-          payment: {
-            type: :object,
-            properties: {
-              agency_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-              amount_currency: { type: :string, example: 'USD' },
-              care_finished_on: { type: :string, example: '2020-03-15' },
-              care_started_on: { type: :string, example: '2020-01-01' },
-              discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              paid_on: { type: :string, example: '2020-05-20' },
-              site_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
-            }
-          },
-          subsidy_rule: {
-            type: :object,
-            properties: {
-              name: { type: :string, example: 'Rule 1' },
-              county_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              state_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              max_age: { type: :number, example: 18 },
-              part_day_rate_cents: { type: :integer, minimum: 0, example: 2_500 },
-              part_day_rate_currency: { type: :string, example: 'USD' },
-              full_day_rate_cents: { type: :integer, minimum: 0, example: 3_000 },
-              full_day_rate_currency: { type: :string, example: 'USD' },
-              part_day_max_hours: { type: :number, example: 4 },
-              full_day_max_hours: { type: :number, example: 12 },
-              full_plus_part_day_max_hours: { type: :number, example: 18 },
-              full_plus_full_day_max_hours: { type: :number, example: 24 },
-              part_day_threshold: { type: :number, example: 12 },
-              full_day_threshold: { type: :number, example: 24 },
-              license_type: { '$ref': '#/components/schemas/license_types' },
-              qris_rating: { type: :string, example: '1' }
-            }
-          },
-          case_cycle: {
-            type: :object,
-            properties: {
-              case_number: {
-                anyOf: [
-                  { type: :string, example: '123-45' },
-                  { type: :null }
-                ]
-              },
-              copay_cents: { type: :integer, minimum: 0 },
-              copay_currency: { type: :string, example: 'USD' },
-              copay_frequency: {
-                anyOf: [
-                  { '$ref': '#/components/schemas/copay_frequencies' },
-                  { type: :null }
-                ]
-              },
-              effective_on: { '$ref': '#/components/schemas/date_or_null' },
-              expires_on: { '$ref': '#/components/schemas/date_or_null' },
-              notified_on: { '$ref': '#/components/schemas/date_or_null' },
-              status: { '$ref': '#/components/schemas/case_statuses' },
-              submitted_on: { type: :string, example: '2020-07-12' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
-          child_case_cycle: {
-            type: :object,
-            properties: {
-              case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              child_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              full_days_allowed: { type: :integer, example: 21 },
-              part_days_allowed: { type: :integer, example: 18 },
-              subsidy_rule_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' }
-            }
-          },
-          child_case_cycle_payment: {
-            type: :object,
-            properties: {
-              amount_cents: { type: :integer, minimum: 0, example: 19_999 },
-              amount_currency: { type: :string, example: 'USD' },
-              child_case_cycle_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' },
-              discrepancy_cents: { type: :integer, example: 456 },
-              discrepancy_currency: { '$ref': '#/components/schemas/currency_or_null' },
-              payment_id: { type: :string, example: '3fa57706-f5bb-4d40-9350-85871f698d51' }
             }
           },
           attendance: {
@@ -222,8 +118,6 @@ RSpec.configure do |config|
             properties: {
               check_in: { type: :string, example: '020-09-13 14:07:47 -0700' },
               check_out: { '$ref': '#/components/schemas/time_or_null' },
-              child_site_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
-              child_case_cycle_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d52' },
               attendance_duration: { '$ref': '#/components/schemas/duration_definitions' },
               total_time_in_care: { type: :string, example: '360 minutes' },
               starts_on: { type: :string, example: '2020-07-12' }
@@ -270,9 +164,11 @@ RSpec.configure do |config|
                   {
                     type: :object,
                     required: %w[
+                      county_id
                       name
                       license_type
                       user_id
+                      zipcode_id
                     ]
                   }
                 ]
@@ -295,27 +191,14 @@ RSpec.configure do |config|
               child: {
                 type: :object,
                 properties: {
-                  ccms_id: { type: :string, example: '123456789' },
                   date_of_birth: { type: :string, example: '1991-11-01' },
                   full_name: { type: :string, example: 'Seamus Finnigan' },
-                  user_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' },
-                  child_sites_attributes: {
-                    type: :array,
-                    items: {
-                      type: :object,
-                      required: %w[site_id],
-                      properties: {
-                        site_id: { type: :uuid, example: 'a42270e4-e4d4-485c-a57d-ccbad5729030' },
-                        started_care: { type: :string, example: '2018-12-13' },
-                        ended_care: { type: :string, example: '2019-08-04' }
-                      }
-                    }
-                  }
+                  business_id: { type: :uuid, example: '3fa57706-f5bb-4d40-9350-85871f698d55' }
                 },
                 required: %w[
                   full_name
                   date_of_birth
-                  user_id
+                  business_id
                 ]
               }
             }
@@ -330,157 +213,13 @@ RSpec.configure do |config|
               }
             }
           },
-          createSite: {
-            type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/site' },
-                  {
-                    type: :object,
-                    required: %w[
-                      name
-                      address
-                      city_id
-                      state_id
-                      zip_id
-                      county_id
-                      business_id
-                    ]
-                  }
-                ]
-              }
-            }
-          },
-          updateSite: {
-            type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/site' }
-                ]
-              }
-            }
-          },
-          createPayment: {
-            type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/payment' },
-                  {
-                    type: :object,
-                    required: %w[agency_id site_id amount_cents care_finished_on care_started_on paid_on]
-                  }
-                ]
-              }
-            }
-          },
-          updatePayment: {
-            type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/payment' }
-                ]
-              }
-            }
-          },
-          createCaseCycle: {
-            type: :object,
-            properties: {
-              case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/case_cycle' },
-                  {
-                    type: :object,
-                    required: %w[status submitted_on]
-                  }
-                ]
-              }
-            }
-          },
-          updateCaseCycle: {
-            type: :object,
-            properties: {
-              case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/case_cycle' }
-                ]
-              }
-            }
-          },
-          createChildCaseCycle: {
-            type: :object,
-            properties: {
-              child_case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' },
-                  {
-                    type: :object,
-                    required: %w[case_cycle_id child_id full_days_allowed part_days_allowed subsidy_rule_id user_id]
-                  }
-                ]
-              }
-            }
-          },
-          updateChildCaseCycle: {
-            type: :object,
-            properties: {
-              child_case_cycle: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle' }
-                ]
-              }
-            }
-          },
-          createChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' },
-                  {
-                    type: :object,
-                    required: %w[amount_cents child_case_cycle_id payment_id]
-                  }
-                ]
-              }
-            }
-          },
-          updateChildCaseCyclePayment: {
-            type: :object,
-            properties: {
-              child_case_cycle_payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/child_case_cycle_payment' }
-                ]
-              }
-            }
-          },
           createAttendance: {
             type: :object,
-            properties: {
-              payment: {
-                allOf: [
-                  { '$ref': '#/components/schemas/attendance' },
-                  {
-                    type: :object,
-                    required: %w[child_case_cycle_id starts_on]
-                  }
-                ]
-              }
-            }
+            properties: {}
           },
           updateAttendance: {
             type: :object,
-            properties: {
-              site: {
-                allOf: [
-                  { '$ref': '#/components/schemas/attendance' }
-                ]
-              }
-            }
+            properties: {}
           }
         }
       }

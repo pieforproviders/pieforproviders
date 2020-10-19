@@ -17,18 +17,9 @@
 #   I'm not sure if we'll let them change it.
 #
 class Attendance < UuidApplicationRecord
-  belongs_to :child_site
-  has_one :child, through: :child_site
-  has_one :site, through: :child_site
-
-  belongs_to :child_case_cycle
-
-  DURATION_DEFINITIONS = %w[part_day full_day full_plus_part_day full_plus_full_day].freeze
-  enum attendance_duration: DURATION_DEFINITIONS.index_by(&:to_sym)
-
+  has_one :billable_occurrence, as: :billable, dependent: :restrict_with_error
   before_validation :calc_total_time_in_care
 
-  validates :starts_on, date_param: true
   validates :check_in, time_param: true
   validates :check_out, time_param: true
 
@@ -44,23 +35,9 @@ end
 # Table name: attendances
 #
 #  id                                                             :uuid             not null, primary key
-#  attendance_duration                                            :enum             default("full_day"), not null
-#  check_in                                                       :time             not null
-#  check_out                                                      :time             not null
-#  starts_on                                                      :date             not null
+#  check_in                                                       :datetime
+#  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
-#  child_case_cycle_id                                            :uuid             not null
-#  child_site_id                                                  :uuid             not null
-#
-# Indexes
-#
-#  index_attendances_on_child_case_cycle_id  (child_case_cycle_id)
-#  index_attendances_on_child_site_id        (child_site_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (child_case_cycle_id => child_case_cycles.id)
-#  fk_rails_...  (child_site_id => child_sites.id)
 #

@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["payments"],
-  "items": {"$ref":"child_case_cycle_payment.json"}
-}

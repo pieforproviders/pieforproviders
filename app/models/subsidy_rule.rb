@@ -1,63 +1,51 @@
 # frozen_string_literal: true
 
-# Subsidy rules
+# Subsidy rules - polymorphic "parent" class
 # These records will be manually added to the db either through rake tasks or SQL.
 # Only admins with direct access to the db will be able to update these records
 #
 class SubsidyRule < UuidApplicationRecord
-  belongs_to :county, class_name: 'Lookup::County'
-  belongs_to :state, class_name: 'Lookup::State'
+  belongs_to :county, optional: true
+  belongs_to :state
+  belongs_to :subsidy_ruleable, polymorphic: true
+  has_many :subsidy_rule_rate_types, dependent: :destroy
+  has_many :rate_types, through: :subsidy_rule_rate_types
 
   enum license_type: Licenses.types
 
   validates :name, presence: true
   validates :max_age, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :full_day_rate, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :part_day_rate, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :full_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :part_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :full_day_threshold, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :part_day_threshold, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :full_plus_full_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
-  validates :full_plus_part_day_max_hours, numericality: { greater_than_or_equal_to: 0.00 }
+  validates :effective_on, date_param: true
+  validates :expires_on, date_param: true
 
   validates :license_type, inclusion: { in: Licenses.types.values }
-
-  # The money-rails gem specifically requires that the '_cents' suffix be
-  # specified when using the "monetize" macro even though the attributes are
-  # referred to without the '_cents' suffix.
-  # IOW, you only need to refer to part_day_rate.amount or payment.discrepancy ,
-  # unlike the following statements.
-  monetize :part_day_rate_cents
-  monetize :full_day_rate_cents
 end
 
 # == Schema Information
 #
 # Table name: subsidy_rules
 #
-#  id                           :uuid             not null, primary key
-#  full_day_max_hours           :decimal(, )      not null
-#  full_day_rate_cents          :integer          default(0), not null
-#  full_day_rate_currency       :string           default("USD"), not null
-#  full_day_threshold           :decimal(, )      not null
-#  full_plus_full_day_max_hours :decimal(, )      not null
-#  full_plus_part_day_max_hours :decimal(, )      not null
-#  license_type                 :enum             not null
-#  max_age                      :decimal(, )      not null
-#  name                         :string           not null
-#  part_day_max_hours           :decimal(, )      not null
-#  part_day_rate_cents          :integer          default(0), not null
-#  part_day_rate_currency       :string           default("USD"), not null
-#  part_day_threshold           :decimal(, )      not null
-#  qris_rating                  :string
-#  created_at                   :datetime         not null
-#  updated_at                   :datetime         not null
-#  county_id                    :uuid             not null
-#  state_id                     :uuid             not null
+#  id                    :uuid             not null, primary key
+#  effective_on          :date
+#  expires_on            :date
+#  license_type          :enum             not null
+#  max_age               :decimal(, )      not null
+#  name                  :string           not null
+#  subsidy_ruleable_type :string
+#  created_at            :datetime         not null
+#  updated_at            :datetime         not null
+#  county_id             :uuid
+#  state_id              :uuid             not null
+#  subsidy_ruleable_id   :bigint
 #
 # Indexes
 #
 #  index_subsidy_rules_on_county_id  (county_id)
 #  index_subsidy_rules_on_state_id   (state_id)
+#  subsidy_ruleable_index            (subsidy_ruleable_type,subsidy_ruleable_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (state_id => states.id)
 #

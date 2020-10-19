@@ -8,10 +8,17 @@ es:
     license_exempt_home: guardería en el hogar exento de licencia 
     license_exempt_center: centro exento de licencia
 
+  copay_frequencies: &copay_frequencies
+    daily: diario
+    weekly: semanal
+    monthly: mensual
+
   activerecord:
     attributes:
       business:
-        categories: *license_types
+        license_types: *license_types
+      approval:
+        copay_frequencies: *copay_frequencies
 
   errors:
     messages:

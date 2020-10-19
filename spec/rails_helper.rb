@@ -103,16 +103,18 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   # start by truncating all the tables, but then use the faster transaction strategy
-  config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-    DatabaseCleaner.strategy = :transaction
+  config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = if example.metadata[:use_truncation]
+                                 :truncation
+                               else
+                                 :transaction
+                               end
+
+    DatabaseCleaner.start
   end
 
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
-  end
+  config.append_after(:each) { DatabaseCleaner.clean }
 end
 
 # configure shoulda matchers to use rspec as the test framework and full matcher libraries for rails

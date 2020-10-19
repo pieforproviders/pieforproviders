@@ -10,24 +10,22 @@ VALID_API_PATH = '/api/v1'
 # to be used as parameters that are sent to the server.
 # The examples that expect item_params to be defined end with '... with parameters'.
 #
-# Ex: Assume you are testing the API calls for creating a Payment. The
-#     item_params are the parameters needed to create a Payment.
+# Ex: Assume you are testing the API calls for creating a Business. The
+#     item_params are the parameters needed to create a Business.
 #
-#      it_behaves_like 'it creates an item', Payment, 'payment' do
-#        let(:item_params) {
-#          {
-#            "agency_id": agency_id,
-#            "amount_cents": '123400',
-#            "care_finished_on": '2020-06-01',
-#            "care_started_on": '2020-01-01',
-#            "discrepancy_cents": '7890',
-#            "paid_on": '2020-07-07',
-#            "site_id": site_id
-#          }
-#        }
-#      end
+#     let!(:business_params) do
+#       {
+#         "name": 'Happy Hearts Child Care',
+#         "license_type": 'licensed_center',
+#         "user_id": user.id
+#       }
+#     end
 #
-#     You should define 'agency_id' and 'site_id' and any other values/variables
+#     it_behaves_like 'it creates an item', Business do
+#       let(:item_params) { business_params }
+#     end
+#
+#     You should define 'user_id' and any other values/variables
 #     as needed.
 # ------------------------------------------------------------------------------
 
@@ -496,7 +494,7 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value, is_time_param = false|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
@@ -527,7 +525,11 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
             let(item_name_symbol) { { item_name => item_params.merge(update_attribute => update_valid_value) } }
             run_test! do
               expect(response).to match_response_schema(item_name)
-              expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
+              if is_time_param
+                expect(DateTime.parse(update_valid_value)).to eq(DateTime.parse(response.parsed_body[update_attribute]))
+              else
+                expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
+              end
             end
           end
 
