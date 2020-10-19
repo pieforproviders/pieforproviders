@@ -52,7 +52,6 @@ class Api::V1::AttendancesController < Api::V1::ApiController
   def attendance_params
     params.require(:attendance).permit(:check_in,
                                        :check_out,
-                                       :starts_on,
                                        :total_time_in_care)
   end
 end

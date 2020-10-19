@@ -6,10 +6,8 @@ RSpec.describe 'attendances API', type: :request do
   let(:child) { create(:child) }
   let(:attendance_params) do
     {
-      "starts_on": Date.current.to_s,
-      "check_in": Time.zone.parse((Date.current + 7.hours).to_s).to_s,
-      'check_out': Time.zone.parse((Date.current + 20.hours).to_s).to_s,
-      "attendance_duration": 'full_day'
+      "check_in": Faker::Time.between(from: Time.zone.now - 1.day, to: Time.zone.now).to_s,
+      'check_out': Faker::Time.between(from: Time.zone.now, to: Time.zone.now + 1.day).to_s
     }
   end
 
@@ -23,7 +21,7 @@ RSpec.describe 'attendances API', type: :request do
     let(:item_params) { attendance_params }
   end
 
-  it_behaves_like 'it updates an item', Attendance, 'starts_on', Date.current.to_s, nil do
+  it_behaves_like 'it updates an item', Attendance, 'check_in', Faker::Time.between(from: Time.zone.now - 2.days, to: Time.zone.now - 1.day).to_s, 'A', true do
     let(:item_params) { attendance_params }
   end
 

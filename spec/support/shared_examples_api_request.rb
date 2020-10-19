@@ -494,7 +494,7 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value|
+RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value, is_time_param = false|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
   item_name_symbol = item_name.to_sym
@@ -525,7 +525,11 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
             let(item_name_symbol) { { item_name => item_params.merge(update_attribute => update_valid_value) } }
             run_test! do
               expect(response).to match_response_schema(item_name)
-              expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
+              if is_time_param
+                expect(DateTime.parse(update_valid_value)).to eq(DateTime.parse(response.parsed_body[update_attribute]))
+              else
+                expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
+              end
             end
           end
 
