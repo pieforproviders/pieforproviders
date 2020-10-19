@@ -118,7 +118,6 @@ jobs:
           yarn test --watchAll=false
   e2e_tests:
     name: E2E tests
-    if: ${{ github.ref == 'refs/heads/develop' }}
     runs-on: ubuntu-latest
     services:
       postgres:
