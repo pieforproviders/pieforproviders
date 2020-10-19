@@ -26,7 +26,7 @@ describe('Signup', () => {
     cy.get(createSelector('yesMultiBusiness')).click()
     cy.get(createSelector('phoneType')).click()
     cy.get(createSelector('homePhone')).click()
-    cy.get(createSelector('languageEs')).parent().click()
+    cy.get(createSelector('languageEs')).parent().parent().click() // this is annoying but it's because of nested ant design elements
     cy.get(createSelector('password')).type(password)
     cy.get(createSelector('passwordConfirmation')).type(password)
     cy.get(createSelector('terms')).check()
