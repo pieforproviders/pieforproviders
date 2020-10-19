@@ -237,17 +237,6 @@ CREATE TABLE public.subsidy_rules (
     name character varying NOT NULL,
     license_type public.license_types NOT NULL,
     max_age numeric NOT NULL,
-    part_day_rate_cents integer DEFAULT 0 NOT NULL,
-    part_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    full_day_rate_cents integer DEFAULT 0 NOT NULL,
-    full_day_rate_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    part_day_max_hours numeric NOT NULL,
-    full_day_max_hours numeric NOT NULL,
-    full_plus_part_day_max_hours numeric NOT NULL,
-    full_plus_full_day_max_hours numeric NOT NULL,
-    part_day_threshold numeric NOT NULL,
-    full_day_threshold numeric NOT NULL,
-    qris_rating character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL,
     county_id uuid,
@@ -736,6 +725,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201009020636'),
 ('20201010022135'),
 ('20201011174541'),
-('20201011184243');
+('20201011184243'),
+('20201019013322');
 
 
