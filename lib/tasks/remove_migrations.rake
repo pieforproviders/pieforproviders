@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# frozen_string_literal: true
 
 desc 'Remove data and schema migrations'
 task remove_migrations: :environment do
