@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
-      resources :attendances
+      resources :billable_occurrences
     end
   end
 
