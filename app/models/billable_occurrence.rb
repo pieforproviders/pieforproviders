@@ -6,6 +6,8 @@ class BillableOccurrence < UuidApplicationRecord
   belongs_to :billable, polymorphic: true
   has_many :billable_occurrence_rate_types, dependent: :destroy
   has_many :rate_types, through: :billable_occurrence_rate_types
+
+  accepts_nested_attributes_for :billable
 end
 
 # == Schema Information
