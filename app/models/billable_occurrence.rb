@@ -7,7 +7,11 @@ class BillableOccurrence < UuidApplicationRecord
   has_many :billable_occurrence_rate_types, dependent: :destroy
   has_many :rate_types, through: :billable_occurrence_rate_types
 
-  accepts_nested_attributes_for :billable
+  accepts_nested_attributes_for :billable, allow_destroy: true
+
+  def build_billable(params)
+    self.billable = billable_type.constantize.new(params)
+  end
 end
 
 # == Schema Information
