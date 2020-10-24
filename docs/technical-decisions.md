@@ -9,14 +9,15 @@ This might point to other sources and documents.
 This is a format that can be used to document each main decision. Copy, paste, and fill in for each main decision.  
 - Remember that a key value of this document is for someone to search it in the future when trying to understand the system.  Use keywords and descriptions that will help find answers.    
 
+
 ---
+## Decision:
 
-### Decision:
+### Why? (Rationales, Goals, Limitations, Risks, Unknowns, etc.):
 
-#### Why? (Rationales, Goals, Limitations, Risks, Unknowns, etc.):
+### Keywords / Areas affected:   
 
-##### Keywords / Areas affected:   
+### Author:  
 
-Author:  
-Date:    
+### Date:    
 ---
