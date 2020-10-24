@@ -35,11 +35,10 @@ Also if you notice something that isn't translated (i.e. the English text is har
 
 ## Architecture/Methodology Notes
 
-* We use uuids for the id primary key in API tables
-* We use rswag to generate docs, which means the request specs use the rswag DSL
-* We validate the JSON response of the API on every endpoint
-* A diagram of the db is saved using database markup language in [`/docs/dbdiagram.dbml`](/docs/dbdiagram.dbml) and a PDF version is available at [`/docs/dbdiagram.pdf`](/docs/dbdiagram.pdf).  A live version can be found here: [dbdiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120).  When making changes to the schema, ensure they are also recorded here.
-
+- We use uuids for the id primary key in API tables
+- We use rswag to generate docs, which means the request specs use the rswag DSL
+- We validate the JSON response of the API on every endpoint
+- A diagram of the db is saved using database markup language in [`/docs/dbdiagram.dbml`](/docs/dbdiagram.dbml) and a PDF version is available at [`/docs/dbdiagram.pdf`](/docs/dbdiagram.pdf).  A live version can be found here: [dbdiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120).  When making changes to the schema, ensure they are also recorded here.
 
 There's a helper rake task that runs all test suites and linting steps, and generates the swagger documentation; use `rails prep` to run this command.
 
@@ -54,4 +53,3 @@ Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb
 ## Data Model
 
 The data model is documented in `pie_erd.pdf` - `docs/dbdiagram.dbml` and `docs/dbdiagram.pdf` are deprecated
-</details>  

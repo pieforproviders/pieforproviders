@@ -8,7 +8,7 @@ We help child care providers and families claim the government funding for which
 
 Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with this project.
 
-## Why Contribute?
+## Why You Should Contribute
 
 We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve.
 
@@ -36,7 +36,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - Backend: Rails
   - **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
   - Rubocop
-  - Data Migrations: https://github.com/ilyakatz/data-migrate
+  - Data Migrations: [https://github.com/ilyakatz/data-migrate](https://github.com/ilyakatz/data-migrate)
   - RSpec
     - SimpleCov
     - Shoulda Matchers
@@ -69,7 +69,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - `graphviz` - [https://graphviz.org/download/](https://graphviz.org/download/)
 - `XCode Select` tools if you're on Mac
 
-##@ Optional
+### Optional
 
 - `heroku cli`
 - `foreman`
@@ -162,6 +162,7 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 
 - `yarn start-server` in one terminal (make sure rails is not currently running)
 - `yarn run cy:open` in another terminal
+
 </details>  
 
 ---
@@ -208,4 +209,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [PosgreSQL UUID as primary key in Rails 5.1](https://clearcove.ca/2017/08/postgres-uuid-as-primary-key-in-rails-5-1)
 - [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
 - [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
-</details>  
+
+</details>
