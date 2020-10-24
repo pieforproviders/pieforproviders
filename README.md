@@ -171,45 +171,30 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 
 ---
 
-There's a helper rake task that runs all test suites and linting steps, and generates the swagger documentation; use `rails prep` to run this command.
-
-### Adding/Updating Models
-
-Please make sure you write specs that include JSON validation of the request output for schema (see [spec/support/api/schemas/user.json](spec/support/api/schemas/user.json))
-
-### Adding/Updating API Controllers
-
-Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb) to include your controller actions
-
-### Data Model
-
-The data model is documented in `pie_erd.pdf` - `docs/dbdiagram.dbml` and `docs/dbdiagram.pdf` are deprecated
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 </details>  
 
 ---
 
 <details>
-  <summary>Troubleshooting and common problems</summary>
+  <summary>Troubleshooting and FAQs</summary>
 
 ---
 
-### Rails Devise Secret
+### Login Issues
 
-I keep getting redirected to the login screen when after I've created and confirmed my account
+**Q: I keep getting redirected to the login screen when after I've created and confirmed my account**  
+**A:** Make sure you've created a secret for `DEVISE_JWT_SECRET_KEY` in `.env` using `rails secret`
 
 ### Postgres
 
-Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.
+**Q: I get postgres errors when I try to set up the database**  
+**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.  
 
 ### XCode
 
-If you get the following error:
-
-```
-gyp: No Xcode or CLT version detected!
-```
-
-try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
+**Q: I see the following error in my terminal: `gyp: No Xcode or CLT version detected!`**  
+**A:** try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
 </details>  
 
 ---
