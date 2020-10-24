@@ -8,7 +8,7 @@ We help child care providers and families claim the government funding for which
 
 Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with this project.
 
-## Why Contribute?
+## Why You Should Contribute
 
 We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve.
 
@@ -22,17 +22,21 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 ## Important URLs
 
-- Staging: [https://pie-staging.herokuapp.com/](https://pie-staging.herokuapp.com/)
+- Staging: [https://pie-staging.herokuapp.com/](https://pie-staging.herokuapp.com/)  
+
+<br />
 
 <details>
   <summary>Architecture</summary>
+
+---
 
 - [ERD/Database Planning Diagram](docs/dbdiagram.pdf)
 
 - Backend: Rails
   - **SUPER IMPORTANT** This is configured to use UUIDs for primary keys in the generators: rails/config/initializers/generators.rb
   - Rubocop
-  - Data Migrations: https://github.com/ilyakatz/data-migrate
+  - Data Migrations: [https://github.com/ilyakatz/data-migrate](https://github.com/ilyakatz/data-migrate)
   - RSpec
     - SimpleCov
     - Shoulda Matchers
@@ -47,63 +51,99 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   - ESLint/Prettier
   - Jest/React Testing Library
   - Husky for pre-commit hooks
-  </details>
+  
+</details>  
+
+---
 
 <details>
-  <summary>Assumptions, Assertions, and Comments</summary>
-  
-  * I decided to go with a monorepo because of previous experience managing multi-repo projects.  If you need to make changes to multiple layers of the application, creating and managing multiple branches on multiple repos is more disruptive than handling merge conflicts, in my experience.  With a monorepo, everything you need to code review a PR is in the same place, and it makes it easier to track changes that impacted multiple layers of the application.
-</details>
+  <summary>Prerequisites</summary>
 
-## Prerequisites
+---
 
-- `postgres`
+### Required
+
+- `postgres` v12.3
 - `bundler`
+- `git`
+- `graphviz` - [https://graphviz.org/download/](https://graphviz.org/download/)
 - `XCode Select` tools if you're on Mac
 
-## Optional
+### Optional
 
-- `rvm` or another ruby version manager to isolate your dependency installation
-- [Postgres.app](https://postgresapp.com/) or another postgres tool
 - `heroku cli`
+- `foreman`
 
-## Getting Started
+</details>  
 
-- clone the repo
-- `cd pieforproviders`
-- copy `.env.sample` to `.env` and add values (contact a repo contributor)
+---
+
+<details>
+  <summary>Setup and configuration</summary>
+
+---
+
+- clone the repo: `git clone git@github.com:pieforproviders/pieforproviders.git`
+- navigate to the app directory: `cd pieforproviders`
 - install bundler for gems: `gem install bundler`
 - install gems: `bundle install`
-- set up the database: `bundle exec rails db:setup`
+- set up an environment file: copy `.env.sample` to `.env`
+- configure Devise: run `rails secret` to generate a secret string, add it to `.env` as the `DEVISE_JWT_SECRET_KEY` value
+- create and seed the database: `bundle exec rails db:setup`
 - install yarn globally if you don't have it yet: `npm install yarn -g`
-- `cd client`
+- navigate to the frontend directory: `cd client`
 - install front-end and end-to-end packages: `yarn install`
-- `cd ../`
 
-## Running the app locally
+</details>  
 
+---
+
+<details>
+  <summary>Running the app locally</summary>
+
+---
 You have several convenient options for running the app locally.
 
-1. Rake task
+### 1. Rake task (requires `heroku cli`)
 
-- Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 - `rails start`
+- This spins up both the front end and the back end in the same terminal window
 
-2. Foreman
+### 2. Foreman (requires `foreman`)
 
-- Install [foreman](https://github.com/ddollar/foreman) -- `gem install foreman`
 - Run `foreman start`
+- This spins up both the front end and the back end in the same terminal windo
 
-3. Without Foreman or Heroku
+### 3. Without Foreman or Heroku
 
 - Start rails in one terminal: `rails s -p 3001`
 - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 
-Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
+Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑  
+  
+> ***NOTE:*** Swagger UI is currently not configured to use authentication, so any authenticated endpoints will not be accessible at this route, you'll get unauthorized errors.
+</details>  
 
-## Running tests
+---
+
+<details>
+  <summary>Using the application</summary>
+
+---
+
+You can create a new user account by visiting `/signup` (or clicking "Sign Up" on the login page at the root).
+
+When you create a new account, you should see a demo email pop up in a new tab; **the link in this URL can't be clicked in local development**.  Instead, copy the path (starting with `localhost`) and paste it into a browser window.  This will confirm your user and automatically log you in.
+</details>  
+
+---
+
+<details>
+  <summary>Running tests</summary>
+
+---
 
 ### API
 
@@ -116,42 +156,58 @@ Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑
 
 ### End to End
 
-- `yarn build && yarn deploy`
-- `yarn cy:ci` from the root directory
+- `yarn run cy:ci` from the root directory
 
-### Prep for Pull Request
+### Interactive End to End
 
-There's a helper rake task that runs all test suites and linting steps, and generates the swagger documentation; use `rails prep` to run this command.
+- `yarn start-server` in one terminal (make sure rails is not currently running)
+- `yarn run cy:open` in another terminal
 
-## Adding/Updating Models
+</details>  
 
-Please make sure you write specs that include JSON validation of the request output for schema (see [spec/support/api/schemas/user.json](spec/support/api/schemas/user.json))
+---
 
-## Adding/Updating API Controllers
+<details>
+  <summary>Development guidelines</summary>
 
-Update the controller actions in [spec/swagger_helper.rb](spec/swagger_helper.rb) to include your controller actions
+---
 
-## Data Model
+See [CONTRIBUTING.md](CONTRIBUTING.md)
+</details>  
 
-The data model is documented in Database Markup Language in [docs/dbdiagram.dbml](docs/dbdiagram.dbml), and as a [PDF](docs/dbdiagram.pdf).  We use [DBDiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120) to update the PDF; you can copy changes to the [docs/dbdiagram.dbml](docs/dbdiagram.dbml) into the text field in [DBDiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120), and then the diagram will update.  Then export the PDF and save it back to the repo.
+---
 
-## Resources/Further Reading
+<details>
+  <summary>Troubleshooting and FAQs</summary>
+
+---
+
+### Login Issues
+
+**Q: I keep getting redirected to the login screen when after I've created and confirmed my account**  
+**A:** Make sure you've created a secret for `DEVISE_JWT_SECRET_KEY` in `.env` using `rails secret`
+
+### Postgres
+
+**Q: I get postgres errors when I try to set up the database**  
+**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.  
+
+### XCode
+
+**Q: I see the following error in my terminal: `gyp: No Xcode or CLT version detected!`**  
+**A:** try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
+</details>  
+
+---
+
+<details>
+  <summary>Resources and further reading</summary>
+
+---
 
 - [Quickstart for Rails](https://docs.docker.com/compose/rails/)
 - [PosgreSQL UUID as primary key in Rails 5.1](https://clearcove.ca/2017/08/postgres-uuid-as-primary-key-in-rails-5-1)
 - [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
 - [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
 
-## Notes
-
-- re: names - `full_name` with a `greeting_name` is more culturally inclusive - UX will probably have to make it make sense but not everyone has one first name and one last name
-
-## Troubleshooting
-
-If you get the following error:
-
-```
-gyp: No Xcode or CLT version detected!
-```
-
-try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
+</details>
