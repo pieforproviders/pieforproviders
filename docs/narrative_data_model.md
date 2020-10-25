@@ -1,5 +1,11 @@
 # Pie for Providers Data Model Narrative
 
+## Purpose
+
+The purpose of this document is to bridge the gap between the data model and real world usage/domain knowledge for engineers.
+
+## Users
+
 The most likely user for Pie for Providers in the MVP phase is a *Shared Service Alliance* staff member who is supporting *Family Childcare Providers* in billing and subsidy eligibility.  This document is meant to describe the connection between user domain knowledge/experience/interaction and the data model.  All **Capitalized and Bolded** terms are table-backed models in the Rails application.  There will be some notation on whether or not behavior is currently implemented or needs to be designed/decided, as of 10/20/2020.
 
 ## Onboarding and Account Creation
