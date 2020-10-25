@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Breadcrumb, Button, Dropdown, Grid, Menu } from 'antd'
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined } from '@ant-design/icons'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
