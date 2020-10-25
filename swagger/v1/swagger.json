@@ -5,15 +5,15 @@
     "version": "v1"
   },
   "paths": {
-    "/api/v1/attendances": {
+    "/api/v1/billable_occurrences": {
       "get": {
-        "summary": "lists all attendances for a user",
+        "summary": "lists all billable_occurrences for a user",
         "tags": [
-          "attendances"
+          "billable_occurrences"
         ],
         "responses": {
           "200": {
-            "description": "attendances found",
+            "description": "billable_occurrences found",
             "content": {
             }
           },
@@ -30,16 +30,16 @@
         }
       },
       "post": {
-        "summary": "creates a attendance",
+        "summary": "creates a billable_occurrence",
         "tags": [
-          "attendances"
+          "billable_occurrences"
         ],
         "parameters": [
 
         ],
         "responses": {
           "201": {
-            "description": "attendance created",
+            "description": "billable_occurrence created",
             "content": {
             }
           },
@@ -63,14 +63,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/createAttendance"
+                "$ref": "#/components/schemas/createBillableOccurrence"
               }
             }
           }
         }
       }
     },
-    "/api/v1/attendances/{id}": {
+    "/api/v1/billable_occurrences/{id}": {
       "parameters": [
         {
           "name": "id",
@@ -82,18 +82,18 @@
         }
       ],
       "get": {
-        "summary": "retrieves a attendance",
+        "summary": "retrieves a billable_occurrence",
         "tags": [
-          "attendances"
+          "billable_occurrences"
         ],
         "responses": {
           "200": {
-            "description": "attendance found",
+            "description": "billable_occurrence found",
             "content": {
             }
           },
           "404": {
-            "description": "attendance not found",
+            "description": "billable_occurrence not found",
             "content": {
             }
           },
@@ -110,26 +110,26 @@
         }
       },
       "put": {
-        "summary": "updates a attendance",
+        "summary": "updates a billable_occurrence",
         "tags": [
-          "attendances"
+          "billable_occurrences"
         ],
         "parameters": [
 
         ],
         "responses": {
           "200": {
-            "description": "attendance updated",
+            "description": "billable_occurrence updated",
             "content": {
             }
           },
           "422": {
-            "description": "attendance cannot be updated",
+            "description": "billable_occurrence cannot be updated",
             "content": {
             }
           },
           "404": {
-            "description": "attendance not found",
+            "description": "billable_occurrence not found",
             "content": {
             }
           },
@@ -148,25 +148,25 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/updateAttendance"
+                "$ref": "#/components/schemas/updateBillableOccurrence"
               }
             }
           }
         }
       },
       "delete": {
-        "summary": "deletes a attendance",
+        "summary": "deletes a billable_occurrence",
         "tags": [
-          "attendances"
+          "billable_occurrences"
         ],
         "responses": {
           "204": {
-            "description": "attendance deleted",
+            "description": "billable_occurrence deleted",
             "content": {
             }
           },
           "404": {
-            "description": "attendance not found",
+            "description": "billable_occurrence not found",
             "content": {
             }
           },
