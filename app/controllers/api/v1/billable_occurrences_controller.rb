@@ -3,6 +3,7 @@
 # API for child case cycle billable_occurrences
 class Api::V1::BillableOccurrencesController < Api::V1::ApiController
   before_action :set_billable_occurrence, only: %i[show update destroy]
+  before_action :authorize_user, only: %i[update destroy]
 
   # GET /billable_occurrences
   def index
@@ -50,6 +51,10 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
 
   def set_billable_occurrence
     @billable_occurrence = policy_scope(BillableOccurrence).find(params[:id])
+  end
+
+  def authorize_user
+    authorize @billable_occurrence
   end
 
   def billable_occurrence_params
