@@ -15,7 +15,12 @@ RSpec.describe 'businesses API', type: :request do
     }
   end
 
-  it_behaves_like 'it lists all items for a user', Business
+  it_behaves_like 'it lists all items for a user', Business do
+    let(:count) { 2 }
+    let(:owner) { user }
+    let(:owner_attributes) { { user: owner, zipcode: zipcode, county: zipcode.county } }
+    let(:non_owner_attributes) { { zipcode: zipcode, county: zipcode.county } }
+  end
 
   it_behaves_like 'it creates an item', Business do
     let(:item_params) { business_params }

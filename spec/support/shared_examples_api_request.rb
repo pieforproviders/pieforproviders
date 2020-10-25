@@ -115,12 +115,17 @@ def name_from_class(item_class)
 end
 
 #  This is the parameter passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
+#    item_class [Class] - the class for the item
 #
 RSpec.shared_examples 'it lists all items for a user' do |item_class|
   item_name = name_from_class(item_class)
   item_plural = item_name.pluralize
+  item_name_symbol = item_name.to_sym
+
+  before do
+    create_list(item_name_symbol, count, owner_attributes)
+    create_list(item_name_symbol, count, non_owner_attributes)
+  end
 
   path "#{VALID_API_PATH}/#{item_plural}" do
     get "lists all #{item_plural} for a user" do
@@ -135,10 +140,33 @@ RSpec.shared_examples 'it lists all items for a user' do |item_class|
       context 'on the right api version' do
         include_context 'correct api version header'
         context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', "#{item_plural} found" do
-            run_test! do
-              expect(response).to match_response_schema(item_plural)
+          context 'admin user' do
+            include_context 'admin user'
+            response '200', "#{item_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(count * 2)
+                expect(response).to match_response_schema(item_plural)
+              end
+            end
+          end
+
+          context 'resource owner' do
+            before { sign_in owner }
+
+            response '200', "#{item_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(count)
+                expect(response).to match_response_schema(item_plural)
+              end
+            end
+          end
+
+          context 'non-owner' do
+            include_context 'authenticated user'
+            response '200', "#{item_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(0)
+              end
             end
           end
         end

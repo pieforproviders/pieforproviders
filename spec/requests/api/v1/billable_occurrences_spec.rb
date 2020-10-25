@@ -7,7 +7,8 @@ RSpec.describe 'billable occurrences API', type: :request do
   let(:billable_occurrence_params) do
     {
       "child_approval_id": child.child_approvals[0].id,
-      "attendance_params": attributes_for(:attendance)
+      "billable_type": 'Attendance',
+      "billable_attributes": attributes_for(:attendance)
     }
   end
 
@@ -21,7 +22,11 @@ RSpec.describe 'billable occurrences API', type: :request do
     let(:item_params) { billable_occurrence_params }
   end
 
-  it_behaves_like 'it updates an item', BillableOccurrence, 'attendance_params', { "check_in": Faker::Time.between(from: Time.zone.now - 1.day, to: Time.zone.now).to_s }, nil, true do
+  it_behaves_like 'it updates an item', BillableOccurrence,
+                  'billable_attributes',
+                  { "check_in": Faker::Time.between(from: Time.zone.now - 1.day, to: Time.zone.now).to_s },
+                  nil,
+                  true do
     let(:item_params) { billable_occurrence_params }
   end
 
