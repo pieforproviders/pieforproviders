@@ -6,7 +6,7 @@ The most likely user for Pie for Providers in the MVP phase is a *Shared Service
 
 As a user, I will create an account, generating a **User** record.
 
-I will log in and be "onboarded" via the UI; I will upload the case records of the businesses I am supporting and the children for whom they provide care.  During onboarding, I wlil provide information about the **Child** receiving childcare and the subsidy, the **Business** that provides childcare to that **Child**, and the **Approval** letter that outlines details about the subsidy for which the family (a collection of **Children** in the same household) is eligible.  Each case record entered in during onboarding is the associated information that makes up a **ChildApproval**.
+I will log in and be "onboarded" via the UI; I will upload the case records of the businesses I am supporting and the children for whom they provide care.  During onboarding, I will provide information about the **Child** receiving childcare and the subsidy, the **Business** that provides childcare to that **Child**, and the **Approval** letter that outlines details about the subsidy for which the family (a collection of **Children** in the same household with the same case number) is eligible.  Each case record entered in during onboarding is the associated information that makes up a **ChildApproval**.
 
 > ### Onboarding Example
 >
@@ -32,7 +32,7 @@ I will log in and be "onboarded" via the UI; I will upload the case records of t
 > | First name (Child.full_name) | Last name (Child.full_name) | Date of birth (Child.date_of_birth) | Business Name (Business.name) | Business Zip Code (Business.ZipCode) | Business County (Business.County) | Business QRIS rating (TO BE IMPLEMENTED) | Case number (Approval.case_number) | Full days (ChildApprovalRateTypes) | Part days (ChildApprovalRateTypes) | Effective on (Approval.effective_on) | Expires on (Approval.expires_on) | Co-pay (Approval.copay_cents[monetize]) | Co-pay frequency (Approval.copay_frequency[enum]) |  
 > | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
 > | Kimbu | Mòsi | 2014-06-30 | Happy Hearts Childcare | 60606 | Cook | Gold | 4567890 | 10 | 10 | 2020-02-04 | 2021-02-04 | $12 | Weekly |
-> | Amaury | Mòsi | 2012-09-11 | Little Leaf Day School | 60101 | DuPage | Bronze | 4567890 | 11 | 7 | 2019-11-12 | 2020-11-12 | $12 | Weekly |  
+> | Amaury | Mòsi | 2012-09-11 | Little Leaf Day School | 60101 | DuPage | Bronze | 4567890 | 11 | 7 | 2020-02-04 | 2021-02-04 | $12 | Weekly |  
 > 
 > The remaining childrren will each have their own record with unique case numbers
   
@@ -49,7 +49,7 @@ The backend will then do the following:
 >
 > In the example above, Kimbu Mòsi is approved for 10 full_days and 10 part_days, and is 6 years old at the time of entry into Pie.  Their childcare provider **Business** has a Gold QRIS rating, and is located in Cook County.  This makes them eligible for a particular **SubsidyRule** (which in turn has an **IllinoisSubsidyRule** defining its QRIS percentage increases), say, "3+ in age, Cook County, Gold"
 >
-> That **SubsidyRule** has 2 **RateTypes** associated via **SubsidyRuleRateTypes**: full_day (defined as 8 hours, with an 80% attendance threshhold, at a rate of $30) and part_day (defined as 4 hours, with an 80% attendance threshhold, at a rate of $15)
+> That **SubsidyRule** has 2 **RateTypes** associated via **SubsidyRuleRateTypes**: full_day (defined as 8 hours, with an 79.5% attendance threshhold, at a rate of $30) and part_day (defined as 4 hours, with an 79.5% attendance threshhold, at a rate of $15)
 >
 > This means that Kimbu should have a **ChildApproval** (associated to the **Approval** letter) that has two **ChildApprovalRateTypes** (associated to the two **RateTypes** that belong to the appropriate **SubsidyRule** that applies to Kimbu)
 >
@@ -64,7 +64,7 @@ This concludes onboarding and creating subsidy cases at the beginning of a user'
 
 As a child attends their child care provider, they generate **BillableOccurrences** (anything the provider can bill the state for in order to receive subsidy funds).  In Illinois, the only **BillableOccurrence** is an **Attendance** at childcare.  
 
-**TO BE IMPLEMENTED**: In other states, things like providing a child lunch or transportation can be reimbursed by the state as a part of a **SubsidyRule**.
+**TO BE IMPLEMENTED**: In other states, things like enrollment fees or providing a child transportation can be reimbursed by the state as a part of a **SubsidyRule**.
 
 **TO BE IMPLEMENTED**: A Pie user will enter one or more **BillableOccurrences** of a particular type (say, an **Attendance**) for a particular **ChildApproval** (i.e. "This **Child** attended on 10/20/2020, and the **Approval** that is currently active has the following **RateType** for an attendance of this length").  Pie will take the current **ChildApproval** for that **Child** and using the **SubsidyRule** and **ChildApprovalRateTypes**, will associate that **BillableOccurrence** to a **BillableOccurrenceRateType** - this will accommodate any changes in rates over the life of the **ChildApproval**; the **BillableOccurrence** is a snapshot in time of an event, so when other associations change or expire, we don't want old records to lose their integrity.
 
