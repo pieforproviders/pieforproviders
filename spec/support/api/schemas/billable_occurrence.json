@@ -1,5 +1,17 @@
 {
   "properties": {
+    "billable": {
+      "if": {
+        "properties": {
+          "billable_type": {
+            "const": "Attendance"
+          }
+        }
+      },
+      "then": {
+        "$ref": "attendance.json"
+      }
+    },
     "billable_id": {
       "type": "string",
       "format": "uuid"
@@ -22,24 +34,6 @@
     "updated_at": {
       "type": "string",
       "format": "date-time"
-    },
-    "allOf": [
-      {
-        "if": {
-          "properties": {
-            "billable_type": {
-              "const": "Attendance"
-            }
-          }
-        },
-        "then": {
-          "properties": {
-            "billable": {
-              "$ref": "attendance.json"
-            }
-          }
-        }
-      }
-    ]
+    }
   }
 }
