@@ -19,10 +19,8 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
   # POST /billable_occurrences
   def create
     @billable_occurrence = BillableOccurrence.new(billable_occurrence_params.except(:billable_attributes))
-    # binding.pry
-    @billable_occurrence.billable = billable_occurrence_params[:billable_type]
-                                    .safe_constantize
-                                    .new(billable_occurrence_params[:billable_attributes])
+    @billable_occurrence.billable = billable_occurrence_params[:billable_type]&.safe_constantize
+                                                                                &.new(billable_occurrence_params[:billable_attributes])
 
     if @billable_occurrence.save
       render json: @billable_occurrence, include: ['billable'], status: :created, location: @billable_occurrence
@@ -33,9 +31,8 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
 
   # PATCH/PUT /billable_occurrences/:id
   def update
-    @billable_occurrence = BillableOccurrence.find(params[:id])
-    @billable_occurrence.update_attributes(child_approval_id: billable_occurrence_params[:child_approval_id])
-    @billable_occurrence.billable.update_attributes(billable_occurrence_params[:billable_attributes])
+    @billable_occurrence.update(child_approval_id: billable_occurrence_params[:child_approval_id])
+    @billable_occurrence.billable.update(billable_occurrence_params[:billable_attributes]) if billable_occurrence_params[:billable_attributes].present?
 
     if @billable_occurrence.save
       render json: @billable_occurrence, include: ['billable']
