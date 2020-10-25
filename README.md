@@ -66,12 +66,13 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - `postgres` v12.3
 - `bundler`
 - `git`
+- `npm`
 - `graphviz` - [https://graphviz.org/download/](https://graphviz.org/download/)
 - `XCode Select` tools if you're on Mac
 
 ### Optional
 
-- `heroku cli`
+- `heroku cli` - [https://devcenter.heroku.com/articles/heroku-cli#download-and-install](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
 - `foreman`
 
 </details>  
