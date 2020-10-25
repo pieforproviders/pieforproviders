@@ -34,7 +34,7 @@ end
 #  updated_at            :datetime         not null
 #  county_id             :uuid
 #  state_id              :uuid             not null
-#  subsidy_ruleable_id   :bigint
+#  subsidy_ruleable_id   :uuid
 #
 # Indexes
 #
