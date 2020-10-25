@@ -2,7 +2,9 @@
 
 FactoryBot.define do
   factory :business do
-    name { Faker::Name.child_care_businesses }
+    sequence :name do |n|
+      "#{Faker::Name.child_care_businesses}#{n}"
+    end
     license_type { Licenses.types.keys.sample }
     user factory: :confirmed_user
     zipcode

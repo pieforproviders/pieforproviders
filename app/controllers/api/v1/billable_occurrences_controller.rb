@@ -6,23 +6,26 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
 
   # GET /billable_occurrences
   def index
-    @billable_occurrences = BillableOccurrence.all
+    @billable_occurrences = policy_scope(BillableOccurrence)
 
-    render json: @billable_occurrences.include(:billable)
+    render json: @billable_occurrences, include: ['billable']
   end
 
   # GET /billable_occurrences/:id
   def show
-    render json: @billable_occurrence.include(:billable)
+    render json: @billable_occurrence, include: ['billable']
   end
 
   # POST /billable_occurrences
-  # TODO: need to calculate the billable_occurrence_duration based on the subsidy_rule
   def create
-    @billable_occurrence = BillableOccurrence.new(billable_occurrence_params)
+    @billable_occurrence = BillableOccurrence.new(billable_occurrence_params.except(:billable_attributes))
+    # binding.pry
+    @billable_occurrence.billable = billable_occurrence_params[:billable_type]
+                                    .safe_constantize
+                                    .new(billable_occurrence_params[:billable_attributes])
 
     if @billable_occurrence.save
-      render json: @billable_occurrence.include(:billable), status: :created, location: @billable_occurrence
+      render json: @billable_occurrence, include: ['billable'], status: :created, location: @billable_occurrence
     else
       render json: @billable_occurrence.errors, status: :unprocessable_entity
     end
@@ -30,8 +33,12 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
 
   # PATCH/PUT /billable_occurrences/:id
   def update
-    if @billable_occurrence.update(billable_occurrence_params)
-      render json: @billable_occurrence.include(:billable)
+    @billable_occurrence = BillableOccurrence.find(params[:id])
+    @billable_occurrence.update_attributes(child_approval_id: billable_occurrence_params[:child_approval_id])
+    @billable_occurrence.billable.update_attributes(billable_occurrence_params[:billable_attributes])
+
+    if @billable_occurrence.save
+      render json: @billable_occurrence, include: ['billable']
     else
       render json: @billable_occurrence.errors, status: :unprocessable_entity
     end
@@ -45,11 +52,10 @@ class Api::V1::BillableOccurrencesController < Api::V1::ApiController
   private
 
   def set_billable_occurrence
-    @billable_occurrence = BillableOccurrence.find(params[:id])
+    @billable_occurrence = policy_scope(BillableOccurrence).find(params[:id])
   end
 
   def billable_occurrence_params
-    params.require(:billable_occurrence).permit(:child_approval_id,
-                                                { attendance_params: %i[check_in check_out total_time_in_care] })
+    params.require(:billable_occurrence).permit(:child_approval_id, :billable_type, billable_attributes: %i[check_in check_out])
   end
 end
