@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Any item that can be billed to the state for subsidy pay
+# Any activity or event that can be billed to the state for subsidy pay
 class BillableOccurrence < UuidApplicationRecord
   belongs_to :child_approval
   belongs_to :billable, polymorphic: true, dependent: :destroy
