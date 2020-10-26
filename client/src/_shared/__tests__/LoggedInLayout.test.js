@@ -10,7 +10,7 @@ const doRender = overrideProps => {
 
 
 describe('<LoggedInLayout />', () => {
-  it('renders the CasesImport page', () => {
+  it('renders the LoggedInLayout wrapper', () => {
     const { container } = doRender({
       children: <Button />,
       title: ''

@@ -14,7 +14,6 @@ const { useBreakpoint } = Grid
 export function LoggedInLayout({ children, title }) {
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
-  const [language, setLanguage] = useState(i18n.language)
   const history = useHistory()
   const screens = useBreakpoint()
 
@@ -23,14 +22,11 @@ export function LoggedInLayout({ children, title }) {
     history.push('/login')
   }
 
-  const changeLanguage = lang => {
-    setLanguage(lang)
-    i18n.changeLanguage(lang)
-  }
+  const changeLanguage = lang => i18n.changeLanguage(lang)
 
   const mobileMenu = (
     <Menu>
-      {language === 'es' ? (
+      {i18n.language === 'es' ? (
         <Menu.Item>
           <Button type="link" onClick={() => changeLanguage('en')}>
             {t('english')}
@@ -68,7 +64,7 @@ export function LoggedInLayout({ children, title }) {
         </div>
         {screens.md ? (
           <>
-            {language === 'es' ? (
+            {i18n.language === 'es' ? (
               <Button onClick={() => changeLanguage('en')}>
                 {t('english')}
               </Button>
