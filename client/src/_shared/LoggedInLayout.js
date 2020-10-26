@@ -2,7 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Breadcrumb, Button, Grid } from 'antd'
+import { Breadcrumb, Button, Dropdown, Grid, Menu } from 'antd'
+import { MenuOutlined } from '@ant-design/icons'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
@@ -12,7 +13,7 @@ const { useBreakpoint } = Grid
 
 export function LoggedInLayout({ children, title }) {
   const dispatch = useDispatch()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const history = useHistory()
   const screens = useBreakpoint()
 
@@ -20,6 +21,31 @@ export function LoggedInLayout({ children, title }) {
     dispatch(removeAuth())
     history.push('/login')
   }
+
+  const changeLanguage = lang => i18n.changeLanguage(lang)
+
+  const mobileMenu = (
+    <Menu>
+      {i18n.language === 'es' ? (
+        <Menu.Item>
+          <Button type="link" onClick={() => changeLanguage('en')}>
+            {t('english')}
+          </Button>
+        </Menu.Item>
+      ) : (
+        <Menu.Item>
+          <Button type="link" onClick={() => changeLanguage('es')}>
+            {t('spanish')}
+          </Button>
+        </Menu.Item>
+      )}
+      <Menu.Item>
+        <Button type="link" onClick={logout}>
+          {t('logout')}
+        </Button>
+      </Menu.Item>
+    </Menu>
+  )
 
   return (
     <div className="bg-mediumGray">
@@ -36,9 +62,26 @@ export function LoggedInLayout({ children, title }) {
         >
           Pie for Providers
         </div>
-        <Button type="link" onClick={logout}>
-          {t('logout')}
-        </Button>
+        {screens.md ? (
+          <>
+            {i18n.language === 'es' ? (
+              <Button onClick={() => changeLanguage('en')}>
+                {t('english')}
+              </Button>
+            ) : (
+              <Button onClick={() => changeLanguage('es')}>
+                {t('spanish')}
+              </Button>
+            )}
+            <Button type="link" onClick={logout}>
+              {t('logout')}
+            </Button>
+          </>
+        ) : (
+          <Dropdown overlay={mobileMenu}>
+            <MenuOutlined />
+          </Dropdown>
+        )}
       </div>
       <div className="w-full xs:h-full px-4 mt-4">
         {title && (
