@@ -8,7 +8,6 @@ const doRender = overrideProps => {
   return render(<LoggedInLayout {...defaultProps} {...overrideProps} />)
 }
 
-
 describe('<LoggedInLayout />', () => {
   it('renders the LoggedInLayout wrapper', () => {
     const { container } = doRender({
