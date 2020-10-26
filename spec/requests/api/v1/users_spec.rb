@@ -60,7 +60,7 @@ RSpec.describe 'users API', type: :request do
 
   describe 'user profile' do
     path '/api/v1/profile' do
-      let(:item_params) { user_params }
+      let(:record_params) { user_params }
 
       get 'retrieves the user profile' do
         tags 'users'
