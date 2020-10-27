@@ -148,15 +148,17 @@ RAND_CHECKOUT_HRS_RANGE = 18 # checkout will be within 18 hours of checkin
 # create Attendance records, some random amount of part and full days.
 def make_attendance(first_date: Date.current - 10,
                     last_date: Date.current,
-                    earliest_checkin_hour: 7)
+                    earliest_checkin_hour: 7,
+                    child: Child.first)
 
   days_attended = dates_skipping_most_weekends(first_date: first_date, last_date: last_date)
   days_attended.each do |day_attended|
     random_checkin_time = (earliest_checkin_hour * 60) + Random.rand(60 * RAND_CHECKIN_HRS_RANGE).minutes
     random_checkout_time = random_checkin_time + Random.rand(60 * RAND_CHECKOUT_HRS_RANGE).minutes
 
-    Attendance.find_or_create_by!(check_in: day_attended + random_checkin_time,
-                                  check_out: day_attended + random_checkout_time)
+    # Attendances are a type of BillableOccurrence so we should always create them this way
+    BillableOccurrence.find_or_create_by!(child_approval: child.child_approvals[0], billable: Attendance.create!(check_in: day_attended + random_checkin_time,
+                                                                                                                 check_out: day_attended + random_checkout_time))
   end
 end
 
@@ -167,29 +169,33 @@ end
 # Attendance for Maria between January 1 and March 31
 make_attendance(first_date: JAN_1,
                 last_date: MAR_31,
-                earliest_checkin_hour: 7)
+                earliest_checkin_hour: 7,
+                child: maria)
 
 # Attendance for K'Shawn between January 1 and March 31
 make_attendance(first_date: JAN_1,
                 last_date: MAR_31,
-                earliest_checkin_hour: 7)
+                earliest_checkin_hour: 7, child: kshawn)
 
 # ------------
 
 # Attendance for Maria between April 1 and June 30
 make_attendance(first_date: APR_1,
                 last_date: JUN_30,
-                earliest_checkin_hour: 7)
+                earliest_checkin_hour: 7,
+                child: maria)
 
 # Attendance for K'Shawn between April 1 and June 30
 make_attendance(first_date: APR_1,
                 last_date: JUN_30,
-                earliest_checkin_hour: 7)
+                earliest_checkin_hour: 7,
+                child: kshawn)
 
 # Attendance for mubiru between April 1 and June 30
 make_attendance(first_date: APR_1,
                 last_date: JUN_30,
-                earliest_checkin_hour: 7)
+                earliest_checkin_hour: 7,
+                child: mubiru)
 
 puts_records_in_db(Attendance)
 

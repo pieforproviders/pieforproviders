@@ -6,12 +6,12 @@ VALID_API_PATH = '/api/v1'
 
 # These are shared examples for typical API calls for a Rails model.
 #
-# Some examples expect _item_params_ to be defined (e.g. with a let(:item_params) block)
+# Some examples expect _record_params_ to be defined (e.g. with a let(:record_params) block)
 # to be used as parameters that are sent to the server.
-# The examples that expect item_params to be defined end with '... with parameters'.
+# The examples that expect record_params to be defined end with '... with parameters'.
 #
 # Ex: Assume you are testing the API calls for creating a Business. The
-#     item_params are the parameters needed to create a Business.
+#     record_params are the parameters needed to create a Business.
 #
 #     let!(:business_params) do
 #       {
@@ -21,8 +21,8 @@ VALID_API_PATH = '/api/v1'
 #       }
 #     end
 #
-#     it_behaves_like 'it creates an item', Business do
-#       let(:item_params) { business_params }
+#     it_behaves_like 'it creates a record', Business do
+#       let(:record_params) { business_params }
 #     end
 #
 #     You should define 'user_id' and any other values/variables
@@ -33,21 +33,21 @@ VALID_API_PATH = '/api/v1'
 # Examples that test for common error conditions:
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
-RSpec.shared_examples 'server error responses for wrong api version with parameters' do |item_name|
+#  record_params - parameters to be passed to the server
+RSpec.shared_examples 'server error responses for wrong api version with parameters' do |record_name|
   context 'on the wrong api version' do
     include_context 'incorrect api version header'
     context 'when authenticated' do
       include_context 'authenticated user'
       response '500', 'internal server error' do
-        let(item_name.to_sym) { { item_name => item_params } }
+        let(record_name.to_sym) { { record_name => record_params } }
         run_test!
       end
     end
 
     context 'when not authenticated' do
       response '500', 'internal server error' do
-        let(item_name.to_sym) { { item_name => item_params } }
+        let(record_name.to_sym) { { record_name => record_params } }
         run_test!
       end
     end
@@ -73,11 +73,11 @@ RSpec.shared_examples 'server error responses for wrong api version' do
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
-RSpec.shared_examples '401 error if not authenticated with parameters' do |item_name|
+#  record_params - parameters to be passed to the server
+RSpec.shared_examples '401 error if not authenticated with parameters' do |record_name|
   context 'when not authenticated' do
     response '401', 'not authorized' do
-      let(item_name.to_sym) { { item_name => item_params } }
+      let(record_name.to_sym) { { record_name => record_params } }
       run_test!
     end
   end
@@ -92,17 +92,17 @@ RSpec.shared_examples '401 error if not authenticated' do
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
-RSpec.shared_examples '404 not found with parameters' do |item_name|
-  response '404', "#{item_name} not found" do
+#  record_params - parameters to be passed to the server
+RSpec.shared_examples '404 not found with parameters' do |record_name|
+  response '404', "#{record_name} not found" do
     let(:id) { 'invalid' }
-    let(item_name.to_sym) { { item_name => item_params } }
+    let(record_name.to_sym) { { record_name => record_params } }
     run_test!
   end
 end
 
-RSpec.shared_examples '404 not found' do |item_name|
-  response '404', "#{item_name} not found" do
+RSpec.shared_examples '404 not found' do |record_name|
+  response '404', "#{record_name} not found" do
     let(:id) { 'invalid' }
     run_test!
   end
@@ -110,21 +110,21 @@ end
 
 # ------------------------------------------------------------------------------
 
-def name_from_class(item_class)
-  item_class.name.underscore
+def name_from_class(record_class)
+  record_class.name.underscore
 end
 
 #  This is the parameter passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
+#    record_class [Class] - the class for the record
 #
-RSpec.shared_examples 'it lists all items for a user' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
+RSpec.shared_examples 'it lists all records for a user' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}" do
-    get "lists all #{item_plural} for a user" do
-      tags item_plural
+  path "#{VALID_API_PATH}/#{record_plural}" do
+    get "lists all #{record_plural} for a user" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
@@ -135,10 +135,36 @@ RSpec.shared_examples 'it lists all items for a user' do |item_class|
       context 'on the right api version' do
         include_context 'correct api version header'
         context 'when authenticated' do
-          include_context 'authenticated user'
-          response '200', "#{item_plural} found" do
-            run_test! do
-              expect(response).to match_response_schema(item_plural)
+          let!(:owner_records) { create_list(record_name_symbol, count, owner_attributes) }
+          let!(:non_owner_records) { create_list(record_name_symbol, count, non_owner_attributes) }
+
+          context 'admin user' do
+            include_context 'admin user'
+            response '200', "#{record_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(count * 2)
+                expect(response).to match_response_schema(record_plural)
+              end
+            end
+          end
+
+          context 'resource owner' do
+            before { sign_in owner }
+
+            response '200', "#{record_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(count)
+                expect(response).to match_response_schema(record_plural)
+              end
+            end
+          end
+
+          context 'non-owner' do
+            include_context 'authenticated user'
+            response '200', "#{record_plural} found" do
+              run_test! do
+                expect(JSON.parse(response.body).size).to eq(0)
+              end
             end
           end
         end
@@ -152,22 +178,22 @@ RSpec.shared_examples 'it lists all items for a user' do |item_class|
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
+#  record_params - parameters to be passed to the server
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
+#    record_class [Class] - the class for the record; is used to create a new record
+#      with the record_params
 #
-RSpec.shared_examples 'it retrieves an item for a user' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
+RSpec.shared_examples 'it retrieves a record for a user' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
-    let(:id) { (item_class.send :create!, item_params).id }
+    let(:id) { (record_class.send :create!, record_params).id }
 
-    get "retrieves a #{item_name}" do
-      tags item_plural
+    get "retrieves a #{record_name}" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
@@ -179,45 +205,45 @@ RSpec.shared_examples 'it retrieves an item for a user' do |item_class|
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '200', "#{item_name} found" do
+          response '200', "#{record_name} found" do
             run_test! do
-              expect(response).to match_response_schema(item_name)
+              expect(response).to match_response_schema(record_name)
             end
           end
 
-          it_behaves_like '404 not found with parameters', item_name
+          it_behaves_like '404 not found with parameters', record_name
         end
 
-        it_behaves_like '401 error if not authenticated with parameters', item_name
+        it_behaves_like '401 error if not authenticated with parameters', record_name
       end
 
-      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
     end
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
+#  record_params - parameters to be passed to the server
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
+#    record_class [Class] - the class for the record; is used to create a new record
+#      with the record_params
 #
-RSpec.shared_examples 'it creates an item with the right api version and is authenticated' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
-  item_name_symbol = item_name.to_sym
+RSpec.shared_examples 'it creates a record with the right api version and is authenticated' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}" do
-    post "creates a #{item_name}" do
-      tags item_plural
+  path "#{VALID_API_PATH}/#{record_plural}" do
+    post "creates a #{record_name}" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
       consumes 'application/json'
 
-      parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/components/schemas/create#{item_class}"
+      parameter name: record_name_symbol, in: :body, schema: {
+        '$ref' => "#/components/schemas/create#{record_class}"
       }
 
       context 'on the right api version' do
@@ -225,15 +251,15 @@ RSpec.shared_examples 'it creates an item with the right api version and is auth
         context 'when authenticated' do
           include_context 'authenticated user'
 
-          response '201', "#{item_name} created" do
-            let(item_name_symbol) { { item_name => item_params } }
+          response '201', "#{record_name} created" do
+            let(record_name_symbol) { { record_name => record_params } }
             run_test! do
-              expect(response).to match_response_schema(item_name)
+              expect(response).to match_response_schema(record_name)
             end
           end
 
           response '422', 'invalid request' do
-            let(item_name_symbol) { { item_name => { 'blorf': 'whatever' } } }
+            let(record_name_symbol) { { record_name => { 'blorf': 'whatever' } } }
             run_test!
           end
         end
@@ -243,61 +269,61 @@ RSpec.shared_examples 'it creates an item with the right api version and is auth
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
+#  record_params - parameters to be passed to the server
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params.
+#    record_class [Class] - the class for the record; is used to create a new record
+#      with the record_params.
 #
-RSpec.shared_examples 'it creates an item' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
-  item_name_symbol = item_name.to_sym
+RSpec.shared_examples 'it creates a record' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
 
-  it_behaves_like 'it creates an item with the right api version and is authenticated', item_class
+  it_behaves_like 'it creates a record with the right api version and is authenticated', record_class
 
-  path "#{VALID_API_PATH}/#{item_plural}" do
-    post "creates a #{item_name}" do
-      tags item_plural
+  path "#{VALID_API_PATH}/#{record_plural}" do
+    post "creates a #{record_name}" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
       consumes 'application/json'
 
-      parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/components/schemas/create#{item_class}"
+      parameter name: record_name_symbol, in: :body, schema: {
+        '$ref' => "#/components/schemas/create#{record_class}"
       }
 
       context 'on the right api version' do
         include_context 'correct api version header'
-        it_behaves_like '401 error if not authenticated with parameters', item_name
+        it_behaves_like '401 error if not authenticated with parameters', record_name
       end
 
-      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
     end
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
-#  item - the resource
+#  record_params - parameters to be passed to the server
+#  record - the resource
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item.
+#    record_class [Class] - the class for the record.
 #
-RSpec.shared_examples 'admins and resource owners can retrieve an item' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
+RSpec.shared_examples 'admins and resource owners can retrieve a record' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
     let(:id) do
-      item.id
+      record.id
     end
 
-    get "retrieves a #{item_name}" do
-      tags item_plural
+    get "retrieves a #{record_name}" do
+      tags record_plural
 
       produces 'application/json'
 
@@ -306,9 +332,9 @@ RSpec.shared_examples 'admins and resource owners can retrieve an item' do |item
         context 'when authenticated' do
           context 'admin user' do
             include_context 'admin user'
-            response '200', "#{item_name} found" do
+            response '200', "#{record_name} found" do
               run_test! do
-                expect(response).to match_response_schema(item_name)
+                expect(response).to match_response_schema(record_name)
               end
             end
           end
@@ -316,39 +342,39 @@ RSpec.shared_examples 'admins and resource owners can retrieve an item' do |item
           context 'resource owner' do
             before { sign_in owner }
 
-            response '200', "#{item_name} found" do
+            response '200', "#{record_name} found" do
               run_test! do
-                expect(response).to match_response_schema(item_name)
+                expect(response).to match_response_schema(record_name)
               end
             end
 
-            it_behaves_like '404 not found with parameters', item_name
+            it_behaves_like '404 not found with parameters', record_name
           end
 
           context 'non-owner' do
             include_context 'authenticated user'
-            response '404', "#{item_name} not found" do
+            response '404', "#{record_name} not found" do
               run_test!
             end
           end
         end
 
-        it_behaves_like '401 error if not authenticated with parameters', item_name
+        it_behaves_like '401 error if not authenticated with parameters', record_name
       end
 
-      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
     end
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
-#  item - the resource
+#  record_params - parameters to be passed to the server
+#  record - the resource
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item
-#    item_name [String] - the name of the item (singular).
+#    record_class [Class] - the class for the record
+#    record_name [String] - the name of the record (singular).
 #      It is used as a key in the parameters sent to the server
 #      and as part of the schema name in the schema definitions.
 #      It is pluralized and used for the path and the tags.
@@ -356,34 +382,34 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'admins and resource owners can update an item' do |item_class, update_attribute, update_valid_value, update_invalid_value|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
-  item_name_symbol = item_name.to_sym
+RSpec.shared_examples 'admins and resource owners can update a record' do |record_class, update_attribute, update_valid_value, update_invalid_value|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
-    let(:id) { item.id }
+    let(:id) { record.id }
 
-    put "updates a #{item_name}" do
-      tags item_plural
+    put "updates a #{record_name}" do
+      tags record_plural
 
       produces 'application/json'
       consumes 'application/json'
 
-      parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/components/schemas/update#{item_class}"
+      parameter name: record_name_symbol, in: :body, schema: {
+        '$ref' => "#/components/schemas/update#{record_class}"
       }
       context 'on the right api version' do
         include_context 'correct api version header'
         context 'when authenticated' do
-          let(item_name_symbol) { { item_name => item_params.merge(update_attribute => update_valid_value) } }
+          let(record_name_symbol) { { record_name => record_params.merge(update_attribute => update_valid_value) } }
 
           context 'admin user' do
             include_context 'admin user'
-            response '200', "#{item_name} updated" do
+            response '200', "#{record_name} updated" do
               run_test! do
-                expect(response).to match_response_schema(item_name)
+                expect(response).to match_response_schema(record_name)
                 expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
               end
             end
@@ -392,55 +418,139 @@ RSpec.shared_examples 'admins and resource owners can update an item' do |item_c
           context 'resource owner' do
             before { sign_in owner }
 
-            response '200', "#{item_name} updated" do
+            response '200', "#{record_name} updated" do
               run_test! do
-                expect(response).to match_response_schema(item_name)
+                expect(response).to match_response_schema(record_name)
                 expect(response.parsed_body[update_attribute]).to eq(update_valid_value)
               end
             end
 
-            response '422', "#{item_name} cannot be updated" do
-              let(item_name_symbol) { { item_name => { update_attribute => update_invalid_value } } }
+            response '422', "#{record_name} cannot be updated" do
+              let(record_name_symbol) { { record_name => { update_attribute => update_invalid_value } } }
               run_test!
             end
 
-            it_behaves_like '404 not found with parameters', item_name
+            it_behaves_like '404 not found with parameters', record_name
           end
 
           context 'non-owner' do
             include_context 'authenticated user'
-            response '404', "#{item_name} not found" do
-              let(item_name_symbol) { { item_name => item_params.merge(update_attribute => update_valid_value) } }
+            response '404', "#{record_name} not found" do
+              let(record_name_symbol) { { record_name => record_params.merge(update_attribute => update_valid_value) } }
               run_test!
             end
           end
         end
 
-        it_behaves_like '401 error if not authenticated with parameters', item_name
+        it_behaves_like '401 error if not authenticated with parameters', record_name
       end
 
-      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
     end
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item - the resource
+#  record_params - parameters to be passed to the server
+#  record - the resource
+#  owner - the user who owns the resource
+#  association - the name of the associated object in the response
+#
+#  These are the parameters passed to this example:
+#    record_class [Class] - the class for the record
+#    record_name [String] - the name of the record (singular).
+#      It is used as a key in the parameters sent to the server
+#      and as part of the schema name in the schema definitions.
+#      It is pluralized and used for the path and the tags.
+#    update_attribute [String] - attribute name to be updated
+#    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
+#    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
+#
+RSpec.shared_examples 'admins and resource owners can update a nested record' do |record_class, update_attribute, update_valid_value, update_invalid_value|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
+
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
+    parameter name: :id, in: :path, type: :string
+    let(:id) { record.id }
+
+    put "updates a #{record_name}" do
+      tags record_plural
+
+      produces 'application/json'
+      consumes 'application/json'
+
+      parameter name: record_name_symbol, in: :body, schema: {
+        '$ref' => "#/components/schemas/update#{record_class}"
+      }
+      context 'on the right api version' do
+        include_context 'correct api version header'
+        context 'when authenticated' do
+          let(record_name_symbol) { { record_name => record_params.merge(update_attribute => update_valid_value) } }
+
+          context 'admin user' do
+            include_context 'admin user'
+            response '200', "#{record_name} updated" do
+              run_test! do
+                expect(response).to match_response_schema(record_name)
+                expect(response.parsed_body[association]).to include(JSON.parse(update_valid_value.to_json))
+              end
+            end
+          end
+
+          context 'resource owner' do
+            before { sign_in owner }
+
+            response '200', "#{record_name} updated" do
+              run_test! do
+                expect(response).to match_response_schema(record_name)
+                expect(response.parsed_body[association]).to include(JSON.parse(update_valid_value.to_json))
+              end
+            end
+
+            response '422', "#{record_name} cannot be updated" do
+              let(record_name_symbol) { { record_name => { update_attribute => update_invalid_value } } }
+              run_test!
+            end
+
+            it_behaves_like '404 not found with parameters', record_name
+          end
+
+          context 'non-owner' do
+            include_context 'authenticated user'
+            response '404', "#{record_name} not found" do
+              let(record_name_symbol) { { record_name => record_params.merge(update_attribute => update_valid_value) } }
+              run_test!
+            end
+          end
+        end
+
+        it_behaves_like '401 error if not authenticated with parameters', record_name
+      end
+
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
+    end
+  end
+end
+
+# This example expects the following to be defined with a let(:) block:
+#  record - the resource
 #  owner - the user who owns the resource
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item.
+#    record_class [Class] - the class for the record.
 #
-RSpec.shared_examples 'admins and resource owners can delete an item' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
+RSpec.shared_examples 'admins and resource owners can delete a record' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
-    let(:id) { item.id }
+    let(:id) { record.id }
 
-    delete "deletes a #{item_name}" do
-      tags item_plural
+    delete "deletes a #{record_name}" do
+      tags record_plural
 
       produces 'application/json'
 
@@ -449,7 +559,7 @@ RSpec.shared_examples 'admins and resource owners can delete an item' do |item_c
         context 'when authenticated' do
           context 'admin user' do
             include_context 'admin user'
-            response '204', "#{item_name} deleted" do
+            response '204', "#{record_name} deleted" do
               run_test!
             end
           end
@@ -457,16 +567,16 @@ RSpec.shared_examples 'admins and resource owners can delete an item' do |item_c
           context 'resource owner' do
             before { sign_in owner }
 
-            response '204', "#{item_name} deleted" do
+            response '204', "#{record_name} deleted" do
               run_test!
             end
 
-            it_behaves_like '404 not found', item_name
+            it_behaves_like '404 not found', record_name
           end
 
           context 'non-owner' do
             include_context 'authenticated user'
-            response '404', "#{item_name} not found" do
+            response '404', "#{record_name} not found" do
               run_test!
             end
           end
@@ -481,12 +591,12 @@ RSpec.shared_examples 'admins and resource owners can delete an item' do |item_c
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
+#  record_params - parameters to be passed to the server
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
-#    item_name [String] - the name of the item (singular).
+#    record_class [Class] - the class for the record; is used to create a new record
+#      with the record_params
+#    record_name [String] - the name of the record (singular).
 #      It is used as a key in the parameters sent to the server
 #      and as part of the schema name in the schema definitions.
 #      It is pluralized and used for the path and the tags.
@@ -494,17 +604,17 @@ end
 #    update_valid_value [String | Number | nil] - valid value for the updated value for the attribute
 #    update_invalid_value  [String | Number | nil] - invalid value for the attribute so that the server returns a 422 (cannot be updated) error
 #
-RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, update_valid_value, update_invalid_value, is_time_param = false|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
-  item_name_symbol = item_name.to_sym
+RSpec.shared_examples 'it updates a record' do |record_class, update_attribute, update_valid_value, update_invalid_value, is_time_param = false|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
+  record_name_symbol = record_name.to_sym
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
-    let(:id) { (item_class.send :create!, item_params).id }
+    let(:id) { (record_class.send :create!, record_params).id }
 
-    put "updates a #{item_name}" do
-      tags item_plural
+    put "updates a #{record_name}" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
@@ -512,8 +622,8 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
 
       # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
 
-      parameter name: item_name_symbol, in: :body, schema: {
-        '$ref' => "#/components/schemas/update#{item_class}"
+      parameter name: record_name_symbol, in: :body, schema: {
+        '$ref' => "#/components/schemas/update#{record_class}"
       }
       # security [{ token: [] }]
 
@@ -521,10 +631,10 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '200', "#{item_name} updated" do
-            let(item_name_symbol) { { item_name => item_params.merge(update_attribute => update_valid_value) } }
+          response '200', "#{record_name} updated" do
+            let(record_name_symbol) { { record_name => record_params.merge(update_attribute => update_valid_value) } }
             run_test! do
-              expect(response).to match_response_schema(item_name)
+              expect(response).to match_response_schema(record_name)
               if is_time_param
                 expect(DateTime.parse(update_valid_value)).to eq(DateTime.parse(response.parsed_body[update_attribute]))
               else
@@ -533,39 +643,39 @@ RSpec.shared_examples 'it updates an item' do |item_class, update_attribute, upd
             end
           end
 
-          response '422', "#{item_name} cannot be updated" do
-            let(item_name_symbol) { { item_name => { update_attribute => update_invalid_value } } }
+          response '422', "#{record_name} cannot be updated" do
+            let(record_name_symbol) { { record_name => { update_attribute => update_invalid_value } } }
             run_test!
           end
 
-          it_behaves_like '404 not found with parameters', item_name
+          it_behaves_like '404 not found with parameters', record_name
         end
 
-        it_behaves_like '401 error if not authenticated with parameters', item_name
+        it_behaves_like '401 error if not authenticated with parameters', record_name
       end
 
-      it_behaves_like 'server error responses for wrong api version with parameters', item_name
+      it_behaves_like 'server error responses for wrong api version with parameters', record_name
     end
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
-#  item_params - parameters to be passed to the server
+#  record_params - parameters to be passed to the server
 #
 #  These are the parameters passed to this example:
-#    item_class [Class] - the class for the item; is used to create a new item
-#      with the item_params
+#    record_class [Class] - the class for the record; is used to create a new record
+#      with the record_params
 #
-RSpec.shared_examples 'it deletes an item for a user' do |item_class|
-  item_name = name_from_class(item_class)
-  item_plural = item_name.pluralize
+RSpec.shared_examples 'it deletes a record for a user' do |record_class|
+  record_name = name_from_class(record_class)
+  record_plural = record_name.pluralize
 
-  path "#{VALID_API_PATH}/#{item_plural}/{id}" do
+  path "#{VALID_API_PATH}/#{record_plural}/{id}" do
     parameter name: :id, in: :path, type: :string
-    let(:id) { (item_class.send :create!, item_params).id }
+    let(:id) { (record_class.send :create!, record_params).id }
 
-    delete "deletes a #{item_name}" do
-      tags item_plural
+    delete "deletes a #{record_name}" do
+      tags record_plural
 
       # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
       produces 'application/json'
@@ -577,11 +687,11 @@ RSpec.shared_examples 'it deletes an item for a user' do |item_class|
         include_context 'correct api version header'
         context 'when authenticated' do
           include_context 'authenticated user'
-          response '204', "#{item_name} deleted" do
+          response '204', "#{record_name} deleted" do
             run_test!
           end
 
-          it_behaves_like '404 not found', item_name
+          it_behaves_like '404 not found', record_name
         end
 
         it_behaves_like '401 error if not authenticated'

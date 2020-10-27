@@ -1,0 +1,9 @@
+{
+  "type": "array",
+  "required": [
+    "billable_occurrences"
+  ],
+  "items": {
+    "$ref": "billable_occurrence.json"
+  }
+}
