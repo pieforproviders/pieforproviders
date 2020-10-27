@@ -179,7 +179,7 @@ make_attendance(first_date: JAN_1,
 # Attendance for K'Shawn between January 1 and March 31
 make_attendance(first_date: JAN_1,
                 last_date: MAR_31,
-                earliest_checkin_hour: 7, child: maria)
+                earliest_checkin_hour: 7, child: kshawn)
 
 # ------------
 
