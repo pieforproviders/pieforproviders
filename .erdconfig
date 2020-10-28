@@ -1,13 +1,33 @@
+title: "PieForProviders Rails ERD"
+filename: pie_erd
+filetype: pdf
+
+# Models to show or not:
+exclude: "UuidApplicationRecord, DataMigrate::DataSchemaMigration, ActiveRecord::SchemaMigration"
+disconnected: true
+
+# What to show for each model:
 attributes:
   - content
   - foreign_key
   - inheritance
   - primary_key
-disconnected: true
-filename: pie_erd
-filetype: pdf
+
+# add the primary key as the first attribute?
+prepend_primary: true
+
+# alphabetically sort the attributes?
+sort: true
+
+# Relationships to show:
 indirect: true
 inheritance: true
-notation: simple
-orientation: horizontal
 polymorphism: true
+
+# Formatting and Style for the Graphviz diagram:
+notation: simple
+orientation: vertical
+splines: ortho
+
+markup: true
+warn: true
