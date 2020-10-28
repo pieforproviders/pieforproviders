@@ -14,6 +14,11 @@ const doRender = () => {
 describe('<Dashboard />', () => {
   it('renders the Dashboard page', () => {
     const { container } = doRender()
-    expect(container).toHaveTextContent('This is the dashboard')
+    expect(container).toHaveTextContent('Your dashboard')
+    expect(container).toHaveTextContent('Child name')
+    expect(container).toHaveTextContent('Case number')
+    expect(container).toHaveTextContent('Attendance rate')
+    expect(container).toHaveTextContent('Min. revenue')
+    expect(container).toHaveTextContent('Max. revenue')
   })
 })

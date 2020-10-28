@@ -133,5 +133,6 @@
   "notFound": "404: No se encuentra",
   "goBackHome": "Ve al inicio",
 
-  "dashboardTitle": "Este es la página principal"
+  "dashboardTitle": "Tu tablero",
+  "revenueProjections": "Proyecciones de ingresos en tiempo real basadas en datos de asistencia."
 }
