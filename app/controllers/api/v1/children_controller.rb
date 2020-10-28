@@ -17,6 +17,13 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     render json: @child
   end
 
+  # GET /case_list_for_dashboard
+  def case_list_for_dashboard
+    @children = policy_scope(Child)
+
+    render json: @children, only: [:full_name], include: [{ approvals: { only: [:case_number] } }]
+  end
+
   # POST /children
   def create
     @child = Child.new(child_params)

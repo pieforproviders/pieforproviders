@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
+      get 'case_list_for_dashboard', to: 'children#case_list_for_dashboard'
       resources :billable_occurrences
     end
   end
@@ -77,6 +78,7 @@ end
 #                                       PATCH  /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       PUT    /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       DELETE /api/v1/children/:id(.:format)                                                           api/v1/children#destroy {:format=>:json}
+#               case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                api/v1/children#case_list_for_dashboard {:format=>:json}
 #                  billable_occurrences GET    /api/v1/billable_occurrences(.:format)                                                   api/v1/billable_occurrences#index {:format=>:json}
 #                                       POST   /api/v1/billable_occurrences(.:format)                                                   api/v1/billable_occurrences#create {:format=>:json}
 #                   billable_occurrence GET    /api/v1/billable_occurrences/:id(.:format)                                               api/v1/billable_occurrences#show {:format=>:json}

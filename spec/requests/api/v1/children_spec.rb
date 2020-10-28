@@ -29,4 +29,52 @@ RSpec.describe 'children API', type: :request do
   it_behaves_like 'admins and resource owners can update a record', Child, 'full_name', 'Padma Patil', nil
 
   it_behaves_like 'admins and resource owners can delete a record', Child
+
+  describe '#case_list_for_dashboard' do
+    path '/api/v1/case_list_for_dashboard' do
+      get 'lists all cases with associated data for a user' do
+        tags 'children', 'dashboard'
+
+        # rswag requires a call to :produces if you are going to set Accept header info. See Rswag::Specs::RequestFactory#add_headers
+        produces 'application/json'
+
+        # parameter name: 'Authorization', in: :header, type: :string, default: 'Bearer <token>'
+        # security [{ token: [] }]
+
+        include_context 'correct api version header'
+        let!(:owner_records) { create_list(:child, count, owner_attributes) }
+        let!(:non_owner_records) { create_list(:child, count, non_owner_attributes) }
+
+        context 'admin user' do
+          include_context 'admin user'
+          response '200', 'cases found' do
+            run_test! do
+              expect(JSON.parse(response.body).size).to eq(count * 2)
+              expect(response).to match_response_schema('case_list_for_dashboard')
+            end
+          end
+        end
+
+        context 'resource owner' do
+          before { sign_in owner }
+
+          response '200', 'cases found' do
+            run_test! do
+              expect(JSON.parse(response.body).size).to eq(count)
+              expect(response).to match_response_schema('case_list_for_dashboard')
+            end
+          end
+        end
+
+        context 'non-owner' do
+          include_context 'authenticated user'
+          response '200', 'cases found' do
+            run_test! do
+              expect(JSON.parse(response.body).size).to eq(0)
+            end
+          end
+        end
+      end
+    end
+  end
 end

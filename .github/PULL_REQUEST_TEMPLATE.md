@@ -14,7 +14,7 @@
 * [ ] Are your primary keys UUIDs on any new tables?
 
 ## 🏺 Accessibility
-<!-- Did you find any accessibilty issues in your UI components?  Did you mitigate them?  If not, link the bug tickets you filed for mitigation. -->
+<!-- Did you find any accessibility issues in your UI components?  Did you mitigate them?  If not, link the bug tickets you filed for mitigation. -->
 
 ## 🛷 Deployment
 <!-- What do we need to know to deploy this code out? -->
