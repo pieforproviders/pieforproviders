@@ -21,7 +21,10 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   def case_list_for_dashboard
     @children = policy_scope(Child)
 
-    render json: @children, only: [:full_name], include: [{ approvals: { only: [:case_number] } }]
+    render json: @children, only: [:full_name], include: [
+      { business: { only: [:name] } },
+      { approvals: { only: [:case_number] } }
+    ]
   end
 
   # POST /children

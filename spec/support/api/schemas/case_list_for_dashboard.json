@@ -8,6 +8,16 @@
       "full_name": {
         "type": "string"
       },
+      "business": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
       "approvals": {
         "type": "array",
         "items": {
@@ -24,6 +34,7 @@
     },
     "required": [
       "full_name",
+      "business",
       "approvals"
     ]
   }
