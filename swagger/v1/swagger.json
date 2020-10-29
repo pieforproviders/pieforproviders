@@ -539,6 +539,22 @@
         }
       }
     },
+    "/api/v1/case_list_for_dashboard": {
+      "get": {
+        "summary": "lists all cases with associated data for a user",
+        "tags": [
+          "children",
+          "dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "cases found",
+            "content": {
+            }
+          }
+        }
+      }
+    },
     "/api/v1/users": {
       "get": {
         "summary": "retrieves all users",
