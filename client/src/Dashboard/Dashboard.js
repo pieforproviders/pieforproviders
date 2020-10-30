@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
 import { Table, Typography } from 'antd'
+import '_assets/styles/table-overrides.css'
 
 export function Dashboard() {
   const [businessList, setBusinessList] = useState([])
@@ -188,6 +189,7 @@ export function Dashboard() {
         size={'medium'}
         pagination={false}
         sticky
+        className="dashboard-table"
       >
         {businessList &&
           businessList.map(business => {
