@@ -26,7 +26,21 @@ end
 
 # ---------------------------------------------
 
-@user_kate = User.where(email: ENV.fetch('TESTUSER_EMAIL', 'test@test.com')).first_or_create(
+@user_admin = User.where(email: 'admin@test.com').first_or_create!(
+  full_name: 'Admin User',
+  greeting_name: 'Addie',
+  language: 'spanish',
+  opt_in_email: false,
+  opt_in_text: false,
+  organization: 'Pie for Providers',
+  password: 'testpass1234!',
+  password_confirmation: 'testpass1234!',
+  service_agreement_accepted: true,
+  timezone: 'Central Time (US & Canada)',
+  admin: true
+)
+
+@user_kate = User.where(email: 'test@test.com').first_or_create(
   active: true,
   full_name: 'Kate Donaldson',
   greeting_name: 'Kate',
@@ -34,8 +48,8 @@ end
   opt_in_email: true,
   opt_in_text: true,
   organization: 'Pie for Providers',
-  password: ENV.fetch('TESTUSER_PASS', 'testpass1234!'),
-  password_confirmation: ENV.fetch('TESTUSER_PASS', 'testpass1234!'),
+  password: 'testpass1234!',
+  password_confirmation: 'testpass1234!',
   phone_number: '8888888888',
   phone_type: 'cell',
   service_agreement_accepted: true,

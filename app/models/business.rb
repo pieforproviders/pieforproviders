@@ -14,6 +14,17 @@ class Business < UuidApplicationRecord
   validates :name, presence: true, uniqueness: { scope: :user_id }
 
   scope :active, -> { where(active: true) }
+
+  before_update :prevent_deactivation_with_active_children
+
+  private
+
+  def prevent_deactivation_with_active_children
+    return unless children.pluck(:active).uniq.include?(true)
+
+    errors.add(:active, 'Cannot deactivate a business with active cases')
+    throw :abort
+  end
 end
 
 # == Schema Information

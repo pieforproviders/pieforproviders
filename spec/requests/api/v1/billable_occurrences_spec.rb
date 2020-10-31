@@ -3,8 +3,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'billable occurrences API', type: :request do
-  let(:child) { create(:child) }
-  let(:child2) { create(:child, business: create(:business, user: create(:confirmed_user))) }
+  let!(:zipcode) { create(:zipcode) }
+  let(:child) { create(:child, business: create(:business, user: create(:confirmed_user), zipcode: zipcode, county: zipcode.county)) }
+  let(:child2) { create(:child, business: create(:business, user: create(:confirmed_user), zipcode: zipcode, county: zipcode.county)) }
   let(:child3) { create(:child, business: child.business) }
   let(:child3id) { child3.id }
   let(:record_params) do

@@ -44,3 +44,6 @@ node_modules
 # cypress videos and screenshots
 spec/cypress/videos
 spec/cypress/screenshots
+
+# yarn releases
+.yarn

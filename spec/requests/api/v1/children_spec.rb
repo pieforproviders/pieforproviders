@@ -43,11 +43,13 @@ RSpec.describe 'children API', type: :request do
 
         include_context 'correct api version header'
         let!(:owner_records) { create_list(:child, count, owner_attributes) }
+        let!(:owner_inactive_records) { create_list(:child, count, owner_attributes.merge(active: false)) }
         let!(:non_owner_records) { create_list(:child, count, non_owner_attributes) }
+        let!(:non_owner_inactive_records) { create_list(:child, count, non_owner_attributes.merge(active: false)) }
 
         context 'admin user' do
           include_context 'admin user'
-          response '200', 'cases found' do
+          response '200', 'active cases found' do
             run_test! do
               expect(JSON.parse(response.body).size).to eq(count * 2)
               expect(response).to match_response_schema('case_list_for_dashboard')
@@ -58,7 +60,7 @@ RSpec.describe 'children API', type: :request do
         context 'resource owner' do
           before { sign_in owner }
 
-          response '200', 'cases found' do
+          response '200', 'active cases found' do
             run_test! do
               expect(JSON.parse(response.body).size).to eq(count)
               expect(response).to match_response_schema('case_list_for_dashboard')
@@ -68,7 +70,7 @@ RSpec.describe 'children API', type: :request do
 
         context 'non-owner' do
           include_context 'authenticated user'
-          response '200', 'cases found' do
+          response '200', 'active cases found' do
             run_test! do
               expect(JSON.parse(response.body).size).to eq(0)
             end
