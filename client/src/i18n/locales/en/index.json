@@ -133,5 +133,6 @@
   "notFound": "404: Not found",
   "goBackHome": "Back home",
 
-  "dashboardTitle": "This is the dashboard"
+  "dashboardTitle": "Your dashboard",
+  "revenueProjections": "Real-time revenue projections based on attendance data."
 }
