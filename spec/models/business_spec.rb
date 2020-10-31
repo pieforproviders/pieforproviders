@@ -20,6 +20,15 @@ RSpec.describe Business, type: :model do
   it 'factory should be valid (default; no args)' do
     expect(build(:business)).to be_valid
   end
+
+  it 'does not allow deactivation of a business with active children' do
+    business = create(:business_with_children)
+    business.update(active: false)
+    expect(business.errors.messages[:active]).to be_present
+    business.children.each { |child| child.update(active: false) }
+    business.update(active: false)
+    expect(business.errors.messages[:active]).not_to be_present
+  end
 end
 
 # == Schema Information

@@ -9,6 +9,12 @@ FactoryBot.define do
     user factory: :confirmed_user
     zipcode
     county { zipcode.county }
+
+    factory :business_with_children do
+      after :create do |business|
+        create_list(:child, 3, business: business)
+      end
+    end
   end
 end
 
