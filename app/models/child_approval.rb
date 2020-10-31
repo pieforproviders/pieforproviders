@@ -15,21 +15,26 @@ class ChildApproval < UuidApplicationRecord
   private
 
   def associate_subsidy_rule
-    business = child.business
-    state = business.state
-    county = business.county
-
-    # get the child's age rounded to a precision of 2 decimal points, i.e 1.05 years
-    age = ((Date.today - child.date_of_birth) / 365.25).to_f.round(2)
-
-    case state_name
+    case state
     when 'Illinois'
       # associate the child with the appropriate Illinois subsidy rule
-      subsidy_rule = SubsidyRule.where(state: state, county: county).where('max_age >= ? AND effective_on < ? AND expires_on >= ?', age, Date.today, Date.today).first
+      self.subsidy_rule = SubsidyRule.where(state: state, county: county).find_by('max_age >= ? AND effective_on < ? AND expires_on >= ?', age, Time.zone.today, Time.zone.today)
     when 'Nebraska'
       # associate the child with the appropriate Nebraska subsidy rule
     end
   end
+end
+
+def state
+  child.business.state
+end
+
+def county
+  child.business.county
+end
+
+def age
+  ((Time.zone.today - child.date_of_birth) / 365.25).to_f.round(2)
 end
 
 # == Schema Information

@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :attendance do
     transient do
-      date { Date.today }
+      date { Time.zone.today }
     end
 
     latest_opening_time = (6 * 60).minutes # 6:00 am

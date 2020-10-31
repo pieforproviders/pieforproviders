@@ -17,14 +17,15 @@ RSpec.describe AttendanceRateCalculator do
     context 'with a family with one child' do
       before do
         # travel to July 12th, 2020
-        travel_to Date.new(2020, 9, 1).at_end_of_day
-        current_approval = child.approvals.where('expires_on > ? AND effective_on <= ?', Date.today, Date.today).child_approval
+        travel_to Date.new(2020, 7, 12).at_end_of_day
+        current_approval = child.approvals.where('expires_on > ? AND effective_on <= ?', Time.zone.today, Time.zone.today).child_approval
         # make 3 attendances from July 1st, 2020 to July 12th, 2020
-        create_list(:billable_attendance, 3, child_approval: current_approval, date: Faker::Date.between(from: Date.today.at_beginning_of_month, to: Date.today - 1))
+        create_list(:billable_attendance, 3, child_approval: current_approval, date: Faker::Date.between(from: Time.zone.today.at_beginning_of_month, to: Time.zone.today - 1))
       end
       it 'returns the attendance rate' do
         result = AttendanceRateCalculator.new([child])
-        expect(result).to eq('en')
+        # The child will have attended 3 out of 12 days, for 25% attendance
+        expect(result).to eq(0.25)
       end
     end
   end
