@@ -18,6 +18,8 @@ class Child < UuidApplicationRecord
 
   accepts_nested_attributes_for :approvals
 
+  scope :active, -> { where(active: true) }
+
   delegate :user, to: :business
 end
 
