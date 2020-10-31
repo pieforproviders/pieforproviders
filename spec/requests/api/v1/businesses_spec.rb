@@ -32,7 +32,7 @@ RSpec.describe 'businesses API', type: :request do
   it_behaves_like 'admins and resource owners can delete a record', Business
 
   describe '#update' do
-    let(:business_with_cases) { create(:business_with_children, user: owner) }
+    let(:business_with_cases) { create(:business_with_children, user: owner, zipcode: zipcode, county: zipcode.county) }
     let(:id) { business_with_cases.id }
     path '/api/v1/businesses/{id}' do
       parameter name: :id, in: :path, type: :string
