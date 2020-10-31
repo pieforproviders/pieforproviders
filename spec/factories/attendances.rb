@@ -2,8 +2,12 @@
 
 FactoryBot.define do
   factory :attendance do
+    transient do
+      date { Date.today }
+    end
+
     latest_opening_time = (6 * 60).minutes # 6:00 am
-    site_opening_time = Time.zone.parse(Date.current.to_s) + Random.rand(latest_opening_time).minutes # opens between midnight and 6 a.m.
+    site_opening_time = Time.zone.parse(date) + Random.rand(latest_opening_time).minutes # opens between midnight and 6 a.m.
     latest_check_in = (8 * 60).minutes # 8 hours after opening time
 
     min_time_in_care = 60.minutes
