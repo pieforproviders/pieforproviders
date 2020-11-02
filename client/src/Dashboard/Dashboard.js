@@ -60,7 +60,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('caseNumber'),
+      title: t('caseNumberLowercase'),
       dataIndex: 'caseNumber',
       key: 'caseNumber',
       width: 150,
@@ -111,10 +111,10 @@ export function Dashboard() {
       key: 'potentialRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) => numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sorter: (a, b) =>
+        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
       sortDirections: ['descend', 'ascend']
     }
-
   ]
 
   // to be replaced with API data

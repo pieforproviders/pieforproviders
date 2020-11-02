@@ -136,6 +136,7 @@
   "dashboardTitle": "Your dashboard",
   "revenueProjections": "Real-time revenue projections based on attendance data.",
   "childName": "Child name",
+  "caseNumberLowercase": "Case number",
   "business": "Business",
   "attendanceRate": "Attendance rate",
   "minRevenue": "Min. revenue",
