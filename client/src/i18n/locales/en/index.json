@@ -134,5 +134,11 @@
   "goBackHome": "Back home",
 
   "dashboardTitle": "Your dashboard",
-  "revenueProjections": "Real-time revenue projections based on attendance data."
+  "revenueProjections": "Real-time revenue projections based on attendance data.",
+  "childName": "Child name",
+  "business": "Business",
+  "attendanceRate": "Attendance rate",
+  "minRevenue": "Min. revenue",
+  "maxRevenue": "Max. revenue",
+  "potentialRevenue": "Potential revenue"
 }
