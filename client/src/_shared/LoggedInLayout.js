@@ -70,6 +70,8 @@ export function LoggedInLayout({ children, title }) {
     )
   }
 
+  // listening for width changes of the window to make the site responsive
+  // unfortunately, ant-design breakpoints didn't include 768 <=, but 768 >=
   useEffect(() => {
     window.addEventListener('resize', setWidth)
 
