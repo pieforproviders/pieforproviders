@@ -97,15 +97,6 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('maxRevenue'),
-      dataIndex: 'maxRevenue',
-      key: 'maxRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => numMatch(a.maxRevenue) - numMatch(b.maxRevenue),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
       title: t('potentialRevenue'),
       dataIndex: 'potentialRevenue',
       key: 'potentialRevenue',
@@ -113,6 +104,15 @@ export function Dashboard() {
       onHeaderCell,
       sorter: (a, b) =>
         numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sortDirections: ['descend', 'ascend']
+    },
+    {
+      title: t('maxRevenue'),
+      dataIndex: 'maxRevenue',
+      key: 'maxRevenue',
+      width: 150,
+      onHeaderCell,
+      sorter: (a, b) => numMatch(a.maxRevenue) - numMatch(b.maxRevenue),
       sortDirections: ['descend', 'ascend']
     }
   ]
