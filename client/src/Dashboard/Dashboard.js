@@ -51,7 +51,7 @@ export function Dashboard() {
   // configuation for table columns
   const columns = [
     {
-      title: 'Child name',
+      title: t('childName'),
       dataIndex: 'childName',
       key: 'childName',
       width: 150,
@@ -60,7 +60,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Case number',
+      title: t('caseNumberLowercase'),
       dataIndex: 'caseNumber',
       key: 'caseNumber',
       width: 150,
@@ -69,7 +69,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Business',
+      title: t('business'),
       dataIndex: 'business',
       key: 'business',
       width: 150,
@@ -78,7 +78,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Attendance rate',
+      title: t('attendanceRate'),
       dataIndex: 'attendanceRate',
       key: 'attendanceRate',
       width: 150,
@@ -88,7 +88,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Min. revenue',
+      title: t('minRevenue'),
       dataIndex: 'minRevenue',
       key: 'minRevenue',
       width: 150,
@@ -97,7 +97,17 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Max. revenue',
+      title: t('potentialRevenue'),
+      dataIndex: 'potentialRevenue',
+      key: 'potentialRevenue',
+      width: 150,
+      onHeaderCell,
+      sorter: (a, b) =>
+        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sortDirections: ['descend', 'ascend']
+    },
+    {
+      title: t('maxRevenue'),
       dataIndex: 'maxRevenue',
       key: 'maxRevenue',
       width: 150,
@@ -116,7 +126,8 @@ export function Dashboard() {
       business: 'Lil Baby Ducklings',
       attendanceRate: '97%',
       minRevenue: '$1266.5',
-      maxRevenue: '$1888.47'
+      maxRevenue: '$1888.47',
+      potentialRevenue: '$2000.80'
     },
     {
       key: '2',
@@ -125,7 +136,8 @@ export function Dashboard() {
       business: 'Austin Community Child Care',
       attendanceRate: '38%',
       minRevenue: '$1266.5',
-      maxRevenue: '$1888.47'
+      maxRevenue: '$1888.47',
+      potentialRevenue: '$2030.80'
     },
     {
       key: '3',
@@ -134,7 +146,8 @@ export function Dashboard() {
       business: 'Goslings Grow',
       attendanceRate: '96%',
       minRevenue: '$2926.11',
-      maxRevenue: '$1008.86'
+      maxRevenue: '$1008.86',
+      potentialRevenue: '$2299.80'
     },
     {
       key: '4',
@@ -143,7 +156,8 @@ export function Dashboard() {
       business: 'Austin Community Child Care',
       attendanceRate: '30%',
       minRevenue: '$342.58',
-      maxRevenue: '$121.62'
+      maxRevenue: '$121.62',
+      potentialRevenue: '$3003.80'
     },
     {
       key: '5',
@@ -152,7 +166,8 @@ export function Dashboard() {
       business: 'Ravenswood Daycare',
       attendanceRate: '110%',
       minRevenue: '$4000.90',
-      maxRevenue: '$5000.80'
+      maxRevenue: '$5000.80',
+      potentialRevenue: '$5002.80'
     },
     {
       key: '6',
@@ -161,7 +176,8 @@ export function Dashboard() {
       business: 'Austin Community Child Care',
       attendanceRate: '50%',
       minRevenue: '$1240.90',
-      maxRevenue: '$2000.50'
+      maxRevenue: '$2000.50',
+      potentialRevenue: '$3430.80'
     },
     {
       key: '7',
@@ -170,12 +186,13 @@ export function Dashboard() {
       business: 'Ravenswood Daycare',
       attendanceRate: '52%',
       minRevenue: '$1109.90',
-      maxRevenue: '$2188'
+      maxRevenue: '$2188',
+      potentialRevenue: '$1500.80'
     }
   ]
 
   return (
-    <div className="dashboard">
+    <div className="dashboard sm:mx-8">
       <div className="m-2">
         <Typography.Title>{t('dashboardTitle')}</Typography.Title>
         <Typography.Text className="md-3">
@@ -190,6 +207,7 @@ export function Dashboard() {
         pagination={false}
         sticky
         className="dashboard-table"
+        scroll={{ x: 'max-content' }}
       >
         {businessList &&
           businessList.map(business => {
