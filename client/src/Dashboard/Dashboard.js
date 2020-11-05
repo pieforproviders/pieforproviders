@@ -146,7 +146,7 @@ export function Dashboard() {
   // configuation for table columns
   const columns = [
     {
-      title: 'Child name',
+      title: t('childName'),
       dataIndex: 'childName',
       key: 'childName',
       width: 150,
@@ -155,7 +155,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Case number',
+      title: t('caseNumberLowercase'),
       dataIndex: 'caseNumber',
       key: 'caseNumber',
       width: 150,
@@ -164,7 +164,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Business',
+      title: t('business'),
       dataIndex: 'business',
       key: 'business',
       width: 150,
@@ -173,7 +173,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Attendance rate',
+      title: t('attendanceRate'),
       dataIndex: 'attendanceRate',
       key: 'attendanceRate',
       width: 150,
@@ -183,7 +183,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Min. revenue',
+      title: t('minRevenue'),
       dataIndex: 'minRevenue',
       key: 'minRevenue',
       width: 150,
@@ -192,7 +192,17 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: 'Max. revenue',
+      title: t('potentialRevenue'),
+      dataIndex: 'potentialRevenue',
+      key: 'potentialRevenue',
+      width: 150,
+      onHeaderCell,
+      sorter: (a, b) =>
+        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sortDirections: ['descend', 'ascend']
+    },
+    {
+      title: t('maxRevenue'),
       dataIndex: 'maxRevenue',
       key: 'maxRevenue',
       width: 150,
@@ -203,7 +213,7 @@ export function Dashboard() {
   ]
 
   return (
-    <div className="dashboard">
+    <div className="dashboard sm:mx-8">
       <div className="m-2">
         <Typography.Title>{t('dashboardTitle')}</Typography.Title>
         <Typography.Text className="md-3">
@@ -218,6 +228,7 @@ export function Dashboard() {
         pagination={false}
         sticky
         className="dashboard-table"
+        scroll={{ x: 'max-content' }}
       >
         {businessList &&
           businessList.map(business => {
