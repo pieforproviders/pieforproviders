@@ -71,7 +71,6 @@ import '_assets/styles/table-overrides.css'
 //   }
 // ]
 
-
 export function Dashboard() {
   const [businessList, setBusinessList] = useState([])
   const [dashboardData, setDashboardData] = useState([])
@@ -83,66 +82,13 @@ export function Dashboard() {
       style: {
         color: '#262626',
         fontWeight: 'bold'
-      }
+      },
+      scope: 'col'
     }
   }
-
-  useEffect(() => {
-    const responseValue = async () => {
-      const businesses = await makeRequest({
-        type: 'get',
-        url: '/api/v1/businesses',
-        headers: { Authorization: token }
-      })
-      const allBusinesses = await businesses.json()
-      if (!allBusinesses.error) {
-        setBusinessList(allBusinesses)
-      }
-    }
-    const getDashboardData = async () => {
-      const response = await makeRequest({
-        type: 'get',
-        url: '/api/v1/case_list_for_dashboard',
-        headers: { Authorization: token }
-      })
-      const parsedResponse = await response.json()
-      const data = parsedResponse.reduce((acc, cv, index) => {
-        const {
-          full_name: name = '',
-          approvals: [{ case_number: caseNumber = '' }],
-          business: { name: businessName = '' }
-        } = cv
-
-        return [
-          ...acc,
-          {
-            key: index,
-            childName: name,
-            caseNumber: caseNumber,
-            business: businessName,
-            // these values will be updated as the case_list endpoint is updated
-            attendanceRate: '',
-            minRevenue: '',
-            maxRevenue: '',
-            potentialRevenue: ''
-          }
-        ]
-      }, [])
-      setDashboardData(data)
-    }
-    // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
-    responseValue()
-    getDashboardData()
-    // still haven't found a better way around this - sometimes we really do
-    // only want the useEffect to fire on the first component load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const columnSorter = (a, b, name) =>
     a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
-
   const numMatch = num => num.match(/\d+.\d{2}/) ?? 0
-
   // configuation for table columns
   const columns = [
     {
@@ -179,7 +125,7 @@ export function Dashboard() {
       width: 150,
       onHeaderCell,
       sorter: (a, b) =>
-        a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
+      a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -198,7 +144,7 @@ export function Dashboard() {
       width: 150,
       onHeaderCell,
       sorter: (a, b) =>
-        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -211,6 +157,62 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     }
   ]
+
+  useEffect(() => {
+    const responseValue = async () => {
+      const businesses = await makeRequest({
+        type: 'get',
+        url: '/api/v1/businesses',
+        headers: { Authorization: token }
+      })
+      const allBusinesses = await businesses.json()
+      if (!allBusinesses.error) {
+        setBusinessList(allBusinesses)
+      }
+    }
+
+    const getDashboardData = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/case_list_for_dashboard',
+        headers: { Authorization: token }
+      })
+      const parsedResponse = await response.json()
+
+      if (!parsedResponse.error) {
+        const data = parsedResponse.reduce((acc, cv, index) => {
+          const {
+            full_name: name = '',
+            approvals: [{ case_number: caseNumber = '' }],
+            business: { name: businessName = '' }
+          } = cv
+
+          return [
+            ...acc,
+            {
+              key: index,
+              childName: name,
+              caseNumber: caseNumber,
+              business: businessName,
+              // these values will be updated as the case_list endpoint is updated
+              attendanceRate: '',
+              minRevenue: '',
+              maxRevenue: '',
+              potentialRevenue: ''
+            }
+          ]
+        }, [])
+
+        setDashboardData(data)
+      }
+    }
+    // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
+    responseValue()
+    getDashboardData()
+    // still haven't found a better way around this - sometimes we really do
+    // only want the useEffect to fire on the first component load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="dashboard sm:mx-8">
