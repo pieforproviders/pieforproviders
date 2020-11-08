@@ -27,7 +27,23 @@ RSpec.describe OnboardingCsvParser do
 
   let(:valid_1_row_csv) { header_row + juan_ortiz_row }
 
-  let(:csv_row_juan_ortiz) { CSV::Row.new(headers, juan_ortiz_row.split(',')) }
+  let(:csv_row_juan_ortiz) do
+    CSV::Row.new(headers,
+                 ['Juan',
+                  'Oritz',
+                  Date.new(2015, 4, 14),
+                  'Happy Hearts Childcare',
+                  '60606',
+                  'Cook',
+                  'Gold',
+                  '1234567',
+                  18,
+                  4,
+                  Date.new(2019, 11, 12),
+                  Date.new(2020, 11, 12),
+                  10_000,
+                  'Monthly'])
+  end
 
   let(:illinois) { build(:state, name: 'Illinois', abbr: 'IL') }
   let(:cook_county) { build(:county, name: 'Cook', state: illinois) }
