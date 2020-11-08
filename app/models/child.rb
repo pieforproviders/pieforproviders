@@ -21,6 +21,36 @@ class Child < UuidApplicationRecord
   scope :active, -> { where(active: true) }
 
   delegate :user, to: :business
+
+  # @return [Decimal] - the age of the child in years on the given date,
+  #  rounded to 4 decimal places
+  def age_in_years(given_date = Date.current)
+    years = given_date.year - date_of_birth.year
+    days_since = days_since_recent_birthday(given_date)
+
+    divisor = 365.0
+    divisor += 1 if DateHelperService.leap_day_btwn?(recent_birthday, given_date)
+
+    partial_year = (days_since / divisor).round(4)
+    years + partial_year
+  end
+
+  private
+
+  # @return [Integer] - number of days since the most recent birthday
+  def days_since_recent_birthday(given_date = Date.current)
+    (given_date - recent_birthday(given_date)).to_i
+  end
+
+  # @return [Date] - the most recent birthday to have already occurred on or
+  #   before the given_date
+  def recent_birthday(given_date = Date.current)
+    bd_in_given_year = date_of_birth.change(year: given_date.year)
+
+    # Has the most recent birthday already happened in the given year?
+    recent_bd_year = (bd_in_given_year > given_date ? given_date.year - 1 : given_date.year)
+    date_of_birth.change(year: recent_bd_year)
+  end
 end
 
 # == Schema Information
