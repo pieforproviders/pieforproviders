@@ -65,7 +65,7 @@ class OnboardingCsvParser
   end
 
   def self.get_approval(row)
-    approval_data = { case_number: row['case_number'].to_s }
+    approval_data = { case_number: row['case_number'].to_s.strip }
     approval_data[:effective_on] = row['effective_on'] if row['effective_on'].present?
     approval_data[:expires_on] = row['expires_on'] if row['expires_on'].present?
     approval = Approval.find_by(approval_data)
