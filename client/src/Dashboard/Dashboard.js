@@ -83,7 +83,7 @@ export function Dashboard() {
         color: '#262626',
         fontWeight: 'bold'
       },
-      scope: 'col'
+      role: 'columnheader'
     }
   }
   const columnSorter = (a, b, name) =>
@@ -125,7 +125,7 @@ export function Dashboard() {
       width: 150,
       onHeaderCell,
       sorter: (a, b) =>
-      a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
+        a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -144,7 +144,7 @@ export function Dashboard() {
       width: 150,
       onHeaderCell,
       sorter: (a, b) =>
-      numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
       sortDirections: ['descend', 'ascend']
     },
     {
