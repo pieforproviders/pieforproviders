@@ -66,7 +66,6 @@ puts_records_in_db(User)
 montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
 big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
 hardin_zipcode = Zipcode.find_or_create_by!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
-sweetgrass_cty_mt = County.find_or_create_by!(name: 'Sweet Grass', state: montana)
 
 illinois = State.find_or_create_by!(name: 'Illinois', abbr: 'IL')
 cook_county = County.find_or_create_by!(name: 'Cook', state: illinois)
@@ -83,6 +82,17 @@ lake_county = County.find_or_create_by!(name: 'Lake', state: illinois)
   license_type: Licenses.types.keys.first,
   county: big_horn_cty_mt,
   zipcode: hardin_zipcode
+)
+
+@biz_goslings = Business.where(name: 'Goslings Grow', user: @user_kate).first_or_create(
+  license_type: Licenses.types.keys.first,
+  county: cook_county,
+  zipcode: cook_zip_60688
+)
+@biz_lil_ducks = Business.where(name: 'Lil Baby Ducklings', user: @user_kate).first_or_create(
+  license_type: Licenses.types.keys.first,
+  county: cook_county,
+  zipcode: cook_zip_60686
 )
 
 puts_records_in_db(Business)
@@ -123,24 +133,30 @@ puts_records_in_db(Approval)
 
 # find_or_create_by! a Child with the full_name,
 #  and birthday set randomly between the min_age and max_age.
-def child_named(full_name, min_birthday: MIN_BIRTHDAY,
-                max_birthday: MAX_BIRTHDAY,
-                business: @business)
-  effective_date = Faker::Date.between(from: 1.year.ago, to: Time.zone.today)
+def child_named(full_name, date_of_birth: nil,
+                min_birthday: MIN_BIRTHDAY, max_birthday: MAX_BIRTHDAY,
+                business: @biz_happy_seedlings,
+                case_number: Faker::Number.number(digits: 10),
+                copay: Faker::Number.decimal(l_digits: 3, r_digits: 2),
+                copay_frequency: [nil].concat(Approval::COPAY_FREQUENCIES).sample,
+                effective_on: Faker::Date.between(from: 1.year.ago, to: Time.zone.today),
+                expires_on: effective_on + 1.year)
+
   Child.find_or_create_by!(business: business,
                            full_name: full_name,
-                           date_of_birth: Faker::Date.between(from: max_birthday, to: min_birthday),
+                           date_of_birth: (date_of_birth.nil? ? Faker::Date.between(from: max_birthday, to: min_birthday) : date_of_birth),
                            approvals: [
                              Approval.create!(
-                               case_number: Faker::Number.number(digits: 10),
-                               copay: Faker::Number.decimal(l_digits: 3, r_digits: 2),
-                               copay_frequency: [nil].concat(Approval::COPAY_FREQUENCIES).sample,
-                               effective_on: effective_date,
-                               expires_on: effective_date + 1.year
+                               case_number: case_number,
+                               copay: copay,
+                               copay_frequency: copay_frequency,
+                               effective_on: effective_on,
+                               expires_on: expires_on
                              )
                            ])
 end
 
+# Kids in Happy Seedlings Childcare
 maria = child_named('Maria Baca')
 kshawn = child_named("K'Shawn Henderson")
 marcus = child_named('Marcus Smith')
