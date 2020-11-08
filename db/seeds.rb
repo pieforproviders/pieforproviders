@@ -65,19 +65,57 @@ puts_records_in_db(User)
 
 montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
 big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
-hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
+hardin_zipcode = Zipcode.find_or_create_by!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
+sweetgrass_cty_mt = County.find_or_create_by!(name: 'Sweet Grass', state: montana)
+
+illinois = State.find_or_create_by!(name: 'Illinois', abbr: 'IL')
+cook_county = County.find_or_create_by!(name: 'Cook', state: illinois)
+cook_zip_60686 = Zipcode.find_or_create_by!(state: cook_county.state, county: cook_county, code: '60686', city: 'Chicago')
+cook_zip_60688 = Zipcode.find_or_create_by!(state: cook_county.state, county: cook_county, code: '60688', city: 'Chicago')
+
+lake_county = County.find_or_create_by!(name: 'Lake', state: illinois)
 
 # ---------------------------------------------
 # Businesses
 # ---------------------------------------------
 
-@business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
+@biz_happy_seedlings = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
   license_type: Licenses.types.keys.first,
   county: big_horn_cty_mt,
   zipcode: hardin_zipcode
 )
 
 puts_records_in_db(Business)
+
+# ---------------------------------------------
+# Approvals
+# ---------------------------------------------
+
+Approval.create!(case_number: '1234567',
+                 copay: 500.00,
+                 copay_frequency: 'weekly',
+                 effective_on: Date.new(2019,11,12),
+                 expires_on: Date.new(2020,11,11)
+                 )
+Approval.create!(case_number: '1231231',
+                 copay: 1111.11,
+                 copay_frequency: 'monthly',
+                 effective_on: Date.new(2020,2,4),
+                 expires_on: Date.new(2021,2,3)
+)
+Approval.create!(case_number: '4567890',
+                 copay: 1500.00,
+                 copay_frequency: 'monthly',
+                 effective_on: Date.new(2020,2,4),
+                 expires_on: Date.new(2021,2,3)
+)
+Approval.create!(case_number: '4242424',
+                 copay: 555.55,
+                 copay_frequency: 'weekly',
+                 effective_on: Date.new(2020,1,4),
+                 expires_on: Date.new(2021,1,3)
+)
+puts_records_in_db(Approval)
 
 # ---------------------------------------------
 # Children w/ Required Approvals
@@ -116,18 +154,59 @@ puts_records_in_db(Child)
 # Subsidy Rules
 # ---------------------------------------------
 
-rule_effective_date = Faker::Date.between(from: 10.years.ago, to: Time.zone.today)
+today = Date.current
 
 il_sr_rule = IllinoisSubsidyRule.first_or_create!
 
-sr_rule_1 = SubsidyRule.first_or_create!(
-  name: 'Rule 1',
+il_rules_start = today - 200
+il_9_this_year = SubsidyRule.find_or_create_by(
+  name: 'This year until age 9',
+  max_age: 9,
+  license_type: Licenses.types.values.sample,
+  county: cook_county,
+  state: cook_county.state,
+  effective_on: il_rules_start,
+  expires_on: il_rules_start + 1.year - 1.day,
+  subsidy_ruleable: il_sr_rule
+)
+il_9_last_year = SubsidyRule.find_or_create_by(
+  name: 'Last year until age 9',
+  max_age: 9,
+  license_type: Licenses.types.values.sample,
+  county: cook_county,
+  state: cook_county.state,
+  effective_on: il_rules_start - 1.years,
+  expires_on: il_rules_start - 1.day,
+  subsidy_ruleable: il_sr_rule
+)
+il_18_this_year = SubsidyRule.find_or_create_by(
+  name: 'This year until age 18',
   max_age: 18,
   license_type: Licenses.types.values.sample,
-  county: big_horn_cty_mt,
-  state: big_horn_cty_mt.state,
-  effective_on: rule_effective_date,
-  expires_on: rule_effective_date + rand(1..10).years,
+  county: cook_county,
+  state: cook_county.state,
+  effective_on: il_rules_start,
+  expires_on: il_rules_start + 1.year - 1.day,
+  subsidy_ruleable: il_sr_rule
+)
+il_18_last_year = SubsidyRule.find_or_create_by(
+  name: 'Last year until age 18',
+  max_age: 18,
+  license_type: Licenses.types.values.sample,
+  county: cook_county,
+  state: cook_county.state,
+  effective_on: il_rules_start - 1.year,
+  expires_on: il_rules_start - 1.day,
+  subsidy_ruleable: il_sr_rule
+)
+il_lake_18_this_year = SubsidyRule.find_or_create_by(
+  name: 'This year until age 18',
+  max_age: 18,
+  license_type: Licenses.types.values.sample,
+  county: lake_county,
+  state: lake_county.state,
+  effective_on: il_rules_start,
+  expires_on: il_rules_start + 1.year - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 
