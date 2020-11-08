@@ -19,8 +19,22 @@ class SubsidyRule < UuidApplicationRecord
   validates :expires_on, date_param: true
 
   validates :license_type, inclusion: { in: Licenses.types.values }
-end
 
+  def self.in_effect_on(date = Date.current)
+    where('effective_on <= ?', date).where('expires_on > ?', date)
+  end
+
+  def self.within_max_age(age)
+    where('max_age >= ?', age).order(:max_age)
+  end
+
+  def self.age_county_state(age, county, state, effective_on: Date.current)
+    in_effect_on(effective_on)
+      .where(state: state, county: county)
+      .within_max_age(age)
+      .first
+  end
+end
 # == Schema Information
 #
 # Table name: subsidy_rules
@@ -40,9 +54,10 @@ end
 #
 # Indexes
 #
-#  index_subsidy_rules_on_county_id  (county_id)
-#  index_subsidy_rules_on_state_id   (state_id)
-#  subsidy_ruleable_index            (subsidy_ruleable_type,subsidy_ruleable_id)
+#  index_subsidy_rules_on_county_id               (county_id)
+#  index_subsidy_rules_on_state_id                (state_id)
+#  index_subsidy_rules_on_state_id_and_county_id  (state_id,county_id)
+#  subsidy_ruleable_index                         (subsidy_ruleable_type,subsidy_ruleable_id)
 #
 # Foreign Keys
 #
