@@ -34,9 +34,10 @@ end
 #
 # Indexes
 #
-#  index_subsidy_rules_on_county_id  (county_id)
-#  index_subsidy_rules_on_state_id   (state_id)
-#  subsidy_ruleable_index            (subsidy_ruleable_type,subsidy_ruleable_id)
+#  index_subsidy_rules_on_county_id               (county_id)
+#  index_subsidy_rules_on_state_id                (state_id)
+#  index_subsidy_rules_on_state_id_and_county_id  (state_id,county_id)
+#  subsidy_ruleable_index                         (subsidy_ruleable_type,subsidy_ruleable_id)
 #
 # Foreign Keys
 #
