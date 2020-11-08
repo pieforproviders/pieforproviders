@@ -2,7 +2,7 @@
 
 # list these mailer preview links with this URL:
 # http://localhost:3001/rails/mailers/devise_custom_mailer
-
+#
 class DeviseCustomMailerPreview < ActionMailer::Preview
   def confirmation_instructions
     DeviseCustomMailer.confirmation_instructions(User.first, 'token', {})
