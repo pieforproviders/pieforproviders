@@ -7,12 +7,10 @@ require_relative File.join(__dir__, '..', '..', 'app', 'services', 'onboarding_c
 require 'json'
 
 RSpec.describe OnboardingCsvReader do
-
   test_csv_fn = File.join(__dir__, '..', 'fixtures', 'files', 'onboarding_data.csv')
 
   describe '.import' do
-
-    it "raises an error if no filename is provided" do
+    it 'raises an error if no filename is provided' do
       expect { described_class.import(nil) }.to raise_error ArgumentError
       expect { described_class.import('') }.to raise_error ArgumentError
     end
