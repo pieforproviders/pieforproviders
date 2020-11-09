@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require_relative 'onboarding_csv_parser'
 
 #--------------------------
 #
@@ -15,29 +16,14 @@ require 'csv'
 #--------------------------
 #
 class OnboardingCsvReader
-  IMPORT_FN = Rails.root.join('onboarding_data.csv')
 
-  def self.import(full_filename = IMPORT_FN)
-    classes_to_count = [Child, ChildApproval]
-    orig_counts = initial_counts(classes_to_count)
+  def self.import(full_filename)
+    raise ArgumentError, 'Must provide a filename' if full_filename.blank?
 
-    Rails.logger.info ">>> Importing #{full_filename}..."
-
+    json = String.new
     File.open(full_filename, 'r') do |csv_file|
-      OnboardingCsvParser.parse(csv_file.read)
+      json << OnboardingCsvParser.parse(csv_file.read)
     end
-
-    Rails.logger.info "  Finished importing #{full_filename}"
-    log_final_counts(orig_counts)
-  end
-
-  def self.initial_counts(classes_tracked = [])
-    classes_tracked.index_with { |klass| klass.send(:count) }
-  end
-
-  def self.log_final_counts(orig_counts = {})
-    orig_counts.each do |klass, orig_count|
-      Rails.logger.info "   #{klass.send(:count) - orig_count} total #{klass.name} added"
-    end
+    json
   end
 end
