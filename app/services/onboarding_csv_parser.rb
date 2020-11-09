@@ -36,7 +36,7 @@ class OnboardingCsvParser
   # @return [Hash] - a Hash where all keys and values are Strings
   def self.create_all_strings_hash(row)
     row_h = row.to_h
-    row_h.transform_keys!{ |key| key.to_s.strip }
-    row_h.transform_values!{ |value| value.to_s.strip }
+    row_h.transform_keys! { |key| key.to_s.strip }
+    row_h.transform_values! { |value| value.to_s.strip }
   end
 end

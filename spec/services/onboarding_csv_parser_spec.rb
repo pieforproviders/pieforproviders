@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require_relative File.join(__dir__, '..', '..', 'app','services','onboarding_csv_parser')
+require_relative File.join(__dir__, '..', '..', 'app', 'services', 'onboarding_csv_parser')
 
 require 'json'
 
@@ -31,7 +31,7 @@ RSpec.describe OnboardingCsvParser do
   let(:amaury_mosi_row) { 'Amaury,Mòsi,2012-09-11,Goslings Grow,60688,Cook,Bronze,4567890,11,7,2020-02-04,2021-02-03,1200,Weekly' }
 
   let(:valid_1_row_csv) { header_row + juan_ortiz_row }
-  let(:valid_3_rows_csv) { header_row + juan_ortiz_row + "\n" + julia_ortiz_row + "\n" + amaury_mosi_row }
+  let(:valid_3_rows_csv) { "#{header_row} #{juan_ortiz_row}\n#{julia_ortiz_row}\n#{amaury_mosi_row}" }
 
   let(:csv_row_juan_ortiz) do
     CSV::Row.new(headers,
