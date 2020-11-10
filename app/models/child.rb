@@ -19,6 +19,7 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals
 
   scope :active, -> { where(active: true) }
+  scope :with_current_approval, -> { joins(:approvals).merge(Approval.current) }
 
   delegate :user, to: :business
 end
