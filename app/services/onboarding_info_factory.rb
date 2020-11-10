@@ -15,7 +15,6 @@ require 'pie_for_providers_error'
 #
 #--------------------------
 class OnboardingInfoFactory
-
   # Find ()or create if needed) objects in the JSON String that represents onboarding information.
   #  This handles the equivalent of 1 row of an Onboarding CSV file.
   #  TODO: name this to something else? ex: onboarding_json(json) or onboarding_row_json(json) ?
@@ -34,9 +33,7 @@ class OnboardingInfoFactory
   # @raise [ItemNotFoundError]
   def self.get_business(json)
     json_hash = json_to_h(json)
-    zipcode = Zipcode.find_by(code: json_hash['business_zip_code'])
-    raise_not_found_error("Zipcode #{json_hash['business_zip_code']}") unless zipcode
-
+    zipcode = get_business_zipcode(json)
     biz_name = json_hash['business_name']
     business = Business.find_or_create_by!(name: biz_name, zipcode: zipcode) do |biz|
       biz.user = User.find_by(admin: true)
@@ -48,6 +45,16 @@ class OnboardingInfoFactory
     business
   end
 
+  # Get the business zipcode from json string. Raise an error if not found
+  #
+  # @return [Zipcode]
+  # @raise ItemNotFoundError
+  def self.get_business_zipcode(json)
+    json_hash = json_to_h(json)
+    zipcode = Zipcode.find_by(code: json_hash['business_zip_code'])
+    raise_not_found_error("Zipcode #{json_hash['business_zip_code']}") unless zipcode
+    zipcode
+  end
 
   # Create a Child based on the information in the json string and the business.
   # Do nothing if the child already exists.
@@ -79,8 +86,8 @@ class OnboardingInfoFactory
   def self.get_approval(json)
     json_hash = json_to_h(json)
     approval_data = { case_number: json_hash['case_number'].to_s.strip }
-    approval_data['effective_on'] = json_hash['effective_on'] if json_hash['effective_on'].present?
-    approval_data['expires_on'] = json_hash['expires_on'] if json_hash['expires_on'].present?
+    approval_data['effective_on'] = json_hash['effective_on']
+    approval_data['expires_on'] = json_hash['expires_on']
     approval = Approval.find_by(approval_data)
     raise_not_found_error("Approval case number: #{json_hash['case_number']} effective on: #{json_hash['effective_on']} expires on: #{json_hash['expires_on']}") unless approval
 
