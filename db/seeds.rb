@@ -98,36 +98,6 @@ lake_county = County.find_or_create_by!(name: 'Lake', state: illinois)
 puts_records_in_db(Business)
 
 # ---------------------------------------------
-# Approvals
-# ---------------------------------------------
-
-Approval.create!(case_number: '1234567',
-                 copay: 500.00,
-                 copay_frequency: 'weekly',
-                 effective_on: Date.new(2019,11,12),
-                 expires_on: Date.new(2020,11,11)
-                 )
-Approval.create!(case_number: '1231231',
-                 copay: 1111.11,
-                 copay_frequency: 'monthly',
-                 effective_on: Date.new(2020,2,4),
-                 expires_on: Date.new(2021,2,3)
-)
-Approval.create!(case_number: '4567890',
-                 copay: 1500.00,
-                 copay_frequency: 'monthly',
-                 effective_on: Date.new(2020,2,4),
-                 expires_on: Date.new(2021,2,3)
-)
-Approval.create!(case_number: '4242424',
-                 copay: 555.55,
-                 copay_frequency: 'weekly',
-                 effective_on: Date.new(2020,1,4),
-                 expires_on: Date.new(2021,1,3)
-)
-puts_records_in_db(Approval)
-
-# ---------------------------------------------
 # Children w/ Required Approvals
 # ---------------------------------------------
 
@@ -174,15 +144,15 @@ today = Date.current
 
 il_sr_rule = IllinoisSubsidyRule.first_or_create!
 
-il_rules_start = today - 200
+two_hundred_days_ago = today - 200
 il_9_this_year = SubsidyRule.find_or_create_by(
   name: 'This year until age 9',
   max_age: 9,
   license_type: Licenses.types.values.sample,
   county: cook_county,
   state: cook_county.state,
-  effective_on: il_rules_start,
-  expires_on: il_rules_start + 1.year - 1.day,
+  effective_on: two_hundred_days_ago,
+  expires_on: two_hundred_days_ago + 1.year - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 il_9_last_year = SubsidyRule.find_or_create_by(
@@ -191,8 +161,8 @@ il_9_last_year = SubsidyRule.find_or_create_by(
   license_type: Licenses.types.values.sample,
   county: cook_county,
   state: cook_county.state,
-  effective_on: il_rules_start - 1.years,
-  expires_on: il_rules_start - 1.day,
+  effective_on: two_hundred_days_ago - 1.years,
+  expires_on: two_hundred_days_ago - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 il_18_this_year = SubsidyRule.find_or_create_by(
@@ -201,8 +171,8 @@ il_18_this_year = SubsidyRule.find_or_create_by(
   license_type: Licenses.types.values.sample,
   county: cook_county,
   state: cook_county.state,
-  effective_on: il_rules_start,
-  expires_on: il_rules_start + 1.year - 1.day,
+  effective_on: two_hundred_days_ago,
+  expires_on: two_hundred_days_ago + 1.year - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 il_18_last_year = SubsidyRule.find_or_create_by(
@@ -211,8 +181,8 @@ il_18_last_year = SubsidyRule.find_or_create_by(
   license_type: Licenses.types.values.sample,
   county: cook_county,
   state: cook_county.state,
-  effective_on: il_rules_start - 1.year,
-  expires_on: il_rules_start - 1.day,
+  effective_on: two_hundred_days_ago - 1.year,
+  expires_on: two_hundred_days_ago - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 il_lake_18_this_year = SubsidyRule.find_or_create_by(
@@ -221,8 +191,8 @@ il_lake_18_this_year = SubsidyRule.find_or_create_by(
   license_type: Licenses.types.values.sample,
   county: lake_county,
   state: lake_county.state,
-  effective_on: il_rules_start,
-  expires_on: il_rules_start + 1.year - 1.day,
+  effective_on: two_hundred_days_ago,
+  expires_on: two_hundred_days_ago + 1.year - 1.day,
   subsidy_ruleable: il_sr_rule
 )
 
