@@ -16,11 +16,13 @@ RSpec.describe OnboardingCsvReader do
     end
 
     it 'uses the filename provided' do
+      faux_file = double(File)
+      allow(faux_file).to receive_messages(open: true, read: true, close: true)
       allow(OnboardingCsvParser).to receive(:parse)
 
       given_filename = File.join(__dir__, 'blorfo.csv')
       expect(File).to receive(:open).with(given_filename, 'r')
-                                    .and_return(true)
+                                    .and_return(faux_file)
       described_class.import(given_filename)
     end
 
