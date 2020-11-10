@@ -5,16 +5,18 @@ require 'pie_for_providers_error' # TODO: add this to spec_helper.rb ?
 
 # specifications and tests for SubsidyRuleFinder
 RSpec.describe SubsidyRuleFinder do
-
   let(:illinois) { build(:state, name: 'Illinois', abbr: 'IL') }
   let(:cook_county) { build(:county, name: 'Cook', state: illinois) }
   let(:cook_zip_06) { build(:zipcode, county: cook_county, code: '60606') }
   let(:biz) { build(:business, county: cook_county, zipcode: cook_zip_06) }
-  let(:kid) { build(:child, date_of_birth: Date.current - 6.years + 20.days,
-                    business: biz, approvals: [ build(:approval)]) }
+  let(:kid) do
+    build(:child,
+          date_of_birth: Date.current - 6.years + 20.days,
+          business: biz,
+          approvals: [build(:approval)])
+  end
 
   describe '.for' do
-
     it 'get the rule based on child age, business state & county and effective_on date' do
       allow(kid).to receive(:age_in_years).and_return(5)
       given_date = Date.current - 2.days
