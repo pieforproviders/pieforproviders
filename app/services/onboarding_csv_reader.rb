@@ -19,10 +19,13 @@ class OnboardingCsvReader
   def self.import(full_filename)
     raise ArgumentError, 'Must provide a filename' if full_filename.nil? || full_filename.empty?
 
-    json = String.new  # TODO: rubocop flags this, but I don't know how else to initialize it.
-    File.open(full_filename, 'r') do |csv_file|
-      json << OnboardingCsvParser.parse(csv_file.read)
+    begin
+      csv_file = File.open(full_filename, 'r')
+      json = OnboardingCsvParser.parse(csv_file.read)
+    ensure
+      csv_file.close
     end
+
     json
   end
 end
