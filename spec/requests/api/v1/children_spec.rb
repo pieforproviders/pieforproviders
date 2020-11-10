@@ -42,7 +42,9 @@ RSpec.describe 'children API', type: :request do
         # security [{ token: [] }]
 
         include_context 'correct api version header'
-        let!(:owner_records) { create_list(:child, count, owner_attributes) }
+        let!(:expired_approval) { create(:approval, case_number: '1234567A', effective_on: Date.current - 2.years, expires_on: Date.current - 1.year, create_children: false) }
+        let!(:current_approval) { create(:approval, case_number: '1234567B', effective_on: Date.current - 2.months, expires_on: Date.current + 10.months, create_children: false) }
+        let!(:owner_records) { create_list(:child, count, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
         let!(:owner_inactive_records) { create_list(:child, count, owner_attributes.merge(active: false)) }
         let!(:non_owner_records) { create_list(:child, count, non_owner_attributes) }
         let!(:non_owner_inactive_records) { create_list(:child, count, non_owner_attributes.merge(active: false)) }
@@ -52,6 +54,8 @@ RSpec.describe 'children API', type: :request do
           response '200', 'active cases found' do
             run_test! do
               expect(JSON.parse(response.body).size).to eq(count * 2)
+              expect(JSON.parse(response.body).first['approvals'].size).to eq(1)
+              expect(JSON.parse(response.body).first['approvals'].first['case_number']).to eq('1234567B')
               expect(response).to match_response_schema('case_list_for_dashboard')
             end
           end
