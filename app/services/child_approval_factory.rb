@@ -16,14 +16,16 @@ class ChildApprovalFactory
     raise ArgumentError, 'child cannot be nil' if child.nil?
     raise ArgumentError, 'approval cannot be nil' if approval.nil?
 
-    child_subsidy_rule = SubsidyRuleFinder.for(child, date)
-
     child_approval = ChildApproval.find_or_create_by!(child: child,
                                                       approval: approval,
-                                                      subsidy_rule: child_subsidy_rule)
-    raise "Could not find_or_create_by! a ChildApproval for child #{child.full_name}, approval id #{approval.id} subsidy rule id: #{child_subsidy_rule.id}" unless child_approval
+                                                      subsidy_rule: SubsidyRuleFinder.for(child, date))
+    set_child_approval(child, approval, child_approval)
+  end
+
+  def set_child_approval(child, approval, child_approval)
+    raise "Could not find_or_create_by! a ChildApproval for child #{child.full_name}, approval id #{approval.id}" unless child_approval
 
     child.child_approvals = [child_approval]
-    child_approval # TODO: I do not understand why Rubocop is flagging this as: Lint/Void: Variable child_approval used in void conte
+    child_approval
   end
 end
