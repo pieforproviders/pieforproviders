@@ -2,14 +2,38 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
-import { Table, Typography } from 'antd'
+import { Col, Divider, Row, Table, Typography } from 'antd'
 import '_assets/styles/table-overrides.css'
 
+
 export function Dashboard() {
-  const [businessList, setBusinessList] = useState([])
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const staticSummaryStats = [
+    {
+      title: t('guaranteedRevenue'),
+      stat: '$981',
+      definition: t('guaranteedRevenueDef')
+    },
+    {
+      title: t('potentialRevenue'),
+      stat: '$1,200',
+      definition: t('potentialRevenueDef')
+    },
+    {
+      title: t('maxApprovedRevenue'),
+      stat: '$1200',
+      definition: t('maxApprovedRevenueDef')
+    },
+    {
+      title: t('attendanceRate'),
+      stat: '60%',
+      definition: t('attendanceRateDef')
+    }
+  ]
+  const [businessList, setBusinessList] = useState([])
+  const [summaryStats, setSummaryStats] = useState(staticSummaryStats)
   const onHeaderCell = () => {
     return {
       style: {
@@ -195,9 +219,77 @@ export function Dashboard() {
     <div className="dashboard sm:mx-8">
       <div className="m-2">
         <Typography.Title>{t('dashboardTitle')}</Typography.Title>
-        <Typography.Text className="md-3">
+        <Typography.Text className="md-3 text-base">
           {t('revenueProjections')}
         </Typography.Text>
+      </div>
+      <div className="mx-2 my-10">
+        <Row justify="start">
+          {summaryStats.map((stat, i) => (
+            <>
+              <Col span={4}>
+                <Row>
+                  <Typography.Text>{stat.title}</Typography.Text>
+                </Row>
+                <Row>
+                  <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+                      {stat.stat}
+                  </Typography.Text>
+                </Row>
+                <Row>
+                  <Typography.Paragraph className="text-xs w-2/3">
+                    {stat.definition}
+                  </Typography.Paragraph>
+                </Row>
+              </Col>
+              {i + 1 === summaryStats.length ? null : (
+                <Divider
+                  style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
+                  className="h-32 mx-8 -ml-2"
+                  type="vertical"
+                />
+              )}
+            </>
+          ))}
+          {/* <Col span={3}>
+            <Row>
+              <Typography.Text>{t('potentialRevenue')}</Typography.Text>
+            </Row>
+            <Row>number</Row>
+            <Row>
+              <Typography.Text>{t('potentialRevenueDef')}</Typography.Text>
+            </Row>
+          </Col>
+          <Divider
+            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
+            className="h-32 mx-8"
+            type="vertical"
+          />
+          <Col span={3}>
+            <Row>
+              <Typography.Text>{t('maxApprovedRevenue')}</Typography.Text>
+            </Row>
+            <Row>number</Row>
+            <Row>{t('maxApprovedRevenueDef')}</Row>
+          </Col>
+          <Divider
+            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
+            className="h-32 mx-8"
+            type="vertical"
+          />
+          <Col span={3}>
+            <Row>
+              <Typography.Text>{t('attendanceRate')}</Typography.Text>
+            </Row>
+            <Row>number</Row>
+            <Row>{t('attendanceRateDef')}</Row>
+          </Col>
+          <Divider
+            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
+            className="h-32 mx-8"
+            type="vertical"
+          /> */}
+        </Row>
       </div>
       <Table
         dataSource={staticData}

@@ -138,8 +138,14 @@
   "childName": "Nombre del niño",
   "caseNumberLowercase": "Número de caso",
   "business": "Negocio",
-  "attendanceRate": "Tasa de asistencia",
   "minRevenue": "Ingresos mínimos",
   "maxRevenue": "Ingresos máximos",
-  "potentialRevenue": "Ingresos potenciales"
+  "guaranteedRevenue": "Ingresos garantizados",
+  "quaranteedRevenueDef": "Basado en días ya asistidos",
+  "potentialRevenue": "Ingresos potenciales",
+  "potentialRevenueDef": "Basado en asistencia anticipada por el resto del mes",
+  "maxApprovedRevenue": "Ingresos máximos aprobados",
+  "maxApprovedRevenueDef": "Si todas las familias satisfagan la tasa de 80% asistencia",
+  "attendanceRate": "Tasa de asistencia",
+  "attendanceRateDef": "Basada en la tasa de asistencia de todos los niños listados"
 }

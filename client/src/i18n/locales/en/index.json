@@ -138,8 +138,14 @@
   "childName": "Child name",
   "caseNumberLowercase": "Case number",
   "business": "Business",
-  "attendanceRate": "Attendance rate",
   "minRevenue": "Min. revenue",
   "maxRevenue": "Max. revenue",
-  "potentialRevenue": "Potential revenue"
+  "guaranteedRevenue": "Guaranteed revenue",
+  "guaranteedRevenueDef": "Based on days already attended",
+  "potentialRevenue": "Potential revenue",
+  "potentialRevenueDef": "Based on attendance expected for the rest of the month",
+  "maxApprovedRevenue": "Max approved revenue",
+  "maxApprovedRevenueDef": "If all families meet 80% attendance rate",
+  "attendanceRate": "Attendance rate",
+  "attendanceRateDef": "Based on attendance rate of all children listed"
 }
