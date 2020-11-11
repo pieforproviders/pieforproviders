@@ -72,7 +72,6 @@ import '_assets/styles/table-overrides.css'
 // ]
 
 export function Dashboard() {
-  const [businessList, setBusinessList] = useState([])
   const [dashboardData, setDashboardData] = useState([])
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
@@ -159,18 +158,6 @@ export function Dashboard() {
   ]
 
   useEffect(() => {
-    const responseValue = async () => {
-      const businesses = await makeRequest({
-        type: 'get',
-        url: '/api/v1/businesses',
-        headers: { Authorization: token }
-      })
-      const allBusinesses = await businesses.json()
-      if (!allBusinesses.error) {
-        setBusinessList(allBusinesses)
-      }
-    }
-
     const getDashboardData = async () => {
       const response = await makeRequest({
         type: 'get',
@@ -207,7 +194,6 @@ export function Dashboard() {
       }
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
-    responseValue()
     getDashboardData()
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
@@ -231,12 +217,7 @@ export function Dashboard() {
         sticky
         className="dashboard-table"
         scroll={{ x: 'max-content' }}
-      >
-        {businessList &&
-          businessList.map(business => {
-            return <div key={business.name}>{business.name}</div>
-          })}
-      </Table>
+      />
     </div>
   )
 }
