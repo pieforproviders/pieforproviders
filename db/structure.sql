@@ -70,13 +70,13 @@ SET default_with_oids = false;
 CREATE TABLE public.approvals (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     case_number character varying,
-    copay_cents integer DEFAULT 0 NOT NULL,
-    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL,
     copay_frequency public.copay_frequency,
     effective_on date,
     expires_on date,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    copay_cents integer,
+    copay_currency character varying DEFAULT 'USD'::character varying NOT NULL
 );
 
 
@@ -915,6 +915,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20201101000507'),
-('20201101173522');
+('20201101173522'),
+('20201112193701');
 
 

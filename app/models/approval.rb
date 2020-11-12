@@ -18,7 +18,7 @@ class Approval < UuidApplicationRecord
 
   scope :current, -> { where('effective_on <= ? AND expires_on > ?', Date.current, Date.current) }
 
-  monetize :copay_cents
+  monetize :copay_cents, allow_nil: true
 end
 
 # == Schema Information
@@ -27,7 +27,7 @@ end
 #
 #  id              :uuid             not null, primary key
 #  case_number     :string
-#  copay_cents     :integer          default(0), not null
+#  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
 #  copay_frequency :enum
 #  effective_on    :date
