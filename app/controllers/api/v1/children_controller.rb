@@ -19,7 +19,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
 
   # GET /case_list_for_dashboard
   def case_list_for_dashboard
-    @children = policy_scope(Child.active.with_current_approval).uniq
+    @children = policy_scope(Child.active.with_current_approval)
 
     render json: ChildBlueprint.render(@children, view: :dashboard)
   end
