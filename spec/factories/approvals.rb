@@ -15,6 +15,11 @@ FactoryBot.define do
     after(:create) do |approval, evaluator|
       approval.children << create_list(:child, rand(1..3)) if evaluator.create_children
     end
+
+    factory :expired_approval do
+      effective_on { Date.current - 2.years }
+      expires_on { Date.current - 1.year }
+    end
   end
 end
 
