@@ -45,9 +45,9 @@ RSpec.describe 'children API', type: :request do
         let!(:expired_approval) { create(:approval, case_number: '1234567A', effective_on: Date.current - 2.years, expires_on: Date.current - 1.year, create_children: false) }
         let!(:current_approval) { create(:approval, case_number: '1234567B', effective_on: Date.current - 2.months, expires_on: Date.current + 10.months, create_children: false) }
         let!(:owner_records) { create_list(:child, count, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
-        let!(:owner_inactive_records) { create_list(:child, count, owner_attributes.merge(active: false)) }
-        let!(:non_owner_records) { create_list(:child, count, non_owner_attributes) }
-        let!(:non_owner_inactive_records) { create_list(:child, count, non_owner_attributes.merge(active: false)) }
+        let!(:owner_inactive_records) { create_list(:child, count, owner_attributes.merge(active: false, approvals: [expired_approval, current_approval])) }
+        let!(:non_owner_records) { create_list(:child, count, non_owner_attributes.merge(approvals: [expired_approval, current_approval])) }
+        let!(:non_owner_inactive_records) { create_list(:child, count, non_owner_attributes.merge(active: false, approvals: [expired_approval, current_approval])) }
 
         context 'admin user' do
           include_context 'admin user'
