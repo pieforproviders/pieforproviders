@@ -18,6 +18,8 @@ end
 # Table name: child_approvals
 #
 #  id              :uuid             not null, primary key
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #  approval_id     :uuid             not null
 #  child_id        :uuid             not null
 #  subsidy_rule_id :uuid
