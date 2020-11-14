@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'faker'
+
 # This seeds the db with data. It is not used in production.
 # Use :find_or_create_by! or :first_or_create! when creating objects
 
