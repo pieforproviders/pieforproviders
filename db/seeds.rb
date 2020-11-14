@@ -85,30 +85,52 @@ puts_records_in_db(Business)
 
 # find_or_create_by! a Child with the full_name,
 #  and birthday set randomly between the min_age and max_age.
-def child_named(full_name, min_birthday: MIN_BIRTHDAY,
-                max_birthday: MAX_BIRTHDAY,
-                business: @business)
-  effective_date = Faker::Date.between(from: 1.year.ago, to: Time.zone.today)
+def create_case(full_name,
+                business: @business,
+                case_number: Faker::Number.number(digits: 10),
+                effective_on: Faker::Date.between(from: 1.year.ago, to: Time.zone.today),
+                date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
+                copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
+                copay_frequency: nil,
+                add_expired_approval: false)
+  expires_on = effective_on + 1.year - 1.day
+
+  copay_frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
+
+  approvals = [
+    Approval.find_or_create_by!(
+      case_number: case_number,
+      copay_cents: copay,
+      copay_frequency: copay_frequency,
+      effective_on: effective_on,
+      expires_on: expires_on
+    )
+  ]
+
+  if add_expired_approval
+    approvals << Approval.find_or_create_by!(
+      case_number: case_number,
+      copay_cents: copay ? copay - 1200 : nil,
+      copay_frequency: copay_frequency,
+      effective_on: effective_on - 1.year,
+      expires_on: effective_on - 1.day
+    )
+  end
+
   Child.find_or_create_by!(business: business,
                            full_name: full_name,
-                           date_of_birth: Faker::Date.between(from: max_birthday, to: min_birthday),
-                           approvals: [
-                             Approval.create!(
-                               case_number: Faker::Number.number(digits: 10),
-                               copay: Faker::Number.decimal(l_digits: 3, r_digits: 2),
-                               copay_frequency: [nil].concat(Approval::COPAY_FREQUENCIES).sample,
-                               effective_on: effective_date,
-                               expires_on: effective_date + 1.year
-                             )
-                           ])
+                           date_of_birth: date_of_birth,
+                           approvals: approvals)
 end
 
-maria = child_named('Maria Baca')
-kshawn = child_named("K'Shawn Henderson")
-marcus = child_named('Marcus Smith')
-sabina = child_named('Sabina Akers')
-mubiru = child_named('Mubiru Karstensen')
-tarq = child_named('Tarquinius Kelly')
+maria = create_case('Maria Baca')
+maria = create_case('Adédèjì Adébísí', case_number: '1234567A')
+maria = create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
+kshawn = create_case("K'Shawn Henderson")
+marcus = create_case('Marcus Smith')
+sabina = create_case('Sabina Akers', add_expired_approval: true)
+mubiru = create_case('Mubiru Karstensen')
+tarq = create_case('Tarquinius Kelly', add_expired_approval: true)
 
 puts_records_in_db(Child)
 

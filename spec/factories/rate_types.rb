@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :rate_type do
     # set a decimal value 90% of the time; 10% set to nil
     name { Faker::Construction.subcontract_category }
-    amount { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
+    amount { Faker::Number.between(from: 1000, to: 10_000) }
     max_duration { Faker::Number.decimal(l_digits: 2, r_digits: 2) }
     threshold { Faker::Number.decimal(l_digits: 2, r_digits: 2) }
   end
