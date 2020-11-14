@@ -31,7 +31,7 @@ RSpec.describe Approval, type: :model do
   end
 
   it 'copay can be nil' do
-    approval.update(copay: Faker::Number.decimal(l_digits: 3, r_digits: 2))
+    approval.update(copay: Faker::Number.between(from: 1000, to: 10_000))
     expect(approval.valid?).to be_truthy
     approval.copay = nil
     expect(approval.valid?).to be_truthy
@@ -69,7 +69,7 @@ end
 #
 #  id              :uuid             not null, primary key
 #  case_number     :string
-#  copay_cents     :integer          default(0), not null
+#  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
 #  copay_frequency :enum
 #  effective_on    :date
