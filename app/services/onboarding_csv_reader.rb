@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'csv'
-require_relative 'onboarding_csv_parser'
 
 #--------------------------
 #

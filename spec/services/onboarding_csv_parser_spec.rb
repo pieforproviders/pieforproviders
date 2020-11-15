@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require_relative File.join(__dir__, '..', '..', 'app', 'services', 'onboarding_csv_parser')
-
-require 'json'
+require 'rails_helper'
 
 # For the MVP, we can assume that the CSV file is well formed: format is correct
 #   and data is complete.

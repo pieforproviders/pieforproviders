@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require_relative File.join(__dir__, '..', 'spec_helper')
-require_relative File.join(__dir__, '..', '..', 'app', 'services', 'onboarding_csv_reader')
-require_relative File.join(__dir__, '..', '..', 'app', 'services', 'onboarding_csv_parser')
-
-require 'json'
+require 'rails_helper'
 
 RSpec.describe OnboardingCsvReader do
   test_csv_fn = File.join(__dir__, '..', 'fixtures', 'files', 'onboarding_data.csv')
