@@ -185,7 +185,9 @@ CREATE TABLE public.child_approvals (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     subsidy_rule_id uuid,
     approval_id uuid NOT NULL,
-    child_id uuid NOT NULL
+    child_id uuid NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -911,6 +913,7 @@ ALTER TABLE ONLY public.subsidy_rules
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20201112193701');
+('20201112193701'),
+('20201115203512');
 
 
