@@ -7,7 +7,7 @@ import React from 'react'
 import { I18nextProvider } from 'react-i18next'
 import i18n from 'i18n'
 import PropTypes from 'prop-types'
-import { render as rtlRender } from '@testing-library/react'
+import { render as rtlRender, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from '_reducers/rootReducer'
@@ -56,4 +56,4 @@ function render(
 
 export * from '@testing-library/react'
 
-export { render }
+export { render, screen }

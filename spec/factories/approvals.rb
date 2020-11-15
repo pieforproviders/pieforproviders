@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :approval do
     case_number { Faker::Number.number(digits: 10) }
-    copay { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
-    copay_frequency { Copays.frequencies.keys.sample }
+    copay { Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000) }
+    copay_frequency { copay ? Copays.frequencies.keys.sample : nil }
     effective_on { Faker::Date.between(from: 1.year.ago, to: Time.zone.today) }
     expires_on { effective_on + 1.year }
 
@@ -15,6 +15,11 @@ FactoryBot.define do
     after(:create) do |approval, evaluator|
       approval.children << create_list(:child, rand(1..3)) if evaluator.create_children
     end
+
+    factory :expired_approval do
+      effective_on { Date.current - 2.years }
+      expires_on { Date.current - 1.year }
+    end
   end
 end
 
@@ -24,7 +29,7 @@ end
 #
 #  id              :uuid             not null, primary key
 #  case_number     :string
-#  copay_cents     :integer          default(0), not null
+#  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
 #  copay_frequency :enum
 #  effective_on    :date

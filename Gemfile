@@ -5,10 +5,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.6'
 
+gem 'blueprinter', '~> 0.25.1'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
+gem 'faker'
 gem 'money-rails'
 gem 'my_zipcode_gem'
 gem 'pg', '>= 0.18', '< 2.0'
@@ -35,7 +37,6 @@ group :development, :test do
   gem 'cypress-on-rails', '~> 1.8'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
-  gem 'faker'
   gem 'pry'
   gem 'pry-remote'
   gem 'rspec-rails'
