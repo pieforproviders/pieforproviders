@@ -28,11 +28,11 @@ class Child < UuidApplicationRecord
   delegate :user, to: :business
 
   def current_approval
-    approvals.current
+    approvals.current.first
   end
 
   def current_child_approval
-    child_approvals.find_by(approval: approvals.current)
+    child_approvals.find_by(approval: current_approval)
   end
 
   def current_subsidy_rule

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :state do
     abbr { Faker::Address.state_abbr }
     name { Faker::Address.state }
-    initialize_with { State.find_or_create_by(name: name, abbr: abbr)}
+    initialize_with { State.find_or_create_by(name: name, abbr: abbr) }
   end
 end
 
