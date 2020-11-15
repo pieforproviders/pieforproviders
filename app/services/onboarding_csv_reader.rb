@@ -17,7 +17,7 @@ require_relative 'onboarding_csv_parser'
 #
 class OnboardingCsvReader
   def self.import(full_filename)
-    raise ArgumentError, 'Must provide a filename' if full_filename.nil? || full_filename.empty?
+    raise ArgumentError, 'Must provide a filename' if full_filename.blank?
 
     begin
       csv_file = File.open(full_filename, 'r')

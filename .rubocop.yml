@@ -39,9 +39,6 @@ Lint/StructNewOverride:
 
 Rails:
   Enabled: true
-  Exclude:
-    - app/services/onboarding_csv_reader.rb
-    - app/services/onboarding_csv_parser.rb
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
