@@ -17,10 +17,7 @@ class SubsidyRuleAssociator
 
   def associate_subsidy_rule
     county = @child.business.county
-    if county.state.abbr == 'IL'
-      subsidy_rule = SubsidyRule.find_by('max_age >= ? AND county_id = ?', age, county.id)
-      @child.current_child_approval.update!(subsidy_rule: subsidy_rule)
-    end
+    illinois_subsidy_rule_associator(county) if county.state.abbr == 'IL'
   end
 
   def age
@@ -28,5 +25,10 @@ class SubsidyRuleAssociator
     years_since_birth = Date.current.year - dob.year
     birthday_passed = dob.month >= Date.current.month && dob.day >= Date.current.day
     birthday_passed ? years_since_birth : years_since_birth - 1
+  end
+
+  def illinois_subsidy_rule_associator(county)
+    subsidy_rule = SubsidyRule.find_by('max_age >= ? AND county_id = ?', age, county.id)
+    @child.current_child_approval.update!(subsidy_rule: subsidy_rule)
   end
 end
