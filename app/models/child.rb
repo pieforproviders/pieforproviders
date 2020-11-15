@@ -19,6 +19,7 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals
 
   scope :active, -> { where(active: true) }
+  scope :with_current_approval, -> { joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', Date.current, Date.current) }
 
   delegate :user, to: :business
 end
