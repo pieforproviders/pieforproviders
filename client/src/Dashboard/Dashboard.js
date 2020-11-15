@@ -220,69 +220,57 @@ export function Dashboard() {
 
   return (
     <div className="dashboard sm:mx-8">
-      <div className="m-2">
+      <div className="dashboard-title m-2">
         <Typography.Title>{t('dashboardTitle')}</Typography.Title>
         <Typography.Text className="md-3 text-base">
           {t('revenueProjections')}
         </Typography.Text>
       </div>
-      <div className="mx-2 my-10">
-        <Row>
-          {summaryStats.map((stat, i) => {
-            const renderDivider = () => {
-              if ((screens.sm || screens.xs) && !screens.md) {
-                // eslint-disable-next-line no-unused-expressions
-                return i % 2 === 0 ? (
-                  <Divider
-                    // span={1}
-                    style={{ borderWidth: 0.75, borderColor: '#BDBDBD' }}
-                    className="h-32 m-2"
-                    type="vertical"
-                  />
-                ) : null
-              } else {
-                // eslint-disable-next-line no-unused-expressions
-                return summaryStats.length === i + 1 ? null : (
-                  <Divider
-                    // span={1}
-                    style={{ borderWidth: 0.75, borderColor: '#BDBDBD' }}
-                    // mx-8 -ml-2
-                    className="h-32 "
-                    type="vertical"
-                  />
-                )
-              }
+      <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
+        {summaryStats.map((stat, i) => {
+          const renderDivider = () => {
+            if ((screens.sm || screens.xs) && !screens.md) {
+              // eslint-disable-next-line no-unused-expressions
+              return i % 2 === 0 ? (
+                <Divider
+                  style={{ borderWidth: 0.5, borderColor: '#BDBDBD' }}
+                  className="h-32 m-2"
+                  type="vertical"
+                />
+              ) : null
+            } else {
+              // eslint-disable-next-line no-unused-expressions
+              return summaryStats.length === i + 1 ? null : (
+                <Divider
+                  style={{ borderWidth: 0.5, borderColor: '#BDBDBD' }}
+                  className="h-32 m:mr-4 lg:mr-6"
+                  type="vertical"
+                />
+              )
             }
+          }
 
-            return (
-              <>
-                <Col
-                  xs={11}
-                  sm={5}
-                  md={5}
-                  lg={4}
-                  xl={4}
-                  className="my-2 md:pl-2"
-                >
-                  <Row>
-                    <Typography.Text>{stat.title}</Typography.Text>
-                  </Row>
-                  <Row>
-                    <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
-                      {stat.stat}
-                    </Typography.Text>
-                  </Row>
-                  <Row>
-                    <Typography.Paragraph className="text-xs">
-                      {stat.definition}
-                    </Typography.Paragraph>
-                  </Row>
-                </Col>
-                {renderDivider()}
-              </>
-            )
-          })}
-        </Row>
+          return (
+            <div key={i} className="dashboard-stat flex">
+              <div className="w-full mt-2">
+                <p className="whitespace-no-wrap">
+                  <Typography.Text>{stat.title}</Typography.Text>
+                </p>
+                <p className="mt-2">
+                  <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+                    {stat.stat}
+                  </Typography.Text>
+                </p>
+                <p className="mt-5">
+                  <Typography.Paragraph className="text-xs">
+                    {stat.definition}
+                  </Typography.Paragraph>
+                </p>
+              </div>
+              {renderDivider()}
+            </div>
+          )
+        })}
       </div>
       <Table
         dataSource={staticData}
