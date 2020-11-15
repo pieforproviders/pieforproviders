@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
-import { Col, Divider, Row, Table, Typography } from 'antd'
+import { Col, Divider, Grid, Row, Table, Typography } from 'antd'
 import '_assets/styles/table-overrides.css'
 
+const { useBreakpoint } = Grid;
 
 export function Dashboard() {
+  const screens = useBreakpoint();
+  console.log(screens)
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
@@ -167,71 +170,61 @@ export function Dashboard() {
         </Typography.Text>
       </div>
       <div className="mx-2 my-10">
-        <Row justify="start">
-          {summaryStats.map((stat, i) => (
-            <>
-              <Col span={4}>
-                <Row>
-                  <Typography.Text>{stat.title}</Typography.Text>
-                </Row>
-                <Row>
-                  <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+        <Row>
+          {summaryStats.map((stat, i) => {
+            const renderDivider = () => {
+              if ((screens.sm || screens.xs) && !screens.md) {
+                // eslint-disable-next-line no-unused-expressions
+                return i % 2 === 0 ? (
+                  <Divider
+                    // span={1}
+                    style={{ borderWidth: 0.75, borderColor: '#BDBDBD' }}
+                    className="h-32 m-2"
+                    type="vertical"
+                  />
+                ) : null
+              } else {
+                // eslint-disable-next-line no-unused-expressions
+                return summaryStats.length === i + 1 ? null : (
+                  <Divider
+                    // span={1}
+                    style={{ borderWidth: 0.75, borderColor: '#BDBDBD' }}
+                    // mx-8 -ml-2
+                    className="h-32 "
+                    type="vertical"
+                  />
+                )
+              }
+            }
+
+            return (
+              <>
+                <Col
+                  xs={11}
+                  sm={5}
+                  md={5}
+                  lg={4}
+                  xl={4}
+                  className="my-2 md:pl-2"
+                >
+                  <Row>
+                    <Typography.Text>{stat.title}</Typography.Text>
+                  </Row>
+                  <Row>
+                    <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
                       {stat.stat}
-                  </Typography.Text>
-                </Row>
-                <Row>
-                  <Typography.Paragraph className="text-xs w-2/3">
-                    {stat.definition}
-                  </Typography.Paragraph>
-                </Row>
-              </Col>
-              {i + 1 === summaryStats.length ? null : (
-                <Divider
-                  style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
-                  className="h-32 mx-8 -ml-2"
-                  type="vertical"
-                />
-              )}
-            </>
-          ))}
-          {/* <Col span={3}>
-            <Row>
-              <Typography.Text>{t('potentialRevenue')}</Typography.Text>
-            </Row>
-            <Row>number</Row>
-            <Row>
-              <Typography.Text>{t('potentialRevenueDef')}</Typography.Text>
-            </Row>
-          </Col>
-          <Divider
-            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
-            className="h-32 mx-8"
-            type="vertical"
-          />
-          <Col span={3}>
-            <Row>
-              <Typography.Text>{t('maxApprovedRevenue')}</Typography.Text>
-            </Row>
-            <Row>number</Row>
-            <Row>{t('maxApprovedRevenueDef')}</Row>
-          </Col>
-          <Divider
-            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
-            className="h-32 mx-8"
-            type="vertical"
-          />
-          <Col span={3}>
-            <Row>
-              <Typography.Text>{t('attendanceRate')}</Typography.Text>
-            </Row>
-            <Row>number</Row>
-            <Row>{t('attendanceRateDef')}</Row>
-          </Col>
-          <Divider
-            style={{ borderWidth: 1, borderColor: '#BDBDBD' }}
-            className="h-32 mx-8"
-            type="vertical"
-          /> */}
+                    </Typography.Text>
+                  </Row>
+                  <Row>
+                    <Typography.Paragraph className="text-xs">
+                      {stat.definition}
+                    </Typography.Paragraph>
+                  </Row>
+                </Col>
+                {renderDivider()}
+              </>
+            )
+          })}
         </Row>
       </div>
       <Table
