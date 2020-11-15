@@ -15,7 +15,6 @@ end
 # Table name: child_approval_rate_types
 #
 #  id                :uuid             not null, primary key
-#  approved_amount   :decimal(, )
 #  child_approval_id :uuid
 #  rate_type_id      :uuid             not null
 #
