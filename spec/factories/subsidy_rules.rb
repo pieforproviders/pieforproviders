@@ -5,11 +5,11 @@ FactoryBot.define do
     sequence(:name) { |n| "Subsidy Rule #{n}" }
     max_age { 18 }
     license_type { Licenses.types.values.sample }
-    county
     effective_on { Faker::Date.between(from: 1.year.ago, to: Time.zone.today) }
     expires_on { effective_on + 1.year }
-    state { county.state }
     factory :subsidy_rule_for_illinois do
+      state { create(:state, abbr: 'IL', name: 'Illinois') }
+      county { create(:county, state: state, name: 'Cook') }
       association :subsidy_ruleable, factory: :illinois_subsidy_rule
     end
   end
