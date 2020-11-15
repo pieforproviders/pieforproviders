@@ -204,11 +204,9 @@ export function Dashboard() {
                     {stat.stat}
                   </Typography.Text>
                 </p>
-                <p className="mt-5">
-                  <Typography.Paragraph className="text-xs">
-                    {stat.definition}
-                  </Typography.Paragraph>
-                </p>
+                <Typography.Paragraph className="text-xs mt-5">
+                  {stat.definition}
+                </Typography.Paragraph>
               </div>
               {renderDivider()}
             </div>
