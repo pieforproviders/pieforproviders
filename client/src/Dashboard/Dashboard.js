@@ -89,7 +89,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('minRevenue'),
+      title: t('guaranteedRevenue'),
       dataIndex: 'minRevenue',
       key: 'minRevenue',
       width: 150,
@@ -108,7 +108,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('maxRevenue'),
+      title: t('maxApprovedRevenue'),
       dataIndex: 'maxRevenue',
       key: 'maxRevenue',
       width: 150,
