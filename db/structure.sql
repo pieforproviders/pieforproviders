@@ -173,8 +173,7 @@ CREATE TABLE public.businesses (
 CREATE TABLE public.child_approval_rate_types (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     child_approval_id uuid,
-    rate_type_id uuid NOT NULL,
-    approved_amount numeric
+    rate_type_id uuid NOT NULL
 );
 
 
@@ -186,9 +185,7 @@ CREATE TABLE public.child_approvals (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     subsidy_rule_id uuid,
     approval_id uuid NOT NULL,
-    child_id uuid NOT NULL,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    child_id uuid NOT NULL
 );
 
 
@@ -914,8 +911,6 @@ ALTER TABLE ONLY public.subsidy_rules
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20201101000507'),
-('20201101173522'),
 ('20201112193701');
 
 
