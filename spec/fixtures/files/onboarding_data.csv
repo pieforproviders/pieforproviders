@@ -1,0 +1,7 @@
+first_name,last_name,date_of_birth,business_name,business_zip_code,business_county,business_qris_rating,case_number,full_days,part_days,effective_on,expires_on,co_pay,co_pay_frequency
+Juan, Oritz,2015-04-14, Happy Hearts Childcare,60606, Cook,Gold, 1234567, 18,4,2019-11-12,2020-11-12,10000,Monthly
+Julia, Oritz,2017-12-01, Happy Hearts Childcare,60606, Cook,Gold, 1234567,22,5,2019-11-12,2020-11-12,10000,Monthly
+Kimbu,Mòsi,2014-06-30,Happy Hearts Childcare,60606,Cook,Gold,4567890,10,10,2020-02-04,2021-02-04,1200,Weekly
+Amaury,Mòsi,2012-09-11,Little Leaf Day School,60101,DuPage,Bronze,4567890,11,7,2020-02-04,2021-02-04,1200,Weekly
+Shao, Luixian,2017-10-01,Little Leaf Day School,60101,DuPage,Bronze,4242424,12,10,2020-01-04,2021-01-04,1200,Weekly
+Thalia, Makrouli,2013-11-01,Little Leaf Day School,60101,DuPage,Bronze,1111111,20,5,2020-05-05,2021-05-05,1200,Weekly
