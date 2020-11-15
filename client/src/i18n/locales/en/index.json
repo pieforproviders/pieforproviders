@@ -144,7 +144,7 @@
   "guaranteedRevenueDef": "Based on days already attended",
   "potentialRevenue": "Potential revenue",
   "potentialRevenueDef": "Based on attendance expected for the rest of the month",
-  "maxApprovedRevenue": "Max approved revenue",
+  "maxApprovedRevenue": "Max. approved revenue",
   "maxApprovedRevenueDef": "If all families meet 80% attendance rate",
   "attendanceRate": "Attendance rate",
   "attendanceRateDef": "Based on attendance rate of all children listed"
