@@ -35,8 +35,6 @@ export function Dashboard() {
       definition: t('attendanceRateDef')
     }
   ]
-  const [businessList, setBusinessList] = useState([])
-  const [summaryStats, setSummaryStats] = useState(staticSummaryStats)
   const onHeaderCell = () => {
     return {
       style: {
@@ -170,23 +168,23 @@ export function Dashboard() {
         </Typography.Text>
       </div>
       <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
-        {summaryStats.map((stat, i) => {
+        {staticSummaryStats.map((stat, i) => {
           const renderDivider = () => {
             if ((screens.sm || screens.xs) && !screens.md) {
               // eslint-disable-next-line no-unused-expressions
               return i % 2 === 0 ? (
                 <Divider
-                  style={{ borderWidth: 0.5, borderColor: '#BDBDBD' }}
-                  className="h-32 m-2"
+                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                  className="stats-divider m-2"
                   type="vertical"
                 />
               ) : null
             } else {
               // eslint-disable-next-line no-unused-expressions
-              return summaryStats.length === i + 1 ? null : (
+              return staticSummaryStats.length === i + 1 ? null : (
                 <Divider
-                  style={{ borderWidth: 0.5, borderColor: '#BDBDBD' }}
-                  className="h-32 m:mr-4 lg:mr-6"
+                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                  className="stats-divder sm:mr-2 m:mx-4 lg:mx-4"
                   type="vertical"
                 />
               )
@@ -196,7 +194,7 @@ export function Dashboard() {
           return (
             <div key={i} className="dashboard-stat flex">
               <div className="w-full mt-2">
-                <p className="whitespace-no-wrap">
+                <p className="h-6 xs:whitespace-no-wrap">
                   <Typography.Text>{stat.title}</Typography.Text>
                 </p>
                 <p className="mt-2">
