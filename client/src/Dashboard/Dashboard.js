@@ -184,7 +184,7 @@ export function Dashboard() {
               return staticSummaryStats.length === i + 1 ? null : (
                 <Divider
                   style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
-                  className="stats-divder sm:mr-2 m:mx-4 lg:mx-4"
+                  className="stats-divder sm:mr-4 m:mx-4"
                   type="vertical"
                 />
               )
