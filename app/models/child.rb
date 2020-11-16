@@ -2,6 +2,8 @@
 
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
+  after_commit :associate_subsidy_rule
+
   belongs_to :business
 
   has_many :child_approvals, dependent: :destroy
@@ -19,9 +21,29 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals
 
   scope :active, -> { where(active: true) }
+
+  # TODO: Figure out how to merge this scope correctly
   scope :with_current_approval, -> { joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', Date.current, Date.current) }
 
   delegate :user, to: :business
+
+  def current_approval
+    approvals.current.first
+  end
+
+  def current_child_approval
+    child_approvals.find_by(approval: current_approval)
+  end
+
+  def current_subsidy_rule
+    current_child_approval.subsidy_rule
+  end
+
+  private
+
+  def associate_subsidy_rule
+    SubsidyRuleAssociator.new(self).call
+  end
 end
 
 # == Schema Information
