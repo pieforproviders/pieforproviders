@@ -141,7 +141,7 @@
   "minRevenue": "Ingresos mínimos",
   "maxRevenue": "Ingresos máximos",
   "guaranteedRevenue": "Ingresos garantizados",
-  "quaranteedRevenueDef": "Basado en días ya asistidos",
+  "guaranteedRevenueDef": "Basado en días ya asistidos",
   "potentialRevenue": "Ingresos potenciales",
   "potentialRevenueDef": "Basado en asistencia anticipada por el resto del mes",
   "maxApprovedRevenue": "Ingresos máximos aprobados",
