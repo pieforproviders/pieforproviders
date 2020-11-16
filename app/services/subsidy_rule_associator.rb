@@ -28,7 +28,7 @@ class SubsidyRuleAssociator
   end
 
   def illinois_subsidy_rule_associator(county)
-    subsidy_rule = SubsidyRule.find_by('max_age >= ? AND county_id = ?', age, county.id)
+    subsidy_rule = SubsidyRule.where('max_age >= ? AND county_id = ?', age, county.id).order(:max_age).first
     @child.current_child_approval.update!(subsidy_rule: subsidy_rule)
   end
 end
