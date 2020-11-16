@@ -6,6 +6,7 @@ FactoryBot.define do
     name { Faker::Address.community }
     county_seat { Faker::Address.city }
     state
+    initialize_with { County.find_or_create_by(name: name, state: state) }
   end
 end
 
