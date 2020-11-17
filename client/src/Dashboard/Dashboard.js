@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
-import { Table, Typography } from 'antd'
+import { Divider, Grid, Table, Typography } from 'antd'
 import '_assets/styles/table-overrides.css'
 
 // const STATICDATA = [
@@ -71,11 +71,36 @@ import '_assets/styles/table-overrides.css'
 //   }
 // ]
 
+const { useBreakpoint } = Grid
+
 export function Dashboard() {
+  const screens = useBreakpoint()
   const [dashboardData, setDashboardData] = useState([])
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const staticSummaryStats = [
+    {
+      title: t('guaranteedRevenue'),
+      stat: '$981',
+      definition: t('guaranteedRevenueDef')
+    },
+    {
+      title: t('potentialRevenue'),
+      stat: '$1,200',
+      definition: t('potentialRevenueDef')
+    },
+    {
+      title: t('maxApprovedRevenue'),
+      stat: '$1200',
+      definition: t('maxApprovedRevenueDef')
+    },
+    {
+      title: t('attendanceRate'),
+      stat: '60%',
+      definition: t('attendanceRateDef')
+    }
+  ]
   const onHeaderCell = () => {
     return {
       style: {
@@ -128,7 +153,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('minRevenue'),
+      title: t('guaranteedRevenue'),
       dataIndex: 'minRevenue',
       key: 'minRevenue',
       width: 150,
@@ -147,7 +172,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend']
     },
     {
-      title: t('maxRevenue'),
+      title: t('maxApprovedRevenue'),
       dataIndex: 'maxRevenue',
       key: 'maxRevenue',
       width: 150,
@@ -202,11 +227,55 @@ export function Dashboard() {
 
   return (
     <div className="dashboard sm:mx-8">
-      <div className="m-2">
+      <div className="dashboard-title m-2">
         <Typography.Title>{t('dashboardTitle')}</Typography.Title>
-        <Typography.Text className="md-3">
+        <Typography.Text className="md-3 text-base">
           {t('revenueProjections')}
         </Typography.Text>
+      </div>
+      <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
+        {staticSummaryStats.map((stat, i) => {
+          const renderDivider = () => {
+            if ((screens.sm || screens.xs) && !screens.md) {
+              // eslint-disable-next-line no-unused-expressions
+              return i % 2 === 0 ? (
+                <Divider
+                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                  className="stats-divider m-2"
+                  type="vertical"
+                />
+              ) : null
+            } else {
+              // eslint-disable-next-line no-unused-expressions
+              return staticSummaryStats.length === i + 1 ? null : (
+                <Divider
+                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                  className="stats-divder sm:mr-4 m:mx-4"
+                  type="vertical"
+                />
+              )
+            }
+          }
+
+          return (
+            <div key={i} className="dashboard-stat flex">
+              <div className="w-full mt-2">
+                <p className="h-6 xs:whitespace-no-wrap">
+                  <Typography.Text>{stat.title}</Typography.Text>
+                </p>
+                <p className="mt-2">
+                  <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+                    {stat.stat}
+                  </Typography.Text>
+                </p>
+                <Typography.Paragraph className="text-xs mt-5">
+                  {stat.definition}
+                </Typography.Paragraph>
+              </div>
+              {renderDivider()}
+            </div>
+          )
+        })}
       </div>
       <Table
         dataSource={dashboardData}
