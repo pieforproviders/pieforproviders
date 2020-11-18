@@ -17,13 +17,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
 -- Name: case_status; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -914,6 +907,7 @@ SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
 ('20201112193701'),
-('20201115203512');
+('20201115203512'),
+('20201118014217');
 
 
