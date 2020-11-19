@@ -147,5 +147,11 @@
   "maxApprovedRevenue": "Ingresos máximos aprobados",
   "maxApprovedRevenueDef": "Si todas las familias satisfagan la tasa de 80% asistencia",
   "attendanceRate": "Tasa de asistencia",
-  "attendanceRateDef": "Basada en la tasa de asistencia de todos los niños listados"
+  "attendanceRateDef": "Basada en la tasa de asistencia de todos los niños listados",
+
+  "onTrack": "en camino",
+  "sureBet": "sin duda",
+  "atRisk": "en riesgo",
+  "notMet": "no cumplido",
+  "notEnoughInfo": "información insuficiente"
 }
