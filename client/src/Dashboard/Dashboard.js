@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
-import { Col, Divider, Grid, Row, Table, Typography } from 'antd'
+import { Divider, Grid, Table, Tag, Typography } from 'antd'
 import '_assets/styles/table-overrides.css'
+import '_assets/styles/tag-overrides.css'
+import { attendanceCategories } from '_utils/constants'
 
 const { useBreakpoint } = Grid;
+
+const attendanceRateStaticData = Object.entries(attendanceCategories).reduce((acc, cv) => { return [...acc, { rate: Math.floor(Math.random() * Math.floor(101)), category: cv[1]}]}, [])
 
 export function Dashboard() {
   const screens = useBreakpoint();
@@ -84,7 +88,24 @@ export function Dashboard() {
       onHeaderCell,
       sorter: (a, b) =>
         a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
-      sortDirections: ['descend', 'ascend']
+      sortDirections: ['descend', 'ascend'],
+      render: attendanceRate => {
+        const createTag = (color, text) => <Tag className={`${color}-tag`}>{`${attendanceRate.rate}% - ${t(text)}`}</Tag>
+
+         switch (attendanceRate.category) {
+          case attendanceCategories.ONTRACK:
+            return createTag('green', 'onTrack')
+          case attendanceCategories.SUREBET:
+            return createTag('green', 'sureBet')
+          case attendanceCategories.ATRISK:
+            return createTag('red', 'atRisk')
+          case attendanceCategories.NOTMET:
+            return createTag('red', 'notMet')
+          case attendanceCategories.NOTENOUGHINFO:
+          default:
+            return createTag('grey', 'notEnoughInfo')
+        }
+      }
     },
     {
       title: t('guaranteedRevenue'),
@@ -141,7 +162,8 @@ export function Dashboard() {
               caseNumber: caseNumber,
               business: businessName,
               // these values will be updated as the case_list endpoint is updated
-              attendanceRate: '',
+              // static data for attendanceRate column
+              attendanceRate: attendanceRateStaticData[Math.floor(Math.random() * attendanceRateStaticData.length)],
               minRevenue: '',
               maxRevenue: '',
               potentialRevenue: ''

@@ -1,0 +1,21 @@
+.green-tag.ant-tag {
+  border-color: transparent;
+  background: #F2FDF7;
+  color: #00853D;
+}
+
+.red-tag.ant-tag {
+  border-color: transparent;
+  background: #FFEDED  ;
+  color: #D23C2A;
+}
+
+.grey-tag.ant-tag {
+  border-color: transparent;
+  background: #F2F2F2;
+  color: #333333;
+}
+
+.ant-tag:hover {
+  color:#333333;
+}

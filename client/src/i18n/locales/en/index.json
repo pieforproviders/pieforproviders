@@ -147,5 +147,11 @@
   "maxApprovedRevenue": "Max. approved revenue",
   "maxApprovedRevenueDef": "If all families meet 80% attendance rate",
   "attendanceRate": "Attendance rate",
-  "attendanceRateDef": "Based on attendance rate of all children listed"
+  "attendanceRateDef": "Based on attendance rate of all children listed",
+
+  "onTrack": "on track",
+  "sureBet": "sure bet",
+  "atRisk": "st risk",
+  "notMet": "not met",
+  "notEnoughInfo": "not enough info"
 }
