@@ -75,7 +75,15 @@ import { attendanceCategories } from '_utils/constants'
 
 const { useBreakpoint } = Grid
 
-const attendanceRateStaticData = Object.entries(attendanceCategories).reduce((acc, cv) => { return [...acc, { rate: Math.floor(Math.random() * Math.floor(101)), category: cv[1]}]}, [])
+const attendanceRateStaticData = Object.entries(attendanceCategories).reduce(
+  (acc, cv) => {
+    return [
+      ...acc,
+      { rate: Math.floor(Math.random() * Math.floor(101)), category: cv[1] }
+    ]
+  },
+  []
+)
 
 export function Dashboard() {
   const screens = useBreakpoint()
@@ -156,9 +164,13 @@ export function Dashboard() {
         a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
       sortDirections: ['descend', 'ascend'],
       render: attendanceRate => {
-        const createTag = (color, text) => <Tag className={`${color}-tag`}>{`${attendanceRate.rate}% - ${t(text)}`}</Tag>
+        const createTag = (color, text) => (
+          <Tag className={`${color}-tag`}>
+            {`${attendanceRate.rate}% - ${t(text)}`}
+          </Tag>
+        )
 
-         switch (attendanceRate.category) {
+        switch (attendanceRate.category) {
           case attendanceCategories.ONTRACK:
             return createTag('green', 'onTrack')
           case attendanceCategories.SUREBET:
@@ -229,7 +241,10 @@ export function Dashboard() {
               business: businessName,
               // these values will be updated as the case_list endpoint is updated
               // static data for attendanceRate column
-              attendanceRate: attendanceRateStaticData[Math.floor(Math.random() * attendanceRateStaticData.length)],
+              attendanceRate:
+                attendanceRateStaticData[
+                  Math.floor(Math.random() * attendanceRateStaticData.length)
+                ],
               minRevenue: '',
               maxRevenue: '',
               potentialRevenue: ''
