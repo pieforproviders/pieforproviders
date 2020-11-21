@@ -67,7 +67,7 @@ puts_records_in_db(User)
 # ---------------------------------------------
 
 illinois = State.find_by(name: 'Illinois', abbr: 'IL')
-cook = County.find_by(name: 'Cook', state: illinois)
+cook = County.find_by(name: 'COOK', state: illinois)
 chicago_zipcode = Zipcode.find_by(city: 'Chicago', county: cook, state: cook.state, code: '60606')
 
 # ---------------------------------------------
