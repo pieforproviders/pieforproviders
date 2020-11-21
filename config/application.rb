@@ -29,10 +29,7 @@ module App
 
     config.autoload_paths << Rails.root.join('lib')
 
-    # Changes the schema format as the tables using Postgres enums aren't dumped
-    # properly when using the default of `:ruby`.
-    # Ref: https://sipsandbits.com/2018/04/30/using-database-native-enums-with-rails/
-    config.active_record.schema_format = :sql
+    config.active_record.schema_format = :ruby
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

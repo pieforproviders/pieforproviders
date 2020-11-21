@@ -71,7 +71,7 @@ end
 #  case_number     :string
 #  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
-#  copay_frequency :enum
+#  copay_frequency :string
 #  effective_on    :date
 #  expires_on      :date
 #  created_at      :datetime         not null

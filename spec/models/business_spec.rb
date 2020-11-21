@@ -37,7 +37,7 @@ end
 #
 #  id           :uuid             not null, primary key
 #  active       :boolean          default(TRUE), not null
-#  license_type :enum
+#  license_type :string           not null
 #  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -47,13 +47,13 @@ end
 #
 # Indexes
 #
-#  index_businesses_on_county_id         (county_id)
-#  index_businesses_on_name_and_user_id  (name,user_id) UNIQUE
-#  index_businesses_on_user_id           (user_id)
-#  index_businesses_on_zipcode_id        (zipcode_id)
+#  index_businesses_on_county_id   (county_id)
+#  index_businesses_on_user_id     (user_id)
+#  index_businesses_on_zipcode_id  (zipcode_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (user_id => users.id)
 #  fk_rails_...  (zipcode_id => zipcodes.id)
 #
