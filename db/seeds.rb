@@ -66,9 +66,9 @@ puts_records_in_db(User)
 # Locations
 # ---------------------------------------------
 
-illinois = State.where(name: 'Illinois', abbr: 'IL')
-cook = County.where(name: 'Cook', state: illinois)
-chicago_zipcode = Zipcode.where(city: 'Chicago', county: cook, state: cook.state, code: '60606')
+illinois = State.find_by(name: 'Illinois', abbr: 'IL')
+cook = County.find_by(name: 'COOK', state: illinois)
+chicago_zipcode = Zipcode.find_by(city: 'Chicago', county: cook, state: cook.state, code: '60606')
 
 # ---------------------------------------------
 # Businesses
