@@ -8,8 +8,6 @@ class SubsidyRule < UuidApplicationRecord
   belongs_to :county, optional: true
   belongs_to :state
   belongs_to :subsidy_ruleable, polymorphic: true
-  has_many :subsidy_rule_rate_types, dependent: :destroy
-  has_many :rate_types, through: :subsidy_rule_rate_types
 
   enum license_type: Licenses.types
 
