@@ -34,9 +34,10 @@ end
 #
 # Indexes
 #
-#  index_businesses_on_county_id   (county_id)
-#  index_businesses_on_user_id     (user_id)
-#  index_businesses_on_zipcode_id  (zipcode_id)
+#  index_businesses_on_county_id         (county_id)
+#  index_businesses_on_name_and_user_id  (name,user_id) UNIQUE
+#  index_businesses_on_user_id           (user_id)
+#  index_businesses_on_zipcode_id        (zipcode_id)
 #
 # Foreign Keys
 #
