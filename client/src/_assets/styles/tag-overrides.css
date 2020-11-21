@@ -4,10 +4,10 @@
   color: #00853D;
 }
 
-.red-tag.ant-tag {
+.orange-tag.ant-tag {
   border-color: transparent;
-  background: #FFEDED  ;
-  color: #BB3525;
+  background: #F3E0D4;
+  color: #9C4814;
 }
 
 .grey-tag.ant-tag {

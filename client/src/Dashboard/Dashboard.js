@@ -110,9 +110,9 @@ export function Dashboard() {
           case attendanceCategories.SUREBET:
             return createTag('green', 'sureBet')
           case attendanceCategories.ATRISK:
-            return createTag('red', 'atRisk')
+            return createTag('orange', 'atRisk')
           case attendanceCategories.NOTMET:
-            return createTag('red', 'notMet')
+            return createTag('orange', 'notMet')
           case attendanceCategories.NOTENOUGHINFO:
           default:
             return createTag('grey', 'notEnoughInfo')
