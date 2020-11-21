@@ -9,7 +9,7 @@ class DateParamValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    value&.is_a?(Date) ? value : Date.parse(value)
+    value.is_a?(Date) ? value : Date.parse(value)
   rescue TypeError, ArgumentError
     record.errors.add(attribute, self.class.invalid_date_message)
   end

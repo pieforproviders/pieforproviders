@@ -11,12 +11,6 @@ RSpec.describe SubsidyRule, type: :model do
   it 'factory should be valid (default; no args)' do
     expect(build(:subsidy_rule_for_illinois)).to be_valid
   end
-
-  it do
-    should define_enum_for(:license_type).with_values(
-      Licenses.types
-    ).backed_by_column_of_type(:enum)
-  end
 end
 
 # == Schema Information
@@ -26,7 +20,7 @@ end
 #  id                    :uuid             not null, primary key
 #  effective_on          :date
 #  expires_on            :date
-#  license_type          :enum             not null
+#  license_type          :string           not null
 #  max_age               :decimal(, )      not null
 #  name                  :string           not null
 #  subsidy_ruleable_type :string
@@ -34,7 +28,7 @@ end
 #  updated_at            :datetime         not null
 #  county_id             :uuid
 #  state_id              :uuid             not null
-#  subsidy_ruleable_id   :uuid
+#  subsidy_ruleable_id   :bigint
 #
 # Indexes
 #

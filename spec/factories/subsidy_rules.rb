@@ -22,7 +22,7 @@ end
 #  id                    :uuid             not null, primary key
 #  effective_on          :date
 #  expires_on            :date
-#  license_type          :enum             not null
+#  license_type          :string           not null
 #  max_age               :decimal(, )      not null
 #  name                  :string           not null
 #  subsidy_ruleable_type :string
@@ -30,7 +30,7 @@ end
 #  updated_at            :datetime         not null
 #  county_id             :uuid
 #  state_id              :uuid             not null
-#  subsidy_ruleable_id   :uuid
+#  subsidy_ruleable_id   :bigint
 #
 # Indexes
 #

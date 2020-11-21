@@ -5,8 +5,6 @@ class ChildApproval < UuidApplicationRecord
   belongs_to :child
   belongs_to :approval
   belongs_to :subsidy_rule, optional: true
-  has_many :child_approval_rate_types, dependent: :destroy
-  has_many :rate_types, through: :child_approval_rate_types
 
   delegate :user, to: :child
 end

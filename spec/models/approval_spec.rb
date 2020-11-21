@@ -7,12 +7,6 @@ RSpec.describe Approval, type: :model do
   it { should have_many(:children).through(:child_approvals) }
   it { is_expected.to monetize(:copay) }
 
-  it do
-    should define_enum_for(:copay_frequency).with_values(
-      Copays.frequencies
-    ).backed_by_column_of_type(:enum)
-  end
-
   let(:approval) { build(:approval) }
   let(:effective_date) { Faker::Date.between(from: 1.year.ago, to: Time.zone.today) }
 
@@ -71,7 +65,7 @@ end
 #  case_number     :string
 #  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
-#  copay_frequency :enum
+#  copay_frequency :string
 #  effective_on    :date
 #  expires_on      :date
 #  created_at      :datetime         not null

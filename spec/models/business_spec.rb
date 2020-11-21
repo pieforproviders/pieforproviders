@@ -7,11 +7,7 @@ RSpec.describe Business, type: :model do
   it { should belong_to(:county) }
   it { should belong_to(:zipcode) }
   it { should validate_presence_of(:name) }
-  it {
-    should define_enum_for(:license_type).with_values(
-      Licenses.types
-    ).backed_by_column_of_type(:enum)
-  }
+
   it 'validates uniqueness of business name' do
     create(:business)
     should validate_uniqueness_of(:name).scoped_to(:user_id)
@@ -37,7 +33,7 @@ end
 #
 #  id           :uuid             not null, primary key
 #  active       :boolean          default(TRUE), not null
-#  license_type :enum
+#  license_type :string           not null
 #  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -55,5 +51,6 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (user_id => users.id)
 #  fk_rails_...  (zipcode_id => zipcodes.id)
 #

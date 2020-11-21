@@ -33,7 +33,7 @@ end
 #
 #  id           :uuid             not null, primary key
 #  active       :boolean          default(TRUE), not null
-#  license_type :enum
+#  license_type :string           not null
 #  name         :string           not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
@@ -51,5 +51,6 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (county_id => counties.id)
+#  fk_rails_...  (user_id => users.id)
 #  fk_rails_...  (zipcode_id => zipcodes.id)
 #

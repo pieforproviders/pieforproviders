@@ -12,6 +12,8 @@ end
 #  id         :uuid             not null, primary key
 #  expiration :datetime         not null
 #  jti        :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 # Indexes
 #

@@ -8,7 +8,7 @@ namespace :zipcodes do
   task update_states: :environment do
     puts '>>> Begin update of states table...'
     url = 'https://github.com/midwire/free_zipcode_data/raw/master/all_us_states.csv'
-    data = URI.open(url)
+    data = URI.parse(url).open
     file = nil
     if data.is_a? StringIO
       file = Tempfile.new('all_us_states.csv')
@@ -31,7 +31,7 @@ namespace :zipcodes do
   task update_counties: :update_states do
     puts '>>> Begin update of counties table...'
     url = 'https://github.com/midwire/free_zipcode_data/raw/master/all_us_counties.csv'
-    data = URI.open(url)
+    data = URI.parse(url).open
     file = nil
     if data.is_a? StringIO
       file = Tempfile.new('all_us_counties.csv')
@@ -56,7 +56,7 @@ namespace :zipcodes do
   task update_zipcodes: :update_counties do
     puts '>>> Begin update of zipcodes table...'
     url = 'https://github.com/midwire/free_zipcode_data/raw/master/all_us_zipcodes.csv'
-    data = URI.open(url)
+    data = URI.parse(url).open
     file = nil
     if data.is_a? StringIO
       file = Tempfile.new('all_us_zipcodes.csv')
@@ -108,7 +108,7 @@ namespace :zipcodes do
       end
     end
     filename = 'all_us_states.csv'
-    URI.open("#{Rails.root}/db/#{filename}", 'w') do |f|
+    File.open("#{Rails.root}/db/#{filename}", 'w') do |f|
       f.write(csv_string)
     end
   end
@@ -127,7 +127,7 @@ namespace :zipcodes do
       end
     end
     filename = 'all_us_counties.csv'
-    URI.open("#{Rails.root}/db/#{filename}", 'w') do |f|
+    File.open("#{Rails.root}/db/#{filename}", 'w') do |f|
       f.write(csv_string)
     end
   end
@@ -150,7 +150,7 @@ namespace :zipcodes do
       end
     end
     filename = 'all_us_zipcodes.csv'
-    URI.open("#{Rails.root}/db/#{filename}", 'w') do |f|
+    File.open("#{Rails.root}/db/#{filename}", 'w') do |f|
       f.write(csv_string)
     end
   end
