@@ -66,9 +66,9 @@ puts_records_in_db(User)
 # Locations
 # ---------------------------------------------
 
-illinois = State.find_or_create_by!(name: 'Illinois', abbr: 'IL')
-cook = County.find_or_create_by!(name: 'Cook', state: illinois)
-chicago_zipcode = Zipcode.first_or_create!(city: 'Chicago', county: cook, state: cook.state, code: '60606')
+illinois = State.where(name: 'Illinois', abbr: 'IL')
+cook = County.where(name: 'Cook', state: illinois)
+chicago_zipcode = Zipcode.where(city: 'Chicago', county: cook, state: cook.state, code: '60606')
 
 # ---------------------------------------------
 # Businesses
