@@ -50,7 +50,7 @@ development:
   # Schema search path. The server defaults to $user,public
   #schema_search_path: myapp,sharedapp,public
   # https://github.com/rails/rails/issues/36816#issuecomment-632006710
-  schema_search_path: '"$user", public'
+  schema_search_path: public
 
   # Minimum log levels, in increasing order:
   #   debug5, debug4, debug3, debug2, debug1,
