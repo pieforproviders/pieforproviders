@@ -10,10 +10,17 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+CREATE SCHEMA public;
+
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
@@ -107,17 +114,6 @@ COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_ou
 
 
 --
--- Name: billable_occurrence_rate_types; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.billable_occurrence_rate_types (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    billable_occurrence_id uuid,
-    rate_type_id uuid NOT NULL
-);
-
-
---
 -- Name: billable_occurrences; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -156,17 +152,6 @@ CREATE TABLE public.businesses (
     license_type public.license_types,
     county_id uuid NOT NULL,
     zipcode_id uuid NOT NULL
-);
-
-
---
--- Name: child_approval_rate_types; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.child_approval_rate_types (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    child_approval_id uuid,
-    rate_type_id uuid NOT NULL
 );
 
 
@@ -238,22 +223,6 @@ CREATE TABLE public.illinois_subsidy_rules (
 
 
 --
--- Name: rate_types; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.rate_types (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    name character varying NOT NULL,
-    amount_cents integer DEFAULT 0 NOT NULL,
-    amount_currency character varying DEFAULT 'USD'::character varying NOT NULL,
-    max_duration numeric,
-    threshold numeric,
-    created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -272,17 +241,6 @@ CREATE TABLE public.states (
     name character varying,
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
-);
-
-
---
--- Name: subsidy_rule_rate_types; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.subsidy_rule_rate_types (
-    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
-    subsidy_rule_id uuid,
-    rate_type_id uuid NOT NULL
 );
 
 
@@ -389,14 +347,6 @@ ALTER TABLE ONLY public.attendances
 
 
 --
--- Name: billable_occurrence_rate_types billable_occurrence_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.billable_occurrence_rate_types
-    ADD CONSTRAINT billable_occurrence_rate_types_pkey PRIMARY KEY (id);
-
-
---
 -- Name: billable_occurrences billable_occurrences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -418,14 +368,6 @@ ALTER TABLE ONLY public.blocked_tokens
 
 ALTER TABLE ONLY public.businesses
     ADD CONSTRAINT businesses_pkey PRIMARY KEY (id);
-
-
---
--- Name: child_approval_rate_types child_approval_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_approval_rate_types
-    ADD CONSTRAINT child_approval_rate_types_pkey PRIMARY KEY (id);
 
 
 --
@@ -469,14 +411,6 @@ ALTER TABLE ONLY public.illinois_subsidy_rules
 
 
 --
--- Name: rate_types rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.rate_types
-    ADD CONSTRAINT rate_types_pkey PRIMARY KEY (id);
-
-
---
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -490,14 +424,6 @@ ALTER TABLE ONLY public.schema_migrations
 
 ALTER TABLE ONLY public.states
     ADD CONSTRAINT states_pkey PRIMARY KEY (id);
-
-
---
--- Name: subsidy_rule_rate_types subsidy_rule_rate_types_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subsidy_rule_rate_types
-    ADD CONSTRAINT subsidy_rule_rate_types_pkey PRIMARY KEY (id);
 
 
 --
@@ -529,20 +455,6 @@ ALTER TABLE ONLY public.zipcodes
 --
 
 CREATE INDEX billable_index ON public.billable_occurrences USING btree (billable_type, billable_id);
-
-
---
--- Name: index_billable_occurrence_rate_types_on_billable_occurrence_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_billable_occurrence_rate_types_on_billable_occurrence_id ON public.billable_occurrence_rate_types USING btree (billable_occurrence_id);
-
-
---
--- Name: index_billable_occurrence_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_billable_occurrence_rate_types_on_rate_type_id ON public.billable_occurrence_rate_types USING btree (rate_type_id);
 
 
 --
@@ -585,20 +497,6 @@ CREATE INDEX index_businesses_on_user_id ON public.businesses USING btree (user_
 --
 
 CREATE INDEX index_businesses_on_zipcode_id ON public.businesses USING btree (zipcode_id);
-
-
---
--- Name: index_child_approval_rate_types_on_child_approval_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_approval_rate_types_on_child_approval_id ON public.child_approval_rate_types USING btree (child_approval_id);
-
-
---
--- Name: index_child_approval_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_child_approval_rate_types_on_rate_type_id ON public.child_approval_rate_types USING btree (rate_type_id);
 
 
 --
@@ -648,20 +546,6 @@ CREATE INDEX index_counties_on_state_id ON public.counties USING btree (state_id
 --
 
 CREATE INDEX index_states_on_abbr ON public.states USING btree (abbr);
-
-
---
--- Name: index_subsidy_rule_rate_types_on_rate_type_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rule_rate_types_on_rate_type_id ON public.subsidy_rule_rate_types USING btree (rate_type_id);
-
-
---
--- Name: index_subsidy_rule_rate_types_on_subsidy_rule_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_subsidy_rule_rate_types_on_subsidy_rule_id ON public.subsidy_rule_rate_types USING btree (subsidy_rule_id);
 
 
 --
@@ -788,30 +672,6 @@ ALTER TABLE ONLY public.subsidy_rules
 
 
 --
--- Name: subsidy_rule_rate_types fk_rails_2c8ca83220; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subsidy_rule_rate_types
-    ADD CONSTRAINT fk_rails_2c8ca83220 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
-
-
---
--- Name: billable_occurrence_rate_types fk_rails_39b46a8efd; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.billable_occurrence_rate_types
-    ADD CONSTRAINT fk_rails_39b46a8efd FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
-
-
---
--- Name: billable_occurrence_rate_types fk_rails_3ecc6abdd0; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.billable_occurrence_rate_types
-    ADD CONSTRAINT fk_rails_3ecc6abdd0 FOREIGN KEY (billable_occurrence_id) REFERENCES public.billable_occurrences(id);
-
-
---
 -- Name: businesses fk_rails_48152d6e55; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -825,14 +685,6 @@ ALTER TABLE ONLY public.businesses
 
 ALTER TABLE ONLY public.zipcodes
     ADD CONSTRAINT fk_rails_4916202daf FOREIGN KEY (state_id) REFERENCES public.states(id);
-
-
---
--- Name: subsidy_rule_rate_types fk_rails_56583d3a66; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.subsidy_rule_rate_types
-    ADD CONSTRAINT fk_rails_56583d3a66 FOREIGN KEY (subsidy_rule_id) REFERENCES public.subsidy_rules(id);
 
 
 --
@@ -876,22 +728,6 @@ ALTER TABLE ONLY public.zipcodes
 
 
 --
--- Name: child_approval_rate_types fk_rails_d3d552ef33; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_approval_rate_types
-    ADD CONSTRAINT fk_rails_d3d552ef33 FOREIGN KEY (rate_type_id) REFERENCES public.rate_types(id);
-
-
---
--- Name: child_approval_rate_types fk_rails_dbacd97c03; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.child_approval_rate_types
-    ADD CONSTRAINT fk_rails_dbacd97c03 FOREIGN KEY (child_approval_id) REFERENCES public.child_approvals(id);
-
-
---
 -- Name: subsidy_rules fk_rails_eac641c57e; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -909,6 +745,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20201112193701'),
 ('20201115203512'),
 ('20201118014217'),
-('20201118020539');
+('20201118020539'),
+('20201121163024');
 
 
