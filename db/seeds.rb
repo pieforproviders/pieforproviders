@@ -58,6 +58,7 @@ end
   timezone: 'Central Time (US & Canada)'
 )
 
+@user_admin.confirm
 @user_kate.confirm
 puts_records_in_db(User)
 
@@ -65,9 +66,9 @@ puts_records_in_db(User)
 # Locations
 # ---------------------------------------------
 
-montana = State.find_or_create_by!(name: 'Montana', abbr: 'MT')
-big_horn_cty_mt = County.find_or_create_by!(name: 'Big Horn', state: montana)
-hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state, code: '12345')
+illinois = State.where(name: 'Illinois', abbr: 'IL')
+cook = County.where(name: 'Cook', state: illinois)
+chicago_zipcode = Zipcode.where(city: 'Chicago', county: cook, state: cook.state, code: '60606')
 
 # ---------------------------------------------
 # Businesses
@@ -75,8 +76,8 @@ hardin_zipcode = Zipcode.first_or_create!(city: 'Hardin', county: big_horn_cty_m
 
 @business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
   license_type: Licenses.types.keys.first,
-  county: big_horn_cty_mt,
-  zipcode: hardin_zipcode
+  county: cook,
+  zipcode: chicago_zipcode
 )
 
 puts_records_in_db(Business)
@@ -148,8 +149,8 @@ sr_rule_1 = SubsidyRule.first_or_create!(
   name: 'Rule 1',
   max_age: 18,
   license_type: Licenses.types.values.sample,
-  county: big_horn_cty_mt,
-  state: big_horn_cty_mt.state,
+  county: cook,
+  state: cook.state,
   effective_on: rule_effective_date,
   expires_on: rule_effective_date + rand(1..10).years,
   subsidy_ruleable: il_sr_rule
