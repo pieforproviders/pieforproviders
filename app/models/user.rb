@@ -71,7 +71,7 @@ end
 # Indexes
 #
 #  index_users_on_confirmation_token    (confirmation_token)
-#  index_users_on_email                 (email)
-#  index_users_on_phone_number          (phone_number)
+#  index_users_on_email                 (email) UNIQUE
+#  index_users_on_phone_number          (phone_number) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token)
 #

@@ -9,10 +9,13 @@ class InitialMigration < ActiveRecord::Migration[6.0]
     ########################################
 
     create_table :states, id: :uuid do |t|
-      t.string :abbr, limit: 2, index: true
+      t.string :abbr, limit: 2
       t.string :name
 
       t.timestamps
+
+      t.index :abbr, unique: true
+      t.index :name, unique: true
     end
 
     create_table :counties, id: :uuid do |t|
@@ -22,6 +25,9 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.string :county_seat
 
       t.timestamps
+
+      t.index %i[name state_id], unique: true
+      t.index %i[abbr state_id], unique: true
     end
 
     create_table :zipcodes, id: :uuid do |t|
@@ -73,12 +79,12 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.string :full_name, null: false
       t.string :greeting_name, null: false
       t.string :organization, null: false
-      t.string :email, null: false, index: true, unique: true
+      t.string :email, null: false
       t.string :language, null: false
       t.string :phone_type
       t.boolean :opt_in_email, null: false, default: true
       t.boolean :opt_in_text, null: false, default: true
-      t.string :phone_number, index: true, unique: true
+      t.string :phone_number, null: true
       t.boolean :service_agreement_accepted, null: false, default: false
       t.boolean :admin, null: false, default: false
       t.string :timezone, null: false
@@ -105,6 +111,8 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.string   :unconfirmed_email # Only if using reconfirmable
 
       t.timestamps
+      t.index :email, unique: true
+      t.index :phone_number, unique: true
     end
 
     create_table :blocked_tokens, id: :uuid do |t|
@@ -127,6 +135,8 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.references :zipcode, type: :uuid, null: false, foreign_key: true, index: true
 
       t.timestamps
+
+      t.index %i[name user_id], unique: true
     end
 
     create_table :children, id: :uuid do |t|
@@ -152,8 +162,8 @@ class InitialMigration < ActiveRecord::Migration[6.0]
 
     create_table :child_approvals, id: :uuid do |t|
       t.references :subsidy_rule, type: :uuid, foreign_key: true
-      t.references :approval, null: false, type: :uuid, foreign_key: true
-      t.references :child, null: false, type: :uuid, foreign_key: true
+      t.references :approval, type: :uuid, null: false, foreign_key: true
+      t.references :child, type: :uuid, null: false, foreign_key: true
 
       t.timestamps
     end
@@ -163,7 +173,7 @@ class InitialMigration < ActiveRecord::Migration[6.0]
     ########################################
 
     create_table :billable_occurrences, id: :uuid do |t|
-      t.references :billable, polymorphic: true, index: { name: :billable_index }
+      t.references :billable, type: :uuid, polymorphic: true, index: { name: :billable_index }
       t.references :child_approval, type: :uuid, foreign_key: true, null: false
 
       t.timestamps

@@ -29,5 +29,6 @@ end
 #
 # Indexes
 #
-#  index_states_on_abbr  (abbr)
+#  index_states_on_abbr  (abbr) UNIQUE
+#  index_states_on_name  (name) UNIQUE
 #

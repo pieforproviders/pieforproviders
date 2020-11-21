@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
 
   create_table "billable_occurrences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "billable_type"
-    t.bigint "billable_id"
+    t.uuid "billable_id"
     t.uuid "child_approval_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["county_id"], name: "index_businesses_on_county_id"
+    t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
     t.index ["zipcode_id"], name: "index_businesses_on_zipcode_id"
   end
@@ -96,6 +97,8 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.string "county_seat"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["abbr", "state_id"], name: "index_counties_on_abbr_and_state_id", unique: true
+    t.index ["name", "state_id"], name: "index_counties_on_name_and_state_id", unique: true
     t.index ["name"], name: "index_counties_on_name"
     t.index ["state_id"], name: "index_counties_on_state_id"
   end
@@ -115,7 +118,8 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["abbr"], name: "index_states_on_abbr"
+    t.index ["abbr"], name: "index_states_on_abbr", unique: true
+    t.index ["name"], name: "index_states_on_name", unique: true
   end
 
   create_table "subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -165,8 +169,8 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
-    t.index ["email"], name: "index_users_on_email"
-    t.index ["phone_number"], name: "index_users_on_phone_number"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
   end
 

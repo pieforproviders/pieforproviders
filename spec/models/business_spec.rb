@@ -7,11 +7,7 @@ RSpec.describe Business, type: :model do
   it { should belong_to(:county) }
   it { should belong_to(:zipcode) }
   it { should validate_presence_of(:name) }
-  it {
-    should define_enum_for(:license_type).with_values(
-      Licenses.types
-    ).backed_by_column_of_type(:enum)
-  }
+
   it 'validates uniqueness of business name' do
     create(:business)
     should validate_uniqueness_of(:name).scoped_to(:user_id)
@@ -47,9 +43,10 @@ end
 #
 # Indexes
 #
-#  index_businesses_on_county_id   (county_id)
-#  index_businesses_on_user_id     (user_id)
-#  index_businesses_on_zipcode_id  (zipcode_id)
+#  index_businesses_on_county_id         (county_id)
+#  index_businesses_on_name_and_user_id  (name,user_id) UNIQUE
+#  index_businesses_on_user_id           (user_id)
+#  index_businesses_on_zipcode_id        (zipcode_id)
 #
 # Foreign Keys
 #

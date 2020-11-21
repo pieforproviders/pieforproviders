@@ -24,8 +24,10 @@ end
 #
 # Indexes
 #
-#  index_counties_on_name      (name)
-#  index_counties_on_state_id  (state_id)
+#  index_counties_on_abbr_and_state_id  (abbr,state_id) UNIQUE
+#  index_counties_on_name               (name)
+#  index_counties_on_name_and_state_id  (name,state_id) UNIQUE
+#  index_counties_on_state_id           (state_id)
 #
 # Foreign Keys
 #
