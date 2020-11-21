@@ -26,7 +26,7 @@ end
 #  id                    :uuid             not null, primary key
 #  effective_on          :date
 #  expires_on            :date
-#  license_type          :enum             not null
+#  license_type          :string           not null
 #  max_age               :decimal(, )      not null
 #  name                  :string           not null
 #  subsidy_ruleable_type :string

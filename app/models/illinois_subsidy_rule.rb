@@ -4,11 +4,11 @@
 class IllinoisSubsidyRule < UuidApplicationRecord
   has_one :subsidy_rule, as: :subsidy_ruleable, dependent: :restrict_with_error
 
-  validates :bronze_percentage, numericality: true
-  validates :full_day_rate, numericality: true
-  validates :gold_percentage, numericality: true
-  validates :part_day_rate, numericality: true
-  validates :silver_percentage, numericality: true
+  validates :bronze_percentage, numericality: true, allow_nil: true
+  validates :full_day_rate, numericality: true, allow_nil: true
+  validates :gold_percentage, numericality: true, allow_nil: true
+  validates :part_day_rate, numericality: true, allow_nil: true
+  validates :silver_percentage, numericality: true, allow_nil: true
 end
 
 # == Schema Information
