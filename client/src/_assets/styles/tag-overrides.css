@@ -1,3 +1,5 @@
+/* NOTE: going to continue to create override one-off files for specific ant-design components.
+Goal is to at some point to create a 'best practices' guideline for us in implementing ant-design + tailwindcss classes together  */
 .green-tag.ant-tag {
   border-color: transparent;
   background: #F2FDF7;
