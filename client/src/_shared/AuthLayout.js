@@ -21,7 +21,7 @@ export function AuthLayout({
       <Col
         xs={24}
         md={12}
-        className="overflow-y-scroll mt-4 xs:mt-8 px-4 md:px-8"
+        className="h-screen overflow-y-scroll mt-4 xs:mt-8 px-4 md:px-8"
       >
         <Row gutter={{ xs: 16, md: 32 }}>
           <Col
