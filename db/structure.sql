@@ -119,11 +119,11 @@ COMMENT ON COLUMN public.attendances.total_time_in_care IS 'Calculated: check_ou
 
 CREATE TABLE public.billable_occurrences (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    billable_type character varying,
+    billable_id bigint,
     child_approval_id uuid NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL,
-    billable_type character varying,
-    billable_id uuid
+    updated_at timestamp(6) without time zone NOT NULL
 );
 
 
@@ -200,15 +200,6 @@ CREATE TABLE public.counties (
 
 
 --
--- Name: data_migrations; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.data_migrations (
-    version character varying NOT NULL
-);
-
-
---
 -- Name: illinois_subsidy_rules; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -218,7 +209,9 @@ CREATE TABLE public.illinois_subsidy_rules (
     silver_percentage numeric,
     gold_percentage numeric,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    part_day_rate numeric,
+    full_day_rate numeric
 );
 
 
@@ -257,10 +250,10 @@ CREATE TABLE public.subsidy_rules (
     updated_at timestamp(6) without time zone NOT NULL,
     county_id uuid,
     state_id uuid NOT NULL,
-    effective_on date,
-    expires_on date,
     subsidy_ruleable_type character varying,
-    subsidy_ruleable_id uuid
+    subsidy_ruleable_id bigint,
+    effective_on date,
+    expires_on date
 );
 
 
@@ -392,14 +385,6 @@ ALTER TABLE ONLY public.children
 
 ALTER TABLE ONLY public.counties
     ADD CONSTRAINT counties_pkey PRIMARY KEY (id);
-
-
---
--- Name: data_migrations data_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.data_migrations
-    ADD CONSTRAINT data_migrations_pkey PRIMARY KEY (version);
 
 
 --
@@ -739,13 +724,64 @@ ALTER TABLE ONLY public.subsidy_rules
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user", public;
+SET search_path TO public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20191201163315'),
+('20191228173615'),
+('20200405020218'),
+('20200406025948'),
+('20200415011742'),
+('20200415014152'),
+('20200425210517'),
+('20200425220142'),
+('20200426002926'),
+('20200429014219'),
+('20200429020409'),
+('20200614143825'),
+('20200615004546'),
+('20200802164810'),
+('20200802173943'),
+('20200802210346'),
+('20200802222331'),
+('20200814013700'),
+('20200824023040'),
+('20200824023511'),
+('20200824025129'),
+('20200825180000'),
+('20200825180100'),
+('20200825180200'),
+('20200825180300'),
+('20200828013851'),
+('20200902182940'),
+('20200902184516'),
+('20200903112138'),
+('20200906195706'),
+('20200906232048'),
+('20200907181541'),
+('20200910021812'),
+('20200911180200'),
+('20200911220200'),
+('20200913004651'),
+('20200913005807'),
+('20200914030020'),
+('20200918232336'),
+('20201007145834'),
+('20201007161749'),
+('20201007165331'),
+('20201007200557'),
+('20201007202953'),
+('20201007203150'),
+('20201009020636'),
+('20201010022135'),
+('20201011174541'),
+('20201011184243'),
+('20201019013322'),
+('20201019020032'),
+('20201019035426'),
 ('20201112193701'),
 ('20201115203512'),
-('20201118014217'),
-('20201118020539'),
-('20201121163024');
+('20201121163024'),
+('20201121163612');
 
 

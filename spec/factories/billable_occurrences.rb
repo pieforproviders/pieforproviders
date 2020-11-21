@@ -17,7 +17,7 @@ end
 #  billable_type     :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
-#  billable_id       :uuid
+#  billable_id       :bigint
 #  child_approval_id :uuid             not null
 #
 # Indexes
