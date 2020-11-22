@@ -58,14 +58,13 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.string "license_type", null: false
     t.string "name", null: false
     t.uuid "user_id", null: false
-    t.uuid "county_id", null: false
-    t.uuid "zipcode_id", null: false
+    t.string "county"
+    t.string "state"
+    t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["county_id"], name: "index_businesses_on_county_id"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
-    t.index ["zipcode_id"], name: "index_businesses_on_zipcode_id"
   end
 
   create_table "child_approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -90,19 +89,6 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
-  create_table "counties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "state_id", null: false
-    t.string "abbr"
-    t.string "name"
-    t.string "county_seat"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["abbr", "state_id"], name: "index_counties_on_abbr_and_state_id", unique: true
-    t.index ["name", "state_id"], name: "index_counties_on_name_and_state_id", unique: true
-    t.index ["name"], name: "index_counties_on_name"
-    t.index ["state_id"], name: "index_counties_on_state_id"
-  end
-
   create_table "illinois_subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "bronze_percentage"
     t.decimal "silver_percentage"
@@ -113,29 +99,18 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "states", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "abbr", limit: 2
-    t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["abbr"], name: "index_states_on_abbr", unique: true
-    t.index ["name"], name: "index_states_on_name", unique: true
-  end
-
   create_table "subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.date "effective_on"
     t.date "expires_on"
     t.string "license_type", null: false
-    t.uuid "county_id"
-    t.uuid "state_id", null: false
+    t.string "county"
+    t.string "state"
     t.string "subsidy_ruleable_type"
     t.bigint "subsidy_ruleable_id"
     t.decimal "max_age", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["county_id"], name: "index_subsidy_rules_on_county_id"
-    t.index ["state_id"], name: "index_subsidy_rules_on_state_id"
     t.index ["subsidy_ruleable_type", "subsidy_ruleable_id"], name: "subsidy_ruleable_index"
   end
 
@@ -174,33 +149,10 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
   end
 
-  create_table "zipcodes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "code", null: false
-    t.string "city"
-    t.uuid "state_id", null: false
-    t.uuid "county_id", null: false
-    t.string "area_code"
-    t.decimal "lat", precision: 15, scale: 10
-    t.decimal "lon", precision: 15, scale: 10
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["code"], name: "index_zipcodes_on_code", unique: true
-    t.index ["county_id"], name: "index_zipcodes_on_county_id"
-    t.index ["lat", "lon"], name: "index_zipcodes_on_lat_and_lon"
-    t.index ["state_id"], name: "index_zipcodes_on_state_id"
-  end
-
   add_foreign_key "billable_occurrences", "child_approvals"
-  add_foreign_key "businesses", "counties"
   add_foreign_key "businesses", "users"
-  add_foreign_key "businesses", "zipcodes"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
   add_foreign_key "child_approvals", "subsidy_rules"
   add_foreign_key "children", "businesses"
-  add_foreign_key "counties", "states"
-  add_foreign_key "subsidy_rules", "counties"
-  add_foreign_key "subsidy_rules", "states"
-  add_foreign_key "zipcodes", "counties"
-  add_foreign_key "zipcodes", "states"
 end

@@ -19,13 +19,10 @@ RSpec.describe Child, type: :model do
   context 'associates the record with a subsidy rule' do
     let!(:subsidy_rule_cook_age5) { create(:subsidy_rule_for_illinois, max_age: 5) }
     let!(:subsidy_rule_cook_age3) { create(:subsidy_rule_for_illinois, max_age: 3) }
-    let!(:zipcode_cook) { create(:zipcode, county: subsidy_rule_cook_age3.county, state: subsidy_rule_cook_age3.state) }
-    let!(:business_cook) { create(:business, county: zipcode_cook.county, zipcode: zipcode_cook) }
+    let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
     let!(:child_cook) { create(:child, date_of_birth: Date.current - 2.years, business: business_cook) }
-
-    let!(:subsidy_rule_dupage) { create(:subsidy_rule_for_illinois, county: create(:county, state: State.find_by(abbr: 'IL'), name: 'DuPage')) }
-    let!(:zipcode_dupage) { create(:zipcode, county: subsidy_rule_dupage.county, state: subsidy_rule_dupage.state) }
-    let!(:business_dupage) { create(:business, county: zipcode_dupage.county, zipcode: zipcode_dupage) }
+    let!(:subsidy_rule_dupage) { create(:subsidy_rule_for_illinois, county: 'DuPage') }
+    let!(:business_dupage) { create(:business, county: 'DuPage', zipcode: '60613') }
 
     it 'on creation' do
       expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_cook_age3)
