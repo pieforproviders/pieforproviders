@@ -13,7 +13,8 @@ export function Confirmation({ location }) {
   useEffect(() => {
     let isSubscribed = true
     const confirm = async () => {
-      const confirmationToken = new URLSearchParams(location.search)
+      const params = new URLSearchParams(location.search)
+      const confirmationToken = params.get('confirmation_token')
       const response = await makeRequest({
         type: 'get',
         url: `confirmation${
