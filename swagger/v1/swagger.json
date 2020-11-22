@@ -872,11 +872,11 @@
               {
                 "type": "object",
                 "required": [
-                  "county_id",
+                  "county",
                   "name",
                   "license_type",
                   "user_id",
-                  "zipcode_id"
+                  "zipcode"
                 ]
               }
             ]
