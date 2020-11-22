@@ -19,13 +19,30 @@ JUN_30 = Date.new(THIS_YEAR, 6, 30)
 MIN_BIRTHDAY = (Time.zone.now - 2.weeks)
 MAX_BIRTHDAY = (Time.zone.now - 14.years)
 
-# ---------------------------------------------
-
 # Use puts to show the number of records in the database for a given class
 def puts_records_in_db(klass)
   puts " ... #{klass.count} #{klass.name.pluralize} now in the db"
 end
 
+# ---------------------------------------------
+# Subsidy Rules
+# ---------------------------------------------
+
+# currently active rule
+SubsidyRule.first_or_create!(
+  name: 'Rule 1',
+  max_age: 18,
+  license_type: Licenses.types.values.sample,
+  county: 'Cook',
+  state: 'IL',
+  effective_on: Faker::Date.between(from: 10.years.ago, to: Time.zone.today),
+  subsidy_ruleable: IllinoisSubsidyRule.first_or_create!
+)
+
+puts_records_in_db(SubsidyRule)
+
+# ---------------------------------------------
+# Users
 # ---------------------------------------------
 
 @user_admin = User.where(email: 'admin@test.com').first_or_create!(
@@ -60,24 +77,17 @@ end
 
 @user_admin.confirm
 @user_kate.confirm
+
 puts_records_in_db(User)
-
-# ---------------------------------------------
-# Locations
-# ---------------------------------------------
-
-illinois = State.find_by(name: 'Illinois', abbr: 'IL')
-cook = County.find_by(name: 'COOK', state: illinois)
-chicago_zipcode = Zipcode.find_by(city: 'Chicago', county: cook, state: cook.state, code: '60606')
 
 # ---------------------------------------------
 # Businesses
 # ---------------------------------------------
 
-@business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create(
+@business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create!(
   license_type: Licenses.types.keys.first,
-  county: cook,
-  zipcode: chicago_zipcode
+  county: 'Cook',
+  zipcode: '60606'
 )
 
 puts_records_in_db(Business)
@@ -136,108 +146,5 @@ mubiru = create_case('Mubiru Karstensen')
 tarq = create_case('Tarquinius Kelly', add_expired_approval: true)
 
 puts_records_in_db(Child)
-
-# ---------------------------------------------
-# Subsidy Rules
-# ---------------------------------------------
-
-rule_effective_date = Faker::Date.between(from: 10.years.ago, to: Time.zone.today)
-
-il_sr_rule = IllinoisSubsidyRule.first_or_create!
-
-sr_rule_1 = SubsidyRule.first_or_create!(
-  name: 'Rule 1',
-  max_age: 18,
-  license_type: Licenses.types.values.sample,
-  county: cook,
-  state: cook.state,
-  effective_on: rule_effective_date,
-  expires_on: rule_effective_date + rand(1..10).years,
-  subsidy_ruleable: il_sr_rule
-)
-
-puts_records_in_db(SubsidyRule)
-
-# ---------------------------------------------
-# Attendance
-# ---------------------------------------------
-
-puts ' Now creating attendance records...'
-
-# @return [Array[Date]] - list of days, starting with the first date (inclusive),
-#   ending with the last_date (inclusive),
-#   and including random weekends dates (using the percent_weekends)
-#   If skip_all_weekends, then absolutely no weekend dates are returned
-def dates_skipping_most_weekends(first_date: Date.current - 60.days,
-                                 last_date: Date.current,
-                                 percent_on_weekends: 0.10,
-                                 skip_all_weekends: false)
-  dates = []
-  num_days = last_date - first_date
-  num_days.to_i.times do |day_num|
-    this_date = (first_date + (day_num - 1)).to_datetime
-    dates << this_date.to_date if this_date.on_weekday? || (!skip_all_weekends && Faker::Boolean.boolean(true_ratio: percent_on_weekends))
-  end
-  dates
-end
-
-RAND_CHECKIN_HRS_RANGE = 3 # checkin will be within 3 hours of the earliest checkin hour
-RAND_CHECKOUT_HRS_RANGE = 18 # checkout will be within 18 hours of checkin
-
-# create Attendance records, some random amount of part and full days.
-def make_attendance(first_date: Date.current - 10,
-                    last_date: Date.current,
-                    earliest_checkin_hour: 7,
-                    child: Child.first)
-
-  days_attended = dates_skipping_most_weekends(first_date: first_date, last_date: last_date)
-  days_attended.each do |day_attended|
-    random_checkin_time = (earliest_checkin_hour * 60) + Random.rand(60 * RAND_CHECKIN_HRS_RANGE).minutes
-    random_checkout_time = random_checkin_time + Random.rand(60 * RAND_CHECKOUT_HRS_RANGE).minutes
-
-    # Attendances are a type of BillableOccurrence so we should always create them this way
-    BillableOccurrence.find_or_create_by!(child_approval: child.child_approvals[0], billable: Attendance.create!(check_in: day_attended + random_checkin_time,
-                                                                                                                 check_out: day_attended + random_checkout_time))
-  end
-end
-
-def latest_date(date1, date2)
-  [date1, date2].compact.max
-end
-
-# Attendance for Maria between January 1 and March 31
-make_attendance(first_date: JAN_1,
-                last_date: MAR_31,
-                earliest_checkin_hour: 7,
-                child: maria)
-
-# Attendance for K'Shawn between January 1 and March 31
-make_attendance(first_date: JAN_1,
-                last_date: MAR_31,
-                earliest_checkin_hour: 7, child: kshawn)
-
-# ------------
-
-# Attendance for Maria between April 1 and June 30
-make_attendance(first_date: APR_1,
-                last_date: JUN_30,
-                earliest_checkin_hour: 7,
-                child: maria)
-
-# Attendance for K'Shawn between April 1 and June 30
-make_attendance(first_date: APR_1,
-                last_date: JUN_30,
-                earliest_checkin_hour: 7,
-                child: kshawn)
-
-# Attendance for mubiru between April 1 and June 30
-make_attendance(first_date: APR_1,
-                last_date: JUN_30,
-                earliest_checkin_hour: 7,
-                child: mubiru)
-
-puts_records_in_db(Attendance)
-
-# ---------------------------------------------
 
 puts 'Seeding is done!'

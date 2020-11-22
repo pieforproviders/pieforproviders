@@ -6,7 +6,7 @@ class SubsidyRuleAssociator
   def initialize(child)
     @child = child
     @county = child.business.county
-    @state = child.business.county.state
+    @state = child.business.state
   end
 
   def call
@@ -16,8 +16,7 @@ class SubsidyRuleAssociator
   private
 
   def associate_subsidy_rule
-    county = @child.business.county
-    illinois_subsidy_rule_associator(county) if county.state.abbr == 'IL'
+    illinois_subsidy_rule_associator(@county) if @state == 'IL'
   end
 
   def age
@@ -28,7 +27,7 @@ class SubsidyRuleAssociator
   end
 
   def illinois_subsidy_rule_associator(county)
-    subsidy_rule = SubsidyRule.where('max_age >= ? AND county_id = ?', age, county.id).order(:max_age).first
+    subsidy_rule = SubsidyRule.current.where('max_age >= ?', age).where(county: county).order(:max_age).first
     @child.current_child_approval.update!(subsidy_rule: subsidy_rule)
   end
 end

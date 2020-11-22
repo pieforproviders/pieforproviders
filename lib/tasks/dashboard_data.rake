@@ -2,11 +2,12 @@
 
 require 'faker'
 
+# minimum birthdates (ages)
+
 desc 'Add second user cases'
 task dashboard_data: :environment do
-  # minimum birthdates (ages)
-  MIN_BIRTHDAY = (Time.zone.now - 2.weeks)
-  MAX_BIRTHDAY = (Time.zone.now - 14.years)
+  @min_birthday = (Time.zone.now - 2.weeks)
+  @max_birthday = (Time.zone.now - 14.years)
 
   ActionMailer::Base.perform_deliveries = false
 
@@ -15,68 +16,76 @@ task dashboard_data: :environment do
     active: true,
     full_name: 'Second User',
     greeting_name: 'Seco',
-    language: 'spanissh',
+    language: 'spanish',
     opt_in_email: true,
     opt_in_text: true,
-    organization: 'Illinois Child Care Alliance',
+    organization: 'Montana Child Care Alliance',
     password: 'testpass1234!',
     password_confirmation: 'testpass1234!',
     phone_number: '7777777777',
     phone_type: 'cell',
     service_agreement_accepted: true,
-    timezone: 'Eastern Time (US & Canada)'
+    timezone: 'Mountain Time (US & Canada)'
   )
 
   @non_admin.confirm
 
-  montana = State.find_by!(name: 'Montana', abbr: 'MT')
-  big_horn_cty_mt = County.find_by!(name: 'BIG HORN', state: montana)
-  hardin_zipcode = Zipcode.find_by!(city: 'Hardin', county: big_horn_cty_mt, state: big_horn_cty_mt.state)
-
   @business = Business.where(name: 'Second Childcare', user: @non_admin).first_or_create!(
     license_type: Licenses.types.keys.sample,
-    county: big_horn_cty_mt,
-    zipcode: hardin_zipcode
+    county: 'Big Horn',
+    zipcode: '01246'
   )
 
-  def create_case(full_name,
-                  business: @business,
-                  case_number: Faker::Number.number(digits: 10),
-                  effective_on: Faker::Date.between(from: 1.year.ago, to: Time.zone.today),
-                  date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
-                  copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
-                  copay_frequency: nil,
-                  add_expired_approval: false)
-    expires_on = effective_on + 1.year - 1.day
-    copay_frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
+  @case_number = Random.rand(10) > 7 ? nil : Faker::IDNumber.invalid
+  @copay_cents = Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000)
+  @effective_on = Faker::Date.between(from: 1.year.ago, to: Time.zone.today)
+  @expires_on = @effective_on + 1.year - 1.day
 
-    approvals = [
-      Approval.find_or_create_by!(
-        case_number: case_number,
-        copay_cents: copay,
-        copay_frequency: copay_frequency,
-        effective_on: effective_on,
-        expires_on: expires_on
-      )
-    ]
+  def random_copay_frequency(copay_frequency)
+    copay_frequency || @copay_cents ? Approval::COPAY_FREQUENCIES.sample : nil
+  end
 
-    if add_expired_approval
-      approvals << Approval.find_or_create_by!(
-        case_number: case_number,
-        copay_cents: copay ? copay - 1200 : nil,
-        copay_frequency: copay_frequency,
-        effective_on: effective_on - 1.year,
-        expires_on: effective_on - 1.day
-      )
-    end
+  def create_current_approval(copay_frequency)
+    Approval.find_or_create_by!(
+      case_number: @case_number,
+      copay_cents: @copay_cents,
+      copay_frequency: random_copay_frequency(copay_frequency),
+      effective_on: @effective_on,
+      expires_on: @expires_on
+    )
+  end
 
-    Child.find_or_create_by!(business: business,
-                             full_name: full_name,
-                             date_of_birth: date_of_birth,
-                             approvals: approvals)
+  def create_expired_approval(copay_frequency)
+    Approval.find_or_create_by!(
+      case_number: @case_number,
+      copay_cents: @copay_cents ? @copay_cents - 1200 : nil,
+      copay_frequency: random_copay_frequency(copay_frequency),
+      effective_on: @effective_on - 1.year,
+      expires_on: @effective_on - 1.day
+    )
+  end
+
+  def create_approvals(
+    copay_frequency: nil,
+    add_expired_approval: false
+  )
+    approvals = [create_current_approval(copay_frequency)]
+    approvals << create_expired_approval(copay_frequency) if add_expired_approval
+    approvals
+  end
+
+  def create_case(full_name, approvals)
+    date_of_birth = Faker::Date.between(from: @max_birthday, to: @min_birthday)
+    Child.find_or_create_by!(
+      business: @business,
+      full_name: full_name,
+      date_of_birth: date_of_birth,
+      approvals: approvals
+    )
   end
 
   5.times do
-    create_case(Faker::Movies::PrincessBride.character, case_number: Random.rand(10) > 7 ? nil : Faker::IDNumber.invalid, add_expired_approval: Random.rand(10) > 7)
+    approvals = create_approvals(add_expired_approval: Random.rand(10) > 7)
+    create_case(Faker::GreekPhilosophers.name, approvals)
   end
 end

@@ -58,7 +58,7 @@ class Api::V1::BusinessesController < Api::V1::ApiController
   end
 
   def business_params
-    attributes = %i[county_id license_type name zipcode_id]
+    attributes = %i[county license_type name zipcode]
     attributes += %i[user_id active] if current_user.admin?
     params.require(:business).permit(attributes)
   end
