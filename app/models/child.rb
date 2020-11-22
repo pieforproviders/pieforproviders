@@ -39,6 +39,26 @@ class Child < UuidApplicationRecord
     current_child_approval.subsidy_rule
   end
 
+  def attendance_risk
+    'at_risk'
+  end
+
+  def attendance_rate
+    0.46
+  end
+
+  def guaranteed_revenue
+    1045.32
+  end
+
+  def potential_revenue
+    2022.14
+  end
+
+  def max_approved_revenue
+    2025.12
+  end
+
   private
 
   def associate_subsidy_rule

@@ -12,6 +12,10 @@ AllCops:
     - tmp/**/**
     - client/**/**
 
+Style/SymbolProc:
+  Exclude:
+    - app/blueprints/**
+
 Naming/FileName:
   Exclude:
     - config/initializers/**

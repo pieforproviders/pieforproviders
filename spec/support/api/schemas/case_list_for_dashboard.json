@@ -30,12 +30,32 @@
             "case_number"
           ]
         }
+      },
+      "attendance_risk": {
+        "type": "string"
+      },
+      "attendance_rate": {
+        "type": "decimal"
+      },
+      "guaranteed_revenue": {
+        "type": "decimal"
+      },
+      "potential_revenue": {
+        "type": "decimal"
+      },
+      "max_approved_revenue": {
+        "type": "decimal"
       }
     },
     "required": [
       "full_name",
       "business",
-      "approvals"
+      "approvals",
+      "attendance_risk",
+      "attendance_rate",
+      "guaranteed_revenue",
+      "potential_revenue",
+      "max_approved_revenue"
     ]
   }
 }
