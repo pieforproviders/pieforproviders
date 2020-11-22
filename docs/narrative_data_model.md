@@ -46,20 +46,7 @@ I will log in and be "onboarded" via the UI; I will upload the case records of t
 
 The backend will then do the following:  
 
-- **TO BE IMPLEMENTED**: based on **Child**'s age, **County** where care is received, QRIS rating of the **Business** [some other info?] - associate a **SubsidyRule** with each **ChildApproval**
-- **TO BE IMPLEMENTED**: based on available **RateTypes** for the appropriate **SubsidyRule** (reference data to be entered by admins [Pie Staff] only, not via API), create **ChildApprovalRateTypes** for each child
-
-> ### ChildApprovalRateTypes Example
->
-> Illinois currently has two **RateTypes** (reference data to be entered by admins [Pie Staff] only, not via API): `full_days` and `part_days`.  Our spreadsheet currently reflects Illinois' **RateTypes**.
->
-> In the example above, Kimbu Mòsi is approved for 10 full_days and 10 part_days, and is 6 years old at the time of entry into Pie.  Their childcare provider **Business** has a Gold QRIS rating, and is located in Cook County.  This makes them eligible for a particular **SubsidyRule** (which in turn has an **IllinoisSubsidyRule** defining its QRIS percentage increases), say, "3+ in age, Cook County, Gold"
->
-> That **SubsidyRule** has 2 **RateTypes** associated via **SubsidyRuleRateTypes**: full_day (defined as 8 hours, with an 79.5% attendance threshhold, at a rate of $30) and part_day (defined as 4 hours, with an 79.5% attendance threshhold, at a rate of $15)
->
-> This means that Kimbu should have a **ChildApproval** (associated to the **Approval** letter) that has two **ChildApprovalRateTypes** (associated to the two **RateTypes** that belong to the appropriate **SubsidyRule** that applies to Kimbu)
->
-> **NOTE**: This is one of the more complicated associations and could use some model/controller implementation design
+- based on **Child**'s age, **County** where care is received, QRIS rating of the **Business** [some other info?] - associate a **SubsidyRule** with each **ChildApproval**
 
 This concludes onboarding and creating subsidy cases at the beginning of a user's account setup.  It should be noted that when a child is renewed for the subsidy:
 
@@ -72,10 +59,8 @@ As a child attends their child care provider, they generate **BillableOccurrence
 
 **TO BE IMPLEMENTED**: In other states, things like enrollment fees or providing a child transportation can be reimbursed by the state as a part of a **SubsidyRule**.
 
-**TO BE IMPLEMENTED**: A Pie user will enter one or more **BillableOccurrences** of a particular type (say, an **Attendance**) for a particular **ChildApproval** (i.e. "This **Child** attended on 10/20/2020, and the **Approval** that is currently active has the following **RateType** for an attendance of this length").  Pie will take the current **ChildApproval** for that **Child** and using the **SubsidyRule** and **ChildApprovalRateTypes**, will associate that **BillableOccurrence** to a **BillableOccurrenceRateType** - this will accommodate any changes in rates over the life of the **ChildApproval**; the **BillableOccurrence** is a snapshot in time of an event, so when other associations change or expire, we don't want old records to lose their integrity.
+**TO BE IMPLEMENTED**: A Pie user will enter one or more **BillableOccurrences** of a particular type (say, an **Attendance**) for a particular **ChildApproval** (i.e. "This **Child** attended on 10/20/2020, and the **Approval** that is currently active is associated with a particular **SubsidyRule** that defines the rates for this attendance").
 
-**TO BE IMPLEMENTED**: On the fly, the UI will request, for example, "Predicted Revenue by Child" - Pie will use the **BillableOccurrences** for the current time period, as well as the **ChildApprovalRateTypes** and the core **RateType** to determine what the state owes for that Child (did the child meet the threshold of what they were approved for?), along with some other predictive algorithms TBD.
+**TO BE IMPLEMENTED**: On the fly, the UI will request, for example, "Predicted Revenue by Child" - Pie will use the **BillableOccurrences** for the current time period, as well as the rates definedd in the **SubsidyRule** that belongs to the associated **ChildApproval** to determine what the state owes for that Child (did the child meet the threshold of what they were approved for?), along with some other predictive algorithms TBD.
 
-> **NOTE**: This is one of the more complicated associations and could use some model/controller implementation design
-
-**NOTE**: We're missing an important field on **ChildApprovalRateTypes** - it needs to specify the *amount* approved for that particular rate type (let's say, 10 attendances or 15 lunches are approved) - this will need a bug ticket and need to be mitigated
+**TO BE IMPLEMENTED** adding rate type amounts to ChildApprovals - might make sense to have associated StateApprovals like we have for Subsidy Rules
