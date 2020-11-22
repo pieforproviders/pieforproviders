@@ -164,11 +164,11 @@ RSpec.configure do |config|
                   {
                     type: :object,
                     required: %w[
-                      county_id
+                      county
                       name
                       license_type
                       user_id
-                      zipcode_id
+                      zipcode
                     ]
                   }
                 ]

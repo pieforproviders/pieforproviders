@@ -5,45 +5,6 @@ class InitialMigration < ActiveRecord::Migration[6.0]
     enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
 
     ########################################
-    # Reference Data - Locations
-    ########################################
-
-    create_table :states, id: :uuid do |t|
-      t.string :abbr, limit: 2
-      t.string :name
-
-      t.timestamps
-
-      t.index :abbr, unique: true
-      t.index :name, unique: true
-    end
-
-    create_table :counties, id: :uuid do |t|
-      t.references :state, type: :uuid, null: false, foreign_key: true, index: true
-      t.string :abbr
-      t.string :name, index: true
-      t.string :county_seat
-
-      t.timestamps
-
-      t.index %i[name state_id], unique: true
-      t.index %i[abbr state_id], unique: true
-    end
-
-    create_table :zipcodes, id: :uuid do |t|
-      t.string :code, null: false, index: { unique: true }
-      t.string :city
-      t.references :state, type: :uuid, null: false, foreign_key: true, index: true
-      t.references :county, type: :uuid, null: false, foreign_key: true, index: true
-      t.string :area_code
-      t.decimal :lat, precision: 15, scale: 10
-      t.decimal :lon, precision: 15, scale: 10
-      t.index %i[lat lon]
-
-      t.timestamps
-    end
-
-    ########################################
     # Reference Data - Subsidy Rules
     ########################################
 
@@ -52,8 +13,8 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.date :effective_on
       t.date :expires_on
       t.string :license_type, null: false
-      t.references :county, type: :uuid, foreign_key: true, index: true
-      t.references :state, type: :uuid, null: false, foreign_key: true, index: true
+      t.string :county
+      t.string :state
       t.references :subsidy_ruleable, polymorphic: true, index: { name: :subsidy_ruleable_index }
       t.decimal :max_age, null: false
 
@@ -131,8 +92,9 @@ class InitialMigration < ActiveRecord::Migration[6.0]
       t.string :license_type, null: false
       t.string :name, null: false
       t.references :user, type: :uuid, null: false, index: true, foreign_key: true
-      t.references :county, type: :uuid, null: false, foreign_key: true, index: true
-      t.references :zipcode, type: :uuid, null: false, foreign_key: true, index: true
+      t.string :county
+      t.string :state
+      t.string :zipcode
 
       t.timestamps
 

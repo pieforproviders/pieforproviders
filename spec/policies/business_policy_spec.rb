@@ -5,11 +5,10 @@ require 'rails_helper'
 RSpec.describe BusinessPolicy do
   subject { described_class }
   let(:user) { create(:confirmed_user) }
-  let!(:zipcode) { create(:zipcode) }
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
-  let(:business) { create(:business, zipcode: zipcode, county: zipcode.county, user: user) }
-  let(:inactive_business) { create(:business, zipcode: zipcode, county: zipcode.county, name: 'Test Daycare Center', user: user, active: false) }
+  let(:business) { create(:business, zipcode: '60606', county: 'Cook', user: user) }
+  let(:inactive_business) { create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user: user, active: false) }
 
   describe BusinessPolicy::Scope do
     context 'admin user' do
