@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
@@ -37,13 +38,14 @@ export function Signup() {
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
+  const { setIsMultiBusiness } = useMultiBusiness()
   const { t } = useTranslation()
 
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
 
-    localStorage.setItem('pieMultiBusiness', multiBusiness)
+    setIsMultiBusiness(multiBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -53,7 +55,7 @@ export function Signup() {
       setSuccess(true)
     } else if (response.status === 422) {
       const { errors } = await response.json()
-      setValidationErrors(errors[0].detail)
+      setValidationErrors(errors)
     } else {
       setError(true)
     }
@@ -93,14 +95,14 @@ export function Signup() {
   }
 
   return (
-    <>
-      <p className="mb-8">
-        <span className="uppercase font-bold">{t('signup')}</span>
+    <main>
+      <div className="mb-8">
+        <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
           {t('login')}
         </Link>
-      </p>
+      </div>
 
       {error && (
         <Alert
@@ -209,6 +211,9 @@ export function Signup() {
 
         <Form.Item name="phone" label={`${t('phone')} (${t('phoneNote')})`}>
           <Input.Group compact>
+            <label htmlFor="rc_select_1" className="sr-only">
+              {t('phoneType')}
+            </label>
             <Select
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
@@ -230,6 +235,9 @@ export function Signup() {
               </Option>
             </Select>
 
+            <label htmlFor="signup_phoneNumber" className="sr-only">
+              {t('phone')}
+            </label>
             <Form.Item
               name="phoneNumber"
               style={{ width: '70%', marginBottom: 0 }}
@@ -243,7 +251,7 @@ export function Signup() {
               validateStatus={validationErrors?.phone_number && 'error'}
               help={
                 validationErrors?.phone_number &&
-                `${t('phone')} ${validationErrors.phone_number.join(', ')}`
+                `${t('phone')} ${t(validationErrors.phone_number[0].error)}`
               }
             >
               <MaskedInput
@@ -345,7 +353,7 @@ export function Signup() {
           validateStatus={validationErrors?.email && 'error'}
           help={
             validationErrors?.email &&
-            `${t('email')} ${validationErrors.email.join(', ')}`
+            `${t('email')} ${t(validationErrors.email[0].error)}`
           }
         >
           <Input
@@ -439,6 +447,6 @@ export function Signup() {
           <PaddedButton data-cy="signupBtn" text={t('signup')} />
         </Form.Item>
       </Form>
-    </>
+    </main>
   )
 }

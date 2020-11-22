@@ -41,6 +41,9 @@ require 'database_cleaner'
 # this allows us to act on the "remote" postgres docker container
 DatabaseCleaner.allow_remote_database_url = true
 
+require 'money-rails/test_helpers'
+require 'pundit/rspec'
+
 Dir[Rails.root.join('spec/support/**/*.rb')].sort.each { |f| require f }
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -103,16 +106,18 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   # start by truncating all the tables, but then use the faster transaction strategy
-  config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-    DatabaseCleaner.strategy = :transaction
+  config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = if example.metadata[:use_truncation]
+                                 :truncation
+                               else
+                                 :transaction
+                               end
+
+    DatabaseCleaner.start
   end
 
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
-  end
+  config.append_after(:each) { DatabaseCleaner.clean }
 end
 
 # configure shoulda matchers to use rspec as the test framework and full matcher libraries for rails

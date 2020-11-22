@@ -1,4 +1,4 @@
-import moment from 'moment'
+import dayjs from 'dayjs'
 import faker from 'faker'
 import { createSelector } from '../utils'
 
@@ -139,6 +139,10 @@ describe('Password update', () => {
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
+        cy.route({
+          method: 'POST',
+          url: '/confirmation'
+        }).as('confirmation')
 
         cy.visit(`/password/update?reset_password_token=${rawToken}`)
         cy.get(createSelector('password')).type(newPassword)
@@ -153,6 +157,10 @@ describe('Password update', () => {
             matchCase: false
           }
         )
+
+        cy.get(createSelector('resendConfirmationLink')).click()
+        cy.wait('@confirmation')
+        cy.get(createSelector('successMessage')).contains('Email resent')
       })
     })
   })
@@ -175,7 +183,7 @@ describe('Password update', () => {
               password_confirmation: password,
               confirmed_at: null,
               reset_password_token: tokens[1],
-              reset_password_sent_at: moment().subtract('7', 'months').toDate()
+              reset_password_sent_at: dayjs().subtract('7', 'months').format()
             }
           ]
         ])

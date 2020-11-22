@@ -25,50 +25,47 @@ RSpec.describe 'users API', type: :request do
     }
   end
 
-  it_behaves_like 'it lists all items for a user', User
-
-  it_behaves_like 'it creates an item with the right api version and is authenticated', User do
-    let(:item_params) { user_params }
-  end
-
-  describe 'creates a user' do
+  describe 'list users' do
     path '/api/v1/users' do
-      post 'creates a user' do
+      get 'retrieves all users' do
         tags 'users'
-        consumes 'application/json', 'application/xml'
-        parameter name: 'Accept', in: :header, type: :string, default: 'application/vnd.pieforproviders.v1+json'
-        parameter name: :user, in: :body, schema: {
-          '$ref' => '#/components/schemas/createUser'
-        }
+
+        produces 'application/json'
 
         context 'on the right api version' do
           include_context 'correct api version header'
-
-          context 'when not authenticated - CAN create a User' do
-            response '201', 'user created' do
-              let(:user) { { "user": user_params } }
+          context 'admin users' do
+            include_context 'admin user'
+            response '200', 'users found' do
               run_test! do
-                expect(response).to match_response_schema('user')
+                expect(response).to match_response_schema('users')
               end
             end
-            response '422', 'invalid request' do
-              let(:user) { { "user": { "title": 'foo' } } }
+          end
+
+          context 'non-admin users' do
+            include_context 'authenticated user'
+            response '403', 'forbidden' do
               run_test!
             end
           end
+
+          it_behaves_like '401 error if not authenticated with parameters', 'user'
         end
+
+        it_behaves_like 'server error responses for wrong api version with parameters', 'user'
       end
     end
   end
 
   describe 'user profile' do
     path '/api/v1/profile' do
-      let(:item_params) { user_params }
+      let(:record_params) { user_params }
 
       get 'retrieves the user profile' do
         tags 'users'
 
-        produces 'application/json', 'application/xml'
+        produces 'application/json'
 
         context 'on the right api version' do
           include_context 'correct api version header'
@@ -87,13 +84,5 @@ RSpec.describe 'users API', type: :request do
         it_behaves_like 'server error responses for wrong api version with parameters', 'user'
       end
     end
-  end
-
-  it_behaves_like 'it updates an item with a slug', User, 'full_name', 'Ron Weasley', nil do
-    let(:item_params) { user_params }
-  end
-
-  it_behaves_like 'it deletes an item with a slug, for a user', User do
-    let(:item_params) { user_params }
   end
 end

@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export const NewPassword = () => {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
@@ -15,8 +18,8 @@ export const NewPassword = () => {
   useEffect(() => {
     const verifyPasswordToken = async () => {
       const params = new URLSearchParams(location.search)
-      const token = params.get('reset_password_token')
-      if (!token) {
+      const resetToken = params.get('reset_password_token')
+      if (!resetToken) {
         history.push({
           pathname: '/login',
           state: {
@@ -35,7 +38,7 @@ export const NewPassword = () => {
   const onFinish = async values => {
     const { password } = values
     const params = new URLSearchParams(location.search)
-    const token = params.get('reset_password_token')
+    const resetToken = params.get('reset_password_token')
     setLoading(true)
 
     const response = await makeRequest({
@@ -43,7 +46,7 @@ export const NewPassword = () => {
       url: '/password',
       data: {
         user: {
-          reset_password_token: token,
+          reset_password_token: resetToken,
           password: password,
           password_confirmation: password
         }
@@ -52,23 +55,26 @@ export const NewPassword = () => {
 
     setLoading(false)
 
+    const data = await response.json()
+
     if (!response.ok) {
-      const errorMessage = await response.json()
+      dispatch(removeAuth())
       history.push({
         pathname: '/login',
         state: {
           error: {
             status: response.status,
-            attribute: errorMessage.attribute,
-            type: errorMessage.type
+            attribute: data.attribute,
+            type: data.type
           }
         }
       })
       return
     }
 
-    const authorizationHeader = response.headers.get('authorization')
-    if (!authorizationHeader) {
+    const authToken = response.headers.get('authorization')
+    if (!authToken) {
+      dispatch(removeAuth())
       // Unconfirmed users
       history.push({
         pathname: '/login',
@@ -76,21 +82,24 @@ export const NewPassword = () => {
           error: {
             status: 401,
             attribute: 'email',
-            type: 'not_confirmed'
+            type: 'unconfirmed',
+            context: { email: data.email }
           }
         }
       })
     } else {
-      localStorage.setItem('pie-token', authorizationHeader)
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }
 
   return (
     <>
-      <p className="mb-8">
-        <span className="uppercase font-bold">{t('resetPassword')}</span>
-      </p>
+      <div className="mb-8">
+        <h1 className="uppercase font-bold inline-block">
+          {t('resetPassword')}
+        </h1>
+      </div>
 
       <Form
         layout="vertical"

@@ -24,7 +24,7 @@ assignees: ''
 ## 📸 Screenshots
 <!-- If applicable, add screenshots to help explain your problem. -->
 
-## 💻 Desktop
+## 💻 Browser Info
 
 Please complete the following information if accessing the app from a computer:
 
@@ -32,13 +32,13 @@ Please complete the following information if accessing the app from a computer:
 - Browser [e.g. chrome, safari]
 - Version [e.g. 22]
 
-## 📱Smartphone
-
-Please complete the following information if accessing the app from a mobile phone:
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
-
 ## 🍣 Additional context
 <!-- Add any other context about the problem here. -->
+
+## 🏓 Implementation Details
+
+> **NOTE TO ENGINEERS**
+> 
+> Please ensure that you are running Google Lighthouse and/or WebAIM (Wave) on any UI elements in your pull request to check for accessibility issues.
+> 
+> If it is out of scope to address those accessibility issues in your pull request (because the issue is in a parent component and needs refactoring to work, for example), **you are responsible for noting those issues in your pull request and writing bug tickets to address the issues - make sure you link the new tickets in your pull request**

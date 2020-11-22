@@ -1,22 +1,47 @@
 {
-  "type": "object",
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "county_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "id": {
+      "type": "string"
+    },
+    "license_type": {
+      "$ref": "license_types.json"
+    },
+    "name": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "user_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "zipcode_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
   "required": [
-    "license_type",
+    "county_id",
     "created_at",
     "id",
+    "license_type",
     "name",
-    "slug",
     "updated_at",
-    "user_id"
+    "user_id",
+    "zipcode_id"
   ],
-  "properties": {
-    "active": { "type": "boolean" },
-    "license_type": {"$ref":"license_types.json"},
-    "created_at": { "type": "string" , "format": "date-time" },
-    "id": { "type": "string" },
-    "name": { "type": "string" },
-    "slug": { "type": "string" },
-    "updated_at": { "type": "string" , "format": "date-time" },
-    "user_id": { "type": "string", "format": "uuid" }
-  }
+  "type": "object"
 }

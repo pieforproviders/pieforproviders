@@ -1,25 +1,39 @@
 {
-  "type": "object",
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "business_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
   "required": [
     "active",
-    "ccms_id",
     "created_at",
     "date_of_birth",
     "full_name",
     "id",
-    "slug",
     "updated_at",
-    "user_id"
+    "business_id"
   ],
-  "properties": {
-    "active": { "type": "boolean" },
-    "ccms_id": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "date_of_birth": { "type": "string", "format": "date" },
-    "id": { "type": "string" },
-    "full_name": { "type": "string" },
-    "slug": { "type": "string" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "user_id": { "type": "string", "format": "uuid" }
-  }
+  "type": "object"
 }

@@ -5,12 +5,10 @@ class User < UuidApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
   devise :confirmable, :database_authenticatable, :registerable,
-         :recoverable, :validatable, :jwt_authenticatable,
+         :recoverable, :trackable, :validatable, :jwt_authenticatable,
          jwt_revocation_strategy: BlockedToken
 
   has_many :businesses, dependent: :restrict_with_error
-  has_many :children, dependent: :restrict_with_error
-  has_many :case_cycles, dependent: :restrict_with_error
 
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
@@ -26,11 +24,13 @@ class User < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  before_validation { |user| user.slug = generate_slug(user.email) }
-
   # format phone numbers - remove any non-digit characters
   def phone_number=(value)
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
+  end
+
+  def as_json(_options = {})
+    super(except: [:admin])
   end
 end
 
@@ -40,6 +40,7 @@ end
 #
 #  id                         :uuid             not null, primary key
 #  active                     :boolean          default(TRUE), not null
+#  admin                      :boolean          default(FALSE), not null
 #  confirmation_sent_at       :datetime
 #  confirmation_token         :string
 #  confirmed_at               :datetime
@@ -47,13 +48,11 @@ end
 #  current_sign_in_ip         :inet
 #  email                      :string           not null
 #  encrypted_password         :string           default(""), not null
-#  failed_attempts            :integer          default(0), not null
 #  full_name                  :string           not null
 #  greeting_name              :string           not null
 #  language                   :string           not null
 #  last_sign_in_at            :datetime
 #  last_sign_in_ip            :inet
-#  locked_at                  :datetime
 #  opt_in_email               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
 #  organization               :string           not null
@@ -64,19 +63,15 @@ end
 #  reset_password_token       :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  sign_in_count              :integer          default(0), not null
-#  slug                       :string           not null
 #  timezone                   :string           not null
 #  unconfirmed_email          :string
-#  unlock_token               :string
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #
 # Indexes
 #
-#  index_users_on_confirmation_token    (confirmation_token) UNIQUE
+#  index_users_on_confirmation_token    (confirmation_token)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_phone_number          (phone_number) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_slug                  (slug) UNIQUE
-#  index_users_on_unlock_token          (unlock_token) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token)
 #

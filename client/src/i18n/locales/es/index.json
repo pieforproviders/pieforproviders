@@ -35,6 +35,7 @@
   "multiBusinessTrue": "Sí, gestiono varios negocios de cuidado infantil",
   "phone": "Número de teléfono",
   "phoneNote": "solo llamaremos o enviaremos un mensaje de texto si lo deseas",
+  "phoneType": "Tipo de telefono",
   "phoneTypePlaceholder": "Elija uno",
   "phoneTypeCell": "Celular",
   "phoneTypeHome": "Casa",
@@ -61,11 +62,15 @@
   "add": "Añade",
   "addToContacts": "a tus contactos.",
   "resendConfirmationEmail": "Haga clic aquí para reenviar el correo.",
+  "toResendConfirmationEmail": "para reenviar el correo de confirmación.",
   "confirmationEmailResent": "Correo reenviado",
 
   "here": "aquí",
+  "clickHere": "Haga clic aquí",
 
   "reportFeedback": "Da comentarios",
+
+  "taken": "ya ha sido tomado",
 
   "setup": "Configuración",
   "steps": "Pasos",
@@ -84,6 +89,8 @@
 
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
 
+  "invalidEmailOrPassword": "Correo y/o contraseña inválido(s).",
+  "unauthenticated": "Tienes que registrarte o iniciar sesión antes de continuar.",
   "alreadyConfirmed": "Ya has verificado tu cuenta. Ahora puedes iniciar sesión.",
   "emailUnconfirmed": "Tienes que confirmar tu correo antes de continuar.",
   "confirmationPeriodExpired": "Tu periodo de confirmación ha expirado",
@@ -126,5 +133,19 @@
   "notFound": "404: No se encuentra",
   "goBackHome": "Ve al inicio",
 
-  "dashboardTitle": "Este es la página principal"
+  "dashboardTitle": "Tu pantalla principal",
+  "revenueProjections": "Predicción de ingresos en tiempo real basada en datos de asistencia",
+  "childName": "Nombre del niño",
+  "caseNumberLowercase": "Número de caso",
+  "business": "Negocio",
+  "minRevenue": "Ingresos mínimos",
+  "maxRevenue": "Ingresos máximos",
+  "guaranteedRevenue": "Ingresos garantizados",
+  "guaranteedRevenueDef": "Basado en días ya asistidos",
+  "potentialRevenue": "Ingresos potenciales",
+  "potentialRevenueDef": "Basado en asistencia anticipada por el resto del mes",
+  "maxApprovedRevenue": "Ingresos máximos aprobados",
+  "maxApprovedRevenueDef": "Si todas las familias satisfagan la tasa de 80% asistencia",
+  "attendanceRate": "Tasa de asistencia",
+  "attendanceRateDef": "Basada en la tasa de asistencia de todos los niños listados"
 }

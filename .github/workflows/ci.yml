@@ -1,5 +1,8 @@
 name: CI
 on:
+  push:
+    branches:
+      - "develop"
   pull_request:
     types: [opened, synchronize]
 jobs:
@@ -84,7 +87,7 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:structure:load
+          bundle exec rake db:schema:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres
@@ -114,8 +117,7 @@ jobs:
           yarn
           yarn test --watchAll=false
   e2e_tests:
-    name: 'E2E tests'
-    if: github.event == 'deployment'
+    name: E2E tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -150,7 +152,7 @@ jobs:
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
-          bundle exec rake db:structure:load
+          bundle exec rake db:schema:load
         env:
           RAILS_ENV: test
           POSTGRES_USER: postgres

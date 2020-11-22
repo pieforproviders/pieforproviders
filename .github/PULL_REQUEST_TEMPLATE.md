@@ -1,9 +1,11 @@
 # 💅🏼 What issue does this fix?
-<!-- Which Github Issue is this related to?  Summarize the work in a sentence or two -->
+<!-- Which Github Issue is this related to?  Summarize the work in a sentence or two.  DO NOT use "Fixes #123" or anything that will auto-close the ticket, we want the ticket open until it's QAed. -->
 
 ## 🍂 Before You Submit
 <!-- Check steps as necessary - this list is a reminder -->
 * [ ] Did you write tests?
+* [ ] Did you run Google Lighthouse and/or WebAIM (Wave) on UI components in your PR?
+* [ ] Does your PR contain any required translations?
 * [ ] Did you run `bundle exec rspec` from the root?
 * [ ] Did you run `bundle exec rails rswag` from the root?
 * [ ] Did you run `bundle exec rubocop` from the root?
@@ -11,7 +13,10 @@
 * [ ] Did you run `yarn test` in `/client`?
 * [ ] Are your primary keys UUIDs on any new tables?
 
-## 🛷 Deployment Considerations
+## 🏺 Accessibility
+<!-- Did you find any accessibility issues in your UI components?  Did you mitigate them?  If not, link the bug tickets you filed for mitigation. -->
+
+## 🛷 Deployment
 <!-- What do we need to know to deploy this code out? -->
 * [ ] Data Migrations
 * [ ] Schema Migrations

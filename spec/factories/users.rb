@@ -3,7 +3,7 @@
 FactoryBot.define do
   password = Faker::Internet.password
   factory :user do
-    active { Faker::Boolean.boolean }
+    active { true }
     email { Faker::Internet.email }
     full_name { Faker::Games::WorldOfWarcraft.hero }
     greeting_name { Faker::Name.first_name }
@@ -23,14 +23,21 @@ FactoryBot.define do
     factory :confirmed_user do
       before(:create, &:skip_confirmation!)
     end
+
+    factory :admin do
+      before(:create, &:skip_confirmation!)
+      admin { true }
+    end
   end
 end
+
 # == Schema Information
 #
 # Table name: users
 #
 #  id                         :uuid             not null, primary key
 #  active                     :boolean          default(TRUE), not null
+#  admin                      :boolean          default(FALSE), not null
 #  confirmation_sent_at       :datetime
 #  confirmation_token         :string
 #  confirmed_at               :datetime
@@ -38,13 +45,11 @@ end
 #  current_sign_in_ip         :inet
 #  email                      :string           not null
 #  encrypted_password         :string           default(""), not null
-#  failed_attempts            :integer          default(0), not null
 #  full_name                  :string           not null
 #  greeting_name              :string           not null
 #  language                   :string           not null
 #  last_sign_in_at            :datetime
 #  last_sign_in_ip            :inet
-#  locked_at                  :datetime
 #  opt_in_email               :boolean          default(TRUE), not null
 #  opt_in_text                :boolean          default(TRUE), not null
 #  organization               :string           not null
@@ -55,19 +60,15 @@ end
 #  reset_password_token       :string
 #  service_agreement_accepted :boolean          default(FALSE), not null
 #  sign_in_count              :integer          default(0), not null
-#  slug                       :string           not null
 #  timezone                   :string           not null
 #  unconfirmed_email          :string
-#  unlock_token               :string
 #  created_at                 :datetime         not null
 #  updated_at                 :datetime         not null
 #
 # Indexes
 #
-#  index_users_on_confirmation_token    (confirmation_token) UNIQUE
+#  index_users_on_confirmation_token    (confirmation_token)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_phone_number          (phone_number) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#  index_users_on_slug                  (slug) UNIQUE
-#  index_users_on_unlock_token          (unlock_token) UNIQUE
+#  index_users_on_reset_password_token  (reset_password_token)
 #

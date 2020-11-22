@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["sites"],
-  "items": {"$ref":"site.json"}
-}

@@ -23,7 +23,7 @@ RSpec.describe 'POST /signup', type: :request do
   path '/signup' do
     post 'Signs up a new user; creates the user.' do
       tags 'users'
-      consumes 'application/json', 'application/xml'
+      consumes 'application/json'
       parameter name: :user, in: :body, schema: {
         '$ref' => '#/components/schemas/createUser'
       }
@@ -39,19 +39,19 @@ RSpec.describe 'POST /signup', type: :request do
         context 'with bad data' do
           let(:user) { { "user": { "title": 'whatever' } } }
           run_test! do
-            expect(JSON.parse(response.body)['errors'].first['detail']['email'].first).to eq("can't be blank")
-            expect(JSON.parse(response.body)['errors'].first['detail']['password'].first).to eq("can't be blank")
-            expect(JSON.parse(response.body)['errors'].first['detail']['full_name'].first).to eq("can't be blank")
-            expect(JSON.parse(response.body)['errors'].first['detail']['language'].first).to eq("can't be blank")
-            expect(JSON.parse(response.body)['errors'].first['detail']['organization'].first).to eq("can't be blank")
-            expect(JSON.parse(response.body)['errors'].first['detail']['timezone'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['email'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['password'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['full_name'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['language'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['organization'].first).to eq("can't be blank")
+            expect(JSON.parse(response.body)['detail']['timezone'].first).to eq("can't be blank")
           end
         end
         context 'with an existing user' do
           before(:each) { create(:confirmed_user, email: params[:email]) }
           let(:user) { { "user": params } }
           run_test! do
-            expect(JSON.parse(response.body)['errors'].first['detail']['email'].first).to eq('has already been taken')
+            expect(JSON.parse(response.body)['detail']['email'].first).to eq('has already been taken')
           end
         end
       end

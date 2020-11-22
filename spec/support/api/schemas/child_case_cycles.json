@@ -1,5 +1,0 @@
-{
-  "type": "array",
-  "required": ["child_case_cycles"],
-  "items": {"$ref":"child_case_cycle.json"}
-}

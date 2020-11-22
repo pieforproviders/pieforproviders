@@ -2,23 +2,29 @@ import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export function Confirmation({ location }) {
+  const dispatch = useDispatch()
   const { makeRequest } = useApiResponse()
   let history = useHistory()
 
   useEffect(() => {
     let isSubscribed = true
     const confirm = async () => {
-      const token = new URLSearchParams(location.search)
+      const confirmationToken = new URLSearchParams(location.search)
       const response = await makeRequest({
         type: 'get',
-        url: `confirmation${token ? `?confirmation_token=${token}` : ''}`
+        url: `confirmation${
+          confirmationToken ? `?confirmation_token=${confirmationToken}` : ''
+        }`
       })
+      const authToken = response.headers.get('authorization')
       if (isSubscribed) {
-        if (!response.ok || response.headers.get('authorization') === null) {
+        if (!response.ok || authToken === null) {
           const errorMessage = await response.json()
-          localStorage.removeItem('pie-token')
+          dispatch(removeAuth())
           history.push({
             pathname: '/login',
             state: {
@@ -31,17 +37,14 @@ export function Confirmation({ location }) {
             }
           })
         } else {
-          localStorage.setItem(
-            'pie-token',
-            response.headers.get('authorization')
-          )
+          dispatch(addAuth(authToken))
           history.push('/getting-started')
         }
       }
     }
     confirm()
     return () => (isSubscribed = false)
-  }, [history, location.pathname, location.search, makeRequest])
+  }, [dispatch, history, location.pathname, location.search, makeRequest])
 
   return null
 }

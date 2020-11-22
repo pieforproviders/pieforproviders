@@ -5,11 +5,15 @@ import { Form, Input, Alert, Modal } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
-import ErrorAlert from 'ErrorAlert'
+import AuthStatusAlert from 'AuthStatusAlert'
+import { useDispatch } from 'react-redux'
+import { addAuth, removeAuth } from '_reducers/authReducer'
 
 export function Login() {
+  const dispatch = useDispatch()
   const location = useLocation()
   const [apiError, setApiError] = useState(null)
+  const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
   const { makeRequest } = useApiResponse()
   let history = useHistory()
@@ -17,58 +21,88 @@ export function Login() {
 
   useEffect(() => {
     if (location.state?.error?.status) {
+      setApiSuccess(null)
       setApiError({
         status: location.state?.error?.status,
         message: location.state?.error?.message,
         attribute: location.state?.error?.attribute,
+        context: location.state?.error?.context,
         type: location.state?.error?.type
       })
       window.history.replaceState(null, '')
     }
   }, [location])
 
+  useEffect(() => {
+    if (location.state?.success) {
+      setApiError(null)
+      setApiSuccess({
+        message: location.state.success.message
+      })
+      window.history.replaceState(null, '')
+    }
+  }, [location])
+
   const onFinish = async values => {
+    setApiSuccess(null)
+    setApiError(null)
     const response = await makeRequest({
       type: 'post',
       url: '/login',
       data: { user: values }
     })
-    if (!response.ok || response.headers.get('authorization') === null) {
+    const authToken = response.headers.get('authorization')
+    if (!response.ok || authToken === null) {
       const errorMessage = await response.json()
       setApiError({
         status: response.status,
-        message: errorMessage.error
+        message: errorMessage.error,
+        attribute: errorMessage.attribute,
+        type: errorMessage.type,
+        context: { email: values.email }
       })
     } else {
-      localStorage.setItem('pie-token', response.headers.get('authorization'))
+      dispatch(addAuth(authToken))
       history.push('/getting-started')
     }
   }
 
   const onChooseReset = () => {
-    localStorage.removeItem('pie-token')
+    dispatch(removeAuth())
     history.push('/dashboard')
   }
+
   return (
-    <>
-      <p className="mb-4">
+    <main>
+      <div className="mb-4">
         <Link to="/signup" className="uppercase">
           {t('signup')}
         </Link>{' '}
-        {t('or')} <span className="uppercase font-bold">{t('login')}</span>
-      </p>
+        {t('or ')}
+        <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+      </div>
 
-      {apiError?.status && (
+      {apiError && (
         <Alert
           className="mb-2"
-          message={apiError.message}
-          type="error"
-          description={
-            apiError?.attribute ? (
-              <ErrorAlert attribute={apiError.attribute} type={apiError.type} />
-            ) : null
+          message={
+            <AuthStatusAlert
+              attribute={apiError.attribute}
+              type={apiError.type}
+              context={apiError.context}
+            />
           }
+          type="error"
           data-cy="authError"
+        />
+      )}
+
+      {apiSuccess && (
+        <Alert
+          message={apiSuccess.message}
+          type="success"
+          className="mb-2"
+          data-cy="successMessage"
         />
       )}
 
@@ -143,17 +177,18 @@ export function Login() {
         <Modal
           centered
           visible
-          closable={false}
+          maskClosable
           footer={null}
           maskStyle={{
             backgroundColor: 'rgba(0, 74, 110, 0.5)'
           }}
+          onCancel={() => setShowResetPasswordDialog(false)}
         >
           <PasswordResetRequest
             onClose={() => setShowResetPasswordDialog(false)}
           />
         </Modal>
       )}
-    </>
+    </main>
   )
 }

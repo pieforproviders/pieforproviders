@@ -50,12 +50,6 @@ export const getColumns = t => [
     render: text => XLSX.SSF.format('yyyy-mm-dd', text)
   },
   {
-    dataIndex: 'siteId',
-    key: 'siteId',
-    title: t('siteId'),
-    responsive: ['sm']
-  },
-  {
     dataIndex: 'caseStatus',
     key: 'caseStatus',
     title: t('caseStatus'),

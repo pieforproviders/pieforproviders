@@ -3,14 +3,45 @@
 require 'rails_helper'
 
 RSpec.describe Child, type: :model do
-  it { should belong_to(:user) }
-  it { should have_many(:child_sites) }
-  it { should have_many(:sites).through(:child_sites) }
+  it { should belong_to(:business) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:date_of_birth) }
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:child)).to be_valid
+  end
+
   it 'validates uniqueness of full name' do
     create(:child)
-    should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :user_id)
+    should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :business_id)
+  end
+
+  context 'associates the record with a subsidy rule' do
+    let!(:subsidy_rule_cook_age5) { create(:subsidy_rule_for_illinois, max_age: 5) }
+    let!(:subsidy_rule_cook_age3) { create(:subsidy_rule_for_illinois, max_age: 3) }
+    let!(:zipcode_cook) { create(:zipcode, county: subsidy_rule_cook_age3.county, state: subsidy_rule_cook_age3.state) }
+    let!(:business_cook) { create(:business, county: zipcode_cook.county, zipcode: zipcode_cook) }
+    let!(:child_cook) { create(:child, date_of_birth: Date.current - 2.years, business: business_cook) }
+
+    let!(:subsidy_rule_dupage) { create(:subsidy_rule_for_illinois, county: create(:county, state: State.find_by(abbr: 'IL'), name: 'DuPage')) }
+    let!(:zipcode_dupage) { create(:zipcode, county: subsidy_rule_dupage.county, state: subsidy_rule_dupage.state) }
+    let!(:business_dupage) { create(:business, county: zipcode_dupage.county, zipcode: zipcode_dupage) }
+
+    it 'on creation' do
+      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_cook_age3)
+    end
+
+    it 'on update' do
+      too_old_for_cook = child_cook.date_of_birth - 4.years
+      child_cook.update!(date_of_birth: too_old_for_cook)
+      expect(child_cook.current_subsidy_rule).to be_nil
+      child_cook.update!(date_of_birth: too_old_for_cook + 2.years)
+      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_cook_age5)
+      age_eligible_for_dupage = Date.current - Random.rand(1..subsidy_rule_dupage.max_age.to_i - 1).years
+      child_cook.update!(date_of_birth: age_eligible_for_dupage)
+      child_cook.update!(business: business_dupage)
+      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_dupage)
+    end
   end
 end
 
@@ -22,15 +53,16 @@ end
 #  active        :boolean          default(TRUE), not null
 #  date_of_birth :date             not null
 #  full_name     :string           not null
-#  slug          :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  ccms_id       :string
-#  user_id       :uuid             not null
+#  business_id   :uuid             not null
 #
 # Indexes
 #
-#  index_children_on_slug     (slug) UNIQUE
-#  index_children_on_user_id  (user_id)
-#  unique_children            (full_name,date_of_birth,user_id) UNIQUE
+#  index_children_on_business_id  (business_id)
+#  unique_children                (full_name,date_of_birth,business_id) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (business_id => businesses.id)
 #

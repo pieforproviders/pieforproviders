@@ -1,0 +1,41 @@
+{
+  "type": "array",
+  "required": [
+    "children"
+  ],
+  "items": {
+    "properties": {
+      "full_name": {
+        "type": "string"
+      },
+      "business": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "approvals": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "case_number": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "case_number"
+          ]
+        }
+      }
+    },
+    "required": [
+      "full_name",
+      "business",
+      "approvals"
+    ]
+  }
+}

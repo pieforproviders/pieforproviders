@@ -1,4 +1,4 @@
-require: 
+require:
   - rubocop-performance
   - rubocop-rails
 
@@ -27,6 +27,7 @@ Metrics/BlockLength:
 # screens are bigger now and long lines are more acceptable
 Layout/LineLength:
   Max: 180
+  IgnoredPatterns: ['\A#']
 
 # pending auto-enable
 Lint/RaiseException:
