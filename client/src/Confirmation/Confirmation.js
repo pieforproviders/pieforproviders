@@ -10,7 +10,7 @@ export function Confirmation({ location }) {
   useEffect(() => {
     let isSubscribed = true
     const confirm = async () => {
-      const token = location.search.split('=')[1]
+      const token = new URLSearchParams(location.search)
       const response = await makeRequest({
         type: 'get',
         url: `confirmation${token ? `?confirmation_token=${token}` : ''}`
