@@ -1,0 +1,23 @@
+/* NOTE: going to continue to create override one-off files for specific ant-design components.
+Goal is to at some point to create a 'best practices' guideline for us in implementing ant-design + tailwindcss classes together  */
+.green-tag.ant-tag {
+  border-color: transparent;
+  background: #F2FDF7;
+  color: #00853D;
+}
+
+.orange-tag.ant-tag {
+  border-color: transparent;
+  background: #F3E0D4;
+  color: #9C4814;
+}
+
+.grey-tag.ant-tag {
+  border-color: transparent;
+  background: #F2F2F2;
+  color: #333333;
+}
+
+.ant-tag:hover {
+  color:#333333;
+}
