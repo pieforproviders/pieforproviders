@@ -79,7 +79,7 @@ export function LoggedInLayout({ children, title }) {
   }, [])
 
   return (
-    <div className="bg-mediumGray">
+    <div className="bg-mediumGray h-full">
       <div className="w-full shadow-md p-4 flex items-center bg-white">
         <img
           alt={t('pieforProvidersLogoAltText')}
