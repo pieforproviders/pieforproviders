@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Redirect,
   Route,
-  Switch
+  Switch,
+  useLocation
 } from 'react-router-dom'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import ReactGA from 'react-ga'
@@ -20,10 +21,62 @@ import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
-const App = () => {
+const Routes = () => {
   const { t } = useTranslation()
   const isAuthenticated = useAuthentication()
+  let location = useLocation()
 
+  return (
+    <div
+      className={`text-primaryBlue font-proxima text-sm h-screen ${
+        location.pathname === '/signup' || location.pathname === '/login'
+          ? 'overflow-hidden'
+          : ''
+      }`}
+    >
+      <Switch>
+        <Route path="/signup">
+          <AuthLayout
+            backgroundImageClass="auth-image"
+            contentComponent={Signup}
+          />
+        </Route>
+        <Route path="/login">
+          <AuthLayout
+            backgroundImageClass="auth-image"
+            contentComponent={Login}
+          />
+        </Route>
+        <Route path="/password/update">
+          <AuthLayout
+            backgroundImageClass="auth-image"
+            contentComponent={NewPassword}
+          />
+        </Route>
+        <Route
+          path="/confirm"
+          title="Confirm your Account"
+          component={Confirmation}
+        />
+        <AuthenticatedRoute exact path="/getting-started" title={t('setup')}>
+          <GettingStarted />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/dashboard">
+          <Dashboard />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/cases/import">
+          <CasesImport />
+        </AuthenticatedRoute>
+        <Route exact path="/">
+          <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
+        </Route>
+        <Route component={NotFound} />
+      </Switch>
+    </div>
+  )
+}
+
+const App = () => {
   useEffect(() => {
     /* skip production code for coverage */
     /* istanbul ignore next */
@@ -33,54 +86,11 @@ const App = () => {
   }, [])
 
   return (
-    <div className="text-primaryBlue font-proxima text-sm h-screen">
-      <ErrorBoundary>
-        <Router>
-          <Switch>
-            <Route path="/signup">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={Signup}
-              />
-            </Route>
-            <Route path="/login">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={Login}
-              />
-            </Route>
-            <Route path="/password/update">
-              <AuthLayout
-                backgroundImageClass="auth-image"
-                contentComponent={NewPassword}
-              />
-            </Route>
-            <Route
-              path="/confirm"
-              title="Confirm your Account"
-              component={Confirmation}
-            />
-            <AuthenticatedRoute
-              exact
-              path="/getting-started"
-              title={t('setup')}
-            >
-              <GettingStarted />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/dashboard">
-              <Dashboard />
-            </AuthenticatedRoute>
-            <AuthenticatedRoute exact path="/cases/import">
-              <CasesImport />
-            </AuthenticatedRoute>
-            <Route exact path="/">
-              <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
-            </Route>
-            <Route component={NotFound} />
-          </Switch>
-        </Router>
-      </ErrorBoundary>
-    </div>
+    <ErrorBoundary>
+      <Router>
+        <Routes />
+      </Router>
+    </ErrorBoundary>
   )
 }
 
