@@ -7,17 +7,7 @@ import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import { attendanceCategories } from '_utils/constants'
 
-const { useBreakpoint } = Grid;
-
-const attendanceRateStaticData = Object.entries(attendanceCategories).reduce(
-  (acc, cv) => {
-    return [
-      ...acc,
-      { rate: Math.floor(Math.random() * Math.floor(101)), category: cv[1] }
-    ]
-  },
-  []
-)
+const { useBreakpoint } = Grid
 
 export function Dashboard() {
   const screens = useBreakpoint();
@@ -33,7 +23,7 @@ export function Dashboard() {
     },
     {
       title: t('potentialRevenue'),
-      stat: '$1,200',
+      stat: '$1200',
       definition: t('potentialRevenueDef')
     },
     {
@@ -99,12 +89,12 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend'],
       render: attendanceRate => {
         const createTag = (color, text) => (
-          <Tag className={`${color}-tag custom-tag`}>
-            {`${attendanceRate.rate}% - ${t(text)}`}
+          <Tag className={`${color}-tag`}>
+            {`${attendanceRate.rate * 100}% - ${t(text)}`}
           </Tag>
         )
 
-        switch (attendanceRate.category) {
+        switch (attendanceRate.riskCategory) {
           case attendanceCategories.ONTRACK:
             return createTag('green', 'onTrack')
           case attendanceCategories.SUREBET:
@@ -121,11 +111,12 @@ export function Dashboard() {
     },
     {
       title: t('guaranteedRevenue'),
-      dataIndex: 'minRevenue',
-      key: 'minRevenue',
+      dataIndex: 'guaranteedRevenue',
+      key: 'guaranteedRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) => numMatch(a.minRevenue) - numMatch(b.minRevenue),
+      sorter: (a, b) =>
+        numMatch(a.guaranteedRevenue) - numMatch(b.guaranteedRevenue),
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -161,27 +152,27 @@ export function Dashboard() {
       if (!parsedResponse.error) {
         const data = parsedResponse.reduce((acc, cv, index) => {
           const {
-            full_name: name = '',
+            full_name: childName = '',
             approvals: [{ case_number: caseNumber = '' }],
-            business: { name: businessName = '' }
+            business: { name: business = '' },
+            attendance_rate: rate = '',
+            attendance_risk: riskCategory = '',
+            guaranteed_revenue: guaranteedRevenue = '',
+            max_approved_revenue: maxRevenue = '',
+            potential_revenue: potentialRevenue = ''
           } = cv
 
           return [
             ...acc,
             {
               key: index,
-              childName: name,
-              caseNumber: caseNumber,
-              business: businessName,
-              // these values will be updated as the case_list endpoint is updated
-              // static data for attendanceRate column
-              attendanceRate:
-                attendanceRateStaticData[
-                  Math.floor(Math.random() * attendanceRateStaticData.length)
-                ],
-              minRevenue: '',
-              maxRevenue: '',
-              potentialRevenue: ''
+              childName,
+              caseNumber,
+              business,
+              attendanceRate: { rate, riskCategory },
+              guaranteedRevenue,
+              maxRevenue,
+              potentialRevenue
             }
           ]
         }, [])
