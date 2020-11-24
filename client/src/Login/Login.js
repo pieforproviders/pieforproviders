@@ -119,7 +119,7 @@ export function Login() {
         wrapperCol={{ md: 12 }}
       >
         <Form.Item
-          className="text-primaryBlue"
+          className="body-2-bold text-primaryBlue"
           label={t('email')}
           name="email"
           rules={[
@@ -137,7 +137,7 @@ export function Login() {
         </Form.Item>
 
         <Form.Item
-          className="text-primaryBlue"
+          className="body-2-bold text-primaryBlue"
           label={t('password')}
           name="password"
           rules={[
@@ -161,10 +161,12 @@ export function Login() {
         className="mt-24"
       >
         <div className="mb-6">
-          <div className="text-2xl font-semibold mb-1 text-primaryBlue">
+          <div className="h3-large mb-1 text-primaryBlue">
             {t('forgotPassword')}
           </div>
-          <div>{t('resetPasswordText')}</div>
+          <div className="body-2-bold text-primaryBlue">
+            {t('resetPasswordText')}
+          </div>
         </div>
         <Form.Item>
           <PaddedButton

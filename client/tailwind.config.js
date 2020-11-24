@@ -26,18 +26,47 @@ module.exports = {
         blueOverlay: '#004A6E80'
       },
       fontFamily: {
-        proxima: 'Proxima Nova'
+        'proxima-nova': ['Proxima Nova'],
+        'proxima-nova-alt': ['Proxima Nova Alt']
+      },
+      fontSize: {
+        twelve: '12px',
+        fourteen: '14px',
+        sixteen: '16px',
+        eighteen: '18px',
+        twenty: '20px',
+        twentyFour: '24px',
+        twentyEight: '28px',
+        thirty: '30px',
+        thirtySix: '36px',
+        forty: '40px',
+        fortyEight: '48px',
+        sixtyFour: '64px',
+        pointSevenFiveR: '.75rem',
+        pointEightSevenFiveR: '.875rem',
+        oneR: '1rem',
+        onePointOneTwoFiveR: '1.125rem',
+        onePointFiveR: '1.5rem',
+        onePointSevenFiveR: '1.75rem',
+        twoPointTwoFiveR: '2.25rem',
+        twoPointFiveR: '2.5rem',
+        threeR: '3rem'
+      },
+      fontWeight: {
+        regular: '400',
+        semiBold: '600',
+        bold: '700'
       }
-    }
-  },
-  screens: {
-    xs: '360px',
-    sm: '768px',
-    md: '1024px',
-    lg: '1280px'
+    },
+    screens: {
+      xs: '360px',
+      sm: '768px',
+      md: '1024px',
+      lg: '1280px'
   },
   plugins: [require('./tailwind/plugins/base')()],
   future: {
     removeDeprecatedGapUtilities: true
   }
+}
 }

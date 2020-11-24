@@ -1,21 +1,120 @@
 @tailwind base;
 
-@font-face {
-  font-family: Proxima Nova;
-  font-weight: 400;
-  src: url(_assets/fonts/proxima-nova/400-regular.woff2) format("woff2");
+@layer base {
+  @font-face {
+    font-family: Proxima Nova;
+    font-weight: 400;
+    src: url(_assets/fonts/proxima-nova/400-regular.woff2) format("woff2");
+  }
+
+  @font-face {
+    font-family: Proxima Nova;
+    font-weight: 600;
+    src: url(_assets/fonts/proxima-nova/600-semibold.woff2) format("woff2");
+  }
+
+  @font-face {
+    font-family: Proxima Nova;
+    font-weight: 700;
+    src: url(_assets/fonts/proxima-nova/700-bold.woff2) format("woff2");
+  }
+
+  @font-face {
+    font-family: Proxima Nova;
+    font-weight: 900;
+    src: url(_assets/fonts/proxima-nova/900-black.woff2) format("woff2");
+  }
+
+  @font-face {
+    font-family: Proxima Nova Alt;
+    font-weight: 400;
+    src: url(_assets/fonts/proxima-nova-alt/400-regular.woff) format("woff");
+  }
+
+  @font-face {
+    font-family: Proxima Nova Alt;
+    font-weight: 700;
+    src: url(_assets/fonts/proxima-nova-alt/700-bold.woff2) format("woff2");
+  }
+
+  @font-face {
+    font-family: Proxima Nova Alt;
+    font-weight: 900;
+    src: url(_assets/fonts/proxima-nova-alt/900-black.woff2) format("woff2");
+  }
 }
-@font-face {
-  font-family: Proxima Nova;
-  font-weight: 700;
-  src: url(_assets/fonts/proxima-nova/700-bold.woff2) format("woff2");
+
+/* These classes are based on the P4P typography spreadsheet in figma. Classes are named according to entries in the spreadsheet and given fontweight, pixel size, and rem size values. 
+These values are assigned using custom values that can be found in tailwind.config.js. */
+
+.body-1 {
+  @apply .text-sixteen .text-oneR .font-proxima-nova-alt .font-regular;
 }
-@font-face {
-  font-family: Proxima Nova;
-  font-weight: 900;
-  src: url(_assets/fonts/proxima-nova/900-black.woff2) format("woff2");
+
+.body-2 {
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
+}
+
+.body-2-bold {
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-bold;
+}
+
+.link-text {
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-bold;
+}
+
+.error-text {
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
+}
+
+.disabled-text {
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
+}
+
+.tiny-text {
+  @apply .text-twelve .text-pointSevenFiveR .font-proxima-nova .font-semiBold;
+}
+
+.display-large {
+  @apply .text-fortyEight .text-threeR .font-proxima-nova-alt .font-bold;
+}
+
+.h1-large {
+  @apply .text-thirtySix .text-twoPointTwoFiveR .font-proxima-nova .font-semiBold;;
+}
+
+.h2-large {
+  @apply .text-twentyEight .text-onePointSevenFiveR .font-proxima-nova .font-semiBold;
+}
+
+.h3-large {
+  @apply .text-twentyFour .text-onePointFiveR .font-proxima-nova-alt .font-bold;
+}
+
+.eyebrow-large {
+  @apply .text-eighteen .text-onePointOneTwoFiveR .font-proxima-nova .font-semiBold;
+} 
+
+.display-small {
+  @apply .text-forty .text-twoPointFiveR .font-proxima-nova-alt .font-bold;
+}
+
+.h1-small {
+ @apply .text-twentyEight .text-onePointSevenFiveR .font-proxima-nova .font-semiBold;
+}
+
+.h2-small {
+  @apply .text-twentyFour .text-onePointFiveR .font-proxima-nova .font-semiBold;
+}
+
+.h3-small {
+  @apply .text-eighteen .text-onePointOneTwoFiveR .font-proxima-nova .font-bold;
+}
+
+.eyebrow-small {
+  @apply .text-sixteen .text-oneR .font-proxima-nova .font-bold;
 }
 
 @tailwind components;
-
 @tailwind utilities;
+
