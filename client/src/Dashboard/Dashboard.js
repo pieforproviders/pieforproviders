@@ -99,7 +99,7 @@ export function Dashboard() {
       sortDirections: ['descend', 'ascend'],
       render: attendanceRate => {
         const createTag = (color, text) => (
-          <Tag className={`${color}-tag`}>
+          <Tag className={`${color}-tag custom-tag`}>
             {`${attendanceRate.rate}% - ${t(text)}`}
           </Tag>
         )
