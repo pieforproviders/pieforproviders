@@ -64,7 +64,7 @@ export function Signup() {
   // Google Analytics
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
-      ReactGA.pageview(window.location.pathname + window.location.search)
+      ReactGA.pageview(window.location.href)
       ReactGA.event({
         category: 'Guest',
         action: 'Landed on Signup Page'
