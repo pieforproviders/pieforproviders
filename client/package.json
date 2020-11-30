@@ -15,7 +15,7 @@
     "@sentry/browser": "^5.27.6",
     "antd": "^4.8.5",
     "antd-mask-input": "^0.1.14",
-    "craco-less": "^1.17.0",
+    "craco-less": "^1.17.1",
     "csv": "^5.3.2",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.1.4",
