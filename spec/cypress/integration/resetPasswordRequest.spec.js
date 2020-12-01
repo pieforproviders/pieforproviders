@@ -27,8 +27,7 @@ describe('Reset password request', () => {
     })
 
     it('sends password reset instructions', () => {
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/password'
       }).as('resetPasswordRequest')
@@ -44,8 +43,7 @@ describe('Reset password request', () => {
 
   describe('non-existent users', () => {
     it('displays an error message', () => {
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/password'
       }).as('resetPasswordRequest')
