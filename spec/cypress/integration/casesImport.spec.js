@@ -23,8 +23,7 @@ describe('CasesImport', () => {
         }
       ]
     ])
-    cy.server()
-    cy.route({
+    cy.intercept({
       method: 'POST',
       url: '/login'
     }).as('login')
