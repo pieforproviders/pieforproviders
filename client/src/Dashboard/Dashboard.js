@@ -48,7 +48,6 @@ export function Dashboard() {
   }
   const columnSorter = (a, b, name) =>
     a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
-  const numMatch = num => num.match(/\d+.\d{2}/) ?? 0
   // configuation for table columns
   const columns = [
     {
@@ -84,8 +83,7 @@ export function Dashboard() {
       key: 'attendanceRate',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) =>
-        a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
+      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
       sortDirections: ['descend', 'ascend'],
       render: attendanceRate => {
         const createTag = (color, text) => (
@@ -115,8 +113,7 @@ export function Dashboard() {
       key: 'guaranteedRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) =>
-        numMatch(a.guaranteedRevenue) - numMatch(b.guaranteedRevenue),
+      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -125,8 +122,7 @@ export function Dashboard() {
       key: 'potentialRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) =>
-        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -135,7 +131,7 @@ export function Dashboard() {
       key: 'maxRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) => numMatch(a.maxRevenue) - numMatch(b.maxRevenue),
+      sorter: (a, b) => a.maxRevenue - b.maxRevenue,
       sortDirections: ['descend', 'ascend']
     }
   ]
