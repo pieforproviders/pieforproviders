@@ -32,8 +32,7 @@ describe('Confirmation', () => {
 
     describe('valid confirmation link', () => {
       it('allows a user to confirm and redirects them', () => {
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'GET',
           url: `/confirmation?confirmation_token=${confirmationToken}`
         }).as('confirmation')
@@ -46,8 +45,7 @@ describe('Confirmation', () => {
 
     describe('invalid confirmation link', () => {
       it('displays an error message', () => {
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'GET',
           url: '/confirmation?confirmation_token=cactus'
         }).as('confirmation')
@@ -61,8 +59,7 @@ describe('Confirmation', () => {
 
     describe('no confirmation token provided', () => {
       it('displays an error message', () => {
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'GET',
           url: '/confirmation'
         }).as('confirmation')
@@ -77,8 +74,7 @@ describe('Confirmation', () => {
     describe('expired confirmation token', () => {
       it('displays an error message', () => {
         cy.appScenario('confirmationTokenExpired')
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'GET',
           url: `/confirmation?confirmation_token=${confirmationToken}`
         }).as('confirmation')
@@ -117,8 +113,7 @@ describe('Confirmation', () => {
     })
 
     it('displays an error message', () => {
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'GET',
         url: `/confirmation?confirmation_token=${confirmationToken}`
       }).as('confirmation')

@@ -28,8 +28,7 @@ describe('Login', () => {
 
     describe('valid credentials', () => {
       it('allows a user to log in', () => {
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'POST',
           url: '/login'
         }).as('login')
@@ -45,8 +44,7 @@ describe('Login', () => {
 
     describe('invalid credentials', () => {
       it('displays an error message', () => {
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'POST',
           url: '/login'
         }).as('login')
@@ -80,12 +78,11 @@ describe('Login', () => {
     })
 
     it('displays an error message and allows the user to resend the confirmation email', () => {
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/login'
       }).as('login')
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/confirmation'
       }).as('confirmation')
@@ -105,8 +102,7 @@ describe('Login', () => {
 
   describe('non-existent users', () => {
     it('displays an error message', () => {
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/login'
       }).as('login')

@@ -13,8 +13,7 @@ const orgName = company.companyName()
 describe('Signup', () => {
   beforeEach(() => {
     cy.app('clean')
-    cy.server()
-    cy.route({
+    cy.intercept({
       method: 'POST',
       url: '/signup'
     }).as('signup')
@@ -91,7 +90,7 @@ describe('Signup', () => {
     })
 
     it('allows the user to request new confirmation', () => {
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/confirmation'
       }).as('resend')
@@ -102,7 +101,7 @@ describe('Signup', () => {
     })
 
     it('displays an error message if the user has already confirmed their account', () => {
-      cy.route({
+      cy.intercept({
         method: 'POST',
         url: '/confirmation'
       }).as('resend')
