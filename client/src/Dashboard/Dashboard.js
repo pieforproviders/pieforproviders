@@ -7,83 +7,7 @@ import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import { attendanceCategories } from '_utils/constants'
 
-// const STATICDATA = [
-//   {
-//     key: '1',
-//     childName: 'Bessie Cooper',
-//     caseNumber: '282753',
-//     business: 'Lil Baby Ducklings',
-//     attendanceRate: '97%',
-//     minRevenue: '$1266.5',
-//     maxRevenue: '$1888.47'
-//   },
-//   {
-//     key: '2',
-//     childName: 'Jenny Wilson',
-//     caseNumber: '172922',
-//     business: 'Austin Community Child Care',
-//     attendanceRate: '38%',
-//     minRevenue: '$1266.5',
-//     maxRevenue: '$1888.47'
-//   },
-//   {
-//     key: '3',
-//     childName: 'Brooklyn Simmons',
-//     caseNumber: '282753',
-//     business: 'Goslings Grow',
-//     attendanceRate: '96%',
-//     minRevenue: '$2926.11',
-//     maxRevenue: '$1008.86'
-//   },
-//   {
-//     key: '4',
-//     childName: 'Eleanor Pena',
-//     caseNumber: '363171',
-//     business: 'Austin Community Child Care',
-//     attendanceRate: '30%',
-//     minRevenue: '$342.58',
-//     maxRevenue: '$121.62'
-//   },
-//   {
-//     key: '5',
-//     childName: 'Theresa Webb',
-//     caseNumber: '449003',
-//     business: 'Ravenswood Daycare',
-//     attendanceRate: '110%',
-//     minRevenue: '$4000.90',
-//     maxRevenue: '$5000.80'
-//   },
-//   {
-//     key: '6',
-//     childName: 'Kathryn Murphy',
-//     caseNumber: '295340',
-//     business: 'Austin Community Child Care',
-//     attendanceRate: '50%',
-//     minRevenue: '$1240.90',
-//     maxRevenue: '$2000.50'
-//   },
-//   {
-//     key: '7',
-//     childName: 'Leslie Alexander',
-//     caseNumber: '803162',
-//     business: 'Ravenswood Daycare',
-//     attendanceRate: '52%',
-//     minRevenue: '$1109.90',
-//     maxRevenue: '$2188'
-//   }
-// ]
-
 const { useBreakpoint } = Grid
-
-const attendanceRateStaticData = Object.entries(attendanceCategories).reduce(
-  (acc, cv) => {
-    return [
-      ...acc,
-      { rate: Math.floor(Math.random() * Math.floor(101)), category: cv[1] }
-    ]
-  },
-  []
-)
 
 export function Dashboard() {
   const screens = useBreakpoint()
@@ -99,7 +23,7 @@ export function Dashboard() {
     },
     {
       title: t('potentialRevenue'),
-      stat: '$1,200',
+      stat: '$1200',
       definition: t('potentialRevenueDef')
     },
     {
@@ -124,7 +48,6 @@ export function Dashboard() {
   }
   const columnSorter = (a, b, name) =>
     a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
-  const numMatch = num => num.match(/\d+.\d{2}/) ?? 0
   // configuation for table columns
   const columns = [
     {
@@ -160,17 +83,16 @@ export function Dashboard() {
       key: 'attendanceRate',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) =>
-        a.attendanceRate.match(/\d+/) - b.attendanceRate.match(/\d+/),
+      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
       sortDirections: ['descend', 'ascend'],
       render: attendanceRate => {
         const createTag = (color, text) => (
-          <Tag className={`${color}-tag`}>
+          <Tag className={`${color}-tag custom-tag`}>
             {`${attendanceRate.rate}% - ${t(text)}`}
           </Tag>
         )
 
-        switch (attendanceRate.category) {
+        switch (attendanceRate.riskCategory) {
           case attendanceCategories.ONTRACK:
             return createTag('green', 'onTrack')
           case attendanceCategories.SUREBET:
@@ -187,11 +109,11 @@ export function Dashboard() {
     },
     {
       title: t('guaranteedRevenue'),
-      dataIndex: 'minRevenue',
-      key: 'minRevenue',
+      dataIndex: 'guaranteedRevenue',
+      key: 'guaranteedRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) => numMatch(a.minRevenue) - numMatch(b.minRevenue),
+      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -200,8 +122,7 @@ export function Dashboard() {
       key: 'potentialRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) =>
-        numMatch(a.potentialRevenue) - numMatch(b.potentialRevenue),
+      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -210,7 +131,7 @@ export function Dashboard() {
       key: 'maxRevenue',
       width: 150,
       onHeaderCell,
-      sorter: (a, b) => numMatch(a.maxRevenue) - numMatch(b.maxRevenue),
+      sorter: (a, b) => a.maxRevenue - b.maxRevenue,
       sortDirections: ['descend', 'ascend']
     }
   ]
@@ -227,27 +148,27 @@ export function Dashboard() {
       if (!parsedResponse.error) {
         const data = parsedResponse.reduce((acc, cv, index) => {
           const {
-            full_name: name = '',
+            full_name: childName = '',
             approvals: [{ case_number: caseNumber = '' }],
-            business: { name: businessName = '' }
+            business: { name: business = '' },
+            attendance_rate: rate = '',
+            attendance_risk: riskCategory = '',
+            guaranteed_revenue: guaranteedRevenue = '',
+            max_approved_revenue: maxRevenue = '',
+            potential_revenue: potentialRevenue = ''
           } = cv
 
           return [
             ...acc,
             {
               key: index,
-              childName: name,
-              caseNumber: caseNumber,
-              business: businessName,
-              // these values will be updated as the case_list endpoint is updated
-              // static data for attendanceRate column
-              attendanceRate:
-                attendanceRateStaticData[
-                  Math.floor(Math.random() * attendanceRateStaticData.length)
-                ],
-              minRevenue: '',
-              maxRevenue: '',
-              potentialRevenue: ''
+              childName,
+              caseNumber,
+              business,
+              attendanceRate: { rate, riskCategory },
+              guaranteedRevenue,
+              maxRevenue,
+              potentialRevenue
             }
           ]
         }, [])

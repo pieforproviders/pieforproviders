@@ -37,8 +37,7 @@ describe('Password update', () => {
     describe('valid password update link', () => {
       it('allows a user to update their password and logs them in', () => {
         const newPassword = random.alphaNumeric(15)
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
@@ -58,8 +57,7 @@ describe('Password update', () => {
         const newPassword = random.alphaNumeric(15)
         const token = random.alphaNumeric()
 
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
@@ -88,8 +86,7 @@ describe('Password update', () => {
         cy.appScenario('resetPasswordTokenUsed')
         const newPassword = random.alphaNumeric(15)
 
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
@@ -134,12 +131,11 @@ describe('Password update', () => {
     describe('valid password update link', () => {
       it('allows a user to update their password and redirects them to the login page', () => {
         const newPassword = random.alphaNumeric(15)
-        cy.server()
-        cy.route({
+        cy.intercept({
           method: 'PUT',
           url: '/password'
         }).as('passwordReset')
-        cy.route({
+        cy.intercept({
           method: 'POST',
           url: '/confirmation'
         }).as('confirmation')
@@ -192,8 +188,7 @@ describe('Password update', () => {
 
     it('displays an error message', () => {
       const newPassword = random.alphaNumeric(15)
-      cy.server()
-      cy.route({
+      cy.intercept({
         method: 'PUT',
         url: '/password'
       }).as('passwordReset')

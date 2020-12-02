@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen } from 'setupTests'
+import { render, screen, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { Dashboard } from '../Dashboard'
 
@@ -12,26 +12,30 @@ const doRender = () => {
 }
 
 describe('<Dashboard />', () => {
-  it('renders the Dashboard page', () => {
+  it('renders the Dashboard page', async () => {
     const { container } = doRender()
-    expect(screen.getAllByRole('columnheader').length).toEqual(7)
-    expect(container).toHaveTextContent('Your dashboard')
-    expect(container).toHaveTextContent('Child name')
-    expect(container).toHaveTextContent('Case number')
-    expect(container).toHaveTextContent('Attendance rate')
-    expect(container).toHaveTextContent('Guaranteed revenue')
-    expect(container).toHaveTextContent('Max. approved revenue')
 
-    // Stat summary content
-    expect(container).toHaveTextContent('Based on days already attended')
-    expect(container).toHaveTextContent(
-      'Based on attendance expected for the rest of the month'
-    )
-    expect(container).toHaveTextContent(
-      'If all families meet 80% attendance rate'
-    )
-    expect(container).toHaveTextContent(
-      'Based on attendance rate of all children listed'
-    )
+    await waitFor(() => {
+      console.log(container)
+      expect(screen.getAllByRole('columnheader').length).toEqual(7)
+      expect(container).toHaveTextContent('Your dashboard')
+      expect(container).toHaveTextContent('Child name')
+      expect(container).toHaveTextContent('Case number')
+      expect(container).toHaveTextContent('Attendance rate')
+      expect(container).toHaveTextContent('Guaranteed revenue')
+      expect(container).toHaveTextContent('Max. approved revenue')
+
+      // Stat summary content
+      expect(container).toHaveTextContent('Based on days already attended')
+      expect(container).toHaveTextContent(
+        'Based on attendance expected for the rest of the month'
+      )
+      expect(container).toHaveTextContent(
+        'If all families meet 80% attendance rate'
+      )
+      expect(container).toHaveTextContent(
+        'Based on attendance rate of all children listed'
+      )
+    })
   })
 })
