@@ -8,7 +8,7 @@ class ApplicationController < ActionController::API
 
   def render_resource(resource)
     if resource.errors.empty?
-      render json: resource, status: :created, location: resource
+      render json: UserBlueprint.render(resource), status: :created, location: resource
     else
       validation_error(resource)
     end
@@ -22,12 +22,6 @@ class ApplicationController < ActionController::API
       detail: resource.errors,
       code: '100'
     }, status: :unprocessable_entity
-  end
-
-  # from https://www.kostolansky.sk/posts/localize-rails-enums/
-  def t_enum(enum_name, enum_value)
-    enum_i18n_key = enum_name.to_s.pluralize
-    I18n.t("activerecord.attributes.#{model_name.i18n_key}.#{enum_i18n_key}.#{enum_value}")
   end
 
   private

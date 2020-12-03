@@ -7,11 +7,11 @@ class Api::V1::UsersController < Api::V1::ApiController
     authorize User
     @users = User.all
 
-    render json: @users
+    render json: UserBlueprint.render(@users)
   end
 
   # GET /profile
   def show
-    render json: current_user
+    render json: UserBlueprint.render(current_user)
   end
 end

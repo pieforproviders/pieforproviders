@@ -32,6 +32,10 @@ class User < UuidApplicationRecord
   def as_json(_options = {})
     super(except: [:admin])
   end
+
+  def state
+    businesses&.first&.state || ''
+  end
 end
 
 # == Schema Information

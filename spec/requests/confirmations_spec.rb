@@ -15,6 +15,8 @@ RSpec.describe 'GET /confirmation', type: :request do
         let(:confirmation_token) { unconfirmed_user.confirmation_token }
         run_test! do
           expect(response).to match_response_schema('user')
+          expect(JSON.parse(response.body)['state']).to eq(confirmed_user.state)
+          expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
         end
       end
 
