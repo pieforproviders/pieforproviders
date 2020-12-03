@@ -79,7 +79,7 @@ export function LoggedInLayout({ children, title }) {
   }, [])
 
   return (
-    <div className="bg-mediumGray lg:h-full">
+    <div className="bg-mediumGray h-full min-h-screen">
       <div className="w-full shadow-md p-4 flex items-center bg-white">
         <img
           alt={t('pieforProvidersLogoAltText')}
@@ -95,7 +95,7 @@ export function LoggedInLayout({ children, title }) {
         </div>
         {windowWidth > 768 ? renderDesktopMenu() : renderMobileMenu()}
       </div>
-      <div className="w-full xs:h-full px-4 mt-4">
+      <div className="w-full px-4 mt-4">
         {title && (
           <Breadcrumb className="mb-2">
             <Breadcrumb.Item>{title}</Breadcrumb.Item>
