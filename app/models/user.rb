@@ -34,7 +34,7 @@ class User < UuidApplicationRecord
   end
 
   def state
-    businesses&.first&.state
+    businesses&.first&.state || ''
   end
 end
 

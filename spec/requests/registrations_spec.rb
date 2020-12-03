@@ -32,6 +32,8 @@ RSpec.describe 'POST /signup', type: :request do
         let(:user) { { "user": params } }
         run_test! do
           expect(response).to match_response_schema('user')
+          expect(JSON.parse(response.body)['state']).to eq('')
+          expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
         end
       end
 

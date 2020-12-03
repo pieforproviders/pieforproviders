@@ -41,7 +41,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   def sign_in_resource(resource)
     sign_in(resource)
     response.headers['authorization'] = current_token
-    render json: resource
+    render json: UserBlueprint.render(resource)
   end
 
   def current_token
