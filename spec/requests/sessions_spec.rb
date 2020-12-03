@@ -22,6 +22,8 @@ RSpec.describe 'POST /login', type: :request do
 
     it 'returns 200' do
       expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)['state']).to eq(user.state)
+      expect(JSON.parse(response.body).keys).not_to include('encrypted_password')
     end
 
     it 'returns JWT token in authorization header' do
