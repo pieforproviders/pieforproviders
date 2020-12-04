@@ -9,7 +9,7 @@ class CheckIfApprovalExists
     @expires_on = expires_on
   end
 
-  attr_reader :child, :case_number
+  attr_reader :child, :case_number, :effective_on, :expires_on
 
   def call
     associate_child_to_approval
@@ -18,7 +18,7 @@ class CheckIfApprovalExists
   private
 
   def associate_child_to_approval
-    'create approval' if !approvals_with_case_number
+    'create approval' unless approvals_with_case_number
     # what is needed to create an approval?
   end
 
