@@ -13,13 +13,12 @@ end
 #
 # Table name: illinois_subsidy_rules
 #
-#  id                   :uuid             not null, primary key
-#  attendance_threshold :decimal(, )
-#  bronze_percentage    :decimal(, )
-#  full_day_rate        :decimal(, )
-#  gold_percentage      :decimal(, )
-#  part_day_rate        :decimal(, )
-#  silver_percentage    :decimal(, )
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                :uuid             not null, primary key
+#  bronze_percentage :decimal(, )
+#  full_day_rate     :decimal(, )
+#  gold_percentage   :decimal(, )
+#  part_day_rate     :decimal(, )
+#  silver_percentage :decimal(, )
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
