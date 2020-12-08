@@ -11,7 +11,10 @@ const { useBreakpoint } = Grid
 
 export function Dashboard() {
   const screens = useBreakpoint()
-  const [dashboardData, setDashboardData] = useState({ tableData: [], summaryData: [] })
+  const [dashboardData, setDashboardData] = useState({
+    tableData: [],
+    summaryData: []
+  })
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
@@ -36,7 +39,7 @@ export function Dashboard() {
           childName,
           caseNumber,
           business,
-          attendanceRate: { rate , riskCategory },
+          attendanceRate: { rate, riskCategory },
           guaranteedRevenue,
           maxRevenue,
           potentialRevenue
@@ -46,15 +49,29 @@ export function Dashboard() {
   }
 
   const reduceSummaryData = data => {
-    return data.reduce((acc, cv) => {
-      const { guaranteedRevenue, maxRevenue, potentialRevenue, attendanceRate: { rate } } = cv
-      return {
-        guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
-        potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
-        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
-        attendanceRateTotal: acc.attendanceRateTotal + rate
+    return data.reduce(
+      (acc, cv) => {
+        const {
+          guaranteedRevenue,
+          maxRevenue,
+          potentialRevenue,
+          attendanceRate: { rate }
+        } = cv
+        return {
+          guaranteedRevenueTotal:
+            acc.guaranteedRevenueTotal + guaranteedRevenue,
+          potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
+          maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
+          attendanceRateTotal: acc.attendanceRateTotal + rate
+        }
+      },
+      {
+        guaranteedRevenueTotal: 0,
+        potentialRevenueTotal: 0,
+        maxApprovedRevenueTotal: 0,
+        attendanceRateTotal: 0
       }
-    }, { guaranteedRevenueTotal: 0, potentialRevenueTotal: 0, maxApprovedRevenueTotal: 0, attendanceRateTotal: 0 })
+    )
   }
 
   const onHeaderCell = () => {
@@ -168,26 +185,37 @@ export function Dashboard() {
       if (!parsedResponse.error) {
         const tableData = reduceTableData(parsedResponse)
         const summaryDataTotals = reduceSummaryData(tableData)
-        const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD'})
+        const currencyFormatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        })
         const summaryData = [
           {
             title: t('guaranteedRevenue'),
-            stat: `${currencyFormatter.format(summaryDataTotals.guaranteedRevenueTotal.toFixed(2))}`,
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.guaranteedRevenueTotal.toFixed(2)
+            )}`,
             definition: t('guaranteedRevenueDef')
           },
           {
             title: t('potentialRevenue'),
-            stat: `${currencyFormatter.format(summaryDataTotals.potentialRevenueTotal.toFixed(2))}`,
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.potentialRevenueTotal.toFixed(2)
+            )}`,
             definition: t('potentialRevenueDef')
           },
           {
             title: t('maxApprovedRevenue'),
-            stat: `${currencyFormatter.format(summaryDataTotals.maxApprovedRevenueTotal.toFixed(2))}`,
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.maxApprovedRevenueTotal.toFixed(2)
+            )}`,
             definition: t('maxApprovedRevenueDef')
           },
           {
             title: t('attendanceRate'),
-            stat: `${summaryDataTotals.attendanceRateTotal / tableData.length * 100}%`,
+            stat: `${
+              (summaryDataTotals.attendanceRateTotal / tableData.length) * 100
+            }%`,
             definition: t('attendanceRateDef')
           }
         ]

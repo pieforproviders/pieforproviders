@@ -12,7 +12,6 @@ const doRender = () => {
 }
 
 describe('<Dashboard />', () => {
-
   beforeEach(() => jest.spyOn(window, 'fetch'))
 
   afterEach(() => window.fetch.mockRestore())
@@ -30,7 +29,9 @@ describe('<Dashboard />', () => {
       expect(container).toHaveTextContent('Max. approved revenue')
 
       expect(window.fetch).toHaveBeenCalledTimes(1)
-      expect(window.fetch.mock.calls[0][0]).toBe('/api/v1/case_list_for_dashboard')
+      expect(window.fetch.mock.calls[0][0]).toBe(
+        '/api/v1/case_list_for_dashboard'
+      )
     })
   })
 })
