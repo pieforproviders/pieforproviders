@@ -48,7 +48,7 @@ group :development do
   gem 'annotate'
   gem 'guard-rspec', require: false
   gem 'letter_opener_web', '~> 1.4'
-  gem 'listen', '>= 3.0.5', '< 3.3'
+  gem 'listen', '>= 3.0.5', '< 3.4'
   gem 'pgreset'
   gem 'rails-erd'
   gem 'spring'
