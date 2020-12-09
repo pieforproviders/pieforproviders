@@ -11,32 +11,69 @@ const { useBreakpoint } = Grid
 
 export function Dashboard() {
   const screens = useBreakpoint()
-  const [dashboardData, setDashboardData] = useState([])
+  const [dashboardData, setDashboardData] = useState({
+    tableData: [],
+    summaryData: []
+  })
   const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
-  const staticSummaryStats = [
-    {
-      title: t('guaranteedRevenue'),
-      stat: '$981',
-      definition: t('guaranteedRevenueDef')
-    },
-    {
-      title: t('potentialRevenue'),
-      stat: '$1200',
-      definition: t('potentialRevenueDef')
-    },
-    {
-      title: t('maxApprovedRevenue'),
-      stat: '$1200',
-      definition: t('maxApprovedRevenueDef')
-    },
-    {
-      title: t('attendanceRate'),
-      stat: '60%',
-      definition: t('attendanceRateDef')
-    }
-  ]
+
+  const reduceTableData = res => {
+    return res.reduce((acc, cv, index) => {
+      const {
+        full_name: childName = '',
+        approvals: [{ case_number: caseNumber = '' }],
+        business: { name: business = '' },
+        attendance_rate: rate = '',
+        attendance_risk: riskCategory = '',
+        guaranteed_revenue: guaranteedRevenue = 0,
+        max_approved_revenue: maxRevenue = 0,
+        potential_revenue: potentialRevenue = 0
+      } = cv
+
+      return [
+        ...acc,
+        {
+          key: index,
+          childName,
+          caseNumber,
+          business,
+          attendanceRate: { rate, riskCategory },
+          guaranteedRevenue,
+          maxRevenue,
+          potentialRevenue
+        }
+      ]
+    }, [])
+  }
+
+  const reduceSummaryData = data => {
+    return data.reduce(
+      (acc, cv) => {
+        const {
+          guaranteedRevenue,
+          maxRevenue,
+          potentialRevenue,
+          attendanceRate: { rate }
+        } = cv
+        return {
+          guaranteedRevenueTotal:
+            acc.guaranteedRevenueTotal + guaranteedRevenue,
+          potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
+          maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
+          attendanceRateTotal: acc.attendanceRateTotal + rate
+        }
+      },
+      {
+        guaranteedRevenueTotal: 0,
+        potentialRevenueTotal: 0,
+        maxApprovedRevenueTotal: 0,
+        attendanceRateTotal: 0
+      }
+    )
+  }
+
   const onHeaderCell = () => {
     return {
       style: {
@@ -88,7 +125,7 @@ export function Dashboard() {
       render: attendanceRate => {
         const createTag = (color, text) => (
           <Tag className={`${color}-tag custom-tag`}>
-            {`${attendanceRate.rate}% - ${t(text)}`}
+            {`${attendanceRate.rate * 100}% - ${t(text)}`}
           </Tag>
         )
 
@@ -146,34 +183,44 @@ export function Dashboard() {
       const parsedResponse = await response.json()
 
       if (!parsedResponse.error) {
-        const data = parsedResponse.reduce((acc, cv, index) => {
-          const {
-            full_name: childName = '',
-            approvals: [{ case_number: caseNumber = '' }],
-            business: { name: business = '' },
-            attendance_rate: rate = '',
-            attendance_risk: riskCategory = '',
-            guaranteed_revenue: guaranteedRevenue = '',
-            max_approved_revenue: maxRevenue = '',
-            potential_revenue: potentialRevenue = ''
-          } = cv
+        const tableData = reduceTableData(parsedResponse)
+        const summaryDataTotals = reduceSummaryData(tableData)
+        const currencyFormatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD'
+        })
+        const summaryData = [
+          {
+            title: t('guaranteedRevenue'),
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.guaranteedRevenueTotal.toFixed(2)
+            )}`,
+            definition: t('guaranteedRevenueDef')
+          },
+          {
+            title: t('potentialRevenue'),
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.potentialRevenueTotal.toFixed(2)
+            )}`,
+            definition: t('potentialRevenueDef')
+          },
+          {
+            title: t('maxApprovedRevenue'),
+            stat: `${currencyFormatter.format(
+              summaryDataTotals.maxApprovedRevenueTotal.toFixed(2)
+            )}`,
+            definition: t('maxApprovedRevenueDef')
+          },
+          {
+            title: t('attendanceRate'),
+            stat: `${
+              (summaryDataTotals.attendanceRateTotal / tableData.length) * 100
+            }%`,
+            definition: t('attendanceRateDef')
+          }
+        ]
 
-          return [
-            ...acc,
-            {
-              key: index,
-              childName,
-              caseNumber,
-              business,
-              attendanceRate: { rate, riskCategory },
-              guaranteedRevenue,
-              maxRevenue,
-              potentialRevenue
-            }
-          ]
-        }, [])
-
-        setDashboardData(data)
+        setDashboardData({ tableData, summaryData })
       }
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
@@ -192,7 +239,7 @@ export function Dashboard() {
         </Typography.Text>
       </div>
       <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
-        {staticSummaryStats.map((stat, i) => {
+        {dashboardData.summaryData.map((stat, i) => {
           const renderDivider = () => {
             if ((screens.sm || screens.xs) && !screens.md) {
               // eslint-disable-next-line no-unused-expressions
@@ -205,7 +252,7 @@ export function Dashboard() {
               ) : null
             } else {
               // eslint-disable-next-line no-unused-expressions
-              return staticSummaryStats.length === i + 1 ? null : (
+              return dashboardData.summaryData.length === i + 1 ? null : (
                 <Divider
                   style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
                   className="stats-divder sm:mr-4 m:mx-4"
@@ -236,7 +283,7 @@ export function Dashboard() {
         })}
       </div>
       <Table
-        dataSource={dashboardData}
+        dataSource={dashboardData.tableData}
         columns={columns}
         bordered={true}
         size={'medium'}
