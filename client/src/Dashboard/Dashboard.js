@@ -251,7 +251,6 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  console.log(user.state, 'USER STATE')
   if(user.state === 'NE') {
     return <div>NE Dashboard</div>
   } else {
