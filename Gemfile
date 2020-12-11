@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.6'
 
-gem 'blueprinter', '~> 0.25.1'
+gem 'blueprinter', '~> 0.25.2'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'data_migrate'
 gem 'devise'
