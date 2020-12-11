@@ -14,8 +14,7 @@ const user = createSlice({
         ...user
       }
     },
-    removeAuth() {
-      debugger;
+    deleteUser() {
       return initialState
     }
   }

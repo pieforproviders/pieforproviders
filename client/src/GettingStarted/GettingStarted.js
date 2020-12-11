@@ -17,7 +17,10 @@ import { setUser } from '_reducers/userReducer'
 
 export function GettingStarted() {
   const dispatch = useDispatch()
-  const { token, user } = useSelector(state => ({ token: state.auth.token, user: state.user }))
+  const { token, user } = useSelector(state => ({
+    token: state.auth.token,
+    user: state.user
+  }))
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
 
