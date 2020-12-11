@@ -63,7 +63,7 @@ GEM
       rake (>= 10.4, < 14.0)
     ast (2.4.1)
     bcrypt (3.1.16)
-    blueprinter (0.25.1)
+    blueprinter (0.25.2)
     bootsnap (1.5.1)
       msgpack (~> 1.0)
     brakeman (4.9.1)
@@ -338,7 +338,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate
-  blueprinter (~> 0.25.1)
+  blueprinter (~> 0.25.2)
   bootsnap (>= 1.4.2)
   brakeman
   byebug
