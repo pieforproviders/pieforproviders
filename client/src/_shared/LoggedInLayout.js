@@ -6,8 +6,9 @@ import { Breadcrumb, Button, Dropdown, Grid, Menu } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import '_assets/styles/layouts.css'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
+import { batch, useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
+import { deleteUser } from '_reducers/userReducer'
 
 const { useBreakpoint } = Grid
 
@@ -20,7 +21,10 @@ export function LoggedInLayout({ children, title }) {
   const screens = useBreakpoint()
 
   const logout = () => {
-    dispatch(removeAuth())
+    batch(() => {
+      dispatch(deleteUser())
+      dispatch(removeAuth())
+    })
     history.push('/login')
   }
 

@@ -124,5 +124,5 @@ export default function DashboardTable({ tableData, userState }) {
 
 DashboardTable.propTypes = {
   tableData: PropTypes.array.isRequired,
-  userState: PropTypes.string.isRequired
+  userState: PropTypes.string
 }
