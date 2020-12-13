@@ -105,27 +105,28 @@ export function Dashboard() {
         const summaryDataTotals = reduceSummaryData(tableData)
         const currencyFormatter = new Intl.NumberFormat('en-US', {
           style: 'currency',
-          currency: 'USD'
+          currency: 'USD',
+          minimumFractionDigits: 0
         })
         const summaryData = [
           {
             title: t('guaranteedRevenue'),
             stat: `${currencyFormatter.format(
-              summaryDataTotals.guaranteedRevenueTotal.toFixed(2)
+              summaryDataTotals.guaranteedRevenueTotal.toFixed()
             )}`,
             definition: t('guaranteedRevenueDef')
           },
           {
             title: t('potentialRevenue'),
             stat: `${currencyFormatter.format(
-              summaryDataTotals.potentialRevenueTotal.toFixed(2)
+              summaryDataTotals.potentialRevenueTotal.toFixed()
             )}`,
             definition: t('potentialRevenueDef')
           },
           {
             title: t('maxApprovedRevenue'),
             stat: `${currencyFormatter.format(
-              summaryDataTotals.maxApprovedRevenueTotal.toFixed(2)
+              summaryDataTotals.maxApprovedRevenueTotal.toFixed()
             )}`,
             definition: t('maxApprovedRevenueDef')
           },
