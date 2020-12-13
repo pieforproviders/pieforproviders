@@ -9,16 +9,58 @@ import DashboardTable from './DashboardTable'
 
 export function Dashboard() {
   const dispatch = useDispatch()
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  })
   const { token, user } = useSelector(state => ({
     token: state.auth.token,
     user: state.user
   }))
-  const [dashboardData, setDashboardData] = useState({
-    tableData: [],
-    summaryData: []
+  const [summaryDataTotals, setSummaryTotals] = useState({
+    guaranteedRevenueTotal: 0,
+    potentialRevenueTotal: 0,
+    maxApprovedRevenueTotal: 0,
+    attendanceRateTotal: 0
   })
+  const [summaryData, setSummaryData] = useState([])
+  const [tableData, setTableData] = useState([])
   const { makeRequest } = useApiResponse()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  const generateSummaryData = (totals = summaryDataTotals, td = tableData) => {
+    return [
+      {
+        title: t('guaranteedRevenue'),
+        stat: `${currencyFormatter.format(
+          totals.guaranteedRevenueTotal.toFixed()
+        )}`,
+        definition: t('guaranteedRevenueDef')
+      },
+      {
+        title: t('potentialRevenue'),
+        stat: `${currencyFormatter.format(
+          totals.potentialRevenueTotal.toFixed()
+        )}`,
+        definition: t('potentialRevenueDef')
+      },
+      {
+        title: t('maxApprovedRevenue'),
+        stat: `${currencyFormatter.format(
+          totals.maxApprovedRevenueTotal.toFixed()
+        )}`,
+        definition: t('maxApprovedRevenueDef')
+      },
+      {
+        title: t('attendanceRate'),
+        stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
+        definition: t('attendanceRateDef')
+      }
+    ]
+  }
+
+  i18n.on('languageChanged', () => setSummaryData(generateSummaryData()))
 
   const reduceTableData = res => {
     return res.reduce((acc, cv, index) => {
@@ -50,29 +92,20 @@ export function Dashboard() {
   }
 
   const reduceSummaryData = data => {
-    return data.reduce(
-      (acc, cv) => {
-        const {
-          guaranteedRevenue,
-          maxRevenue,
-          potentialRevenue,
-          attendanceRate: { rate }
-        } = cv
-        return {
-          guaranteedRevenueTotal:
-            acc.guaranteedRevenueTotal + guaranteedRevenue,
-          potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
-          maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
-          attendanceRateTotal: acc.attendanceRateTotal + rate
-        }
-      },
-      {
-        guaranteedRevenueTotal: 0,
-        potentialRevenueTotal: 0,
-        maxApprovedRevenueTotal: 0,
-        attendanceRateTotal: 0
+    return data.reduce((acc, cv) => {
+      const {
+        guaranteedRevenue,
+        maxRevenue,
+        potentialRevenue,
+        attendanceRate: { rate }
+      } = cv
+      return {
+        guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
+        potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
+        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
+        attendanceRateTotal: acc.attendanceRateTotal + rate
       }
-    )
+    }, summaryDataTotals)
   }
 
   useEffect(() => {
@@ -103,43 +136,9 @@ export function Dashboard() {
         // NOTE: user state will be used to configure these
         const tableData = reduceTableData(parsedResponse)
         const summaryDataTotals = reduceSummaryData(tableData)
-        const currencyFormatter = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 0
-        })
-        const summaryData = [
-          {
-            title: t('guaranteedRevenue'),
-            stat: `${currencyFormatter.format(
-              summaryDataTotals.guaranteedRevenueTotal.toFixed()
-            )}`,
-            definition: t('guaranteedRevenueDef')
-          },
-          {
-            title: t('potentialRevenue'),
-            stat: `${currencyFormatter.format(
-              summaryDataTotals.potentialRevenueTotal.toFixed()
-            )}`,
-            definition: t('potentialRevenueDef')
-          },
-          {
-            title: t('maxApprovedRevenue'),
-            stat: `${currencyFormatter.format(
-              summaryDataTotals.maxApprovedRevenueTotal.toFixed()
-            )}`,
-            definition: t('maxApprovedRevenueDef')
-          },
-          {
-            title: t('attendanceRate'),
-            stat: `${
-              (summaryDataTotals.attendanceRateTotal / tableData.length) * 100
-            }%`,
-            definition: t('attendanceRateDef')
-          }
-        ]
-
-        setDashboardData({ tableData, summaryData })
+        setSummaryTotals(summaryDataTotals)
+        setTableData(tableData)
+        setSummaryData(generateSummaryData(summaryDataTotals, tableData))
       }
     }
 
@@ -161,11 +160,8 @@ export function Dashboard() {
           {t('revenueProjections')}
         </Typography.Text>
       </div>
-      <DashboardStats summaryData={dashboardData.summaryData} />
-      <DashboardTable
-        tableData={dashboardData.tableData}
-        userState={user.state ?? ''}
-      />
+      <DashboardStats summaryData={summaryData} />
+      <DashboardTable tableData={tableData} userState={user.state ?? ''} />
     </div>
   )
 }
