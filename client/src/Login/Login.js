@@ -6,8 +6,9 @@ import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
 import AuthStatusAlert from 'AuthStatusAlert'
-import { useDispatch } from 'react-redux'
+import { batch, useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '_reducers/authReducer'
+import { setUser } from '_reducers/userReducer'
 
 export function Login() {
   const dispatch = useDispatch()
@@ -62,7 +63,12 @@ export function Login() {
         context: { email: values.email }
       })
     } else {
-      dispatch(addAuth(authToken))
+      const resp = await response.json()
+
+      batch(() => {
+        dispatch(addAuth(authToken))
+        dispatch(setUser(resp))
+      })
       history.push('/getting-started')
     }
   }

@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useSelector } from 'react-redux'
-import { Divider, Grid, Table, Tag, Typography } from 'antd'
-import '_assets/styles/table-overrides.css'
-import '_assets/styles/tag-overrides.css'
-import { attendanceCategories } from '_utils/constants'
-
-const { useBreakpoint } = Grid
+import { useDispatch, useSelector } from 'react-redux'
+import { Typography } from 'antd'
+import { setUser } from '_reducers/userReducer'
+import DashboardStats from './DashboardStats'
+import DashboardTable from './DashboardTable'
 
 export function Dashboard() {
-  const screens = useBreakpoint()
+  const dispatch = useDispatch()
+  const { token, user } = useSelector(state => ({
+    token: state.auth.token,
+    user: state.user
+  }))
   const [dashboardData, setDashboardData] = useState({
     tableData: [],
     summaryData: []
   })
-  const token = useSelector(state => state.auth.token)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
 
@@ -74,106 +75,22 @@ export function Dashboard() {
     )
   }
 
-  const onHeaderCell = () => {
-    return {
-      style: {
-        color: '#262626',
-        fontWeight: 'bold'
-      },
-      role: 'columnheader'
-    }
-  }
-  const columnSorter = (a, b, name) =>
-    a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
-  // configuation for table columns
-  const columns = [
-    {
-      title: t('childName'),
-      dataIndex: 'childName',
-      key: 'childName',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'childName'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('caseNumberLowercase'),
-      dataIndex: 'caseNumber',
-      key: 'caseNumber',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'caseNumber'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('business'),
-      dataIndex: 'business',
-      key: 'business',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'business'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('attendanceRate'),
-      dataIndex: 'attendanceRate',
-      key: 'attendanceRate',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
-      sortDirections: ['descend', 'ascend'],
-      render: attendanceRate => {
-        const createTag = (color, text) => (
-          <Tag className={`${color}-tag custom-tag`}>
-            {`${attendanceRate.rate * 100}% - ${t(text)}`}
-          </Tag>
-        )
-
-        switch (attendanceRate.riskCategory) {
-          case attendanceCategories.ONTRACK:
-            return createTag('green', 'onTrack')
-          case attendanceCategories.SUREBET:
-            return createTag('green', 'sureBet')
-          case attendanceCategories.ATRISK:
-            return createTag('orange', 'atRisk')
-          case attendanceCategories.NOTMET:
-            return createTag('orange', 'notMet')
-          case attendanceCategories.NOTENOUGHINFO:
-          default:
-            return createTag('grey', 'notEnoughInfo')
-        }
-      }
-    },
-    {
-      title: t('guaranteedRevenue'),
-      dataIndex: 'guaranteedRevenue',
-      key: 'guaranteedRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('potentialRevenue'),
-      dataIndex: 'potentialRevenue',
-      key: 'potentialRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('maxApprovedRevenue'),
-      dataIndex: 'maxRevenue',
-      key: 'maxRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.maxRevenue - b.maxRevenue,
-      sortDirections: ['descend', 'ascend']
-    }
-  ]
-
   useEffect(() => {
+    const getUserData = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/profile',
+        headers: {
+          Authorization: token
+        }
+      })
+
+      if (response.ok) {
+        const resp = await response.json()
+        dispatch(setUser(resp))
+      }
+    }
+
     const getDashboardData = async () => {
       const response = await makeRequest({
         type: 'get',
@@ -183,6 +100,7 @@ export function Dashboard() {
       const parsedResponse = await response.json()
 
       if (!parsedResponse.error) {
+        // NOTE: user state will be used to configure these
         const tableData = reduceTableData(parsedResponse)
         const summaryDataTotals = reduceSummaryData(tableData)
         const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -223,6 +141,10 @@ export function Dashboard() {
         setDashboardData({ tableData, summaryData })
       }
     }
+
+    if (Object.keys(user).length === 0) {
+      getUserData()
+    }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     getDashboardData()
     // still haven't found a better way around this - sometimes we really do
@@ -238,59 +160,10 @@ export function Dashboard() {
           {t('revenueProjections')}
         </Typography.Text>
       </div>
-      <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
-        {dashboardData.summaryData.map((stat, i) => {
-          const renderDivider = () => {
-            if ((screens.sm || screens.xs) && !screens.md) {
-              // eslint-disable-next-line no-unused-expressions
-              return i % 2 === 0 ? (
-                <Divider
-                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
-                  className="stats-divider m-2"
-                  type="vertical"
-                />
-              ) : null
-            } else {
-              // eslint-disable-next-line no-unused-expressions
-              return dashboardData.summaryData.length === i + 1 ? null : (
-                <Divider
-                  style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
-                  className="stats-divder sm:mr-4 m:mx-4"
-                  type="vertical"
-                />
-              )
-            }
-          }
-
-          return (
-            <div key={i} className="dashboard-stat flex">
-              <div className="w-full mt-2">
-                <p className="h-6 xs:whitespace-no-wrap">
-                  <Typography.Text>{stat.title}</Typography.Text>
-                </p>
-                <p className="mt-2">
-                  <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
-                    {stat.stat}
-                  </Typography.Text>
-                </p>
-                <Typography.Paragraph className="text-xs mt-5">
-                  {stat.definition}
-                </Typography.Paragraph>
-              </div>
-              {renderDivider()}
-            </div>
-          )
-        })}
-      </div>
-      <Table
-        dataSource={dashboardData.tableData}
-        columns={columns}
-        bordered={true}
-        size={'medium'}
-        pagination={false}
-        sticky
-        className="dashboard-table"
-        scroll={{ x: 'max-content' }}
+      <DashboardStats summaryData={dashboardData.summaryData} />
+      <DashboardTable
+        tableData={dashboardData.tableData}
+        userState={user.state ?? ''}
       />
     </div>
   )

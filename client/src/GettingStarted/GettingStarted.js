@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Card, Typography } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import Icon from '@material-ui/core/Icon'
@@ -8,15 +8,19 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd'
 import { useTranslation } from 'react-i18next'
 import { PaddedButton } from '_shared/PaddedButton'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '_reducers/userReducer'
 
 // NB: we're using CSS grid instead of Ant grid for these cards
 // because Ant grid doesn't flow into the next row when there are
 // more cards than columns
 
 export function GettingStarted() {
-  const [user, setUser] = useState(null)
-  const token = useSelector(state => state.auth.token)
+  const dispatch = useDispatch()
+  const { token, user } = useSelector(state => ({
+    token: state.auth.token,
+    user: state.user
+  }))
   const { t } = useTranslation()
   const { makeRequest } = useApiResponse()
 
@@ -29,11 +33,16 @@ export function GettingStarted() {
           Authorization: token
         }
       })
-      const user = await response.json()
-      setUser(user)
+
+      if (response.ok) {
+        const resp = await response.json()
+        dispatch(setUser(resp))
+      }
     }
 
-    getUser()
+    if (Object.keys(user).length === 0) {
+      getUser()
+    }
     // we only want this to run once; making the makeRequest hook a dependency causes an infinite re-run of this query
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -65,7 +74,7 @@ export function GettingStarted() {
       <div className="getting-started-content-area">
         <Typography.Title className="text-center">
           {t('gettingStartedWelcome')}
-          {user && `, ${user.greeting_name}!`}
+          {user.greeting_name && `, ${user.greeting_name}!`}
         </Typography.Title>
 
         <div className="mb-8">
@@ -74,7 +83,6 @@ export function GettingStarted() {
           </Typography.Title>
           <p>{t('gettingStartedInstructions')}</p>
         </div>
-
         <Typography.Title level={3}>{t('steps')}</Typography.Title>
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 mx-4">
           {cards.map((card, idx) => (
