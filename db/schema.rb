@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_01_163314) do
+ActiveRecord::Schema.define(version: 2020_12_02_141921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 2019_12_01_163314) do
     t.decimal "full_day_rate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.decimal "attendance_threshold"
   end
 
   create_table "subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

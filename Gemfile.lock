@@ -133,6 +133,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    holidays (8.3.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     json-schema (2.8.1)
@@ -348,6 +349,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   guard-rspec
+  holidays
   json-schema
   letter_opener_web (~> 1.4)
   listen (>= 3.0.5, < 3.3)
