@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_02_141921) do
+ActiveRecord::Schema.define(version: 2020_12_13_235022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -89,6 +89,19 @@ ActiveRecord::Schema.define(version: 2020_12_02_141921) do
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "illinois_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.integer "part_days_approved_per_week"
+    t.integer "full_days_approved_per_week"
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_illinois_approval_amounts_on_child_approval_id"
+  end
+
   create_table "illinois_subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "bronze_percentage"
     t.decimal "silver_percentage"
@@ -156,4 +169,5 @@ ActiveRecord::Schema.define(version: 2020_12_02_141921) do
   add_foreign_key "child_approvals", "children"
   add_foreign_key "child_approvals", "subsidy_rules"
   add_foreign_key "children", "businesses"
+  add_foreign_key "illinois_approval_amounts", "child_approvals"
 end

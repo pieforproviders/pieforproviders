@@ -19,6 +19,7 @@ class Child < UuidApplicationRecord
   validates :date_of_birth, date_param: true
 
   accepts_nested_attributes_for :approvals
+  accepts_nested_attributes_for :child_approvals
 
   scope :active, -> { where(active: true) }
 

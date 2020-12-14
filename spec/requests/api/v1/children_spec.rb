@@ -8,21 +8,124 @@ RSpec.describe 'children API', type: :request do
   let!(:non_owner_business) { create(:business, zipcode: created_business.zipcode, county: created_business.county) }
   let!(:record_params) do
     {
-      "full_name": 'Parvati Patil',
-      "date_of_birth": '1981-04-09',
-      "business_id": created_business.id,
-      "approvals_attributes": [attributes_for(:approval)]
+      "child": {
+        "full_name": 'Parvati Patil',
+        "date_of_birth": '1981-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      },
+      "first_month_name": 'March',
+      "first_month_year": '2020',
+      "month1": {
+        "part_days_approved_per_week": 4,
+        "full_days_approved_per_week": 1
+      },
+      "month2": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      }
     }
   end
   let(:count) { 2 }
   let(:owner) { user }
   let(:owner_attributes) { { business: created_business } }
   let(:non_owner_attributes) { { business: non_owner_business } }
-  let(:record) { Child.create! record_params }
+  let(:record) { Child.create! record_params[:child] }
 
   it_behaves_like 'it lists all records for a user', Child
 
-  it_behaves_like 'it creates a record', Child
+  context 'on the correct api version' do
+    include_context 'correct api version header'
+
+    describe 'POST children#create' do
+      context 'with valid params' do
+        context 'as an admin user' do
+          include_context 'admin user'
+          it 'creates a child with the expected attributes' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(201)
+            json = JSON.parse(response.body)
+            child = Child.find(json['id'])
+            expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(2)
+            expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(Date.parse(record_params[:first_month_name], record_params[:first_month_year]))
+            expect(response).to match_response_schema('child')
+          end
+        end
+        context 'as a non-admin user' do
+          include_context 'authenticated user'
+          it 'creates a child with the expected attributes' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(201)
+            json = JSON.parse(response.body)
+            child = Child.find(json['id'])
+            expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(2)
+            expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(Date.parse(record_params[:first_month_name], record_params[:first_month_year]))
+            expect(response).to match_response_schema('child')
+          end
+        end
+        context 'without authentication' do
+          it 'returns an unauthenticated error' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(401)
+          end
+        end
+      end
+
+      context 'with invalid params' do
+        let(:record_params) { { "child": { 'this_param': 'bad_params' } } }
+        context 'as an admin user' do
+          include_context 'admin user'
+          it 'returns an invalid request response' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(422)
+          end
+        end
+        context 'as a non-admin user' do
+          include_context 'authenticated user'
+          it 'returns an invalid request response' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(422)
+          end
+        end
+        context 'without authentication' do
+          it 'returns an unauthenticated error' do
+            post '/api/v1/children', params: record_params, headers: headers
+            expect(response.status).to eq(401)
+          end
+        end
+      end
+    end
+  end
+
+  context 'on an incorrect api version' do
+    include_context 'incorrect api version header'
+
+    describe 'POST children#create' do
+      context 'as an admin user' do
+        include_context 'admin user'
+        it 'returns a server error' do
+          post '/api/v1/children', params: record_params, headers: headers
+          expect(response.status).to eq(500)
+        end
+      end
+      context 'as a non-admin user' do
+        include_context 'authenticated user'
+        it 'returns a server error' do
+          post '/api/v1/children', params: record_params, headers: headers
+          expect(response.status).to eq(500)
+        end
+      end
+      context 'without authentication' do
+        it 'returns an unauthenticated error' do
+          post '/api/v1/children', params: record_params, headers: headers
+          expect(response.status).to eq(500)
+        end
+      end
+    end
+  end
+
+  # the params for this item are now multi-leveled and complex, so this fails
+  # it_behaves_like 'it creates a record', Child
 
   it_behaves_like 'admins and resource owners can retrieve a record', Child
 

@@ -94,7 +94,7 @@ RSpec.configure do |config|
           },
           time_or_null: {
             anyOf: [
-              { type: :string, example: '020-09-13 14:07:47 -0700' },
+              { type: :string, example: '2020-09-13 14:07:47 -0700' },
               { type: :null }
             ]
           },
@@ -220,6 +220,30 @@ RSpec.configure do |config|
           updateAttendance: {
             type: :object,
             properties: {}
+          },
+          monthlyApprovalAmount: {
+            type: :object,
+            properties: {
+              part_days_approved_per_week: { type: :integer, example: 2 },
+              full_days_approved_per_week: { type: :integer, example: 2 }
+            }
+          },
+          approvalAmounts: {
+            type: :object,
+            properties: {
+              month1: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month2: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month3: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month4: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month5: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month6: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month7: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month8: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month9: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month10: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month11: { '$ref': '#/components/schemas/monthlyApprovalAmount' },
+              month12: { '$ref': '#/components/schemas/monthlyApprovalAmount' }
+            }
           }
         }
       }

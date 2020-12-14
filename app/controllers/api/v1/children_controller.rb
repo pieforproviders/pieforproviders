@@ -29,6 +29,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     @child = Child.new(child_params)
 
     if @child.save
+      make_illinois_approval_amounts
       render json: @child, status: :created, location: @child
     else
       render json: @child.errors, status: :unprocessable_entity
@@ -63,7 +64,21 @@ class Api::V1::ChildrenController < Api::V1::ApiController
   def child_params
     attributes = []
     attributes += %i[active] if current_user.admin?
-    attributes += [:date_of_birth, :full_name, :business_id, { approvals_attributes: %i[case_number copay copay_frequency effective_on expires_on] }]
+    attributes += [
+      :date_of_birth,
+      :full_name,
+      :business_id,
+      { approvals_attributes: %i[case_number copay copay_frequency effective_on expires_on] }
+    ]
     params.require(:child).permit(attributes)
+  end
+
+  def make_illinois_approval_amounts
+    month_amounts = params.select { |key| key.to_s.start_with?('month') }
+    first_month = params['first_month_name']
+    year = params['first_month_year']
+    return if [month_amounts, first_month, year].any?(&:empty?)
+
+    ApprovalAmountGenerator.new(@child, month_amounts, first_month, year).call
   end
 end
