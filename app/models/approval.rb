@@ -6,6 +6,7 @@ class Approval < UuidApplicationRecord
 
   has_many :child_approvals, dependent: :destroy
   has_many :children, through: :child_approvals
+  has_many :illinois_approval_amounts, through: :child_approvals
 
   validates :effective_on, date_param: true
   validates :expires_on, date_param: true

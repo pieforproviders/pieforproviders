@@ -6,6 +6,7 @@ FactoryBot.define do
     bronze_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
     silver_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
     gold_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
+    attendance_threshold { Faker::Number.decimal(l_digits: 0, r_digits: 3) }
   end
 end
 
