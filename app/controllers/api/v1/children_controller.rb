@@ -77,7 +77,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     month_amounts = params.select { |key| key.to_s.start_with?('month') }
     first_month = params['first_month_name']
     year = params['first_month_year']
-    return if [month_amounts, first_month, year].any?(&:empty?)
+    return if month_amounts.empty? && [first_month, year].all?(&:nil?)
 
     ApprovalAmountGenerator.new(@child, month_amounts, first_month, year).call
   end

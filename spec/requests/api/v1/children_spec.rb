@@ -13,6 +13,16 @@ RSpec.describe 'children API', type: :request do
         "date_of_birth": '1981-04-09',
         "business_id": created_business.id,
         "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      }
+    }
+  end
+  let!(:all_months_amounts) do
+    {
+      "child": {
+        "full_name": 'Parvati Patil',
+        "date_of_birth": '1981-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       },
       "first_month_name": 'March',
       "first_month_year": '2020',
@@ -23,6 +33,98 @@ RSpec.describe 'children API', type: :request do
       "month2": {
         "part_days_approved_per_week": 3,
         "full_days_approved_per_week": 2
+      },
+      "month3": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month4": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month5": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month6": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month7": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month8": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month9": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month10": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month11": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month12": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      }
+    }
+  end
+  let!(:some_months_amounts) do
+    {
+      "child": {
+        "full_name": 'Parvati Patil',
+        "date_of_birth": '1981-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      },
+      "first_month_name": 'March',
+      "first_month_year": '2020',
+      "month1": {
+        "part_days_approved_per_week": 4,
+        "full_days_approved_per_week": 1
+      },
+      "month2": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month3": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month4": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month5": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      },
+      "month6": {
+        "part_days_approved_per_week": 3,
+        "full_days_approved_per_week": 2
+      }
+    }
+  end
+  let!(:one_month_amounts) do
+    {
+      "child": {
+        "full_name": 'Parvati Patil',
+        "date_of_birth": '1981-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      },
+      "first_month_name": 'March',
+      "first_month_year": '2020',
+      "month1": {
+        "part_days_approved_per_week": 4,
+        "full_days_approved_per_week": 1
       }
     }
   end
@@ -44,10 +146,6 @@ RSpec.describe 'children API', type: :request do
           it 'creates a child with the expected attributes' do
             post '/api/v1/children', params: record_params, headers: headers
             expect(response.status).to eq(201)
-            json = JSON.parse(response.body)
-            child = Child.find(json['id'])
-            expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(2)
-            expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(Date.parse(record_params[:first_month_name], record_params[:first_month_year]))
             expect(response).to match_response_schema('child')
           end
         end
@@ -56,10 +154,6 @@ RSpec.describe 'children API', type: :request do
           it 'creates a child with the expected attributes' do
             post '/api/v1/children', params: record_params, headers: headers
             expect(response.status).to eq(201)
-            json = JSON.parse(response.body)
-            child = Child.find(json['id'])
-            expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(2)
-            expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(Date.parse(record_params[:first_month_name], record_params[:first_month_year]))
             expect(response).to match_response_schema('child')
           end
         end
@@ -68,6 +162,60 @@ RSpec.describe 'children API', type: :request do
             post '/api/v1/children', params: record_params, headers: headers
             expect(response.status).to eq(401)
           end
+        end
+      end
+
+      context 'with all months included in the params' do
+        include_context 'admin user'
+        it 'creates a child with the expected attributes' do
+          post '/api/v1/children', params: all_months_amounts, headers: headers
+          expect(response.status).to eq(201)
+          json = JSON.parse(response.body)
+          child = Child.find(json['id'])
+          expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
+          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+            Date.parse(
+              all_months_amounts[:first_month_name],
+              all_months_amounts[:first_month_year]
+            )
+          )
+          expect(response).to match_response_schema('child')
+        end
+      end
+
+      context 'with a single month included in the params' do
+        include_context 'admin user'
+        it 'creates a child with the expected attributes' do
+          post '/api/v1/children', params: one_month_amounts, headers: headers
+          expect(response.status).to eq(201)
+          json = JSON.parse(response.body)
+          child = Child.find(json['id'])
+          expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
+          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+            Date.parse(
+              one_month_amounts[:first_month_name],
+              one_month_amounts[:first_month_year]
+            )
+          )
+          expect(response).to match_response_schema('child')
+        end
+      end
+
+      context 'with some months included in the params' do
+        include_context 'admin user'
+        it 'creates a child with the expected attributes' do
+          post '/api/v1/children', params: some_months_amounts, headers: headers
+          expect(response.status).to eq(201)
+          json = JSON.parse(response.body)
+          child = Child.find(json['id'])
+          expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(6)
+          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+            Date.parse(
+              some_months_amounts[:first_month_name],
+              some_months_amounts[:first_month_year]
+            )
+          )
+          expect(response).to match_response_schema('child')
         end
       end
 
