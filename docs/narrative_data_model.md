@@ -52,6 +52,7 @@ This concludes onboarding and creating subsidy cases at the beginning of a user'
 
 - **TO BE IMPLEMENTED**: if their case number remains the same, new **ChildApprovals** will be generated for each child, associated to the original **Approval**, with new effective_on and expires_on dates
 - **TO BE IMPLEMENTED**: if their case number is different when renewal happens, a new **Approval** and associated **ChildApprovals** will be generated for each child
+- When a **Child** is created, 12 **[State]ApprovalAmounts** will be added and associated to the **ChildApproval** created at that time, starting from the given "first_month_name" and "first_month_year", one per month, with the appropriate rate_type columns (i.e. in **IllinoisApprovalAmounts**, there will be a column for `part_days_approved` and a column for `full_days_approved`) (this is currently only implemented for Nebraska)
 
 ## Billable Occurrence Tracking
 

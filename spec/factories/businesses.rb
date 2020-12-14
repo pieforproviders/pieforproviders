@@ -7,7 +7,7 @@ FactoryBot.define do
     end
     license_type { Licenses.types.keys.sample }
     user factory: :confirmed_user
-    zipcode { '12345' }
+    zipcode { '60606' }
     county { 'Cook' }
 
     factory :business_with_children do

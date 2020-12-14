@@ -5,6 +5,7 @@ class ChildApproval < UuidApplicationRecord
   belongs_to :child
   belongs_to :approval
   belongs_to :subsidy_rule, optional: true
+  has_many :illinois_approval_amounts, dependent: :restrict_with_error
 
   delegate :user, to: :child
 end

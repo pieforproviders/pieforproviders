@@ -6,6 +6,7 @@ RSpec.describe ChildApproval, type: :model do
   it { should belong_to(:child) }
   it { should belong_to(:approval) }
   it { should belong_to(:subsidy_rule).optional }
+  it { should have_many(:illinois_approval_amounts).dependent(:restrict_with_error) }
   it 'factory should be valid (default; no args)' do
     expect(build(:child_approval)).to be_valid
   end
