@@ -2,6 +2,7 @@
 
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
+  before_create :associate_child_to_approval
   after_commit :associate_subsidy_rule
 
   belongs_to :business
@@ -63,6 +64,10 @@ class Child < UuidApplicationRecord
 
   def associate_subsidy_rule
     SubsidyRuleAssociatorJob.perform_later(id)
+  end
+
+  def associate_child_to_approval
+    ApprovalAssociator.new(self).call
   end
 end
 
