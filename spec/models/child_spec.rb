@@ -124,6 +124,92 @@ RSpec.describe Child, type: :model do
       end
     end
   end
+
+  context 'associates approval with child if applicable' do
+    let!(:user) { create(:confirmed_user) }
+    let!(:created_business) { create(:business, user: user) }
+    let!(:child_params) do
+      {
+        "full_name": 'Parvati Patil',
+        "date_of_birth": '2010-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [attributes_for(:approval)]
+      }
+    end
+    let!(:child) { Child.create! child_params }
+    let!(:approval) { child.approvals.first }
+    let(:child2_params) do
+      {
+        "full_name": 'Dev Patil',
+        "date_of_birth": '2015-04-09',
+        "business_id": created_business.id,
+        "approvals_attributes": [
+          {
+            "case_number": approval.case_number,
+            "effective_on": approval.effective_on,
+            "expires_on": approval.expires_on,
+            "copay": 20_000,
+            "copay_frequency": 'monthly'
+          }
+        ]
+      }
+    end
+
+    context 'child has the same approval as a previous child in our system' do
+      it 'associates the approval' do
+        child2 = Child.create! child2_params
+        expect(child2.approvals.first.id).to eq(approval.id)
+      end
+
+      it 'creates a child' do
+        expect { Child.create! child2_params }.to change{ Child.count }.by(1)
+      end
+
+      it 'does not create an approval' do
+        expect { Child.create! child2_params }.to change { Approval.count }.by(0)
+      end
+
+      it 'does create a child approval' do
+        expect { Child.create! child2_params }.to change { ChildApproval.count }.by(1)
+      end
+    end
+
+    context 'child has a unique approval' do
+      let(:child2_params) do
+        {
+          "full_name": 'Dev Patil',
+          "date_of_birth": '2015-04-09',
+          "business_id": created_business.id,
+          "approvals_attributes": [
+            {
+              "case_number": approval.case_number,
+              "effective_on": Date.today + 3.months,
+              "expires_on": approval.expires_on,
+              "copay": 20_000,
+              "copay_frequency": 'monthly'
+            }
+          ]
+        }
+      end
+
+      it 'does not associates the approval' do
+        child2 = Child.create! child2_params
+        expect(child2.approvals.first.id).to_not eq(approval.id)
+      end
+
+      it 'creates a child' do
+        expect { Child.create! child2_params }.to change { Child.count }.by(1)
+      end
+
+      it 'creates an approval' do
+        expect { Child.create! child2_params }.to change { Approval.count }.by(1)
+      end
+
+      it 'creates a child approval' do
+        expect { Child.create! child2_params }.to change { ChildApproval.count }.by(1)
+      end
+    end
+  end
 end
 
 # == Schema Information
