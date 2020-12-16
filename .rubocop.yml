@@ -11,6 +11,7 @@ AllCops:
     - vendor/**/*
     - tmp/**/**
     - client/**/**
+  SuggestExtensions: false
 
 Style/SymbolProc:
   Exclude:
@@ -27,6 +28,7 @@ Metrics/BlockLength:
     - config/initializers/**
     - config/environments/**
     - config/routes.rb
+    - app/blueprints/**
 
 # screens are bigger now and long lines are more acceptable
 Layout/LineLength:

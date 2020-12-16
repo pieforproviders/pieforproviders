@@ -31,31 +31,43 @@
           ]
         }
       },
-      "attendance_risk": {
+      "case_number": {
         "type": "string"
       },
-      "attendance_rate": {
+      "full_days": {
+        "type": "string"
+      },
+      "hours": {
+        "type": "string"
+      },
+      "absences": {
+        "type": "string"
+      },
+      "earned_revenue": {
         "type": "decimal"
       },
-      "guaranteed_revenue": {
+      "estimated_revenue": {
         "type": "decimal"
       },
-      "potential_revenue": {
-        "type": "decimal"
+      "transportation_revenue": {
+        "type": "string"
       },
-      "max_approved_revenue": {
-        "type": "decimal"
+      "as_of": {
+        "type": "string"
       }
     },
     "required": [
       "full_name",
       "business",
       "approvals",
-      "attendance_risk",
-      "attendance_rate",
-      "guaranteed_revenue",
-      "potential_revenue",
-      "max_approved_revenue"
+      "case_number",
+      "full_days",
+      "hours",
+      "absences",
+      "earned_revenue",
+      "estimated_revenue",
+      "transportation_revenue",
+      "as_of"
     ]
   }
 }

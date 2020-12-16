@@ -75,8 +75,23 @@ puts_records_in_db(SubsidyRule)
   timezone: 'Central Time (US & Canada)'
 )
 
+@user_nebraska = User.where(email: 'nebraska@test.com').first_or_create(
+  active: true,
+  full_name: 'Nebraska Provider',
+  greeting_name: 'Candice',
+  language: 'english',
+  opt_in_email: true,
+  opt_in_text: true,
+  organization: 'Nebraska Child Care',
+  password: 'testpass1234!',
+  password_confirmation: 'testpass1234!',
+  service_agreement_accepted: true,
+  timezone: 'Mountain Time (US & Canada)'
+)
+
 @user_admin.confirm
 @user_kate.confirm
+@user_nebraska.confirm
 
 puts_records_in_db(User)
 
@@ -88,6 +103,12 @@ puts_records_in_db(User)
   license_type: Licenses.types.keys.first,
   county: 'Cook',
   zipcode: '60606'
+)
+
+@business_nebraska = Business.where(name: 'Nebraska Home Child Care', user: @user_nebraska).first_or_create!(
+  license_type: Licenses.types.keys.first,
+  county: 'Cook',
+  zipcode: '68123'
 )
 
 puts_records_in_db(Business)
@@ -137,13 +158,17 @@ def create_case(full_name,
 end
 
 maria = create_case('Maria Baca')
-maria = create_case('Adédèjì Adébísí', case_number: '1234567A')
-maria = create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
+adedji = create_case('Adédèjì Adébísí', case_number: '1234567A')
+atinuke = create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
 kshawn = create_case("K'Shawn Henderson")
 marcus = create_case('Marcus Smith')
 sabina = create_case('Sabina Akers', add_expired_approval: true)
 mubiru = create_case('Mubiru Karstensen')
-tarq = create_case('Tarquinius Kelly', add_expired_approval: true)
+tarquinius = create_case('Tarquinius Kelly', add_expired_approval: true)
+rhonan = create_case('Rhonan Shaw', business: @business_nebraska)
+tanim = create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true)
+jasveen = create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true)
+manuel = create_case('Manuel Céspedes', business: @business_nebraska)
 
 puts_records_in_db(Child)
 
