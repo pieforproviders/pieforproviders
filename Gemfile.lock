@@ -75,7 +75,7 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.8.0)
       rack
-    data_migrate (6.5.0)
+    data_migrate (6.6.0)
       rails (>= 5.0)
     database_cleaner (1.8.5)
     devise (4.7.3)
