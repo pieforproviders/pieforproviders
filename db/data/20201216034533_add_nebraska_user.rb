@@ -1,4 +1,6 @@
 class AddNebraskaUser < ActiveRecord::Migration[6.0]
+  MIN_BIRTHDAY = (Time.zone.now - 2.weeks)
+  MAX_BIRTHDAY = (Time.zone.now - 14.years)
   def up
     @user_nebraska = User.where(email: 'nebraska@test.com').first_or_create(
       active: true,
