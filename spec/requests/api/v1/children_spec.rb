@@ -335,7 +335,7 @@ RSpec.describe 'children API', type: :request do
               expect(JSON.parse(response.body).size).to eq(count * 2)
               expect(JSON.parse(response.body).first['approvals'].size).to eq(1)
               expect(JSON.parse(response.body).first['approvals'].first['case_number']).to eq('1234567B')
-              expect(response).to match_response_schema('case_list_for_dashboard')
+              expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
         end
@@ -346,7 +346,23 @@ RSpec.describe 'children API', type: :request do
           response '200', 'active cases found' do
             run_test! do
               expect(JSON.parse(response.body).size).to eq(count)
-              expect(response).to match_response_schema('case_list_for_dashboard')
+              expect(response).to match_response_schema('illinois_case_list_for_dashboard')
+            end
+          end
+        end
+
+        context 'nebraska user' do
+          let!(:owner) { create(:confirmed_user) }
+          let!(:business) { create(:business, :nebraska, user: owner) }
+          let!(:owner_records) { create_list(:child, count, { business: business, approvals: [expired_approval, current_approval] }) }
+          let!(:owner_inactive_records) { create_list(:child, count, { business: business, active: false, approvals: [expired_approvals.sample, current_approvals.sample] }) }
+          before do
+            sign_in owner
+          end
+          response '200', 'active cases found' do
+            run_test! do
+              expect(JSON.parse(response.body).size).to eq(count)
+              expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
         end

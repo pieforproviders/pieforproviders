@@ -1,0 +1,65 @@
+{
+  "type": "array",
+  "required": [
+    "children"
+  ],
+  "items": {
+    "properties": {
+      "full_name": {
+        "type": "string"
+      },
+      "business": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "approvals": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "case_number": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "case_number"
+          ]
+        }
+      },
+      "attendance_risk": {
+        "type": "string"
+      },
+      "attendance_rate": {
+        "type": "decimal"
+      },
+      "guaranteed_revenue": {
+        "type": "decimal"
+      },
+      "potential_revenue": {
+        "type": "decimal"
+      },
+      "max_approved_revenue": {
+        "type": "decimal"
+      },
+      "as_of": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "full_name",
+      "business",
+      "approvals",
+      "attendance_risk",
+      "attendance_rate",
+      "guaranteed_revenue",
+      "potential_revenue",
+      "max_approved_revenue",
+      "as_of"
+    ]
+  }
+}

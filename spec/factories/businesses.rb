@@ -15,6 +15,10 @@ FactoryBot.define do
         create_list(:child, 3, business: business)
       end
     end
+
+    trait :nebraska do
+      zipcode { '68123' }
+    end
   end
 end
 
