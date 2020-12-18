@@ -62,7 +62,7 @@ class Child < UuidApplicationRecord
   private
 
   def associate_subsidy_rule
-    SubsidyRuleAssociator.new(self).call
+    SubsidyRuleAssociatorJob.perform_later(id)
   end
 end
 

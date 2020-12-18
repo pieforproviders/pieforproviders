@@ -92,6 +92,20 @@ ActiveRecord::Schema.define(version: 2020_12_13_235022) do
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
+  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "queue_name"
+    t.integer "priority"
+    t.jsonb "serialized_params"
+    t.datetime "scheduled_at"
+    t.datetime "performed_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+  end
+
   create_table "illinois_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "month", null: false
     t.integer "part_days_approved_per_week"
