@@ -64,14 +64,20 @@ export function Dashboard() {
 
   const reduceTableData = res => {
     return res.reduce((acc, cv, index) => {
+      // if (user.state === "NE") {
+      //   debugger
+      //   const {
+
+      //   } = cv
+      // }
       const {
         full_name: childName = '',
-        approvals: [{ case_number: caseNumber = '' }],
+        approvals: [{ case_number: cNumber = '' }],
         business: { name: business = '' },
         attendance_rate: rate = '',
         attendance_risk: riskCategory = '',
         guaranteed_revenue: guaranteedRevenue = 0,
-        max_approved_revenue: maxRevenue = 0,
+        max_approved_revenue: maxApprovedRevenue = 0,
         potential_revenue: potentialRevenue = 0
       } = cv
 
@@ -80,11 +86,11 @@ export function Dashboard() {
         {
           key: index,
           childName,
-          caseNumber,
+          cNumber,
           business,
           attendanceRate: { rate, riskCategory },
           guaranteedRevenue,
-          maxRevenue,
+          maxApprovedRevenue,
           potentialRevenue
         }
       ]
@@ -92,17 +98,18 @@ export function Dashboard() {
   }
 
   const reduceSummaryData = data => {
+    debugger;
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
-        maxRevenue,
+        maxApprovedRevenue,
         potentialRevenue,
         attendanceRate: { rate }
       } = cv
       return {
         guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
         potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
-        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
+        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxApprovedRevenue,
         attendanceRateTotal: acc.attendanceRateTotal + rate
       }
     }, summaryDataTotals)
@@ -145,12 +152,13 @@ export function Dashboard() {
     if (Object.keys(user).length === 0) {
       getUserData()
     }
+
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     getDashboardData()
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   return (
     <div className="dashboard sm:mx-8">

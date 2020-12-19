@@ -149,6 +149,16 @@
   "attendanceRate": "Tasa de asistencia",
   "attendanceRateDef": "Basada en la tasa de asistencia de todos los niños listados",
 
+  "attendance": "Asistencia",
+  "revenue": "Ingresos",
+  "child": "Niño",
+  "fullDays": "Días completos",
+  "hours": "Horas",
+  "absences": "Ausencias",
+  "earnedRevenue": "Ingresos ganados",
+  "estimatedRevenue": "Ingresos estimados",
+  "transportationRevenue": "Ingresos de la transportación",
+
   "onTrack": "en camino",
   "sureBet": "sin duda",
   "atRisk": "en riesgo",
