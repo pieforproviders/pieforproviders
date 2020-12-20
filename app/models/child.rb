@@ -35,6 +35,10 @@ class Child < UuidApplicationRecord
     child_approvals.find_by(approval: current_approval)
   end
 
+  def attendances
+    Attendance.where(child_approval: ChildApproval.where(child: self))
+  end
+
   def current_subsidy_rule
     current_child_approval.subsidy_rule
   end
@@ -43,8 +47,12 @@ class Child < UuidApplicationRecord
     'at_risk'
   end
 
-  def illinois_attendance_rate
-    0.46
+  def illinois_approval_amounts
+    IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
+  end
+
+  def illinois_attendance_rate(from = DateTime.now.in_time_zone(business.user.timezone).at_beginning_of_month)
+    calculate_illinois_attendance_rate(from.in_time_zone(business.user.timezone))
   end
 
   def illinois_guaranteed_revenue
@@ -63,6 +71,50 @@ class Child < UuidApplicationRecord
 
   def associate_subsidy_rule
     SubsidyRuleAssociatorJob.perform_later(id)
+  end
+
+  def calculate_illinois_attendance_rate(date)
+    return 0 unless illinois_family_days_approved(date).positive?
+
+    (illinois_family_days_attended(date).to_f / illinois_family_days_approved(date)).round(3)
+  end
+
+  def illinois_family_days_approved(date)
+    days = 0
+    current_approval.children.each { |child| days += sum_approvals(child, date) }
+    days
+  end
+
+  def illinois_family_days_attended(date)
+    days = 0
+    current_approval.children.each { |child| days += sum_attendances(child, date) }
+    days
+  end
+
+  def sum_approvals(child, date)
+    approval_amount = child.illinois_approval_amounts.find_by('month BETWEEN ? AND ?', date.at_beginning_of_month, date.at_end_of_month)
+    return 0 unless approval_amount
+
+    [
+      approval_amount.part_days_approved_per_week * weeks_this_month(date),
+      approval_amount.full_days_approved_per_week * weeks_this_month(date)
+    ].sum
+  end
+
+  def sum_attendances(child, date)
+    attendances = child.attendances.for_month(date)
+    return 0 unless attendances
+
+    [
+      attendances.illinois_part_days.count,
+      attendances.illinois_full_days.count,
+      attendances.illinois_full_plus_part_days.count * 2,
+      attendances.illinois_full_plus_full_days.count * 2
+    ].sum
+  end
+
+  def weeks_this_month(from)
+    (from.to_date.all_month.count / 7.0).ceil
   end
 end
 

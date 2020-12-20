@@ -2,18 +2,10 @@
 
 FactoryBot.define do
   factory :attendance do
-    latest_opening_time = (6 * 60).minutes # 6:00 am
-    site_opening_time = Time.zone.parse(Date.current.to_s) + Random.rand(latest_opening_time).minutes # opens between midnight and 6 a.m.
-    latest_check_in = (8 * 60).minutes # 8 hours after opening time
+    child_approval
 
-    min_time_in_care = 60.minutes
-    max_time_in_care = (18 * 60).minutes
-
-    check_in { Faker::Time.between(from: site_opening_time, to: (site_opening_time + latest_check_in)) }
-    check_out do
-      Faker::Time.between(from: check_in,
-                          to: (check_in + min_time_in_care + Random.rand(max_time_in_care).minutes))
-    end
+    check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+    check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
   end
 end
 
@@ -27,4 +19,13 @@ end
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
+#  child_approval_id                                              :uuid             not null
+#
+# Indexes
+#
+#  index_attendances_on_child_approval_id  (child_approval_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (child_approval_id => child_approvals.id)
 #

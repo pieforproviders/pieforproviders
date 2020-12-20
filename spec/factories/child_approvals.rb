@@ -4,6 +4,12 @@ FactoryBot.define do
   factory :child_approval do
     child
     approval
+
+    factory :child_approval_with_attendances do
+      after :create do |child_approval|
+        create_list(:attendance, 3, child_approval: child_approval)
+      end
+    end
   end
 end
 

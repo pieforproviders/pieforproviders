@@ -13,8 +13,9 @@ class ChildBlueprint < Blueprinter::Base
     field :attendance_risk do |child|
       child.illinois_attendance_risk
     end
-    field :attendance_rate do |child|
-      child.illinois_attendance_rate
+    field(:attendance_rate) do |child, options|
+      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
+      child.illinois_attendance_rate(from)
     end
     field :guaranteed_revenue do |child|
       child.illinois_guaranteed_revenue
