@@ -122,7 +122,7 @@ puts_records_in_db(Business)
 def create_case(full_name,
                 business: @business,
                 case_number: Faker::Number.number(digits: 10),
-                effective_on: Faker::Date.between(from: 1.year.ago, to: Time.zone.today),
+                effective_on: Faker::Date.between(from: 8.months.ago, to: Time.zone.today),
                 date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
                 copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
                 copay_frequency: nil,
@@ -151,10 +151,16 @@ def create_case(full_name,
     )
   end
 
-  Child.find_or_create_by!(business: business,
-                           full_name: full_name,
-                           date_of_birth: date_of_birth,
-                           approvals: approvals)
+  child = Child.find_or_create_by!(business: business,
+                                   full_name: full_name,
+                                   date_of_birth: date_of_birth,
+                                   approvals: approvals)
+  IllinoisApprovalAmount.create!(
+    child_approval: child.current_child_approval,
+    month: DateTime.now,
+    part_days_approved_per_week: rand(0..3),
+    full_days_approved_per_week: rand(0..2)
+  )
 end
 
 maria = create_case('Maria Baca')
