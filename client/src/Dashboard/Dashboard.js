@@ -29,7 +29,7 @@ export function Dashboard() {
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
 
-  const generateSummaryData = (totals = summaryDataTotals, td = tableData) => {
+  const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     return [
       {
         title: t('guaranteedRevenue'),
@@ -86,9 +86,9 @@ export function Dashboard() {
             cNumber: cv.approvals[0]?.case_number ?? '',
             business: cv.business.name ?? '',
             attendanceRate: { rate: cv.attendance_rate ?? '', riskCategory: cv.attendance_risk ?? '' },
-            guaranteedRevenue: cv.guaranteed_revenue,
-            maxApprovedRevenue: cv.max_approved_revenue,
-            potentialRevenue: cv.potential_revenue
+            guaranteedRevenue: cv.guaranteed_revenue ?? '',
+            maxApprovedRevenue: cv.max_approved_revenue ?? '',
+            potentialRevenue: cv.potential_revenue ?? ''
           }
         ]
       )
@@ -137,24 +137,28 @@ export function Dashboard() {
       const parsedResponse = await response.json()
 
       if (!parsedResponse.error) {
-        // NOTE: user state will be used to configure these
         const tableData = reduceTableData(parsedResponse)
         // temporary stop gap until next ticket for generating NE specific summary stats
         if (user.state !== 'NE') {
-          const summaryDataTotals = reduceSummaryData(tableData)
-          setSummaryTotals(summaryDataTotals)
+          const updatedSummaryDataTotals = reduceSummaryData(tableData)
+          setSummaryTotals(updatedSummaryDataTotals)
+          setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+          setTableData(tableData)
+          return;
         }
+        setSummaryData(generateSummaryData(tableData))
         setTableData(tableData)
-        setSummaryData(generateSummaryData(summaryDataTotals, tableData))
       }
+    }
+
+    if (Object.keys(user).length !== 0) {
+      getDashboardData()
     }
 
     if (Object.keys(user).length === 0) {
       getUserData()
     }
-
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
-    getDashboardData()
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
