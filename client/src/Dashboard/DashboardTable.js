@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories } from '_utils/constants'
+import ellipse from '_assets/ellipse.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 
@@ -48,7 +49,7 @@ export default function DashboardTable({ tableData, userState }) {
     return child ?
     <div>
       <p className='text-lg'>{child.childName}</p>
-      <p>{child.business+ ' ' + child.cNumber}</p>
+      <p className="flex flex-wrap mt-0.5">{child.business} <img className="mx-1" src={ellipse}/> {child.cNumber}</p>
     </div>
     : <></>
   }
@@ -56,20 +57,20 @@ export default function DashboardTable({ tableData, userState }) {
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
       return {
-        ...options,
         title: t(`${name}`),
         dataIndex: name,
         key: name,
         width: 150,
         onHeaderCell,
         children: generateColumns(children),
-        sortDirections: ['descend', 'ascend']
+        sortDirections: ['descend', 'ascend'],
+        ...options
       }
     })
   }
 
   const neColConfig = [
-    { children: [{ name: 'child', render: renderChild } ]},
+    { children: [{ name: 'child', render: renderChild, width: 250 } ]},
     {
       name: 'attendance',
       children: [

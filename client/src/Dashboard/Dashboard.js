@@ -96,11 +96,6 @@ export function Dashboard() {
   }
 
   const reduceSummaryData = data => {
-    // will be removed in upcoming dynamic summary stats ticket
-    if (user.state === 'NE') {
-      return summaryDataTotals
-    }
-
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
@@ -144,8 +139,11 @@ export function Dashboard() {
       if (!parsedResponse.error) {
         // NOTE: user state will be used to configure these
         const tableData = reduceTableData(parsedResponse)
-        const summaryDataTotals = reduceSummaryData(tableData)
-        setSummaryTotals(summaryDataTotals)
+        // temporary stop gap until next ticket for generating NE specific summary stats
+        if (user.state !== 'NE') {
+          const summaryDataTotals = reduceSummaryData(tableData)
+          setSummaryTotals(summaryDataTotals)
+        }
         setTableData(tableData)
         setSummaryData(generateSummaryData(summaryDataTotals, tableData))
       }
