@@ -44,29 +44,48 @@ export default function DashboardTable({ tableData, userState }) {
     }
   }
 
-  const generateColumn = ({ name = '', children = [], ...options }) => {
-    return {
-      ...options,
-      title: t(`${name}`),
-      dataIndex: name,
-      key: name,
-      width: 150,
-      onHeaderCell,
-      children: children.map(c => generateColumn(c)),
-      sortDirections: ['descend', 'ascend']
-    }
+  const renderChild = child => {
+    return child ?
+    <div>
+      <p className='text-lg'>{child.childName}</p>
+      <p>{child.business+ ' ' + child.cNumber}</p>
+    </div>
+    : <></>
+  }
+
+  const generateColumns = columns => {
+    return columns.map(({ name = '', children = [], ...options }) => {
+      return {
+        ...options,
+        title: t(`${name}`),
+        dataIndex: name,
+        key: name,
+        width: 150,
+        onHeaderCell,
+        children: generateColumns(children),
+        sortDirections: ['descend', 'ascend']
+      }
+    })
   }
 
   const neColConfig = [
-    { children: [{ name: 'child' } ]},
-    { name: 'attendance',
+    { children: [{ name: 'child', render: renderChild } ]},
+    {
+      name: 'attendance',
       children: [
         { name: 'fullDays', sorter: (a, b) => columnSorter(a, b, 'fullDays') },
         { name: 'hours', sorter: (a, b) => columnSorter(a, b, 'hours') },
         { name: 'absences', sorter: (a, b) => columnSorter(a, b, 'absences') },
       ]
     },
-    { name: 'revenue', children: [{ name: 'earnedRevenue' }, { name: 'estimatedRevenue' }, { name: 'transportationRevenue' }]}
+    {
+      name: 'revenue',
+      children: [
+        { name: 'earnedRevenue' },
+        { name: 'estimatedRevenue' },
+        { name: 'transportationRevenue' }
+      ]
+    }
   ]
 
   const defaultColConfig = [
@@ -82,7 +101,7 @@ export default function DashboardTable({ tableData, userState }) {
   return (
     <Table
       dataSource={tableData}
-      columns={userState === "NE" ? neColConfig.map(col => generateColumn(col)) : defaultColConfig.map(col => generateColumn(col))}
+      columns={userState === "NE" ? generateColumns(neColConfig) : generateColumns(defaultColConfig)}
       bordered={true}
       size={'medium'}
       pagination={false}

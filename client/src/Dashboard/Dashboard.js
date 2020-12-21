@@ -64,41 +64,43 @@ export function Dashboard() {
 
   const reduceTableData = res => {
     return res.reduce((acc, cv, index) => {
-      // if (user.state === "NE") {
-      //   debugger
-      //   const {
-
-      //   } = cv
-      // }
-      const {
-        full_name: childName = '',
-        approvals: [{ case_number: cNumber = '' }],
-        business: { name: business = '' },
-        attendance_rate: rate = '',
-        attendance_risk: riskCategory = '',
-        guaranteed_revenue: guaranteedRevenue = 0,
-        max_approved_revenue: maxApprovedRevenue = 0,
-        potential_revenue: potentialRevenue = 0
-      } = cv
-
-      return [
-        ...acc,
-        {
-          key: index,
-          childName,
-          cNumber,
-          business,
-          attendanceRate: { rate, riskCategory },
-          guaranteedRevenue,
-          maxApprovedRevenue,
-          potentialRevenue
-        }
-      ]
+      return (user.state === "NE" ?
+        [
+          ...acc,
+          {
+            key: index,
+            absences: cv.absences ?? '',
+            child: { childName: cv.full_name ?? '', cNumber: cv.approvals[0]?.case_number ?? '', business: cv.business.name ?? ''},
+            earnedRevenue: cv.earned_revenue ?? '',
+            estimatedRevenue: cv.estimated_revenue,
+            fullDays: cv.full_days ?? '',
+            hours: cv.hours ?? '',
+            transportationRevenue: cv.transportation_revenue ?? ''
+          }
+        ]:
+        [
+          ...acc,
+          {
+            key: index,
+            childName: cv.full_name ?? '',
+            cNumber: cv.approvals[0]?.case_number ?? '',
+            business: cv.business.name ?? '',
+            attendanceRate: { rate: cv.attendance_rate ?? '', riskCategory: cv.attendance_risk ?? '' },
+            guaranteedRevenue: cv.guaranteed_revenue,
+            maxApprovedRevenue: cv.max_approved_revenue,
+            potentialRevenue: cv.potential_revenue
+          }
+        ]
+      )
     }, [])
   }
 
   const reduceSummaryData = data => {
-    debugger;
+    // will be removed in upcoming dynamic summary stats ticket
+    if (user.state === 'NE') {
+      return summaryDataTotals
+    }
+
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
