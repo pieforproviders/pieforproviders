@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_13_235022) do
+ActiveRecord::Schema.define(version: 2020_12_21_041639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -33,16 +33,8 @@ ActiveRecord::Schema.define(version: 2020_12_13_235022) do
     t.interval "total_time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "billable_occurrences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "billable_type"
-    t.uuid "billable_id"
     t.uuid "child_approval_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["billable_type", "billable_id"], name: "billable_index"
-    t.index ["child_approval_id"], name: "index_billable_occurrences_on_child_approval_id"
+    t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
   end
 
   create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -90,6 +82,20 @@ ActiveRecord::Schema.define(version: 2020_12_13_235022) do
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "queue_name"
+    t.integer "priority"
+    t.jsonb "serialized_params"
+    t.datetime "scheduled_at"
+    t.datetime "performed_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
   create_table "illinois_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -163,7 +169,7 @@ ActiveRecord::Schema.define(version: 2020_12_13_235022) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token"
   end
 
-  add_foreign_key "billable_occurrences", "child_approvals"
+  add_foreign_key "attendances", "child_approvals"
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"

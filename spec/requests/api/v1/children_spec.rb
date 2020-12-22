@@ -319,22 +319,48 @@ RSpec.describe 'children API', type: :request do
         # security [{ token: [] }]
 
         include_context 'correct api version header'
-        let!(:expired_approval) { create(:expired_approval, case_number: '1234567A', create_children: false) }
-        let!(:expired_approvals) { create_list(:expired_approval, count, create_children: false) }
-        let!(:current_approval) { create(:approval, case_number: '1234567B', create_children: false) }
-        let!(:current_approvals) { create_list(:approval, count, create_children: false) }
-        let!(:owner_records) { create_list(:child, count, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
-        let!(:owner_inactive_records) { create_list(:child, count, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample])) }
-        let!(:non_owner_records) { create_list(:child, count, non_owner_attributes.merge(approvals: [expired_approvals.sample, current_approvals.sample])) }
-        let!(:non_owner_inactive_records) { create_list(:child, count, non_owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample])) }
+        let!(:expired_approval) { create(:approval, effective_on: Date.parse('January 11, 2018'), case_number: '1234567A', create_children: false) }
+        let!(:expired_approvals) { create_list(:approval, count, effective_on: Date.parse('January 11, 2018'), create_children: false) }
+        let!(:current_approval) { create(:approval, effective_on: Date.parse('January 11, 2020'), case_number: '1234567B', create_children: false) }
+        let!(:current_approvals) { create_list(:approval, count, effective_on: Date.parse('January 11, 2020'), create_children: false) }
+        let!(:owner_records) { create_list(:child_in_illinois, count, :with_three_attendances, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
+        let!(:owner_inactive_records) do
+          create_list(:child_in_illinois, count, :with_two_attendances, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
+        end
+        let!(:non_owner_records) do
+          create_list(:child_in_illinois, count, :with_two_attendances, non_owner_attributes.merge(approvals: [expired_approvals.sample, current_approvals.sample]))
+        end
+        let!(:non_owner_inactive_records) do
+          create_list(:child_in_illinois, count, :with_two_attendances,
+                      non_owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
+        end
 
         context 'admin user' do
           include_context 'admin user'
+
+          before { freeze_time }
           response '200', 'active cases found' do
             run_test! do
-              expect(JSON.parse(response.body).size).to eq(count * 2)
-              expect(JSON.parse(response.body).first['approvals'].size).to eq(1)
-              expect(JSON.parse(response.body).first['approvals'].first['case_number']).to eq('1234567B')
+              json = JSON.parse(response.body)
+              expect(json.size).to eq(count * 2)
+              expect(json.first['approvals'].size).to eq(1)
+              expect(json.first['approvals'].first['case_number']).to eq('1234567B')
+              expect(json.first['attendance_rate']).to eq(0)
+              expect(json.first['as_of']).to eq(DateTime.now.strftime('%m/%d/%Y'))
+              expect(response).to match_response_schema('illinois_case_list_for_dashboard')
+            end
+          end
+          response '200', 'when requesting a month with attendances and approvals' do
+            before { travel_to Date.parse('March 28, 2020') }
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.size).to eq(count * 2)
+              expect(json.first['approvals'].size).to eq(1)
+              expect(json.first['approvals'].first['case_number']).to eq('1234567B')
+              expect(json.first['attendance_rate']).to eq(0.16)
+              expect(json.first['as_of']).to eq('03/12/2020')
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
@@ -345,7 +371,8 @@ RSpec.describe 'children API', type: :request do
 
           response '200', 'active cases found' do
             run_test! do
-              expect(JSON.parse(response.body).size).to eq(count)
+              json = JSON.parse(response.body)
+              expect(json.size).to eq(count)
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
@@ -361,7 +388,8 @@ RSpec.describe 'children API', type: :request do
           end
           response '200', 'active cases found' do
             run_test! do
-              expect(JSON.parse(response.body).size).to eq(count)
+              json = JSON.parse(response.body)
+              expect(json.size).to eq(count)
               expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
@@ -371,7 +399,8 @@ RSpec.describe 'children API', type: :request do
           include_context 'authenticated user'
           response '200', 'active cases found' do
             run_test! do
-              expect(JSON.parse(response.body).size).to eq(0)
+              json = JSON.parse(response.body)
+              expect(json.size).to eq(0)
             end
           end
         end

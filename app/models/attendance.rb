@@ -1,27 +1,20 @@
 # frozen_string_literal: true
 
 # Attendance of a child during a specific cycle for a child case
-#
-# from GitHub comments on the PR to implement this model (PR 320)
-# 2020-09-08: open question from Kate D.:
-#   When someone adds an attendance, are we expecting them to choose what
-#   length of care it is, or are we calculating that by the number of hours
-#   as laid out in their subsidy rule?
-#   If we're calculating it, can the user change it, if for some reason our
-#   calculation gets it wrong?
-#
-#   2020-09-08: Answer from Chelsea S:
-#   Since we haven't designed these screens yet, I don't think we have clear
-#   answers. My assumption, though, is that we're calculating it for them based
-#   on the number of hours, as laid out in their subsidy rule.
-#   I'm not sure if we'll let them change it.
-#
 class Attendance < UuidApplicationRecord
-  has_one :billable_occurrence, as: :billable, dependent: :restrict_with_error
   before_validation :calc_total_time_in_care
+
+  belongs_to :child_approval
 
   validates :check_in, time_param: true
   validates :check_out, time_param: true
+
+  scope :for_month, ->(month = DateTme.now) { where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month) }
+
+  scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }
+  scope :illinois_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '5 hours', '12 hours') }
+  scope :illinois_full_plus_part_days, -> { where('total_time_in_care > ? AND total_time_in_care < ?', '12 hours', '17 hours') }
+  scope :illinois_full_plus_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '17 hours', '24 hours') }
 
   private
 
@@ -40,4 +33,13 @@ end
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
+#  child_approval_id                                              :uuid             not null
+#
+# Indexes
+#
+#  index_attendances_on_child_approval_id  (child_approval_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (child_approval_id => child_approvals.id)
 #

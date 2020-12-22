@@ -36,6 +36,11 @@ class User < UuidApplicationRecord
   def state
     businesses&.first&.state || ''
   end
+
+  def latest_attendance_in_month(from = DateTime.now.in_time_zone(timezone).at_beginning_of_month)
+    Attendance.where('check_in BETWEEN ? AND ?', from.at_beginning_of_month,
+                     from.at_end_of_month).where(child_approval: ChildApproval.where(child: Child.where(business: Business.where(user: self)))).max_by(&:check_in)
+  end
 end
 
 # == Schema Information

@@ -6,6 +6,43 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     business
     approvals { create_list(:approval, rand(1..3), create_children: false) }
+
+    factory :child_in_illinois do
+      after(:create) do |child|
+        IllinoisApprovalAmount.create!(
+          child_approval: child.current_child_approval,
+          month: Date.parse('March', '2020'),
+          part_days_approved_per_week: 3,
+          full_days_approved_per_week: 2
+        )
+      end
+    end
+    trait :with_three_attendances do
+      after(:create) do |child|
+        # part day
+        part_day_start = DateTime.parse('March 10, 2020 2:04 pm CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: part_day_start, check_out: part_day_start + 4.hours + 10.minutes)
+
+        # full day
+        full_day_start = DateTime.parse('March 4, 2020 8:32 am CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: full_day_start, check_out: full_day_start + 8.hours + 31.minutes)
+
+        # full plus part day
+        full_plus_part_day_start = DateTime.parse('March 12, 2020 9:18 am CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: full_plus_part_day_start, check_out: full_plus_part_day_start + 14.hours + 29.minutes)
+      end
+    end
+    trait :with_two_attendances do
+      after(:create) do |child|
+        # part day
+        part_day_start = DateTime.parse('March 1, 2020 2:04 pm CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: part_day_start, check_out: part_day_start + 4.hours + 10.minutes)
+
+        # full day
+        full_day_start = DateTime.parse('March 2, 2020 8:32 am CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: full_day_start, check_out: full_day_start + 8.hours + 31.minutes)
+      end
+    end
   end
 end
 
