@@ -2,8 +2,8 @@ import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
 import DashboardTable from '../DashboardTable'
 
-const doRender = (props = { tableData: [], userState: ''}) => {
-  return render(<DashboardTable {...props}/>)
+const doRender = (props = { tableData: [], userState: '' }) => {
+  return render(<DashboardTable {...props} />)
 }
 
 describe('<DashboardTable />', () => {
@@ -21,7 +21,7 @@ describe('<DashboardTable />', () => {
 
   it('renders the DashboardTable component for NE users', async () => {
     await waitFor(() => {
-      const { container } = doRender({ tableData: [], userState: 'NE'})
+      const { container } = doRender({ tableData: [], userState: 'NE' })
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
       expect(container).toHaveTextContent('Hours')

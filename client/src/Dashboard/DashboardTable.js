@@ -46,12 +46,17 @@ export default function DashboardTable({ tableData, userState }) {
   }
 
   const renderChild = child => {
-    return child ?
-    <div>
-      <p className='text-lg'>{child.childName}</p>
-      <p className="flex flex-wrap mt-0.5">{child.business} <img className="mx-1" src={ellipse}/> {child.cNumber}</p>
-    </div>
-    : <></>
+    return child ? (
+      <div>
+        <p className="text-lg">{child.childName}</p>
+        <p className="flex flex-wrap mt-0.5">
+          {child.business} <img className="mx-1" src={ellipse} />{' '}
+          {child.cNumber}
+        </p>
+      </div>
+    ) : (
+      <></>
+    )
   }
 
   const generateColumns = columns => {
@@ -70,13 +75,13 @@ export default function DashboardTable({ tableData, userState }) {
   }
 
   const neColConfig = [
-    { children: [{ name: 'child', render: renderChild, width: 250 } ]},
+    { children: [{ name: 'child', render: renderChild, width: 250 }] },
     {
       name: 'attendance',
       children: [
         { name: 'fullDays', sorter: (a, b) => columnSorter(a, b, 'fullDays') },
         { name: 'hours', sorter: (a, b) => columnSorter(a, b, 'hours') },
-        { name: 'absences', sorter: (a, b) => columnSorter(a, b, 'absences') },
+        { name: 'absences', sorter: (a, b) => columnSorter(a, b, 'absences') }
       ]
     },
     {
@@ -93,16 +98,33 @@ export default function DashboardTable({ tableData, userState }) {
     { name: 'childName', sorter: (a, b) => columnSorter(a, b, 'childName') },
     { name: 'cNumber', sorter: (a, b) => columnSorter(a, b, 'cNumber') },
     { name: 'business', sorter: (a, b) => columnSorter(a, b, 'business') },
-    { name: 'attendanceRate', sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate, render: renderAttendanceRate },
-    { name: 'guaranteedRevenue', sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue },
-    { name: 'potentialRevenue', sorter: (a, b) => a.potentialRevenue - b.potentialRevenue},
-    { name: 'maxApprovedRevenue', sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue }
+    {
+      name: 'attendanceRate',
+      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
+      render: renderAttendanceRate
+    },
+    {
+      name: 'guaranteedRevenue',
+      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue
+    },
+    {
+      name: 'potentialRevenue',
+      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue
+    },
+    {
+      name: 'maxApprovedRevenue',
+      sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue
+    }
   ]
 
   return (
     <Table
       dataSource={tableData}
-      columns={userState === "NE" ? generateColumns(neColConfig) : generateColumns(defaultColConfig)}
+      columns={
+        userState === 'NE'
+          ? generateColumns(neColConfig)
+          : generateColumns(defaultColConfig)
+      }
       bordered={true}
       size={'medium'}
       pagination={false}

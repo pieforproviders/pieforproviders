@@ -64,34 +64,40 @@ export function Dashboard() {
 
   const reduceTableData = res => {
     return res.reduce((acc, cv, index) => {
-      return (user.state === "NE" ?
-        [
-          ...acc,
-          {
-            key: index,
-            absences: cv.absences ?? '',
-            child: { childName: cv.full_name ?? '', cNumber: cv.approvals[0]?.case_number ?? '', business: cv.business.name ?? ''},
-            earnedRevenue: cv.earned_revenue ?? '',
-            estimatedRevenue: cv.estimated_revenue,
-            fullDays: cv.full_days ?? '',
-            hours: cv.hours ?? '',
-            transportationRevenue: cv.transportation_revenue ?? ''
-          }
-        ]:
-        [
-          ...acc,
-          {
-            key: index,
-            childName: cv.full_name ?? '',
-            cNumber: cv.approvals[0]?.case_number ?? '',
-            business: cv.business.name ?? '',
-            attendanceRate: { rate: cv.attendance_rate ?? '', riskCategory: cv.attendance_risk ?? '' },
-            guaranteedRevenue: cv.guaranteed_revenue ?? '',
-            maxApprovedRevenue: cv.max_approved_revenue ?? '',
-            potentialRevenue: cv.potential_revenue ?? ''
-          }
-        ]
-      )
+      return user.state === 'NE'
+        ? [
+            ...acc,
+            {
+              key: index,
+              absences: cv.absences ?? '',
+              child: {
+                childName: cv.full_name ?? '',
+                cNumber: cv.approvals[0]?.case_number ?? '',
+                business: cv.business.name ?? ''
+              },
+              earnedRevenue: cv.earned_revenue ?? '',
+              estimatedRevenue: cv.estimated_revenue,
+              fullDays: cv.full_days ?? '',
+              hours: cv.hours ?? '',
+              transportationRevenue: cv.transportation_revenue ?? ''
+            }
+          ]
+        : [
+            ...acc,
+            {
+              key: index,
+              childName: cv.full_name ?? '',
+              cNumber: cv.approvals[0]?.case_number ?? '',
+              business: cv.business.name ?? '',
+              attendanceRate: {
+                rate: cv.attendance_rate ?? '',
+                riskCategory: cv.attendance_risk ?? ''
+              },
+              guaranteedRevenue: cv.guaranteed_revenue ?? '',
+              maxApprovedRevenue: cv.max_approved_revenue ?? '',
+              potentialRevenue: cv.potential_revenue ?? ''
+            }
+          ]
     }, [])
   }
 
@@ -106,7 +112,8 @@ export function Dashboard() {
       return {
         guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
         potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
-        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxApprovedRevenue,
+        maxApprovedRevenueTotal:
+          acc.maxApprovedRevenueTotal + maxApprovedRevenue,
         attendanceRateTotal: acc.attendanceRateTotal + rate
       }
     }, summaryDataTotals)
@@ -142,9 +149,11 @@ export function Dashboard() {
         if (user.state !== 'NE') {
           const updatedSummaryDataTotals = reduceSummaryData(tableData)
           setSummaryTotals(updatedSummaryDataTotals)
-          setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+          setSummaryData(
+            generateSummaryData(tableData, updatedSummaryDataTotals)
+          )
           setTableData(tableData)
-          return;
+          return
         }
         setSummaryData(generateSummaryData(tableData))
         setTableData(tableData)

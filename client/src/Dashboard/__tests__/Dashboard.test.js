@@ -3,11 +3,12 @@ import { render, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { Dashboard } from '../Dashboard'
 
-const doRender = () => {
+const doRender = stateOptions => {
   return render(
     <MemoryRouter>
       <Dashboard />
-    </MemoryRouter>
+    </MemoryRouter>,
+    stateOptions
   )
 }
 
@@ -20,9 +21,17 @@ describe('<Dashboard />', () => {
     const { container } = doRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
-      expect(window.fetch).toHaveBeenCalledTimes(2)
+      expect(window.fetch).toHaveBeenCalledTimes(1)
       expect(window.fetch.mock.calls[0][0]).toBe('/api/v1/profile')
-      expect(window.fetch.mock.calls[1][0]).toBe(
+    })
+  })
+
+  it('renders the Dashboard page when a user is in state', async () => {
+    const { container } = doRender({ initialState: { user: { state: 'NE' } } })
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Your dashboard')
+      expect(window.fetch).toHaveBeenCalledTimes(1)
+      expect(window.fetch.mock.calls[0][0]).toBe(
         '/api/v1/case_list_for_dashboard'
       )
     })
