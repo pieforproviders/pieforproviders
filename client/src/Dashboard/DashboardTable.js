@@ -50,7 +50,7 @@ export default function DashboardTable({ tableData, userState }) {
       <div>
         <p className="text-lg">{child.childName}</p>
         <p className="flex flex-wrap mt-0.5">
-          {child.business} <img className="mx-1" src={ellipse} />{' '}
+          {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
           {child.cNumber}
         </p>
       </div>
