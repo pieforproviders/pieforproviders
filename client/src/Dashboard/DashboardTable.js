@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories } from '_utils/constants'
+import ellipse from '_assets/ellipse.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 
 export default function DashboardTable({ tableData, userState }) {
   const { t } = useTranslation()
+
   const onHeaderCell = () => {
     return {
       style: {
@@ -17,101 +19,112 @@ export default function DashboardTable({ tableData, userState }) {
       role: 'columnheader'
     }
   }
+
   const columnSorter = (a, b, name) =>
     a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
-  // NOTE: prop user state will be used to configure table columns
-  // configuation for table columns
-  const columns = [
-    {
-      title: t('childName'),
-      dataIndex: 'childName',
-      key: 'childName',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'childName'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('caseNumberLowercase'),
-      dataIndex: 'caseNumber',
-      key: 'caseNumber',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'caseNumber'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('business'),
-      dataIndex: 'business',
-      key: 'business',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => columnSorter(a, b, 'business'),
-      sortDirections: ['descend', 'ascend']
-    },
-    {
-      title: t('attendanceRate'),
-      dataIndex: 'attendanceRate',
-      key: 'attendanceRate',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
-      sortDirections: ['descend', 'ascend'],
-      render: attendanceRate => {
-        const createTag = (color, text) => (
-          <Tag className={`${color}-tag custom-tag`}>
-            {`${(attendanceRate.rate * 100).toFixed(1)}% - ${t(text)}`}
-          </Tag>
-        )
 
-        switch (attendanceRate.riskCategory) {
-          case attendanceCategories.ONTRACK:
-            return createTag('green', 'onTrack')
-          case attendanceCategories.SUREBET:
-            return createTag('green', 'sureBet')
-          case attendanceCategories.ATRISK:
-            return createTag('orange', 'atRisk')
-          case attendanceCategories.NOTMET:
-            return createTag('orange', 'notMet')
-          case attendanceCategories.NOTENOUGHINFO:
-          default:
-            return createTag('grey', 'notEnoughInfo')
-        }
+  const renderAttendanceRate = attendanceRate => {
+    const createTag = (color, text) => (
+      <Tag className={`${color}-tag custom-tag`}>
+        {`${attendanceRate.rate * 100}% - ${t(text)}`}
+      </Tag>
+    )
+
+    switch (attendanceRate.riskCategory) {
+      case attendanceCategories.ONTRACK:
+        return createTag('green', 'onTrack')
+      case attendanceCategories.SUREBET:
+        return createTag('green', 'sureBet')
+      case attendanceCategories.ATRISK:
+        return createTag('orange', 'atRisk')
+      case attendanceCategories.NOTMET:
+        return createTag('orange', 'notMet')
+      case attendanceCategories.NOTENOUGHINFO:
+      default:
+        return createTag('grey', 'notEnoughInfo')
+    }
+  }
+
+  const renderChild = child => {
+    return child ? (
+      <div>
+        <p className="text-lg">{child.childName}</p>
+        <p className="flex flex-wrap mt-0.5">
+          {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
+          {child.cNumber}
+        </p>
+      </div>
+    ) : (
+      <></>
+    )
+  }
+
+  const generateColumns = columns => {
+    return columns.map(({ name = '', children = [], ...options }) => {
+      return {
+        title: t(`${name}`),
+        dataIndex: name,
+        key: name,
+        width: 150,
+        onHeaderCell,
+        children: generateColumns(children),
+        sortDirections: ['descend', 'ascend'],
+        ...options
       }
+    })
+  }
+
+  const neColConfig = [
+    { children: [{ name: 'child', render: renderChild, width: 250 }] },
+    {
+      name: 'attendance',
+      children: [
+        { name: 'fullDays', sorter: (a, b) => columnSorter(a, b, 'fullDays') },
+        { name: 'hours', sorter: (a, b) => columnSorter(a, b, 'hours') },
+        { name: 'absences', sorter: (a, b) => columnSorter(a, b, 'absences') }
+      ]
     },
     {
-      title: t('guaranteedRevenue'),
-      dataIndex: 'guaranteedRevenue',
-      key: 'guaranteedRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
-      sortDirections: ['descend', 'ascend']
+      name: 'revenue',
+      children: [
+        { name: 'earnedRevenue' },
+        { name: 'estimatedRevenue' },
+        { name: 'transportationRevenue' }
+      ]
+    }
+  ]
+
+  const defaultColConfig = [
+    { name: 'childName', sorter: (a, b) => columnSorter(a, b, 'childName') },
+    { name: 'cNumber', sorter: (a, b) => columnSorter(a, b, 'cNumber') },
+    { name: 'business', sorter: (a, b) => columnSorter(a, b, 'business') },
+    {
+      name: 'attendanceRate',
+      sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
+      render: renderAttendanceRate
     },
     {
-      title: t('potentialRevenue'),
-      dataIndex: 'potentialRevenue',
-      key: 'potentialRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
-      sortDirections: ['descend', 'ascend']
+      name: 'guaranteedRevenue',
+      sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue
     },
     {
-      title: t('maxApprovedRevenue'),
-      dataIndex: 'maxRevenue',
-      key: 'maxRevenue',
-      width: 150,
-      onHeaderCell,
-      sorter: (a, b) => a.maxRevenue - b.maxRevenue,
-      sortDirections: ['descend', 'ascend']
+      name: 'potentialRevenue',
+      sorter: (a, b) => a.potentialRevenue - b.potentialRevenue
+    },
+    {
+      name: 'maxApprovedRevenue',
+      sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue
     }
   ]
 
   return (
     <Table
       dataSource={tableData}
-      columns={columns}
+      columns={
+        userState === 'NE'
+          ? generateColumns(neColConfig)
+          : generateColumns(defaultColConfig)
+      }
       bordered={true}
       size={'medium'}
       pagination={false}

@@ -29,7 +29,7 @@ export function Dashboard() {
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
 
-  const generateSummaryData = (totals = summaryDataTotals, td = tableData) => {
+  const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     return [
       {
         title: t('guaranteedRevenue'),
@@ -64,30 +64,40 @@ export function Dashboard() {
 
   const reduceTableData = res => {
     return res.reduce((acc, cv, index) => {
-      const {
-        full_name: childName = '',
-        approvals: [{ case_number: caseNumber = '' }],
-        business: { name: business = '' },
-        attendance_rate: rate = '',
-        attendance_risk: riskCategory = '',
-        guaranteed_revenue: guaranteedRevenue = 0,
-        max_approved_revenue: maxRevenue = 0,
-        potential_revenue: potentialRevenue = 0
-      } = cv
-
-      return [
-        ...acc,
-        {
-          key: index,
-          childName,
-          caseNumber,
-          business,
-          attendanceRate: { rate, riskCategory },
-          guaranteedRevenue,
-          maxRevenue,
-          potentialRevenue
-        }
-      ]
+      return user.state === 'NE'
+        ? [
+            ...acc,
+            {
+              key: index,
+              absences: cv.absences ?? '',
+              child: {
+                childName: cv.full_name ?? '',
+                cNumber: cv.approvals[0]?.case_number ?? '',
+                business: cv.business.name ?? ''
+              },
+              earnedRevenue: cv.earned_revenue ?? '',
+              estimatedRevenue: cv.estimated_revenue,
+              fullDays: cv.full_days ?? '',
+              hours: cv.hours ?? '',
+              transportationRevenue: cv.transportation_revenue ?? ''
+            }
+          ]
+        : [
+            ...acc,
+            {
+              key: index,
+              childName: cv.full_name ?? '',
+              cNumber: cv.approvals[0]?.case_number ?? '',
+              business: cv.business.name ?? '',
+              attendanceRate: {
+                rate: cv.attendance_rate ?? '',
+                riskCategory: cv.attendance_risk ?? ''
+              },
+              guaranteedRevenue: cv.guaranteed_revenue ?? '',
+              maxApprovedRevenue: cv.max_approved_revenue ?? '',
+              potentialRevenue: cv.potential_revenue ?? ''
+            }
+          ]
     }, [])
   }
 
@@ -95,14 +105,15 @@ export function Dashboard() {
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
-        maxRevenue,
+        maxApprovedRevenue,
         potentialRevenue,
         attendanceRate: { rate }
       } = cv
       return {
         guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
         potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
-        maxApprovedRevenueTotal: acc.maxApprovedRevenueTotal + maxRevenue,
+        maxApprovedRevenueTotal:
+          acc.maxApprovedRevenueTotal + maxApprovedRevenue,
         attendanceRateTotal: acc.attendanceRateTotal + rate
       }
     }, summaryDataTotals)
@@ -133,24 +144,34 @@ export function Dashboard() {
       const parsedResponse = await response.json()
 
       if (!parsedResponse.error) {
-        // NOTE: user state will be used to configure these
         const tableData = reduceTableData(parsedResponse)
-        const summaryDataTotals = reduceSummaryData(tableData)
-        setSummaryTotals(summaryDataTotals)
+        // temporary stop gap until next ticket for generating NE specific summary stats
+        if (user.state !== 'NE') {
+          const updatedSummaryDataTotals = reduceSummaryData(tableData)
+          setSummaryTotals(updatedSummaryDataTotals)
+          setSummaryData(
+            generateSummaryData(tableData, updatedSummaryDataTotals)
+          )
+          setTableData(tableData)
+          return
+        }
+        setSummaryData(generateSummaryData(tableData))
         setTableData(tableData)
-        setSummaryData(generateSummaryData(summaryDataTotals, tableData))
       }
+    }
+
+    if (Object.keys(user).length !== 0) {
+      getDashboardData()
     }
 
     if (Object.keys(user).length === 0) {
       getUserData()
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
-    getDashboardData()
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [user])
 
   return (
     <div className="dashboard sm:mx-8">

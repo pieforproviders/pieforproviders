@@ -2,8 +2,8 @@ import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
 import DashboardTable from '../DashboardTable'
 
-const doRender = () => {
-  return render(<DashboardTable tableData={[]} userState={''} />)
+const doRender = (props = { tableData: [], userState: '' }) => {
+  return render(<DashboardTable {...props} />)
 }
 
 describe('<DashboardTable />', () => {
@@ -16,6 +16,19 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Attendance rate')
       expect(container).toHaveTextContent('Guaranteed revenue')
       expect(container).toHaveTextContent('Max. approved revenue')
+    })
+  })
+
+  it('renders the DashboardTable component for NE users', async () => {
+    await waitFor(() => {
+      const { container } = doRender({ tableData: [], userState: 'NE' })
+      expect(container).toHaveTextContent('Child')
+      expect(container).toHaveTextContent('Full days')
+      expect(container).toHaveTextContent('Hours')
+      expect(container).toHaveTextContent('Absences')
+      expect(container).toHaveTextContent('Earned revenue')
+      expect(container).toHaveTextContent('Estimated revenue')
+      expect(container).toHaveTextContent('Transportation revenue')
     })
   })
 })
