@@ -32,6 +32,17 @@ FactoryBot.define do
         child.current_child_approval.attendances << Attendance.new(check_in: full_plus_part_day_start, check_out: full_plus_part_day_start + 14.hours + 29.minutes)
       end
     end
+    trait :with_two_attendances do
+      after(:create) do |child|
+        # part day
+        part_day_start = DateTime.parse('March 1, 2020 2:04 pm CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: part_day_start, check_out: part_day_start + 4.hours + 10.minutes)
+
+        # full day
+        full_day_start = DateTime.parse('March 2, 2020 8:32 am CST')
+        child.current_child_approval.attendances << Attendance.new(check_in: full_day_start, check_out: full_day_start + 8.hours + 31.minutes)
+      end
+    end
   end
 end
 

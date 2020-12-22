@@ -325,18 +325,20 @@ RSpec.describe 'children API', type: :request do
         let!(:current_approvals) { create_list(:approval, count, effective_on: Date.parse('January 11, 2020'), create_children: false) }
         let!(:owner_records) { create_list(:child_in_illinois, count, :with_three_attendances, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
         let!(:owner_inactive_records) do
-          create_list(:child_in_illinois, count, :with_three_attendances, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
+          create_list(:child_in_illinois, count, :with_two_attendances, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
         let!(:non_owner_records) do
-          create_list(:child_in_illinois, count, :with_three_attendances, non_owner_attributes.merge(approvals: [expired_approvals.sample, current_approvals.sample]))
+          create_list(:child_in_illinois, count, :with_two_attendances, non_owner_attributes.merge(approvals: [expired_approvals.sample, current_approvals.sample]))
         end
         let!(:non_owner_inactive_records) do
-          create_list(:child_in_illinois, count, :with_three_attendances,
+          create_list(:child_in_illinois, count, :with_two_attendances,
                       non_owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
 
         context 'admin user' do
           include_context 'admin user'
+
+          before { freeze_time }
           response '200', 'active cases found' do
             run_test! do
               json = JSON.parse(response.body)
@@ -344,6 +346,7 @@ RSpec.describe 'children API', type: :request do
               expect(json.first['approvals'].size).to eq(1)
               expect(json.first['approvals'].first['case_number']).to eq('1234567B')
               expect(json.first['attendance_rate']).to eq(0)
+              expect(json.first['as_of']).to eq(DateTime.now.strftime('%m/%d/%Y'))
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
@@ -357,6 +360,7 @@ RSpec.describe 'children API', type: :request do
               expect(json.first['approvals'].size).to eq(1)
               expect(json.first['approvals'].first['case_number']).to eq('1234567B')
               expect(json.first['attendance_rate']).to eq(0.16)
+              expect(json.first['as_of']).to eq('03/12/2020')
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end

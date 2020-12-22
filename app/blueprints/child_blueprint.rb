@@ -26,8 +26,9 @@ class ChildBlueprint < Blueprinter::Base
     field :max_approved_revenue do |child|
       child.illinois_max_approved_revenue
     end
-    field :as_of do
-      '12/21/2020'
+    field(:as_of) do |child, options|
+      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
+      child.business.user.latest_attendance_in_month(from)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
     end
     exclude :id
   end
@@ -59,8 +60,9 @@ class ChildBlueprint < Blueprinter::Base
     field :transportation_revenue do
       '30 trips - $80.00'
     end
-    field :as_of do
-      '12/21/2020'
+    field(:as_of) do |child, options|
+      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
+      child.business.user.latest_attendance_in_month(from)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
     end
     exclude :id
   end
