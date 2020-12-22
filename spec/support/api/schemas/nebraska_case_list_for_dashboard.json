@@ -53,7 +53,14 @@
         "type": "string"
       },
       "as_of": {
-        "type": "string"
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "required": [
