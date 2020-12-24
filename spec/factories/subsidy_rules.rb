@@ -7,10 +7,15 @@ FactoryBot.define do
     license_type { Licenses.types.values.sample }
     effective_on { Faker::Date.between(from: 1.year.ago, to: Time.zone.today) }
     expires_on { effective_on + 1.year }
+
     factory :subsidy_rule_for_illinois do
       state { 'IL' }
       county { 'Cook' }
       association :subsidy_ruleable, factory: :illinois_subsidy_rule
+
+      trait :fifty_percent do
+        association :subsidy_ruleable, factory: :illinois_subsidy_rule, attendance_threshold: 0.50
+      end
     end
   end
 end
@@ -30,7 +35,7 @@ end
 #  subsidy_ruleable_type :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  subsidy_ruleable_id   :bigint
+#  subsidy_ruleable_id   :uuid
 #
 # Indexes
 #
