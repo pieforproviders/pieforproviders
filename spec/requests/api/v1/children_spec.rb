@@ -334,6 +334,14 @@ RSpec.describe 'children API', type: :request do
           create_list(:child_in_illinois, count, :with_two_attendances,
                       non_owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
+        let(:subsidy_rule) { create(:subsidy_rule_for_illinois, :fifty_percent) }
+        let(:first_child) { owner_records.first }
+        let(:last_child) { owner_records.last }
+        before do
+          ([expired_approval, current_approval] + expired_approvals + current_approvals).each do |approval|
+            approval.children.each { |child| child.current_child_approval.update!(subsidy_rule: subsidy_rule) }
+          end
+        end
 
         context 'admin user' do
           include_context 'admin user'
@@ -351,7 +359,7 @@ RSpec.describe 'children API', type: :request do
             end
           end
           response '200', 'when requesting a month with attendances and approvals' do
-            before { travel_to Date.parse('March 28, 2020') }
+            before { travel_to Date.parse('March 28, 2020').in_time_zone(user.timezone) }
             after { travel_back }
 
             run_test! do
@@ -374,6 +382,131 @@ RSpec.describe 'children API', type: :request do
               json = JSON.parse(response.body)
               expect(json.size).to eq(count)
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
+            end
+          end
+        end
+
+        context 'with attendance risk calculations' do
+          before do
+            sign_in user
+          end
+
+          response '200', 'with a sure_bet family' do
+            before do
+              travel_to Date.parse('December 23, 2020').in_time_zone(user.timezone)
+              create(:illinois_approval_amount, child_approval: first_child.current_child_approval, part_days_approved_per_week: 1, full_days_approved_per_week: 0,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+              create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 0, full_days_approved_per_week: 1,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('sure_bet')
+              expect(json[1]['attendance_risk']).to eq('sure_bet')
+            end
+          end
+
+          response '200', 'with a family with a sure_bet child and an on_track child' do
+            before do
+              travel_to Date.parse('December 23, 2020').in_time_zone(user.timezone)
+              create(:illinois_approval_amount, child_approval: first_child.current_child_approval, part_days_approved_per_week: 1, full_days_approved_per_week: 2,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+              create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 0, full_days_approved_per_week: 1,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('on_track')
+              expect(json[1]['attendance_risk']).to eq('sure_bet')
+            end
+          end
+
+          response '200', 'with an on_track family' do
+            before do
+              travel_to Date.parse('December 23, 2020').in_time_zone(user.timezone)
+              create(:illinois_approval_amount, child_approval: first_child.current_child_approval, part_days_approved_per_week: 3, full_days_approved_per_week: 2,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+              create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 5, child_approval: last_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('on_track')
+              expect(json[1]['attendance_risk']).to eq('on_track')
+            end
+          end
+
+          response '200', 'with an at_risk family' do
+            before do
+              travel_to Date.parse('December 23, 2020').in_time_zone(user.timezone)
+              create(:illinois_approval_amount, child_approval: first_child.current_child_approval, part_days_approved_per_week: 3, full_days_approved_per_week: 2,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+              create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+
+              create_list(:illinois_part_day_attendance, 4, child_approval: first_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 3, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 4, child_approval: last_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 3, child_approval: last_child.current_child_approval)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('at_risk')
+              expect(json[1]['attendance_risk']).to eq('at_risk')
+            end
+          end
+
+          response '200', 'with a not_met family' do
+            before do
+              travel_to Date.parse('December 23, 2020').in_time_zone(user.timezone)
+              create(:illinois_approval_amount, child_approval: first_child.current_child_approval, part_days_approved_per_week: 3, full_days_approved_per_week: 2,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+              create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
+                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
+
+              create_list(:illinois_part_day_attendance, 1, child_approval: first_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 1, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 1, child_approval: last_child.current_child_approval)
+              create_list(:illinois_full_day_attendance, 1, child_approval: last_child.current_child_approval)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('not_met')
+              expect(json[1]['attendance_risk']).to eq('not_met')
+            end
+          end
+
+          response '200', 'with a not_enough_info date' do
+            before do
+              travel_to Date.parse('December 11, 2020').in_time_zone(user.timezone)
+              create(:approval, num_children: 2)
+            end
+            after { travel_back }
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.first['attendance_risk']).to eq('not_enough_info')
             end
           end
         end
