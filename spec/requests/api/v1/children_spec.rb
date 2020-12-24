@@ -399,7 +399,7 @@ RSpec.describe 'children API', type: :request do
               create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 0, full_days_approved_per_week: 1,
                                                 month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
 
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval, check_in: Time.zone.today - rand(1..5).days)
               create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
             end
             after { travel_back }
@@ -419,7 +419,7 @@ RSpec.describe 'children API', type: :request do
               create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 0, full_days_approved_per_week: 1,
                                                 month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
 
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval, check_in: Time.zone.today - rand(1..5).days)
               create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
             end
             after { travel_back }
@@ -439,7 +439,7 @@ RSpec.describe 'children API', type: :request do
               create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
                                                 month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
 
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.current_child_approval, check_in: Time.zone.today - rand(1..5).days)
               create_list(:illinois_full_day_attendance, 5, child_approval: first_child.current_child_approval)
               create_list(:illinois_part_day_attendance, 5, child_approval: last_child.current_child_approval)
               create_list(:illinois_full_day_attendance, 5, child_approval: last_child.current_child_approval)
@@ -461,7 +461,7 @@ RSpec.describe 'children API', type: :request do
               create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
                                                 month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
 
-              create_list(:illinois_part_day_attendance, 4, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 4, child_approval: first_child.current_child_approval, check_in: Time.zone.today - rand(1..4).days)
               create_list(:illinois_full_day_attendance, 3, child_approval: first_child.current_child_approval)
               create_list(:illinois_part_day_attendance, 4, child_approval: last_child.current_child_approval)
               create_list(:illinois_full_day_attendance, 3, child_approval: last_child.current_child_approval)
@@ -483,7 +483,7 @@ RSpec.describe 'children API', type: :request do
               create(:illinois_approval_amount, child_approval: last_child.current_child_approval, part_days_approved_per_week: 2, full_days_approved_per_week: 3,
                                                 month: Time.zone.today.at_beginning_of_month.in_time_zone(user.timezone))
 
-              create_list(:illinois_part_day_attendance, 1, child_approval: first_child.current_child_approval)
+              create_list(:illinois_part_day_attendance, 1, child_approval: first_child.current_child_approval, check_in: Time.zone.today - 4.hours)
               create_list(:illinois_full_day_attendance, 1, child_approval: first_child.current_child_approval)
               create_list(:illinois_part_day_attendance, 1, child_approval: last_child.current_child_approval)
               create_list(:illinois_full_day_attendance, 1, child_approval: last_child.current_child_approval)
