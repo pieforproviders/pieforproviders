@@ -18,12 +18,19 @@ export function Dashboard() {
     token: state.auth.token,
     user: state.user
   }))
-  const [summaryDataTotals, setSummaryTotals] = useState({
-    guaranteedRevenueTotal: 0,
-    potentialRevenueTotal: 0,
-    maxApprovedRevenueTotal: 0,
-    attendanceRateTotal: 0
-  })
+
+  const summaryDataTotalsConfig = {
+    ne: {},
+    default: {
+      guaranteedRevenueTotal: 0,
+      potentialRevenueTotal: 0,
+      maxApprovedRevenueTotal: 0,
+      attendanceRateTotal: 0
+    }
+  }
+  const [summaryDataTotals, setSummaryTotals] = useState(
+    summaryDataTotalsConfig[`${user.state === 'NE' ? 'ne' : 'default'}`]
+  )
   const [summaryData, setSummaryData] = useState([])
   const [tableData, setTableData] = useState([])
   const { makeRequest } = useApiResponse()
