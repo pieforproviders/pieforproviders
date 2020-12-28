@@ -9,7 +9,7 @@ import '_assets/styles/tag-overrides.css'
 
 export default function DashboardTable({ tableData, userState }) {
   const { t } = useTranslation()
-
+  const columnSorter = (a, b, name) => a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
   const onHeaderCell = () => {
     return {
       style: {
@@ -19,9 +19,6 @@ export default function DashboardTable({ tableData, userState }) {
       role: 'columnheader'
     }
   }
-
-  const columnSorter = (a, b, name) =>
-    a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
 
   const renderAttendanceRate = attendanceRate => {
     const createTag = (color, text) => (
@@ -75,21 +72,52 @@ export default function DashboardTable({ tableData, userState }) {
   }
 
   const neColConfig = [
-    { children: [{ name: 'child', render: renderChild, width: 250 }] },
+    {
+      children: [
+        {
+          name: 'child',
+          render: renderChild,
+          width: 250,
+          sorter: (a, b) => columnSorter(a.child, b.child, 'childName')
+        }
+      ]
+    },
     {
       name: 'attendance',
       children: [
-        { name: 'fullDays', sorter: (a, b) => columnSorter(a, b, 'fullDays') },
-        { name: 'hours', sorter: (a, b) => columnSorter(a, b, 'hours') },
-        { name: 'absences', sorter: (a, b) => columnSorter(a, b, 'absences') }
+        {
+          name: 'fullDays',
+          sorter: (a, b) =>
+            a.fullDays.match(/^\d+/)[0] - b.fullDays.match(/^\d+/)[0]
+        },
+        {
+          name: 'hours',
+          sorter: (a, b) => a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0]
+        },
+        {
+          name: 'absences',
+          sorter: (a, b) =>
+            a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0]
+        }
       ]
     },
     {
       name: 'revenue',
       children: [
-        { name: 'earnedRevenue' },
-        { name: 'estimatedRevenue' },
-        { name: 'transportationRevenue' }
+        {
+          name: 'earnedRevenue',
+          sorter: (a, b) => a.earnedRevenue - b.earnedRevenue
+        },
+        {
+          name: 'estimatedRevenue',
+          sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue
+        },
+        {
+          name: 'transportationRevenue',
+          sorter: (a, b) =>
+            a.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0] -
+            b.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0]
+        }
       ]
     }
   ]
