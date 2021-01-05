@@ -11,7 +11,7 @@ FactoryBot.define do
       after(:create) do |child|
         create(:illinois_approval_amount,
                child_approval: child.current_child_approval,
-               month: Date.parse('March', '2020'),
+               month: Date.parse('March 2020'),
                part_days_approved_per_week: 3,
                full_days_approved_per_week: 2)
       end
