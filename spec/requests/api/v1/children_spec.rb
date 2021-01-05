@@ -188,10 +188,7 @@ RSpec.describe 'children API', type: :request do
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
           expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
-            Date.parse(
-              all_months_amounts[:first_month_name],
-              all_months_amounts[:first_month_year]
-            )
+            Date.parse("#{all_months_amounts[:first_month_name]} #{all_months_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
         end
@@ -206,10 +203,7 @@ RSpec.describe 'children API', type: :request do
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
           expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
-            Date.parse(
-              one_month_amounts[:first_month_name],
-              one_month_amounts[:first_month_year]
-            )
+            Date.parse("#{one_month_amounts[:first_month_name]} #{one_month_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
         end
@@ -224,10 +218,7 @@ RSpec.describe 'children API', type: :request do
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(6)
           expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
-            Date.parse(
-              some_months_amounts[:first_month_name],
-              some_months_amounts[:first_month_year]
-            )
+            Date.parse("#{some_months_amounts[:first_month_name]} #{some_months_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
         end
