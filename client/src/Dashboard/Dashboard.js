@@ -20,7 +20,14 @@ export function Dashboard() {
   }))
 
   const summaryDataTotalsConfig = {
-    ne: {},
+    // this will be updated to include dynamically creating the stats for max revenue and total approved
+    ne: {
+      earnedRevenueTotal: 0,
+      estimatedRevenueTotal: 0,
+      maxRevenueTotal: 3162.45,
+      totalApprovedTotal: 3800,
+      transportationRevenueTotal: 0
+    },
     default: {
       guaranteedRevenueTotal: 0,
       potentialRevenueTotal: 0,
@@ -37,34 +44,76 @@ export function Dashboard() {
   const { t, i18n } = useTranslation()
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
-    return [
-      {
-        title: t('guaranteedRevenue'),
-        stat: `${currencyFormatter.format(
-          totals.guaranteedRevenueTotal.toFixed()
-        )}`,
-        definition: t('guaranteedRevenueDef')
-      },
-      {
-        title: t('potentialRevenue'),
-        stat: `${currencyFormatter.format(
-          totals.potentialRevenueTotal.toFixed()
-        )}`,
-        definition: t('potentialRevenueDef')
-      },
-      {
-        title: t('maxApprovedRevenue'),
-        stat: `${currencyFormatter.format(
-          totals.maxApprovedRevenueTotal.toFixed()
-        )}`,
-        definition: t('maxApprovedRevenueDef')
-      },
-      {
-        title: t('attendanceRate'),
-        stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
-        definition: t('attendanceRateDef')
-      }
-    ]
+    if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
+      return [
+        {
+          title: t('earnedRevenue'),
+          stat: `${currencyFormatter.format(
+            totals.earnedRevenueTotal.toFixed()
+          )}`,
+          definition: t('earnedRevenueDef')
+        },
+        {
+          title: t('estimatedRevenue'),
+          stat: `${currencyFormatter.format(
+            totals.estimatedRevenueTotal.toFixed()
+          )}`,
+          definition: t(`estimatedRevenueDef`)
+        },
+        {
+          title: t(`maxRevenue`),
+          stat: `${currencyFormatter.format(totals.maxRevenueTotal.toFixed())}`,
+          definition: t(`maxRevenueDef`)
+        },
+        [
+          {
+            title: t(`totalApproved`),
+            stat: `${currencyFormatter.format(
+              totals.totalApprovedTotal.toFixed()
+            )}`,
+            definition: t(`totalApprovedDef`)
+          },
+          {
+            title: t(`transportation`),
+            stat: `${currencyFormatter.format(
+              totals.transportationRevenueTotal.toFixed()
+            )}`,
+            definition: t(`transportationDef`)
+          }
+        ]
+      ]
+    } else if (totals.guaranteedRevenueTotal >= 0) {
+      return [
+        {
+          title: t('guaranteedRevenue'),
+          stat: `${currencyFormatter.format(
+            totals.guaranteedRevenueTotal.toFixed()
+          )}`,
+          definition: t('guaranteedRevenueDef')
+        },
+        {
+          title: t('potentialRevenue'),
+          stat: `${currencyFormatter.format(
+            totals.potentialRevenueTotal.toFixed()
+          )}`,
+          definition: t('potentialRevenueDef')
+        },
+        {
+          title: t('maxApprovedRevenue'),
+          stat: `${currencyFormatter.format(
+            totals.maxApprovedRevenueTotal.toFixed()
+          )}`,
+          definition: t('maxApprovedRevenueDef')
+        },
+        {
+          title: t('attendanceRate'),
+          stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
+          definition: t('attendanceRateDef')
+        }
+      ]
+    }
+
+    return []
   }
 
   i18n.on('languageChanged', () => setSummaryData(generateSummaryData()))
@@ -109,6 +158,20 @@ export function Dashboard() {
   }
 
   const reduceSummaryData = data => {
+    if (user.state === 'NE') {
+      return data.reduce((acc, cv) => {
+        // this will be updated to include dynamically creating the stats for max revenue and total approved
+        return {
+          ...acc,
+          earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
+          estimatedRevenueTotal:
+            acc.estimatedRevenueTotal + cv.estimatedRevenue,
+          transportationRevenueTotal:
+            acc.transportationRevenueTotal +
+            Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
+        }
+      }, summaryDataTotalsConfig['ne'])
+    }
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
@@ -116,6 +179,7 @@ export function Dashboard() {
         potentialRevenue,
         attendanceRate: { rate }
       } = cv
+
       return {
         guaranteedRevenueTotal: acc.guaranteedRevenueTotal + guaranteedRevenue,
         potentialRevenueTotal: acc.potentialRevenueTotal + potentialRevenue,
@@ -123,7 +187,7 @@ export function Dashboard() {
           acc.maxApprovedRevenueTotal + maxApprovedRevenue,
         attendanceRateTotal: acc.attendanceRateTotal + rate
       }
-    }, summaryDataTotals)
+    }, summaryDataTotalsConfig['default'])
   }
 
   useEffect(() => {
@@ -139,6 +203,9 @@ export function Dashboard() {
       if (response.ok) {
         const resp = await response.json()
         dispatch(setUser(resp))
+        setSummaryTotals(
+          summaryDataTotalsConfig[`${resp.state === 'NE' ? 'ne' : 'default'}`]
+        )
       }
     }
 
@@ -152,17 +219,9 @@ export function Dashboard() {
 
       if (!parsedResponse.error) {
         const tableData = reduceTableData(parsedResponse)
-        // temporary stop gap until next ticket for generating NE specific summary stats
-        if (user.state !== 'NE') {
-          const updatedSummaryDataTotals = reduceSummaryData(tableData)
-          setSummaryTotals(updatedSummaryDataTotals)
-          setSummaryData(
-            generateSummaryData(tableData, updatedSummaryDataTotals)
-          )
-          setTableData(tableData)
-          return
-        }
-        setSummaryData(generateSummaryData(tableData))
+        const updatedSummaryDataTotals = reduceSummaryData(tableData)
+        setSummaryTotals(updatedSummaryDataTotals)
+        setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
         setTableData(tableData)
       }
     }
