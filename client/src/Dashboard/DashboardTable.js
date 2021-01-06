@@ -9,8 +9,7 @@ import '_assets/styles/tag-overrides.css'
 
 export default function DashboardTable({ tableData, userState }) {
   const { t } = useTranslation()
-  const columnSorter = (a, b, name) =>
-    a[name] < b[name] ? -1 : a[name] > b[name] ? 1 : 0
+  const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   const onHeaderCell = () => {
     return {
       style: {
@@ -80,7 +79,11 @@ export default function DashboardTable({ tableData, userState }) {
             name: 'child',
             render: renderChild,
             width: 250,
-            sorter: (a, b) => columnSorter(a.child, b.child, 'childName')
+            sorter: (a, b) =>
+              columnSorter(
+                a.child.childName.match(/([A-zÀ-ú])+$/)[0],
+                b.child.childName.match(/([A-zÀ-ú])+$/)[0]
+              )
           }
         ]
       },
@@ -94,7 +97,8 @@ export default function DashboardTable({ tableData, userState }) {
           },
           {
             name: 'hours',
-            sorter: (a, b) => a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0]
+            sorter: (a, b) =>
+              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0]
           },
           {
             name: 'absences',
@@ -124,9 +128,15 @@ export default function DashboardTable({ tableData, userState }) {
       }
     ],
     default: [
-      { name: 'childName', sorter: (a, b) => columnSorter(a, b, 'childName') },
-      { name: 'cNumber', sorter: (a, b) => columnSorter(a, b, 'cNumber') },
-      { name: 'business', sorter: (a, b) => columnSorter(a, b, 'business') },
+      {
+        name: 'childName',
+        sorter: (a, b) => columnSorter(a.childName, b.childName)
+      },
+      { name: 'cNumber', sorter: (a, b) => columnSorter(a.cNumber, b.cNumber) },
+      {
+        name: 'business',
+        sorter: (a, b) => columnSorter(a.business, b.business)
+      },
       {
         name: 'attendanceRate',
         sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
