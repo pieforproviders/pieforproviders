@@ -61,6 +61,15 @@ class ChildBlueprint < Blueprinter::Base
     field :transportation_revenue do
       '30 trips - $80.00'
     end
+    field :max_revenue do
+      23_122
+    end
+    field :total_approved do
+      23_122
+    end
+    field :attendance_risk do
+      'on_track'
+    end
     field(:as_of) do |child, options|
       from_date = options[:from_date] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
       child.business.user.latest_attendance_in_month(from_date)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
