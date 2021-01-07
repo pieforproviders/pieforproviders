@@ -10,10 +10,12 @@ FactoryBot.define do
 
     transient do
       create_children { true }
+      num_children { rand(1..3) }
+      business { create(:business) }
     end
 
     after(:create) do |approval, evaluator|
-      approval.children << create_list(:child, rand(1..3)) if evaluator.create_children
+      approval.children << create_list(:child, evaluator.num_children, business: evaluator.business) if evaluator.create_children
     end
 
     factory :expired_approval do

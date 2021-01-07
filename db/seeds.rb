@@ -36,7 +36,7 @@ SubsidyRule.first_or_create!(
   county: 'Cook',
   state: 'IL',
   effective_on: Faker::Date.between(from: 10.years.ago, to: Time.zone.today),
-  subsidy_ruleable: IllinoisSubsidyRule.first_or_create!
+  subsidy_ruleable: IllinoisSubsidyRule.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
 )
 
 puts_records_in_db(SubsidyRule)
@@ -155,12 +155,14 @@ def create_case(full_name,
                                    full_name: full_name,
                                    date_of_birth: date_of_birth,
                                    approvals: approvals)
-  IllinoisApprovalAmount.create!(
-    child_approval: child.current_child_approval,
-    month: DateTime.now,
-    part_days_approved_per_week: rand(0..3),
-    full_days_approved_per_week: rand(0..2)
-  )
+  12.times do
+    IllinoisApprovalAmount.create!(
+      child_approval: child.current_child_approval,
+      month: DateTime.now.at_beginning_of_month,
+      part_days_approved_per_week: rand(0..3),
+      full_days_approved_per_week: rand(0..2)
+    )
+  end
 end
 
 maria = create_case('Maria Baca')

@@ -10,12 +10,13 @@ class ChildBlueprint < Blueprinter::Base
     association :approvals, blueprint: ApprovalBlueprint, view: :dashboard do |child|
       child.approvals.current
     end
-    field :attendance_risk do |child|
-      child.illinois_attendance_risk
+    field :attendance_risk do |child, options|
+      from_date = options[:from_date] || DateTime.now.in_time_zone(child.business.user.timezone)
+      child.attendance_risk(from_date)
     end
     field(:attendance_rate) do |child, options|
-      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
-      child.illinois_attendance_rate(from)
+      from_date = options[:from_date] || DateTime.now.in_time_zone(child.business.user.timezone)
+      child.attendance_rate(from_date)
     end
     field :guaranteed_revenue do |child|
       child.illinois_guaranteed_revenue
@@ -27,8 +28,8 @@ class ChildBlueprint < Blueprinter::Base
       child.illinois_max_approved_revenue
     end
     field(:as_of) do |child, options|
-      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
-      child.business.user.latest_attendance_in_month(from)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
+      from_date = options[:from_date] || DateTime.now.in_time_zone(child.business.user.timezone)
+      child.business.user.latest_attendance_in_month(from_date)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
     end
     exclude :id
   end
@@ -61,8 +62,8 @@ class ChildBlueprint < Blueprinter::Base
       '30 trips - $80.00'
     end
     field(:as_of) do |child, options|
-      from = options[:date_from] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
-      child.business.user.latest_attendance_in_month(from)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
+      from_date = options[:from_date] || DateTime.now.in_time_zone(child.business.user.timezone).at_beginning_of_month
+      child.business.user.latest_attendance_in_month(from_date)&.check_in&.strftime('%m/%d/%Y') || DateTime.now.strftime('%m/%d/%Y')
     end
     exclude :id
   end

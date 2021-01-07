@@ -2,8 +2,6 @@
 
 desc 'Generate attendances this month'
 task generate_attendances_this_month: :environment do
-  return if Rails.env.production?
-
   now = DateTime.now
 
   days_left_in_month = now.at_end_of_month.day - now.day

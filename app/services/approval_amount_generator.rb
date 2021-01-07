@@ -41,7 +41,7 @@ class ApprovalAmountGenerator
   def create_illinois_approval_amount(approved_days, index)
     IllinoisApprovalAmount.create!(
       child_approval: @child_approval,
-      month: Date.parse(@first_month, @year) + index.months,
+      month: Date.parse("#{@first_month} #{@year}") + index.months,
       part_days_approved_per_week: approved_days['part_days_approved_per_week'],
       full_days_approved_per_week: approved_days['full_days_approved_per_week']
     )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_21_041639) do
+ActiveRecord::Schema.define(version: 2020_12_24_003211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -126,11 +126,11 @@ ActiveRecord::Schema.define(version: 2020_12_21_041639) do
     t.string "license_type", null: false
     t.string "county"
     t.string "state"
-    t.string "subsidy_ruleable_type"
-    t.bigint "subsidy_ruleable_id"
     t.decimal "max_age", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "subsidy_ruleable_type"
+    t.uuid "subsidy_ruleable_id"
     t.index ["subsidy_ruleable_type", "subsidy_ruleable_id"], name: "subsidy_ruleable_index"
   end
 

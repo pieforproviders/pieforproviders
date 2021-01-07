@@ -27,7 +27,7 @@ end
 #  subsidy_ruleable_type :string
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
-#  subsidy_ruleable_id   :bigint
+#  subsidy_ruleable_id   :uuid
 #
 # Indexes
 #
