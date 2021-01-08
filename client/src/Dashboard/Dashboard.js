@@ -20,12 +20,11 @@ export function Dashboard() {
   }))
 
   const summaryDataTotalsConfig = {
-    // this will be updated to include dynamically creating the stats for max revenue and total approved
     ne: {
       earnedRevenueTotal: 0,
       estimatedRevenueTotal: 0,
-      maxRevenueTotal: 3162.45,
-      totalApprovedTotal: 3800,
+      maxRevenueTotal: 0,
+      totalApprovedTotal: 0,
       transportationRevenueTotal: 0
     },
     default: {
@@ -135,7 +134,9 @@ export function Dashboard() {
               estimatedRevenue: cv.estimated_revenue,
               fullDays: cv.full_days ?? '',
               hours: cv.hours ?? '',
-              transportationRevenue: cv.transportation_revenue ?? ''
+              transportationRevenue: cv.transportation_revenue ?? '',
+              maxRevenue: cv.max_revenue ?? '',
+              totalApproved: cv.total_approved ?? ''
             }
           ]
         : [
@@ -159,18 +160,21 @@ export function Dashboard() {
 
   const reduceSummaryData = data => {
     if (user.state === 'NE') {
-      return data.reduce((acc, cv) => {
-        // this will be updated to include dynamically creating the stats for max revenue and total approved
-        return {
-          ...acc,
-          earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
-          estimatedRevenueTotal:
-            acc.estimatedRevenueTotal + cv.estimatedRevenue,
-          transportationRevenueTotal:
-            acc.transportationRevenueTotal +
-            Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
-        }
-      }, summaryDataTotalsConfig['ne'])
+      return {
+        ...data.reduce((acc, cv) => {
+          return {
+            ...acc,
+            earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
+            estimatedRevenueTotal:
+              acc.estimatedRevenueTotal + cv.estimatedRevenue,
+            transportationRevenueTotal:
+              acc.transportationRevenueTotal +
+              Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
+          }
+        }, summaryDataTotalsConfig['ne']),
+        maxRevenueTotal: data[0].maxRevenue,
+        totalApprovedTotal: data[0].totalApproved
+      }
     }
     return data.reduce((acc, cv) => {
       const {
