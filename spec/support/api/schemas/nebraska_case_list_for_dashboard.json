@@ -52,6 +52,15 @@
       "transportation_revenue": {
         "type": "string"
       },
+      "total_approved": {
+        "type": "decimal"
+      },
+      "max_revenue": {
+        "type": "decimal"
+      },
+      "attendance_risk": {
+        "type": "string"
+      },
       "as_of": {
         "anyOf": [
           {
@@ -73,6 +82,9 @@
       "absences",
       "earned_revenue",
       "estimated_revenue",
+      "total_approved",
+      "max_revenue",
+      "attendance_risk",
       "transportation_revenue",
       "as_of"
     ]
