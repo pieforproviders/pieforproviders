@@ -134,9 +134,7 @@ export function Dashboard() {
               estimatedRevenue: cv.estimated_revenue,
               fullDays: cv.full_days ?? '',
               hours: cv.hours ?? '',
-              transportationRevenue: cv.transportation_revenue ?? '',
-              maxRevenue: cv.max_revenue ?? '',
-              totalApproved: cv.total_approved ?? ''
+              transportationRevenue: cv.transportation_revenue ?? ''
             }
           ]
         : [
@@ -172,8 +170,8 @@ export function Dashboard() {
               Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
           }
         }, summaryDataTotalsConfig['ne']),
-        maxRevenueTotal: data[0].maxRevenue,
-        totalApprovedTotal: data[0].totalApproved
+        maxRevenueTotal: data.max_revenue ?? 0,
+        totalApprovedTotal: data.total_approved ?? 0
       }
     }
     return data.reduce((acc, cv) => {
