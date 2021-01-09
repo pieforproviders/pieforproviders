@@ -51,7 +51,7 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'letter_opener_web', '~> 1.4'
   gem 'listen', '>= 3.0.5', '< 3.5'
-  gem 'pgreset'
+  # gem 'pgreset' # currently has a bug with rails 6.1.0, removing from the dev bundle until it's fixed
   gem 'rails-erd'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
