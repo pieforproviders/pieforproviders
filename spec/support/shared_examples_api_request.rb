@@ -259,7 +259,7 @@ RSpec.shared_examples 'it creates a record with the right api version and is aut
           end
 
           response '422', 'invalid request' do
-            let(record_name_symbol) { { record_name => { 'blorf': 'whatever' } } }
+            let(record_name_symbol) { { record_name => { blorf: 'whatever' } } }
             run_test!
           end
         end

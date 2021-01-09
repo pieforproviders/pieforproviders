@@ -8,137 +8,137 @@ RSpec.describe 'children API', type: :request do
   let!(:non_owner_business) { create(:business, zipcode: created_business.zipcode, county: created_business.county) }
   let!(:record_params) do
     {
-      "child": {
-        "full_name": 'Parvati Patil',
-        "date_of_birth": '1981-04-09',
-        "business_id": created_business.id,
-        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      child: {
+        full_name: 'Parvati Patil',
+        date_of_birth: '1981-04-09',
+        business_id: created_business.id,
+        approvals_attributes: [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       }
     }
   end
   let!(:all_months_amounts) do
     {
-      "child": {
-        "full_name": 'Parvati Patil',
-        "date_of_birth": '1981-04-09',
-        "business_id": created_business.id,
-        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      child: {
+        full_name: 'Parvati Patil',
+        date_of_birth: '1981-04-09',
+        business_id: created_business.id,
+        approvals_attributes: [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       },
-      "first_month_name": 'March',
-      "first_month_year": '2020',
-      "month1": {
-        "part_days_approved_per_week": 4,
-        "full_days_approved_per_week": 1
+      first_month_name: 'March',
+      first_month_year: '2020',
+      month1: {
+        part_days_approved_per_week: 4,
+        full_days_approved_per_week: 1
       },
-      "month2": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month2: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month3": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month3: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month4": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month4: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month5": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month5: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month6": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month6: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month7": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month7: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month8": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month8: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month9": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month9: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month10": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month10: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month11": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month11: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month12": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month12: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       }
     }
   end
   let!(:some_months_amounts) do
     {
-      "child": {
-        "full_name": 'Parvati Patil',
-        "date_of_birth": '1981-04-09',
-        "business_id": created_business.id,
-        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      child: {
+        full_name: 'Parvati Patil',
+        date_of_birth: '1981-04-09',
+        business_id: created_business.id,
+        approvals_attributes: [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       },
-      "first_month_name": 'March',
-      "first_month_year": '2020',
-      "month1": {
-        "part_days_approved_per_week": 4,
-        "full_days_approved_per_week": 1
+      first_month_name: 'March',
+      first_month_year: '2020',
+      month1: {
+        part_days_approved_per_week: 4,
+        full_days_approved_per_week: 1
       },
-      "month2": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month2: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month3": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month3: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month4": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month4: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month5": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month5: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       },
-      "month6": {
-        "part_days_approved_per_week": 3,
-        "full_days_approved_per_week": 2
+      month6: {
+        part_days_approved_per_week: 3,
+        full_days_approved_per_week: 2
       }
     }
   end
   let!(:one_month_amounts) do
     {
-      "child": {
-        "full_name": 'Parvati Patil',
-        "date_of_birth": '1981-04-09',
-        "business_id": created_business.id,
-        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      child: {
+        full_name: 'Parvati Patil',
+        date_of_birth: '1981-04-09',
+        business_id: created_business.id,
+        approvals_attributes: [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       },
-      "first_month_name": 'March',
-      "first_month_year": '2020',
-      "month1": {
-        "part_days_approved_per_week": 4,
-        "full_days_approved_per_week": 1
+      first_month_name: 'March',
+      first_month_year: '2020',
+      month1: {
+        part_days_approved_per_week: 4,
+        full_days_approved_per_week: 1
       }
     }
   end
   let!(:amounts_without_first_month) do
     {
-      "child": {
-        "full_name": 'Parvati Patil',
-        "date_of_birth": '1981-04-09',
-        "business_id": created_business.id,
-        "approvals_attributes": [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
+      child: {
+        full_name: 'Parvati Patil',
+        date_of_birth: '1981-04-09',
+        business_id: created_business.id,
+        approvals_attributes: [attributes_for(:approval).merge!({ effective_on: Date.parse('Mar 22, 2020') })]
       },
-      "month1": {
-        "part_days_approved_per_week": 4,
-        "full_days_approved_per_week": 1
+      month1: {
+        part_days_approved_per_week: 4,
+        full_days_approved_per_week: 1
       }
     }
   end
@@ -187,7 +187,7 @@ RSpec.describe 'children API', type: :request do
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
-          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+          expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
             Date.parse("#{all_months_amounts[:first_month_name]} #{all_months_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
@@ -202,7 +202,7 @@ RSpec.describe 'children API', type: :request do
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
-          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+          expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
             Date.parse("#{one_month_amounts[:first_month_name]} #{one_month_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
@@ -217,7 +217,7 @@ RSpec.describe 'children API', type: :request do
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(6)
-          expect(child.child_approvals.first.illinois_approval_amounts.first.month).to eq(
+          expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
             Date.parse("#{some_months_amounts[:first_month_name]} #{some_months_amounts[:first_month_year]}")
           )
           expect(response).to match_response_schema('child')
@@ -237,7 +237,7 @@ RSpec.describe 'children API', type: :request do
       end
 
       context 'with invalid params' do
-        let(:record_params) { { "child": { 'this_param': 'bad_params' } } }
+        let(:record_params) { { child: { this_param: 'bad_params' } } }
         context 'as an admin user' do
           include_context 'admin user'
           it 'returns an invalid request response' do
