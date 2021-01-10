@@ -5,10 +5,6 @@ class IllinoisAttendanceRiskCalculator
   def initialize(child, from_date)
     @child = child
     @from_date = from_date
-    @current_approval = child.current_approval
-    @current_child_approval = child.current_child_approval
-    @attendances = @current_child_approval.attendances.for_month(@from_date)
-    @approval_amount = @current_child_approval.illinois_approval_amounts.find_by(month: @from_date.at_beginning_of_month)
   end
 
   def call
@@ -21,6 +17,22 @@ class IllinoisAttendanceRiskCalculator
     return 'not_enough_info' if less_than_halfway_through_month
 
     risk_label
+  end
+
+  def active_approval
+    @child.approvals.active_on_date(@from_date)
+  end
+
+  def active_child_approval
+    @child.active_child_approval(@from_date)
+  end
+
+  def attendances
+    active_child_approval.attendances.for_month(@from_date)
+  end
+
+  def approval_amount
+    active_child_approval.illinois_approval_amounts.find_by(month: @from_date.at_beginning_of_month)
   end
 
   def risk_label
@@ -52,7 +64,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def wont_meet_threshold
-    (threshold * family_days_approved - family_days_attended) > @current_approval.child_approvals.count * days_left_in_month
+    (threshold * family_days_approved - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
   end
 
   def at_risk
@@ -60,19 +72,19 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def must_attend_part_days
-    @approval_amount.part_days_approved_per_week.positive?
+    approval_amount.part_days_approved_per_week.positive?
   end
 
   def must_attend_full_days
-    @approval_amount.full_days_approved_per_week.positive?
+    approval_amount.full_days_approved_per_week.positive?
   end
 
   def part_day_attendances
-    @attendances.illinois_part_days.count + @attendances.illinois_full_plus_part_days.count
+    attendances.illinois_part_days.count + attendances.illinois_full_plus_part_days.count
   end
 
   def full_day_attendances
-    @attendances.illinois_full_days.count + @attendances.illinois_full_plus_full_days.count
+    attendances.illinois_full_days.count + attendances.illinois_full_plus_full_days.count
   end
 
   def percentage_of_month_elapsed
@@ -96,11 +108,11 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def threshold
-    @current_child_approval.subsidy_rule.subsidy_ruleable.attendance_threshold.to_f
+    active_child_approval.subsidy_rule.subsidy_ruleable.attendance_threshold.to_f
   end
 
   def latest_user_attendance
-    @child.business.user.latest_attendance_in_month
+    @child.business.user.latest_attendance_in_month(@from_date)
   end
 
   def halfway

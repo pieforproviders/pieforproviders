@@ -17,6 +17,7 @@ RSpec.describe Child, type: :model do
   end
 
   context 'associates the record with a subsidy rule' do
+    let!(:date) { Date.current }
     let!(:subsidy_rule_cook_age5) { create(:subsidy_rule_for_illinois, max_age: 5) }
     let!(:subsidy_rule_cook_age3) { create(:subsidy_rule_for_illinois, max_age: 3) }
     let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
@@ -25,19 +26,19 @@ RSpec.describe Child, type: :model do
     let!(:business_dupage) { create(:business, county: 'DuPage', zipcode: '60613') }
 
     it 'on creation' do
-      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_cook_age3)
+      expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_cook_age3)
     end
 
     it 'on update' do
       too_old_for_cook = child_cook.date_of_birth - 4.years
       child_cook.update!(date_of_birth: too_old_for_cook)
-      expect(child_cook.current_subsidy_rule).to be_nil
+      expect(child_cook.active_subsidy_rule(date)).to be_nil
       child_cook.update!(date_of_birth: too_old_for_cook + 2.years)
-      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_cook_age5)
+      expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_cook_age5)
       age_eligible_for_dupage = Date.current - Random.rand(1..subsidy_rule_dupage.max_age.to_i - 1).years
       child_cook.update!(date_of_birth: age_eligible_for_dupage)
       child_cook.update!(business: business_dupage)
-      expect(child_cook.current_subsidy_rule).to eq(subsidy_rule_dupage)
+      expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_dupage)
     end
   end
 end

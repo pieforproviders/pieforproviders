@@ -5,7 +5,6 @@ class IllinoisAttendanceRateCalculator
   def initialize(child, from_date)
     @child = child
     @from_date = from_date
-    @current_approval = child.current_approval
   end
 
   def call
@@ -16,17 +15,21 @@ class IllinoisAttendanceRateCalculator
 
   def family_days_approved
     days = 0
-    @current_approval.children.each { |child| days += sum_approvals(child) }
+    active_approval.children.each { |child| days += sum_approvals(child) }
     days
   end
 
   def family_days_attended
     days = 0
-    @current_approval.children.each { |child| days += sum_attendances(child) }
+    active_approval.children.each { |child| days += sum_attendances(child) }
     days
   end
 
   private
+
+  def active_approval
+    @child.approvals.active_on_date(@from_date)
+  end
 
   def sum_approvals(child)
     approval_amount = child.illinois_approval_amounts.find_by('month BETWEEN ? AND ?', @from_date.at_beginning_of_month, @from_date.at_end_of_month)

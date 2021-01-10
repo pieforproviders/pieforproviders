@@ -17,17 +17,6 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     render json: @child
   end
 
-  # GET /case_list_for_dashboard
-  def case_list_for_dashboard
-    @children = policy_scope(Child.active.with_current_approval)
-
-    if current_user.state == 'NE'
-      render json: ChildBlueprint.render(@children, view: :nebraska_dashboard)
-    else
-      render json: ChildBlueprint.render(@children, view: :illinois_dashboard)
-    end
-  end
-
   # POST /children
   def create
     @child = Child.new(child_params)

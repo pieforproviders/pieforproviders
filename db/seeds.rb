@@ -157,7 +157,7 @@ def create_case(full_name,
                                    approvals: approvals)
   12.times do
     IllinoisApprovalAmount.create!(
-      child_approval: child.current_child_approval,
+      child_approval: child.active_child_approval(DateTime.now),
       month: DateTime.now.at_beginning_of_month,
       part_days_approved_per_week: rand(0..3),
       full_days_approved_per_week: rand(0..2)

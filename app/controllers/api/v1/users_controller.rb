@@ -14,4 +14,14 @@ class Api::V1::UsersController < Api::V1::ApiController
   def show
     render json: UserBlueprint.render(current_user)
   end
+
+  # GET /case_list_for_dashboard
+  def case_list_for_dashboard
+    date_now = DateTime.now.in_time_zone(current_user.timezone)
+    if current_user.state == 'NE'
+      render json: UserBlueprint.render(policy_scope(User), view: :nebraska_dashboard, from_date: date_now)
+    else
+      render json: UserBlueprint.render(policy_scope(User), view: :illinois_dashboard, from_date: date_now)
+    end
+  end
 end
