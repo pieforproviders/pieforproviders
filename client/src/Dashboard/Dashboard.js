@@ -63,42 +63,41 @@ export function Dashboard() {
   i18n.on('languageChanged', () => setSummaryData(generateSummaryData()))
 
   const reduceTableData = res => {
-    return res.reduce((acc, cv, index) => {
-      return user.state === 'NE'
-        ? [
-            ...acc,
-            {
-              key: index,
-              absences: cv.absences ?? '',
-              child: {
-                childName: cv.full_name ?? '',
-                cNumber: cv.approvals[0]?.case_number ?? '',
-                business: cv.business.name ?? ''
-              },
-              earnedRevenue: cv.earned_revenue ?? '',
-              estimatedRevenue: cv.estimated_revenue,
-              fullDays: cv.full_days ?? '',
-              hours: cv.hours ?? '',
-              transportationRevenue: cv.transportation_revenue ?? ''
-            }
-          ]
-        : [
-            ...acc,
-            {
-              key: index,
-              childName: cv.full_name ?? '',
-              cNumber: cv.approvals[0]?.case_number ?? '',
-              business: cv.business.name ?? '',
-              attendanceRate: {
-                rate: cv.attendance_rate ?? '',
-                riskCategory: cv.attendance_risk ?? ''
-              },
-              guaranteedRevenue: cv.guaranteed_revenue ?? '',
-              maxApprovedRevenue: cv.max_approved_revenue ?? '',
-              potentialRevenue: cv.potential_revenue ?? ''
-            }
-          ]
-    }, [])
+    return res.flatMap(userResponse => {
+      return userResponse.businesses.flatMap(business => {
+        return business.cases.flatMap((childCase, index) => {
+          console.log('childCase.attendance_rate:', childCase.attendance_rate)
+          return user.state === 'NE'
+            ? {
+                key: index,
+                absences: childCase.absences ?? '',
+                child: {
+                  childName: childCase.full_name ?? '',
+                  cNumber: childCase.case_number ?? '',
+                  business: business.name ?? ''
+                },
+                earnedRevenue: childCase.earned_revenue ?? '',
+                estimatedRevenue: childCase.estimated_revenue,
+                fullDays: childCase.full_days ?? '',
+                hours: childCase.hours ?? '',
+                transportationRevenue: childCase.transportation_revenue ?? ''
+              }
+            : {
+                key: index,
+                childName: childCase.full_name ?? '',
+                cNumber: childCase.case_number ?? '',
+                business: business.name ?? '',
+                attendanceRate: {
+                  rate: childCase.attendance_rate ?? '',
+                  riskCategory: childCase.attendance_risk ?? ''
+                },
+                guaranteedRevenue: childCase.guaranteed_revenue ?? '',
+                maxApprovedRevenue: childCase.max_approved_revenue ?? '',
+                potentialRevenue: childCase.potential_revenue ?? ''
+              }
+        })
+      })
+    })
   }
 
   const reduceSummaryData = data => {
