@@ -1,66 +1,7 @@
 {
   "type": "array",
-  "required": [
-    "children"
-  ],
   "items": {
     "properties": {
-      "full_name": {
-        "type": "string"
-      },
-      "business": {
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "name"
-        ]
-      },
-      "approvals": {
-        "type": "array",
-        "items": {
-          "properties": {
-            "case_number": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "case_number"
-          ]
-        }
-      },
-      "case_number": {
-        "type": "string"
-      },
-      "full_days": {
-        "type": "string"
-      },
-      "hours": {
-        "type": "string"
-      },
-      "absences": {
-        "type": "string"
-      },
-      "earned_revenue": {
-        "type": "decimal"
-      },
-      "estimated_revenue": {
-        "type": "decimal"
-      },
-      "transportation_revenue": {
-        "type": "string"
-      },
-      "total_approved": {
-        "type": "decimal"
-      },
-      "max_revenue": {
-        "type": "decimal"
-      },
-      "attendance_risk": {
-        "type": "string"
-      },
       "as_of": {
         "anyOf": [
           {
@@ -70,23 +11,77 @@
             "type": "null"
           }
         ]
+      },
+      "businesses": {
+        "type": "array",
+        "items": {
+          "properties": {
+            "cases": {
+              "type": "array",
+              "items": {
+                "properties": {
+                  "absences": {
+                    "type": "string"
+                  },
+                  "attendance_risk": {
+                    "type": "string"
+                  },
+                  "case_number": {
+                    "type": "string"
+                  },
+                  "earned_revenue": {
+                    "type": "decimal"
+                  },
+                  "estimated_revenue": {
+                    "type": "decimal"
+                  },
+                  "full_days": {
+                    "type": "string"
+                  },
+                  "full_name": {
+                    "type": "string"
+                  },
+                  "hours": {
+                    "type": "string"
+                  },
+                  "transportation_revenue": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "attendance_risk",
+                "case_number",
+                "earned_revenue",
+                "estimated_revenue",
+                "full_days",
+                "full_name",
+                "hours",
+                "transportation_revenue"
+              ]
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "cases",
+            "name"
+          ]
+        }
+      },
+      "max_revenue": {
+        "type": "decimal"
+      },
+      "total_approved": {
+        "type": "decimal"
       }
     },
     "required": [
-      "full_name",
-      "business",
-      "approvals",
-      "case_number",
-      "full_days",
-      "hours",
-      "absences",
-      "earned_revenue",
-      "estimated_revenue",
-      "total_approved",
+      "as_of",
+      "businesses",
       "max_revenue",
-      "attendance_risk",
-      "transportation_revenue",
-      "as_of"
+      "total_approved"
     ]
   }
 }

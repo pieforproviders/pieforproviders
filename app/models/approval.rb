@@ -17,7 +17,7 @@ class Approval < UuidApplicationRecord
   enum copay_frequency: Copays.frequencies
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
-  scope :current, -> { where('effective_on <= ? AND expires_on > ?', Date.current, Date.current) }
+  scope :active_on_date, ->(date) { find_by('effective_on <= ? AND expires_on > ?', date, date) }
 
   monetize :copay_cents, allow_nil: true
 end

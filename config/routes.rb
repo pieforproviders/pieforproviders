@@ -30,7 +30,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
-      get 'case_list_for_dashboard', to: 'children#case_list_for_dashboard'
+      get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
     end
   end
 
@@ -77,7 +77,7 @@ end
 #                                       PATCH  /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       PUT    /api/v1/children/:id(.:format)                                                           api/v1/children#update {:format=>:json}
 #                                       DELETE /api/v1/children/:id(.:format)                                                           api/v1/children#destroy {:format=>:json}
-#               case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                api/v1/children#case_list_for_dashboard {:format=>:json}
+#               case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                api/v1/users#case_list_for_dashboard {:format=>:json}
 #                                       GET    /*path(.:format)                                                                         static#fallback_index_html
 #         rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                  action_mailbox/ingresses/postmark/inbound_emails#create
 #            rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                     action_mailbox/ingresses/relay/inbound_emails#create

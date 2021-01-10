@@ -5,7 +5,6 @@ class IllinoisAttendanceRateCalculator
   def initialize(child, from_date)
     @child = child
     @from_date = from_date
-    @current_approval = child.current_approval
   end
 
   def call
@@ -16,25 +15,31 @@ class IllinoisAttendanceRateCalculator
 
   def family_days_approved
     days = 0
-    @current_approval.children.each { |child| days += sum_approvals(child) }
+    active_approval.children.each { |child| days += sum_approvals(child) }
     days
   end
 
   def family_days_attended
     days = 0
-    @current_approval.children.each { |child| days += sum_attendances(child) }
+    active_approval.children.each { |child| days += sum_attendances(child) }
     days
   end
 
   private
 
+  def active_approval
+    @child.approvals.active_on_date(@from_date)
+  end
+
   def sum_approvals(child)
     approval_amount = child.illinois_approval_amounts.find_by('month BETWEEN ? AND ?', @from_date.at_beginning_of_month, @from_date.at_end_of_month)
     return 0 unless approval_amount
 
+    weeks_in_month = DateService.weeks_in_month(@from_date)
+
     [
-      approval_amount.part_days_approved_per_week * weeks_this_month,
-      approval_amount.full_days_approved_per_week * weeks_this_month
+      approval_amount.part_days_approved_per_week * weeks_in_month,
+      approval_amount.full_days_approved_per_week * weeks_in_month
     ].sum
   end
 
@@ -48,9 +53,5 @@ class IllinoisAttendanceRateCalculator
       attendances.illinois_full_plus_part_days.count * 2,
       attendances.illinois_full_plus_full_days.count * 2
     ].sum
-  end
-
-  def weeks_this_month
-    (@from_date.to_date.all_month.count / 7.0).ceil
   end
 end

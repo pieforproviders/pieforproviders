@@ -21,25 +21,20 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals
 
   scope :active, -> { where(active: true) }
-
-  scope :with_current_approval, -> { joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', Date.current, Date.current) }
+  scope :approved_for_date, ->(date) { joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', date, date) }
 
   delegate :user, to: :business
 
-  def current_approval
-    approvals.current.first
-  end
-
-  def current_child_approval
-    child_approvals.find_by(approval: current_approval)
+  def active_child_approval(date)
+    child_approvals.find_by(approval: approvals.active_on_date(date))
   end
 
   def attendances
     Attendance.where(child_approval: ChildApproval.where(child: self))
   end
 
-  def current_subsidy_rule
-    current_child_approval.subsidy_rule
+  def active_subsidy_rule(date)
+    active_child_approval(date).subsidy_rule
   end
 
   def illinois_approval_amounts

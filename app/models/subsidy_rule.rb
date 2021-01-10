@@ -17,7 +17,7 @@ class SubsidyRule < UuidApplicationRecord
 
   validates :license_type, inclusion: { in: Licenses.types.values }
 
-  scope :current, -> { where('effective_on <= ?', Date.current).where('expires_on IS NULL OR expires_on > ?', Date.current) }
+  scope :effective_on, ->(date) { where('effective_on <= ? AND expires_on IS NULL OR expires_on > ?', date, date) }
 end
 
 # == Schema Information

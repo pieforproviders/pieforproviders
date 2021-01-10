@@ -26,7 +26,7 @@ export default function DashboardTable({ tableData, userState }) {
   const renderAttendanceRate = attendanceRate => {
     const createTag = (color, text) => (
       <Tag className={`${color}-tag custom-tag`}>
-        {`${attendanceRate.rate * 100}% - ${t(text)}`}
+        {`${(attendanceRate.rate * 100).toFixed(1)}% - ${t(text)}`}
       </Tag>
     )
 
