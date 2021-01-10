@@ -25,7 +25,7 @@ class IllinoisAttendanceRateCalculator
     days
   end
 
-  # private
+  private
 
   def active_approval
     @child.approvals.active_on_date(@from_date)
@@ -46,9 +46,6 @@ class IllinoisAttendanceRateCalculator
   def sum_attendances(child)
     attendances = child.attendances.for_month
     return 0 unless attendances
-
-    attendances_to_count = []
-    attendances_to_count << attendances.illinois_part_days.count
 
     [
       attendances.illinois_part_days.count,
