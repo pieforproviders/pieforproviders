@@ -163,5 +163,6 @@
   "sureBet": "sure bet",
   "atRisk": "at risk",
   "notMet": "not met",
-  "notEnoughInfo": "not enough info"
+  "notEnoughInfo": "not enough info",
+  "exceededLimit": "exceeded limit"
 }

@@ -6,4 +6,10 @@ export const attendanceCategories = {
   NOTENOUGHINFO: 'not_enough_info'
 }
 
-export default { attendanceCategories }
+export const fullDayCategories = {
+  ONTRACK: 'on_track',
+  ATRISK: 'at_risk',
+  EXCEEDEDLIMIT: 'exceeded_limit'
+}
+
+export default { attendanceCategories, fullDayCategories }
