@@ -148,6 +148,13 @@
   "maxApprovedRevenueDef": "If all families meet 80% attendance rate",
   "attendanceRate": "Attendance rate",
   "attendanceRateDef": "Based on attendance rate of all children listed",
+  "earnedRevenueDef": "Based on attendance + other fees to date",
+  "estimatedRevenueDef": "If attendance + other fees continue at the same rate",
+  "maxRevenueDef": "If you have perfect attendance for the rest of the month",
+  "totalApproved": "Total approved",
+  "totalApprovedDef": "What the state has approved for all subsidy children",
+  "transportation": "Transportation",
+  "transportationDef": "Max revenue if all transportation is used",
 
   "attendance": "Attendance",
   "revenue": "Revenue",

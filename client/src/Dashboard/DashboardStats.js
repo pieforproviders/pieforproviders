@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Divider, Grid, Typography } from 'antd'
+import '_assets/styles/divider-overrides.css'
 
 const { useBreakpoint } = Grid
 
@@ -31,21 +32,48 @@ export default function DashboardStats({ summaryData }) {
           }
         }
 
+        const renderStat = () => {
+          return (
+            <div className="w-full">
+              {Array.isArray(stat) ? (
+                stat.map((subStat, i) => {
+                  return (
+                    <div key={i} className="mt-2">
+                      <p>
+                        <Typography.Text>{subStat.title}</Typography.Text>
+                        <Typography.Text className="text-blue2 font-semibold ml-1">
+                          {subStat.stat}
+                        </Typography.Text>
+                      </p>
+                      <Typography.Paragraph className="text-xs mt-1">
+                        {subStat.definition}
+                      </Typography.Paragraph>
+                      {i + 1 === stat.length ? null : <Divider />}
+                    </div>
+                  )
+                })
+              ) : (
+                <div className="mt-2">
+                  <p className="h-6 xs:whitespace-no-wrap">
+                    <Typography.Text>{stat.title}</Typography.Text>
+                  </p>
+                  <p className="mt-2">
+                    <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+                      {stat.stat}
+                    </Typography.Text>
+                  </p>
+                  <Typography.Paragraph className="text-xs mt-5">
+                    {stat.definition}
+                  </Typography.Paragraph>
+                </div>
+              )}
+            </div>
+          )
+        }
+
         return (
           <div key={i} className="dashboard-stat flex">
-            <div className="w-full mt-2">
-              <p className="h-6 xs:whitespace-no-wrap">
-                <Typography.Text>{stat.title}</Typography.Text>
-              </p>
-              <p className="mt-2">
-                <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
-                  {stat.stat}
-                </Typography.Text>
-              </p>
-              <Typography.Paragraph className="text-xs mt-5">
-                {stat.definition}
-              </Typography.Paragraph>
-            </div>
+            {renderStat()}
             {renderDivider()}
           </div>
         )
