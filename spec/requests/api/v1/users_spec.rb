@@ -144,20 +144,18 @@ RSpec.describe 'users API', type: :request do
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
+
           response '200', 'when requesting a month with attendances and approvals' do
             before do
               travel_to Time.zone.today - 1.month
               owner.businesses.first.children.active.each do |child|
                 current_child_approval = child.active_child_approval(Time.zone.today)
                 create(:illinois_part_day_attendance,
-                       child_approval: current_child_approval,
-                       check_in: Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now))
+                       child_approval: current_child_approval)
                 create(:illinois_full_day_attendance,
-                       child_approval: current_child_approval,
-                       check_in: Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now))
+                       child_approval: current_child_approval)
                 create(:illinois_full_plus_part_day_attendance,
-                       child_approval: current_child_approval,
-                       check_in: Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now))
+                       child_approval: current_child_approval)
               end
             end
             after { travel_back }
