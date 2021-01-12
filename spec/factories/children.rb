@@ -9,41 +9,26 @@ FactoryBot.define do
 
     factory :child_in_illinois do
       after(:create) do |child|
-        date = Date.parse('March 2020')
-        create(:illinois_approval_amount,
-               child_approval: child.active_child_approval(date),
-               month: date,
-               part_days_approved_per_week: 3,
-               full_days_approved_per_week: 2)
+        12.times do |index|
+          create(:illinois_approval_amount,
+                 child_approval: child.active_child_approval(Time.zone.today),
+                 month: child.active_child_approval(Time.zone.today).approval.effective_on + index.months,
+                 part_days_approved_per_week: 3,
+                 full_days_approved_per_week: 2)
+        end
       end
     end
     trait :with_three_attendances do
       after(:create) do |child|
-        # part day
-        part_day_start = DateTime.parse('March 10, 2020 2:04 pm CST')
-        create(:attendance, child_approval: child.active_child_approval(part_day_start), check_in: part_day_start,
-                            check_out: part_day_start + 4.hours + 10.minutes)
-
-        # full day
-        full_day_start = DateTime.parse('March 4, 2020 8:32 am CST')
-        create(:attendance, child_approval: child.active_child_approval(full_day_start), check_in: full_day_start,
-                            check_out: full_day_start + 8.hours + 31.minutes)
-
-        # full plus part day
-        full_plus_part_day_start = DateTime.parse('March 12, 2020 9:18 am CST')
-        create(:attendance, child_approval: child.active_child_approval(full_plus_part_day_start), check_in: full_plus_part_day_start,
-                            check_out: full_plus_part_day_start + 14.hours + 29.minutes)
+        create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:illinois_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:illinois_full_plus_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
       end
     end
     trait :with_two_attendances do
       after(:create) do |child|
-        # part day
-        part_day_start = DateTime.parse('March 1, 2020 2:04 pm CST')
-        create(:attendance, child_approval: child.active_child_approval(part_day_start), check_in: part_day_start, check_out: part_day_start + 4.hours + 10.minutes)
-
-        # full day
-        full_day_start = DateTime.parse('March 2, 2020 8:32 am CST')
-        create(:attendance, child_approval: child.active_child_approval(full_day_start), check_in: full_day_start, check_out: full_day_start + 8.hours + 31.minutes)
+        create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:illinois_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
       end
     end
   end
