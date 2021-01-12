@@ -107,10 +107,10 @@ RSpec.describe 'users API', type: :request do
         # security [{ token: [] }]
 
         include_context 'correct api version header'
-        let!(:expired_approval) { create(:approval, effective_on: Date.parse('January 11, 2018'), case_number: '1234567A', create_children: false) }
-        let!(:expired_approvals) { create_list(:approval, count, effective_on: Date.parse('January 11, 2018'), create_children: false) }
-        let!(:current_approval) { create(:approval, effective_on: Date.parse('January 11, 2020'), case_number: '1234567B', create_children: false) }
-        let!(:current_approvals) { create_list(:approval, count, effective_on: Date.parse('January 11, 2020'), create_children: false) }
+        let!(:expired_approval) { create(:expired_approval, case_number: '1234567A', create_children: false) }
+        let!(:expired_approvals) { create_list(:expired_approval, count, create_children: false) }
+        let!(:current_approval) { create(:approval, case_number: '1234567B', create_children: false) }
+        let!(:current_approvals) { create_list(:approval, count, create_children: false) }
         let!(:owner_records) { create_list(:child_in_illinois, count, :with_three_attendances, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
         let!(:owner_inactive_records) do
           create_list(:child_in_illinois, count, :with_two_attendances, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
@@ -140,13 +140,24 @@ RSpec.describe 'users API', type: :request do
               json = JSON.parse(response.body)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
-              expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_rate') }.flatten).to include(0)
               expect(json.collect { |user| user['as_of'] }.flatten).to include(DateTime.now.strftime('%m/%d/%Y'))
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
+
           response '200', 'when requesting a month with attendances and approvals' do
-            before { travel_to Date.parse('March 28, 2020').in_time_zone(owner.timezone) }
+            before do
+              travel_to Time.zone.today - 1.month
+              owner.businesses.first.children.active.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create(:illinois_part_day_attendance,
+                       child_approval: current_child_approval)
+                create(:illinois_full_day_attendance,
+                       child_approval: current_child_approval)
+                create(:illinois_full_plus_part_day_attendance,
+                       child_approval: current_child_approval)
+              end
+            end
             after { travel_back }
 
             run_test! do
@@ -154,7 +165,12 @@ RSpec.describe 'users API', type: :request do
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_rate') }.flatten).to include(0.16)
-              expect(json.collect { |user| user['as_of'] }.flatten).to include('03/12/2020')
+              most_recent_attendance = owner.businesses.map do |business|
+                business.children.map do |child|
+                  child.attendances.for_month.pluck(:check_in)
+                end
+              end.flatten.max
+              expect(json.collect { |user| user['as_of'] }.flatten).to include(most_recent_attendance.strftime('%m/%d/%Y'))
               expect(response).to match_response_schema('illinois_case_list_for_dashboard')
             end
           end
@@ -178,106 +194,170 @@ RSpec.describe 'users API', type: :request do
           response '200', 'with a sure_bet family' do
             before do
               travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
-              create(:illinois_approval_amount, child_approval: first_child.active_child_approval(DateTime.now), part_days_approved_per_week: 1, full_days_approved_per_week: 0,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-              create(:illinois_approval_amount, child_approval: last_child.active_child_approval(DateTime.now), part_days_approved_per_week: 0, full_days_approved_per_week: 1,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.active_child_approval(DateTime.now), check_in: Time.zone.today - rand(1..5).days)
-              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.active_child_approval(DateTime.now))
+              first_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 0)
+              last_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
+              owner.businesses.first.children.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create_list(:illinois_part_day_attendance, 10,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+                create_list(:illinois_full_day_attendance, 10,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+              end
             end
             after { travel_back }
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('sure_bet')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('sure_bet')
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                .flatten)
+                .to eq(%w[sure_bet sure_bet])
             end
           end
 
           response '200', 'with a family with a sure_bet child and an on_track child' do
             before do
               travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
-              create(:illinois_approval_amount, child_approval: first_child.active_child_approval(DateTime.now), part_days_approved_per_week: 1, full_days_approved_per_week: 2,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-              create(:illinois_approval_amount, child_approval: last_child.active_child_approval(DateTime.now), part_days_approved_per_week: 0, full_days_approved_per_week: 1,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.active_child_approval(DateTime.now), check_in: Time.zone.today - rand(1..5).days)
-              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.active_child_approval(DateTime.now))
+              first_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 2)
+              last_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
+              owner.businesses.first.children.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create_list(:illinois_part_day_attendance, 0,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+                create_list(:illinois_full_day_attendance, 10,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+              end
             end
             after { travel_back }
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('on_track')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('sure_bet')
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                .flatten)
+                .to eq(%w[on_track sure_bet])
             end
           end
 
           response '200', 'with an on_track family' do
             before do
               travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
-              create(:illinois_approval_amount, child_approval: first_child.active_child_approval(DateTime.now), part_days_approved_per_week: 3, full_days_approved_per_week: 2,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-              create(:illinois_approval_amount, child_approval: last_child.active_child_approval(DateTime.now), part_days_approved_per_week: 2, full_days_approved_per_week: 3,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-
-              create_list(:illinois_part_day_attendance, 5, child_approval: first_child.active_child_approval(DateTime.now), check_in: Time.zone.today - rand(1..5).days)
-              create_list(:illinois_full_day_attendance, 5, child_approval: first_child.active_child_approval(DateTime.now))
-              create_list(:illinois_part_day_attendance, 5, child_approval: last_child.active_child_approval(DateTime.now))
-              create_list(:illinois_full_day_attendance, 5, child_approval: last_child.active_child_approval(DateTime.now))
+              first_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
+              last_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
+              owner.businesses.first.children.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create_list(:illinois_part_day_attendance, 5,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+                create_list(:illinois_full_day_attendance, 5,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+              end
             end
             after { travel_back }
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('on_track')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('on_track')
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                .flatten)
+                .to eq(%w[on_track on_track])
             end
           end
 
           response '200', 'with an at_risk family' do
             before do
               travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
-              create(:illinois_approval_amount, child_approval: first_child.active_child_approval(DateTime.now), part_days_approved_per_week: 3, full_days_approved_per_week: 2,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-              create(:illinois_approval_amount, child_approval: last_child.active_child_approval(DateTime.now), part_days_approved_per_week: 2, full_days_approved_per_week: 3,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-
-              create_list(:illinois_part_day_attendance, 4, child_approval: first_child.active_child_approval(DateTime.now), check_in: Time.zone.today - rand(1..4).days)
-              create_list(:illinois_full_day_attendance, 3, child_approval: first_child.active_child_approval(DateTime.now))
-              create_list(:illinois_part_day_attendance, 4, child_approval: last_child.active_child_approval(DateTime.now))
-              create_list(:illinois_full_day_attendance, 3, child_approval: last_child.active_child_approval(DateTime.now))
+              first_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
+              last_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
+              owner.businesses.first.children.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create_list(:illinois_part_day_attendance, 4,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+                create_list(:illinois_full_day_attendance, 3,
+                            child_approval: current_child_approval,
+                            check_in: Time.zone.today - rand(1..5).days)
+              end
             end
             after { travel_back }
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('at_risk')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('at_risk')
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                .flatten)
+                .to eq(%w[at_risk at_risk])
             end
           end
 
           response '200', 'with a not_met family' do
             before do
               travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
-              create(:illinois_approval_amount, child_approval: first_child.active_child_approval(DateTime.now), part_days_approved_per_week: 3, full_days_approved_per_week: 2,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-              create(:illinois_approval_amount, child_approval: last_child.active_child_approval(DateTime.now), part_days_approved_per_week: 2, full_days_approved_per_week: 3,
-                                                month: Time.zone.today.at_beginning_of_month.in_time_zone(owner.timezone))
-
-              create_list(:illinois_part_day_attendance, 1, child_approval: first_child.active_child_approval(DateTime.now), check_in: Time.zone.today - 4.hours)
-              create_list(:illinois_full_day_attendance, 1, child_approval: first_child.active_child_approval(DateTime.now))
-              create_list(:illinois_part_day_attendance, 1, child_approval: last_child.active_child_approval(DateTime.now))
-              create_list(:illinois_full_day_attendance, 1, child_approval: last_child.active_child_approval(DateTime.now))
+              first_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
+              last_child
+                .active_child_approval(DateTime.now)
+                .illinois_approval_amounts
+                .for_month
+                .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
+              owner.businesses.first.children.each do |child|
+                current_child_approval = child.active_child_approval(Time.zone.today)
+                create(:illinois_part_day_attendance,
+                       child_approval: current_child_approval,
+                       check_in: Time.zone.today - rand(1..5).days)
+                create(:illinois_full_day_attendance,
+                       child_approval: current_child_approval,
+                       check_in: Time.zone.today - rand(1..5).days)
+              end
             end
             after { travel_back }
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('not_met')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('not_met')
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                .flatten)
+                .to eq(%w[not_met not_met])
             end
           end
 
@@ -290,8 +370,10 @@ RSpec.describe 'users API', type: :request do
 
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses', 0, 'cases', 0, 'attendance_risk')).to eq('not_enough_info')
-              expect(json.dig(0, 'businesses', 0, 'cases', 1, 'attendance_risk')).to eq('not_enough_info')
+              expect(json
+                  .collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_risk') }
+                  .flatten)
+                .to eq(%w[not_enough_info not_enough_info])
             end
           end
         end
@@ -318,7 +400,11 @@ RSpec.describe 'users API', type: :request do
           response '200', 'active cases found' do
             run_test! do
               json = JSON.parse(response.body)
-              expect(json.dig(0, 'businesses').size).to eq(0)
+
+              expect(json
+                .collect { |user| user.dig_and_collect('businesses') }
+                .flatten.size)
+                .to eq(0)
             end
           end
         end
