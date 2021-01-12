@@ -32,7 +32,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def approval_amount
-    active_child_approval.illinois_approval_amounts.find_by(month: @from_date.at_beginning_of_month)
+    active_child_approval.illinois_approval_amounts.for_month(@from_date)
   end
 
   def risk_label
