@@ -157,7 +157,7 @@ export function Dashboard() {
     })
   }
 
-  const reduceSummaryData = data => {
+  const reduceSummaryData = (data, res) => {
     if (user.state === 'NE') {
       return {
         ...data.reduce((acc, cv) => {
@@ -171,8 +171,12 @@ export function Dashboard() {
               Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
           }
         }, summaryDataTotalsConfig['ne']),
-        maxRevenueTotal: data.max_revenue ?? 0,
-        totalApprovedTotal: data.total_approved ?? 0
+        ...res.reduce((acc, cv) => {
+          return {
+            maxRevenueTotal: acc.maxRevenueTotal ?? 0 + cv.max_revenue,
+            totalApprovedTotal: acc.totalApprovedTotal ?? 0 + cv.total_approved
+          }
+        }, {})
       }
     }
     return data.reduce((acc, cv) => {
@@ -222,7 +226,10 @@ export function Dashboard() {
 
       if (!parsedResponse.error) {
         const tableData = reduceTableData(parsedResponse)
-        const updatedSummaryDataTotals = reduceSummaryData(tableData)
+        const updatedSummaryDataTotals = reduceSummaryData(
+          tableData,
+          parsedResponse
+        )
         setSummaryTotals(updatedSummaryDataTotals)
         setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
         setTableData(tableData)
