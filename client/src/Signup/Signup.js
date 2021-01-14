@@ -355,6 +355,11 @@ export function Signup() {
             validationErrors?.email &&
             `${t('email')} ${t(validationErrors.email[0].error)}`
           }
+          onChange={() => {
+            if (validationErrors?.email) {
+              setValidationErrors({ email: null })
+            }
+          }}
         >
           <Input
             placeholder="amanda@gmail.com"
