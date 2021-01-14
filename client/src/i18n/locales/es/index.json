@@ -170,5 +170,6 @@
   "sureBet": "sin duda",
   "atRisk": "en riesgo",
   "notMet": "no cumplido",
-  "notEnoughInfo": "información insuficiente"
+  "notEnoughInfo": "información insuficiente",
+  "exceededLimit": "excedió el límite"
 }

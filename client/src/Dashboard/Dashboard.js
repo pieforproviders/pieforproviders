@@ -121,7 +121,6 @@ export function Dashboard() {
     return res.flatMap(userResponse => {
       return userResponse.businesses.flatMap(business => {
         return business.cases.flatMap((childCase, index) => {
-          console.log('childCase.attendance_rate:', childCase.attendance_rate)
           return user.state === 'NE'
             ? {
                 key: index,
@@ -133,7 +132,10 @@ export function Dashboard() {
                 },
                 earnedRevenue: childCase.earned_revenue ?? '',
                 estimatedRevenue: childCase.estimated_revenue,
-                fullDays: childCase.full_days ?? '',
+                fullDays: {
+                  text: childCase.full_days ?? '',
+                  tag: childCase.attendance_risk ?? ''
+                },
                 hours: childCase.hours ?? '',
                 transportationRevenue: childCase.transportation_revenue ?? ''
               }

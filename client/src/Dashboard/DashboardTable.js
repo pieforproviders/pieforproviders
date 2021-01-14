@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { attendanceCategories } from '_utils/constants'
+import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import ellipse from '_assets/ellipse.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
@@ -39,6 +39,30 @@ export default function DashboardTable({ tableData, userState }) {
       case attendanceCategories.NOTENOUGHINFO:
       default:
         return createTag('grey', 'notEnoughInfo')
+    }
+  }
+
+  const renderFullDays = fullday => {
+    const renderCell = (color, text) => {
+      return (
+        <div className="-mb-4">
+          <p className="mb-1">{`${fullday.text}`}</p>
+          <Tag className={`${color}-tag custom-tag`}>{`${
+            t(text).charAt(0).toUpperCase() + t(text).slice(1)
+          }`}</Tag>
+        </div>
+      )
+    }
+
+    switch (fullday.tag) {
+      case fullDayCategories.ONTRACK:
+        return renderCell('green', 'onTrack')
+      case fullDayCategories.ATRISK:
+        return renderCell('orange', 'atRisk')
+      case fullDayCategories.EXCEEDEDLIMIT:
+        return renderCell('red', 'exceededLimit')
+      default:
+        return renderCell('grey', 'notEnoughInfo')
     }
   }
 
@@ -93,7 +117,8 @@ export default function DashboardTable({ tableData, userState }) {
           {
             name: 'fullDays',
             sorter: (a, b) =>
-              a.fullDays.match(/^\d+/)[0] - b.fullDays.match(/^\d+/)[0]
+              a.fullDays.match(/^\d+/)[0] - b.fullDays.match(/^\d+/)[0],
+            render: renderFullDays
           },
           {
             name: 'hours',

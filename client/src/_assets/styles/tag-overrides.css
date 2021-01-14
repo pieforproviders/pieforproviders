@@ -20,6 +20,11 @@ Goal is to at some point to create a 'best practices' guideline for us in implem
   color: #333333;
 }
 
+.red-tag.ant-tag {
+  background: #FFEDED;
+  color: #D23C2A;
+}
+
 .ant-tag:hover {
   color:#333333;
 }
