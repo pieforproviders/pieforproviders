@@ -25,6 +25,10 @@ class Child < UuidApplicationRecord
 
   delegate :user, to: :business
 
+  def state
+    business.user.state
+  end
+
   def active_child_approval(date)
     child_approvals.find_by(approval: approvals.active_on_date(date))
   end
