@@ -46,7 +46,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def less_than_halfway_through_month
-    time_now < halfway || (latest_user_attendance && latest_user_attendance.check_in < halfway)
+    time_now < halfway || (latest_user_attendance && latest_user_attendance < halfway)
   end
 
   def attended_all_approved_days

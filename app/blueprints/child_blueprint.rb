@@ -29,7 +29,7 @@ class ChildBlueprint < Blueprinter::Base
 
   view :nebraska_dashboard do
     field :attendance_risk do
-      'on_track'
+      %w[on_track exceeded_limit at_risk].sample
     end
     field :absences do
       '1 of 5'
