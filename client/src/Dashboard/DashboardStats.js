@@ -15,7 +15,7 @@ export default function DashboardStats({ summaryData }) {
             // eslint-disable-next-line no-unused-expressions
             return i % 2 === 0 ? (
               <Divider
-                style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                style={{ height: '8.25rem', borderColor: '#BDBDBD' }}
                 className="stats-divider m-2"
                 type="vertical"
               />
@@ -24,7 +24,7 @@ export default function DashboardStats({ summaryData }) {
             // eslint-disable-next-line no-unused-expressions
             return summaryData.length === i + 1 ? null : (
               <Divider
-                style={{ height: '8.5rem', borderColor: '#BDBDBD' }}
+                style={{ height: '8.25rem', borderColor: '#BDBDBD' }}
                 className="stats-divder sm:mr-4 m:mx-4"
                 type="vertical"
               />
@@ -57,12 +57,12 @@ export default function DashboardStats({ summaryData }) {
                   <p className="h-6 xs:whitespace-no-wrap">
                     <Typography.Text>{stat.title}</Typography.Text>
                   </p>
-                  <p className="mt-2">
-                    <Typography.Text className="text-blue2 text-3xl font-semibold mt-2 mb-6">
+                  <p>
+                    <Typography.Text className="text-blue2 text-3xl font-semibold mb-6">
                       {stat.stat}
                     </Typography.Text>
                   </p>
-                  <Typography.Paragraph className="text-xs mt-5">
+                  <Typography.Paragraph className="text-xs mt-5 mr-8">
                     {stat.definition}
                   </Typography.Paragraph>
                 </div>
