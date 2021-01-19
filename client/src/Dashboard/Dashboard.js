@@ -165,9 +165,12 @@ export function Dashboard() {
     return tableData.map(row => {
       return {
         ...row,
-        ...((user.state === 'NE' ? currencyConfig['ne'] : currencyConfig['default']).reduce((acc, c) => {
-          return { [c]: currencyFormatter.format(row[c]), ...acc}
-        }, {}))
+        ...(user.state === 'NE'
+          ? currencyConfig['ne']
+          : currencyConfig['default']
+        ).reduce((acc, c) => {
+          return { [c]: currencyFormatter.format(row[c]), ...acc }
+        }, {})
       }
     })
   }
