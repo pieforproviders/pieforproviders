@@ -117,7 +117,8 @@ export default function DashboardTable({ tableData, userState }) {
           {
             name: 'fullDays',
             sorter: (a, b) =>
-              a.fullDays.text.match(/^\d+/)[0] - b.fullDays.text.match(/^\d+/)[0],
+              a.fullDays.text.match(/^\d+/)[0] -
+              b.fullDays.text.match(/^\d+/)[0],
             render: renderFullDays
           },
           {
