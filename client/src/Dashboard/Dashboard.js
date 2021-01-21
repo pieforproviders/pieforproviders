@@ -131,7 +131,7 @@ export function Dashboard() {
                   business: business.name ?? ''
                 },
                 earnedRevenue: childCase.earned_revenue ?? '',
-                estimatedRevenue: childCase.estimated_revenue,
+                estimatedRevenue: childCase.estimated_revenue ?? '',
                 fullDays: {
                   text: childCase.full_days ?? '',
                   tag: childCase.attendance_risk ?? ''
@@ -154,6 +154,24 @@ export function Dashboard() {
               }
         })
       })
+    })
+  }
+
+  const formatCurrencyData = tableData => {
+    const currencyConfig = {
+      default: ['guaranteedRevenue', 'maxApprovedRevenue', 'potentialRevenue'],
+      ne: ['earnedRevenue', 'estimatedRevenue']
+    }
+    return tableData.map(row => {
+      return {
+        ...row,
+        ...(user.state === 'NE'
+          ? currencyConfig['ne']
+          : currencyConfig['default']
+        ).reduce((acc, c) => {
+          return { [c]: currencyFormatter.format(row[c]), ...acc }
+        }, {})
+      }
     })
   }
 
@@ -232,7 +250,7 @@ export function Dashboard() {
         )
         setSummaryTotals(updatedSummaryDataTotals)
         setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-        setTableData(tableData)
+        setTableData(formatCurrencyData(tableData))
       }
     }
 
@@ -248,7 +266,6 @@ export function Dashboard() {
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
-
   return (
     <div className="dashboard sm:mx-8">
       <div className="dashboard-title m-2">
