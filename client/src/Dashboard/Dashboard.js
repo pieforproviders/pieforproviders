@@ -200,34 +200,8 @@ export function Dashboard() {
   }
 
   const reduceAsOfDate = res => {
-    const practice = [
-      {
-        as_of: '01/21/2020',
-        businesses: Array(1),
-        max_revenue: 23122,
-        total_approved: 23122
-      },
-      {
-        as_of: '01/21/2021',
-        businesses: Array(1),
-        max_revenue: 23122,
-        total_approved: 23122
-      },
-      {
-        as_of: '01/11/2021',
-        businesses: Array(1),
-        max_revenue: 23122,
-        total_approved: 23122
-      },
-      {
-        as_of: '12/21/2020',
-        businesses: Array(1),
-        max_revenue: 23122,
-        total_approved: 23122
-      }
-    ]
     const date = new Date(
-      practice.reduce((user1, user2) => {
+      res.reduce((user1, user2) => {
         return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
       }).as_of
     )
