@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch, useSelector } from 'react-redux'
-import { Typography } from 'antd'
+import { Button, Typography } from 'antd'
 import { setUser } from '_reducers/userReducer'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
+import '_assets/styles/dashboard-overrides.css'
 
 export function Dashboard() {
   const dispatch = useDispatch()
@@ -39,6 +40,7 @@ export function Dashboard() {
   )
   const [summaryData, setSummaryData] = useState([])
   const [tableData, setTableData] = useState([])
+  const [dates, setDates] = useState({ asOf: '', dateFilter: '' })
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
 
@@ -197,6 +199,51 @@ export function Dashboard() {
     }, summaryDataTotalsConfig['default'])
   }
 
+  const reduceAsOfDate = res => {
+    const practice = [
+      {
+        as_of: '01/21/2020',
+        businesses: Array(1),
+        max_revenue: 23122,
+        total_approved: 23122
+      },
+      {
+        as_of: '01/21/2021',
+        businesses: Array(1),
+        max_revenue: 23122,
+        total_approved: 23122
+      },
+      {
+        as_of: '01/11/2021',
+        businesses: Array(1),
+        max_revenue: 23122,
+        total_approved: 23122
+      },
+      {
+        as_of: '12/21/2020',
+        businesses: Array(1),
+        max_revenue: 23122,
+        total_approved: 23122
+      }
+    ]
+    const date = new Date(
+      practice.reduce((user1, user2) => {
+        return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
+      }).as_of
+    )
+
+    return {
+      asOf: date.toLocaleDateString('default', {
+        month: 'short',
+        day: 'numeric'
+      }),
+      dateFilter: new Date().toLocaleDateString('default', {
+        month: 'short',
+        year: 'numeric'
+      })
+    }
+  }
+
   useEffect(() => {
     const getUserData = async () => {
       const response = await makeRequest({
@@ -230,6 +277,7 @@ export function Dashboard() {
           tableData,
           parsedResponse
         )
+        setDates(reduceAsOfDate(parsedResponse))
         setSummaryTotals(updatedSummaryDataTotals)
         setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
         setTableData(tableData)
@@ -252,7 +300,15 @@ export function Dashboard() {
   return (
     <div className="dashboard sm:mx-8">
       <div className="dashboard-title m-2">
-        <Typography.Title>{t('dashboardTitle')}</Typography.Title>
+        <div className="flex items-center mb-3">
+          <Typography.Title className="dashboard-title mr-4">
+            {t('dashboardTitle')}
+          </Typography.Title>
+          <Button className="date-filter-button mr-2 text-base py-2 px-4">
+            {dates.dateFilter}
+          </Button>
+          <Typography.Text className="text-gray3">{`As of: ${dates.asOf}`}</Typography.Text>
+        </div>
         <Typography.Text className="md-3 text-base">
           {t('revenueProjections')}
         </Typography.Text>
