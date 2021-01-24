@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return unless ENV.fetch('ALLOW_SEEDING', 'false') == 'true'
+
 require 'faker'
 
 # This seeds the db with data. It is not used in production.
