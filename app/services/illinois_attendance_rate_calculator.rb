@@ -36,7 +36,7 @@ class IllinoisAttendanceRateCalculator
   end
 
   def sum_approvals(child)
-    approval_amount = child.illinois_approval_amounts.find_by(month: @from_date.at_beginning_of_month.to_date)
+    approval_amount = child.illinois_approval_amounts.for_month(@from_date)
     return 0 unless approval_amount
 
     weeks_in_month = DateService.weeks_in_month(@from_date)

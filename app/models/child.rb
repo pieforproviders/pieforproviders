@@ -59,18 +59,6 @@ class Child < UuidApplicationRecord
     AttendanceRiskCalculator.new(self, from_date.in_time_zone(timezone)).call
   end
 
-  def illinois_guaranteed_revenue
-    1045.32
-  end
-
-  def illinois_potential_revenue
-    2022.14
-  end
-
-  def illinois_max_approved_revenue
-    2025.12
-  end
-
   private
 
   def associate_subsidy_rule
