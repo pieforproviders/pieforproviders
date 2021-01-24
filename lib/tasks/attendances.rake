@@ -9,7 +9,6 @@ task attendances: :environment do
     generate_attendances
   else
     puts 'Error seeding attendances: this environment does not allow for seeding attendances'
-    return
   end
 end
 
