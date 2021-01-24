@@ -2,7 +2,7 @@
 
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
-  before_create :associate_child_to_approval
+  before_save :find_or_create_approvals
   after_commit :associate_subsidy_rule
 
   belongs_to :business
@@ -62,12 +62,16 @@ class Child < UuidApplicationRecord
 
   private
 
-  def associate_subsidy_rule
-    SubsidyRuleAssociatorJob.perform_later(id)
+  def find_or_create_approvals
+    self.approvals = approvals.map do |approvals|
+      Approval.find_or_create_by(case_number: approvals.case_number,
+                                 effective_on: approvals.effective_on,
+                                 expires_on: approvals.expires_on)
+    end
   end
 
-  def associate_child_to_approval
-    ApprovalAssociator.new(self).call
+  def associate_subsidy_rule
+    SubsidyRuleAssociatorJob.perform_later(id)
   end
 end
 
