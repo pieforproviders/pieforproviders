@@ -97,7 +97,7 @@ RSpec.describe Child, type: :model do
           approvals_attributes: [
             {
               case_number: approval.case_number,
-              effective_on: Date.today + 3.months,
+              effective_on: Date.current + 3.months,
               expires_on: approval.expires_on,
               copay: 20_000,
               copay_frequency: 'monthly'
