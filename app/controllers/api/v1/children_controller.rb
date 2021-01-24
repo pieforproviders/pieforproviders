@@ -22,7 +22,7 @@ class Api::V1::ChildrenController < Api::V1::ApiController
     @child = Child.new(child_params)
 
     if @child.save
-      make_illinois_approval_amounts
+      make_illinois_approval_amounts if @child.state == 'IL'
       render json: @child, status: :created, location: @child
     else
       render json: @child.errors, status: :unprocessable_entity

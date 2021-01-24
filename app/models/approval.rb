@@ -20,6 +20,10 @@ class Approval < UuidApplicationRecord
   scope :active_on_date, ->(date) { find_by('effective_on <= ? AND expires_on > ?', date, date) }
 
   monetize :copay_cents, allow_nil: true
+
+  def timezone
+    children.first.timezone
+  end
 end
 
 # == Schema Information
