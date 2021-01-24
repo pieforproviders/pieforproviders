@@ -21,7 +21,9 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals
 
   scope :active, -> { where(active: true) }
-  scope :approved_for_date, ->(date) { joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', date, date) }
+  scope :approved_for_date, lambda { |date, timezone|
+                              joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', date.in_time_zone(timezone), date.in_time_zone(timezone))
+                            }
 
   delegate :user, to: :business
 
@@ -29,8 +31,12 @@ class Child < UuidApplicationRecord
     business.user.state
   end
 
+  def timezone
+    business.user.timezone
+  end
+
   def active_child_approval(date)
-    child_approvals.find_by(approval: approvals.active_on_date(date))
+    child_approvals.find_by(approval: approvals.active_on_date(date.in_time_zone(timezone)))
   end
 
   def attendances
@@ -46,11 +52,11 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_rate(from_date)
-    AttendanceRateCalculator.new(self, from_date).call
+    AttendanceRateCalculator.new(self, from_date.in_time_zone(timezone)).call
   end
 
   def attendance_risk(from_date)
-    AttendanceRiskCalculator.new(self, from_date).call
+    AttendanceRiskCalculator.new(self, from_date.in_time_zone(timezone)).call
   end
 
   def illinois_guaranteed_revenue

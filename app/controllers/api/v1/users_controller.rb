@@ -19,9 +19,21 @@ class Api::V1::UsersController < Api::V1::ApiController
   def case_list_for_dashboard
     date_now = DateTime.now.in_time_zone(current_user.timezone)
     if current_user.state == 'NE'
-      render json: UserBlueprint.render(policy_scope(User), view: :nebraska_dashboard, from_date: date_now)
+      render json: UserBlueprint
+        .render(
+          policy_scope(User),
+          view: :nebraska_dashboard,
+          from_date: date_now,
+          timezone: current_user.timezone
+        )
     else
-      render json: UserBlueprint.render(policy_scope(User), view: :illinois_dashboard, from_date: date_now)
+      render json: UserBlueprint
+        .render(
+          policy_scope(User),
+          view: :illinois_dashboard,
+          from_date: date_now,
+          timezone: current_user.timezone
+        )
     end
   end
 end

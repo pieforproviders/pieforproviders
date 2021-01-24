@@ -27,12 +27,16 @@ class IllinoisAttendanceRateCalculator
 
   private
 
+  def timezone
+    @child.timezone
+  end
+
   def active_approval
-    @child.approvals.active_on_date(@from_date)
+    @child.approvals.active_on_date(@from_date.in_time_zone(@child.timezone))
   end
 
   def sum_approvals(child)
-    approval_amount = child.illinois_approval_amounts.find_by('month BETWEEN ? AND ?', @from_date.at_beginning_of_month, @from_date.at_end_of_month)
+    approval_amount = child.illinois_approval_amounts.find_by(month: @from_date.at_beginning_of_month.to_date)
     return 0 unless approval_amount
 
     weeks_in_month = DateService.weeks_in_month(@from_date)

@@ -13,6 +13,10 @@ class IllinoisAttendanceRiskCalculator
 
   private
 
+  def timezone
+    @child.timezone
+  end
+
   def calculate_attendance_risk
     return 'not_enough_info' if less_than_halfway_through_month
 
@@ -20,7 +24,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def active_approval
-    @child.approvals.active_on_date(@from_date)
+    @child.approvals.active_on_date(@from_date.in_time_zone(@child.timezone))
   end
 
   def active_child_approval
@@ -104,7 +108,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def time_now
-    DateTime.now.in_time_zone(@child.business.user.timezone)
+    DateTime.now.in_time_zone(timezone)
   end
 
   def threshold
