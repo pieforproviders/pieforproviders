@@ -278,7 +278,7 @@ export function Dashboard() {
           <Typography.Title className="dashboard-title mr-4">
             {t('dashboardTitle')}
           </Typography.Title>
-          <Button className="date-filter-button mr-2 text-base py-2 px-4">
+          <Button className="date-filter-button mr-2 text-base py-2 px-4" disabled>
             {dates.dateFilter}
           </Button>
           <Typography.Text className="text-gray3">{`As of: ${dates.asOf}`}</Typography.Text>
