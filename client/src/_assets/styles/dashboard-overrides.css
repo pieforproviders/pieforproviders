@@ -1,0 +1,12 @@
+.dashboard-title.ant-typography {
+  margin-bottom: 0;
+}
+
+button.ant-btn.date-filter-button:hover, button.ant-btn.date-filter-button:disabled {
+  color: #333333;
+  border-color: #d9d9d9;
+}
+
+button.ant-btn.date-filter-button {
+  height: 38px;
+}
