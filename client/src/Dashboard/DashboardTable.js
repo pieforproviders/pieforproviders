@@ -101,6 +101,10 @@ export default function DashboardTable({ tableData, userState }) {
     })
   }
 
+  function renderDollarAmount(num) {
+    return <div>{currencyFormatter.format(num)}</div>
+  }
+
   const columnConfig = {
     ne: [
       {
@@ -145,14 +149,14 @@ export default function DashboardTable({ tableData, userState }) {
           {
             name: 'earnedRevenue',
             sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
-            render: rev => <div>{currencyFormatter.format(rev)}</div>
+            render: renderDollarAmount
           },
           {
             name: 'estimatedRevenue',
             sorter: (a, b) => {
               return a.estimatedRevenue - b.estimatedRevenue
             },
-            render: rev => <div>{currencyFormatter.format(rev)}</div>
+            render: renderDollarAmount
           },
           {
             name: 'transportationRevenue',
@@ -181,17 +185,17 @@ export default function DashboardTable({ tableData, userState }) {
       {
         name: 'guaranteedRevenue',
         sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
-        render: rev => <div>{currencyFormatter.format(rev)}</div>
+        render: renderDollarAmount
       },
       {
         name: 'potentialRevenue',
         sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
-        render: rev => <div>{currencyFormatter.format(rev)}</div>
+        render: renderDollarAmount
       },
       {
         name: 'maxApprovedRevenue',
         sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
-        render: rev => <div>{currencyFormatter.format(rev)}</div>
+        render: renderDollarAmount
       }
     ]
   }
