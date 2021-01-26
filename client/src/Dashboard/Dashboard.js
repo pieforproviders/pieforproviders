@@ -159,24 +159,6 @@ export function Dashboard() {
     })
   }
 
-  const formatCurrencyData = tableData => {
-    const currencyConfig = {
-      default: ['guaranteedRevenue', 'maxApprovedRevenue', 'potentialRevenue'],
-      ne: ['earnedRevenue', 'estimatedRevenue']
-    }
-    return tableData.map(row => {
-      return {
-        ...row,
-        ...(user.state === 'NE'
-          ? currencyConfig['ne']
-          : currencyConfig['default']
-        ).reduce((acc, c) => {
-          return { [c]: currencyFormatter.format(row[c]), ...acc }
-        }, {})
-      }
-    })
-  }
-
   const reduceSummaryData = (data, res) => {
     if (user.state === 'NE') {
       return {
@@ -272,7 +254,7 @@ export function Dashboard() {
         setDates(reduceAsOfDate(parsedResponse))
         setSummaryTotals(updatedSummaryDataTotals)
         setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-        setTableData(formatCurrencyData(tableData))
+        setTableData(tableData)
       }
     }
 
@@ -288,6 +270,7 @@ export function Dashboard() {
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
+
   return (
     <div className="dashboard sm:mx-8">
       <div className="dashboard-title m-2">

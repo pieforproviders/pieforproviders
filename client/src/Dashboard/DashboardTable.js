@@ -7,6 +7,12 @@ import ellipse from '_assets/ellipse.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0
+})
+
 export default function DashboardTable({ tableData, userState }) {
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
@@ -138,11 +144,15 @@ export default function DashboardTable({ tableData, userState }) {
         children: [
           {
             name: 'earnedRevenue',
-            sorter: (a, b) => a.earnedRevenue - b.earnedRevenue
+            sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
+            render: rev => <div>{currencyFormatter.format(rev)}</div>
           },
           {
             name: 'estimatedRevenue',
-            sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue
+            sorter: (a, b) => {
+              return a.estimatedRevenue - b.estimatedRevenue
+            },
+            render: rev => <div>{currencyFormatter.format(rev)}</div>
           },
           {
             name: 'transportationRevenue',
@@ -170,15 +180,18 @@ export default function DashboardTable({ tableData, userState }) {
       },
       {
         name: 'guaranteedRevenue',
-        sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue
+        sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
+        render: rev => <div>{currencyFormatter.format(rev)}</div>
       },
       {
         name: 'potentialRevenue',
-        sorter: (a, b) => a.potentialRevenue - b.potentialRevenue
+        sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
+        render: rev => <div>{currencyFormatter.format(rev)}</div>
       },
       {
         name: 'maxApprovedRevenue',
-        sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue
+        sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
+        render: rev => <div>{currencyFormatter.format(rev)}</div>
       }
     ]
   }
