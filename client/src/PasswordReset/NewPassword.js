@@ -89,7 +89,7 @@ export const NewPassword = () => {
       })
     } else {
       dispatch(addAuth(authToken))
-      history.push('/getting-started')
+      history.push('/dashboard')
     }
   }
 

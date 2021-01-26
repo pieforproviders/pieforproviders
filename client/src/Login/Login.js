@@ -69,7 +69,7 @@ export function Login() {
         dispatch(addAuth(authToken))
         dispatch(setUser(resp))
       })
-      history.push('/getting-started')
+      history.push('/dashboard')
     }
   }
 
