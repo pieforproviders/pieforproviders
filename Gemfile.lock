@@ -120,7 +120,7 @@ GEM
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    good_job (1.6.0)
+    good_job (1.7.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -362,7 +362,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  good_job (~> 1.6)
+  good_job (~> 1.7)
   guard-rspec
   hash_dig_and_collect
   holidays
