@@ -47,7 +47,6 @@ describe('Password update', () => {
         cy.get(createSelector('passwordConfirmation')).type(newPassword)
         cy.get(createSelector('resetPasswordBtn')).click()
 
-        cy.wait('@passwordReset')
         cy.location('pathname').should('eq', '/dashboard')
       })
     })
@@ -67,7 +66,6 @@ describe('Password update', () => {
         cy.get(createSelector('passwordConfirmation')).type(newPassword)
         cy.get(createSelector('resetPasswordBtn')).click()
 
-        cy.wait('@passwordReset')
         cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
@@ -96,7 +94,6 @@ describe('Password update', () => {
         cy.get(createSelector('passwordConfirmation')).type(newPassword)
         cy.get(createSelector('resetPasswordBtn')).click()
 
-        cy.wait('@passwordReset')
         cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
@@ -112,7 +109,7 @@ describe('Password update', () => {
         cy.appFactories([
           [
             'create',
-            'user',
+            'unconfirmed_user',
             {
               email,
               full_name: fullName,
@@ -145,7 +142,6 @@ describe('Password update', () => {
         cy.get(createSelector('passwordConfirmation')).type(newPassword)
         cy.get(createSelector('resetPasswordBtn')).click()
 
-        cy.wait('@passwordReset')
         cy.location('pathname').should('eq', '/login')
         cy.get(createSelector('authError')).contains(
           'You have to confirm your email address before continuing',
@@ -155,7 +151,6 @@ describe('Password update', () => {
         )
 
         cy.get(createSelector('resendConfirmationLink')).click()
-        cy.wait('@confirmation')
         cy.get(createSelector('successMessage')).contains('Email resent')
       })
     })
@@ -198,7 +193,6 @@ describe('Password update', () => {
       cy.get(createSelector('passwordConfirmation')).type(newPassword)
       cy.get(createSelector('resetPasswordBtn')).click()
 
-      cy.wait('@passwordReset')
       cy.location('pathname').should('eq', '/login')
       cy.get(createSelector('authError')).contains(
         'Your password reset token has expired. Please request a new one.',
