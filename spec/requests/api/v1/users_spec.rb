@@ -11,17 +11,17 @@ RSpec.describe 'users API', type: :request do
 
   let!(:user_params) do
     {
-      "email": 'fake_email@fake_email.com',
-      "full_name": 'Oliver Twist',
-      "greeting_name": 'Oliver',
-      "language": 'English',
-      "organization": 'Society for the Promotion of Elfish Welfare',
-      "password": 'password1234!',
-      "password_confirmation": 'password1234!',
-      "phone_number": '912-444-5555',
-      "phone_type": 'cell',
-      "service_agreement_accepted": 'true',
-      "timezone": 'Central Time (US & Canada)'
+      email: 'fake_email@fake_email.com',
+      full_name: 'Oliver Twist',
+      greeting_name: 'Oliver',
+      language: 'English',
+      organization: 'Society for the Promotion of Elfish Welfare',
+      password: 'password1234!',
+      password_confirmation: 'password1234!',
+      phone_number: '912-444-5555',
+      phone_type: 'cell',
+      service_agreement_accepted: 'true',
+      timezone: 'Central Time (US & Canada)'
     }
   end
 

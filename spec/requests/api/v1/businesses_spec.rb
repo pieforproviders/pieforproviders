@@ -7,11 +7,11 @@ RSpec.describe 'businesses API', type: :request do
   let!(:admin) { create(:admin) }
   let!(:record_params) do
     {
-      "name": 'Happy Hearts Child Care',
-      "license_type": 'licensed_center',
-      "user_id": user.id,
-      "zipcode": '60606',
-      "county": 'Cook'
+      name: 'Happy Hearts Child Care',
+      license_type: 'licensed_center',
+      user_id: user.id,
+      zipcode: '60606',
+      county: 'Cook'
     }
   end
   let(:count) { 2 }

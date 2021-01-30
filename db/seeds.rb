@@ -153,10 +153,12 @@ def create_case(full_name,
     )
   end
 
-  child = Child.find_or_create_by!(business: business,
-                                   full_name: full_name,
-                                   date_of_birth: date_of_birth,
-                                   approvals: approvals)
+  child = Child.find_or_initialize_by(business: business,
+                                      full_name: full_name,
+                                      date_of_birth: date_of_birth)
+  child.approvals << approvals
+  child.save!
+
   12.times do
     IllinoisApprovalAmount.create!(
       child_approval: child.active_child_approval(DateTime.now),

@@ -6,6 +6,8 @@ class Attendance < UuidApplicationRecord
 
   belongs_to :child_approval
 
+  attribute :total_time_in_care, :interval
+
   validates :check_in, time_param: true
   validates :check_out, time_param: true
 
