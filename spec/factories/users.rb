@@ -24,6 +24,10 @@ FactoryBot.define do
       before(:create, &:skip_confirmation!)
     end
 
+    factory :unconfirmed_user do
+      confirmed_at { nil }
+    end
+
     factory :admin do
       before(:create, &:skip_confirmation!)
       admin { true }

@@ -30,12 +30,12 @@ describe('Signup', () => {
     cy.get(createSelector('passwordConfirmation')).type(password)
     cy.get(createSelector('terms')).check()
   })
-  describe('an existing user signs up', () => {
+  describe('an existing user tries to sign up with the same data', () => {
     beforeEach(() => {
       cy.appFactories([
         [
           'create',
-          'user',
+          'confirmed_user',
           {
             email,
             full_name: fullName,
@@ -53,7 +53,6 @@ describe('Signup', () => {
         cy.get(createSelector('phoneNumber')).type(phoneNumber)
         cy.get(createSelector('email')).type('random@email.com')
         cy.get(createSelector('signupBtn')).click()
-        cy.wait('@signup')
         cy.location('pathname').should('eq', '/signup')
         cy.get('[role="alert"]')
           .contains('Phone number has already been taken')
@@ -65,7 +64,6 @@ describe('Signup', () => {
       it('returns an error', () => {
         cy.get(createSelector('email')).type(email)
         cy.get(createSelector('signupBtn')).click()
-        cy.wait('@signup')
         cy.location('pathname').should('eq', '/signup')
         cy.get('[role="alert"]')
           .contains('Email has already been taken')
@@ -81,7 +79,6 @@ describe('Signup', () => {
       cy.get(createSelector('phoneNumber')).type(phoneNumber)
       cy.get(createSelector('email')).type(email)
       cy.get(createSelector('signupBtn')).click()
-      cy.wait('@signup')
       cy.location('pathname').should('eq', '/signup')
     })
 
@@ -96,7 +93,6 @@ describe('Signup', () => {
       }).as('resend')
       cy.get(createSelector('signupThanks')).should('exist')
       cy.get(createSelector('resendConfirmation')).click()
-      cy.wait('@resend')
       cy.get(createSelector('resent')).should('exist')
     })
 
@@ -107,11 +103,9 @@ describe('Signup', () => {
       }).as('resend')
       cy.get(createSelector('signupThanks')).should('exist')
       cy.get(createSelector('resendConfirmation')).click()
-      cy.wait('@resend')
 
       cy.appScenario('confirmUserAccount')
       cy.get(createSelector('resendConfirmation')).click()
-      cy.wait('@resend')
       cy.location('pathname').should('eq', '/login')
       cy.get(createSelector('authError')).contains(
         'You have already verified your account. You can now log in.',
