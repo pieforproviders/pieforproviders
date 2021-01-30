@@ -48,7 +48,7 @@ describe('Password update', () => {
         cy.get(createSelector('resetPasswordBtn')).click()
 
         cy.wait('@passwordReset')
-        cy.location('pathname').should('eq', '/getting-started')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
 

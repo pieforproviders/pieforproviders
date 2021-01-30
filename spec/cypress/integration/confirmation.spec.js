@@ -39,7 +39,7 @@ describe('Confirmation', () => {
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
         cy.wait('@confirmation')
-        cy.location('pathname').should('eq', '/getting-started')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
 
