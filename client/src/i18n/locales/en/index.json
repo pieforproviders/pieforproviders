@@ -171,5 +171,19 @@
   "atRisk": "at risk",
   "notMet": "not met",
   "notEnoughInfo": "not enough info",
-  "exceededLimit": "exceeded limit"
+  "exceededLimit": "exceeded limit",
+
+  "asOf": "As of",
+  "jan": "Jan",
+  "feb": "Feb",
+  "mar": "Mar",
+  "apr": "Apr",
+  "may": "May",
+  "jun": "Jun",
+  "jul": "Jul",
+  "aug": "Aug",
+  "sept": "Sept",
+  "oct": "Oct",
+  "nov": "Nov",
+  "dec": "Dec"
 }
