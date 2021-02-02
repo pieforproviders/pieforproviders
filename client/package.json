@@ -14,7 +14,7 @@
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^6.0.3",
     "@sentry/react": "^6.0.2",
-    "@sentry/tracing": "^6.0.2",
+    "@sentry/tracing": "^6.0.3",
     "antd": "^4.11.2",
     "antd-mask-input": "^0.1.14",
     "craco-less": "^1.17.1",
