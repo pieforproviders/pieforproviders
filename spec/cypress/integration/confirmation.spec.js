@@ -16,7 +16,7 @@ describe('Confirmation', () => {
       cy.appFactories([
         [
           'create',
-          'user',
+          'unconfirmed_user',
           {
             email,
             full_name: fullName,
@@ -38,8 +38,7 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.wait('@confirmation')
-        cy.location('pathname').should('eq', '/getting-started')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
 
@@ -51,7 +50,6 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=cactus`)
-        cy.wait('@confirmation')
         cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
@@ -65,7 +63,6 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit('/confirm')
-        cy.wait('@confirmation')
         cy.get(createSelector('authError')).should('exist')
         cy.location('pathname').should('eq', '/login')
       })
@@ -80,7 +77,6 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.wait('@confirmation')
         cy.get(createSelector('authError')).contains(
           'Your confirmation period has expired.',
           {
@@ -119,7 +115,6 @@ describe('Confirmation', () => {
       }).as('confirmation')
 
       cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-      cy.wait('@confirmation')
       cy.get(createSelector('authError')).should('exist')
       cy.location('pathname').should('eq', '/login')
     })

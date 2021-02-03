@@ -29,7 +29,7 @@ RSpec.describe 'POST /signup', type: :request do
       }
 
       response '201', 'user created' do
-        let(:user) { { "user": params } }
+        let(:user) { { user: params } }
         run_test! do
           expect(response).to match_response_schema('user')
           expect(JSON.parse(response.body)['state']).to eq('')
@@ -39,7 +39,7 @@ RSpec.describe 'POST /signup', type: :request do
 
       response '422', 'invalid request' do
         context 'with bad data' do
-          let(:user) { { "user": { "title": 'whatever' } } }
+          let(:user) { { user: { title: 'whatever' } } }
           run_test! do
             expect(JSON.parse(response.body)['detail']['email'].first).to eq("can't be blank")
             expect(JSON.parse(response.body)['detail']['password'].first).to eq("can't be blank")
@@ -51,7 +51,7 @@ RSpec.describe 'POST /signup', type: :request do
         end
         context 'with an existing user' do
           before(:each) { create(:confirmed_user, email: params[:email]) }
-          let(:user) { { "user": params } }
+          let(:user) { { user: params } }
           run_test! do
             expect(JSON.parse(response.body)['detail']['email'].first).to eq('has already been taken')
           end

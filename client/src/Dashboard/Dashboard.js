@@ -46,6 +46,11 @@ export function Dashboard() {
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
 
+  const matchAndReplaceDate = dateString => {
+    const match = dateString.match(/^[A-Za-z]+/)
+    return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
+  }
+
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
       return [
@@ -284,9 +289,11 @@ export function Dashboard() {
             className="date-filter-button mr-2 text-base py-2 px-4"
             disabled
           >
-            {dates.dateFilter}
+            {matchAndReplaceDate(dates.dateFilter)}
           </Button>
-          <Typography.Text className="text-gray3">{`As of: ${dates.asOf}`}</Typography.Text>
+          <Typography.Text className="text-gray3">{`${t(
+            `asOf`
+          )}: ${matchAndReplaceDate(dates.asOf)}`}</Typography.Text>
         </div>
         <Typography.Text className="md-3 text-base">
           {t('revenueProjections')}

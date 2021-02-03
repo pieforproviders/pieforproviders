@@ -39,7 +39,7 @@ export function Confirmation({ location }) {
           })
         } else {
           dispatch(addAuth(authToken))
-          history.push('/getting-started')
+          history.push('/dashboard')
         }
       }
     }

@@ -55,11 +55,11 @@ class AddNebraskaUser < ActiveRecord::Migration[6.0]
           expires_on: effective_on - 1.day
         )
       end
-
-      Child.find_or_create_by!(business: business,
-                               full_name: full_name,
-                               date_of_birth: date_of_birth,
-                               approvals: approvals)
+      child = Child.find_or_initialize_by(business: business,
+                                          full_name: full_name,
+                                          date_of_birth: date_of_birth)
+      child.approvals << approvals
+      child.save!
     end
 
     rhonan = create_case('Rhonan Shaw', business: @business_nebraska)

@@ -13,19 +13,13 @@
         ],
         "responses": {
           "200": {
-            "description": "businesses found",
-            "content": {
-            }
+            "description": "businesses found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       },
@@ -39,24 +33,16 @@
         ],
         "responses": {
           "201": {
-            "description": "business created",
-            "content": {
-            }
+            "description": "business created"
           },
           "422": {
-            "description": "invalid request",
-            "content": {
-            }
+            "description": "invalid request"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         },
         "requestBody": {
@@ -88,24 +74,16 @@
         ],
         "responses": {
           "200": {
-            "description": "business found",
-            "content": {
-            }
+            "description": "business found"
           },
           "404": {
-            "description": "business not found",
-            "content": {
-            }
+            "description": "business not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       },
@@ -119,29 +97,19 @@
         ],
         "responses": {
           "200": {
-            "description": "business updated",
-            "content": {
-            }
+            "description": "business updated"
           },
           "422": {
-            "description": "Business cannot be updated",
-            "content": {
-            }
+            "description": "Business cannot be updated"
           },
           "404": {
-            "description": "business not found",
-            "content": {
-            }
+            "description": "business not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         },
         "requestBody": {
@@ -161,24 +129,16 @@
         ],
         "responses": {
           "204": {
-            "description": "business deleted",
-            "content": {
-            }
+            "description": "business deleted"
           },
           "404": {
-            "description": "business not found",
-            "content": {
-            }
+            "description": "business not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       }
@@ -191,19 +151,13 @@
         ],
         "responses": {
           "200": {
-            "description": "children found",
-            "content": {
-            }
+            "description": "children found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       }
@@ -226,24 +180,16 @@
         ],
         "responses": {
           "200": {
-            "description": "child found",
-            "content": {
-            }
+            "description": "child found"
           },
           "404": {
-            "description": "child not found",
-            "content": {
-            }
+            "description": "child not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       },
@@ -257,29 +203,19 @@
         ],
         "responses": {
           "200": {
-            "description": "child updated",
-            "content": {
-            }
+            "description": "child updated"
           },
           "422": {
-            "description": "child cannot be updated",
-            "content": {
-            }
+            "description": "child cannot be updated"
           },
           "404": {
-            "description": "child not found",
-            "content": {
-            }
+            "description": "child not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         },
         "requestBody": {
@@ -299,24 +235,16 @@
         ],
         "responses": {
           "204": {
-            "description": "child deleted",
-            "content": {
-            }
+            "description": "child deleted"
           },
           "404": {
-            "description": "child not found",
-            "content": {
-            }
+            "description": "child not found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       }
@@ -329,24 +257,16 @@
         ],
         "responses": {
           "200": {
-            "description": "users found",
-            "content": {
-            }
+            "description": "users found"
           },
           "403": {
-            "description": "forbidden",
-            "content": {
-            }
+            "description": "forbidden"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       }
@@ -359,19 +279,13 @@
         ],
         "responses": {
           "200": {
-            "description": "profile found",
-            "content": {
-            }
+            "description": "profile found"
           },
           "401": {
-            "description": "not authorized",
-            "content": {
-            }
+            "description": "not authorized"
           },
           "500": {
-            "description": "internal server error",
-            "content": {
-            }
+            "description": "internal server error"
           }
         }
       }
@@ -385,9 +299,7 @@
         ],
         "responses": {
           "200": {
-            "description": "active cases found",
-            "content": {
-            }
+            "description": "active cases found"
           }
         }
       }
@@ -406,14 +318,10 @@
         ],
         "responses": {
           "200": {
-            "description": "user confirmed",
-            "content": {
-            }
+            "description": "user confirmed"
           },
           "403": {
-            "description": "forbidden",
-            "content": {
-            }
+            "description": "forbidden"
           }
         }
       }
@@ -429,14 +337,10 @@
         ],
         "responses": {
           "201": {
-            "description": "user created",
-            "content": {
-            }
+            "description": "user created"
           },
           "422": {
-            "description": "invalid request",
-            "content": {
-            }
+            "description": "invalid request"
           }
         },
         "requestBody": {

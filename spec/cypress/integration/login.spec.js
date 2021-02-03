@@ -37,8 +37,7 @@ describe('Login', () => {
         cy.get(createSelector('email')).type(email)
         cy.get(createSelector('password')).type(password)
         cy.get(createSelector('loginBtn')).click()
-        cy.wait('@login')
-        cy.location('pathname').should('eq', '/getting-started')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
 
@@ -53,7 +52,6 @@ describe('Login', () => {
         cy.get(createSelector('email')).type(email)
         cy.get(createSelector('password')).type(internet.password())
         cy.get(createSelector('loginBtn')).click()
-        cy.wait('@login')
         cy.get(createSelector('authError')).should('exist')
       })
     })
@@ -65,7 +63,7 @@ describe('Login', () => {
       cy.appFactories([
         [
           'create',
-          'user',
+          'unconfirmed_user',
           {
             email,
             full_name: fullName,
@@ -91,11 +89,9 @@ describe('Login', () => {
       cy.get(createSelector('email')).type(email)
       cy.get(createSelector('password')).type(password)
       cy.get(createSelector('loginBtn')).click()
-      cy.wait('@login')
       cy.get(createSelector('authError')).should('exist')
 
       cy.get(createSelector('resendConfirmationLink')).click()
-      cy.wait('@confirmation')
       cy.get(createSelector('successMessage')).contains('Email resent')
     })
   })
@@ -111,7 +107,6 @@ describe('Login', () => {
       cy.get(createSelector('email')).type(internet.email())
       cy.get(createSelector('password')).type(internet.password())
       cy.get(createSelector('loginBtn')).click()
-      cy.wait('@login')
       cy.get(createSelector('authError')).should('exist')
     })
   })

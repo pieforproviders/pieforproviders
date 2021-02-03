@@ -171,5 +171,19 @@
   "atRisk": "en riesgo",
   "notMet": "no cumplido",
   "notEnoughInfo": "información insuficiente",
-  "exceededLimit": "excedió el límite"
+  "exceededLimit": "excedió el límite",
+
+  "asOf": "A partir de",
+  "jan": "Enero",
+  "feb": "Feb",
+  "mar": "Marzo",
+  "apr": "Abr",
+  "may": "Mayo",
+  "jun": "Jun",
+  "jul": "Jul",
+  "aug": "Agosto",
+  "sept": "Set",
+  "oct": "Oct",
+  "nov": "Nov",
+  "dec": "Dic"
 }
