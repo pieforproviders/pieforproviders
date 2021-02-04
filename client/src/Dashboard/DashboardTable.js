@@ -54,9 +54,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       return (
         <div className="-mb-4">
           <p className="mb-1">{`${fullday.text}`}</p>
-          <Tag className={`${color}-tag custom-tag`}>{`${
-            t(text).charAt(0).toUpperCase() + t(text).slice(1)
-          }`}</Tag>
+          <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
     }
@@ -89,9 +87,36 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
-      const hasDefinition = ['fullDays', 'hours', 'absences', 'earnedRevenue', 'estimatedRevenue', 'transportationRevenue']
+      const hasDefinition = [
+        'fullDays',
+        'hours',
+        'absences',
+        'earnedRevenue',
+        'estimatedRevenue',
+        'transportationRevenue'
+      ]
       return {
-        title: () => hasDefinition.includes(name) ? <div onClick={setActiveKey} className="flex">{t(`${name}`)}<a href={`#${t(`${name}`)}`}><img className="ml-1" src={questionMark} alt="question mark"/></a></div>  : t(`${name}`),
+        // eslint-disable-next-line react/display-name
+        title: () =>
+          hasDefinition.includes(name) ? (
+            <div className="flex">
+              {t(`${name}`)}
+              <a
+                href={'#definitions'}
+                onClick={() => setActiveKey(name)}
+                id={name}
+              >
+                {/* conditional logic below is kind of a gross hack to add padding to svg column headers that have long titles */}
+                <img
+                  className={`ml-1 ${t(`${name}`).length > 19 ? `pt-2` : ``}`}
+                  src={questionMark}
+                  alt="question mark"
+                />
+              </a>
+            </div>
+          ) : (
+            t(`${name}`)
+          ),
         dataIndex: name,
         key: name,
         width: 200,
@@ -222,5 +247,6 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
 
 DashboardTable.propTypes = {
   tableData: PropTypes.array.isRequired,
-  userState: PropTypes.string
+  userState: PropTypes.string,
+  setActiveKey: PropTypes.func.isRequired
 }

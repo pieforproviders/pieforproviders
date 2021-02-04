@@ -28,6 +28,7 @@ const Routes = () => {
 
   return (
     <div
+      id="top"
       className={`text-primaryBlue font-proxima text-sm h-full ${
         location.pathname === '/signup' || location.pathname === '/login'
           ? 'overflow-hidden'
