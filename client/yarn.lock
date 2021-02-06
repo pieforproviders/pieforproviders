@@ -1540,7 +1540,7 @@
     redux-thunk "^2.3.0"
     reselect "^4.0.0"
 
-"@sentry/browser@6.0.4", "@sentry/browser@^6.0.4":
+"@sentry/browser@6.0.4":
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.0.4.tgz#f31c0a9e7b22638cff9da70aa96c7934a18a2059"
   integrity sha512-DrlH53IPNZmW6XWT0Za7vGtIyKpm45An662xvXavI8LQQH0qhPU9mb7NcvecwDfs6jXEV2w5Y8rKjuu/J4QxAA==
@@ -1548,6 +1548,16 @@
     "@sentry/core" "6.0.4"
     "@sentry/types" "6.0.4"
     "@sentry/utils" "6.0.4"
+    tslib "^1.9.3"
+
+"@sentry/browser@^6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-6.1.0.tgz#0e18a07b44bebed729bcf842af33203e388e2053"
+  integrity sha512-t3y2TLXDWgvfknyH8eKj/9mghJfSEqItFyp74zPu1Src6kOPjkd4Sa7o4+bdkNgA8dIIOrDAhRUbB2sq4sWMCA==
+  dependencies:
+    "@sentry/core" "6.1.0"
+    "@sentry/types" "6.1.0"
+    "@sentry/utils" "6.1.0"
     tslib "^1.9.3"
 
 "@sentry/core@6.0.4":
@@ -1559,6 +1569,17 @@
     "@sentry/minimal" "6.0.4"
     "@sentry/types" "6.0.4"
     "@sentry/utils" "6.0.4"
+    tslib "^1.9.3"
+
+"@sentry/core@6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-6.1.0.tgz#7dd4584dcaf2188a78b94b766068342e6ee65229"
+  integrity sha512-57mXkp3NoyxRycXrL+Ec6bYS6UYJZp9tYX0lUp5Ry2M0FxDZ3Q4drkjr8MIQOhBaQXP2ukSX4QTVLGMPm60zMw==
+  dependencies:
+    "@sentry/hub" "6.1.0"
+    "@sentry/minimal" "6.1.0"
+    "@sentry/types" "6.1.0"
+    "@sentry/utils" "6.1.0"
     tslib "^1.9.3"
 
 "@sentry/hub@6.0.4":
