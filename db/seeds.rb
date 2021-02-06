@@ -159,10 +159,10 @@ def create_case(full_name,
   child.approvals << approvals
   child.save!
 
-  12.times do
+  12.times do |idx|
     IllinoisApprovalAmount.create!(
       child_approval: child.active_child_approval(DateTime.now),
-      month: DateTime.now.at_beginning_of_month,
+      month: DateTime.now.at_beginning_of_month + idx.months,
       part_days_approved_per_week: rand(0..3),
       full_days_approved_per_week: rand(0..2)
     )

@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Subsidy Rule #{n}" }
     max_age { 18 }
     license_type { Licenses.types.values.sample }
-    effective_on { Faker::Date.between(from: 1.year.ago, to: Time.zone.today) }
+    effective_on { Faker::Date.between(from: 11.months.ago, to: Time.zone.today) }
     expires_on { effective_on + 1.year }
 
     factory :subsidy_rule_for_illinois do

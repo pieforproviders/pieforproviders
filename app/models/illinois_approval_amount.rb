@@ -7,7 +7,9 @@ class IllinoisApprovalAmount < UuidApplicationRecord
   validates :part_days_approved_per_week, numericality: true, allow_nil: true
   validates :full_days_approved_per_week, numericality: true, allow_nil: true
 
-  scope :for_month, ->(month = DateTime.now) { find_by(month: month.at_beginning_of_month..month.at_end_of_month) }
+  def self.for_month(month = DateTime.now)
+    find_by(month: month.at_beginning_of_month..month.at_end_of_month)
+  end
 end
 
 # == Schema Information
