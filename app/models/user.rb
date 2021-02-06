@@ -9,6 +9,10 @@ class User < UuidApplicationRecord
          jwt_revocation_strategy: BlockedToken
 
   has_many :businesses, dependent: :restrict_with_error
+  has_many :children, through: :businesses, dependent: :restrict_with_error
+  has_many :child_approvals, through: :children, dependent: :restrict_with_error
+  has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
+  has_many :attendances, through: :child_approvals, dependent: :restrict_with_error
 
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
