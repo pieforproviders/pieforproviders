@@ -18,6 +18,11 @@ FactoryBot.define do
         end
       end
     end
+
+    factory :necc_child do
+      wonderschool_id { SecureRandom.uuid }
+    end
+
     trait :with_three_attendances do
       after(:create) do |child|
         create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
@@ -38,13 +43,14 @@ end
 #
 # Table name: children
 #
-#  id            :uuid             not null, primary key
-#  active        :boolean          default(TRUE), not null
-#  date_of_birth :date             not null
-#  full_name     :string           not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  business_id   :uuid             not null
+#  id              :uuid             not null, primary key
+#  active          :boolean          default(TRUE), not null
+#  date_of_birth   :date             not null
+#  full_name       :string           not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  business_id     :uuid             not null
+#  wonderschool_id :string
 #
 # Indexes
 #
