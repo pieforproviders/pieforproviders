@@ -36,32 +36,32 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
                 <Tag className={`green-tag custom-tag mr-0`}>
                   {t('exceededLimit')}
                 </Tag>{' '}
-                <span>{t('exceededLimitDef')}</span>
+                <span>{t('neExceededLimitDef')}</span>
               </p>
             </div>
             <div className="my-4">
               <Tag className={`green-tag custom-tag mr-0`}>{t('onTrack')}</Tag>
-              <span>{t('onTrackDef')}</span>
+              <span>{t('neOnTrackDef')}</span>
             </div>
             <div className="my-4">
               <Tag className={`orange-tag custom-tag mr-0`}>{t('atRisk')}</Tag>
-              <span>{t('atRiskDef')}</span>
+              <span>{t('neAtRiskDef')}</span>
             </div>
             <div className="my-4">
               <span>
                 <span className="font-bold">{t('fullDays')}</span>:{' '}
-                {t('fullDaysDef')}
+                {t('neFullDaysDef')}
               </span>
             </div>
             <div className="my-4">
               <span>
-                <span className="font-bold">{t('hours')}</span>: {t('hoursDef')}
+                <span className="font-bold">{t('hours')}</span>: {t('neHoursDef')}
               </span>
             </div>
             <div className="my-4">
               <span>
                 <span className="font-bold">{t('absences')}</span>:{' '}
-                {t('absencesDef')}
+                {t('neAbsencesDef')}
               </span>
             </div>
             <div>
@@ -72,19 +72,19 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             <div className="my-4">
               <span>
                 <span className="font-bold">{t('earnedRevenue')}</span>:{' '}
-                {t('earnedRevenueDef2')}
+                {t('neEarnedRevenueDef')}
               </span>
             </div>
             <div className="my-4">
               <span>
                 <span className="font-bold">{t('estimatedRevenue')}</span>:{' '}
-                {t('estimatedRevenueDef2')}
+                {t('neEstimatedRevenueDef')}
               </span>
             </div>
             <div className="my-4">
               <span>
                 <span className="font-bold">{t('transportationRevenue')}</span>:{' '}
-                {t('transportationRevenueDef')}
+                {t('neTransportationRevenueDef')}
               </span>
             </div>
             <footer className="flex justify-end" id="definitions">
