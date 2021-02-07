@@ -16,6 +16,11 @@ require 'action_view/railtie'
 require 'action_cable/engine'
 # require "sprockets/railtie"
 require 'rails/test_unit/railtie'
+require './lib/log'
+require './lib/log/console_logger'
+require './lib/log/console_formatter'
+require './lib/log/file_logger'
+require './lib/log/file_formatter'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -40,6 +45,11 @@ module App
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    logger_file = ActiveSupport::TaggedLogging.new(Log::FileLogger.new("log/#{Rails.env}.log"))
+    logger_console = ActiveSupport::TaggedLogging.new(Log::ConsoleLogger.new($stdout))
+    config.logger = logger_file
+    config.logger.extend(ActiveSupport::Logger.broadcast(logger_console)) unless Rails.env.test?
 
     config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en
