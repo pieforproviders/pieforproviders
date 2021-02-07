@@ -51,7 +51,7 @@ export function Dashboard() {
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
   }
 
-  const handleDefintionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
+  const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
@@ -309,7 +309,7 @@ export function Dashboard() {
           if (activeKey) {
             return
           } else {
-            handleDefintionsPanel()
+            handleDefinitionsPanel()
             setTimeout(() => {
               document.getElementById(href).click()
             }, 200)
@@ -318,7 +318,7 @@ export function Dashboard() {
       />
       <DashboardDefintions
         activeKey={activeKey}
-        setActiveKey={handleDefintionsPanel}
+        setActiveKey={handleDefinitionsPanel}
       />
     </div>
   )
