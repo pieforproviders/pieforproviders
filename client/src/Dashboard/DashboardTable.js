@@ -87,14 +87,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
-      const hasDefinition = [
-        'fullDays',
-        'hours',
-        'absences',
-        'earnedRevenue',
-        'estimatedRevenue',
-        'transportationRevenue'
-      ]
+      const hasDefinition = ['attendance', 'revenue']
       return {
         // eslint-disable-next-line react/display-name
         title: () =>
@@ -106,9 +99,8 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
                 onClick={() => setActiveKey(name)}
                 id={name}
               >
-                {/* conditional logic below is kind of a gross hack to add padding to svg column headers that have long titles */}
                 <img
-                  className={`ml-1 ${t(`${name}`).length > 19 ? `pt-2` : ``}`}
+                  className={`ml-1`}
                   src={questionMark}
                   alt="question mark"
                 />
