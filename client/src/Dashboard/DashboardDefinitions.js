@@ -55,7 +55,8 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             </div>
             <div className="my-4">
               <span>
-                <span className="font-bold">{t('hours')}</span>: {t('neHoursDef')}
+                <span className="font-bold">{t('hours')}</span>:{' '}
+                {t('neHoursDef')}
               </span>
             </div>
             <div className="my-4">
