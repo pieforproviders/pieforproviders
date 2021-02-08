@@ -24,6 +24,16 @@
     "business_id": {
       "type": "string",
       "format": "uuid"
+    },
+    "wonderschool_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "required": [

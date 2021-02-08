@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'swagger_helper'
+require 'rails_helper'
 
 RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
   let!(:single_child_family) { create(:child) }
