@@ -30,6 +30,10 @@ Metrics/BlockLength:
     - config/routes.rb
     - app/blueprints/**
 
+Metrics/ModuleLength:
+  Exclude:
+    - spec/**/**
+
 # screens are bigger now and long lines are more acceptable
 Layout/LineLength:
   Max: 180
@@ -45,11 +49,6 @@ Lint/StructNewOverride:
 
 Rails:
   Enabled: true
-
-Style/ClassAndModuleChildren:
-  EnforcedStyle: compact
-  Exclude:
-    - config/application.rb
 
 Style/Encoding:
   Enabled: false

@@ -16,7 +16,6 @@ require 'action_view/railtie'
 require 'action_cable/engine'
 # require "sprockets/railtie"
 require 'rails/test_unit/railtie'
-require './lib/log'
 require './lib/log/console_logger'
 require './lib/log/console_formatter'
 require './lib/log/file_logger'
