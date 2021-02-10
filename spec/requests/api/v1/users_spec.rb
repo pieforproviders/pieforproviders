@@ -132,7 +132,8 @@ RSpec.describe 'users API', type: :request do
         end
 
         context 'admin user' do
-          include_context 'admin user'
+          let!(:admin) { create(:admin) }
+          before { sign_in admin }
 
           before { freeze_time }
           response '200', 'active cases found' do
@@ -140,8 +141,8 @@ RSpec.describe 'users API', type: :request do
               json = JSON.parse(response.body)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
-              expect(json.collect { |user| user['as_of'] }.flatten).to include(DateTime.now.strftime('%m/%d/%Y'))
-              expect(response).to match_response_schema('illinois_case_list_for_dashboard')
+              expect(json.collect { |user| user['as_of'] }.flatten).to include(DateTime.now.in_time_zone(admin.timezone).strftime('%m/%d/%Y'))
+              expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
 
@@ -164,9 +165,8 @@ RSpec.describe 'users API', type: :request do
               json = JSON.parse(response.body)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
-              expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'attendance_rate') }.flatten).to include(0.16)
               expect(json.collect { |user| user['as_of'] }.flatten).to include(owner.latest_attendance_in_month(DateTime.now.in_time_zone(owner.timezone)).strftime('%m/%d/%Y'))
-              expect(response).to match_response_schema('illinois_case_list_for_dashboard')
+              expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
         end

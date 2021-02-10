@@ -19,7 +19,7 @@ module Api
 
       # GET /case_list_for_dashboard
       def case_list_for_dashboard
-        if current_user.state == 'NE'
+        if current_user.state == 'NE' || current_user.admin?
           render json: nebraska_dashboard
         else
           render json: illinois_dashboard
