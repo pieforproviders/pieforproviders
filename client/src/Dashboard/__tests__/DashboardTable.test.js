@@ -2,7 +2,9 @@ import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
 import DashboardTable from '../DashboardTable'
 
-const doRender = (props = { tableData: [], userState: '' }) => {
+const doRender = (
+  props = { tableData: [], userState: '', setActiveKey: () => {} }
+) => {
   return render(<DashboardTable {...props} />)
 }
 
@@ -21,7 +23,11 @@ describe('<DashboardTable />', () => {
 
   it('renders the DashboardTable component for NE users', async () => {
     await waitFor(() => {
-      const { container } = doRender({ tableData: [], userState: 'NE' })
+      const { container } = doRender({
+        tableData: [],
+        userState: 'NE',
+        setActiveKey: () => {}
+      })
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
       expect(container).toHaveTextContent('Hours')
@@ -40,7 +46,8 @@ describe('<DashboardTable />', () => {
           { key: 1, fullDays: { text: '14 of 15', tag: 'at_risk' } },
           { key: 2, fullDays: { text: '14 of 15', tag: 'exceeded_limit' } }
         ],
-        userState: 'NE'
+        userState: 'NE',
+        setActiveKey: () => {}
       })
       expect(container).toHaveTextContent('On track')
       expect(container).toHaveTextContent('At risk')

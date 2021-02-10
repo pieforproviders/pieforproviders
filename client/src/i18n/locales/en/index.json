@@ -166,12 +166,12 @@
   "estimatedRevenue": "Estimated revenue",
   "transportationRevenue": "Transportation revenue",
 
-  "onTrack": "on track",
-  "sureBet": "sure bet",
-  "atRisk": "at risk",
-  "notMet": "not met",
-  "notEnoughInfo": "not enough info",
-  "exceededLimit": "exceeded limit",
+  "onTrack": "On track",
+  "sureBet": "Sure bet",
+  "atRisk": "At risk",
+  "notMet": "Not met",
+  "notEnoughInfo": "Not enough info",
+  "exceededLimit": "Exceeded limit",
 
   "asOf": "As of",
   "jan": "Jan",
@@ -185,5 +185,17 @@
   "sept": "Sept",
   "oct": "Oct",
   "nov": "Nov",
-  "dec": "Dec"
+  "dec": "Dec",
+
+  "definitions": "Definitions",
+  "neExceededLimitDef": "The child has attended more days than they were approved for this month. You have earned the max monthly payment and will not be paid for additional days.",
+  "neOnTrackDef": "The child is attending most or all of their days and you will likely receive most of the subsidy payment this month.",
+  "neAtRiskDef": "The child has been absent frequently and you may not receive the full subsidy payment this month.",
+  "neFullDaysDef": "Days with 6-10 hours attended. Approved days come from the approval letter.",
+  "neHoursDef": "Days with less than 6 hours attended.",
+  "neAbsencesDef": "You can be paid for up to five absences. Absences are included in your revenue calculations.",
+  "neEarnedRevenueDef": "The revenue you have already earned this month, based on the child’s attendance. This does not include other subsidy revenue such as transportation.",
+  "neEstimatedRevenueDef": "The subsidy revenue we predict you will receive, based on the child’s attendance this month. This does not include other subsidy revenue such as transportation.",
+  "neTransportationRevenueDef": "Trips you are able to charge for that child. Transportation details come from the approval letter.",
+  "backToTop": "Back to top"
 }

@@ -4,6 +4,7 @@ import { Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import ellipse from '_assets/ellipse.svg'
+import questionMark from '_assets/questionMark.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 
@@ -13,7 +14,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 0
 })
 
-export default function DashboardTable({ tableData, userState }) {
+export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   const onHeaderCell = () => {
@@ -53,9 +54,7 @@ export default function DashboardTable({ tableData, userState }) {
       return (
         <div className="-mb-4">
           <p className="mb-1">{`${fullday.text}`}</p>
-          <Tag className={`${color}-tag custom-tag`}>{`${
-            t(text).charAt(0).toUpperCase() + t(text).slice(1)
-          }`}</Tag>
+          <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
     }
@@ -88,11 +87,31 @@ export default function DashboardTable({ tableData, userState }) {
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
+      const hasDefinition = ['attendance', 'revenue']
       return {
-        title: t(`${name}`),
+        // eslint-disable-next-line react/display-name
+        title: () =>
+          hasDefinition.includes(name) ? (
+            <div className="flex">
+              {t(`${name}`)}
+              <a
+                href={'#definitions'}
+                onClick={() => setActiveKey(name)}
+                id={name}
+              >
+                <img
+                  className={`ml-1`}
+                  src={questionMark}
+                  alt="question mark"
+                />
+              </a>
+            </div>
+          ) : (
+            t(`${name}`)
+          ),
         dataIndex: name,
         key: name,
-        width: 150,
+        width: 200,
         onHeaderCell,
         children: generateColumns(children),
         sortDirections: ['descend', 'ascend'],
@@ -220,5 +239,6 @@ export default function DashboardTable({ tableData, userState }) {
 
 DashboardTable.propTypes = {
   tableData: PropTypes.array.isRequired,
-  userState: PropTypes.string
+  userState: PropTypes.string,
+  setActiveKey: PropTypes.func.isRequired
 }

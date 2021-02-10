@@ -4,6 +4,7 @@ import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Typography } from 'antd'
 import { setUser } from '_reducers/userReducer'
+import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import '_assets/styles/dashboard-overrides.css'
@@ -41,6 +42,7 @@ export function Dashboard() {
   const [summaryData, setSummaryData] = useState([])
   const [tableData, setTableData] = useState([])
   const [dates, setDates] = useState({ asOf: '', dateFilter: '' })
+  const [activeKey, setActiveKey] = useState()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
 
@@ -48,6 +50,8 @@ export function Dashboard() {
     const match = dateString.match(/^[A-Za-z]+/)
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
   }
+
+  const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
@@ -298,7 +302,24 @@ export function Dashboard() {
         </Typography.Text>
       </div>
       <DashboardStats summaryData={summaryData} />
-      <DashboardTable tableData={tableData} userState={user.state ?? ''} />
+      <DashboardTable
+        tableData={tableData}
+        userState={user.state ?? ''}
+        setActiveKey={href => {
+          if (activeKey) {
+            return
+          } else {
+            handleDefinitionsPanel()
+            setTimeout(() => {
+              document.getElementById(href).click()
+            }, 200)
+          }
+        }}
+      />
+      <DashboardDefintions
+        activeKey={activeKey}
+        setActiveKey={handleDefinitionsPanel}
+      />
     </div>
   )
 }
