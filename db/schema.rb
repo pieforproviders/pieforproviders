@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_06_235816) do
+ActiveRecord::Schema.define(version: 2021_02_10_165642) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -135,6 +135,20 @@ ActiveRecord::Schema.define(version: 2021_02_06_235816) do
     t.index ["subsidy_ruleable_type", "subsidy_ruleable_id"], name: "subsidy_ruleable_index"
   end
 
+  create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.text "attendance_risk"
+    t.text "absences"
+    t.text "earned_revenue"
+    t.text "estimated_revenue"
+    t.text "full_days"
+    t.text "hours"
+    t.text "transportation_revenue"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_id"], name: "index_temporary_nebraska_dashboard_cases_on_child_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "full_name", null: false
@@ -177,4 +191,5 @@ ActiveRecord::Schema.define(version: 2021_02_06_235816) do
   add_foreign_key "child_approvals", "subsidy_rules"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
+  add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end
