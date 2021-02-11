@@ -21,44 +21,107 @@
               "items": {
                 "properties": {
                   "absences": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "attendance_risk": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "case_number": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "earned_revenue": {
-                    "type": "decimal"
+                    "anyOf": [
+                      {
+                        "type": "decimal"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "estimated_revenue": {
-                    "type": "decimal"
+                    "anyOf": [
+                      {
+                        "type": "decimal"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "full_days": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "full_name": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "hours": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "transportation_revenue": {
-                    "type": "string"
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
-                }
-              },
-              "required": [
-                "attendance_risk",
-                "case_number",
-                "earned_revenue",
-                "estimated_revenue",
-                "full_days",
-                "full_name",
-                "hours",
-                "transportation_revenue"
-              ]
+                },
+                "required": [
+                  "attendance_risk",
+                  "case_number",
+                  "earned_revenue",
+                  "estimated_revenue",
+                  "full_days",
+                  "full_name",
+                  "hours",
+                  "transportation_revenue"
+                ]
+              }
             },
             "name": {
               "type": "string"
