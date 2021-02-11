@@ -159,12 +159,30 @@ def create_case(full_name,
   child.approvals << approvals
   child.save!
 
-  12.times do |idx|
-    IllinoisApprovalAmount.create!(
-      child_approval: child.active_child_approval(DateTime.now),
-      month: DateTime.now.at_beginning_of_month + idx.months,
-      part_days_approved_per_week: rand(0..3),
-      full_days_approved_per_week: rand(0..2)
+  if child.state == "IL"
+    12.times do |idx|
+      IllinoisApprovalAmount.create!(
+        child_approval: child.active_child_approval(DateTime.now),
+        month: DateTime.now.at_beginning_of_month + idx.months,
+        part_days_approved_per_week: rand(0..3),
+        full_days_approved_per_week: rand(0..2)
+      )
+    end
+  end
+
+  if child.state == "NE"
+    total_absences = rand(0..10).round
+    total_days = rand(0..25).round
+    total_hours = rand(0.0..10.0).round
+    
+    TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
+      attendance_risk: %w[on_track exceeded_limit at_risk].sample,
+      absences: "#{rand(0..total_absences)} of #{total_absences}",
+      earned_revenue: rand(0.00..1000.00).round(2),
+      estimated_revenue: rand(1000.00..2000.00).round(2),
+      full_days: "#{rand(0..total_days)} of #{total_days}",
+      hours: "#{rand(0.0..total_hours).round(2)} of #{total_hours}",
+      transportation_revenue: "#{rand(0..30)} trips - #{Money.new(rand(0..100_000)).format}"
     )
   end
 end
