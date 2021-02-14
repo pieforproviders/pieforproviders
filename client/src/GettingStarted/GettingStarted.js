@@ -72,18 +72,20 @@ export function GettingStarted() {
   return (
     <div className="getting-started text-gray1">
       <div className="getting-started-content-area">
-        <Typography.Title className="text-center">
+        <Typography.Title className="text-center h1-large">
           {t('gettingStartedWelcome')}
           {user.greeting_name && `, ${user.greeting_name}!`}
         </Typography.Title>
 
         <div className="mb-8">
           <Typography.Title level={3}>
-            {t('gettingStartedTitle')}
+            <div className="h3-large">{t('gettingStartedTitle')}</div>
           </Typography.Title>
-          <p>{t('gettingStartedInstructions')}</p>
+          <p className="body-2-bold">{t('gettingStartedInstructions')}</p>
         </div>
-        <Typography.Title level={3}>{t('steps')}</Typography.Title>
+        <Typography.Title level={3}>
+          <div className="h3-large">{t('steps')}</div>
+        </Typography.Title>
         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 mx-4">
           {cards.map((card, idx) => (
             <Card
