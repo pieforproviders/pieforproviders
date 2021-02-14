@@ -1,10 +1,12 @@
 class AddTemporaryDashboardDataForTestKids < ActiveRecord::Migration[6.1]
   def up
-    Child.includes(:business).where(business: { state: "NE" }).each do |child|
+    return unless ENV.fetch('ALLOW_SEEDING', 'false') == 'true'
+
+    Child.includes(:business).where(business: { state: 'NE' }).each do |child|
       total_absences = rand(0..10).round
       total_days = rand(0..25).round
       total_hours = rand(0.0..10.0).round
-      
+
       TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
         attendance_risk: %w[on_track exceeded_limit at_risk].sample,
         absences: "#{rand(0..total_absences)} of #{total_absences}",
