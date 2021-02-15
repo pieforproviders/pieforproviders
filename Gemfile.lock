@@ -126,7 +126,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise-jwt (0.8.0)
+    devise-jwt (0.8.1)
       devise (~> 4.0)
       warden-jwt_auth (~> 0.5)
     diff-lcs (1.4.4)
@@ -185,7 +185,7 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     hash_dig_and_collect (0.0.1)
     holidays (8.4.1)
-    i18n (1.8.8)
+    i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     jmespath (1.4.0)
     json-schema (2.8.1)
