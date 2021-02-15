@@ -33,7 +33,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             </div>
             <div className="my-4">
               <p>
-                <Tag className={`green-tag custom-tag mr-0`}>
+                <Tag className={`red-tag custom-tag mr-0`}>
                   {t('exceededLimit')}
                 </Tag>{' '}
                 <span>{t('neExceededLimitDef')}</span>
