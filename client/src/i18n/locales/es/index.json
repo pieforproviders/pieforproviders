@@ -188,7 +188,7 @@
   "dec": "Dic",
 
   "definitions": "Definiciones",
-  "neExceededLimitDef": "El niño ha asistido a más días de la que fueron aprobados para este mes. Has ganado el pago mensual máximo, y no estarás pagado por días adicionales",
+  "neExceededLimitDef": "El niño ha asistido a más días de la que fueron aprobados para este mes. Has ganado el pago mensual máximo, y no estarás pagado por días adicionales.",
   "neOnTrackDef": "El niño está asistiendo a la mayoría o todas sus días y probablemente recibirás la mayoría del pago del subsido este mes.",
   "neAtRiskDef": "El niño ha sido ausente frecuentemente y es posible que no recibieras el pago completo del subsidio este mes.",
   "neFullDaysDef": "Días con 6-10 horas asistidos. Días aprobados vienen de la carta de aprobación.",
