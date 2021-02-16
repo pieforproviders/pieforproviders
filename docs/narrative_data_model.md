@@ -48,7 +48,7 @@ The backend will then do the following:
 
 - based on **Child**'s age, **County** where care is received, QRIS rating of the **Business** [some other info?] - associate a **SubsidyRule** with each **ChildApproval**
 
-- check on **Child**'s address because the provider will not receive a subsidy for a child that is not a resident of Illinois 
+- check on **Child**'s address because the provider will not receive a subsidy for a child that is not a resident of Illinois [TO BE IMPLEMENTED]
 
 This concludes onboarding and creating subsidy cases at the beginning of a user's account setup.  It should be noted that when a child is renewed for the subsidy:
 
