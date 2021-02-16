@@ -6,7 +6,7 @@ class UserBlueprint < Blueprinter::Base
   field :greeting_name
   field :language
   field :state do |user|
-    user.state
+    user.admin? ? 'NE' : user.state
   end
 
   view :illinois_dashboard do
