@@ -59,34 +59,36 @@ export function Dashboard() {
         {
           title: t('earnedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.earnedRevenueTotal.toFixed()
+            (totals.earnedRevenueTotal ?? 0).toFixed()
           )}`,
           definition: t('earnedRevenueDef')
         },
         {
           title: t('estimatedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.estimatedRevenueTotal.toFixed()
+            (totals.estimatedRevenueTotal ?? 0).toFixed()
           )}`,
           definition: t(`estimatedRevenueDef`)
         },
         {
           title: t(`maxRevenue`),
-          stat: `${currencyFormatter.format(totals.maxRevenueTotal.toFixed())}`,
+          stat: `${currencyFormatter.format(
+            (totals.maxRevenueTotal ?? 0).toFixed()
+          )}`,
           definition: t(`maxRevenueDef`)
         },
         [
           {
             title: t(`totalApproved`),
             stat: `${currencyFormatter.format(
-              totals.totalApprovedTotal.toFixed()
+              (totals.totalApprovedTotal ?? 0).toFixed()
             )}`,
             definition: t(`totalApprovedDef`)
           },
           {
             title: t(`transportation`),
             stat: `${currencyFormatter.format(
-              totals.transportationRevenueTotal.toFixed()
+              (totals.transportationRevenueTotal ?? 0).toFixed()
             )}`,
             definition: t(`transportationDef`)
           }
@@ -97,27 +99,27 @@ export function Dashboard() {
         {
           title: t('guaranteedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.guaranteedRevenueTotal.toFixed()
+            (totals.guaranteedRevenueTotal ?? 0).toFixed()
           )}`,
           definition: t('guaranteedRevenueDef')
         },
         {
           title: t('potentialRevenue'),
           stat: `${currencyFormatter.format(
-            totals.potentialRevenueTotal.toFixed()
+            (totals.potentialRevenueTotal ?? 0).toFixed()
           )}`,
           definition: t('potentialRevenueDef')
         },
         {
           title: t('maxApprovedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.maxApprovedRevenueTotal.toFixed()
+            (totals.maxApprovedRevenueTotal ?? 0).toFixed()
           )}`,
           definition: t('maxApprovedRevenueDef')
         },
         {
           title: t('attendanceRate'),
-          stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
+          stat: `${((totals.attendanceRateTotal ?? 0) / td.length) * 100}%`,
           definition: t('attendanceRateDef')
         }
       ]
