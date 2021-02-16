@@ -6,6 +6,7 @@ RSpec.describe Child, type: :model do
   it { should belong_to(:business) }
   it { should validate_presence_of(:full_name) }
   it { should validate_presence_of(:date_of_birth) }
+  it { should have_one(:temporary_nebraska_dashboard_case) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:child)).to be_valid

@@ -4,26 +4,30 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
-    RSpec.describe AttendanceDownloader, type: :service do
+    RSpec.describe DashboardDownloader, type: :service do
       let!(:file_name) { 'file_name.csv' }
       let!(:other_file_name) { 'other_file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
-      let!(:attendance_data) { "child_id,checked_in_at,checked_out_at\n123456789,'Sat, 06 Feb 2021 07:59:49AM','Sat, 06 Feb 2021 12:12:03PM'" }
+      let!(:dashboard_data) do
+        'child_full_name,absences,attendance_risk,earned_revenue,estimated_revenue,'\
+        "full_days,hours,transportation_revenue\nSarah Brighton,3 of 10,on_track,"\
+        '1235.48,2353.23,10 of 18,3 of 8,33 trips - $212.50'
+      end
       let!(:stubbed_client) { double('AWS Client') }
-      let!(:stubbed_processor) { double('Wonderschool Necc Attendance Processor') }
+      let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
       let!(:stubbed_object) { double('S3 Object') }
 
       describe '.call' do
         context 'when aws environment variables are set' do
           before(:each) do
-            allow(ENV).to receive(:fetch).with('AWS_NECC_ATTENDANCES_BUCKET', '').and_return(source_bucket)
-            allow(ENV).to receive(:fetch).with('AWS_NECC_ATTENDANCES_ARCHIVE_BUCKET', '').and_return(archive_bucket)
+            allow(ENV).to receive(:fetch).with('AWS_NECC_DASHBOARD_BUCKET', '').and_return(source_bucket)
+            allow(ENV).to receive(:fetch).with('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '').and_return(archive_bucket)
             allow(ENV).to receive(:fetch).with('AWS_ACCESS_KEY_ID', '').and_return('fake_key')
             allow(ENV).to receive(:fetch).with('AWS_SECRET_ACCESS_KEY', '').and_return('fake_secret')
             allow(ENV).to receive(:fetch).with('AWS_REGION', '').and_return('fake_region')
             allow(Aws::S3::Client).to receive(:new) { stubbed_client }
-            allow(Wonderschool::Necc::AttendanceProcessor).to receive(:new).with(attendance_data).and_return(stubbed_processor)
+            allow(Wonderschool::Necc::DashboardProcessor).to receive(:new).with(dashboard_data).and_return(stubbed_processor)
           end
 
           context 'when a single file is present on the S3 bucket' do
@@ -31,7 +35,7 @@ module Wonderschool
               it 'pulls down the file from S3, runs the job, and archives the file' do
                 expect(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }] })
                 expect(stubbed_client).to receive(:get_object).with({ bucket: source_bucket, key: file_name }).and_return(stubbed_object)
-                expect(stubbed_object).to receive(:body).and_return(attendance_data)
+                expect(stubbed_object).to receive(:body).and_return(dashboard_data)
                 expect(stubbed_processor).to receive(:call).and_return([%w[child_id checked_in_at checked_out_at],
                                                                         ['123456789', 'Sat, 06 Feb 2021 07:59:49AM', 'Sat, 06 Feb 2021 12:12:03PM']])
                 expect(stubbed_client).to receive(:copy_object).with({
@@ -47,7 +51,7 @@ module Wonderschool
             end
             context 'when the file is invalid' do
               it 'logs an error' do
-                allow(Wonderschool::Necc::AttendanceProcessor).to receive(:new).with('malformed').and_return(stubbed_processor)
+                allow(Wonderschool::Necc::DashboardProcessor).to receive(:new).with('malformed').and_return(stubbed_processor)
                 expect(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }] })
                 expect(stubbed_client).to receive(:get_object).with({ bucket: source_bucket, key: file_name }).and_return(stubbed_object)
                 expect(stubbed_object).to receive(:body).and_return('malformed')
@@ -66,7 +70,7 @@ module Wonderschool
               it 'logs an info message and does not log an error' do
                 expect(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }, { key: other_file_name }] })
                 expect(stubbed_client).to receive(:get_object).twice.and_return(stubbed_object)
-                expect(stubbed_object).to receive(:body).twice.and_return(attendance_data)
+                expect(stubbed_object).to receive(:body).twice.and_return(dashboard_data)
                 expect(stubbed_processor).to receive(:call).twice.and_return(
                   [%w[child_id checked_in_at checked_out_at],
                    ['123456789', 'Sat, 06 Feb 2021 07:59:49AM', 'Sat, 06 Feb 2021 12:12:03PM']]
@@ -83,7 +87,7 @@ module Wonderschool
               it 'logs an info message and logs an error' do
                 expect(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }, { key: other_file_name }] })
                 expect(stubbed_client).to receive(:get_object).with({ bucket: source_bucket, key: file_name }).and_return(stubbed_object)
-                expect(stubbed_object).to receive(:body).and_return(attendance_data)
+                expect(stubbed_object).to receive(:body).and_return(dashboard_data)
                 expect(stubbed_processor).to receive(:call).and_return([%w[child_id checked_in_at checked_out_at],
                                                                         ['123456789', 'Sat, 06 Feb 2021 07:59:49AM', 'Sat, 06 Feb 2021 12:12:03PM']])
                 expect(stubbed_client).to receive(:copy_object).with({
@@ -94,7 +98,7 @@ module Wonderschool
                 expect(Rails.logger).to receive(:tagged).and_yield
                 expect(Rails.logger).to receive(:info).with(file_name)
 
-                allow(Wonderschool::Necc::AttendanceProcessor).to receive(:new).with('malformed').and_return(stubbed_processor)
+                allow(Wonderschool::Necc::DashboardProcessor).to receive(:new).with('malformed').and_return(stubbed_processor)
                 expect(stubbed_client).to receive(:get_object).with({ bucket: source_bucket, key: other_file_name }).and_return(stubbed_object)
                 expect(stubbed_object).to receive(:body).and_return('malformed')
                 expect(stubbed_processor).to receive(:call).and_return(false)

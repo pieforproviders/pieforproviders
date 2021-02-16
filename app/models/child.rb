@@ -10,6 +10,8 @@ class Child < UuidApplicationRecord
   has_many :child_approvals, dependent: :destroy
   has_many :approvals, through: :child_approvals
 
+  has_one :temporary_nebraska_dashboard_case, dependent: :destroy
+
   validates :active, inclusion: { in: [true, false] }
   validates :date_of_birth, presence: true
   validates :full_name, presence: true

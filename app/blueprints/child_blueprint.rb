@@ -28,33 +28,30 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :nebraska_dashboard do
-    field :attendance_risk do
-      %w[on_track exceeded_limit at_risk].sample
+    field :attendance_risk do |child|
+      child.temporary_nebraska_dashboard_case&.attendance_risk
     end
-    field :absences do
-      total_absences = rand(0..10).round
-      "#{rand(0..total_absences)} of #{total_absences}"
+    field :absences do |child|
+      child.temporary_nebraska_dashboard_case&.absences
     end
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:from_date].in_time_zone(child.timezone)).case_number
     end
-    field :earned_revenue do
-      rand(0.00..1000.00).round(2)
+    field :earned_revenue do |child|
+      child.temporary_nebraska_dashboard_case&.earned_revenue
     end
-    field :estimated_revenue do
-      rand(1000.00..2000.00).round(2)
+    field :estimated_revenue do |child|
+      child.temporary_nebraska_dashboard_case&.estimated_revenue
     end
-    field :full_days do
-      total_days = rand(0..25).round
-      "#{rand(0..total_days)} of #{total_days}"
+    field :full_days do |child|
+      child.temporary_nebraska_dashboard_case&.full_days
     end
     field :full_name
-    field :hours do
-      total_hours = rand(0.0..10.0).round
-      "#{rand(0.0..total_hours).round(2)} of #{total_hours}"
+    field :hours do |child|
+      child.temporary_nebraska_dashboard_case&.hours
     end
-    field :transportation_revenue do
-      "#{rand(0..30)} trips - #{Money.new(rand(0..100_000)).format}"
+    field :transportation_revenue do |child|
+      child.temporary_nebraska_dashboard_case&.transportation_revenue
     end
     exclude :id
   end
