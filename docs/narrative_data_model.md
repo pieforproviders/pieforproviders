@@ -28,7 +28,7 @@ I will log in and be "onboarded" via the UI; I will upload the case records of t
 >
 > Juan and Julia Ortiz are siblings, both attending Happy Hearts Childcare.  The state sent an Approval letter that covers both of the Children, at the same business.  Their records in onboarding look like this:  
 >
-> | First name (Child.full_name) | Last name (Child.full_name) | Date of birth (Child.date_of_birth) | Business Name (Business.name) | Business Zip Code (Business.zipcode) | Business County (Business.county) | Business QRIS rating (TO BE IMPLEMENTED) | Case number (Approval.case_number) | Full days (ChildApprovalRateTypes) | Part days (ChildApprovalRateTypes) | Effective on (Approval.effective_on) | Expires on (Approval.expires_on) | Co-pay (Approval.copay_cents[monetize]) | Co-pay frequency (Approval.copay_frequency[enum]) |
+> | First name (Child.full_name) | Last name (Child.full_name) | Date of birth (Child.date_of_birth)| Business Name (Business.name) | Business Zip Code (Business.zipcode) | Business County (Business.county) | Business QRIS rating (TO BE IMPLEMENTED) | Case number (Approval.case_number) | Full days (ChildApprovalRateTypes) | Part days (ChildApprovalRateTypes) | Effective on (Approval.effective_on) | Expires on (Approval.expires_on) | Co-pay (Approval.copay_cents[monetize]) | Co-pay frequency (Approval.copay_frequency[enum]) |
 > | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- | ----------- |
 > | Juan | Ortiz | 2015-04-14 | Happy Hearts Childcare | 60606 | Cook | Gold | 1234567 | 18 | 4 | 2019-11-12 | 2020-11-12 | $100 | Monthly |
 > | Julia | Ortiz | 2017-12-01 | Happy Hearts Childcare | 60606 | Cook | Gold | 1234567 | 22 | 5 | 2019-11-12 | 2020-11-12 | $100 | Monthly |
@@ -41,12 +41,14 @@ I will log in and be "onboarded" via the UI; I will upload the case records of t
 > | Amaury | Mòsi | 2012-09-11 | Little Leaf Day School | 60101 | DuPage | Bronze | 4567890 | 11 | 7 | 2020-02-04 | 2021-02-04 | $12 | Weekly |  
 > 
 > The remaining childrren will each have their own record with unique case numbers
-  
+    
 **TO BE IMPLEMENTED**: At the end of onboarding, I will have entered data to create 4 **Approvals** (one for each family), 6 **Children**, 6 **ChildApprovals**, 2 **Businesses**
 
 The backend will then do the following:  
 
 - based on **Child**'s age, **County** where care is received, QRIS rating of the **Business** [some other info?] - associate a **SubsidyRule** with each **ChildApproval**
+
+- check on **Child**'s address because the provider will not receive a subsidy for a child that is not a resident of Illinois [TO BE IMPLEMENTED]
 
 This concludes onboarding and creating subsidy cases at the beginning of a user's account setup.  It should be noted that when a child is renewed for the subsidy:
 
