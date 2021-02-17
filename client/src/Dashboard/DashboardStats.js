@@ -58,7 +58,7 @@ export default function DashboardStats({ summaryData }) {
                     <Typography.Text>{stat.title}</Typography.Text>
                   </p>
                   <p>
-                    <Typography.Text className="text-blue2 text-3xl font-semibold mb-6">
+                    <Typography.Text className="text-blue2 h2-large mb-6">
                       {stat.stat}
                     </Typography.Text>
                   </p>

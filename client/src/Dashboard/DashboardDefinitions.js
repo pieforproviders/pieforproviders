@@ -4,7 +4,6 @@ import { Button, Collapse, Tag, Typography } from 'antd'
 import { ArrowUpOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/tag-overrides.css'
-import '_assets/styles/title-overrides.css'
 
 export default function DashboardDefintions({ activeKey, setActiveKey }) {
   const { Title } = Typography
@@ -25,11 +24,11 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
         key={1}
       >
         {
-          <div className="text-gray8">
+          <div className="text-gray8 body-1">
             <div>
-              <Title level={4} className="definitions-title">
+              <p className="h3-small text-black">
                 {t('attendance')}
-              </Title>
+              </p>
             </div>
             <div className="my-4">
               <p>
@@ -66,9 +65,9 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
               </span>
             </div>
             <div>
-              <Title level={4} className="definitions-title">
+              <p className="h3-small text-black">
                 {t('revenue')}
-              </Title>
+              </p>
             </div>
             <div className="my-4">
               <span>
@@ -92,7 +91,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
               <a href="#top">
                 <Button
                   onClick={setActiveKey}
-                  className="bg-primaryBlue text-white flex items-center no-underline toTop"
+                  className="eyebrow-large bg-primaryBlue text-white flex items-center no-underline toTop"
                   size="large"
                 >
                   {t('backToTop')}
