@@ -112,7 +112,7 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.8.1)
       rack
-    data_migrate (6.6.0)
+    data_migrate (6.6.1)
       rails (>= 5.0)
     database_cleaner (2.0.1)
       database_cleaner-active_record (~> 2.0.0)
