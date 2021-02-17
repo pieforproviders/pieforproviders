@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Button, Collapse, Tag, Typography } from 'antd'
+import { Button, Collapse, Tag } from 'antd'
 import { ArrowUpOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/tag-overrides.css'
 
 export default function DashboardDefintions({ activeKey, setActiveKey }) {
-  const { Title } = Typography
   const { Panel } = Collapse
   const { t } = useTranslation()
 
@@ -26,9 +25,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
         {
           <div className="text-gray8 body-1">
             <div>
-              <p className="h3-small text-black">
-                {t('attendance')}
-              </p>
+              <p className="h3-small text-black">{t('attendance')}</p>
             </div>
             <div className="my-4">
               <p>
@@ -65,9 +62,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
               </span>
             </div>
             <div>
-              <p className="h3-small text-black">
-                {t('revenue')}
-              </p>
+              <p className="h3-small text-black">{t('revenue')}</p>
             </div>
             <div className="my-4">
               <span>
