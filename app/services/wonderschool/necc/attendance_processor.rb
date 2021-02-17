@@ -4,7 +4,7 @@ require 'csv'
 
 module Wonderschool
   module Necc
-    # processes Attendance data exported from Wonderschool for NECC partnership
+    # processes Attendance data exported from Wonderschool for the NECC partnership
     class AttendanceProcessor
       def initialize(input)
         @input = input

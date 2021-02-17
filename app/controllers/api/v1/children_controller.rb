@@ -22,9 +22,8 @@ module Api
       # POST /children
       def create
         @child = Child.new(child_params)
-
-        if @child.save
-          make_illinois_approval_amounts if @child.state == 'IL'
+        if @child.approvals.each(&:save) && @child.save
+          make_approval_amounts
           render json: @child, status: :created, location: @child
         else
           render json: @child.errors, status: :unprocessable_entity
@@ -63,18 +62,32 @@ module Api
           :date_of_birth,
           :full_name,
           :business_id,
-          { approvals_attributes: %i[case_number copay copay_frequency effective_on expires_on] }
+          { approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }
         ]
         params.require(:child).permit(attributes)
       end
 
-      def make_illinois_approval_amounts
-        month_amounts = params.select { |key| key.to_s.start_with?('month') }
-        first_month = params['first_month_name']
-        year = params['first_month_year']
-        return if month_amounts.empty? || [first_month, year].all?(&:nil?)
+      def make_approval_amounts
+        case @child.state
+        when 'NE'
+          NebraskaApprovalAmountGenerator.new(@child, child_params.merge(nebraska_approval_amount_params)).call
+        when 'IL'
+          IllinoisApprovalAmountGenerator.new(@child, child_params.merge(illinois_approval_amount_params)).call
+        end
+      end
 
-        ApprovalAmountGenerator.new(@child, month_amounts, first_month, year).call
+      def nebraska_approval_amount_params
+        {
+          approval_periods: params[:approval_periods]
+        }
+      end
+
+      def illinois_approval_amount_params
+        {
+          first_month_name: params[:first_month_name],
+          first_month_year: params[:first_month_year],
+          month_amounts: params.select { |key| key.to_s.start_with?('month') }
+        }
       end
     end
   end

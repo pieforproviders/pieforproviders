@@ -4,7 +4,7 @@ require 'csv'
 
 module Wonderschool
   module Necc
-    # processes Dashboard data exported from Wonderschool for NECC partnership
+    # processes Dashboard data compiled from Wonderschool, NECC and provider data
     class DashboardProcessor
       def initialize(input)
         @input = input

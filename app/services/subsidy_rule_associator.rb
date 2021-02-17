@@ -30,7 +30,7 @@ class SubsidyRuleAssociator
   end
 
   def subsidy_rule
-    SubsidyRule.effective_on(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
+    SubsidyRule.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
   end
 
   def age

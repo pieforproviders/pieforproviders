@@ -30,10 +30,12 @@ end
 # Table name: businesses
 #
 #  id           :uuid             not null, primary key
+#  accredited   :boolean
 #  active       :boolean          default(TRUE), not null
 #  county       :string
 #  license_type :string           not null
 #  name         :string           not null
+#  qris_rating  :string
 #  state        :string
 #  zipcode      :string
 #  created_at   :datetime         not null

@@ -4,15 +4,15 @@ require 'csv'
 
 module Wonderschool
   module Necc
-    # downloads Attendance data exported from Wonderschool for the NECC partnership
-    class AttendanceDownloader
+    # downloads Onboarding CSVs compiled from Wonderschool, NECC and provider data
+    class OnboardingDownloader
       def call
-        download_attendance_exports
+        download_onboarding_csv
       end
 
       private
 
-      def download_attendance_exports
+      def download_onboarding_csv
         client = Aws::S3::Client.new(
           credentials: Aws::Credentials.new(akid, secret),
           region: region
@@ -29,7 +29,7 @@ module Wonderschool
 
       def process_file(client, file_name)
         contents = client.get_object({ bucket: source_bucket, key: file_name }).body
-        if Wonderschool::Necc::AttendanceProcessor.new(contents).call
+        if Wonderschool::Necc::OnboardingProcessor.new(contents).call
           log('success', file_name)
           archive(client, file_name)
         else
@@ -47,11 +47,11 @@ module Wonderschool
       end
 
       def source_bucket
-        ENV.fetch('AWS_NECC_ATTENDANCES_BUCKET', '')
+        ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
       end
 
       def archive_bucket
-        ENV.fetch('AWS_NECC_ATTENDANCES_ARCHIVE_BUCKET', '')
+        ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
       end
 
       def akid
@@ -69,11 +69,11 @@ module Wonderschool
       def log(type, message)
         case type
         when 'not_found'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.info "No file found in S3 bucket #{message} on #{date}" }
+          Rails.logger.tagged('NECC Onboarding') { Rails.logger.info "No file found in S3 bucket #{message} on #{date}" }
         when 'success'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.info message }
+          Rails.logger.tagged('NECC Onboarding') { Rails.logger.info message }
         when 'failed'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.error message }
+          Rails.logger.tagged('NECC Onboarding') { Rails.logger.error message }
         end
       end
     end

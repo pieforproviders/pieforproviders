@@ -32,7 +32,7 @@ class IllinoisAttendanceRateCalculator
   end
 
   def active_approval
-    @child.approvals.active_on_date(@from_date.in_time_zone(@child.timezone))
+    @child.approvals.active_on_date(@from_date.in_time_zone(@child.timezone)).first
   end
 
   def sum_approvals(child)

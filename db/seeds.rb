@@ -34,7 +34,7 @@ end
 SubsidyRule.first_or_create!(
   name: 'Rule 1',
   max_age: 18,
-  license_type: Licenses.types.values.sample,
+  license_type: Licenses::TYPES.sample,
   county: 'Cook',
   state: 'IL',
   effective_on: Faker::Date.between(from: 10.years.ago, to: Time.zone.today),
@@ -102,13 +102,13 @@ puts_records_in_db(User)
 # ---------------------------------------------
 
 @business = Business.where(name: 'Happy Seedlings Childcare', user: @user_kate).first_or_create!(
-  license_type: Licenses.types.keys.first,
+  license_type: Licenses::TYPES.sample,
   county: 'Cook',
   zipcode: '60606'
 )
 
 @business_nebraska = Business.where(name: 'Nebraska Home Child Care', user: @user_nebraska).first_or_create!(
-  license_type: Licenses.types.keys.first,
+  license_type: Licenses::TYPES.sample,
   county: 'Cook',
   zipcode: '68123'
 )
@@ -159,7 +159,7 @@ def create_case(full_name,
   child.approvals << approvals
   child.save!
 
-  if child.state == "IL"
+  if child.state == 'IL'
     12.times do |idx|
       IllinoisApprovalAmount.create!(
         child_approval: child.active_child_approval(DateTime.now),
@@ -170,11 +170,11 @@ def create_case(full_name,
     end
   end
 
-  if child.state == "NE"
+  if child.state == 'NE'
     total_absences = rand(0..10).round
     total_days = rand(0..25).round
     total_hours = rand(0.0..10.0).round
-    
+
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: %w[on_track exceeded_limit at_risk].sample,
       absences: "#{rand(0..total_absences)} of #{total_absences}",

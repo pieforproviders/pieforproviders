@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_10_165642) do
+ActiveRecord::Schema.define(version: 2021_02_17_015337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -55,6 +55,8 @@ ActiveRecord::Schema.define(version: 2021_02_10_165642) do
     t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "qris_rating"
+    t.boolean "accredited"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -65,6 +67,12 @@ ActiveRecord::Schema.define(version: 2021_02_10_165642) do
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "full_days"
+    t.decimal "hours"
+    t.boolean "special_needs_rate"
+    t.decimal "special_needs_daily_rate"
+    t.decimal "special_needs_hourly_rate"
+    t.boolean "enrolled_in_school"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["subsidy_rule_id"], name: "index_child_approvals_on_subsidy_rule_id"
@@ -78,6 +86,8 @@ ActiveRecord::Schema.define(version: 2021_02_10_165642) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "wonderschool_id"
+    t.string "dhs_id"
+    t.boolean "enrolled_in_school"
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
@@ -118,6 +128,17 @@ ActiveRecord::Schema.define(version: 2021_02_10_165642) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
+  end
+
+  create_table "nebraska_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_approval_id", null: false
+    t.date "effective_on", null: false
+    t.date "expires_on", null: false
+    t.decimal "family_fee", null: false
+    t.decimal "allocated_family_fee", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
   end
 
   create_table "subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -191,5 +212,6 @@ ActiveRecord::Schema.define(version: 2021_02_10_165642) do
   add_foreign_key "child_approvals", "subsidy_rules"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
+  add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

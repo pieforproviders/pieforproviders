@@ -228,8 +228,8 @@ RSpec.describe 'children API', type: :request do
         include_context 'admin user'
         it 'creates a child with the expected attributes and does not create approval amounts' do
           post '/api/v1/children', params: amounts_without_first_month, headers: headers
-          expect(response.status).to eq(201)
           json = JSON.parse(response.body)
+          expect(response.status).to eq(201)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(0)
           expect(response).to match_response_schema('child')
