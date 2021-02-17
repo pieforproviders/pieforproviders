@@ -179,7 +179,9 @@ export function Dashboard() {
               acc.estimatedRevenueTotal + cv.estimatedRevenue,
             transportationRevenueTotal:
               acc.transportationRevenueTotal +
-              Number(cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0])
+              Number(
+                (cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/) ?? [0])[0]
+              )
           }
         }, summaryDataTotalsConfig['ne']),
         ...res.reduce((acc, cv) => {
