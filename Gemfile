@@ -19,7 +19,7 @@ gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.2'
 gem 'pundit', '~> 2.1'
-gem 'rails', '~> 6.1.2'
+gem 'rails', '~> 6.1.3'
 gem 'rswag-api', '>= 2.3.0'
 gem 'rswag-ui', '>= 2.3.0'
 
