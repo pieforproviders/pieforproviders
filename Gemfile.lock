@@ -9,7 +9,7 @@ GIT
 
 GIT
   remote: https://github.com/andrew-newell/rails-erd.git
-  revision: cd225439688b6a9f7d74f28106fe2ada73090345
+  revision: 9e174b3ef3e0588cdb628904b579f4fc5b354930
   branch: master
   specs:
     rails-erd (1.6.0)
