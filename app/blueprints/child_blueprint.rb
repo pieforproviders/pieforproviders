@@ -29,29 +29,29 @@ class ChildBlueprint < Blueprinter::Base
 
   view :nebraska_dashboard do
     field :attendance_risk do |child|
-      child.temporary_nebraska_dashboard_case.attendance_risk.presence
+      child.temporary_nebraska_dashboard_case&.attendance_risk
     end
     field :absences do |child|
-      child.temporary_nebraska_dashboard_case.absences.presence
+      child.temporary_nebraska_dashboard_case&.absences
     end
     field :case_number do |child, options|
-      child.approvals.active_on_date(options[:from_date].in_time_zone(child.timezone)).case_number
+      child.approvals.active_on_date(options[:from_date].in_time_zone(child.timezone))&.case_number
     end
     field :earned_revenue do |child|
-      child.temporary_nebraska_dashboard_case.earned_revenue.presence&.to_f || 0.0
+      child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
     end
     field :estimated_revenue do |child|
-      child.temporary_nebraska_dashboard_case.estimated_revenue.presence&.to_f || 0.0
+      child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
     end
     field :full_days do |child|
-      child.temporary_nebraska_dashboard_case.full_days.presence
+      child.temporary_nebraska_dashboard_case&.full_days
     end
     field :full_name
     field :hours do |child|
-      child.temporary_nebraska_dashboard_case.hours.presence
+      child.temporary_nebraska_dashboard_case&.hours
     end
     field :transportation_revenue do |child|
-      child.temporary_nebraska_dashboard_case.transportation_revenue.presence
+      child.temporary_nebraska_dashboard_case&.transportation_revenue
     end
     exclude :id
   end
