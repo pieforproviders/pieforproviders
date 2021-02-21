@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import ReactGA from 'react-ga'
 import { Alert, Form, Input, Select, Radio, Checkbox } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
@@ -60,17 +59,6 @@ export function Signup() {
       setError(true)
     }
   }
-
-  // Google Analytics
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
-      ReactGA.pageview(window.location.href)
-      ReactGA.event({
-        category: 'Guest',
-        action: 'Landed on Signup Page'
-      })
-    }
-  }, [])
 
   // Label for the Terms and Conditions checkbox with a link embedded
   const TermsLabel = () => {
