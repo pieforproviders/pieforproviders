@@ -35,13 +35,13 @@ class ChildBlueprint < Blueprinter::Base
       child.temporary_nebraska_dashboard_case&.absences
     end
     field :case_number do |child, options|
-      child.approvals.active_on_date(options[:from_date].in_time_zone(child.timezone)).case_number
+      child.approvals.active_on_date(options[:from_date].in_time_zone(child.timezone))&.case_number
     end
     field :earned_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.earned_revenue
+      child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
     end
     field :estimated_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.estimated_revenue
+      child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
     end
     field :full_days do |child|
       child.temporary_nebraska_dashboard_case&.full_days
