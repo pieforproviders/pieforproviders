@@ -44,7 +44,8 @@ describe('<DashboardTable />', () => {
         tableData: [
           { key: 0, fullDays: { text: '14 of 15', tag: 'on_track' } },
           { key: 1, fullDays: { text: '14 of 15', tag: 'at_risk' } },
-          { key: 2, fullDays: { text: '14 of 15', tag: 'exceeded_limit' } }
+          { key: 2, fullDays: { text: '14 of 15', tag: 'exceeded_limit' } },
+          { key: 3, fullDays: { text: '14 of 15', tag: 'ahead_of_schedule' } }
         ],
         userState: 'NE',
         setActiveKey: () => {}
@@ -52,6 +53,7 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('On track')
       expect(container).toHaveTextContent('At risk')
       expect(container).toHaveTextContent('Exceeded limit')
+      expect(container).toHaveTextContent('Ahead of schedule')
     })
   })
 })
