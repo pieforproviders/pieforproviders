@@ -35,6 +35,8 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     )
 
     switch (attendanceRate.riskCategory) {
+      case attendanceCategories.AHEADOFSCHEDULE:
+        return createTag('green', 'aheadOfSchedule')
       case attendanceCategories.ONTRACK:
         return createTag('green', 'onTrack')
       case attendanceCategories.SUREBET:
@@ -58,8 +60,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         </div>
       )
     }
-
     switch (fullday.tag) {
+      case fullDayCategories.AHEADOFSCHEDULE:
+        return renderCell('green', 'aheadOfSchedule')
       case fullDayCategories.ONTRACK:
         return renderCell('green', 'onTrack')
       case fullDayCategories.ATRISK:
