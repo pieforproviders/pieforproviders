@@ -29,7 +29,6 @@ const Routes = () => {
 
   useEffect(() => {
     if (!window.gtag) return
-    console.log(user.id)
     window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
       page_path: location.pathname,
       user_id: user.id ?? ''
