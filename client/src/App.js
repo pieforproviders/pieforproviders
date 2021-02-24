@@ -6,8 +6,8 @@ import {
   Switch,
   useLocation
 } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
-import ReactGA from 'react-ga'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
@@ -24,7 +24,16 @@ import { useAuthentication } from '_shared/_hooks/useAuthentication'
 const Routes = () => {
   const { t } = useTranslation()
   const isAuthenticated = useAuthentication()
+  const user = useSelector(state => state.user)
   let location = useLocation()
+
+  useEffect(() => {
+    if (!window.gtag) return
+    window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
+      page_path: location.pathname,
+      user_id: user.id ?? ''
+    })
+  }, [location, user])
 
   return (
     <div
@@ -78,14 +87,6 @@ const Routes = () => {
 }
 
 const App = () => {
-  useEffect(() => {
-    /* skip production code for coverage */
-    /* istanbul ignore next */
-    if (process.env.NODE_ENV === 'production') {
-      ReactGA.initialize('UA-117297491-1')
-    }
-  }, [])
-
   return (
     <ErrorBoundary>
       <Router>

@@ -30,6 +30,20 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Pie for Providers</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=%RREACT_APP_GA_MEASUREMENT_ID%"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+
+      gtag('config', "%REACT_APP_GA_MEASUREMENT_ID%")
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
