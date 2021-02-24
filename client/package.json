@@ -13,7 +13,7 @@
     "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^6.0.4",
-    "@sentry/react": "^6.1.0",
+    "@sentry/react": "^6.2.0",
     "@sentry/tracing": "^6.1.0",
     "antd": "^4.12.3",
     "antd-mask-input": "^0.1.14",
