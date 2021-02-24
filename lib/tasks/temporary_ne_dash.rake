@@ -11,14 +11,12 @@ task temporary_ne_dash: :environment do
   end
 end
 
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/MethodLength
 def generate_dashboard
-  Child.includes(:business).where(business: { state: 'NE' }).each do |child|
-    total_absences = rand(0..10).round
-    total_days = rand(0..25).round
-    total_hours = rand(0.0..10.0).round
-
+  Child.includes(:business).where(business: { state: 'NE' }).each_with_index do |child, index|
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
-      attendance_risk: %w[on_track exceeded_limit ahead_of_schedule at_risk].sample,
+      attendance_risk: attendance_risk[index],
       absences: "#{rand(0..total_absences)} of #{total_absences}",
       earned_revenue: rand(0.00..1000.00).round(2),
       estimated_revenue: rand(1000.00..2000.00).round(2),
@@ -27,4 +25,22 @@ def generate_dashboard
       transportation_revenue: "#{rand(0..30)} trips - #{Money.new(rand(0..100_000)).format}"
     )
   end
+end
+# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize
+
+def total_absences
+  rand(0..10).round
+end
+
+def total_days
+  rand(0..25).round
+end
+
+def total_hours
+  rand(0.0..10.0).round
+end
+
+def attendance_risk
+  %w[on_track exceeded_limit ahead_of_schedule at_risk]
 end
