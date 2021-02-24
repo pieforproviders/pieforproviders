@@ -15,6 +15,10 @@ end
 # rubocop:disable Metrics/MethodLength
 def generate_dashboard
   Child.includes(:business).where(business: { state: 'NE' }).each_with_index do |child, index|
+    total_absences = rand(0..10).round
+    total_days = rand(0..25).round
+    total_hours = rand(0.0..10.0).round
+
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: attendance_risk[index] || attendance_risk[0],
       absences: "#{rand(0..total_absences)} of #{total_absences}",
@@ -28,18 +32,6 @@ def generate_dashboard
 end
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize
-
-def total_absences
-  rand(0..10).round
-end
-
-def total_days
-  rand(0..25).round
-end
-
-def total_hours
-  rand(0.0..10.0).round
-end
 
 def attendance_risk
   %w[on_track exceeded_limit ahead_of_schedule at_risk]
