@@ -1,4 +1,4 @@
-import { sendSpan } from '../_utils/appSignal'
+import { sendSpan } from './appSignal'
 
 export default function apiErrorHandler() {
   const handler = response => {

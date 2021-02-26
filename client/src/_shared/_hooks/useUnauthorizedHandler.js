@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
-import { sendSpan } from '../_utils/appSignal'
+import { sendSpan } from '../../_utils/appSignal'
 
 export default function useUnauthorizedHandler() {
   const dispatch = useDispatch()
