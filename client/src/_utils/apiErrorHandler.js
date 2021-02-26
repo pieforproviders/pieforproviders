@@ -1,6 +1,9 @@
+import { sendSpan } from '../_utils/appSignal'
+
 export default function apiErrorHandler() {
   const handler = response => {
-    // TODO: Sentry
+    sendSpan({ params: response, error: new Error('API 500 error') })
+
     return response
   }
 
