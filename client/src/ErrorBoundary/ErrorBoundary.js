@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import * as Sentry from '@sentry/browser'
+import { connect } from 'react-redux'
+import { sendSpan } from '../_utils/appSignal'
 import { withTranslation } from 'react-i18next'
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props)
-    this.state = { eventId: null }
+    this.state = { hasError: false }
   }
 
   static getDerivedStateFromError() {
@@ -14,39 +15,32 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // TODO: Add user info when we have user authentication ready
-    // Ref: https://docs.sentry.io/platforms/javascript/#capturing-the-user
-    Sentry.withScope(scope => {
-      scope.setExtras(errorInfo)
-      const eventId = Sentry.captureException(error)
-      this.setState({ eventId })
+    sendSpan({
+      tags: {
+        userId: this.state.user?.id
+      },
+      params: errorInfo,
+      error
     })
+    this.setState({ hasError: true })
   }
 
   render() {
-    const { t } = this.props
-
     if (this.state.hasError) {
       // TODO: add some language here for error handling for users
-      return (
-        <button
-          className="border border-primaryBlue"
-          onClick={() =>
-            Sentry.showReportDialog({ eventId: this.state.eventId })
-          }
-        >
-          {t('reportFeedback')}
-        </button>
-      )
+      return <div>Something went wrong.</div>
     }
 
     return this.props.children
   }
 }
+const mapStateToProps = state => ({ user: state.user })
 
 ErrorBoundary.propTypes = {
   t: PropTypes.func.isRequired,
   children: PropTypes.node.isRequired
 }
 
-export const ErrorBoundaryComponent = withTranslation()(ErrorBoundary)
+export const ErrorBoundaryComponent = connect(mapStateToProps)(
+  withTranslation()(ErrorBoundary)
+)
