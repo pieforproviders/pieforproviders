@@ -7,7 +7,7 @@ class Child < UuidApplicationRecord
 
   belongs_to :business
 
-  has_many :child_approvals, dependent: :destroy
+  has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
   has_many :approvals, through: :child_approvals
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
@@ -21,12 +21,10 @@ class Child < UuidApplicationRecord
 
   validates :date_of_birth, date_param: true
 
-  accepts_nested_attributes_for :approvals
+  accepts_nested_attributes_for :approvals, :child_approvals
 
   scope :active, -> { where(active: true) }
-  scope :approved_for_date, lambda { |date, timezone|
-                              joins(:approvals).where('approvals.effective_on <= ? AND approvals.expires_on > ?', date.in_time_zone(timezone), date.in_time_zone(timezone))
-                            }
+  scope :approved_for_date, ->(date, timezone) { joins(:approvals).merge(Approval.active_on_date(date.in_time_zone(timezone))) }
 
   delegate :user, to: :business
 
@@ -39,7 +37,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_child_approval(date)
-    child_approvals.find_by(approval: approvals.active_on_date(date.in_time_zone(timezone)))
+    child_approvals.find_by(approval: approvals.active_on_date(date.in_time_zone(timezone)).first)
   end
 
   def attendances
@@ -65,10 +63,10 @@ class Child < UuidApplicationRecord
   private
 
   def find_or_create_approvals
-    self.approvals = approvals.map do |approvals|
-      Approval.find_or_create_by(case_number: approvals.case_number,
-                                 effective_on: approvals.effective_on,
-                                 expires_on: approvals.expires_on)
+    self.approvals = approvals.map do |approval|
+      Approval.find_or_create_by(case_number: approval.case_number,
+                                 effective_on: approval.effective_on,
+                                 expires_on: approval.expires_on)
     end
   end
 
@@ -81,14 +79,16 @@ end
 #
 # Table name: children
 #
-#  id              :uuid             not null, primary key
-#  active          :boolean          default(TRUE), not null
-#  date_of_birth   :date             not null
-#  full_name       :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  business_id     :uuid             not null
-#  wonderschool_id :string
+#  id                 :uuid             not null, primary key
+#  active             :boolean          default(TRUE), not null
+#  date_of_birth      :date             not null
+#  enrolled_in_school :boolean
+#  full_name          :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  business_id        :uuid             not null
+#  dhs_id             :string
+#  wonderschool_id    :string
 #
 # Indexes
 #

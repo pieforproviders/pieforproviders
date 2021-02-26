@@ -2,6 +2,8 @@
 
 # The businesses for which users are responsible for keeping subsidy data
 class Business < UuidApplicationRecord
+  include Licenses
+
   before_update :prevent_deactivation_with_active_children
   after_commit :state_from_zipcode
 
@@ -9,7 +11,7 @@ class Business < UuidApplicationRecord
 
   has_many :children, dependent: :restrict_with_error
 
-  enum license_type: Licenses.types
+  accepts_nested_attributes_for :children
 
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :user_id }
@@ -37,10 +39,12 @@ end
 # Table name: businesses
 #
 #  id           :uuid             not null, primary key
+#  accredited   :boolean
 #  active       :boolean          default(TRUE), not null
 #  county       :string
 #  license_type :string           not null
 #  name         :string           not null
+#  qris_rating  :string
 #  state        :string
 #  zipcode      :string
 #  created_at   :datetime         not null

@@ -4,9 +4,11 @@
 class Approval < UuidApplicationRecord
   COPAY_FREQUENCIES = %w[daily weekly monthly].freeze
 
-  has_many :child_approvals, dependent: :destroy
+  has_many :child_approvals, dependent: :destroy, inverse_of: :approval, autosave: true
   has_many :children, through: :child_approvals
   has_many :illinois_approval_amounts, through: :child_approvals
+
+  accepts_nested_attributes_for :child_approvals, :children
 
   validates :effective_on, date_param: true
   validates :expires_on, date_param: true
@@ -17,7 +19,7 @@ class Approval < UuidApplicationRecord
   enum copay_frequency: Copays.frequencies
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
-  scope :active_on_date, ->(date) { find_by('effective_on <= ? AND expires_on > ?', date, date) }
+  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
 
   monetize :copay_cents, allow_nil: true
 

@@ -15,7 +15,7 @@ module Wonderschool
         '1235.48,2353.23,10 of 18,3 of 8,33 trips - $212.50'
       end
       let!(:stubbed_client) { double('AWS Client') }
-      let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
+      let!(:stubbed_processor) { double('Wonderschool Necc Dashboard Processor') }
       let!(:stubbed_object) { double('S3 Object') }
 
       describe '.call' do

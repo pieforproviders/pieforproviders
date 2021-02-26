@@ -4,7 +4,7 @@ require 'csv'
 
 module Wonderschool
   module Necc
-    # downloads Attendance CSVs exported from Wonderschool for NECC partnership
+    # downloads Dashboard data compiled from Wonderschool, NECC and provider data
     class DashboardDownloader
       def call
         download_dashboard_exports
@@ -69,11 +69,11 @@ module Wonderschool
       def log(type, message)
         case type
         when 'not_found'
-          Rails.logger.tagged('NECC Attendances processed') { Rails.logger.info "No file found in S3 bucket #{message} on #{date}" }
+          Rails.logger.tagged('NECC Dashboard') { Rails.logger.info "No file found in S3 bucket #{message} on #{date}" }
         when 'success'
-          Rails.logger.tagged('NECC Attendances processed') { Rails.logger.info message }
+          Rails.logger.tagged('NECC Dashboard') { Rails.logger.info message }
         when 'failed'
-          Rails.logger.tagged('NECC Attendances failed to process') { Rails.logger.error message }
+          Rails.logger.tagged('NECC Dashboard') { Rails.logger.error message }
         end
       end
     end

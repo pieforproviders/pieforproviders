@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence :name do |n|
       "#{Faker::Name.child_care_businesses}#{n}"
     end
-    license_type { Licenses.types.keys.sample }
+    license_type { Licenses::TYPES.sample }
     user factory: :confirmed_user
     zipcode { '60606' }
     county { 'Cook' }
@@ -27,10 +27,12 @@ end
 # Table name: businesses
 #
 #  id           :uuid             not null, primary key
+#  accredited   :boolean
 #  active       :boolean          default(TRUE), not null
 #  county       :string
 #  license_type :string           not null
 #  name         :string           not null
+#  qris_rating  :string
 #  state        :string
 #  zipcode      :string
 #  created_at   :datetime         not null

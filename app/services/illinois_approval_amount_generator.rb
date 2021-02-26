@@ -1,27 +1,25 @@
 # frozen_string_literal: true
 
-# Service to create approval amounts when a child is created
-class ApprovalAmountGenerator
-  def initialize(child, month_amounts, first_month, year)
+# Service to create approval amounts when a child is created in IL
+class IllinoisApprovalAmountGenerator
+  def initialize(child, params)
     @child = child
-    @state = @child.business.state
-    @child_approval = @child.child_approvals.first
-    @month_amounts = month_amounts
-    @first_month = first_month
-    @year = year
+    @month_amounts = params[:month_amounts]
+    @first_month = params[:first_month_name]
+    @year = params[:first_month_year]
+    @approval = Approval.find_by(params[:approvals_attributes]&.first)
+    @child_approval = child.child_approvals.find_by(approval: @approval)
   end
 
   def call
+    return if @month_amounts.empty? || [@first_month, @year].all?(&:nil?) || @approval.nil?
+
     generate_approval_amounts
   end
 
   private
 
   def generate_approval_amounts
-    illinois_approval_amount_generator if @state == 'IL'
-  end
-
-  def illinois_approval_amount_generator
     prep_single_month_amounts
     @month_amounts.each do |month, approved_days|
       index = month.to_s.delete('month').to_i - 1

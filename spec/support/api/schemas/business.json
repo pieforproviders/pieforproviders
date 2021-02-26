@@ -1,5 +1,15 @@
 {
   "properties": {
+    "accredited": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "active": {
       "type": "boolean"
     },
@@ -19,6 +29,16 @@
     },
     "name": {
       "type": "string"
+    },
+    "qris_rating": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "state": {
       "type": "string"
