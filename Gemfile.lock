@@ -101,7 +101,7 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.8.1)
       rack
-    data_migrate (6.6.0)
+    data_migrate (6.6.2)
       rails (>= 5.0)
     database_cleaner (2.0.1)
       database_cleaner-active_record (~> 2.0.0)
@@ -203,7 +203,7 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
-    minitest (5.14.3)
+    minitest (5.14.4)
     mocha (1.12.0)
     monetize (1.9.4)
       money (~> 6.12)
