@@ -30,11 +30,11 @@ module Wonderschool
         contents.each { |subsidy_case| process_onboarding_case(subsidy_case) || failed_subsidy_cases << subsidy_case }
 
         if failed_subsidy_cases.present?
-          log('failed_subsidy_cases', failed_subsidy_cases.as_json)
-          store('failed_subsidy_cases', failed_subsidy_cases.as_json)
+          log('failed_subsidy_cases', failed_subsidy_cases.flatten.to_s)
+          store('failed_subsidy_cases', failed_subsidy_cases.flatten.to_s)
           return false
         end
-        contents.as_json
+        contents.to_s
       end
 
       def convert_by_type
@@ -75,13 +75,14 @@ module Wonderschool
       end
 
       def process_onboarding_case(subsidy_case)
-        user = User.find_by(email: subsidy_case['Provider Email'])
+        user = User.find_by(email: subsidy_case['Provider Email']&.downcase)
         return false unless user
 
         ActiveRecord::Base.transaction do
           make_associated_case_records(subsidy_case, user)
         end
-      rescue ActiveRecord::RecordInvalid
+      rescue ActiveRecord::RecordInvalid => e
+        log('error processing', e.to_s)
         false
       end
 
@@ -184,10 +185,6 @@ module Wonderschool
 
       def approval_headers(row)
         row.headers.map { |header| header.split(' - ')[0] }.uniq
-      end
-
-      def source_bucket
-        ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
       end
 
       def archive_bucket

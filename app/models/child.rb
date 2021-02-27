@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_subsidy_rule
+  after_commit :associate_subsidy_rule, except: [:destroy]
 
   belongs_to :business
 

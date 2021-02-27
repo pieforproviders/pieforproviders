@@ -19,6 +19,7 @@ end
 #
 #  id                     :uuid             not null, primary key
 #  absences               :text
+#  as_of                  :string
 #  attendance_risk        :text
 #  earned_revenue         :text
 #  estimated_revenue      :text

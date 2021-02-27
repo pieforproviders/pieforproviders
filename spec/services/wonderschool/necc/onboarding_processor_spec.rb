@@ -165,13 +165,13 @@ module Wonderschool
               ['Full Name', 'Becky Falzone'],
               ['Client ID', '69370816'],
               ['Provider Name', "Kate's Kids"],
-              ['Date of birth (required)', '2013-12-26'],
+              ['Date of birth (required)', Date.parse('2013-12-26')],
               ['Enrolled in School (Kindergarten or later)', 'No'],
               ['Case number', '56582912'],
               ['Authorized full day units', '330'],
               ['Authorized hourly units', '1,760'],
-              ['Effective on', '2020-11-24'],
-              ['Expires on', '2021-11-23'],
+              ['Effective on', Date.parse('2020-11-24')],
+              ['Expires on', Date.parse('2021-11-23')],
               ['Special Needs Rate?', 'Yes'],
               ['Special Needs Daily Rate', '90.77'],
               ['Special Needs Hourly Rate', '9.43'],
@@ -182,12 +182,12 @@ module Wonderschool
               ['Business QRIS rating', 'Step 5'],
               %w[Accredited No],
               ['Approval #1 - Family Fee', '60.00'],
-              ['Approval #1 - Begin Date', '2020-11-24'],
-              ['Approval #1 - End Date', '2021-05-23'],
+              ['Approval #1 - Begin Date', Date.parse('2020-11-24')],
+              ['Approval #1 - End Date', Date.parse('2021-05-23')],
               ['Approval #1 - Allocated Family Fee', '60.00'],
               ['Approval #2 - Family Fee', '85.00'],
-              ['Approval #2 - Begin Date', '2021-05-24'],
-              ['Approval #2 - End Date', '2021-11-23'],
+              ['Approval #2 - Begin Date', Date.parse('2021-05-24')],
+              ['Approval #2 - End Date', Date.parse('2021-11-23')],
               ['Approval #2 - Allocated Family Fee', '85.00'],
               ['Approval #3 - Family Fee', nil],
               ['Approval #3 - Begin Date', nil],
@@ -202,14 +202,14 @@ module Wonderschool
               ['Approval #5 - End Date', nil],
               ['Approval #5 - Allocated Family Fee', nil]
             ]
-          ]
+          ].flatten.to_s
         end
         it "does not stop the job if the user doesn't exist, and logs the failed case", use_truncation: true do
           second_user.destroy!
           expect(stubbed_client).to receive(:put_object).with(
             {
               bucket: archive_bucket,
-              body: failed_subsidy_case.as_json, key: file_name
+              body: failed_subsidy_case, key: file_name
             }
           )
           # TODO: this gets called 13 times for some reason?
@@ -221,13 +221,11 @@ module Wonderschool
 
       describe '.call' do
         let!(:file_name) { 'failed_subsidy_cases' }
-        let!(:source_bucket) { 'source_bucket' }
         let!(:archive_bucket) { 'archive_bucket' }
         let!(:stubbed_client) { double('AWS Client') }
-        let!(:stubbed_processor) { double('Wonderschool Necc Attendance Processor') }
+        let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
         let!(:stubbed_object) { double('S3 Object') }
         before do
-          allow(ENV).to receive(:fetch).with('AWS_NECC_ONBOARDING_BUCKET', '').and_return(source_bucket)
           allow(ENV).to receive(:fetch).with('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '').and_return(archive_bucket)
           allow(ENV).to receive(:fetch).with('AWS_ACCESS_KEY_ID', '').and_return('fake_key')
           allow(ENV).to receive(:fetch).with('AWS_SECRET_ACCESS_KEY', '').and_return('fake_secret')
@@ -266,7 +264,7 @@ module Wonderschool
 
         context 'when the csv data is the wrong format from a file' do
           let(:source_data) { invalid_csv }
-          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].as_json }
+          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
           it 'returns false' do
             expect(stubbed_client).to receive(:put_object).with(
               {
@@ -282,7 +280,7 @@ module Wonderschool
 
         context 'when the csv data is the wrong format from a string' do
           let(:source_data) { invalid_string }
-          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].as_json }
+          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
           it 'returns false' do
             expect(stubbed_client).to receive(:put_object).with(
               {
@@ -298,7 +296,7 @@ module Wonderschool
 
         context 'when the csv data is the wrong format from a stream' do
           let(:source_data) { StringIO.new(invalid_string) }
-          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].as_json }
+          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
           it 'returns false' do
             expect(stubbed_client).to receive(:put_object).with(
               {
