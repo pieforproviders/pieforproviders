@@ -186,8 +186,20 @@ export function Dashboard() {
         }, summaryDataTotalsConfig['ne']),
         ...res.reduce((acc, cv) => {
           return {
-            maxRevenueTotal: acc.maxRevenueTotal ?? 0 + cv.max_revenue,
-            totalApprovedTotal: acc.totalApprovedTotal ?? 0 + cv.total_approved
+            maxRevenueTotal:
+              acc.maxRevenueTotal ??
+              0 +
+                (typeof cv.max_revenue === 'string' ||
+                cv.max_revenue instanceof String
+                  ? 0
+                  : cv.max_revenue),
+            totalApprovedTotal:
+              acc.totalApprovedTotal ??
+              0 +
+                (typeof cv.total_approved === 'string' ||
+                cv.total_approved instanceof String
+                  ? 0
+                  : cv.total_approved)
           }
         }, {})
       }
