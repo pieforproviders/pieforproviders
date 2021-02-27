@@ -35,8 +35,9 @@ class SubsidyRuleAssociator
 
   def age
     dob = @child.date_of_birth
-    years_since_birth = Date.current.year - dob.year
-    birthday_passed = dob.month >= Date.current.month && dob.day >= Date.current.day
+    today = DateTime.now.in_time_zone(@child.timezone)
+    years_since_birth = today.year - dob.year
+    birthday_passed = dob.month >= today.month && dob.day >= today.day
     birthday_passed ? years_since_birth : years_since_birth - 1
   end
 

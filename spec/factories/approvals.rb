@@ -19,8 +19,8 @@ FactoryBot.define do
     end
 
     factory :expired_approval do
-      effective_on { Date.current - 2.years }
-      expires_on { Date.current - 1.year }
+      effective_on { DateTime.now.in_time_zone('Central Time (US & Canada)') - 2.years }
+      expires_on { DateTime.now.in_time_zone('Central Time (US & Canada)') - 1.year }
     end
   end
 end

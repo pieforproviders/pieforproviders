@@ -18,26 +18,41 @@ RSpec.describe Child, type: :model do
   end
 
   context 'associates the record with a subsidy rule' do
-    let!(:date) { Date.current }
+    include ActiveJob::TestHelper
+
+    let!(:date) { DateTime.now.in_time_zone('Central Time (US & Canada)') }
     let!(:subsidy_rule_cook_age5) { create(:subsidy_rule_for_illinois, max_age: 5) }
     let!(:subsidy_rule_cook_age3) { create(:subsidy_rule_for_illinois, max_age: 3) }
     let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
-    let!(:child_cook) { create(:child, date_of_birth: Date.current - 2.years, business: business_cook) }
+    let!(:child_cook) { create(:child, date_of_birth: DateTime.now.in_time_zone('Central Time (US & Canada)') - 2.years, business: business_cook) }
     let!(:subsidy_rule_dupage) { create(:subsidy_rule_for_illinois, county: 'DuPage') }
     let!(:business_dupage) { create(:business, county: 'DuPage', zipcode: '60613') }
 
+    after do
+      clear_enqueued_jobs
+    end
+
     it 'on creation' do
+      perform_enqueued_jobs do
+        child_cook.save!
+      end
       expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_cook_age3)
     end
 
     it 'on update' do
       too_old_for_cook = child_cook.date_of_birth - 4.years
-      child_cook.update!(date_of_birth: too_old_for_cook)
+      perform_enqueued_jobs do
+        child_cook.update!(date_of_birth: too_old_for_cook)
+      end
       expect(child_cook.active_subsidy_rule(date)).to be_nil
-      child_cook.update!(date_of_birth: too_old_for_cook + 2.years)
+      perform_enqueued_jobs do
+        child_cook.update!(date_of_birth: too_old_for_cook + 2.years)
+      end
       expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_cook_age5)
-      age_eligible_for_dupage = Date.current - Random.rand(1..subsidy_rule_dupage.max_age.to_i - 1).years
-      child_cook.update!(business: business_dupage, date_of_birth: age_eligible_for_dupage)
+      age_eligible_for_dupage = DateTime.now.in_time_zone('Central Time (US & Canada)') - Random.rand(1..subsidy_rule_dupage.max_age.to_i - 1).years
+      perform_enqueued_jobs do
+        child_cook.update!(business: business_dupage, date_of_birth: age_eligible_for_dupage)
+      end
       expect(child_cook.active_subsidy_rule(date)).to eq(subsidy_rule_dupage)
     end
   end
@@ -97,7 +112,7 @@ RSpec.describe Child, type: :model do
           approvals_attributes: [
             {
               case_number: approval.case_number,
-              effective_on: Date.current + 3.months,
+              effective_on: DateTime.now.in_time_zone('Central Time (US & Canada)') + 3.months,
               expires_on: approval.expires_on,
               copay: 20_000,
               copay_frequency: 'monthly'
