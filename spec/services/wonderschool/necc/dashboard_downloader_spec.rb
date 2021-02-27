@@ -10,9 +10,12 @@ module Wonderschool
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
       let!(:dashboard_data) do
-        'child_full_name,absences,attendance_risk,earned_revenue,estimated_revenue,'\
-        "full_days,hours,transportation_revenue\nSarah Brighton,3 of 10,on_track,"\
-        '1235.48,2353.23,10 of 18,3 of 8,33 trips - $212.50'
+        <<~CSV
+          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Transportation revenue
+          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,"0 days, 0 hours",at_risk,0,90.77,"1,815.40",n/a
+          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,"1 day, 0 hours",on_track,98.21,1234.56,"1,815.40",2 trips - $22.00
+          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,"0 days, 4 hours",exceeded_limit,330.00,330.00,"1,815.40",n/a
+        CSV
       end
       let!(:stubbed_client) { double('AWS Client') }
       let!(:stubbed_processor) { double('Wonderschool Necc Dashboard Processor') }

@@ -25,10 +25,10 @@ class UserBlueprint < Blueprinter::Base
     end
     association :businesses, blueprint: BusinessBlueprint, view: :nebraska_dashboard
     field :max_revenue do
-      23_122
+      'N/A'
     end
     field :total_approved do
-      23_122
+      'N/A'
     end
     excludes :id, :greeting_name, :language, :state
   end
