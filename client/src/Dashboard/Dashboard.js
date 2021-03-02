@@ -72,22 +72,29 @@ export function Dashboard() {
         },
         {
           title: t(`maxRevenue`),
-          stat: `${currencyFormatter.format(totals.maxRevenueTotal.toFixed())}`,
+          stat: `${
+            totals.maxRevenueTotal === 'n/a'
+              ? totals.maxRevenueTotal
+              : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
+          }`,
           definition: t(`maxRevenueDef`)
         },
         [
           {
             title: t(`totalApproved`),
-            stat: `${currencyFormatter.format(
-              totals.totalApprovedTotal.toFixed()
-            )}`,
+            stat: `${
+              totals.totalApprovedTotal === 'n/a'
+                ? totals.totalApprovedTotal
+                : currencyFormatter.format(totals.totalApprovedTotal.toFixed())
+            }`,
             definition: t(`totalApprovedDef`)
           },
           {
             title: t(`transportation`),
-            stat: `${currencyFormatter.format(
-              totals.transportationRevenueTotal.toFixed()
-            )}`,
+            stat: 'n/a',
+            // `${currencyFormatter.format(
+            //   totals.transportationRevenueTotal.toFixed()
+            // )}`
             definition: t(`transportationDef`)
           }
         ]
@@ -185,25 +192,27 @@ export function Dashboard() {
           }
         }, summaryDataTotalsConfig['ne']),
         ...res.reduce((acc, cv) => {
+          const setTotal = (total, amount) =>
+            total ??
+            0 +
+              (typeof amount === 'string' || amount instanceof String
+                ? 0
+                : amount)
+
           return {
             maxRevenueTotal:
-              acc.maxRevenueTotal ??
-              0 +
-                (typeof cv.max_revenue === 'string' ||
-                cv.max_revenue instanceof String
-                  ? 0
-                  : cv.max_revenue),
+              cv.max_revenue === 'N/A'
+                ? 'n/a'
+                : setTotal(acc.maxRevenueTotal, cv.max_revenue),
             totalApprovedTotal:
-              acc.totalApprovedTotal ??
-              0 +
-                (typeof cv.total_approved === 'string' ||
-                cv.total_approved instanceof String
-                  ? 0
-                  : cv.total_approved)
+              cv.total_approved === 'N/A'
+                ? 'n/a'
+                : setTotal(acc.totalApprovedTotal, cv.total_approved)
           }
         }, {})
       }
     }
+
     return data.reduce((acc, cv) => {
       const {
         guaranteedRevenue,
