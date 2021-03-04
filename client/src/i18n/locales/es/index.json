@@ -198,6 +198,12 @@
   "neEarnedRevenueDef": "Los ingresos que ya has ganado este mes, basado en la asistencia del niño. Esto no incluye otros ingresos del subsidio como la transportación.",
   "neEstimatedRevenueDef": "Ingreso del subsidio que predecimos que recibirás, basado en la asistencia del niño este mes. Esto no incluye otros ingresos del subsidio como la transportación.",
   "neTransportationRevenueDef": "Viajes que puedes cobrar para ese niño. Los detalles de la transportación vienen de la carta de aprobación.",
-  "backToTop": "Volver"
+  "backToTop": "Volver",
 
+  "of": "de",
+  "trips": "viajes",
+
+  "sortAsc": "Ordenar ascendente",
+  "sortDesc": "Ordenar descendiente",
+  "sortCancel": "Cancelar orden"
 }

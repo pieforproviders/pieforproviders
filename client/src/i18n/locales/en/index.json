@@ -198,5 +198,12 @@
   "neEarnedRevenueDef": "The revenue you have already earned this month, based on the child’s attendance. This does not include other subsidy revenue such as transportation.",
   "neEstimatedRevenueDef": "The subsidy revenue we predict you will receive, based on the child’s attendance this month. This does not include other subsidy revenue such as transportation.",
   "neTransportationRevenueDef": "Trips you are able to charge for that child. Transportation details come from the approval letter.",
-  "backToTop": "Back to top"
+  "backToTop": "Back to top",
+
+  "of": "of",
+  "trips": "trips",
+
+  "sortAsc": "Click to sort ascending ",
+  "sortDesc": "Click to sort descending",
+  "sortCancel": "Click to cancel sort"
 }
