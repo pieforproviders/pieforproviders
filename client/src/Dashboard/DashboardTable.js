@@ -55,7 +55,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{`${fullday.text}`}</p>
+          <p className="mb-1">{fullday.text.replace('of', t('of'))}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
@@ -127,6 +127,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     return <div>{currencyFormatter.format(num)}</div>
   }
 
+  const replaceText = (text, translation) => (
+    <div>{text.replace(translation, t(translation))}</div>
+  )
+
   const columnConfig = {
     ne: [
       {
@@ -156,12 +160,14 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           {
             name: 'hours',
             sorter: (a, b) =>
-              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0]
+              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
+            render: text => replaceText(text, 'of')
           },
           {
             name: 'absences',
             sorter: (a, b) =>
-              a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0]
+              a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
+            render: text => replaceText(text, 'of')
           }
         ]
       },
@@ -184,7 +190,8 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             name: 'transportationRevenue',
             sorter: (a, b) =>
               a.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0] -
-              b.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0]
+              b.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0],
+            render: text => replaceText(text, 'trips')
           }
         ]
       }
@@ -236,6 +243,11 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       sticky
       className="dashboard-table"
       scroll={{ x: 'max-content' }}
+      locale={{
+        triggerDesc: t('sortDesc'),
+        triggerAsc: t('sortAsc'),
+        cancelSort: t('sortCancel')
+      }}
     />
   )
 }
