@@ -44,7 +44,7 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
-    "cypress": "^6.5.0",
+    "cypress": "^6.6.0",
     "cypress-file-upload": "^5.0.2",
     "dayjs": "^1.10.4",
     "eslint": "^6.6.0",
