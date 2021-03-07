@@ -111,7 +111,7 @@ module Wonderschool
             it 'logs an info message and does not log an error' do
               allow(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [] })
               expect(Rails.logger).to receive(:tagged).and_yield
-              expect(Rails.logger).to receive(:info).with("No file found in S3 bucket #{source_bucket} on #{Date.current.in_time_zone('Central Time (US & Canada)')}")
+              expect(Rails.logger).to receive(:info).with("No file found in S3 bucket #{source_bucket} on #{DateTime.now.in_time_zone('Central Time (US & Canada)')}")
               expect(stubbed_client).not_to receive(:get_object)
               expect(stubbed_object).not_to receive(:body)
               expect(stubbed_processor).not_to receive(:call)
