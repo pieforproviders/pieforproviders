@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.6'
 
 gem 'aws-sdk-s3', '~> 1'
-gem 'blueprinter', '~> 0.25.2'
+gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'data_migrate'
 gem 'devise'
@@ -37,7 +37,7 @@ gem 'rswag-ui', '>= 2.3.0'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'cypress-on-rails', '~> 1.8'
+  gem 'cypress-on-rails', '~> 1.9'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
