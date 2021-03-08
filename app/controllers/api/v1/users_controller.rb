@@ -28,15 +28,19 @@ module Api
 
       private
 
-      def date_now
-        DateTime.now.in_time_zone(current_user.timezone)
+      def filter_date
+        if params[:filter_date]
+          Date.parse(params[:filter_date])&.in_time_zone(current_user.timezone)&.at_end_of_day
+        else
+          DateTime.now.in_time_zone(current_user.timezone)
+        end
       end
 
       def nebraska_dashboard
         UserBlueprint.render(
           policy_scope(User),
           view: :nebraska_dashboard,
-          from_date: date_now,
+          filter_date: filter_date,
           timezone: current_user.timezone
         )
       end
@@ -45,7 +49,7 @@ module Api
         UserBlueprint.render(
           policy_scope(User),
           view: :illinois_dashboard,
-          from_date: date_now,
+          filter_date: filter_date,
           timezone: current_user.timezone
         )
       end

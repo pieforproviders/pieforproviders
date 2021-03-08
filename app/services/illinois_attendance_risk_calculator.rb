@@ -2,15 +2,12 @@
 
 # Service to calculate a family's attendance rate
 class IllinoisAttendanceRiskCalculator
-  def initialize(child, from_date)
+  def initialize(child, filter_date)
     @child = child
-    @from_date = from_date
+    @filter_date = filter_date
   end
 
   def call
-    less_than_halfway_through_month = time_now < halfway || (latest_user_attendance && latest_user_attendance < halfway)
-    return 'not_enough_info' if less_than_halfway_through_month
-
     risk_label
   end
 
@@ -21,15 +18,18 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def active_child_approval
-    @child.active_child_approval(@from_date)
+    @child.active_child_approval(@filter_date)
   end
 
   def attendances
-    active_child_approval.attendances.for_month(@from_date)
+    active_child_approval.attendances.for_month(@filter_date)
   end
 
   def risk_label
-    attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @from_date).call
+    less_than_halfway_through_month = time_now < halfway || (latest_user_attendance && latest_user_attendance < halfway)
+    return 'not_enough_info' if less_than_halfway_through_month || !approval_amount
+
+    attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @filter_date).call
 
     if attendance_rate < threshold
       threshold_not_met_risks
@@ -40,8 +40,13 @@ class IllinoisAttendanceRiskCalculator
     end
   end
 
+  def approval_amount
+    active_child_approval.illinois_approval_amounts.for_month(@filter_date).first
+  end
+
   def attended_all_approved_days
-    approval_amount = active_child_approval.illinois_approval_amounts.for_month(@from_date)
+    return false unless approval_amount
+
     must_attend_part_days = approval_amount.part_days_approved_per_week.positive?
     must_attend_full_days = approval_amount.full_days_approved_per_week.positive?
     (!must_attend_part_days || part_day_attendances.positive?) && (!must_attend_full_days || full_day_attendances.positive?)
@@ -58,7 +63,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def wont_meet_threshold
-    active_approval = @child.approvals.active_on_date(@from_date.in_time_zone(timezone)).first
+    active_approval = @child.approvals.active_on_date(@filter_date.in_time_zone(timezone)).first
     (threshold * family_days_approved - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
   end
 
@@ -75,16 +80,16 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def percentage_of_month_elapsed
-    days_elapsed_in_month = @from_date.day - @from_date.at_beginning_of_month.day
+    days_elapsed_in_month = @filter_date.day - @filter_date.at_beginning_of_month.day
     days_elapsed_in_month.to_f / total_days_in_month
   end
 
   def family_days_attended
-    IllinoisAttendanceRateCalculator.new(@child, @from_date).family_days_attended
+    IllinoisAttendanceRateCalculator.new(@child, @filter_date).family_days_attended
   end
 
   def family_days_approved
-    IllinoisAttendanceRateCalculator.new(@child, @from_date).family_days_approved
+    IllinoisAttendanceRateCalculator.new(@child, @filter_date).family_days_approved
   end
 
   def time_now
@@ -92,22 +97,22 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def threshold
-    active_child_approval.subsidy_rule.subsidy_ruleable.attendance_threshold.to_f
+    active_child_approval&.subsidy_rule&.subsidy_ruleable&.attendance_threshold&.to_f
   end
 
   def latest_user_attendance
-    @child.business.user.latest_attendance_in_month(@from_date)
+    @child.business.user.latest_attendance_in_month(@filter_date)
   end
 
   def halfway
-    @from_date.at_beginning_of_month + 14.days
+    @filter_date.at_beginning_of_month + 14.days
   end
 
   def days_left_in_month
-    @from_date.at_end_of_month.day - @from_date.day
+    @filter_date.at_end_of_month.day - @filter_date.day
   end
 
   def total_days_in_month
-    @from_date.to_date.all_month.count
+    @filter_date.to_date.all_month.count
   end
 end

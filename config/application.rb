@@ -31,7 +31,7 @@ module App
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
-    config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('lib').to_s
 
     config.active_record.schema_format = :ruby
 

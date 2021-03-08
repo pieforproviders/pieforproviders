@@ -44,9 +44,9 @@ class User < UuidApplicationRecord
     businesses&.first&.state || ''
   end
 
-  def latest_attendance_in_month(from_date)
-    from_date = from_date.in_time_zone(timezone)
-    Attendance.where('check_in BETWEEN ? AND ?', from_date.at_beginning_of_month, from_date.at_end_of_month)
+  def latest_attendance_in_month(filter_date)
+    filter_date = filter_date.in_time_zone(timezone)
+    Attendance.where('check_in BETWEEN ? AND ?', filter_date.at_beginning_of_month, filter_date.at_end_of_month)
               .where(child_approval: ChildApproval.where(child: Child.where(business: Business.where(user: self))))
               .max_by(&:check_in)&.check_in&.in_time_zone(timezone)
   end

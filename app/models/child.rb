@@ -52,12 +52,12 @@ class Child < UuidApplicationRecord
     IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
   end
 
-  def attendance_rate(from_date)
-    AttendanceRateCalculator.new(self, from_date.in_time_zone(timezone)).call
+  def attendance_rate(filter_date)
+    AttendanceRateCalculator.new(self, filter_date.in_time_zone(timezone)).call
   end
 
-  def attendance_risk(from_date)
-    AttendanceRiskCalculator.new(self, from_date.in_time_zone(timezone)).call
+  def attendance_risk(filter_date)
+    AttendanceRiskCalculator.new(self, filter_date.in_time_zone(timezone)).call
   end
 
   private
