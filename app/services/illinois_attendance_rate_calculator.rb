@@ -2,9 +2,9 @@
 
 # Service to calculate a family's attendance rate
 class IllinoisAttendanceRateCalculator
-  def initialize(child, from_date)
+  def initialize(child, filter_date)
     @child = child
-    @from_date = from_date
+    @filter_date = filter_date
   end
 
   def call
@@ -32,14 +32,14 @@ class IllinoisAttendanceRateCalculator
   end
 
   def active_approval
-    @child.approvals.active_on_date(@from_date.in_time_zone(@child.timezone)).first
+    @child.approvals.active_on_date(@filter_date.in_time_zone(@child.timezone)).first
   end
 
   def sum_approvals(child)
-    approval_amount = child.illinois_approval_amounts.for_month(@from_date)
+    approval_amount = child.illinois_approval_amounts.for_month(@filter_date).first
     return 0 unless approval_amount
 
-    weeks_in_month = DateService.weeks_in_month(@from_date)
+    weeks_in_month = DateService.weeks_in_month(@filter_date)
 
     [
       approval_amount.part_days_approved_per_week * weeks_in_month,
@@ -48,7 +48,7 @@ class IllinoisAttendanceRateCalculator
   end
 
   def sum_attendances(child)
-    attendances = child.attendances.for_month
+    attendances = child.attendances.for_month(@filter_date)
     return 0 unless attendances
 
     [

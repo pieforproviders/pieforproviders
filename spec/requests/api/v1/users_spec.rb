@@ -193,11 +193,13 @@ RSpec.describe 'users API', type: :request do
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 0)
               last_child
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
               owner.businesses.first.children.each do |child|
                 current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
@@ -227,11 +229,13 @@ RSpec.describe 'users API', type: :request do
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 2)
               last_child
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
               owner.businesses.first.children.each do |child|
                 current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
@@ -258,11 +262,13 @@ RSpec.describe 'users API', type: :request do
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
                 current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
@@ -292,11 +298,13 @@ RSpec.describe 'users API', type: :request do
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
                 current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
@@ -326,11 +334,13 @@ RSpec.describe 'users API', type: :request do
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
                 .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
                 .illinois_approval_amounts
                 .for_month
+                .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
                 current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
