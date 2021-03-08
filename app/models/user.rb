@@ -50,6 +50,10 @@ class User < UuidApplicationRecord
               .where(child_approval: ChildApproval.where(child: Child.where(business: Business.where(user: self))))
               .max_by(&:check_in)&.check_in&.in_time_zone(timezone)
   end
+
+  def first_approval_effective_date
+    approvals.order(effective_on: :asc).first.effective_on
+  end
 end
 
 # == Schema Information
