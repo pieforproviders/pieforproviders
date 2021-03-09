@@ -22,6 +22,19 @@ RSpec.describe User, type: :model do
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')
   end
+
+  describe '#first_approval_effective_date' do
+    let!(:business) { create(:business, user: user) }
+    let!(:approval1) { create(:approval, effective_on: Date.parse('Mar 3, 2020'), create_children: false) }
+    let!(:approval2) { create(:approval, effective_on: Date.parse('Jan 10, 2020'), create_children: false) }
+    let!(:approval3) { create(:approval, effective_on: Date.parse('May 6, 2020'), create_children: false) }
+    let!(:approval4) { create(:approval, effective_on: Date.parse('Feb 21, 2020'), create_children: false) }
+    let!(:child) { create(:child, business: business, approvals: [approval1, approval2, approval3]) }
+    let!(:child2) { create(:child, business: business, approvals: [approval4]) }
+    it 'returns the correct date' do
+      expect(user.first_approval_effective_date).to eq(Date.parse('Jan 10, 2020'))
+    end
+  end
 end
 
 # == Schema Information
