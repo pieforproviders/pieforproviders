@@ -62,17 +62,17 @@
             "name"
           ]
         }
+      },
+      "first_approval_effective_date": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
-    },
-    "first_approval_effective_date": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ]
     },
     "required": [
       "as_of",

@@ -52,7 +52,7 @@ class User < UuidApplicationRecord
   end
 
   def first_approval_effective_date
-    approvals.order(effective_on: :asc).first.effective_on
+    approvals.order(effective_on: :asc).first&.effective_on
   end
 end
 
