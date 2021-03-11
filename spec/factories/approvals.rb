@@ -19,8 +19,7 @@ FactoryBot.define do
     end
 
     factory :expired_approval do
-      effective_on { DateTime.now.in_time_zone('Central Time (US & Canada)') - 2.years }
-      expires_on { DateTime.now.in_time_zone('Central Time (US & Canada)') - 1.year }
+      effective_on { Faker::Date.between(from: 3.years.ago, to: 2.years.ago) }
     end
   end
 end

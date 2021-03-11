@@ -4,26 +4,26 @@ FactoryBot.define do
   factory :attendance do
     child_approval
 
-    check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+    check_in { Faker::Time.between(from: Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_month, to: Time.current.in_time_zone(child_approval.child.timezone)) }
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
     factory :illinois_part_day_attendance do
-      check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+      check_in { Faker::Time.between(from: Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_month, to: Time.current.in_time_zone(child_approval.child.timezone)) }
       check_out { check_in + 2.hours + 13.minutes }
     end
 
     factory :illinois_full_day_attendance do
-      check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+      check_in { Faker::Time.between(from: Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_month, to: Time.current.in_time_zone(child_approval.child.timezone)) }
       check_out { check_in + 8.hours + 21.minutes }
     end
 
     factory :illinois_full_plus_part_day_attendance do
-      check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+      check_in { Faker::Time.between(from: Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_month, to: Time.current.in_time_zone(child_approval.child.timezone)) }
       check_out { check_in + 14.hours + 48.minutes }
     end
 
     factory :illinois_full_plus_full_day_attendance do
-      check_in { Faker::Time.between(from: DateTime.now.at_beginning_of_month, to: DateTime.now) }
+      check_in { Faker::Time.between(from: Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_month, to: Time.current.in_time_zone(child_approval.child.timezone)) }
       check_out { check_in + 18.hours + 11.minutes }
     end
   end

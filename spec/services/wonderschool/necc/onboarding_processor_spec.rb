@@ -23,8 +23,8 @@ module Wonderschool
           nope,yep,maybe
         CSV
       end
-      let!(:first_user) { create(:user, email: 'rebecca@rebecca.com') }
-      let!(:second_user) { create(:user, email: 'kate@kate.com') }
+      let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }
+      let!(:second_user) { create(:confirmed_user, email: 'kate@kate.com') }
 
       RSpec.shared_examples 'creates thomas' do
         it "sets Thomas' attributes correctly", use_truncation: true do

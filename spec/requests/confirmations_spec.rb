@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'swagger_helper'
 
 RSpec.describe 'GET /confirmation', type: :request do
-  let(:unconfirmed_user) { create(:user, confirmed_at: nil) }
+  let(:unconfirmed_user) { create(:unconfirmed_user) }
   let(:confirmed_user) { create(:confirmed_user) }
   path '/confirmation' do
     get "Confirms the user's account." do
