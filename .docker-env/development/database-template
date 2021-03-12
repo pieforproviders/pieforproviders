@@ -1,0 +1,9 @@
+# Environment variables used by the config/database.yml file
+PGUSER=POSTGRES_USER_1
+PGPASSWORD=POSTGRES_PASSWORD_1
+DB_HOST=database
+
+# Environment variables used by the PostgreSQL Docker container
+POSTGRES_USER=POSTGRES_USER_1
+POSTGRES_PASSWORD=POSTGRES_PASSWORD_1
+POSTGRES_DB=pie

@@ -10,8 +10,8 @@ exec_pg_setup () {
   fi
 }
 
-# exec_pg_setup '.env-docker/development/database'
-# exec_pg_setup 'init.sql'
+exec_pg_setup '.docker-env/development/database'
+exec_pg_setup 'init.sql'
 # END: PostgreSQL setup
 
 # BEGIN: Get Ruby version
@@ -43,4 +43,4 @@ docker/gem_install_bundler
 
 docker/bundle_install
 
-# docker/rails_db_setup
+docker/rails_db_setup

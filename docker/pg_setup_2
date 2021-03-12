@@ -1,0 +1,17 @@
+#!/bin/bash
+
+DB_USERNAME=$1
+DB_PASSWORD=$2
+
+echo 'Configure .docker-env/development/database'
+cp .docker-env/development/database-template .docker-env/development/database
+wait
+docker/replace_sif 'POSTGRES_USER_1' $DB_USERNAME '.docker-env/development/database'
+docker/replace_sif 'POSTGRES_PASSWORD_1' $DB_PASSWORD '.docker-env/development/database'
+
+echo 'Configure init.sql'
+cp init.sql.template init.sql
+wait
+docker/replace_sif 'POSTGRES_USER_1' $DB_USERNAME 'init.sql'
+docker/replace_sif 'POSTGRES_PASSWORD_1' $DB_PASSWORD 'init.sql'
+chmod +x init.sql

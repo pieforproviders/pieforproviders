@@ -28,7 +28,7 @@ services:
     links:
       - mailcatcher
     env_file:
-      - .env-docker/development/database
+      - .docker-env/development/database
     depends_on:
       - database
 
@@ -41,7 +41,7 @@ services:
   database:
     image: postgres
     env_file:
-      - .env-docker/development/database
+      - .docker-env/development/database
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
