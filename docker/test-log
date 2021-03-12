@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+docker/bundle_install
+docker/migrate
+
+echo '------------------------'
+echo 'BEGIN: bundle exec rspec'
+echo '------------------------'
+docker/run bundle exec rspec
+echo '----------------------'
+echo 'END: bundle exec rspec'
+echo '----------------------'
