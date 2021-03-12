@@ -5,7 +5,7 @@ FactoryBot.define do
     case_number { Faker::Number.number(digits: 10) }
     copay_cents { Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000) }
     copay_frequency { copay ? Copays.frequencies.keys.sample : nil }
-    effective_on { Faker::Date.between(from: 11.months.ago, to: 3.months.ago) }
+    effective_on { Date.current - 9.months }
     expires_on { effective_on + 1.year }
 
     transient do
@@ -19,7 +19,8 @@ FactoryBot.define do
     end
 
     factory :expired_approval do
-      effective_on { Faker::Date.between(from: 3.years.ago, to: 2.years.ago) }
+      effective_on { Date.current - 3.years }
+      expires_on { Date.current - 2.years }
     end
   end
 end

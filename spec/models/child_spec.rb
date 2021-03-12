@@ -26,7 +26,7 @@ RSpec.describe Child, type: :model do
     let!(:subsidy_rule_dupage) { create(:subsidy_rule_for_illinois, county: 'DuPage', max_age: 12) }
     let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
     let!(:business_dupage) { create(:business, county: 'DuPage', zipcode: '60613') }
-    let(:child_cook) { build(:child, date_of_birth: DateTime.now.in_time_zone('Central Time (US & Canada)') - 2.years, business: business_cook) }
+    let(:child_cook) { build(:child, date_of_birth: DateTime.now.in_time_zone('Central Time (US & Canada)') - 2.years - 3.weeks, business: business_cook) }
 
     after do
       clear_enqueued_jobs

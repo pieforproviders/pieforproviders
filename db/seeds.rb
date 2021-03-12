@@ -37,7 +37,7 @@ SubsidyRule.first_or_create!(
   license_type: Licenses::TYPES.sample,
   county: 'Cook',
   state: 'IL',
-  effective_on: Faker::Date.between(from: 10.years.ago, to: Time.zone.today),
+  effective_on: Date.current - 4.years,
   subsidy_ruleable: IllinoisSubsidyRule.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
 )
 

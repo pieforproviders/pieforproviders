@@ -28,6 +28,7 @@ module Api
 
       private
 
+      # TODO: check time calculation
       def filter_date
         if params[:filter_date]
           Date.parse(params[:filter_date])&.in_time_zone(current_user.timezone)&.at_end_of_day
