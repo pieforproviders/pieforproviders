@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e
+
+# BEGIN: PostgreSQL setup
+exec_pg_setup () {
+  FILENAME=$1
+  if [[ ! -f $FILENAME ]]
+  then
+    docker/pg_setup_1
+  fi
+}
+
+# exec_pg_setup '.env-docker/development/database'
+# exec_pg_setup 'init.sql'
+# END: PostgreSQL setup
+
+# BEGIN: Get Ruby version
+cp .ruby-version tmp/.ruby-version-process
+sed -i.bak "s|ruby-||g" tmp/.ruby-version-process
+rm tmp/.ruby-version-process.bak
+RUBY_VERSION_HERE=`cat tmp/.ruby-version-process`
+rm tmp/.ruby-version-process
+# END: Get Ruby version
+
+# Copy Dockerfile-template to Dockerfile
+cp Dockerfile-template Dockerfile
+
+# Fill in the Ruby version in the Dockerfile
+sed -i "s/RUBY_VERSION/$RUBY_VERSION_HERE/g" Dockerfile
+
+docker-compose down -v --remove-orphans
+wait
+echo '###########################'
+echo 'BEGIN: docker-compose build'
+echo '###########################'
+docker-compose build # Set up the Docker containers
+wait
+echo '##############################'
+echo 'FINISHED: docker-compose build'
+echo '##############################'
+
+# docker/bundle_install
+
+# docker/rails_db_setup

@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    volumes:
+      - .:/home/winner/myapp
+    environment:
+      - BUNDLE_PATH=/home/winner/myapp/tmp/bundle
+      - BUNDLE_APP_CONFIG=/home/winner/myapp/.bundle
+    user: winner
+    command:
+      - bin/server
+    ports:
+      - "3000:3000"
+    links:
+      - mailcatcher
+    env_file:
+      - .env-docker/development/database
+    depends_on:
+      - database
+
+  mailcatcher:
+    image: yappabe/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+
+  database:
+    image: postgres
+    env_file:
+      - .env-docker/development/database
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "15432:5432"
+
+volumes:
+  db_data:
