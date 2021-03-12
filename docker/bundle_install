@@ -1,0 +1,16 @@
+#!/bin/bash
+set +e
+
+# NOTE: /home/winner/myapp/tmp/bundle is the BUNDLE_PATH directory specified in docker-compose.yml
+echo '----------------------------------------------------------------------------------------------'
+echo 'mkdir -p /home/winner/myapp/tmp/bundle && chown -R winner:winner /home/winner/myapp/tmp/bundle'
+docker-compose run --rm -u root web bash -c 'mkdir -p /home/winner/myapp/tmp/bundle && chown -R winner:winner /home/winner/myapp/tmp/bundle'
+
+set -e
+echo '---------------------'
+echo 'BEGIN: bundle install'
+echo '---------------------'
+docker/run bundle install
+echo '-------------------'
+echo 'END: bundle install'
+echo '-------------------'

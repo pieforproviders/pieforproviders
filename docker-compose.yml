@@ -1,5 +1,16 @@
 version: "3"
 
+# SPECIAL NOTES:
+# 1.  GEM_HOME is set to the tmp/gem_home directory in this app.
+#     Bundler is installed here.
+#     If you delete Bundler from this directory, you will get an error
+#     message about not having the correct version of bundler when you
+#     run "bundle install" or try to do just about anything else.
+# 2.  BUNDLE_PATH is set to the tmp/bundle directory in this app.
+#     The products of "bundle install" are saved here.  If you delete
+#     this directory, subsequent executions of the "bundle install"
+#     process will take longer.
+
 services:
   web:
     build: .
@@ -8,6 +19,7 @@ services:
     environment:
       - BUNDLE_PATH=/home/winner/myapp/tmp/bundle
       - BUNDLE_APP_CONFIG=/home/winner/myapp/.bundle
+      - GEM_HOME=/home/winner/myapp/tmp/gem_home
     user: winner
     command:
       - bin/server
