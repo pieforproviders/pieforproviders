@@ -5,7 +5,7 @@ FactoryBot.define do
     date_of_birth { Date.current.strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
-    approvals { create_list(:approval, rand(1..3), create_children: false) }
+    approvals { [create(:approval, create_children: false)] }
 
     factory :child_in_illinois do
       after(:create) do |child|

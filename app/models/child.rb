@@ -12,36 +12,40 @@ class Child < UuidApplicationRecord
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
-  validates :active, inclusion: { in: [true, false] }
+  validates :active, boolean_param: true
+  validates :approvals, presence: true
+  validates :date_of_birth, date_param: true
   validates :date_of_birth, presence: true
   validates :full_name, presence: true
   validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }
 
-  validates :approvals, presence: true
-
-  validates :date_of_birth, date_param: true
-
   accepts_nested_attributes_for :approvals, :child_approvals
 
   scope :active, -> { where(active: true) }
-  scope :approved_for_date, ->(date, timezone) { joins(:approvals).merge(Approval.active_on_date(date.in_time_zone(timezone))) }
+  scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
 
   delegate :user, to: :business
+  delegate :state, to: :user
+  delegate :timezone, to: :user
 
-  def state
-    business.user.state
-  end
-
-  def timezone
-    business.user.timezone
+  def active_approval(date)
+    approvals.active_on_date(date).first
   end
 
   def active_child_approval(date)
-    child_approvals.find_by(approval: approvals.active_on_date(date.in_time_zone(timezone)).first)
+    active_approval(date).child_approvals.where(child: self).first
   end
 
   def attendances
-    Attendance.where(child_approval: ChildApproval.where(child: self))
+    Attendance.joins(:child_approvals).where(child_approval: { child: self })
+  end
+
+  def attendance_rate(filter_date)
+    AttendanceRateCalculator.new(self, filter_date).call
+  end
+
+  def attendance_risk(filter_date)
+    AttendanceRiskCalculator.new(self, filter_date).call
   end
 
   def active_subsidy_rule(date)
@@ -50,14 +54,6 @@ class Child < UuidApplicationRecord
 
   def illinois_approval_amounts
     IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
-  end
-
-  def attendance_rate(filter_date)
-    AttendanceRateCalculator.new(self, filter_date.in_time_zone(timezone)).call
-  end
-
-  def attendance_risk(filter_date)
-    AttendanceRiskCalculator.new(self, filter_date.in_time_zone(timezone)).call
   end
 
   private
