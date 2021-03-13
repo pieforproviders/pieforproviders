@@ -22,6 +22,14 @@ RUBY_VERSION_HERE=`cat tmp/.ruby-version-process`
 rm tmp/.ruby-version-process
 # END: Get Ruby version
 
+# BEGIN: Configure .env
+cp .env.sample .env
+echo '' >> .env
+echo '' >> .env
+echo 'ALLOW_SEEDING=true' >> .env
+echo '' >> .env
+# END: Configre .env
+
 # Copy Dockerfile-template to Dockerfile
 cp Dockerfile-template Dockerfile
 
@@ -42,5 +50,7 @@ echo '##############################'
 docker/gem_install_bundler
 
 docker/bundle_install
+
+docker/rails_secret
 
 docker/rails_db_setup
