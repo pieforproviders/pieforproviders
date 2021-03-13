@@ -15,4 +15,4 @@ echo '--------------------------------------'
 echo 'View this app at http://localhost:3001'
 echo 'and the MailCatcher interface at http://localhost:1080'
 echo ''
-docker-compose up web
+docker-compose up rails

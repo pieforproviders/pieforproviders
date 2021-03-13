@@ -12,7 +12,7 @@ version: "3"
 #     process will take longer.
 
 services:
-  web:
+  rails:
     build: .
     volumes:
       - .:/home/winner/myapp
