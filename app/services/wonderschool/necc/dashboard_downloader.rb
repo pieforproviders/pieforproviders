@@ -43,7 +43,7 @@ module Wonderschool
       end
 
       def date
-        DateTime.now.in_time_zone('Central Time (US & Canada)')
+        
       end
 
       def source_bucket
@@ -69,7 +69,7 @@ module Wonderschool
       def log(type, message)
         case type
         when 'not_found'
-          Rails.logger.tagged('NECC Dashboard') { Rails.logger.info "No file found in S3 bucket #{message} on #{date}" }
+          Rails.logger.tagged('NECC Dashboard') { Rails.logger.info "No file found in S3 bucket #{message} at #{Time.current.strftime("%m/%d/%Y %I:%M%p")}" }
         when 'success'
           Rails.logger.tagged('NECC Dashboard') { Rails.logger.info message }
         when 'failed'

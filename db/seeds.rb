@@ -11,7 +11,7 @@ ActionMailer::Base.perform_deliveries = false
 
 puts 'Seeding.......'
 
-THIS_YEAR = DateTime.now.in_time_zone('Central Time (US & Canada)').year
+THIS_YEAR = Time.current.year
 JAN_1 = Date.new(THIS_YEAR, 1, 1)
 MAR_31 = Date.new(THIS_YEAR, 3, 31)
 APR_1 = Date.new(THIS_YEAR, 4, 1)
@@ -162,8 +162,8 @@ def create_case(full_name,
   if child.state == 'IL'
     12.times do |idx|
       IllinoisApprovalAmount.create!(
-        child_approval: child.active_child_approval(DateTime.now),
-        month: DateTime.now.at_beginning_of_month + idx.months,
+        child_approval: child.active_child_approval(Time.current),
+        month: Time.current.at_beginning_of_month + idx.months,
         part_days_approved_per_week: rand(0..3),
         full_days_approved_per_week: rand(0..2)
       )

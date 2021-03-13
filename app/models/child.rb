@@ -37,7 +37,7 @@ class Child < UuidApplicationRecord
   end
 
   def attendances
-    Attendance.joins(:child_approvals).where(child_approval: { child: self })
+    Attendance.joins(:child_approval).where(child_approvals: { child: self })
   end
 
   def attendance_rate(filter_date)

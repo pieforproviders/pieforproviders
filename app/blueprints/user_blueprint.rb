@@ -13,7 +13,7 @@ class UserBlueprint < Blueprinter::Base
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
       # TODO: check time calculation
-      (user.latest_attendance_in_month(options[:filter_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+      (user.latest_attendance_in_month(options[:filter_date]) || Time.current).strftime('%m/%d/%Y')
     end
     field(:first_approval_effective_date) do |user, _options|
       # TODO: check time calculation
@@ -27,7 +27,7 @@ class UserBlueprint < Blueprinter::Base
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
       # TODO: check time calculation
-      (user.latest_attendance_in_month(options[:filter_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+      (user.latest_attendance_in_month(options[:filter_date]) || Time.current).strftime('%m/%d/%Y')
     end
     field(:first_approval_effective_date) do |user, _options|
       # TODO: check time calculation

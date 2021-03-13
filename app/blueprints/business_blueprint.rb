@@ -8,7 +8,7 @@ class BusinessBlueprint < Blueprinter::Base
     field :name
     exclude :id
     association :children, name: :cases, blueprint: ChildBlueprint, view: :illinois_dashboard do |business, options|
-      business.children.active.approved_for_date(options[:filter_date], options[:timezone])
+      business.children.active.approved_for_date(options[:filter_date])
     end
   end
 
@@ -16,7 +16,7 @@ class BusinessBlueprint < Blueprinter::Base
     field :name
     exclude :id
     association :children, name: :cases, blueprint: ChildBlueprint, view: :nebraska_dashboard do |business, options|
-      business.children.active.approved_for_date(options[:filter_date], options[:timezone])
+      business.children.active.approved_for_date(options[:filter_date])
     end
   end
 end

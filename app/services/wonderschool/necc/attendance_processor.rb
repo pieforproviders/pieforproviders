@@ -69,8 +69,8 @@ module Wonderschool
         child = Child.find_by(wonderschool_id: row['child_id'])
         return false unless child
 
-        check_in = row['checked_in_at'].in_time_zone(child.timezone)
-        check_out = row['checked_out_at'].in_time_zone(child.timezone)
+        check_in = row['checked_in_at']
+        check_out = row['checked_out_at']
         return false unless child.attendances.find_or_create_by!(
           child_approval: child.active_child_approval(check_in),
           check_in: check_in,

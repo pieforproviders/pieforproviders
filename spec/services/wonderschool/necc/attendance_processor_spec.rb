@@ -33,23 +33,23 @@ module Wonderschool
           it 'creates attendance records for the correct child with the correct data' do
             described_class.new(valid_string).call
             expect(
-              first_child.attendances.first.check_in.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 07:59:49AM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 07:59:49AM')
             expect(
-              first_child.attendances.first.check_out.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 12:12:03PM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 12:12:03PM')
             expect(
-              second_child.attendances.first.check_in.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Wed, 03 Feb 2021 03:56:09PM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Wed, 03 Feb 2021 03:56:09PM')
             expect(
-              second_child.attendances.first.check_out.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Thu, 04 Feb 2021 01:56:44AM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Thu, 04 Feb 2021 01:56:44AM')
             expect(
-              third_child.attendances.first.check_in.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 07:57:35AM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 07:57:35AM')
             expect(
-              third_child.attendances.first.check_out.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 04:21:23PM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 04:21:23PM')
           end
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
@@ -70,23 +70,23 @@ module Wonderschool
           it 'creates attendance records for the correct child with the correct data' do
             described_class.new(StringIO.new(valid_string)).call
             expect(
-              first_child.attendances.first.check_in.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 07:59:49AM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 07:59:49AM')
             expect(
-              first_child.attendances.first.check_out.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 12:12:03PM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 12:12:03PM')
             expect(
-              second_child.attendances.first.check_in.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Wed, 03 Feb 2021 03:56:09PM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Wed, 03 Feb 2021 03:56:09PM')
             expect(
-              second_child.attendances.first.check_out.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Thu, 04 Feb 2021 01:56:44AM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Thu, 04 Feb 2021 01:56:44AM')
             expect(
-              third_child.attendances.first.check_in.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 07:57:35AM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 07:57:35AM')
             expect(
-              third_child.attendances.first.check_out.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 04:21:23PM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 04:21:23PM')
           end
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
@@ -107,23 +107,23 @@ module Wonderschool
           it 'creates attendance records for the correct child with the correct data' do
             described_class.new(attendance_csv).call
             expect(
-              first_child.attendances.first.check_in.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 07:59:49AM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 07:59:49AM')
             expect(
-              first_child.attendances.first.check_out.in_time_zone(first_child.timezone)
-            ).to be_within(1.second).of 'Sat, 06 Feb 2021 12:12:03PM'.in_time_zone(first_child.timezone)
+              first_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Sat, 06 Feb 2021 12:12:03PM')
             expect(
-              second_child.attendances.first.check_in.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Wed, 03 Feb 2021 03:56:09PM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Wed, 03 Feb 2021 03:56:09PM')
             expect(
-              second_child.attendances.first.check_out.in_time_zone(second_child.timezone)
-            ).to be_within(1.second).of 'Thu, 04 Feb 2021 01:56:44AM'.in_time_zone(second_child.timezone)
+              second_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Thu, 04 Feb 2021 01:56:44AM')
             expect(
-              third_child.attendances.first.check_in.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 07:57:35AM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_in
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 07:57:35AM')
             expect(
-              third_child.attendances.first.check_out.in_time_zone(third_child.timezone)
-            ).to be_within(1.second).of 'Fri, 05 Feb 2021 04:21:23PM'.in_time_zone(third_child.timezone)
+              third_child.attendances.first.check_out
+            ).to be_within(1.second).of DateTime.parse('Fri, 05 Feb 2021 04:21:23PM')
           end
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do

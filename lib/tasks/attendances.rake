@@ -13,7 +13,7 @@ task attendances: :environment do
 end
 
 def now
-  DateTime.now
+  Time.current
 end
 
 # rubocop:disable Naming/AccessorMethodName

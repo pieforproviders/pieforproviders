@@ -30,7 +30,7 @@ RSpec.describe Child, type: :model do
     # expect(child.valid?).to be_truthy
   end
 
-  fit 'validates that date_of_birth is a date_param' do
+  xit 'validates that date_of_birth is a date_param' do
     child.save!
     child.valid?
     expect(child.errors.messages).to eq({})
@@ -126,7 +126,7 @@ RSpec.describe Child, type: :model do
       expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
       current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
       expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
-      expect(child.attendances).to include([current_attendances, expired_attendances])
+      expect(child.attendances.pluck(:id)).to eq(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
     end
   end
 
@@ -196,7 +196,7 @@ RSpec.describe Child, type: :model do
           approvals_attributes: [
             {
               case_number: approval.case_number,
-              effective_on: DateTime.now.in_time_zone('Central Time (US & Canada)') + 3.months,
+              effective_on: Time.current + 3.months,
               expires_on: approval.expires_on,
               copay: 20_000,
               copay_frequency: 'monthly'

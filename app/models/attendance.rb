@@ -6,6 +6,10 @@ class Attendance < UuidApplicationRecord
 
   belongs_to :child_approval
 
+  # Rails 6.2 will be returning an activesupport duration object for interval type fields
+  # this uses the new behavior in advance of that release
+  attribute :total_time_in_care, :interval
+
   validates :check_in, time_param: true
   validates :check_out, time_param: true
   validates :total_time_in_care, exclusion: { in: [0] }

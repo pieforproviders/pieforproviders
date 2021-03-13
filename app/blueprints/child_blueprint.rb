@@ -8,7 +8,7 @@ class ChildBlueprint < Blueprinter::Base
     field :full_name
     field :case_number do |child, options|
       # TODO: check time calculation
-      child.approvals.active_on_date(options[:filter_date].in_time_zone(child.timezone)).first.case_number
+      child.approvals.active_on_date(options[:filter_date]).first.case_number
     end
     field :attendance_risk do |child, options|
       child.attendance_risk(options[:filter_date])
@@ -37,7 +37,7 @@ class ChildBlueprint < Blueprinter::Base
     end
     field :case_number do |child, options|
       # TODO: check time calculation
-      child.approvals.active_on_date(options[:filter_date].in_time_zone(child.timezone)).first.case_number
+      child.approvals.active_on_date(options[:filter_date]).first.case_number
     end
     field :earned_revenue do |child|
       child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0

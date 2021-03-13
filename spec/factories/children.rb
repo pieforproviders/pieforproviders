@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :child do
-    date_of_birth { Date.current.strftime('%Y-%m-%d') }
+    date_of_birth { Time.current.strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
