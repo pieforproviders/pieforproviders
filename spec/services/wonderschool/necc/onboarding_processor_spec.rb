@@ -6,21 +6,27 @@ module Wonderschool
   module Necc
     RSpec.describe OnboardingProcessor do
       let!(:onboarding_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv') }
+      let!(:user_does_not_exist_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_invalid_user.csv') }
       let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_invalid_format.csv') }
       let!(:valid_string) do
         <<~CSV
           Full Name,Client ID,Provider Name,Date of birth (required),Enrolled in School (Kindergarten or later),Case number,Authorized full day units,Authorized hourly units,Effective on,Expires on,Special Needs Rate?,Special Needs Daily Rate,Special Needs Hourly Rate,Provider Email,Business Zip Code,Business County,Business License,Business QRIS rating,Accredited,Approval #1 - Family Fee,Approval #1 - Begin Date,Approval #1 - End Date,Approval #1 - Allocated Family Fee,Approval #2 - Family Fee,Approval #2 - Begin Date,Approval #2 - End Date,Approval #2 - Allocated Family Fee,Approval #3 - Family Fee,Approval #3 - Begin Date,Approval #3 - End Date,Approval #3 - Allocated Family Fee,Approval #4 - Family Fee,Approval #4 - Begin Date,Approval #4 - End Date,Approval #4 - Allocated Family Fee,Approval #5 - Family Fee,Approval #5 - Begin Date,Approval #5 - End Date,Approval #5 - Allocated Family Fee
-          Thomas Eddleman,14047907,Rebecca's Childcare,2010-09-01,No,14635435,276,"1,656",2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
-          Jacob Ford,31610139,Rebecca's Childcare,2017-09-01,No,14635435,276,"1,656",2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
-          Linda Rogers,15228275,Rebecca's Childcare,2019-02-21,No,14635435,276,"1,656",2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
+          Thomas Eddleman,14047907,Rebecca's Childcare,2010-09-01,No,14635435,276,1656,2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
+          Jacob Ford,31610139,Rebecca's Childcare,2017-09-01,No,14635435,276,1656,2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
+          Linda Rogers,15228275,Rebecca's Childcare,2019-02-21,No,14635435,276,1656,2020-09-01,2021-08-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,0.00,2020-09-01,2021-08-31,0.00,,,,,,,,,,,,,,,,
           Paz Korman,81185504,Rebecca's Childcare,2017-05-17,No,12312445,138,828,2021-01-29,2021-07-31,No,,,rebecca@rebecca.com,68845,Corke,Family Child Care Home II,Step 4,Yes,108.00,2021-01-29,2021-07-31,108.00,,,,,,,,,,,,,,,,
-          Becky Falzone,69370816,Kate's Kids,2013-12-26,No,56582912,330,"1,760",2020-11-24,2021-11-23,Yes,90.77,9.43,kate@kate.com,68845,Corke,Family Child Care Home I,Step 5,No,60.00,2020-11-24,2021-05-23,60.00,85.00,2021-05-24,2021-11-23,85.00,,,,,,,,,,,,
+          Becky Falzone,69370816,Kate's Kids,2013-12-26,No,56582912,330,1760,2020-11-24,2021-11-23,Yes,90.77,9.43,kate@kate.com,68845,Corke,Family Child Care Home I,Step 5,No,60.00,2020-11-24,2021-05-23,60.00,85.00,2021-05-24,2021-11-23,85.00,,,,,,,,,,,,
         CSV
       end
       let(:invalid_string) do
         <<~CSV
           wrong_headers,icon,face
           nope,yep,maybe
+        CSV
+      end
+      let(:user_does_not_exist) do
+        <<~CSV
+          Becky Falzone,69370816,Kate's Kids,2013-12-26,No,56582912,330,1760,2020-11-24,2021-11-23,Yes,90.77,9.43,kate2@kate.com,68845,Corke,Family Child Care Home I,Step 5,No,60.00,2020-11-24,2021-05-23,60.00,85.00,2021-05-24,2021-11-23,85.00,,,,,,,,,,,,
         CSV
       end
       let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }
@@ -169,13 +175,13 @@ module Wonderschool
               ['Enrolled in School (Kindergarten or later)', 'No'],
               ['Case number', '56582912'],
               ['Authorized full day units', '330'],
-              ['Authorized hourly units', '1,760'],
+              ['Authorized hourly units', '1760'],
               ['Effective on', Date.parse('2020-11-24')],
               ['Expires on', Date.parse('2021-11-23')],
               ['Special Needs Rate?', 'Yes'],
               ['Special Needs Daily Rate', '90.77'],
               ['Special Needs Hourly Rate', '9.43'],
-              ['Provider Email', 'kate@kate.com'],
+              ['Provider Email', 'kate2@kate.com'],
               ['Business Zip Code', '68845'],
               ['Business County', 'Corke'],
               ['Business License', 'Family Child Care Home I'],
@@ -204,18 +210,17 @@ module Wonderschool
             ]
           ].flatten.to_s
         end
+
         it "does not stop the job if the user doesn't exist, and logs the failed case", use_truncation: true do
-          second_user.destroy!
           expect(stubbed_client).to receive(:put_object).with(
             {
               bucket: archive_bucket,
               body: failed_subsidy_case, key: file_name
             }
           )
-          # TODO: this gets called 13 times for some reason?
-          # expect(Rails.logger).to receive(:tagged).and_yield
-          # expect(Rails.logger).to receive(:error).with(failed_subsidy_case)
-          described_class.new(source_data).call
+          allow(Rails.logger).to receive(:tagged).and_yield
+          expect(Rails.logger).to receive(:error).with(failed_subsidy_case)
+          described_class.new(data_with_invalid_records).call
         end
       end
 
@@ -225,6 +230,7 @@ module Wonderschool
         let!(:stubbed_client) { double('AWS Client') }
         let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
         let!(:stubbed_object) { double('S3 Object') }
+
         before do
           allow(ENV).to receive(:fetch).with('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '').and_return(archive_bucket)
           allow(ENV).to receive(:fetch).with('AWS_ACCESS_KEY_ID', '').and_return('fake_key')
@@ -232,6 +238,7 @@ module Wonderschool
           allow(ENV).to receive(:fetch).with('AWS_REGION', '').and_return('fake_region')
           allow(Aws::S3::Client).to receive(:new) { stubbed_client }
         end
+
         context "when a file name passed in doesn't exist" do
           it 'returns false' do
             expect(described_class.new(Rails.root.join('fake.csv')).call).to eq(false)
@@ -240,6 +247,7 @@ module Wonderschool
 
         context 'with a valid string' do
           let(:source_data) { valid_string }
+          let(:data_with_invalid_records) { "#{valid_string}\n#{user_does_not_exist}" }
           include_examples 'creates thomas'
           include_examples 'creates becky'
           include_examples 'adds model record count'
@@ -248,6 +256,7 @@ module Wonderschool
 
         context 'with a valid stream' do
           let(:source_data) { StringIO.new(valid_string) }
+          let(:data_with_invalid_records) { StringIO.new("#{valid_string}\n#{user_does_not_exist}") }
           include_examples 'creates thomas'
           include_examples 'creates becky'
           include_examples 'adds model record count'
@@ -256,6 +265,7 @@ module Wonderschool
 
         context 'with a valid file' do
           let(:source_data) { onboarding_csv }
+          let(:data_with_invalid_records) { user_does_not_exist_csv }
           include_examples 'creates thomas'
           include_examples 'creates becky'
           include_examples 'adds model record count'
@@ -272,7 +282,7 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new(invalid_csv).call).to eq(false)
           end
@@ -288,7 +298,7 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new("wrong_headers,icon,face\nnope,yep,maybe").call).to eq(false)
           end
@@ -304,7 +314,7 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new(StringIO.new("wrong_headers,icon,face\nnope,yep,maybe")).call).to eq(false)
           end

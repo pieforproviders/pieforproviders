@@ -50,19 +50,25 @@ module Wonderschool
       end
 
       def read_csv_file
-        CSV.read(@input,
-                 headers: true,
-                 return_headers: false,
-                 unconverted_fields: %i[child_id],
-                 converters: %i[date])
+        CSV.read(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(?:,\s*)+$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def parse_string_to_csv
-        CSV.parse(@input,
-                  headers: true,
-                  return_headers: false,
-                  unconverted_fields: %i[child_id],
-                  converters: %i[date])
+        CSV.parse(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(?:,\s*)+$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def process_attendance(row)

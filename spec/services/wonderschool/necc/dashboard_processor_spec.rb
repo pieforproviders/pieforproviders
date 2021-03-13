@@ -91,14 +91,14 @@ module Wonderschool
           end
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
+            first_child.destroy!
             expect(stubbed_client).to receive(:put_object).with(
               {
                 bucket: archive_bucket,
                 body: error_log, key: file_name
               }
             )
-            first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             described_class.new(valid_string).call
           end
@@ -164,7 +164,7 @@ module Wonderschool
               }
             )
             first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             described_class.new(StringIO.new(valid_string)).call
           end
@@ -230,7 +230,7 @@ module Wonderschool
               }
             )
             first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             described_class.new(dashboard_csv).call
           end
@@ -244,11 +244,12 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new(invalid_csv).call).to eq(false)
           end
         end
+
         context 'when the csv data is the wrong format from a string' do
           let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
           it 'returns false' do
@@ -258,11 +259,12 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new("wrong_headers,icon,face\nnope,yep,maybe").call).to eq(false)
           end
         end
+
         context 'when the csv data is the wrong format from a stream' do
           let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
           it 'returns false' do
@@ -272,7 +274,7 @@ module Wonderschool
                 body: error_log, key: file_name
               }
             )
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new(StringIO.new("wrong_headers,icon,face\nnope,yep,maybe")).call).to eq(false)
           end

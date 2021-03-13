@@ -13,33 +13,32 @@ RSpec.describe Child, type: :model do
   it { should validate_presence_of(:date_of_birth) }
   it { should validate_presence_of(:full_name) }
 
-  xit 'validates that active is a boolean field or nil' do
-    # TODO: something is converting this to a boolean by the time it hits the validator because any non-nil value is "truthy" - this might not be a useful validation
+  it 'validates that active is a boolean field or nil' do
     child.save!
     child.active = 23.5
     expect(child.valid?).to be_falsey
-    # child.update(active: 23)
-    # expect(child.valid?).to be_falsey
-    # child.update(active: '23')
-    # expect(child.valid?).to be_falsey
-    # child.update(active: 'true')
-    # expect(child.valid?).to be_falsey
-    # child.update(active: nil)
-    # expect(child.valid?).to be_falsey
-    # child.update(active: false)
-    # expect(child.valid?).to be_truthy
+    child.update(active: 23)
+    expect(child.valid?).to be_falsey
+    child.update(active: '23')
+    expect(child.valid?).to be_falsey
+    child.update(active: 'true')
+    expect(child.valid?).to be_falsey
+    child.update(active: nil)
+    expect(child.valid?).to be_falsey
+    child.update(active: false)
+    expect(child.valid?).to be_truthy
   end
 
-  xit 'validates that date_of_birth is a date_param' do
+  it 'validates that date_of_birth is a date_param' do
     child.save!
     child.valid?
     expect(child.errors.messages).to eq({})
     expect(child).to be_valid
 
-    # child.date_of_birth = 'not a date'
-    # child.valid?
-    # expect(child.errors.messages.keys).to eq([:date_of_birth])
-    # expect(child.errors.messages[:date_of_birth]).to include('no implicit conversion of nil into String')
+    child.date_of_birth = 'not a date'
+    child.valid?
+    expect(child.errors.messages.keys).to eq([:date_of_birth])
+    expect(child.errors.messages[:date_of_birth]).to include('no implicit conversion of nil into String')
 
     child.date_of_birth = 32.6
     child.valid?
@@ -47,20 +46,20 @@ RSpec.describe Child, type: :model do
     expect(child.errors.messages[:date_of_birth]).to include('no implicit conversion of Float into String')
     expect(child).not_to be_valid
 
-    # child.date_of_birth = '2021-02-01'
-    # child.valid?
-    # expect(child.errors.messages).to eq({})
-    # expect(child).to be_valid
+    child.date_of_birth = '2021-02-01'
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
 
-    # child.date_of_birth = Date.new(2021, 12, 11)
-    # child.valid?
-    # expect(child.errors.messages).to eq({})
-    # expect(child).to be_valid
+    child.date_of_birth = Date.new(2021, 12, 11)
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
 
-    # child.date_of_birth = Time.new(2021, 12, 11)
-    # child.valid?
-    # expect(child.errors.messages).to eq({})
-    # expect(child).to be_valid
+    child.date_of_birth = Time.new(2021, 12, 11)
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
   end
 
   it 'validates uniqueness of child name scoped to DOB and business' do

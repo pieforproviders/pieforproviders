@@ -12,11 +12,9 @@ class UserBlueprint < Blueprinter::Base
   view :illinois_dashboard do
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
-      # TODO: check time calculation
       (user.latest_attendance_in_month(options[:filter_date]) || Time.current).strftime('%m/%d/%Y')
     end
     field(:first_approval_effective_date) do |user, _options|
-      # TODO: check time calculation
       user.first_approval_effective_date
     end
     association :businesses, blueprint: BusinessBlueprint, view: :illinois_dashboard
@@ -26,11 +24,9 @@ class UserBlueprint < Blueprinter::Base
   view :nebraska_dashboard do
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
-      # TODO: check time calculation
       (user.latest_attendance_in_month(options[:filter_date]) || Time.current).strftime('%m/%d/%Y')
     end
     field(:first_approval_effective_date) do |user, _options|
-      # TODO: check time calculation
       user.first_approval_effective_date
     end
     association :businesses, blueprint: BusinessBlueprint, view: :nebraska_dashboard

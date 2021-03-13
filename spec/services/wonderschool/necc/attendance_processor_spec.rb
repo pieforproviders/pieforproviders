@@ -54,7 +54,7 @@ module Wonderschool
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
             first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[child_id 123456789], ['checked_in_at', 'Sat, 06 Feb 2021 07:59:49AM'],
                                                            ['checked_out_at', 'Sat, 06 Feb 2021 12:12:03PM']]])
             described_class.new(valid_string).call
@@ -91,7 +91,7 @@ module Wonderschool
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
             first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[child_id 123456789], ['checked_in_at', 'Sat, 06 Feb 2021 07:59:49AM'],
                                                            ['checked_out_at', 'Sat, 06 Feb 2021 12:12:03PM']]])
             described_class.new(StringIO.new(valid_string)).call
@@ -128,7 +128,7 @@ module Wonderschool
 
           it "does not stop the job if the child doesn't exist, and logs the failed child" do
             first_child.destroy!
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[child_id 123456789], ['checked_in_at', 'Sat, 06 Feb 2021 07:59:49AM'],
                                                            ['checked_out_at', 'Sat, 06 Feb 2021 12:12:03PM']]])
             described_class.new(attendance_csv).call
@@ -136,21 +136,21 @@ module Wonderschool
         end
         context 'when the csv data is the wrong format from a file' do
           it 'returns false' do
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]])
             expect(described_class.new(invalid_csv).call).to eq(false)
           end
         end
         context 'when the csv data is the wrong format from a string' do
           it 'returns false' do
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]])
             expect(described_class.new("wrong_headers,icon,face\nnope,yep,maybe").call).to eq(false)
           end
         end
         context 'when the csv data is the wrong format from a stream' do
           it 'returns false' do
-            expect(Rails.logger).to receive(:tagged).and_yield
+            allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with([[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]])
             expect(described_class.new(StringIO.new("wrong_headers,icon,face\nnope,yep,maybe")).call).to eq(false)
           end

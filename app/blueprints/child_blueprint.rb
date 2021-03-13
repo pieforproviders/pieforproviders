@@ -7,7 +7,6 @@ class ChildBlueprint < Blueprinter::Base
   view :illinois_dashboard do
     field :full_name
     field :case_number do |child, options|
-      # TODO: check time calculation
       child.approvals.active_on_date(options[:filter_date]).first.case_number
     end
     field :attendance_risk do |child, options|
@@ -36,7 +35,6 @@ class ChildBlueprint < Blueprinter::Base
       child.temporary_nebraska_dashboard_case&.absences
     end
     field :case_number do |child, options|
-      # TODO: check time calculation
       child.approvals.active_on_date(options[:filter_date]).first.case_number
     end
     field :earned_revenue do |child|

@@ -10,7 +10,6 @@ class Approval < UuidApplicationRecord
 
   accepts_nested_attributes_for :child_approvals, :children
 
-  # TODO: check time calculation
   validates :effective_on, date_param: true
   validates :expires_on, date_param: true
 
@@ -20,7 +19,6 @@ class Approval < UuidApplicationRecord
   enum copay_frequency: Copays.frequencies
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
-  # TODO: check time calculation
   scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
 
   monetize :copay_cents, allow_nil: true
