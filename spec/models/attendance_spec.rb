@@ -21,7 +21,7 @@ RSpec.describe Attendance, type: :model do
                           check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
     end
     it 'returns attendances for given months' do
-      date = Time.new(2020, 12, 15).to_date
+      date = Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date
       expect(Attendance.for_month).to include(current_attendance)
       expect(Attendance.for_month).not_to include(past_attendance)
       expect(Attendance.for_month(date)).to include(past_attendance)

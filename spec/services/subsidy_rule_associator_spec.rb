@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
 # xcontext 'associates the record with a subsidy rule' do
 #   let!(:date) { Time.current }
 #   let!(:subsidy_rule_cook_age5) { create(:subsidy_rule_for_illinois, max_age: 5) }

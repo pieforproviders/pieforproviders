@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Child, type: :model do
   let(:child) { create(:child) }
+  let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
   it { should belong_to(:business) }
   it { should have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
   it { should have_many(:approvals).through(:child_approvals) }
@@ -40,7 +41,7 @@ RSpec.describe Child, type: :model do
     expect(child.errors.messages).to eq({})
     expect(child).to be_valid
 
-    child.date_of_birth = Time.new(2021, 12, 11)
+    child.date_of_birth = Time.new(2021, 12, 11, 0, 0, 0, timezone)
     child.valid?
     expect(child.errors.messages).to eq({})
     expect(child).to be_valid
@@ -108,6 +109,7 @@ RSpec.describe Child, type: :model do
   end
 
   context 'dashboard methods' do
+    # TODO
   end
 
   it 'enqueues a subsidy rule association job' do

@@ -26,7 +26,7 @@ class IllinoisAttendanceRateCalculator
   end
 
   private
-  
+
   def active_approval
     @child.approvals.active_on_date(@filter_date).first
   end

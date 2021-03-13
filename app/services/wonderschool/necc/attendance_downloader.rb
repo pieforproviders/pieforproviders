@@ -69,7 +69,7 @@ module Wonderschool
       def log(type, message)
         case type
         when 'not_found'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.info "No file found in S3 bucket #{message} at #{Time.current.strftime("%m/%d/%Y %I:%M%p")}" }
+          Rails.logger.tagged('NECC Attendances') { Rails.logger.info "No file found in S3 bucket #{message} at #{Time.current.strftime('%m/%d/%Y %I:%M%p')}" }
         when 'success'
           Rails.logger.tagged('NECC Attendances') { Rails.logger.info message }
         when 'failed'
