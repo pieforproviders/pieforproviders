@@ -22,7 +22,12 @@ services:
       - GEM_HOME=/home/winner/myapp/tmp/gem_home
     user: winner
     command:
-      - bin/server
+      - bundle
+      - exec
+      - rails
+      - server
+      - --binding=0.0.0.0
+      - --port=3000
     ports:
       - "3000:3000"
     links:
