@@ -12,12 +12,13 @@ class Child < UuidApplicationRecord
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
-  validates :active, boolean_param: true
   validates :approvals, presence: true
   validates :date_of_birth, date_param: true
   validates :date_of_birth, presence: true
   validates :full_name, presence: true
-  # validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }
+  # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
+  # this will try to validate with the incorrect dob even though the record has already failed
+  validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }, unless: -> { errors }
 
   accepts_nested_attributes_for :approvals, :child_approvals
 

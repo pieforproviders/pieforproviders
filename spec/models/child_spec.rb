@@ -13,22 +13,6 @@ RSpec.describe Child, type: :model do
   it { should validate_presence_of(:date_of_birth) }
   it { should validate_presence_of(:full_name) }
 
-  it 'validates that active is a boolean field or nil' do
-    child.save!
-    child.active = 23.5
-    expect(child.valid?).to be_falsey
-    child.update(active: 23)
-    expect(child.valid?).to be_falsey
-    child.update(active: '23')
-    expect(child.valid?).to be_falsey
-    child.update(active: 'true')
-    expect(child.valid?).to be_falsey
-    child.update(active: nil)
-    expect(child.valid?).to be_falsey
-    child.update(active: false)
-    expect(child.valid?).to be_truthy
-  end
-
   it 'validates that date_of_birth is a date_param' do
     child.save!
     child.valid?
@@ -60,12 +44,6 @@ RSpec.describe Child, type: :model do
     child.valid?
     expect(child.errors.messages).to eq({})
     expect(child).to be_valid
-  end
-
-  it 'validates uniqueness of child name scoped to DOB and business' do
-    # need to create a child record to instantiate an existing record to compare to
-    create(:child)
-    should validate_uniqueness_of(:full_name).scoped_to(:date_of_birth, :business_id)
   end
 
   it 'factory should be valid (default; no args)' do
