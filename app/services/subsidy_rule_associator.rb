@@ -26,7 +26,7 @@ class SubsidyRuleAssociator
   end
 
   def today
-    DateTime.now.in_time_zone(@child.timezone)
+    Time.current
   end
 
   def subsidy_rule

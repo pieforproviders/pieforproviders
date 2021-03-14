@@ -13,10 +13,6 @@ class IllinoisAttendanceRiskCalculator
 
   private
 
-  def timezone
-    @child.timezone
-  end
-
   def active_child_approval
     @child.active_child_approval(@filter_date)
   end
@@ -26,7 +22,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def risk_label
-    less_than_halfway_through_month = time_now < halfway || (latest_user_attendance && latest_user_attendance < halfway)
+    less_than_halfway_through_month = Time.current < halfway || (latest_user_attendance && latest_user_attendance < halfway)
     return 'not_enough_info' if less_than_halfway_through_month || !approval_amount
 
     attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @filter_date).call
@@ -63,7 +59,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def wont_meet_threshold
-    active_approval = @child.approvals.active_on_date(@filter_date.in_time_zone(timezone)).first
+    active_approval = @child.approvals.active_on_date(@filter_date).first
     (threshold * family_days_approved - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
   end
 
@@ -90,10 +86,6 @@ class IllinoisAttendanceRiskCalculator
 
   def family_days_approved
     IllinoisAttendanceRateCalculator.new(@child, @filter_date).family_days_approved
-  end
-
-  def time_now
-    DateTime.now.in_time_zone(timezone)
   end
 
   def threshold

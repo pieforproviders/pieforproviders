@@ -127,7 +127,7 @@ RSpec.describe 'users API', type: :request do
         let(:last_child) { owner_records.last }
         before do
           ([expired_approval, current_approval] + expired_approvals + current_approvals).each do |approval|
-            approval.children.each { |child| child.active_child_approval(DateTime.now).update!(subsidy_rule: subsidy_rule) }
+            approval.children.each { |child| child.active_child_approval(Time.current).update!(subsidy_rule: subsidy_rule) }
           end
         end
 
@@ -141,7 +141,7 @@ RSpec.describe 'users API', type: :request do
               json = JSON.parse(response.body)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
-              expect(json.collect { |user| user['as_of'] }.flatten).to include(DateTime.now.in_time_zone(admin.timezone).strftime('%m/%d/%Y'))
+              expect(json.collect { |user| user['as_of'] }.flatten).to include(Time.current.strftime('%m/%d/%Y'))
               expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
@@ -165,7 +165,7 @@ RSpec.describe 'users API', type: :request do
               json = JSON.parse(response.body)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(count * 2)
               expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'case_number') }.flatten).to include(/1234567B/)
-              expect(json.collect { |user| user['as_of'] }.flatten).to include(owner.latest_attendance_in_month(DateTime.now.in_time_zone(owner.timezone)).strftime('%m/%d/%Y'))
+              expect(json.collect { |user| user['as_of'] }.flatten).to include(owner.latest_attendance_in_month(Time.current).strftime('%m/%d/%Y'))
               expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
             end
           end
@@ -188,21 +188,21 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with a sure_bet family' do
             before do
-              travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 23, 2020')
               first_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 0)
               last_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
               owner.businesses.first.children.each do |child|
-                current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                current_child_approval = child.active_child_approval(Time.current)
                 create_list(:illinois_part_day_attendance, 10,
                             child_approval: current_child_approval,
                             check_in: Time.zone.today - rand(1..5).days)
@@ -224,21 +224,21 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with a family with a sure_bet child and an on_track child' do
             before do
-              travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 23, 2020')
               first_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 1, full_days_approved_per_week: 2)
               last_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 0, full_days_approved_per_week: 1)
               owner.businesses.first.children.each do |child|
-                current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                current_child_approval = child.active_child_approval(Time.current)
                 create_list(:illinois_full_day_attendance, 10,
                             child_approval: current_child_approval,
                             check_in: Time.zone.today - rand(1..5).days)
@@ -257,21 +257,21 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with an on_track family' do
             before do
-              travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 23, 2020')
               first_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
-                current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                current_child_approval = child.active_child_approval(Time.current)
                 create_list(:illinois_part_day_attendance, 5,
                             child_approval: current_child_approval,
                             check_in: Time.zone.today - rand(1..5).days)
@@ -293,21 +293,21 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with an at_risk family' do
             before do
-              travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 23, 2020')
               first_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
-                current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                current_child_approval = child.active_child_approval(Time.current)
                 create_list(:illinois_part_day_attendance, 4,
                             child_approval: current_child_approval,
                             check_in: Time.zone.today - rand(1..5).days)
@@ -329,21 +329,21 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with a not_met family' do
             before do
-              travel_to Date.parse('December 23, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 23, 2020')
               first_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 3, full_days_approved_per_week: 2)
               last_child
-                .active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                .active_child_approval(Time.current)
                 .illinois_approval_amounts
                 .for_month
                 .first
                 .update!(part_days_approved_per_week: 2, full_days_approved_per_week: 3)
               owner.businesses.first.children.each do |child|
-                current_child_approval = child.active_child_approval(DateTime.now.in_time_zone(owner.timezone))
+                current_child_approval = child.active_child_approval(Time.current)
                 create(:illinois_part_day_attendance,
                        child_approval: current_child_approval,
                        check_in: Time.zone.today - rand(1..5).days)
@@ -365,7 +365,7 @@ RSpec.describe 'users API', type: :request do
 
           response '200', 'with a not_enough_info date' do
             before do
-              travel_to Date.parse('December 11, 2020').in_time_zone(owner.timezone)
+              travel_to Date.parse('December 11, 2020')
               create(:approval, num_children: 2)
             end
             after { travel_back }
