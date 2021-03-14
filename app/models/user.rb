@@ -45,6 +45,7 @@ class User < UuidApplicationRecord
   end
 
   def latest_attendance_in_month(filter_date)
+    filter_date ||= Time.current
     # TODO: Fix this query using joins to eager load the child approvals and businesses
     Attendance.where('check_in BETWEEN ? AND ?', filter_date.at_beginning_of_month, filter_date.at_end_of_month)
               .where(child_approval: ChildApproval.where(child: Child.where(business: Business.where(user: self))))

@@ -8,7 +8,7 @@ class IllinoisAttendanceRateCalculator
   end
 
   def call
-    return 0 unless family_days_approved.positive?
+    return 0 unless active_approval.presence && family_days_approved.positive?
 
     (family_days_attended.to_f / family_days_approved).round(3)
   end
