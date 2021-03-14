@@ -16,7 +16,7 @@
     "antd": "^4.13.1",
     "antd-mask-input": "^0.1.14",
     "craco-less": "^1.17.1",
-    "csv": "^5.3.2",
+    "csv": "^5.4.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-prettier": "^3.3.1",
     "hash-anything": "^1.2.2",
