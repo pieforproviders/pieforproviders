@@ -4,7 +4,7 @@
 class IllinoisAttendanceRiskCalculator
   def initialize(child, filter_date)
     @child = child
-    @filter_date = filter_date
+    @filter_date = filter_date || Time.current
   end
 
   def call
