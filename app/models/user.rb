@@ -55,10 +55,6 @@ class User < UuidApplicationRecord
   def first_approval_effective_date
     approvals.order(effective_on: :asc).first&.effective_on
   end
-
-  def first_approval_effective_date
-    approvals.order(effective_on: :asc).first&.effective_on
-  end
 end
 
 # == Schema Information

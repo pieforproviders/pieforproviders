@@ -43,11 +43,7 @@ module Wonderschool
       end
 
       def date
-<<<<<<< HEAD
-        DateTime.now.in_time_zone('Central Time (US & Canada)')
-=======
         Time.current
->>>>>>> a99d92896008778eda43882884325937ff6565f6
       end
 
       def source_bucket
