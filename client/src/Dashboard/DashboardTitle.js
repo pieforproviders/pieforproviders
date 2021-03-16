@@ -13,7 +13,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
   const dropdownStyle = { color: '#006C9E' }
 
-  const matchAndReplaceDate = dateString => {
+  const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
   }
