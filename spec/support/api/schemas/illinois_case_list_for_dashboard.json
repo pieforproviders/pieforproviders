@@ -62,6 +62,16 @@
             "name"
           ]
         }
+      },
+      "first_approval_effective_date": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
       }
     },
     "required": [

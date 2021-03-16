@@ -12,7 +12,10 @@ class UserBlueprint < Blueprinter::Base
   view :illinois_dashboard do
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
-      (user.latest_attendance_in_month(options[:from_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+      (user.latest_attendance_in_month(options[:filter_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+    end
+    field(:first_approval_effective_date) do |user, _options|
+      user.first_approval_effective_date
     end
     association :businesses, blueprint: BusinessBlueprint, view: :illinois_dashboard
     excludes :id, :greeting_name, :language, :state
@@ -21,7 +24,10 @@ class UserBlueprint < Blueprinter::Base
   view :nebraska_dashboard do
     field(:as_of) do |user, options|
       # if there are no attendances, the rates are as of today
-      (user.latest_attendance_in_month(options[:from_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+      (user.latest_attendance_in_month(options[:filter_date]) || DateTime.now.in_time_zone(user.timezone)).strftime('%m/%d/%Y')
+    end
+    field(:first_approval_effective_date) do |user, _options|
+      user.first_approval_effective_date
     end
     association :businesses, blueprint: BusinessBlueprint, view: :nebraska_dashboard
     field :max_revenue do

@@ -11,7 +11,7 @@ ActionMailer::Base.perform_deliveries = false
 
 puts 'Seeding.......'
 
-THIS_YEAR = Date.current.year
+THIS_YEAR = DateTime.now.in_time_zone('Central Time (US & Canada)').year
 JAN_1 = Date.new(THIS_YEAR, 1, 1)
 MAR_31 = Date.new(THIS_YEAR, 3, 31)
 APR_1 = Date.new(THIS_YEAR, 4, 1)

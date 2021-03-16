@@ -5,8 +5,26 @@
 button.ant-btn.date-filter-button:hover, button.ant-btn.date-filter-button:disabled {
   color: #333333;
   border-color: #d9d9d9;
+  height: 38px;
 }
 
-button.ant-btn.date-filter-button {
+button.ant-btn.date-filter-button,
+div.ant-select-selector.date-filter-select {
   height: 38px;
+}
+
+.ant-select-single.ant-select-lg:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: white;
+  color: #006C9E;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.ant-select-item-option-content,
+.ant-select-single.ant-select-lg:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-item {
+  color: #006C9E;
+}
+
+div.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #F3F8FA;
 }

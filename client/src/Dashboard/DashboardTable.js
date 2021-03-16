@@ -8,13 +8,12 @@ import questionMark from '_assets/questionMark.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0
-})
-
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0
+  })
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   const onHeaderCell = () => {
