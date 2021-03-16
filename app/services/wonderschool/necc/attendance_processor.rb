@@ -50,27 +50,33 @@ module Wonderschool
       end
 
       def read_csv_file
-        CSV.read(@input,
-                 headers: true,
-                 return_headers: false,
-                 unconverted_fields: %i[child_id],
-                 converters: %i[date])
+        CSV.read(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(?:,\s*)+$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def parse_string_to_csv
-        CSV.parse(@input,
-                  headers: true,
-                  return_headers: false,
-                  unconverted_fields: %i[child_id],
-                  converters: %i[date])
+        CSV.parse(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(?:,\s*)+$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def process_attendance(row)
         child = Child.find_by(wonderschool_id: row['child_id'])
         return false unless child
 
-        check_in = row['checked_in_at'].in_time_zone(child.timezone)
-        check_out = row['checked_out_at'].in_time_zone(child.timezone)
+        check_in = row['checked_in_at']
+        check_out = row['checked_out_at']
         return false unless child.attendances.find_or_create_by!(
           child_approval: child.active_child_approval(check_in),
           check_in: check_in,

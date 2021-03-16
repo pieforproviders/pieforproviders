@@ -1,7 +1,6 @@
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
-// TODO: Something isn't working here, if I hit an authenticated route directly, it logs me out
 export function useAuthentication() {
   const auth = useSelector(state => state.auth)
   /*

@@ -70,7 +70,7 @@ module Wonderschool
                   }
                 ).and_return({ copy_object_result: {} })
                 expect(stubbed_client).to receive(:delete_object).with({ bucket: source_bucket, key: file_name }).and_return({})
-                expect(Rails.logger).to receive(:tagged).and_yield
+                allow(Rails.logger).to receive(:tagged).and_yield
                 expect(Rails.logger).to receive(:info).with(file_name)
                 expect(Rails.logger).not_to receive(:error)
                 described_class.new.call
@@ -89,7 +89,7 @@ module Wonderschool
                 expect(stubbed_processor).to receive(:call).and_return(false)
                 expect(stubbed_client).not_to receive(:copy_object)
                 expect(stubbed_client).not_to receive(:delete_object)
-                expect(Rails.logger).to receive(:tagged).and_yield
+                allow(Rails.logger).to receive(:tagged).and_yield
                 expect(Rails.logger).to receive(:error).with(file_name)
                 described_class.new.call
               end
@@ -172,7 +172,7 @@ module Wonderschool
                 expect(stubbed_client).to receive(:delete_object).with(
                   { bucket: source_bucket, key: file_name }
                 ).and_return({})
-                expect(Rails.logger).to receive(:tagged).and_yield
+                allow(Rails.logger).to receive(:tagged).and_yield
                 expect(Rails.logger).to receive(:info).with(file_name)
 
                 allow(Wonderschool::Necc::OnboardingProcessor).to receive(:new).with('malformed').and_return(stubbed_processor)
@@ -183,7 +183,7 @@ module Wonderschool
                 expect(stubbed_processor).to receive(:call).and_return(false)
                 expect(stubbed_client).not_to receive(:copy_object)
                 expect(stubbed_client).not_to receive(:delete_object)
-                expect(Rails.logger).to receive(:tagged).and_yield
+                allow(Rails.logger).to receive(:tagged).and_yield
                 expect(Rails.logger).to receive(:error).with(other_file_name)
                 described_class.new.call
               end
@@ -193,8 +193,8 @@ module Wonderschool
           context "when there's no file in the S3 bucket" do
             it 'logs an info message and does not log an error' do
               allow(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [] })
-              expect(Rails.logger).to receive(:tagged).and_yield
-              expect(Rails.logger).to receive(:info).with("No file found in S3 bucket #{source_bucket} on #{DateTime.now.in_time_zone('Central Time (US & Canada)')}")
+              allow(Rails.logger).to receive(:tagged).and_yield
+              expect(Rails.logger).to receive(:info).with("No file found in S3 bucket #{source_bucket} at #{Time.current.strftime('%m/%d/%Y %I:%M%p')}")
               expect(stubbed_client).not_to receive(:get_object)
               expect(stubbed_object).not_to receive(:body)
               expect(stubbed_processor).not_to receive(:call)
