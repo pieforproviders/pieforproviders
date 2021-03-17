@@ -12,30 +12,6 @@ version: "3"
 #     process will take longer.
 
 services:
-  rails:
-    build: .
-    volumes:
-      - .:/home/winner/myapp
-    environment:
-      - BUNDLE_PATH=/home/winner/myapp/tmp/bundle
-      - BUNDLE_APP_CONFIG=/home/winner/myapp/.bundle
-      - GEM_HOME=/home/winner/myapp/tmp/gem_home
-    user: winner
-    command:
-      - bundle
-      - exec
-      - rails
-      - server
-      - --binding=0.0.0.0
-      - --port=3001
-    ports:
-      - "3001:3001"
-    links:
-      - mailcatcher
-    env_file:
-      - .docker-env/development/database
-    depends_on:
-      - database
 
   mailcatcher:
     image: yappabe/mailcatcher
@@ -52,6 +28,37 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "15432:5432"
+
+  rails:
+    container_name: pie_rails
+    build: .
+    volumes:
+      - .:/home/winner/myapp
+    environment:
+      - BUNDLE_PATH=/home/winner/myapp/tmp/bundle
+      - BUNDLE_APP_CONFIG=/home/winner/myapp/.bundle
+      - GEM_HOME=/home/winner/myapp/tmp/gem_home
+    env_file:
+      - .docker-env/development/database
+    user: winner
+    command: bundle exec rails server --binding=0.0.0.0 --port=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    links:
+      - mailcatcher
+
+  react:
+    container_name: pie_react
+    image: "node:14-alpine"
+    user: "node"
+    working_dir: /home/winner/myapp
+    volumes:
+      - ./client:home/winner/myapp/client
+    command: "bin/server"
+    depends_on:
+      - rails
 
 volumes:
   db_data:
