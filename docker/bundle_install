@@ -8,14 +8,13 @@ docker-compose run --rm -u root rails bash -c 'mkdir -p /home/winner/myapp/tmp/b
 
 set -e
 
-echo '-------------------'
-echo 'BEGIN: yarn install'
-echo '-------------------'
+echo '--------------------------'
+echo 'BEGIN: yarn install (root)'
+echo '--------------------------'
 docker/run yarn install
-echo '-----------------'
-echo 'END: yarn install'
-echo '-----------------'
-
+echo '------------------------'
+echo 'END: yarn install (root)'
+echo '------------------------'
 
 echo '---------------------'
 echo 'BEGIN: bundle install'

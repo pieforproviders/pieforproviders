@@ -2,6 +2,17 @@
 set -e
 
 docker/bundle_install
+
+echo '----------------------------'
+echo 'BEGIN: yarn test-once (root)'
+echo '----------------------------'
+docker/run yarn test-once
+echo '--------------------------'
+echo 'END: yarn test-once (root)'
+echo '--------------------------'
+
+docker/run client/bin/test
+
 docker/migrate
 
 echo '------------------------'

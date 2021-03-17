@@ -4,7 +4,10 @@ echo '-------------------'
 echo 'BEGIN: yarn install'
 echo '-------------------'
 yarn install
-
+echo '-----------------'
+echo 'END: yarn install'
+echo '-----------------'
+echo ''
 echo '--------------------------------------'
 echo 'View this app at http://localhost:3000'
 echo 'and the MailCatcher interface at http://localhost:3000'

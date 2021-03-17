@@ -55,7 +55,7 @@ services:
     user: "node"
     working_dir: /home/winner/myapp
     volumes:
-      - ./client:home/winner/myapp/client
+      - ./client:/home/winner/myapp/client
     command: "bin/server"
     depends_on:
       - rails
