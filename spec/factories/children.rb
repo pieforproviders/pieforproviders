@@ -2,10 +2,10 @@
 
 FactoryBot.define do
   factory :child do
-    date_of_birth { Faker::Date.birthday(min_age: 0, max_age: 18).strftime('%Y-%m-%d') }
+    date_of_birth { Time.current.strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
-    approvals { create_list(:approval, rand(1..3), create_children: false) }
+    approvals { [create(:approval, create_children: false)] }
 
     factory :child_in_illinois do
       after(:create) do |child|

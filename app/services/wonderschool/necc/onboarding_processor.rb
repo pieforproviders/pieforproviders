@@ -27,7 +27,7 @@ module Wonderschool
         log('blank_contents', @input.to_s) and return false if contents.blank?
 
         failed_subsidy_cases = []
-        contents.each { |subsidy_case| process_onboarding_case(subsidy_case) || failed_subsidy_cases << subsidy_case }
+        contents.each { |subsidy_case| failed_subsidy_cases << subsidy_case unless process_onboarding_case(subsidy_case) }
 
         if failed_subsidy_cases.present?
           log('failed_subsidy_cases', failed_subsidy_cases.flatten.to_s)
@@ -59,19 +59,25 @@ module Wonderschool
       end
 
       def read_csv_file
-        CSV.read(@input,
-                 headers: true,
-                 return_headers: false,
-                 unconverted_fields: %i[child_id],
-                 converters: %i[date])
+        CSV.read(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(,*|\s*)$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def parse_string_to_csv
-        CSV.parse(@input,
-                  headers: true,
-                  return_headers: false,
-                  unconverted_fields: %i[child_id],
-                  converters: %i[date])
+        CSV.parse(
+          @input,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(,*|\s*)$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
       end
 
       def process_onboarding_case(subsidy_case)

@@ -18,10 +18,11 @@ FactoryBot.define do
     service_agreement_accepted { true }
     timezone { 'Central Time (US & Canada)' }
     confirmation_token { Faker::Alphanumeric.alphanumeric(number: 10) }
-    confirmed_at { [Time.zone.at(rand * Time.now.to_i), nil].sample }
+    admin { false }
 
     factory :confirmed_user do
       before(:create, &:skip_confirmation!)
+      confirmed_at { Time.zone.at(rand * Time.now.to_i) }
     end
 
     factory :unconfirmed_user do
@@ -30,6 +31,7 @@ FactoryBot.define do
 
     factory :admin do
       before(:create, &:skip_confirmation!)
+      confirmed_at { Time.zone.at(rand * Time.now.to_i) }
       admin { true }
     end
   end
