@@ -11,9 +11,10 @@ docker-compose down
 docker/bundle_install
 docker/migrate
 
-echo '--------------------------------------'
-echo 'View this app at http://localhost:3000'
-echo 'and the MailCatcher interface at http://localhost:1080 .'
+echo '-----------------------------------------'
+echo 'View this app at http://localhost:3000  .'
+echo 'View the MailCatcher interface at http://localhost:1080 .'
+echo 'View the API at http://localhost:3000/api-docs'
 echo ''
 echo '--------------------'
 echo 'Database parameters:'
