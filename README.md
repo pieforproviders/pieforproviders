@@ -53,7 +53,7 @@ Docker should be installed on your local machine.
 ### Other Important Scripts
 * Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sanity check to allow you to make sure to commit quality working code only.
 * Enter "docker/nuke" to destroy the Docker image, container, and networks.
-* Enter "docker/nuke" to destroy the Docker container but leave the base images in place.
+* Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
 
 ---
 
