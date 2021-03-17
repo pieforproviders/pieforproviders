@@ -13,13 +13,14 @@ docker/seed 2>&1 | tee log/$DATE/seed.log
 wait
 # docker/outline 2>&1 | tee log/$DATE/outline.log
 # wait
-# docker/test_code 2>&1 | tee log/$DATE/test_code.log
-# wait
-# echo '******************************'
-# echo 'The build process is complete!'
-# echo ''
-# echo "The logs are in the log/$DATE directory."
-# echo ''
-# echo 'If all went well, the local app has been seeded, block diagrams are available,'
-# echo 'and all the tests passed.'
-# echo ''
+docker/test_code 2>&1 | tee log/$DATE/test_code.log
+wait
+echo '******************************'
+echo 'The build process is complete!'
+echo ''
+echo "The logs are in the log/$DATE directory."
+echo ''
+echo 'If all went well, the local app has been seeded, block diagrams are available,'
+echo 'and all the tests passed.'
+echo ''
+echo 'Use the docker/server script to start up the app server.'
