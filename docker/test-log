@@ -22,3 +22,11 @@ docker/run bundle exec rspec
 echo '----------------------'
 echo 'END: bundle exec rspec'
 echo '----------------------'
+
+echo '------------------------------'
+echo 'BEGIN: bundle exec rails rswag'
+echo '------------------------------'
+docker/run bundle exec rails rswag
+echo '----------------------------'
+echo 'END: bundle exec rails rswag'
+echo '----------------------------'
