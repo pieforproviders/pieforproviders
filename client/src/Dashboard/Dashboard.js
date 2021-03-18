@@ -225,7 +225,15 @@ export function Dashboard() {
     }, summaryDataTotalsConfig['default'])
   }
 
-  const reduceDates = res => {
+  const makeMonth = (date = new Date()) => ({
+    displayDate: date.toLocaleDateString('default', {
+      month: 'short',
+      year: 'numeric'
+    }),
+    date: date.toISOString().split('T')[0]
+  })
+
+  const reduceDates = (res, fd) => {
     const reduceDate = date_name => {
       return new Date(
         res.reduce((user1, user2) => {
@@ -240,20 +248,16 @@ export function Dashboard() {
         12 * (dateTo.getFullYear() - dateFrom.getFullYear())
       )
     }
+
     const firstMonth = reduceDate('first_approval_effective_date')
     let currentDate = new Date()
     const numOfMonths = monthDiff(firstMonth, currentDate)
     let dateFilterMonths = []
+    dateFilterMonths.push(makeMonth(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
       currentDate.setMonth(currentDate.getMonth() - 1)
-      dateFilterMonths.push({
-        displayDate: currentDate.toLocaleDateString('default', {
-          month: 'short',
-          year: 'numeric'
-        }),
-        date: currentDate.toISOString().split('T')[0]
-      })
+      dateFilterMonths.push(makeMonth(currentDate))
     }
 
     return {
@@ -261,14 +265,14 @@ export function Dashboard() {
         month: 'short',
         day: 'numeric'
       }),
-      dateFilterValue: dateFilterMonths.find(
+      dateFilterValue: fd ? dateFilterMonths.find(
         m =>
           m.date.match(/\d{4}-\d{2}/)[0] ===
           firstMonth
             .toISOString()
             .split('T')[0]
             .match(/\d{4}-\d{2}/)[0]
-      ),
+      ) : makeMonth(),
       dateFilterMonths
     }
   }
@@ -288,16 +292,12 @@ export function Dashboard() {
         tableData,
         parsedResponse
       )
-      setDates(reduceDates(parsedResponse))
+      setDates(reduceDates(parsedResponse, filterDate))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
       setTableData(tableData)
     }
   }
-  // const handleDashboardUpdate = useCallback(
-  //   filterDate => getDashboardData(filterDate),
-  //   [getDashboardData]
-  // )
 
   useEffect(() => {
     const getUserData = async () => {
