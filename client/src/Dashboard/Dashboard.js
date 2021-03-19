@@ -265,14 +265,16 @@ export function Dashboard() {
         month: 'short',
         day: 'numeric'
       }),
-      dateFilterValue: fd ? dateFilterMonths.find(
-        m =>
-          m.date.match(/\d{4}-\d{2}/)[0] ===
-          firstMonth
-            .toISOString()
-            .split('T')[0]
-            .match(/\d{4}-\d{2}/)[0]
-      ) : makeMonth(),
+      dateFilterValue: fd
+        ? dateFilterMonths.find(
+            m =>
+              m.date.match(/\d{4}-\d{2}/)[0] ===
+              firstMonth
+                .toISOString()
+                .split('T')[0]
+                .match(/\d{4}-\d{2}/)[0]
+          )
+        : makeMonth(),
       dateFilterMonths
     }
   }
