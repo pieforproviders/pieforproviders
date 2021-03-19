@@ -34,7 +34,7 @@ echo '' >> .env
 cp Dockerfile-template Dockerfile
 
 # Fill in the Ruby version in the Dockerfile
-sed -i "s/RUBY_VERSION/$RUBY_VERSION_HERE/g" Dockerfile
+docker/replace_sif 'RUBY_VERSION' "$RUBY_VERSION_HERE" Dockerfile
 
 docker-compose down -v --remove-orphans
 wait
