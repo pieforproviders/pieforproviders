@@ -92,6 +92,9 @@ ActiveRecord::Schema.define(version: 2021_02_27_170337) do
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
+  create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
   create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "queue_name"
     t.integer "priority"
