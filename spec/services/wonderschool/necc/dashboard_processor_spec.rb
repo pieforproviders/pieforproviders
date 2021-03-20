@@ -7,6 +7,7 @@ module Wonderschool
     RSpec.describe DashboardProcessor do
       let!(:dashboard_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data.csv') }
       let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_invalid_format.csv') }
+      let!(:missing_field_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv') }
       let!(:valid_string) do
         <<~CSV
           As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Family Fee
@@ -15,9 +16,18 @@ module Wonderschool
           2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,exceeded_limit,330.00,330.00,1815.40,105.75
         CSV
       end
-      let!(:first_child) { create(:necc_child, full_name: 'Sarah Brighton') }
-      let!(:second_child) { create(:necc_child, full_name: 'Charles Williamson') }
-      let!(:third_child) { create(:necc_child, full_name: 'Marcus Wright') }
+      let!(:missing_field_string) do
+        <<~CSV
+          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue
+          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,at_risk,0,90.77,1815.40
+          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,on_track,98.21,1234.56,1815.40
+          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,exceeded_limit,330.00,330.00,1815.40
+        CSV
+      end
+      let!(:business) { create(:business, name: 'Test Day Care') }
+      let!(:first_child) { create(:necc_child, full_name: 'Sarah Brighton', business: business) }
+      let!(:second_child) { create(:necc_child, full_name: 'Charles Williamson', business: business) }
+      let!(:third_child) { create(:necc_child, full_name: 'Marcus Wright', business: business) }
 
       let(:error_log) do
         [
@@ -34,6 +44,50 @@ module Wonderschool
             ['Estimated Revenue', '90.77'],
             ['Approved (Scheduled) revenue', '1815.40'],
             ['Family Fee', '120.00']
+          ]
+        ].flatten.to_s
+      end
+
+      let(:missing_field_error_log) do
+        [
+          [
+            ['As of Date', Date.parse('2021-02-21')],
+            ['Child Name', 'Sarah Brighton'],
+            ['Case Number', '23434235'],
+            ['Business', 'Test Day Care'],
+            ['Full Days', '0 of 20'],
+            ['Hourly', '0 of 0'],
+            ['Absences', '1 of 3'],
+            %w[Status at_risk],
+            ['Earned revenue', '0'],
+            ['Estimated Revenue', '90.77'],
+            ['Approved (Scheduled) revenue', '1815.40']
+          ],
+          [
+            ['As of Date', Date.parse('2021-02-25')],
+            ['Child Name', 'Charles Williamson'],
+            ['Case Number', '23434235'],
+            ['Business', 'Test Day Care'],
+            ['Full Days', '1 of 15'],
+            ['Hourly', '1 of 18'],
+            ['Absences', '3 of 4'],
+            %w[Status on_track],
+            ['Earned revenue', '98.21'],
+            ['Estimated Revenue', '1234.56'],
+            ['Approved (Scheduled) revenue', '1815.40']
+          ],
+          [
+            ['As of Date', Date.parse('2021-02-24')],
+            ['Child Name', 'Marcus Wright'],
+            ['Case Number', '23434235'],
+            ['Business', 'Test Day Care'],
+            ['Full Days', '3 of 15'],
+            ['Hourly', '4 of 18'],
+            ['Absences', '0 of 1'],
+            %w[Status exceeded_limit],
+            ['Earned revenue', '330.00'],
+            ['Estimated Revenue', '330.00'],
+            ['Approved (Scheduled) revenue', '1815.40']
           ]
         ].flatten.to_s
       end
@@ -78,7 +132,7 @@ module Wonderschool
         end
       end
 
-      RSpec.shared_examples 'creates records, attributes, does not stop job on failure' do
+      RSpec.shared_examples 'creates records, attributes, does not stop job on failure to find child' do
         it 'creates dashboard records for every row in the file, idempotently' do
           expect { described_class.new(input).call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
           expect { described_class.new(input).call }.not_to change(TemporaryNebraskaDashboardCase, :count)
@@ -116,6 +170,20 @@ module Wonderschool
         end
       end
 
+      RSpec.shared_examples 'failure to update child returns false' do
+        it 'returns false' do
+          expect(stubbed_client).to receive(:put_object).with(
+            {
+              bucket: archive_bucket,
+              body: missing_field_error_log, key: file_name
+            }
+          )
+          allow(Rails.logger).to receive(:tagged).and_yield
+          expect(Rails.logger).to receive(:error).with(missing_field_error_log)
+          expect(described_class.new(input).call).to eq(false)
+        end
+      end
+
       describe '.call' do
         let!(:file_name) { 'failed_dashboard_cases' }
         let!(:archive_bucket) { 'archive_bucket' }
@@ -139,17 +207,32 @@ module Wonderschool
 
         context 'with a valid string' do
           let(:input) { valid_string }
-          include_examples 'creates records, attributes, does not stop job on failure'
+          include_examples 'creates records, attributes, does not stop job on failure to find child'
         end
 
         context 'with a valid stream' do
           let(:input) { StringIO.new(valid_string) }
-          include_examples 'creates records, attributes, does not stop job on failure'
+          include_examples 'creates records, attributes, does not stop job on failure to find child'
         end
 
         context 'with a valid file' do
           let(:input) { dashboard_csv }
-          include_examples 'creates records, attributes, does not stop job on failure'
+          include_examples 'creates records, attributes, does not stop job on failure to find child'
+        end
+
+        context 'when a required field is missing from a string' do
+          let(:input) { missing_field_string }
+          include_examples 'failure to update child returns false'
+        end
+
+        context 'when a required field is missing from a stream' do
+          let(:input) { StringIO.new(missing_field_string) }
+          include_examples 'failure to update child returns false'
+        end
+
+        context 'when a required field is missing from a file' do
+          let(:input) { missing_field_csv }
+          include_examples 'failure to update child returns false'
         end
 
         context 'when the csv data is the wrong format' do

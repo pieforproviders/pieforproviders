@@ -80,17 +80,16 @@ module Wonderschool
       end
 
       def process_dashboard_case(row)
-        child = Child.find_by(full_name: row['Child Name'])
+        child = Child.find_by(full_name: row['Child Name'], business: Business.find_by(name: row['Business']))
         return false unless child
 
-        params = field_mapping(row)
         dashboard_case = TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child)
-        unless dashboard_case.update!(params)
-          log('error processing', dashboard_case.errors.to_s)
-          return false
-        end
+        dashboard_case.update!(field_mapping(row))
 
         true
+      rescue ActiveRecord::RecordInvalid => e
+        log('error processing', e)
+        false
       end
 
       def field_mapping(row)
