@@ -70,6 +70,16 @@
                       }
                     ]
                   },
+                  "family_fee": {
+                    "anyOf": [
+                      {
+                        "type": "decimal"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
                   "full_days": {
                     "anyOf": [
                       {
@@ -99,16 +109,6 @@
                         "type": "null"
                       }
                     ]
-                  },
-                  "transportation_revenue": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
-                    ]
                   }
                 },
                 "required": [
@@ -116,10 +116,10 @@
                   "case_number",
                   "earned_revenue",
                   "estimated_revenue",
+                  "family_fee",
                   "full_days",
                   "full_name",
-                  "hours",
-                  "transportation_revenue"
+                  "hours"
                 ]
               }
             },

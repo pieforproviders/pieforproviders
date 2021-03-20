@@ -100,9 +100,9 @@ module Wonderschool
           absences: row['Absences'],
           earned_revenue: row['Earned revenue'],
           estimated_revenue: row['Estimated Revenue'],
+          family_fee: row['Family Fee'],
           full_days: row['Full Days'],
-          hours: row['Hourly'],
-          transportation_revenue: row['Transportation revenue']
+          hours: row['Hourly']
         }
       end
 
