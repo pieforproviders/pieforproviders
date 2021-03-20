@@ -19,6 +19,25 @@ module Wonderschool
       let!(:second_child) { create(:necc_child, full_name: 'Charles Williamson') }
       let!(:third_child) { create(:necc_child, full_name: 'Marcus Wright') }
 
+      let(:error_log) do
+        [
+          [
+            ['As of Date', Date.parse('2021-02-21')],
+            ['Child Name', 'Sarah Brighton'],
+            ['Case Number', '23434235'],
+            ['Business', 'Test Day Care'],
+            ['Full Days', '0 of 20'],
+            ['Hourly', '0 of 0'],
+            ['Absences', '0 days, 0 hours'],
+            %w[Status at_risk],
+            ['Earned revenue', '0'],
+            ['Estimated Revenue', '90.77'],
+            ['Approved (Scheduled) revenue', '1,815.40'],
+            ['Transportation revenue', 'n/a']
+          ]
+        ].flatten.to_s
+      end
+
       describe '.call' do
         let!(:file_name) { 'failed_dashboard_cases' }
         let!(:archive_bucket) { 'archive_bucket' }
@@ -39,24 +58,6 @@ module Wonderschool
         end
 
         context 'with a valid string' do
-          let(:error_log) do
-            [
-              [
-                ['As of Date', Date.parse('2021-02-21')],
-                ['Child Name', 'Sarah Brighton'],
-                ['Case Number', '23434235'],
-                ['Business', 'Test Day Care'],
-                ['Full Days', '0 of 20'],
-                ['Hourly', '0 of 0'],
-                ['Absences', '0 days, 0 hours'],
-                %w[Status at_risk],
-                ['Earned revenue', '0'],
-                ['Estimated Revenue', '90.77'],
-                ['Approved (Scheduled) revenue', '1,815.40'],
-                ['Transportation revenue', 'n/a']
-              ]
-            ].flatten.to_s
-          end
           it 'creates dashboard records for every row in the file, idempotently' do
             expect { described_class.new(valid_string).call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
             expect { described_class.new(valid_string).call }.not_to change(TemporaryNebraskaDashboardCase, :count)
@@ -105,24 +106,6 @@ module Wonderschool
         end
 
         context 'with a valid stream' do
-          let(:error_log) do
-            [
-              [
-                ['As of Date', Date.parse('2021-02-21')],
-                ['Child Name', 'Sarah Brighton'],
-                ['Case Number', '23434235'],
-                ['Business', 'Test Day Care'],
-                ['Full Days', '0 of 20'],
-                ['Hourly', '0 of 0'],
-                ['Absences', '0 days, 0 hours'],
-                %w[Status at_risk],
-                ['Earned revenue', '0'],
-                ['Estimated Revenue', '90.77'],
-                ['Approved (Scheduled) revenue', '1,815.40'],
-                ['Transportation revenue', 'n/a']
-              ]
-            ].flatten.to_s
-          end
           it 'creates dashboard records for every row in the file, idempotently' do
             expect { described_class.new(StringIO.new(valid_string)).call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
             expect { described_class.new(StringIO.new(valid_string)).call }.not_to change(TemporaryNebraskaDashboardCase, :count)
@@ -171,24 +154,6 @@ module Wonderschool
         end
 
         context 'with a valid file' do
-          let(:error_log) do
-            [
-              [
-                ['As of Date', Date.parse('2021-02-21')],
-                ['Child Name', 'Sarah Brighton'],
-                ['Case Number', '23434235'],
-                ['Business', 'Test Day Care'],
-                ['Full Days', '0 of 20'],
-                ['Hourly', '0 of 0'],
-                ['Absences', '0 days, 0 hours'],
-                %w[Status at_risk],
-                ['Earned revenue', '0'],
-                ['Estimated Revenue', '90.77'],
-                ['Approved (Scheduled) revenue', '1,815.40'],
-                ['Transportation revenue', 'n/a']
-              ]
-            ].flatten.to_s
-          end
           it 'creates dashboard records for every row in the file, idempotently' do
             expect { described_class.new(dashboard_csv).call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
             expect { described_class.new(dashboard_csv).call }.not_to change(TemporaryNebraskaDashboardCase, :count)
