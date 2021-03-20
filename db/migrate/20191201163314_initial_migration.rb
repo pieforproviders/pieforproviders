@@ -5,6 +5,12 @@ class InitialMigration < ActiveRecord::Migration[6.0]
     enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
 
     ########################################
+    # Data Migrations table
+    ########################################
+    create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+    end
+    
+    ########################################
     # Reference Data - Subsidy Rules
     ########################################
 
