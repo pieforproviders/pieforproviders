@@ -53,6 +53,9 @@ class ChildBlueprint < Blueprinter::Base
     field :hours do |child|
       child.temporary_nebraska_dashboard_case&.hours
     end
+    field :hours_attended do |child|
+      child.temporary_nebraska_dashboard_case&.hours_attended
+    end
     exclude :id
   end
 end

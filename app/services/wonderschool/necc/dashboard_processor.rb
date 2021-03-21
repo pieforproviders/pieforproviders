@@ -92,6 +92,7 @@ module Wonderschool
         false
       end
 
+      # rubocop:disable Metrics/MethodLength
       def field_mapping(row)
         {
           as_of: row['As of Date'],
@@ -101,9 +102,11 @@ module Wonderschool
           estimated_revenue: row['Estimated Revenue'],
           family_fee: row['Family Fee'],
           full_days: row['Full Days'],
-          hours: row['Hourly']
+          hours: row['Hourly'],
+          hours_attended: row['Hours Attended']
         }
       end
+      # rubocop:enable Metrics/MethodLength
 
       def archive_bucket
         ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')

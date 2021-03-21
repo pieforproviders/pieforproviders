@@ -10,18 +10,18 @@ module Wonderschool
       let!(:missing_field_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv') }
       let!(:valid_string) do
         <<~CSV
-          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Family Fee
-          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,at_risk,0,90.77,1815.40,120.00
-          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,on_track,98.21,1234.56,1815.40,25.00
-          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,exceeded_limit,330.00,330.00,1815.40,105.75
+          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Hours Attended,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Family Fee
+          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,4 of 6,at_risk,0,90.77,1815.40,120.00
+          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,1 of 2,on_track,98.21,1234.56,1815.40,25.00
+          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,12 of 14,exceeded_limit,330.00,330.00,1815.40,105.75
         CSV
       end
       let!(:missing_field_string) do
         <<~CSV
-          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue
-          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,at_risk,0,90.77,1815.40
-          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,on_track,98.21,1234.56,1815.40
-          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,exceeded_limit,330.00,330.00,1815.40
+          As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Hours Attended,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue
+          2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,4 of 6,at_risk,0,90.77,1815.40
+          2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,1 of 2,on_track,98.21,1234.56,1815.40
+          2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,12 of 14,exceeded_limit,330.00,330.00,1815.40
         CSV
       end
       let!(:business) { create(:business, name: 'Test Day Care') }
@@ -39,6 +39,7 @@ module Wonderschool
             ['Full Days', '0 of 20'],
             ['Hourly', '0 of 0'],
             ['Absences', '1 of 3'],
+            ['Hours Attended', '4 of 6'],
             %w[Status at_risk],
             ['Earned revenue', '0'],
             ['Estimated Revenue', '90.77'],
@@ -58,6 +59,7 @@ module Wonderschool
             ['Full Days', '0 of 20'],
             ['Hourly', '0 of 0'],
             ['Absences', '1 of 3'],
+            ['Hours Attended', '4 of 6'],
             %w[Status at_risk],
             ['Earned revenue', '0'],
             ['Estimated Revenue', '90.77'],
@@ -71,6 +73,7 @@ module Wonderschool
             ['Full Days', '1 of 15'],
             ['Hourly', '1 of 18'],
             ['Absences', '3 of 4'],
+            ['Hours Attended', '1 of 2'],
             %w[Status on_track],
             ['Earned revenue', '98.21'],
             ['Estimated Revenue', '1234.56'],
@@ -84,6 +87,7 @@ module Wonderschool
             ['Full Days', '3 of 15'],
             ['Hourly', '4 of 18'],
             ['Absences', '0 of 1'],
+            ['Hours Attended', '12 of 14'],
             %w[Status exceeded_limit],
             ['Earned revenue', '330.00'],
             ['Estimated Revenue', '330.00'],
@@ -103,6 +107,7 @@ module Wonderschool
           expect(first_child.temporary_nebraska_dashboard_case.family_fee).to eq(120.00)
           expect(first_child.temporary_nebraska_dashboard_case.full_days).to eq('0 of 20')
           expect(first_child.temporary_nebraska_dashboard_case.hours).to eq('0 of 0')
+          expect(first_child.temporary_nebraska_dashboard_case.hours_attended).to eq('4 of 6')
         end
       end
       RSpec.shared_examples 'updates charles' do
@@ -116,6 +121,7 @@ module Wonderschool
           expect(second_child.temporary_nebraska_dashboard_case.family_fee).to eq(25.00)
           expect(second_child.temporary_nebraska_dashboard_case.full_days).to eq('1 of 15')
           expect(second_child.temporary_nebraska_dashboard_case.hours).to eq('1 of 18')
+          expect(second_child.temporary_nebraska_dashboard_case.hours_attended).to eq('1 of 2')
         end
       end
       RSpec.shared_examples 'updates marcus' do
@@ -129,6 +135,7 @@ module Wonderschool
           expect(third_child.temporary_nebraska_dashboard_case.family_fee).to eq(105.75)
           expect(third_child.temporary_nebraska_dashboard_case.full_days).to eq('3 of 15')
           expect(third_child.temporary_nebraska_dashboard_case.hours).to eq('4 of 18')
+          expect(third_child.temporary_nebraska_dashboard_case.hours_attended).to eq('12 of 14')
         end
       end
 
