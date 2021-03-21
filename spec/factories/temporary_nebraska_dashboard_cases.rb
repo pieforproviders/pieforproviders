@@ -10,6 +10,7 @@ FactoryBot.define do
     family_fee { 120.00 }
     full_days { '10 of 12' }
     hours { '2 of 2' }
+    hours_attended { '1 of 2' }
   end
 end
 
@@ -26,6 +27,7 @@ end
 #  family_fee        :decimal(, )
 #  full_days         :text
 #  hours             :text
+#  hours_attended    :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  child_id          :uuid             not null

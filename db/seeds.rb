@@ -182,7 +182,8 @@ def create_case(full_name,
       estimated_revenue: rand(1000.00..2000.00).round(2),
       family_fee: rand(1000.00..2000.00).round(2),
       full_days: "#{rand(0..total_days)} of #{total_days}",
-      hours: "#{rand(0.0..total_hours).round(2)} of #{total_hours}"
+      hours: "#{rand(0.0..total_hours).round(2)} of #{total_hours}",
+      hours_attended: "#{rand(0.0..total_hours).round(2)} of #{total_hours}"
     )
   end
 end

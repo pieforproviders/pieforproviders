@@ -1,4 +1,4 @@
-As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Family Fee
-2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,at_risk,0,90.77,1815.40,120.00
-2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,on_track,98.21,1234.56,1815.40,25.00
-2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,exceeded_limit,330.00,330.00,1815.40,105.75
+As of Date,Child Name,Case Number,Business,Full Days,Hourly,Absences,Hours Attended,Status,Earned revenue,Estimated Revenue,Approved (Scheduled) revenue,Family Fee
+2021-02-21,Sarah Brighton,23434235,Test Day Care,0 of 20,0 of 0,1 of 3,4 of 6,at_risk,0,90.77,1815.40,120.00
+2021-02-25,Charles Williamson,23434235,Test Day Care,1 of 15,1 of 18,3 of 4,1 of 2,on_track,98.21,1234.56,1815.40,25.00
+2021-02-24,Marcus Wright,23434235,Test Day Care,3 of 15,4 of 18,0 of 1,12 of 14,exceeded_limit,330.00,330.00,1815.40,105.75

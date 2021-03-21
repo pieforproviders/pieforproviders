@@ -11,6 +11,7 @@ class TemporaryNebraskaDashboardCase < UuidApplicationRecord
   validates :family_fee, presence: true
   validates :full_days, presence: true
   validates :hours, presence: true
+  validates :hours_attended, presence: true
 end
 
 # == Schema Information
@@ -26,6 +27,7 @@ end
 #  family_fee        :decimal(, )
 #  full_days         :text
 #  hours             :text
+#  hours_attended    :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  child_id          :uuid             not null

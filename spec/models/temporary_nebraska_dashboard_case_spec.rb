@@ -4,6 +4,14 @@ require 'rails_helper'
 
 RSpec.describe TemporaryNebraskaDashboardCase, type: :model do
   it { should belong_to(:child) }
+  it { should validate_presence_of(:absences) }
+  it { should validate_presence_of(:attendance_risk) }
+  it { should validate_presence_of(:earned_revenue) }
+  it { should validate_presence_of(:estimated_revenue) }
+  it { should validate_presence_of(:family_fee) }
+  it { should validate_presence_of(:full_days) }
+  it { should validate_presence_of(:hours) }
+  it { should validate_presence_of(:hours_attended) }
 
   let(:temporary_nebraska_dashboard_case) { build(:temporary_nebraska_dashboard_case) }
 
@@ -25,6 +33,7 @@ end
 #  family_fee        :decimal(, )
 #  full_days         :text
 #  hours             :text
+#  hours_attended    :string
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  child_id          :uuid             not null

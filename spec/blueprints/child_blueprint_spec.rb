@@ -36,7 +36,8 @@ RSpec.describe ChildBlueprint do
         'family_fee',
         'full_days',
         'full_name',
-        'hours'
+        'hours',
+        'hours_attended'
       )
     end
   end

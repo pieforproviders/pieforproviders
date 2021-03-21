@@ -109,6 +109,16 @@
                         "type": "null"
                       }
                     ]
+                  },
+                  "hours_attended": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 },
                 "required": [
@@ -119,7 +129,8 @@
                   "family_fee",
                   "full_days",
                   "full_name",
-                  "hours"
+                  "hours",
+                  "hours_attended"
                 ]
               }
             },
