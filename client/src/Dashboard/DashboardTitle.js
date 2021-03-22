@@ -9,7 +9,8 @@ const { Option } = Select
 
 export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const { t } = useTranslation()
-  const [isDropdownVisible, setDropdownVisible] = useState(false)
+  // keeping this dropdown icon logic in hope it can eventually work
+  // const [isDropdownVisible, setDropdownVisible] = useState(false)
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
   const dropdownStyle = { color: '#006C9E' }
 
@@ -32,15 +33,15 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         </Typography.Title>
         {userState !== 'NE' ? (
           <Select
-            suffixIcon={
-              isDropdownVisible ? (
-                <UpOutlined style={dropdownStyle} />
-              ) : (
-                <DownOutlined style={dropdownStyle} />
-              )
-            }
+            // suffixIcon={
+            //   isDropdownVisible ? (
+            //     <UpOutlined style={dropdownStyle} />
+            //   ) : (
+            //     <DownOutlined style={dropdownStyle} />
+            //   )
+            // }
+            // onDropdownVisibleChange={open => setDropdownVisible(open)}
             value={dateFilterValue}
-            onDropdownVisibleChange={open => setDropdownVisible(open)}
             onChange={value => {
               getDashboardData(value)
               setDateFilterValue(value)
