@@ -44,8 +44,8 @@
     "node": ">=12.14.1"
   },
   "devDependencies": {
-    "cypress": "^6.6.0",
-    "cypress-file-upload": "^5.0.2",
+    "cypress": "^6.8.0",
+    "cypress-file-upload": "^5.0.3",
     "dayjs": "^1.10.4",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.15.0",
@@ -53,6 +53,6 @@
     "eslint-plugin-prettier": "^3.3.1",
     "faker": "^5.4.0",
     "prettier": "^2.2.1",
-    "start-server-and-test": "^1.12.0"
+    "start-server-and-test": "^1.12.1"
   }
 }

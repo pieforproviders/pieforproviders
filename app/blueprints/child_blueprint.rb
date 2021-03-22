@@ -37,6 +37,9 @@ class ChildBlueprint < Blueprinter::Base
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
     end
+    field :family_fee do |child|
+      child.temporary_nebraska_dashboard_case&.family_fee&.to_f || 0.0
+    end
     field :earned_revenue do |child|
       child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
     end
@@ -50,8 +53,8 @@ class ChildBlueprint < Blueprinter::Base
     field :hours do |child|
       child.temporary_nebraska_dashboard_case&.hours
     end
-    field :transportation_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.transportation_revenue
+    field :hours_attended do |child|
+      child.temporary_nebraska_dashboard_case&.hours_attended
     end
     exclude :id
   end

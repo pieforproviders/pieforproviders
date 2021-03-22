@@ -80,19 +80,19 @@ module Wonderschool
       end
 
       def process_dashboard_case(row)
-        child = Child.find_by(full_name: row['Child Name'])
+        child = Child.find_by(full_name: row['Child Name'], business: Business.find_by(name: row['Business']))
         return false unless child
 
-        params = field_mapping(row)
         dashboard_case = TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child)
-        unless dashboard_case.update!(params)
-          log('error processing', dashboard_case.errors.to_s)
-          return false
-        end
+        dashboard_case.update!(field_mapping(row))
 
         true
+      rescue ActiveRecord::RecordInvalid => e
+        log('error processing', e)
+        false
       end
 
+      # rubocop:disable Metrics/MethodLength
       def field_mapping(row)
         {
           as_of: row['As of Date'],
@@ -100,11 +100,13 @@ module Wonderschool
           absences: row['Absences'],
           earned_revenue: row['Earned revenue'],
           estimated_revenue: row['Estimated Revenue'],
+          family_fee: row['Family Fee'],
           full_days: row['Full Days'],
           hours: row['Hourly'],
-          transportation_revenue: row['Transportation revenue']
+          hours_attended: row['Hours Attended']
         }
       end
+      # rubocop:enable Metrics/MethodLength
 
       def archive_bucket
         ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
