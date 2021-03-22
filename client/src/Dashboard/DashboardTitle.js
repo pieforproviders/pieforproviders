@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Typography, Select } from 'antd'
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
+// import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
 
@@ -11,8 +11,8 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const { t } = useTranslation()
   // keeping this dropdown icon logic in hope it can eventually work
   // const [isDropdownVisible, setDropdownVisible] = useState(false)
+  // const dropdownStyle = { color: '#006C9E' }
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
-  const dropdownStyle = { color: '#006C9E' }
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
