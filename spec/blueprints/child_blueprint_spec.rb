@@ -33,10 +33,11 @@ RSpec.describe ChildBlueprint do
         'case_number',
         'earned_revenue',
         'estimated_revenue',
+        'family_fee',
         'full_days',
         'full_name',
         'hours',
-        'transportation_revenue'
+        'hours_attended'
       )
     end
   end

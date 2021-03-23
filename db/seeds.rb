@@ -180,9 +180,10 @@ def create_case(full_name,
       absences: "#{rand(0..total_absences)} of #{total_absences}",
       earned_revenue: rand(0.00..1000.00).round(2),
       estimated_revenue: rand(1000.00..2000.00).round(2),
+      family_fee: rand(1000.00..2000.00).round(2),
       full_days: "#{rand(0..total_days)} of #{total_days}",
       hours: "#{rand(0.0..total_hours).round(2)} of #{total_hours}",
-      transportation_revenue: "#{rand(0..30)} trips - #{Money.new(rand(0..100_000)).format}"
+      hours_attended: "#{rand(0.0..total_hours).round(2)} of #{total_hours}"
     )
   end
 end
