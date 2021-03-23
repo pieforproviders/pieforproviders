@@ -71,7 +71,7 @@ export function Dashboard() {
               ? totals.maxRevenueTotal
               : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
           }`,
-          definition: t(`maxRevenueDef`)
+          definition: t(`comingSoon`)
         },
         [
           {
@@ -81,7 +81,7 @@ export function Dashboard() {
                 ? totals.totalApprovedTotal
                 : currencyFormatter.format(totals.totalApprovedTotal.toFixed())
             }`,
-            definition: t(`totalApprovedDef`)
+            definition: t(`comingSoon`)
           },
           {
             title: t(`transportation`),
@@ -89,7 +89,7 @@ export function Dashboard() {
             // `${currencyFormatter.format(
             //   totals.transportationRevenueTotal.toFixed()
             // )}`
-            definition: t(`transportationDef`)
+            definition: t(`comingSoon`)
           }
         ]
       ]
