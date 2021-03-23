@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Typography } from 'antd'
 import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
-import '_assets/styles/dashboard-overrides.css'
+import DashboardTitle from './DashboardTitle'
 
 export function Dashboard() {
   const dispatch = useDispatch()
@@ -45,11 +44,6 @@ export function Dashboard() {
   const [activeKey, setActiveKey] = useState()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
-
-  const matchAndReplaceDate = dateString => {
-    const match = dateString.match(/^[A-Za-z]+/)
-    return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
-  }
 
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
@@ -231,22 +225,79 @@ export function Dashboard() {
     }, summaryDataTotalsConfig['default'])
   }
 
-  const reduceAsOfDate = res => {
-    const date = new Date(
-      res.reduce((user1, user2) => {
-        return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
-      }).as_of
-    )
+  const makeMonth = (date = new Date()) => ({
+    displayDate: date.toLocaleDateString('default', {
+      month: 'short',
+      year: 'numeric'
+    }),
+    date: date.toISOString().split('T')[0]
+  })
+
+  const reduceDates = (res, fd) => {
+    const reduceDate = date_name => {
+      return new Date(
+        res.reduce((user1, user2) => {
+          return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
+        })[`${date_name}`]
+      )
+    }
+    const monthDiff = (dateFrom, dateTo) => {
+      return (
+        dateTo.getMonth() -
+        dateFrom.getMonth() +
+        12 * (dateTo.getFullYear() - dateFrom.getFullYear())
+      )
+    }
+
+    const firstMonth = reduceDate('first_approval_effective_date')
+    let currentDate = new Date()
+    const numOfMonths = monthDiff(firstMonth, currentDate)
+    let dateFilterMonths = []
+    dateFilterMonths.push(makeMonth(currentDate))
+
+    for (let i = 0; i < numOfMonths; i++) {
+      currentDate.setMonth(currentDate.getMonth() - 1)
+      dateFilterMonths.push(makeMonth(currentDate))
+    }
 
     return {
-      asOf: date.toLocaleDateString('default', {
+      asOf: reduceDate('as_of').toLocaleDateString('default', {
         month: 'short',
         day: 'numeric'
       }),
-      dateFilter: new Date().toLocaleDateString('default', {
-        month: 'short',
-        year: 'numeric'
-      })
+      dateFilterValue: fd
+        ? dateFilterMonths.find(
+            m =>
+              m.date.match(/\d{4}-\d{2}/)[0] ===
+              firstMonth
+                .toISOString()
+                .split('T')[0]
+                .match(/\d{4}-\d{2}/)[0]
+          )
+        : makeMonth(),
+      dateFilterMonths
+    }
+  }
+
+  const getDashboardData = async (filterDate = undefined) => {
+    const baseUrl = '/api/v1/case_list_for_dashboard'
+    const response = await makeRequest({
+      type: 'get',
+      url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
+      headers: { Authorization: token }
+    })
+    const parsedResponse = await response.json()
+
+    if (!parsedResponse.error) {
+      const tableData = reduceTableData(parsedResponse)
+      const updatedSummaryDataTotals = reduceSummaryData(
+        tableData,
+        parsedResponse
+      )
+      setDates(reduceDates(parsedResponse, filterDate))
+      setSummaryTotals(updatedSummaryDataTotals)
+      setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+      setTableData(tableData)
     }
   }
 
@@ -269,27 +320,6 @@ export function Dashboard() {
       }
     }
 
-    const getDashboardData = async () => {
-      const response = await makeRequest({
-        type: 'get',
-        url: '/api/v1/case_list_for_dashboard',
-        headers: { Authorization: token }
-      })
-      const parsedResponse = await response.json()
-
-      if (!parsedResponse.error) {
-        const tableData = reduceTableData(parsedResponse)
-        const updatedSummaryDataTotals = reduceSummaryData(
-          tableData,
-          parsedResponse
-        )
-        setDates(reduceAsOfDate(parsedResponse))
-        setSummaryTotals(updatedSummaryDataTotals)
-        setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-        setTableData(tableData)
-      }
-    }
-
     if (Object.keys(user).length !== 0) {
       getDashboardData()
     }
@@ -305,25 +335,11 @@ export function Dashboard() {
 
   return (
     <div className="dashboard sm:mx-8">
-      <div className="dashboard-title m-2">
-        <div className="flex items-center mb-3">
-          <Typography.Title className="dashboard-title mr-4">
-            {t('dashboardTitle')}
-          </Typography.Title>
-          <Button
-            className="date-filter-button mr-2 text-base py-2 px-4"
-            disabled
-          >
-            {matchAndReplaceDate(dates.dateFilter)}
-          </Button>
-          <Typography.Text className="text-gray3">{`${t(
-            `asOf`
-          )}: ${matchAndReplaceDate(dates.asOf)}`}</Typography.Text>
-        </div>
-        <Typography.Text className="md-3 text-base">
-          {t('revenueProjections')}
-        </Typography.Text>
-      </div>
+      <DashboardTitle
+        dates={dates}
+        userState={user.state ?? ''}
+        getDashboardData={getDashboardData}
+      />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
         tableData={tableData}
