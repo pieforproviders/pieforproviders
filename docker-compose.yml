@@ -33,14 +33,14 @@ services:
     container_name: pie_rails
     build: .
     volumes:
-      - .:/home/winner/myapp
+      - .:/home/docker_user/myapp
     environment:
-      - BUNDLE_PATH=/home/winner/myapp/tmp/bundle
-      - BUNDLE_APP_CONFIG=/home/winner/myapp/.bundle
-      - GEM_HOME=/home/winner/myapp/tmp/gem_home
+      - BUNDLE_PATH=/home/docker_user/myapp/tmp/bundle
+      - BUNDLE_APP_CONFIG=/home/docker_user/myapp/.bundle
+      - GEM_HOME=/home/docker_user/myapp/tmp/gem_home
     env_file:
       - .docker-env/development/database
-    user: winner
+    user: docker_user
     command: bundle exec rails server --binding=0.0.0.0 --port=3000
     ports:
       - "3000:3000"
@@ -53,9 +53,9 @@ services:
     container_name: pie_react
     image: "node:14-alpine"
     user: "node"
-    working_dir: /home/winner/myapp
+    working_dir: /home/docker_user/myapp
     volumes:
-      - ./client:/home/winner/myapp/client
+      - ./client:/home/docker_user/myapp/client
     command: "bin/server"
     depends_on:
       - rails
