@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# This is the quick version of docker/server.
+
+echo '-----------------------------------------'
+echo 'View this app at http://localhost:3000  .'
+echo 'View the MailCatcher interface at http://localhost:1080 .'
+echo 'View the API at http://localhost:3000/api-docs'
+echo ''
+echo '--------------------'
+echo 'Database parameters:'
+echo 'Host: localhost'
+echo 'Port number: 15432'
+echo 'Database: pie_development'
+echo 'Username and password: specified in .docker-env/development/database'
+echo ''
+docker-compose up rails
