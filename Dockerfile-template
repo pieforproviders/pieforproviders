@@ -38,4 +38,4 @@ RUN set -ex \
 RUN useradd -m -s /bin/bash -u 1000 docker_user
 USER docker_user
 
-WORKDIR /home/docker_user/myapp
+WORKDIR /home/docker_user/pie

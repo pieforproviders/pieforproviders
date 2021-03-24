@@ -33,11 +33,11 @@ services:
     container_name: pie_rails
     build: .
     volumes:
-      - .:/home/docker_user/myapp
+      - .:/home/docker_user/pie
     environment:
-      - BUNDLE_PATH=/home/docker_user/myapp/tmp/bundle
-      - BUNDLE_APP_CONFIG=/home/docker_user/myapp/.bundle
-      - GEM_HOME=/home/docker_user/myapp/tmp/gem_home
+      - BUNDLE_PATH=/home/docker_user/pie/tmp/bundle
+      - BUNDLE_APP_CONFIG=/home/docker_user/pie/.bundle
+      - GEM_HOME=/home/docker_user/pie/tmp/gem_home
     env_file:
       - .docker-env/development/database
     user: docker_user
@@ -53,9 +53,9 @@ services:
     container_name: pie_react
     image: "node:14-alpine"
     user: "node"
-    working_dir: /home/docker_user/myapp
+    working_dir: /home/docker_user/pie
     volumes:
-      - ./client:/home/docker_user/myapp/client
+      - ./client:/home/docker_user/pie/client
     command: "bin/server"
     depends_on:
       - rails
