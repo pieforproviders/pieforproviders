@@ -166,6 +166,7 @@
   "earnedRevenue": "Earned revenue",
   "estimatedRevenue": "Estimated revenue",
   "transportationRevenue": "Transportation revenue",
+  "familyFee": "Family fee",
 
   "onTrack": "On track",
   "sureBet": "Sure bet",
@@ -199,6 +200,7 @@
   "neEarnedRevenueDef": "The revenue you have already earned this month, based on the child’s attendance. This does not include the family fee.",
   "neEstimatedRevenueDef": "The subsidy revenue we predict you will receive, if you have perfect attendance for the rest of the month. This does not include the family fee.",
   "neTransportationRevenueDef": "Trips you are able to charge for that child. Transportation details come from the approval letter.",
+  "neFamilyFeeDef": "The amount the parent owes you for this child for the month.",
   "backToTop": "Back to top",
 
   "of": "of",

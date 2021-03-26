@@ -78,8 +78,8 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             </div>
             <div className="my-4">
               <span>
-                <span className="font-bold">{t('transportationRevenue')}</span>:{' '}
-                {t('neTransportationRevenueDef')}
+                <span className="font-bold">{t('familyFee')}</span>:{' '}
+                {t('neFamilyFeeDef')}
               </span>
             </div>
             <footer className="flex justify-end" id="definitions">

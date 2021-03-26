@@ -186,11 +186,11 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             render: renderDollarAmount
           },
           {
-            name: 'transportationRevenue',
+            name: 'familyFee',
             sorter: (a, b) =>
-              a.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0] -
-              b.transportationRevenue.match(/([0-9]+.[0-9]{2})/)[0],
-            render: text => replaceText(text, 'trips')
+              a.familyFee.match(/([0-9]+.[0-9]{2})/)[0] -
+              b.familyFee.match(/([0-9]+.[0-9]{2})/)[0],
+            render: renderDollarAmount
           }
         ]
       }
