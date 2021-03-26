@@ -200,7 +200,7 @@
   "neEarnedRevenueDef": "Los ingresos que ya has ganado este mes, basado en la asistencia del niño. Esto no incluye cuota familiar.",
   "neEstimatedRevenueDef": "Ingreso del subsidio que predecimos que recibirás, si tienes asistencia perfecta el resto del mes. Esto no incluye cuota familiar.",
   "neTransportationRevenueDef": "Viajes que puedes cobrar para ese niño. Los detalles de la transportación vienen de la carta de aprobación.",
-  "neFamilyFeeDef": "The amount the parent owes you for this child for the month.",
+  "neFamilyFeeDef": "La cantidad que los padres te deben para este niño este mes.",
   "backToTop": "Volver",
 
   "of": "de",
