@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+echo '---------------------------------'
+echo 'BEGIN: bundle exec rails db:setup'
+echo '---------------------------------'
+docker/run bundle exec rails db:setup
+echo '-------------------------------'
+echo 'END: bundle exec rails db:setup'
+echo '-------------------------------'

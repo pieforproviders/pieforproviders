@@ -1,0 +1,64 @@
+version: "3"
+
+# SPECIAL NOTES:
+# 1.  GEM_HOME is set to the tmp/gem_home directory in this app.
+#     Bundler is installed here.
+#     If you delete Bundler from this directory, you will get an error
+#     message about not having the correct version of bundler when you
+#     run "bundle install" or try to do just about anything else.
+# 2.  BUNDLE_PATH is set to the tmp/bundle directory in this app.
+#     The products of "bundle install" are saved here.  If you delete
+#     this directory, subsequent executions of the "bundle install"
+#     process will take longer.
+
+services:
+
+  mailcatcher:
+    image: yappabe/mailcatcher
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+
+  database:
+    image: postgres
+    env_file:
+      - .docker-env/development/database
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "15432:5432"
+
+  rails:
+    container_name: pie_rails
+    build: .
+    volumes:
+      - .:/home/docker_user/pie
+    environment:
+      - BUNDLE_PATH=/home/docker_user/pie/tmp/bundle
+      - BUNDLE_APP_CONFIG=/home/docker_user/pie/.bundle
+      - GEM_HOME=/home/docker_user/pie/tmp/gem_home
+    env_file:
+      - .docker-env/development/database
+    user: docker_user
+    command: bundle exec rails server --binding=0.0.0.0 --port=3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    links:
+      - mailcatcher
+
+  react:
+    container_name: pie_react
+    image: "node:14-alpine"
+    user: "node"
+    working_dir: /home/docker_user/pie
+    volumes:
+      - ./client:/home/docker_user/pie/client
+    command: "bin/server"
+    depends_on:
+      - rails
+
+volumes:
+  db_data:
