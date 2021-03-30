@@ -2277,10 +2277,10 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     color-convert "^2.0.1"
 
-antd-mask-input@^0.1.14:
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/antd-mask-input/-/antd-mask-input-0.1.14.tgz#328afcd6d1f3492704297a59bac854ca96bced0c"
-  integrity sha512-m/sFvypNakwiNmthPHkVcpjd4G6hUWF05JD/PYgfjb3ebZK4GlEPnkNH12CKMLG0lfS0Q2IqLixuPq5w04N30w==
+antd-mask-input@^0.1.15:
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/antd-mask-input/-/antd-mask-input-0.1.15.tgz#7a2b5035dfa0fcb1ecb409c40181b31cff1f738d"
+  integrity sha512-PXSD/chUJySWam2jj/NW1LHF3X92rJGecjU1BGfbdfrMGabVTNRsjNhO+xEUpjdi5VR/E60WAmcIKGnRFj6H6w==
 
 antd@^4.15.0:
   version "4.15.0"
