@@ -165,6 +165,7 @@
   "absences": "Absences",
   "earnedRevenue": "Earned revenue",
   "estimatedRevenue": "Estimated revenue",
+  "hoursAttended": "Hours attended",
   "transportationRevenue": "Transportation revenue",
 
   "onTrack": "On track",
@@ -199,6 +200,7 @@
   "neEarnedRevenueDef": "The revenue you have already earned this month, based on the child’s attendance. This does not include the family fee.",
   "neEstimatedRevenueDef": "The subsidy revenue we predict you will receive, if you have perfect attendance for the rest of the month. This does not include the family fee.",
   "neTransportationRevenueDef": "Trips you are able to charge for that child. Transportation details come from the approval letter.",
+  "neHoursAttendedDef": "Hours the child has attended this week. If you exceed your maximum hours for the week, you will not be paid by the state for those additional hours.",
   "backToTop": "Back to top",
 
   "of": "of",

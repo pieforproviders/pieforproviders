@@ -149,7 +149,8 @@ export function Dashboard() {
                   tag: childCase.attendance_risk ?? ''
                 },
                 hours: childCase.hours ?? '',
-                transportationRevenue: childCase.transportation_revenue ?? ''
+                transportationRevenue: childCase.transportation_revenue ?? '',
+                hoursAttended: childCase.hours_attended ?? ''
               }
             : {
                 key: `${index}-${childCase.full_name}`,

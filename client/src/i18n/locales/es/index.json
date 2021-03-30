@@ -165,6 +165,7 @@
   "absences": "Ausencias",
   "earnedRevenue": "Ingresos ganados",
   "estimatedRevenue": "Ingresos estimados",
+  "hoursAttended": "Horas atendidas",
   "transportationRevenue": "Ingresos de la transportación",
 
   "onTrack": "En camino",
@@ -199,6 +200,7 @@
   "neEarnedRevenueDef": "Los ingresos que ya has ganado este mes, basado en la asistencia del niño. Esto no incluye la cuota familiar.",
   "neEstimatedRevenueDef": "Ingresos estimados: Los ingresos del subsidio que predecimos que recibirás, si tienes asistencia perfecta por el resto del mes. Esto no incluye la cuota familiar.",
   "neTransportationRevenueDef": "Viajes que puedes cobrar para ese niño. Los detalles de la transportación vienen de la carta de aprobación.",
+  "neHoursAttendedDef": "Horas que el niño ha asistido esta semana. Si excedes tus hora máximas para la semana, no estarás pagado por el estado para esas horas adicionales.",
   "backToTop": "Volver",
 
   "of": "de",

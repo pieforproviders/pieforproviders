@@ -43,45 +43,27 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
               <Tag className={`orange-tag custom-tag mr-0`}>{t('atRisk')}</Tag>
               <span>{t('neAtRiskDef')}</span>
             </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('fullDays')}</span>:{' '}
-                {t('neFullDaysDef')}
-              </span>
-            </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('hours')}</span>:{' '}
-                {t('neHoursDef')}
-              </span>
-            </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('absences')}</span>:{' '}
-                {t('neAbsencesDef')}
-              </span>
-            </div>
+            {['fullDays', 'hours', 'hoursAttended', 'absences'].map((c, i) => (
+              <div key={i} className="my-4">
+                <span>
+                  <span className="font-bold">{t(c)}</span>:{' '}
+                  {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                </span>
+              </div>
+            ))}
             <div>
               <p className="h3-small text-black">{t('revenue')}</p>
             </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('earnedRevenue')}</span>:{' '}
-                {t('neEarnedRevenueDef')}
-              </span>
-            </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('estimatedRevenue')}</span>:{' '}
-                {t('neEstimatedRevenueDef')}
-              </span>
-            </div>
-            <div className="my-4">
-              <span>
-                <span className="font-bold">{t('transportationRevenue')}</span>:{' '}
-                {t('neTransportationRevenueDef')}
-              </span>
-            </div>
+            {['earnedRevenue', 'estimatedRevenue', 'transportationRevenue'].map(
+              (c, i) => (
+                <div key={i} className="my-4">
+                  <span>
+                    <span className="font-bold">{t(c)}</span>:{' '}
+                    {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                  </span>
+                </div>
+              )
+            )}
             <footer className="flex justify-end" id="definitions">
               <a href="#top">
                 <Button
