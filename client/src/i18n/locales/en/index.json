@@ -195,6 +195,7 @@
   "neExceededLimitDef": "The child has attended more days than they were approved for this month. You have earned the max monthly payment and will not be paid for additional days.",
   "neOnTrackDef": "The child is attending most or all of their days and you will likely receive most of the subsidy payment this month.",
   "neAtRiskDef": "The child has been absent frequently and you may not receive the full subsidy payment this month.",
+  "neAheadOfScheduleDef": "The child has had higher than expected attendance. You are at risk of exceeding your approved days for the child this month.",
   "neFullDaysDef": "Days with 6-10 hours attended. Approved days come from the approval letter.",
   "neHoursDef": "Days with less than 6 hours attended.",
   "neAbsencesDef": "You can be paid for up to five absences. Absences are included in your revenue calculations.",
