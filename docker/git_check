@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Run this script before entering "git add" and "git commit".
+
+docker/test
+
+docker/brakeman
+
+docker/cop
+
+echo '----------'
+echo 'git status'
+git status

@@ -21,7 +21,7 @@ describe('<DashboardDefinitions />', () => {
     expect(container).toHaveTextContent('Revenue')
     expect(container).toHaveTextContent('Earned revenue')
     expect(container).toHaveTextContent('Estimated revenue')
-    expect(container).toHaveTextContent('Transportation revenue')
+    expect(container).toHaveTextContent('Family fee')
     expect(container).toHaveTextContent('Back to top')
   })
 })

@@ -35,7 +35,7 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
-      expect(container).toHaveTextContent('Transportation revenue')
+      expect(container).toHaveTextContent('Family fee')
     })
   })
 })

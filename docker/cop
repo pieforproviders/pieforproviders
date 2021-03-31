@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# RuboCop
+echo '----------------------'
+echo 'bundle exec rubocop -D'
+docker/run bundle exec rubocop -D

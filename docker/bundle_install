@@ -1,0 +1,25 @@
+#!/bin/bash
+set +e
+
+# NOTE: /home/docker_user/pie/tmp/bundle is the BUNDLE_PATH directory specified in docker-compose.yml
+echo '--------------------------------------------------------------------------------------------------------------'
+echo 'mkdir -p /home/docker_user/pie/tmp/bundle && chown -R docker_user:docker_user /home/docker_user/pie/tmp/bundle'
+docker-compose run --rm -u root rails bash -c 'mkdir -p /home/docker_user/pie/tmp/bundle && chown -R docker_user:docker_user /home/docker_user/pie/tmp/bundle'
+
+set -e
+
+echo '--------------------------'
+echo 'BEGIN: yarn install (root)'
+echo '--------------------------'
+docker/run yarn install
+echo '------------------------'
+echo 'END: yarn install (root)'
+echo '------------------------'
+
+echo '---------------------'
+echo 'BEGIN: bundle install'
+echo '---------------------'
+docker/run bundle install
+echo '-------------------'
+echo 'END: bundle install'
+echo '-------------------'

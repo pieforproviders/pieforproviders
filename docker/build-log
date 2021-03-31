@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+# BEGIN: PostgreSQL setup
+exec_pg_setup () {
+  FILENAME=$1
+  if [[ ! -f $FILENAME ]]
+  then
+    docker/pg_setup_1
+  fi
+}
+
+exec_pg_setup '.docker-env/development/database'
+exec_pg_setup 'init.sql'
+# END: PostgreSQL setup
+
+# BEGIN: Get Ruby version
+cp .ruby-version tmp/.ruby-version-process
+sed -i.bak "s|ruby-||g" tmp/.ruby-version-process
+rm tmp/.ruby-version-process.bak
+RUBY_VERSION_HERE=`cat tmp/.ruby-version-process`
+rm tmp/.ruby-version-process
+# END: Get Ruby version
+
+# BEGIN: Configure .env
+cp .env.sample .env
+echo '' >> .env
+echo '' >> .env
+echo 'ALLOW_SEEDING=true' >> .env
+echo '' >> .env
+# END: Configre .env
+
+# Copy Dockerfile-template to Dockerfile
+cp Dockerfile-template Dockerfile
+
+# Fill in the Ruby version in the Dockerfile
+docker/replace_sif 'RUBY_VERSION' "$RUBY_VERSION_HERE" Dockerfile
+
+docker-compose down -v --remove-orphans
+wait
+echo '###########################'
+echo 'BEGIN: docker-compose build'
+echo '###########################'
+docker-compose build # Set up the Docker containers
+wait
+echo '##############################'
+echo 'FINISHED: docker-compose build'
+echo '##############################'
+
+docker/gem_install_bundler
+
+docker/bundle_install
+
+docker/rails_secret
+
+docker/rails_db_setup

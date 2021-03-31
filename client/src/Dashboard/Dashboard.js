@@ -150,7 +150,8 @@ export function Dashboard() {
                 },
                 hours: childCase.hours ?? '',
                 transportationRevenue: childCase.transportation_revenue ?? '',
-                hoursAttended: childCase.hours_attended ?? ''
+                hoursAttended: childCase.hours_attended ?? '',
+                familyFee: childCase.family_fee ?? ''
               }
             : {
                 key: `${index}-${childCase.full_name}`,
@@ -179,11 +180,7 @@ export function Dashboard() {
             earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
             estimatedRevenueTotal:
               acc.estimatedRevenueTotal + cv.estimatedRevenue,
-            transportationRevenueTotal:
-              acc.transportationRevenueTotal +
-              Number(
-                (cv.transportationRevenue.match(/([0-9]+.[0-9]{2})/) ?? [0])[0]
-              )
+            transportationRevenueTotal: acc.transportationRevenueTotal
           }
         }, summaryDataTotalsConfig['ne']),
         ...res.reduce((acc, cv) => {

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo '----------------------------'
+echo 'BEGIN: yarn install (client)'
+echo '----------------------------'
+yarn install
+echo '--------------------------'
+echo 'END: yarn install (client)'
+echo '--------------------------'
+echo ''
+echo '-------------------------'
+echo 'BEGIN: yarn lint (client)'
+echo '-------------------------'
+yarn lint
+echo '-----------------------'
+echo 'END: yarn lint (client)'
+echo '-----------------------'
+echo ''
+echo '------------------------------'
+echo 'BEGIN: yarn test-once (client)'
+echo '------------------------------'
+yarn test-once
+echo '----------------------------'
+echo 'END: yarn test-once (client)'
+echo '----------------------------'

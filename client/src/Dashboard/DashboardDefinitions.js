@@ -54,16 +54,14 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             <div>
               <p className="h3-small text-black">{t('revenue')}</p>
             </div>
-            {['earnedRevenue', 'estimatedRevenue', 'transportationRevenue'].map(
-              (c, i) => (
-                <div key={i} className="my-4">
-                  <span>
-                    <span className="font-bold">{t(c)}</span>:{' '}
-                    {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
-                  </span>
-                </div>
-              )
-            )}
+            {['earnedRevenue', 'estimatedRevenue', 'familyFee'].map((c, i) => (
+              <div key={i} className="my-4">
+                <span>
+                  <span className="font-bold">{t(c)}</span>:{' '}
+                  {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                </span>
+              </div>
+            ))}
             <footer className="flex justify-end" id="definitions">
               <a href="#top">
                 <Button

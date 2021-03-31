@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo '-------------------'
+echo 'docker-compose down'
+docker-compose down
+
+docker/bundle_install
+
+echo '---------------------------------'
+echo 'bundle exec rake db:migrate:reset'
+docker/run bundle exec rake db:migrate:reset
+
+echo '+++++++++++++++++++++++++++++++'
+echo 'BEGIN: bundle exec rake db:seed'
+echo '+++++++++++++++++++++++++++++++'
+docker/run bundle exec rake db:seed
+echo '+++++++++++++++++++++++++++++'
+echo 'END: bundle exec rake db:seed'
+echo '+++++++++++++++++++++++++++++'
+
+echo ''
+echo 'The Rails server has been stopped.'
+echo 'Please enter "docker/server" to start it up again.'
