@@ -86,6 +86,26 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <></>
     )
   }
+  const getCurrentWeek = () => {
+    const current = new Date()
+    const first = current.getDate() - current.getDay()
+    const last = first + 6
+    const firstDay = new Date(current.setDate(first)).toLocaleDateString(
+      'default',
+      {
+        month: 'short',
+        day: 'numeric'
+      }
+    )
+    const lastDay = new Date(current.setDate(last)).toLocaleDateString(
+      'default',
+      {
+        month: 'short',
+        day: 'numeric'
+      }
+    )
+    return `${firstDay} - ${lastDay}`
+  }
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
@@ -108,6 +128,12 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
                 />
               </a>
             </div>
+          ) : name === 'hoursAttended' ? (
+            <p>
+              {t(`${name}`)}
+              <br />
+              {getCurrentWeek()}
+            </p>
           ) : (
             t(`${name}`)
           ),
@@ -166,6 +192,12 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             name: 'absences',
             sorter: (a, b) =>
               a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
+            render: text => replaceText(text, 'of')
+          },
+          {
+            name: 'hoursAttended',
+            sorter: (a, b) =>
+              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
             render: text => replaceText(text, 'of')
           }
         ]

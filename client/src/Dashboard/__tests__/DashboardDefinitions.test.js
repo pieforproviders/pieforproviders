@@ -16,6 +16,7 @@ describe('<DashboardDefinitions />', () => {
     expect(container).toHaveTextContent('At risk')
     expect(container).toHaveTextContent('Full days')
     expect(container).toHaveTextContent('Hours')
+    expect(container).toHaveTextContent('Hours attended')
     expect(container).toHaveTextContent('Absences')
     expect(container).toHaveTextContent('Revenue')
     expect(container).toHaveTextContent('Earned revenue')

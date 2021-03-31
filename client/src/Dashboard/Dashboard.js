@@ -149,6 +149,8 @@ export function Dashboard() {
                   tag: childCase.attendance_risk ?? ''
                 },
                 hours: childCase.hours ?? '',
+                transportationRevenue: childCase.transportation_revenue ?? '',
+                hoursAttended: childCase.hours_attended ?? '',
                 familyFee: childCase.family_fee ?? ''
               }
             : {
