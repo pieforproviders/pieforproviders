@@ -14,6 +14,7 @@ describe('<DashboardDefinitions />', () => {
     expect(container).toHaveTextContent('Exceeded limit')
     expect(container).toHaveTextContent('On track')
     expect(container).toHaveTextContent('At risk')
+    expect(container).toHaveTextContent('Ahead of schedule')
     expect(container).toHaveTextContent('Full days')
     expect(container).toHaveTextContent('Hours')
     expect(container).toHaveTextContent('Hours attended')

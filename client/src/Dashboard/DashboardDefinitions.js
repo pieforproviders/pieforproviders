@@ -27,22 +27,27 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
             <div>
               <p className="h3-small text-black">{t('attendance')}</p>
             </div>
-            <div className="my-4">
-              <p>
-                <Tag className={`red-tag custom-tag mr-0`}>
-                  {t('exceededLimit')}
-                </Tag>{' '}
-                <span>{t('neExceededLimitDef')}</span>
-              </p>
-            </div>
-            <div className="my-4">
-              <Tag className={`green-tag custom-tag mr-0`}>{t('onTrack')}</Tag>
-              <span>{t('neOnTrackDef')}</span>
-            </div>
-            <div className="my-4">
-              <Tag className={`orange-tag custom-tag mr-0`}>{t('atRisk')}</Tag>
-              <span>{t('neAtRiskDef')}</span>
-            </div>
+            {[
+              { name: 'exceededLimit', color: 'red' },
+              { name: 'onTrack', color: 'green' },
+              { name: 'atRisk', color: 'orange' },
+              { name: 'aheadOfSchedule', color: 'green' }
+            ].map((tag, i) => (
+              <div key={i} className="my-4">
+                <p>
+                  <Tag className={`${tag.color}-tag custom-tag mr-0`}>
+                    {t(tag.name)}
+                  </Tag>{' '}
+                  <span>
+                    {t(
+                      `ne${
+                        tag.name.charAt(0).toUpperCase() + tag.name.slice(1)
+                      }Def`
+                    )}
+                  </span>
+                </p>
+              </div>
+            ))}
             {['fullDays', 'hours', 'hoursAttended', 'absences'].map((c, i) => (
               <div key={i} className="my-4">
                 <span>
