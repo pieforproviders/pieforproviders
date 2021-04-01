@@ -227,21 +227,6 @@ module Wonderschool
           include_examples 'creates records, attributes, does not stop job on failure to find child'
         end
 
-        context 'when a required field is missing from a string' do
-          let(:input) { missing_field_string }
-          include_examples 'failure to update child returns false'
-        end
-
-        context 'when a required field is missing from a stream' do
-          let(:input) { StringIO.new(missing_field_string) }
-          include_examples 'failure to update child returns false'
-        end
-
-        context 'when a required field is missing from a file' do
-          let(:input) { missing_field_csv }
-          include_examples 'failure to update child returns false'
-        end
-
         context 'when the csv data is the wrong format' do
           let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
 
