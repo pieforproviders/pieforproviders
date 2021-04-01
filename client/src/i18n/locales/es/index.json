@@ -200,7 +200,7 @@
   "neHoursDef": "Días con menos de 6 horas asistidos.",
   "neAbsencesDef": "Puedes estar pagado para hasta cinco ausencias. Ausencias están incluidos en tus cálculos de ingresos.",
   "neEarnedRevenueDef": "Los ingresos que ya has ganado este mes, basado en la asistencia del niño. Esto no incluye la cuota familiar.",
-  "neEstimatedRevenueDef": "Ingresos estimados: Los ingresos del subsidio que predecimos que recibirás, si tienes asistencia perfecta por el resto del mes. Esto no incluye la cuota familiar.",
+  "neEstimatedRevenueDef": "Los ingresos del subsidio que predecimos que recibirás, si tienes asistencia perfecta por el resto del mes. Esto no incluye la cuota familiar.",
   "neTransportationRevenueDef": "Viajes que puedes cobrar para ese niño. Los detalles de la transportación vienen de la carta de aprobación.",
   "neHoursAttendedDef": "Horas que el niño ha asistido esta semana. Si excedes tus hora máximas para la semana, no estarás pagado por el estado para esas horas adicionales.",
   "neFamilyFeeDef": "La cantidad que los padres te deben para este niño este mes.",
