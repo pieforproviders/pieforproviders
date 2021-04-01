@@ -8,10 +8,8 @@ class TemporaryNebraskaDashboardCase < UuidApplicationRecord
   validates :attendance_risk, presence: true
   validates :earned_revenue, presence: true
   validates :estimated_revenue, presence: true
-  validates :family_fee, presence: true
   validates :full_days, presence: true
   validates :hours, presence: true
-  validates :hours_attended, presence: true
 end
 
 # == Schema Information
