@@ -3,15 +3,6 @@
 # A temporary model to store dashboard data until we build calculations into the Nebraska Dashboard
 class TemporaryNebraskaDashboardCase < UuidApplicationRecord
   belongs_to :child
-
-  validates :absences, presence: true
-  validates :attendance_risk, presence: true
-  validates :earned_revenue, presence: true
-  validates :estimated_revenue, presence: true
-  validates :family_fee, presence: true
-  validates :full_days, presence: true
-  validates :hours, presence: true
-  validates :hours_attended, presence: true
 end
 
 # == Schema Information

@@ -47,8 +47,8 @@ module Wonderschool
       def log(type, message)
         case type
         when 'blank_contents'
-          Rails.logger.tagged('NECC Dashboard file cannot be processed') { Rails.logger.error message }
-        when 'failed_dashboard_cases'
+          Rails.logger.tagged('NECC Dashboard file is blank') { Rails.logger.error message }
+        else
           Rails.logger.tagged('NECC Dashboard cases failed to process') { Rails.logger.error message }
         end
       end
@@ -88,7 +88,7 @@ module Wonderschool
 
         true
       rescue ActiveRecord::RecordInvalid => e
-        log('error processing', e)
+        log('error_processing', e)
         false
       end
 

@@ -48,8 +48,8 @@ module Wonderschool
       def log(type, message)
         case type
         when 'blank_contents'
-          Rails.logger.tagged('NECC Onboarding file cannot be processed') { Rails.logger.error message }
-        when 'failed_subsidy_cases'
+          Rails.logger.tagged('NECC Onboarding file is blank') { Rails.logger.error message }
+        else
           Rails.logger.tagged('NECC Onboarding cases failed to process') { Rails.logger.error message }
         end
       end
@@ -88,7 +88,7 @@ module Wonderschool
           make_associated_case_records(subsidy_case, user)
         end
       rescue ActiveRecord::RecordInvalid => e
-        log('error processing', e.to_s)
+        log('error_processing', e.to_s)
         false
       end
 

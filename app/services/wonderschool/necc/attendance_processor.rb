@@ -43,8 +43,8 @@ module Wonderschool
       def log(type, message)
         case type
         when 'blank_contents'
-          Rails.logger.tagged('NECC Attendance file cannot be processed') { Rails.logger.error message }
-        when 'failed_rows'
+          Rails.logger.tagged('NECC Attendance file is blank') { Rails.logger.error message }
+        else
           Rails.logger.tagged('NECC Attendances failed to process') { Rails.logger.error message }
         end
       end

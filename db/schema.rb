@@ -68,10 +68,10 @@ ActiveRecord::Schema.define(version: 2021_03_21_154924) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "full_days"
-    t.decimal "hours"
+    t.integer "hours"
     t.boolean "special_needs_rate"
-    t.decimal "special_needs_daily_rate"
-    t.decimal "special_needs_hourly_rate"
+    t.boolean "special_needs_daily_rate"
+    t.boolean "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
@@ -136,8 +136,6 @@ ActiveRecord::Schema.define(version: 2021_03_21_154924) do
     t.date "expires_on", null: false
     t.decimal "family_fee", null: false
     t.decimal "allocated_family_fee", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
   end
 
