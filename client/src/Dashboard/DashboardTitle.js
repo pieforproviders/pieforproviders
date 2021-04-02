@@ -13,7 +13,6 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   // const [isDropdownVisible, setDropdownVisible] = useState(false)
   // const dropdownStyle = { color: '#006C9E' }
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
-  const [isSmallDevice, setIsSmallDevice] = useState(false)
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -26,35 +25,10 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
     }
   }, [dates, dateFilterValue])
 
-  useEffect(() => {
-    const mediaQueryList = window.matchMedia('(max-width: 560px)')
-    // addEventListener is unavailable for media query lists in Safari 13 or below
-    const isSafari13 = typeof mediaQueryList.addEventListener !== 'function'
-    const handleWidthChange = evt => setIsSmallDevice(evt.matches)
-
-    handleWidthChange(mediaQueryList)
-
-    if (isSafari13) {
-      mediaQueryList.addListener(handleWidthChange)
-    } else {
-      mediaQueryList.addEventListener('change', handleWidthChange)
-    }
-
-    return () => {
-      if (isSafari13) {
-        mediaQueryList.removeListener(handleWidthChange)
-      } else {
-        mediaQueryList.removeEventListener('change', handleWidthChange)
-      }
-    }
-  }, [])
-
   return (
     <div className="dashboard-title m-2">
-      <div className={`flex items-center mb-3 ${isSmallDevice && 'flex-col'}`}>
-        <Typography.Title
-          className={`dashboard-title mr-4 ${isSmallDevice && 'text-center'}`}
-        >
+      <div className="flex flex-col items-center mb-3 sm:flex-row">
+        <Typography.Title className="dashboard-title mr-4 text-center">
           {t('dashboardTitle')}
         </Typography.Title>
         {userState !== 'NE' ? (
@@ -89,7 +63,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             {matchAndReplaceDate(dates?.dateFilterValue?.displayDate ?? '')}
           </Button>
         ) : null}
-        <Typography.Text className={`text-gray3 ${isSmallDevice && 'mt-1'}`}>
+        <Typography.Text className={'text-gray3 mt-1 sm:mt-0'}>
           {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
         </Typography.Text>
       </div>
