@@ -63,7 +63,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             {matchAndReplaceDate(dates?.dateFilterValue?.displayDate ?? '')}
           </Button>
         ) : null}
-        <Typography.Text className={'text-gray3 mt-1 sm:mt-0'}>
+        <Typography.Text className="text-gray3 mt-1 sm:mt-0">
           {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
         </Typography.Text>
       </div>
