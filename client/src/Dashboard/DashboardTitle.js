@@ -27,8 +27,8 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
 
   return (
     <div className="dashboard-title m-2">
-      <div className="flex flex-col items-center mb-3 sm:flex-row">
-        <Typography.Title className="dashboard-title mr-4 text-center">
+      <div className="flex flex-col items-center mb-4 sm:mb-3 sm:flex-row">
+        <Typography.Title className="dashboard-title text-center sm:mr-4">
           {t('dashboardTitle')}
         </Typography.Title>
         {userState !== 'NE' ? (
@@ -47,7 +47,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
               setDateFilterValue(value)
             }}
             size="large"
-            className="date-filter-select mr-2 text-base"
+            className="date-filter-select my-2 text-base sm:mr-2 "
           >
             {(dates?.dateFilterMonths ?? []).map((month, k) => (
               <Option key={k} value={month.date}>
@@ -63,7 +63,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             {matchAndReplaceDate(dates?.dateFilterValue?.displayDate ?? '')}
           </Button>
         ) : null}
-        <Typography.Text className="text-gray3 mt-1 sm:mt-0">
+        <Typography.Text className="text-gray3">
           {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
         </Typography.Text>
       </div>
