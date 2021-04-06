@@ -180,16 +180,12 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           },
           {
             name: 'estimatedRevenue',
-            sorter: (a, b) => {
-              return a.estimatedRevenue - b.estimatedRevenue
-            },
+            sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
             render: renderDollarAmount
           },
           {
             name: 'familyFee',
-            sorter: (a, b) =>
-              a.familyFee.match(/([0-9]+.[0-9]{2})/)[0] -
-              b.familyFee.match(/([0-9]+.[0-9]{2})/)[0],
+            sorter: (a, b) => a.familyFee - b.familyFee,
             render: renderDollarAmount
           }
         ]
