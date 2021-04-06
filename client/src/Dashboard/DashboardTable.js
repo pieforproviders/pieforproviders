@@ -104,7 +104,15 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         day: 'numeric'
       }
     )
-    return `${firstDay} - ${lastDay}`
+
+    const matchAndReplaceDate = (dateString = '') => {
+      const match = dateString.match(/^[A-Za-z]+/)
+      return match
+        ? dateString.replace(match[0], t(match[0].toLowerCase()))
+        : ''
+    }
+
+    return `${matchAndReplaceDate(firstDay)} - ${matchAndReplaceDate(lastDay)}`
   }
 
   const generateColumns = columns => {
