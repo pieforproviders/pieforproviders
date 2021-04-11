@@ -1447,6 +1447,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
+"@mars/heroku-js-runtime-env@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@mars/heroku-js-runtime-env/-/heroku-js-runtime-env-3.0.2.tgz#e5b8480ed82b54046474a08a139b8d9560af3a28"
+  integrity sha1-5bhIDtgrVARkdKCKE5uNlWCvOig=
+
 "@material-ui/core@^4.11.3":
   version "4.11.3"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.3.tgz#f22e41775b0bd075e36a7a093d43951bf7f63850"
