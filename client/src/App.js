@@ -7,6 +7,7 @@ import {
   useLocation
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
@@ -21,6 +22,8 @@ import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
+const env = runtimeEnv()
+
 const Routes = () => {
   const { t } = useTranslation()
   const isAuthenticated = useAuthentication()
@@ -29,7 +32,7 @@ const Routes = () => {
 
   useEffect(() => {
     if (!window.gtag) return
-    window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
+    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
       page_path: location.pathname,
       user_id: user.id ?? ''
     })
