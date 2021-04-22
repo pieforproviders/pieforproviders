@@ -5802,10 +5802,10 @@ has@^1.0.0, has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-hash-anything@^1.2.2:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/hash-anything/-/hash-anything-1.3.1.tgz#6b9658efd4d5acc5ebe8c855b1f0cb1b29cc128e"
-  integrity sha512-5iJK7rvFjahE6hg1ygEE+jAjLpOZ0jfZXFBi9bPy2hqFqvP4vv3AFZI1V0/ucvDlXtP4pyRS0rT+5qsMSn7mMg==
+hash-anything@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/hash-anything/-/hash-anything-1.3.2.tgz#a0c90fa6d74d16f1073343e9def72df3edae1f99"
+  integrity sha512-4x3ciWKuieS/69hPYAwNkBkPANB1+SiE0jVN5hIDTVLq3DOqEe8eD4jpb5JR+RoKqseK8Hdh+XOsFeUoPOFMJA==
 
 hash-base@^3.0.0:
   version "3.1.0"
