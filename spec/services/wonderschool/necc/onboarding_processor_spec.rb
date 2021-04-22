@@ -254,15 +254,6 @@ module Wonderschool
           include_examples 'logs failed records'
         end
 
-        context 'with a valid stream' do
-          let(:source_data) { StringIO.new(valid_string) }
-          let(:data_with_invalid_records) { StringIO.new("#{valid_string}\n#{user_does_not_exist}") }
-          include_examples 'creates thomas'
-          include_examples 'creates becky'
-          include_examples 'adds model record count'
-          include_examples 'logs failed records'
-        end
-
         context 'with a valid file' do
           let(:source_data) { onboarding_csv }
           let(:data_with_invalid_records) { user_does_not_exist_csv }
@@ -301,22 +292,6 @@ module Wonderschool
             allow(Rails.logger).to receive(:tagged).and_yield
             expect(Rails.logger).to receive(:error).with(error_log)
             expect(described_class.new("wrong_headers,icon,face\nnope,yep,maybe").call).to eq(false)
-          end
-        end
-
-        context 'when the csv data is the wrong format from a stream' do
-          let(:source_data) { StringIO.new(invalid_string) }
-          let(:error_log) { [[%w[wrong_headers nope], %w[icon yep], %w[face maybe]]].flatten.to_s }
-          it 'returns false' do
-            expect(stubbed_client).to receive(:put_object).with(
-              {
-                bucket: archive_bucket,
-                body: error_log, key: file_name
-              }
-            )
-            allow(Rails.logger).to receive(:tagged).and_yield
-            expect(Rails.logger).to receive(:error).with(error_log)
-            expect(described_class.new(StringIO.new("wrong_headers,icon,face\nnope,yep,maybe")).call).to eq(false)
           end
         end
       end
