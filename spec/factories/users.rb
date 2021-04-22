@@ -21,7 +21,9 @@ FactoryBot.define do
     admin { false }
 
     factory :confirmed_user do
-      before(:create, &:skip_confirmation!)
+      before(:create) do |user|
+        user.skip_confirmation!
+      end
       confirmed_at { Time.zone.at(rand * Time.now.to_i) }
     end
 
@@ -30,7 +32,9 @@ FactoryBot.define do
     end
 
     factory :admin do
-      before(:create, &:skip_confirmation!)
+      before(:create) do |user|
+        user.skip_confirmation!
+      end
       confirmed_at { Time.zone.at(rand * Time.now.to_i) }
       admin { true }
     end

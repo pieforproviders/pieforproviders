@@ -21,8 +21,7 @@ module Wonderschool
       private
 
       def read_contents
-        contents = convert_by_type
-
+        contents ||= csv_contents
         log('blank_contents', @input.to_s) and return false if contents.blank?
 
         failed_dashboard_cases = []
@@ -34,14 +33,6 @@ module Wonderschool
           return false
         end
         contents.to_s
-      end
-
-      def convert_by_type
-        if [String, StringIO].member?(@input.class)
-          parse_string_to_csv
-        elsif File.file?(@input.to_s)
-          read_csv_file
-        end
       end
 
       def log(type, message)
@@ -57,23 +48,15 @@ module Wonderschool
         @storage_client.put_object({ bucket: archive_bucket, body: data, key: file_name })
       end
 
-      def read_csv_file
-        CSV.read(
-          @input,
-          headers: true,
-          return_headers: false,
-          skip_lines: /^(?:,\s*)+$/,
-          unconverted_fields: %i[child_id],
-          converters: %i[date]
-        )
-      end
+      def csv_contents
+        return false if @input.is_a?(Pathname) && !File.exist?(@input)
 
-      def parse_string_to_csv
+        contents = @input.is_a?(Pathname) ? File.read(@input.to_s) : @input
         CSV.parse(
-          @input,
+          contents,
           headers: true,
           return_headers: false,
-          skip_lines: /^(?:,\s*)+$/,
+          skip_lines: /^(,*|\s*)$/,
           unconverted_fields: %i[child_id],
           converters: %i[date]
         )

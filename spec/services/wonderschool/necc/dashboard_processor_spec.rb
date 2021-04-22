@@ -217,11 +217,6 @@ module Wonderschool
           include_examples 'creates records, attributes, does not stop job on failure to find child'
         end
 
-        context 'with a valid stream' do
-          let(:input) { StringIO.new(valid_string) }
-          include_examples 'creates records, attributes, does not stop job on failure to find child'
-        end
-
         context 'with a valid file' do
           let(:input) { dashboard_csv }
           include_examples 'creates records, attributes, does not stop job on failure to find child'
@@ -232,11 +227,6 @@ module Wonderschool
 
           context 'from a string' do
             let(:invalid_input) { "wrong_headers,icon,face\nnope,yep,maybe" }
-            include_examples 'invalid input returns false'
-          end
-
-          context 'from a stream' do
-            let(:invalid_input) { StringIO.new("wrong_headers,icon,face\nnope,yep,maybe") }
             include_examples 'invalid input returns false'
           end
 
