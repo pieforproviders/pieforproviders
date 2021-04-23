@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.6'
+ruby '3.0.1'
 
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'
@@ -12,7 +12,7 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 1.8'
+gem 'good_job', '~> 1.9'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
@@ -37,7 +37,7 @@ gem 'rswag-ui', '>= 2.3.0'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'cypress-on-rails', '~> 1.9'
+  gem 'cypress-on-rails', '~> 1.10'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'

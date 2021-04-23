@@ -1,9 +1,11 @@
 import Appsignal from '@appsignal/javascript'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 
+const env = runtimeEnv()
 let appSignal
-if (process.env.REACT_APP_APPSIGNAL_KEY) {
+if (env.REACT_APP_APPSIGNAL_KEY) {
   appSignal = new Appsignal({
-    key: process.env.REACT_APP_APPSIGNAL_KEY
+    key: env.REACT_APP_APPSIGNAL_KEY
   })
 }
 

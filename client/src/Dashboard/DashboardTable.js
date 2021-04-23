@@ -54,7 +54,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{fullday.text.replace('of', t('of'))}</p>
+          <p className="mb-1">{fullday.text.split(' ')[0]}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
@@ -104,7 +104,15 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         day: 'numeric'
       }
     )
-    return `${firstDay} - ${lastDay}`
+
+    const matchAndReplaceDate = (dateString = '') => {
+      const match = dateString.match(/^[A-Za-z]+/)
+      return match
+        ? dateString.replace(match[0], t(match[0].toLowerCase()))
+        : ''
+    }
+
+    return `${matchAndReplaceDate(firstDay)} - ${matchAndReplaceDate(lastDay)}`
   }
 
   const generateColumns = columns => {
@@ -186,7 +194,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             name: 'hours',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: text => replaceText(text, 'of')
+            render: text => text.split(' ')[0]
           },
           {
             name: 'absences',
@@ -212,16 +220,12 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           },
           {
             name: 'estimatedRevenue',
-            sorter: (a, b) => {
-              return a.estimatedRevenue - b.estimatedRevenue
-            },
+            sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
             render: renderDollarAmount
           },
           {
             name: 'familyFee',
-            sorter: (a, b) =>
-              a.familyFee.match(/([0-9]+.[0-9]{2})/)[0] -
-              b.familyFee.match(/([0-9]+.[0-9]{2})/)[0],
+            sorter: (a, b) => a.familyFee - b.familyFee,
             render: renderDollarAmount
           }
         ]
