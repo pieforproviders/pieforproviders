@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { sendSpan } from '../_utils/appSignal'
 import { withTranslation } from 'react-i18next'
+import { ErrorDisplay } from '../_shared'
 
 class ErrorBoundary extends Component {
   constructor(props) {
@@ -26,10 +27,7 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    if (this.state.hasError) {
-      // TODO: add some language here for error handling for users
-      return <div>Something went wrong.</div>
-    }
+    if (this.state.hasError) return <ErrorDisplay />
 
     return this.props.children
   }
