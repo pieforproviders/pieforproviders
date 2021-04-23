@@ -16,7 +16,7 @@
       "url": "heroku/ruby"
     },
     {
-      "url": "create-react-app-inner-buildpack"
+      "url": "mars/create-react-app-inner-buildpack"
     }
   ],
   "scripts": {
