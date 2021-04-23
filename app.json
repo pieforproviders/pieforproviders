@@ -13,9 +13,6 @@
       "url": "heroku/nodejs"
     },
     {
-      "url": "https://github.com/mars/create-react-app-inner-buildpack"
-    },
-    {
       "url": "heroku/ruby"
     }
   ],
