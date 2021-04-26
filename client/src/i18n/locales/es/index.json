@@ -130,8 +130,10 @@
   "copay": "Copago",
   "copayFrequency": "Frecuencia de copago",
 
-  "notFound": "404: No se encuentra",
-  "goBackHome": "Ve al inicio",
+  "oops": "¡Ups!",
+  "notFound": "Lo sentimos, pero parece que algo salió mal de parte de nosotros. Por favor regresa a tu tablero para continuar.",
+  "goBack": "Volver",
+  "notFoundImageAltText": "Tarta y bebidas",
 
   "dashboardTitle": "Tu pantalla principal",
   "revenueProjections": "Predicción de ingresos en tiempo real basada en datos de asistencia",

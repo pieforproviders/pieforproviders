@@ -130,8 +130,10 @@
   "copay": "Co-pay",
   "copayFrequency": "Co-pay frequency",
 
-  "notFound": "404: Not found",
-  "goBackHome": "Back home",
+  "oops": "Oops!",
+  "notFound": "We’re sorry, but it looks like something went wrong on our end. Please return to your dashboard to continue.",
+  "goBack": "Go back",
+  "notFoundImageAltText": "Pie and drinks",
 
   "dashboardTitle": "Your dashboard",
   "revenueProjections": "Real-time revenue projections based on attendance data.",

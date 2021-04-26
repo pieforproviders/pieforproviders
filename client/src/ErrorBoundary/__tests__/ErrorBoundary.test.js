@@ -24,7 +24,7 @@ describe('Error Boundary', () => {
     } finally {
       window.removeEventListener('error', handleTopLevelError)
     }
-    expect(container).toHaveTextContent('Something went wrong.')
+    expect(container).toHaveTextContent('Oops!')
     expect(topLevelErrors.length).toBe(1)
   })
 })
