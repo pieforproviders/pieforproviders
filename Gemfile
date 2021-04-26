@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.6.6'
+ruby '3.0.1'
 
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'
@@ -12,7 +12,7 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 1.8'
+gem 'good_job', '~> 1.9'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'

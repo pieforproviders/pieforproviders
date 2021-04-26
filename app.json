@@ -1,7 +1,10 @@
 {
   "name": "Pie for Providers",
   "description": "Pie for Providers App",
-  "addons": ["heroku-postgresql:hobby-dev", "papertrail"],
+  "addons": [
+    "heroku-postgresql:hobby-dev",
+    "papertrail"
+  ],
   "env": {
     "RAILS_ENV": "production"
   },

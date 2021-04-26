@@ -64,7 +64,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{fullday.text.replace('of', t('of'))}</p>
+          <p className="mb-1">{fullday.text.split(' ')[0]}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
@@ -226,7 +226,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             name: 'hours',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: text => replaceText(text, 'of')
+            render: text => text.split(' ')[0]
           },
           {
             name: 'absences',
