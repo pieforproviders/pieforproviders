@@ -1,14 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Table, Tag } from 'antd'
+import { Button, DatePicker, Modal, Select, Table, Tag } from 'antd'
+// import DatePicker from '_shared/DatePicker'
+import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
+import vector from '_assets/vector.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
+import '_assets/styles/select-overrides.css'
 
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
+  const [isMIModalVisible, setIsMIModalVisible] = useState(false)
+  const [selectedChild, setSelectedChild] = useState('')
+  const [inactiveDate, setInactiveDate] = useState(dayjs())
+  const [inactiveReason, setInactiveReason] = useState(null)
+  const [inactiveCases, setInactiveCases] = useState([])
+
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -164,6 +174,28 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     <div>{text.replace(translation, t(translation))}</div>
   )
 
+  const handleInactiveClick = record => {
+    setSelectedChild(record)
+    setIsMIModalVisible(true)
+  }
+
+  const handleMIModalOk = () => {
+    // make API call to set child as inactive
+    setInactiveCases(inactiveCases.concat(selectedChild.key))
+    setSelectedChild('')
+    // set these as niull only after making the api call with these values
+    setInactiveReason(null)
+    setInactiveDate(null)
+    setIsMIModalVisible(false)
+  }
+
+  const handleMIModalCancel = () => {
+    setSelectedChild('')
+    setInactiveReason(null)
+    setInactiveDate(null)
+    setIsMIModalVisible(false)
+  }
+
   const columnConfig = {
     ne: [
       {
@@ -229,7 +261,33 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             render: renderDollarAmount
           }
         ]
-      }
+      },
+      {
+        children: [
+          {
+            name: 'actions',
+            render: (text, record) => {
+              if (inactiveCases.includes(record.key)) {
+                debugger
+                return <div> INACTIVE BOOP</div>
+              }
+              return (
+                <div>
+                  <Button
+                    type="link"
+                    className="flex items-start"
+                    onClick={() => handleInactiveClick(record)}
+                  >
+                    <img src={vector} className="mr-2" />
+                    Mark inactive
+                  </Button>
+                </div>
+              )
+            },
+            width: 175
+          }
+        ]
+      },
     ],
     default: [
       {
@@ -264,26 +322,85 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     ]
   }
 
+  const datePickerProps =
+    isMIModalVisible && !inactiveDate ? { value: inactiveDate } : {}
+
   return (
-    <Table
-      dataSource={tableData}
-      columns={
-        userState === 'NE'
-          ? generateColumns(columnConfig['ne'])
-          : generateColumns(columnConfig['default'])
-      }
-      bordered={true}
-      size={'medium'}
-      pagination={false}
-      sticky
-      className="dashboard-table"
-      scroll={{ x: 'max-content' }}
-      locale={{
-        triggerDesc: t('sortDesc'),
-        triggerAsc: t('sortAsc'),
-        cancelSort: t('sortCancel')
-      }}
-    />
+    <>
+      <Table
+        dataSource={tableData}
+        columns={
+          userState === 'NE'
+            ? generateColumns(columnConfig['ne'])
+            : generateColumns(columnConfig['default'])
+        }
+        bordered={true}
+        size={'medium'}
+        pagination={false}
+        sticky
+        className="dashboard-table"
+        scroll={{ x: 'max-content' }}
+        locale={{
+          triggerDesc: t('sortDesc'),
+          triggerAsc: t('sortAsc'),
+          cancelSort: t('sortCancel')
+        }}
+      />
+      <Modal
+        title={
+          <div className="text-gray9 font-semibold text-lg">
+            <p>Mark Inactive: {selectedChild.child?.childName}</p>
+          </div>
+        }
+        visible={isMIModalVisible}
+        onOk={handleMIModalOk}
+        onCancel={handleMIModalCancel}
+        footer={[
+          <Button key="cancelModal" onClick={handleMIModalCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="okModal"
+            disabled={inactiveDate && inactiveReason ? false : true}
+            onClick={handleMIModalOk}
+            type="primary"
+          >
+            Mark Inactive
+          </Button>
+        ]}
+      >
+        <p className="text-gray8 text-base">
+          {t('markInactiveInfo1')} {t('markInactiveInfo2')}
+        </p>
+        <Select
+          className="inactive-select"
+          placeholder="Reason for making inactive"
+          bordered={false}
+          onChange={value => setInactiveReason(value)}
+        >
+          <Select.Option value="no longer in my care">
+            {t('inactiveReason1')}
+          </Select.Option>
+          <Select.Option value="no longer recieving subsidies">
+            {t('inactiveReason2')}
+          </Select.Option>
+          <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
+        </Select>
+        <p className="text-gray8 text-base mb-3">
+          {t('markInactiveCalendarPrompt')}
+        </p>
+        <DatePicker
+          style={{
+            width: '256px',
+            height: '40px',
+            border: '1px solid #D9D9D9',
+            color: '#BFBFBF'
+          }}
+          onChange={(_, dateString) => setInactiveDate(dateString)}
+          {...datePickerProps}
+        />
+      </Modal>
+    </>
   )
 }
 
