@@ -142,7 +142,6 @@
   "business": "Business",
   "minRevenue": "Min. revenue",
   "maxRevenue": "Max. revenue",
-  "guaranteedRevenue": "Earned revenue",
   "guaranteedRevenueDef": "Based on days already attended",
   "potentialRevenue": "Potential revenue",
   "potentialRevenueDef": "Based on attendance expected for the rest of the month",

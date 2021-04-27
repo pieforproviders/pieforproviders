@@ -142,7 +142,6 @@
   "business": "Negocio",
   "minRevenue": "Ingresos mínimos",
   "maxRevenue": "Ingresos máximos",
-  "guaranteedRevenue": "Ingresos ganados",
   "guaranteedRevenueDef": "Basado en días ya asistidos",
   "potentialRevenue": "Ingresos potenciales",
   "potentialRevenueDef": "Basado en asistencia anticipada por el resto del mes",

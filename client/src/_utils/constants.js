@@ -3,7 +3,7 @@ export const attendanceCategories = {
   ONTRACK: 'on_track',
   SUREBET: 'sure_bet',
   ATRISK: 'at_risk',
-  WILLNOTMEET: 'not_met', // TODO: does this string value need to stay synced with backend data model?
+  WILLNOTMEET: 'not_met', // TODO: keeping this old value because it needs to stay synced with backend data model.
   NOTENOUGHINFO: 'not_enough_info'
 }
 
