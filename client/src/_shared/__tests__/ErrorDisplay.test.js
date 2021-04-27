@@ -1,18 +1,13 @@
 import React from 'react'
 import { render, screen } from 'setupTests'
-import { MemoryRouter } from 'react-router-dom'
-import NotFound from '../NotFound'
+import { ErrorDisplay } from '../ErrorDisplay'
 
 const doRender = () => {
-  return render(
-    <MemoryRouter>
-      <NotFound />
-    </MemoryRouter>
-  )
+  return render(<ErrorDisplay />)
 }
 
-describe('<NotFound />', () => {
-  it('renders the NotFound page', () => {
+describe('<ErrorDisplay />', () => {
+  it('renders the ErrorDisplay component', () => {
     doRender()
     expect(screen.getByText(/Oops!/)).toBeDefined()
     expect(screen.getByText(/Go back/)).not.toHaveAttribute('disabled')
