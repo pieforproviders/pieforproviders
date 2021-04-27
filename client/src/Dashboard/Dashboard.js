@@ -96,7 +96,7 @@ export function Dashboard() {
     } else if (totals.guaranteedRevenueTotal >= 0) {
       return [
         {
-          title: t('guaranteedRevenue'),
+          title: t('earnedRevenue'),
           stat: `${currencyFormatter.format(
             totals.guaranteedRevenueTotal.toFixed()
           )}`,
