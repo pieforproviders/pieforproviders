@@ -24,7 +24,6 @@ class ChildBlueprint < Blueprinter::Base
     field :max_approved_revenue do |_child, _options|
       rand(1000.00..2000.00).round(2)
     end
-    exclude :id
   end
 
   view :nebraska_dashboard do
@@ -56,6 +55,5 @@ class ChildBlueprint < Blueprinter::Base
     field :hours_attended do |child|
       child.temporary_nebraska_dashboard_case&.hours_attended
     end
-    exclude :id
   end
 end

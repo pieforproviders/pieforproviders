@@ -20,6 +20,9 @@
               "type": "array",
               "items": {
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
                   "attendance_risk": {
                     "type": "string"
                   },
@@ -44,6 +47,7 @@
                 }
               },
               "required": [
+                "id",
                 "attendance_risk",
                 "attendance_rate",
                 "case_number",

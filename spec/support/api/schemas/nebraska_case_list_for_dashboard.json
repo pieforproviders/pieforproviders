@@ -20,6 +20,9 @@
               "type": "array",
               "items": {
                 "properties": {
+                  "id": {
+                    "type": "string"
+                  },
                   "absences": {
                     "anyOf": [
                       {
@@ -122,6 +125,7 @@
                   }
                 },
                 "required": [
+                  "id",
                   "attendance_risk",
                   "case_number",
                   "earned_revenue",
