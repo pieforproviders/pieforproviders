@@ -14,6 +14,7 @@ RSpec.describe ChildBlueprint do
     let(:blueprint) { ChildBlueprint.render(child, view: :illinois_dashboard) }
     it 'includes IL dashboard fields' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
+        'id',
         'attendance_rate',
         'attendance_risk',
         'case_number',
@@ -28,6 +29,7 @@ RSpec.describe ChildBlueprint do
     let(:blueprint) { ChildBlueprint.render(child, view: :nebraska_dashboard) }
     it 'includes the child name and all cases' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
+        'id',
         'absences',
         'attendance_risk',
         'case_number',
