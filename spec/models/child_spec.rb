@@ -213,6 +213,8 @@ end
 #  date_of_birth      :date             not null
 #  enrolled_in_school :boolean
 #  full_name          :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  business_id        :uuid             not null

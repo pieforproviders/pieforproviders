@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_subsidy_rule, except: [:destroy]
+  after_commit :associate_subsidy_rule, unless: Proc.new { |child| child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
@@ -11,6 +11,7 @@ class Child < UuidApplicationRecord
   has_many :approvals, through: :child_approvals
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
+
 
   validates :approvals, presence: true
   validates :date_of_birth, date_param: true
@@ -20,7 +21,16 @@ class Child < UuidApplicationRecord
   # this will try to validate with the incorrect dob even though the record has already failed
   validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }, unless: -> { errors }
 
+  REASONS = %w[
+    no_longer_in_my_care,
+    no_longer_recieving_subsidies,
+    other
+  ].freeze
+  validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
+  validates :last_active_date, date_param: true
+
   accepts_nested_attributes_for :approvals, :child_approvals
+  #TODO field: last_active_date? report the change in name in tickets.
 
   scope :active, -> { where(active: true) }
   scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
@@ -81,6 +91,8 @@ end
 #  date_of_birth      :date             not null
 #  enrolled_in_school :boolean
 #  full_name          :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  business_id        :uuid             not null

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_21_154924) do
+ActiveRecord::Schema.define(version: 2021_04_30_210817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(version: 2021_03_21_154924) do
     t.string "wonderschool_id"
     t.string "dhs_id"
     t.boolean "enrolled_in_school"
+    t.date "last_active_date"
+    t.string "inactive_reason"
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
