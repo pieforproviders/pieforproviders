@@ -54,6 +54,26 @@
           "type": "null"
         }
       ]
+    },
+    "last_active_date": {
+      "anyOf": [
+        {
+          "type": "date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "inactive_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "required": [
@@ -63,7 +83,9 @@
     "full_name",
     "id",
     "updated_at",
-    "business_id"
+    "business_id",
+    "last_active_date",
+    "inactive_reason"
   ],
   "type": "object"
 }

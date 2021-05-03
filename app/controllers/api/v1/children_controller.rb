@@ -4,8 +4,8 @@ module Api
   module V1
     # API for user children
     class ChildrenController < Api::V1::ApiController
-      before_action :set_child, only: %i[show update destroy]
-      before_action :authorize_user, only: %i[update destroy]
+      before_action :set_child, only: %i[show update]
+      before_action :authorize_user, only: %i[update]
 
       # GET /children
       def index

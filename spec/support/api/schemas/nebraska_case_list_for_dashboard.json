@@ -122,7 +122,27 @@
                         "type": "null"
                       }
                     ]
-                  }
+                  },
+                  "last_active_date": {
+                    "anyOf": [
+                      {
+                        "type": "date"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inactive_reason": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
                 },
                 "required": [
                   "id",
@@ -134,7 +154,9 @@
                   "full_days",
                   "full_name",
                   "hours",
-                  "hours_attended"
+                  "hours_attended",
+                  "last_active_date",
+                  "inactive_reason"
                 ]
               }
             },
