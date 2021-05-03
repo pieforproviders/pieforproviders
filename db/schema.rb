@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
     t.boolean "enrolled_in_school"
     t.date "last_active_date"
     t.string "inactive_reason"
+    t.boolean "deleted", default: false, null: false
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end

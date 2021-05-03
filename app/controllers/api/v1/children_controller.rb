@@ -4,8 +4,8 @@ module Api
   module V1
     # API for user children
     class ChildrenController < Api::V1::ApiController
-      before_action :set_child, only: %i[show update]
-      before_action :authorize_user, only: %i[update]
+      before_action :set_child, only: %i[show update destroy]
+      before_action :authorize_user, only: %i[update destroy]
 
       # GET /children
       def index
@@ -39,6 +39,12 @@ module Api
         end
       end
 
+      # DELETE /children/:id
+      def destroy
+        # soft delete
+        @child.update!(deleted: true)
+      end
+
       private
 
       def set_child
@@ -50,7 +56,9 @@ module Api
       end
 
       def child_params
-        attributes = [
+        attributes = []
+        attributes += %i[deleted] if current_user.admin?
+        attributes += [
           :date_of_birth,
           :full_name,
           :business_id,

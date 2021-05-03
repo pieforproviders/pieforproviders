@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_subsidy_rule, unless: proc { |child| child.active_previously_changed?(from: true, to: false) }
+  after_commit :associate_subsidy_rule, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
@@ -32,6 +32,7 @@ class Child < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
+  scope :not_deleted, -> { where(deleted: false) }
 
   delegate :user, to: :business
   delegate :state, to: :user

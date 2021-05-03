@@ -56,6 +56,7 @@ RSpec.describe Child, type: :model do
 
   context 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
+    let(:deleted_child) { create(:child, deleted: true) }
 
     it 'only displays active children in the active scope' do
       expect(Child.active).to include(child)
@@ -66,6 +67,12 @@ RSpec.describe Child, type: :model do
       expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(child)
       expect(Child.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
     end
+
+    it 'displays inactive children but not deleted children in the not_deleted scope' do
+      expect(Child.not_deleted).to include(inactive_child)
+      expect(Child.not_deleted).to not_include(deleted_child)
+    end
+
   end
 
   context 'delegated attributes' do

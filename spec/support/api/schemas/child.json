@@ -74,6 +74,9 @@
           "type": "null"
         }
       ]
+    },
+    "deleted": {
+      "type": "boolean"
     }
   },
   "required": [
@@ -85,7 +88,8 @@
     "updated_at",
     "business_id",
     "last_active_date",
-    "inactive_reason"
+    "inactive_reason",
+    "deleted"
   ],
   "type": "object"
 }

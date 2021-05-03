@@ -7,7 +7,7 @@ RSpec.describe ChildBlueprint do
   let(:blueprint) { ChildBlueprint.render(child) }
   context 'returns the correct fields when no view option is passed' do
     it 'only includes the ID' do
-      expect(JSON.parse(blueprint).keys).to contain_exactly('id')
+      expect(JSON.parse(blueprint).keys).to contain_exactly('id', 'active', 'last_active_date', 'inactive_reason')
     end
   end
   context 'returns the correct fields when IL view is requested' do

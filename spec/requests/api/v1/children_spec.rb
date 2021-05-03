@@ -295,4 +295,6 @@ RSpec.describe 'children API', type: :request do
   it_behaves_like 'admins and resource owners can retrieve a record', Child
 
   it_behaves_like 'admins and resource owners can update a record', Child, 'full_name', 'Padma Patil', nil
+
+  it_behaves_like 'admins and resource owners can delete a record', Child
 end
