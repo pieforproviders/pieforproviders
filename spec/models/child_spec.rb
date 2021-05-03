@@ -72,7 +72,6 @@ RSpec.describe Child, type: :model do
       expect(Child.not_deleted).to include(inactive_child)
       expect(Child.not_deleted).to not_include(deleted_child)
     end
-
   end
 
   context 'delegated attributes' do
