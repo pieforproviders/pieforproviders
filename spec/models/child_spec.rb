@@ -117,6 +117,7 @@ RSpec.describe Child, type: :model do
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do
+      expect(Child.not_deleted).to include(child)
       expect(Child.not_deleted).to include(inactive_child)
       expect(Child.not_deleted).to not_include(deleted_child)
     end
