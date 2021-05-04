@@ -83,12 +83,12 @@ RSpec.describe Child, type: :model do
   it 'validates that inactive_reason is a permitted value only' do
     child.save!
 
-    child.inactive_reason = "other"
+    child.inactive_reason = 'other'
     child.valid?
     expect(child.errors.messages).to eq({})
     expect(child).to be_valid
 
-    child.inactive_reason = "not a valid reason"
+    child.inactive_reason = 'not a valid reason'
     child.valid?
     expect(child.errors.messages.keys).to eq([:inactive_reason])
     expect(child.errors.messages[:inactive_reason]).to include('is not included in the list')
