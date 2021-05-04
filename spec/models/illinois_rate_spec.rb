@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe IllinoisSubsidyRule, type: :model do
-  it { should have_one(:subsidy_rule).dependent(:restrict_with_error) }
+RSpec.describe IllinoisRate, type: :model do
+  it { should have_one(:rate).dependent(:restrict_with_error) }
   it { should validate_numericality_of(:bronze_percentage) }
   it { should validate_numericality_of(:full_day_rate) }
   it { should validate_numericality_of(:gold_percentage) }
@@ -11,13 +11,13 @@ RSpec.describe IllinoisSubsidyRule, type: :model do
   it { should validate_numericality_of(:silver_percentage) }
 
   it 'factory should be valid (default; no args)' do
-    expect(build(:illinois_subsidy_rule)).to be_valid
+    expect(build(:illinois_rate)).to be_valid
   end
 end
 
 # == Schema Information
 #
-# Table name: illinois_subsidy_rules
+# Table name: illinois_rates
 #
 #  id                   :uuid             not null, primary key
 #  attendance_threshold :decimal(, )

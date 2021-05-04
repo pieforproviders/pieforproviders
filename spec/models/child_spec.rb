@@ -169,12 +169,12 @@ RSpec.describe Child, type: :model do
     # TODO
   end
 
-  it 'enqueues a subsidy rule association job' do
+  it 'enqueues a rate association job' do
     include ActiveJob::TestHelper
     ActiveJob::Base.queue_adapter = :test
 
     child.update!(date_of_birth: (Time.current - 6.years).to_date)
-    expect(SubsidyRuleAssociatorJob).to have_been_enqueued.exactly(:twice)
+    expect(RateAssociatorJob).to have_been_enqueued.exactly(:twice)
   end
 
   context 'associates approval with child if applicable' do
