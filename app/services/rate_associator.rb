@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-# Service to associate a child with a subsidy rule based on their age and
+# Service to associate a child with a rate based on their age and
 # county where care is received
-class SubsidyRuleAssociator
+class RateAssociator
   def initialize(child)
     @child = child
   end
 
   def call
-    associate_subsidy_rule
+    associate_rate
   end
 
   private
 
-  def associate_subsidy_rule
-    illinois_subsidy_rule_associator if state == 'IL'
+  def associate_rate
+    illinois_rate_associator if state == 'IL'
   end
 
   def county
@@ -29,8 +29,8 @@ class SubsidyRuleAssociator
     Time.current
   end
 
-  def subsidy_rule
-    SubsidyRule.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
+  def rate
+    Rate.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
   end
 
   def age
@@ -40,7 +40,7 @@ class SubsidyRuleAssociator
     birthday_passed ? years_since_birth : years_since_birth - 1
   end
 
-  def illinois_subsidy_rule_associator
-    @child.active_child_approval(today).update!(subsidy_rule: subsidy_rule)
+  def illinois_rate_associator
+    @child.active_child_approval(today).update!(rate: rate)
   end
 end

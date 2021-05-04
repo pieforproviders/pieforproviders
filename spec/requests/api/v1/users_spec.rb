@@ -122,12 +122,12 @@ RSpec.describe 'users API', type: :request do
           create_list(:child_in_illinois, count, :with_two_attendances,
                       non_owner_attributes.merge(deleted: true, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
-        let(:subsidy_rule) { create(:subsidy_rule_for_illinois, :fifty_percent) }
+        let(:rate) { create(:rate_for_illinois, :fifty_percent) }
         let(:first_child) { owner_records.first }
         let(:last_child) { owner_records.last }
         before do
           ([expired_approval, current_approval] + expired_approvals + current_approvals).each do |approval|
-            approval.children.each { |child| child.active_child_approval(Time.current).update!(subsidy_rule: subsidy_rule) }
+            approval.children.each { |child| child.active_child_approval(Time.current).update!(rate: rate) }
           end
         end
 

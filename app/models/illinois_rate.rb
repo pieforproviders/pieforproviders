@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Subsidy rules that apply for Illinois
-class IllinoisSubsidyRule < UuidApplicationRecord
-  has_one :subsidy_rule, as: :subsidy_ruleable, dependent: :restrict_with_error
+class IllinoisRate < UuidApplicationRecord
+  has_one :rate, as: :state_rule, dependent: :restrict_with_error
 
   validates :bronze_percentage, numericality: true, allow_nil: true
   validates :full_day_rate, numericality: true, allow_nil: true
@@ -13,7 +13,7 @@ end
 
 # == Schema Information
 #
-# Table name: illinois_subsidy_rules
+# Table name: illinois_rates
 #
 #  id                   :uuid             not null, primary key
 #  attendance_threshold :decimal(, )
