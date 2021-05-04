@@ -113,6 +113,8 @@ RSpec.describe Child, type: :model do
 
     it 'only displays children approved for the requested date in the approved_for_date scope' do
       expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(child)
+      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
+      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
       expect(Child.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
     end
 
