@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Button, DatePicker, Modal, Select, Table, Tag } from 'antd'
-// import DatePicker from '_shared/DatePicker'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
+import grayVector from '_assets/gray-vector.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
@@ -18,12 +20,14 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const [inactiveDate, setInactiveDate] = useState(dayjs())
   const [inactiveReason, setInactiveReason] = useState(null)
   const [inactiveCases, setInactiveCases] = useState([])
-
+  const [sortedRows, setSortedRows] = useState([])
+  const { makeRequest } = useApiResponse()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2
   })
+  const { token } = useSelector(state => ({ token: state.auth.token }))
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   const onHeaderCell = () => {
@@ -36,7 +40,13 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     }
   }
 
-  const renderAttendanceRate = attendanceRate => {
+  const isInactive = record => (!record.active || inactiveCases.includes(record.key))
+
+  const renderAttendanceRate = (attendanceRate, record) => {
+    if (isInactive(record)) {
+      return '-'
+    }
+
     const createTag = (color, text) => (
       <Tag className={`${color}-tag custom-tag`}>
         {`${(attendanceRate.rate * 100).toFixed(1)}% - ${t(text)}`}
@@ -60,7 +70,11 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     }
   }
 
-  const renderFullDays = fullday => {
+  const renderFullDays = (fullday, record) => {
+    if (isInactive(record)) {
+      return '-'
+    }
+
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
@@ -83,10 +97,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     }
   }
 
-  const renderChild = child => {
+  const renderChild = (child, record) => {
     return child ? (
       <div>
-        <p className="text-lg mb-1">{child.childName}</p>
+        <p className="text-lg mb-1">{child.childName}{isInactive(record) ? ' (Inactive)' : ''}</p>
         <p className="flex flex-wrap mt-0.5">
           {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
           {child.cNumber}
@@ -166,9 +180,8 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     })
   }
 
-  function renderDollarAmount(num) {
-    return <div>{currencyFormatter.format(num)}</div>
-  }
+  const renderDollarAmount = (num, record) => (isInactive(record) ? '-' : <div>{currencyFormatter.format(num)}</div>)
+
 
   const replaceText = (text, translation) => (
     <div>{text.replace(translation, t(translation))}</div>
@@ -179,11 +192,26 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     setIsMIModalVisible(true)
   }
 
-  const handleMIModalOk = () => {
+  const handleMIModalOk = async () => {
     // make API call to set child as inactive
+    // const response = await makeRequest({
+    //   type: 'put',
+    //   url: '/api/v1/children/' + selectedChild?.child.id ?? '',
+    //   headers: {
+    //     Authorization: token
+    //   },
+    //   data: {
+    //     child: {
+    //       active: false,
+    //       inactive_date: inactiveDate,
+    //       inactive_reason: inactiveReason
+    //     }
+    //   }
+    // })
+
     setInactiveCases(inactiveCases.concat(selectedChild.key))
     setSelectedChild('')
-    // set these as niull only after making the api call with these values
+    // set these as null only after making the api call with these values
     setInactiveReason(null)
     setInactiveDate(null)
     setIsMIModalVisible(false)
@@ -226,19 +254,19 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             name: 'hours',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: text => text.split(' ')[0]
+            render: (text, record) => isInactive(record) ? '-' : text.split(' ')[0]
           },
           {
             name: 'absences',
             sorter: (a, b) =>
               a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
-            render: text => replaceText(text, 'of')
+            render: (text, record) => isInactive(record) ? '-' : replaceText(text, 'of')
           },
           {
             name: 'hoursAttended',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: text => replaceText(text, 'of')
+            render: (text, record) => isInactive(record) ? '-' : replaceText(text, 'of')
           }
         ]
       },
@@ -266,24 +294,19 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         children: [
           {
             name: 'actions',
-            render: (text, record) => {
-              if (inactiveCases.includes(record.key)) {
-                debugger
-                return <div> INACTIVE BOOP</div>
-              }
-              return (
+            render: (text, record) => (
                 <div>
                   <Button
+                    disabled={isInactive(record)}
                     type="link"
                     className="flex items-start"
                     onClick={() => handleInactiveClick(record)}
                   >
-                    <img src={vector} className="mr-2" />
+                    <img src={isInactive(record) ? grayVector : vector} className="mr-2" />
                     Mark inactive
                   </Button>
                 </div>
-              )
-            },
+              ),
             width: 175
           }
         ]
@@ -292,12 +315,17 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     default: [
       {
         name: 'childName',
-        sorter: (a, b) => columnSorter(a.childName, b.childName)
+        sorter: (a, b) => columnSorter(a.childName, b.childName),
+        render: (text, record) => isInactive(record) ? <div><p>{text}</p><p>'Inactive'</p></div> : text
       },
-      { name: 'cNumber', sorter: (a, b) => columnSorter(a.cNumber, b.cNumber) },
+      { name: 'cNumber',
+        sorter: (a, b) => columnSorter(a.cNumber, b.cNumber),
+        render: (text, record) => isInactive(record) ? '-' : text
+      },
       {
         name: 'business',
-        sorter: (a, b) => columnSorter(a.business, b.business)
+        sorter: (a, b) => columnSorter(a.business, b.business),
+        render: (text, record) => isInactive(record) ? '-' : text
       },
       {
         name: 'attendanceRate',
@@ -318,6 +346,25 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         name: 'maxApprovedRevenue',
         sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
         render: renderDollarAmount
+      },
+      {
+        name: 'actions',
+        render: (text, record) => {
+          return (
+            <div>
+              <Button
+                disabled={isInactive(record)}
+                type="link"
+                className="flex items-start"
+                onClick={() => handleInactiveClick(record)}
+              >
+                <img src={isInactive(record) ? grayVector : vector} className="mr-2" />
+                Mark inactive
+              </Button>
+            </div>
+          )
+        },
+        width: 175
       }
     ]
   }
@@ -325,10 +372,14 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const datePickerProps =
     isMIModalVisible && !inactiveDate ? { value: inactiveDate } : {}
 
+  useEffect(() => {
+    setSortedRows([...tableData].sort((a, b) => ((inactiveCases.includes(a.key) && inactiveCases.includes(b.key)) ? 0 : (inactiveCases.includes(a.key)) ? 1 : -1)))
+  }, [inactiveCases])
+
   return (
     <>
       <Table
-        dataSource={tableData}
+        dataSource={inactiveCases.length > 0 ? sortedRows : tableData}
         columns={
           userState === 'NE'
             ? generateColumns(columnConfig['ne'])
@@ -378,10 +429,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           bordered={false}
           onChange={value => setInactiveReason(value)}
         >
-          <Select.Option value="no longer in my care">
+          <Select.Option value="no_longer_in_my_care">
             {t('inactiveReason1')}
           </Select.Option>
-          <Select.Option value="no longer recieving subsidies">
+          <Select.Option value="no_longer_recieving_subsidies">
             {t('inactiveReason2')}
           </Select.Option>
           <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
