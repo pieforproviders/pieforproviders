@@ -133,9 +133,9 @@ export function Dashboard() {
     return res.flatMap(userResponse => {
       return userResponse.businesses.flatMap(business => {
         return business.cases.flatMap((childCase, index) => {
-          debugger
           return user.state === 'NE'
             ? {
+                id: childCase.id ?? '',
                 key: `${index}-${childCase.full_name}`,
                 absences: childCase.absences ?? '',
                 child: {
@@ -156,6 +156,7 @@ export function Dashboard() {
                 active: childCase.active ?? true
               }
             : {
+                id: childCase.id ?? '',
                 key: `${index}-${childCase.full_name}`,
                 childName: childCase.full_name ?? '',
                 cNumber: childCase.case_number ?? '',
