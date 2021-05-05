@@ -62,8 +62,8 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         return createTag('green', 'sureBet')
       case attendanceCategories.ATRISK:
         return createTag('orange', 'atRisk')
-      case attendanceCategories.NOTMET:
-        return createTag('orange', 'notMet')
+      case attendanceCategories.WILLNOTMEET:
+        return createTag('orange', 'willNotMeet')
       case attendanceCategories.NOTENOUGHINFO:
       default:
         return createTag('grey', 'notEnoughInfo')
@@ -333,7 +333,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         render: renderAttendanceRate
       },
       {
-        name: 'guaranteedRevenue',
+        name: 'earnedRevenue',
         sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
         render: renderDollarAmount
       },

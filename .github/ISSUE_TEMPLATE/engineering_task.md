@@ -10,6 +10,10 @@ assignees: ''
 ## 📋 Summary
 <!-- A clear and concise description of the needed work. (Ex. Extract the address conversion behavior in users#new to a service object) -->
 
+## 🇺🇸 States this change applies to
+- [ ] Nebraska
+- [ ] Illinois
+
 ## 💻 Implementation Details
 
 > **NOTE TO ENGINEERS**

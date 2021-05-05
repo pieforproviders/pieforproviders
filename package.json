@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "cypress": "^7.2.0",
-    "cypress-file-upload": "^5.0.6",
+    "cypress-file-upload": "^5.0.7",
     "dayjs": "^1.10.4",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.15.0",
