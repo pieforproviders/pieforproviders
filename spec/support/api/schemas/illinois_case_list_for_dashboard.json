@@ -43,6 +43,29 @@
                   },
                   "potential_revenue": {
                     "type": "decimal"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "last_active_date": {
+                    "anyOf": [
+                      {
+                        "type": "date"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "inactive_reason": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   }
                 }
               },
@@ -54,7 +77,10 @@
                 "full_name",
                 "guaranteed_revenue",
                 "max_approved_revenue",
-                "potential_revenue"
+                "potential_revenue",
+                "active",
+                "last_active_date",
+                "inactive_reason"
               ]
             },
             "name": {

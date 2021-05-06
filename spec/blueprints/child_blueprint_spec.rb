@@ -7,7 +7,7 @@ RSpec.describe ChildBlueprint do
   let(:blueprint) { ChildBlueprint.render(child) }
   context 'returns the correct fields when no view option is passed' do
     it 'only includes the ID' do
-      expect(JSON.parse(blueprint).keys).to contain_exactly('id')
+      expect(JSON.parse(blueprint).keys).to contain_exactly('id', 'active', 'last_active_date', 'inactive_reason')
     end
   end
   context 'returns the correct fields when IL view is requested' do
@@ -15,13 +15,16 @@ RSpec.describe ChildBlueprint do
     it 'includes IL dashboard fields' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
         'id',
+        'active',
         'attendance_rate',
         'attendance_risk',
         'case_number',
         'full_name',
         'guaranteed_revenue',
         'max_approved_revenue',
-        'potential_revenue'
+        'potential_revenue',
+        'last_active_date',
+        'inactive_reason'
       )
     end
   end
@@ -30,6 +33,7 @@ RSpec.describe ChildBlueprint do
     it 'includes the child name and all cases' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
         'id',
+        'active',
         'absences',
         'attendance_risk',
         'case_number',
@@ -39,7 +43,9 @@ RSpec.describe ChildBlueprint do
         'full_days',
         'full_name',
         'hours',
-        'hours_attended'
+        'hours_attended',
+        'last_active_date',
+        'inactive_reason'
       )
     end
   end
