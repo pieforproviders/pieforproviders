@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_210817) do
+ActiveRecord::Schema.define(version: 2021_05_05_233822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
   end
 
   create_table "child_approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "subsidy_rule_id"
     t.uuid "approval_id", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -73,9 +72,12 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
+    t.uuid "rate_id"
+    t.uuid "nebraska_rate_id"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
-    t.index ["subsidy_rule_id"], name: "index_child_approvals_on_subsidy_rule_id"
+    t.index ["nebraska_rate_id"], name: "index_child_approvals_on_nebraska_rate_id"
+    t.index ["rate_id"], name: "index_child_approvals_on_rate_id"
   end
 
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -122,7 +124,7 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
     t.index ["child_approval_id"], name: "index_illinois_approval_amounts_on_child_approval_id"
   end
 
-  create_table "illinois_subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "illinois_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "bronze_percentage"
     t.decimal "silver_percentage"
     t.decimal "gold_percentage"
@@ -144,7 +146,21 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
   end
 
-  create_table "subsidy_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "county", null: false
+    t.decimal "max_age", null: false
+    t.string "license_type", null: false
+    t.string "rate_type", null: false
+    t.decimal "qris_enhancement_threshold", null: false
+    t.decimal "special_needs_enhancement_threshold", null: false
+    t.decimal "accreditation_enhancement_threshold", null: false
+    t.date "effective_on", null: false
+    t.date "expires_on"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.date "effective_on"
     t.date "expires_on"
@@ -154,9 +170,9 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
     t.decimal "max_age", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "subsidy_ruleable_type"
-    t.uuid "subsidy_ruleable_id"
-    t.index ["subsidy_ruleable_type", "subsidy_ruleable_id"], name: "subsidy_ruleable_index"
+    t.string "state_rule_type"
+    t.uuid "state_rule_id"
+    t.index ["state_rule_type", "state_rule_id"], name: "state_rule_index"
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -214,7 +230,8 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "child_approvals", "subsidy_rules"
+  add_foreign_key "child_approvals", "nebraska_rates"
+  add_foreign_key "child_approvals", "rates"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
