@@ -4,6 +4,10 @@
 class ChildBlueprint < Blueprinter::Base
   identifier :id
 
+  field :active
+  field :last_active_date
+  field :inactive_reason
+
   view :illinois_dashboard do
     field :full_name
     field :case_number do |child, options|

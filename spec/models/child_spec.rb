@@ -47,6 +47,53 @@ RSpec.describe Child, type: :model do
     expect(child).to be_valid
   end
 
+  it 'validates that last_active_date is a date_param' do
+    child.save!
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
+
+    child.last_active_date = 'not a date'
+    child.valid?
+    expect(child.errors.messages.keys).to eq([:last_active_date])
+    expect(child.errors.messages[:last_active_date]).to include('no implicit conversion of nil into String')
+
+    child.last_active_date = 32.6
+    child.valid?
+    expect(child.errors.messages.keys).to eq([:last_active_date])
+    expect(child.errors.messages[:last_active_date]).to include('no implicit conversion of Float into String')
+    expect(child).not_to be_valid
+
+    child.last_active_date = '2021-02-01'
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
+
+    child.last_active_date = Date.new(2021, 12, 11)
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
+
+    child.last_active_date = Time.new(2021, 12, 11, 0, 0, 0, timezone)
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
+  end
+
+  it 'validates that inactive_reason is a permitted value only' do
+    child.save!
+
+    child.inactive_reason = 'other'
+    child.valid?
+    expect(child.errors.messages).to eq({})
+    expect(child).to be_valid
+
+    child.inactive_reason = 'not a valid reason'
+    child.valid?
+    expect(child.errors.messages.keys).to eq([:inactive_reason])
+    expect(child.errors.messages[:inactive_reason]).to include('is not included in the list')
+  end
+
   it 'factory should be valid (default; no args)' do
     expect(build(:child)).to be_valid
   end
@@ -56,15 +103,25 @@ RSpec.describe Child, type: :model do
 
   context 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
+    let(:deleted_child) { create(:child, deleted: true) }
 
     it 'only displays active children in the active scope' do
       expect(Child.active).to include(child)
       expect(Child.active).to not_include(inactive_child)
+      expect(Child.active).to include(deleted_child)
     end
 
     it 'only displays children approved for the requested date in the approved_for_date scope' do
       expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(child)
+      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
+      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
       expect(Child.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
+    end
+
+    it 'displays inactive children but not deleted children in the not_deleted scope' do
+      expect(Child.not_deleted).to include(child)
+      expect(Child.not_deleted).to include(inactive_child)
+      expect(Child.not_deleted).to not_include(deleted_child)
     end
   end
 
@@ -213,6 +270,8 @@ end
 #  date_of_birth      :date             not null
 #  enrolled_in_school :boolean
 #  full_name          :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  business_id        :uuid             not null
