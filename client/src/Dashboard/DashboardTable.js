@@ -231,7 +231,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       data: {
         child: {
           active: false,
-          inactive_date: inactiveDate,
+          last_active_date: inactiveDate,
           inactive_reason: inactiveReason
         }
       }
