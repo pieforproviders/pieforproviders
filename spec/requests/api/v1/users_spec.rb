@@ -112,15 +112,15 @@ RSpec.describe 'users API', type: :request do
         let!(:current_approval) { create(:approval, case_number: '1234567B', create_children: false) }
         let!(:current_approvals) { create_list(:approval, count, create_children: false) }
         let!(:owner_records) { create_list(:child_in_illinois, count, :with_three_attendances, owner_attributes.merge(approvals: [expired_approval, current_approval])) }
-        let!(:owner_inactive_records) do
-          create_list(:child_in_illinois, count, :with_two_attendances, owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
+        let!(:owner_deleted_records) do
+          create_list(:child_in_illinois, count, :with_two_attendances, owner_attributes.merge(deleted: true, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
         let!(:non_owner_records) do
           create_list(:child_in_illinois, count, :with_two_attendances, non_owner_attributes.merge(approvals: [expired_approvals.sample, current_approvals.sample]))
         end
-        let!(:non_owner_inactive_records) do
+        let!(:non_owner_deleted_records) do
           create_list(:child_in_illinois, count, :with_two_attendances,
-                      non_owner_attributes.merge(active: false, approvals: [expired_approvals.sample, current_approvals.sample]))
+                      non_owner_attributes.merge(deleted: true, approvals: [expired_approvals.sample, current_approvals.sample]))
         end
         let(:subsidy_rule) { create(:subsidy_rule_for_illinois, :fifty_percent) }
         let(:first_child) { owner_records.first }
@@ -384,7 +384,7 @@ RSpec.describe 'users API', type: :request do
           let!(:nebraska_owner) { create(:confirmed_user) }
           let!(:business) { create(:business, :nebraska, user: nebraska_owner) }
           let!(:owner_records) { create_list(:child, count, { business: business, approvals: [expired_approval, current_approval] }) }
-          let!(:owner_inactive_records) { create_list(:child, count, { business: business, active: false, approvals: [expired_approvals.sample, current_approvals.sample] }) }
+          let!(:owner_deleted_records) { create_list(:child, count, { business: business, deleted: true, approvals: [expired_approvals.sample, current_approvals.sample] }) }
           before do
             sign_in nebraska_owner
           end
