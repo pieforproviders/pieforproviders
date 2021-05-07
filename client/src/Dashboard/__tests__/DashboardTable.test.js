@@ -10,9 +10,9 @@ const doRender = (
 
 describe('<DashboardTable />', () => {
   it('renders the DashboardTable component', async () => {
+    const { container } = doRender()
     await waitFor(() => {
-      const { container } = doRender()
-      expect(screen.getAllByRole('columnheader').length).toEqual(7)
+      expect(screen.getAllByRole('columnheader').length).toEqual(8)
       expect(container).toHaveTextContent('Child name')
       expect(container).toHaveTextContent('Case number')
       expect(container).toHaveTextContent('Attendance rate')
@@ -22,12 +22,12 @@ describe('<DashboardTable />', () => {
   })
 
   it('renders the DashboardTable component for NE users', async () => {
+    const { container } = doRender({
+      tableData: [],
+      userState: 'NE',
+      setActiveKey: () => {}
+    })
     await waitFor(() => {
-      const { container } = doRender({
-        tableData: [],
-        userState: 'NE',
-        setActiveKey: () => {}
-      })
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
       expect(container).toHaveTextContent('Hours')
