@@ -2,6 +2,6 @@
 
 # Action Mailer allows you to send emails from your application using mailer classes and views.
 class ApplicationMailer < ActionMailer::Base
-  default from: ENV.fetch('SENDMAIL_USERNAME', '')
+  default from: Rails.application.config.sendmail_username
   layout 'mailer'
 end
