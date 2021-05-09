@@ -92,19 +92,19 @@ module Wonderschool
       # rubocop:enable Metrics/MethodLength
 
       def archive_bucket
-        ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
+        Rails.application.config.aws_necc_dashboard_archive_bucket
       end
 
       def akid
-        ENV.fetch('AWS_ACCESS_KEY_ID', '')
+        Rails.application.config.aws_access_key_id
       end
 
       def secret
-        ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
+        Rails.application.config.aws_secret_access_key
       end
 
       def region
-        ENV.fetch('AWS_REGION', '')
+        Rails.application.config.aws_region
       end
     end
   end

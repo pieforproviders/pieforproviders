@@ -25,12 +25,12 @@ module Wonderschool
         contents ||= csv_contents
         log('blank_contents', @input.to_s) and return false if contents.blank?
 
-        failed_subsidy_cases = []
-        contents.each { |subsidy_case| failed_subsidy_cases << subsidy_case unless process_onboarding_case(subsidy_case) }
+        failed_onboarding_cases = []
+        contents.each { |subsidy_case| failed_onboarding_cases << subsidy_case unless process_onboarding_case(subsidy_case) }
 
-        if failed_subsidy_cases.present?
-          log('failed_subsidy_cases', failed_subsidy_cases.flatten.to_s)
-          store('failed_subsidy_cases', failed_subsidy_cases.flatten.to_s)
+        if failed_onboarding_cases.present?
+          log('failed_onboarding_cases', failed_onboarding_cases.flatten.to_s)
+          store('failed_onboarding_cases', failed_onboarding_cases.flatten.to_s)
           return false
         end
         contents.to_s
@@ -40,7 +40,7 @@ module Wonderschool
         case type
         when 'blank_contents'
           Rails.logger.tagged('NECC Onboarding file cannot be processed') { Rails.logger.error message }
-        when 'failed_subsidy_cases'
+        when 'failed_onboarding_cases'
           Rails.logger.tagged('NECC Onboarding cases failed to process') { Rails.logger.error message }
         end
       end
@@ -177,19 +177,19 @@ module Wonderschool
       end
 
       def archive_bucket
-        ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
+        Rails.application.config.aws_necc_onboarding_archive_bucket
       end
 
       def akid
-        ENV.fetch('AWS_ACCESS_KEY_ID', '')
+        Rails.application.config.aws_access_key_id
       end
 
       def secret
-        ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
+        Rails.application.config.aws_secret_access_key
       end
 
       def region
-        ENV.fetch('AWS_REGION', '')
+        Rails.application.config.aws_region
       end
     end
     # rubocop:enable Metrics/ClassLength

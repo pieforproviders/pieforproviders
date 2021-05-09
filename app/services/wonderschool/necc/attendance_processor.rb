@@ -8,6 +8,10 @@ module Wonderschool
     class AttendanceProcessor
       def initialize(input)
         @input = input
+        @storage_client = Aws::S3::Client.new(
+          credentials: Aws::Credentials.new(akid, secret),
+          region: region
+        )
       end
 
       def call
@@ -20,32 +24,28 @@ module Wonderschool
         contents ||= csv_contents
         log('blank_contents', @input.to_s) and return false if contents.blank?
 
-        failed_rows = []
-        contents.each { |row| process_attendance(row) || failed_rows << row }
+        failed_attendances = []
+        contents.each { |row| process_attendance(row) || failed_attendances << row }
 
-        if failed_rows.present?
-          log('failed_rows', failed_rows.as_json)
-          false
-        else
-          contents.as_json
+        if failed_attendances.present?
+          log('failed_attendances', failed_attendances.flatten.to_s)
+          store('failed_attendances', failed_attendances.flatten.to_s)
+          return false
         end
-      end
-
-      def convert_by_type
-        if File.file?(@input.to_s)
-          read_csv_file
-        else
-          parse_string_to_csv
-        end
+        contents.to_s
       end
 
       def log(type, message)
         case type
         when 'blank_contents'
           Rails.logger.tagged('NECC Attendance file cannot be processed') { Rails.logger.error message }
-        when 'failed_rows'
+        when 'failed_attendances'
           Rails.logger.tagged('NECC Attendances failed to process') { Rails.logger.error message }
         end
+      end
+
+      def store(file_name, data)
+        @storage_client.put_object({ bucket: archive_bucket, body: data, key: file_name })
       end
 
       def csv_contents
@@ -75,6 +75,22 @@ module Wonderschool
         )
 
         true
+      end
+
+      def archive_bucket
+        Rails.application.config.aws_necc_attendance_archive_bucket
+      end
+
+      def akid
+        Rails.application.config.aws_access_key_id
+      end
+
+      def secret
+        Rails.application.config.aws_secret_access_key
+      end
+
+      def region
+        Rails.application.config.aws_region
       end
     end
   end

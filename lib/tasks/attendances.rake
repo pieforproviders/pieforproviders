@@ -5,7 +5,7 @@
 # attendances between the day it is run and the last attendance that was entered
 desc 'Generate attendances this month'
 task attendances: :environment do
-  if ENV.fetch('ALLOW_SEEDING', 'false') == 'true'
+  if Rails.application.config.allow_seeding
     generate_attendances
   else
     puts 'Error seeding attendances: this environment does not allow for seeding attendances'
