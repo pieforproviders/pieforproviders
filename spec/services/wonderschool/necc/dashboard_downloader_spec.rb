@@ -24,11 +24,8 @@ module Wonderschool
       describe '.call' do
         context 'when aws environment variables are set' do
           before(:each) do
-            allow(ENV).to receive(:fetch).with('AWS_NECC_DASHBOARD_BUCKET', '').and_return(source_bucket)
-            allow(ENV).to receive(:fetch).with('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '').and_return(archive_bucket)
-            allow(ENV).to receive(:fetch).with('AWS_ACCESS_KEY_ID', '').and_return('fake_key')
-            allow(ENV).to receive(:fetch).with('AWS_SECRET_ACCESS_KEY', '').and_return('fake_secret')
-            allow(ENV).to receive(:fetch).with('AWS_REGION', '').and_return('fake_region')
+            allow(Rails.application.config).to receive(:aws_necc_dashboard_bucket).and_return(source_bucket)
+            allow(Rails.application.config).to receive(:aws_necc_dashboard_archive_bucket).and_return(archive_bucket)
             allow(Aws::S3::Client).to receive(:new) { stubbed_client }
             allow(Wonderschool::Necc::DashboardProcessor).to receive(:new).with(dashboard_data).and_return(stubbed_processor)
           end

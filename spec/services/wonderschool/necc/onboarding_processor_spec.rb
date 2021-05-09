@@ -225,17 +225,14 @@ module Wonderschool
       end
 
       describe '.call' do
-        let!(:file_name) { 'failed_subsidy_cases' }
+        let!(:file_name) { 'failed_onboarding_cases' }
         let!(:archive_bucket) { 'archive_bucket' }
         let!(:stubbed_client) { double('AWS Client') }
         let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
         let!(:stubbed_object) { double('S3 Object') }
 
         before do
-          allow(ENV).to receive(:fetch).with('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '').and_return(archive_bucket)
-          allow(ENV).to receive(:fetch).with('AWS_ACCESS_KEY_ID', '').and_return('fake_key')
-          allow(ENV).to receive(:fetch).with('AWS_SECRET_ACCESS_KEY', '').and_return('fake_secret')
-          allow(ENV).to receive(:fetch).with('AWS_REGION', '').and_return('fake_region')
+          allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket).and_return(archive_bucket)
           allow(Aws::S3::Client).to receive(:new) { stubbed_client }
         end
 

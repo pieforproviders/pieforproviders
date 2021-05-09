@@ -47,11 +47,11 @@ module Wonderschool
       end
 
       def source_bucket
-        Rails.application.config.aws_necc_attendances_bucket
+        Rails.application.config.aws_necc_attendance_bucket
       end
 
       def archive_bucket
-        Rails.application.config.aws_necc_attendances_archive_bucket
+        Rails.application.config.aws_necc_attendance_archive_bucket
       end
 
       def akid
