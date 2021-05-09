@@ -24,7 +24,7 @@ module Wonderschool
       let(:error_log) do
         [
           [
-            ['child_id', '123456789'],
+            %w[child_id 123456789],
             ['checked_in_at', 'Sat, 06 Feb 2021 07:59:49AM'],
             ['checked_out_at', 'Sat, 06 Feb 2021 12:12:03PM']
           ]

@@ -31,9 +31,8 @@ module Wonderschool
           log('failed_attendances', failed_attendances.flatten.to_s)
           store('failed_attendances', failed_attendances.flatten.to_s)
           return false
-        else
-          contents.to_s
         end
+        contents.to_s
       end
 
       def log(type, message)
