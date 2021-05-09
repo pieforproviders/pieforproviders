@@ -39,7 +39,7 @@
     "arrowParens": "avoid"
   },
   "engines": {
-    "yarn": "1.22.5",
+    "yarn": ">=1.22.10",
     "npm": ">=6.13.4",
     "node": ">=12.14.1"
   },
@@ -47,12 +47,13 @@
     "cypress": "^7.2.0",
     "cypress-file-upload": "^5.0.7",
     "dayjs": "^1.10.4",
-    "eslint": "^6.6.0",
-    "eslint-config-prettier": "^6.15.0",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-cypress": "^2.11.3",
     "eslint-plugin-prettier": "^3.4.0",
     "faker": "^5.5.3",
     "prettier": "^2.2.1",
     "start-server-and-test": "^1.12.1"
-  }
+  },
+  "dependencies": {}
 }
