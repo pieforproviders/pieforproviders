@@ -14,4 +14,6 @@ export const fullDayCategories = {
   EXCEEDEDLIMIT: 'exceeded_limit'
 }
 
-export default { attendanceCategories, fullDayCategories }
+const constants = { attendanceCategories, fullDayCategories }
+
+export default constants
