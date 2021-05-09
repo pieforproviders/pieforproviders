@@ -13,6 +13,37 @@ import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from '_reducers/rootReducer'
 import dayjs from 'dayjs'
 
+// window.matchMedia isn't implemented by JSDOM, but the responsive parts of
+// the Antd React library make use of it, so we have to mock it:
+// https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
+// Object.defineProperty(global, 'matchMedia', {
+//   writable: true,
+//   value: jest.fn().mockImplementation(query => ({
+//     matches: false,
+//     media: query,
+//     onchange: null,
+//     addListener: jest.fn(), // deprecated
+//     removeListener: jest.fn(), // deprecated
+//     addEventListener: jest.fn(),
+//     removeEventListener: jest.fn(),
+//     dispatchEvent: jest.fn()
+//   }))
+// })
+
+// New Implementation of this fix: https://stackoverflow.com/a/65695824
+
+delete window.matchMedia
+window.matchMedia = query => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: jest.fn(), // deprecated
+  removeListener: jest.fn(), // deprecated
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  dispatchEvent: jest.fn()
+})
+
 function render(
   ui,
   {
