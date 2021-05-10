@@ -183,6 +183,39 @@ RSpec.describe 'users API', type: :request do
           end
         end
 
+        context 'include inactive child' do
+          before { sign_in owner }
+
+          response '200', 'active cases found' do
+            before do
+              first_child
+                .update!(active: false)
+            end
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'active') }.flatten).to include(false, true)
+            end
+          end
+        end
+
+        context 'exclude deleted child' do
+          before { sign_in owner }
+
+          response '200', 'active cases found' do
+            before do
+              last_child
+                .update!(deleted: true)
+            end
+
+            run_test! do
+              json = JSON.parse(response.body)
+              expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'id') }.flatten).to include(first_child.id)
+              expect(json.collect { |user| user.dig_and_collect('businesses', 'cases', 'id') }.flatten).not_to include(last_child.id)
+            end
+          end
+        end
+
         context 'with attendance risk calculations' do
           before { sign_in owner }
 
