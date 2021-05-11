@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-return unless ENV.fetch('ALLOW_SEEDING', 'false') == 'true'
+return unless Rails.application.config.allow_seeding
 
 require 'faker'
 

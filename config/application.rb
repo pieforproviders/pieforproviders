@@ -54,5 +54,18 @@ module App
     config.i18n.default_locale = :en
 
     config.active_job.queue_adapter = :good_job
+
+    # custom configuration
+    config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == true
+    config.aws_access_key_id = ENV.fetch('AWS_ACCESS_KEY_ID', '')
+    config.aws_secret_access_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
+    config.aws_region = ENV.fetch('AWS_REGION', '')
+    config.aws_necc_attendance_bucket = ENV.fetch('AWS_NECC_ATTENDANCES_BUCKET', '')
+    config.aws_necc_attendance_archive_bucket = ENV.fetch('AWS_NECC_ATTENDANCES_ARCHIVE_BUCKET', '')
+    config.aws_necc_dashboard_bucket = ENV.fetch('AWS_NECC_DASHBOARD_BUCKET', '')
+    config.aws_necc_dashboard_archive_bucket = ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
+    config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
+    config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
+    config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
   end
 end
