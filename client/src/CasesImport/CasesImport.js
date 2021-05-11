@@ -80,8 +80,7 @@ export function CasesImport() {
     },
     {
       language: 'es',
-      name:
-        'Pie.for.Providers.Plantilla.de.Hoja.de.Calculo.Espanol.v.10.5.xlsx',
+      name: 'Pie.for.Providers.Plantilla.de.Hoja.de.Calculo.Espanol.v.10.5.xlsx',
       text: 'Baja nuestra plantilla de hoja de cálculo en español'
     }
   ]
