@@ -18,6 +18,7 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Attendance rate')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Max. approved revenue')
+      expect(container).toHaveTextContent('Actions')
     })
   })
 
@@ -36,6 +37,7 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
+      expect(container).toHaveTextContent('Actions')
     })
   })
 })
