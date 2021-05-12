@@ -439,6 +439,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         </p>
         <Select
           className="inactive-select"
+          dropdownStyle={{ minWidth: `28%` }}
           placeholder="Reason for making inactive"
           bordered={false}
           onChange={value => setInactiveReason(value)}

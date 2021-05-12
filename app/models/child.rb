@@ -22,7 +22,7 @@ class Child < UuidApplicationRecord
 
   REASONS = %w[
     no_longer_in_my_care
-    no_longer_recieving_subsidies
+    no_longer_receiving_subsidies
     other
   ].freeze
 
