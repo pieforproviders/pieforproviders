@@ -15,3 +15,7 @@
  .ant-picker-input > input {
    color: #BFBFBF
  }
+
+ .ant-select-selection-selected-value {
+  width: 100%;
+}

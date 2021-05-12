@@ -220,7 +220,7 @@
   "markInactiveInfo2": "You will still be able to review past attendance and revenue.",
   "markInactiveReason": "Reason for marking inactive",
   "inactiveReason1": "No longer in my care",
-  "inactiveReason2": "No longer recieving subsidies",
+  "inactiveReason2": "No longer receiving subsidies",
   "inactiveReason3": "Other",
   "markInactiveCalendarPrompt": "Let us know when this child should become inactive."
 }
