@@ -5,45 +5,67 @@ require 'csv'
 module Wonderschool
   module Necc
     # downloads Attendance data exported from Wonderschool for the NECC partnership
-    class AttendanceDownloader
-      def call
-        download_attendance_exports
+    class AttendanceDownloader < S3DownloaderBase
+
+      def initialize()
+        super()
+        @logger_tag = 'NECC Attendances'
       end
 
       private
 
-      def download_attendance_exports
-        client = Aws::S3::Client.new(
-          credentials: Aws::Credentials.new(akid, secret),
-          region: region
-        )
-
-        file_names = client.list_objects_v2({ bucket: source_bucket })[:contents].map! { |file| file[:key] }
-
-        return log('not_found', source_bucket) if file_names.empty?
-
-        file_names.each do |file_name|
-          process_file(client, file_name)
-        end
-      end
-
-      def process_file(client, file_name)
-        contents = client.get_object({ bucket: source_bucket, key: file_name }).body
-        if Wonderschool::Necc::AttendanceProcessor.new(contents).call
-          log('success', file_name)
-          archive(client, file_name)
+      def process_file(file_name)
+        fetched = @client.get_object({ bucket: source_bucket, key: file_name }).body
+        if read_contents(fetched)
+          log(:info, "processed #{file_name}")
+          move_to_archive(@client, file_name)
         else
-          log('failed', file_name)
+          log(:error "failed to process #{file_name}")
         end
       end
 
-      def archive(client, file_name)
-        client.copy_object({ bucket: archive_bucket, copy_source: "#{source_bucket}/#{file_name}", key: file_name })
-        client.delete_object({ bucket: source_bucket, key: file_name })
+      def read_contents(fetched_obj)
+        contents ||= csv_contents(fetched_obj) #TODO: why is this ||=, when is contents already defined?
+        log(:error , "could not read: #{fetched_obj.to_s}", ) and return false if contents.blank?
+
+        failed_attendances = []
+        contents.each { |row| process_attendance(row) || failed_attendances << row }
+
+        if failed_attendances.present?
+          log(:error, "failed_attendances: #{failed_attendances.flatten.to_s}", )
+          store_in_archive('failed_attendances', failed_attendances.flatten.to_s)
+          #TODO : what? saving this to the same filename every time? Does S3 overwrite the file?
+          return false
+        end
+        contents.to_s
       end
 
-      def date
-        Time.current
+      def csv_contents(input)
+        return false if input.is_a?(Pathname) && !File.exist?(input)
+
+        contents = input.is_a?(Pathname) ? File.read(input.to_s) : input
+        CSV.parse(
+          contents,
+          headers: true,
+          return_headers: false,
+          skip_lines: /^(,*|\s*)$/,
+          unconverted_fields: %i[child_id],
+          converters: %i[date]
+        )
+      end
+
+      def process_attendance(row)
+        child = Child.find_by(wonderschool_id: row['child_id'])
+        return false unless child
+
+        check_in = row['checked_in_at']
+        check_out = row['checked_out_at']
+        return false unless child.attendances.find_or_create_by!(
+          child_approval: child.active_child_approval(check_in),
+          check_in: check_in,
+          check_out: check_out
+        )
+        true
       end
 
       def source_bucket
@@ -52,29 +74,6 @@ module Wonderschool
 
       def archive_bucket
         Rails.application.config.aws_necc_attendance_archive_bucket
-      end
-
-      def akid
-        Rails.application.config.aws_access_key_id
-      end
-
-      def secret
-        Rails.application.config.aws_secret_access_key
-      end
-
-      def region
-        Rails.application.config.aws_region
-      end
-
-      def log(type, message)
-        case type
-        when 'not_found'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.info "No file found in S3 bucket #{message} at #{Time.current.strftime('%m/%d/%Y %I:%M%p')}" }
-        when 'success'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.info message }
-        when 'failed'
-          Rails.logger.tagged('NECC Attendances') { Rails.logger.error message }
-        end
       end
     end
   end
