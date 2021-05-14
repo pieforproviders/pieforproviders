@@ -8,8 +8,7 @@ module Wonderschool
     class AttendanceDownloader < S3DownloaderBase
 
       def initialize()
-        super()
-        @logger_tag = 'NECC Attendances'
+        super('NECC Attendances')
       end
 
       private
@@ -20,7 +19,7 @@ module Wonderschool
           log(:info, "processed #{file_name}")
           move_to_archive(@client, file_name)
         else
-          log(:error "failed to process #{file_name}")
+          log(:error, "error while processing file: #{file_name}")
         end
       end
 
@@ -32,7 +31,7 @@ module Wonderschool
         contents.each { |row| process_attendance(row) || failed_attendances << row }
 
         if failed_attendances.present?
-          log(:error, "failed_attendances: #{failed_attendances.flatten.to_s}", )
+          log(:error, "failed on these inputs: #{failed_attendances.flatten.to_s}", )
           store_in_archive('failed_attendances', failed_attendances.flatten.to_s)
           #TODO : what? saving this to the same filename every time? Does S3 overwrite the file?
           return false
