@@ -63,18 +63,19 @@ module Wonderschool
       end
 
       def process_attendance(row)
-        child = Child.find_by(wonderschool_id: row['child_id'])
+        child = Child.find_by(wonderschool_id: row['child_id'], business: Business.find_by(name: row['school_name']))
         return false unless child
 
         check_in = row['checked_in_at']
         check_out = row['checked_out_at']
-        return false unless child.attendances.find_or_create_by!(
-          child_approval: child.active_child_approval(check_in),
-          check_in: check_in,
-          check_out: check_out
-        )
+
+        attendance = child.attendances.find_or_initialize_by(wonderschool_id: row['attendance_id'])
+        attendance.update!(child_approval: child.active_child_approval(check_in), check_in: check_in, check_out: check_out)
 
         true
+      rescue ActiveRecord::RecordInvalid => e
+        log('error processing', e)
+        false
       end
 
       def archive_bucket
