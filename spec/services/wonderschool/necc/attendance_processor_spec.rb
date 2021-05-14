@@ -4,7 +4,7 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
-    RSpec.describe AttendanceProcessor do
+    RSpec.describe AttendanceDownloader do
       let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv') }
       let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_invalid_format.csv') }
       let!(:valid_string) do
@@ -17,7 +17,7 @@ module Wonderschool
       let!(:second_child) { create(:necc_child, wonderschool_id: '987654321') }
       let!(:third_child) { create(:necc_child, wonderschool_id: '121212121') }
 
-      let!(:file_name) { 'failed_attendances' }
+      let!(:file_name) { 'failed_attendaninputces' }
       let!(:archive_bucket) { 'archive_bucket' }
       let!(:stubbed_client) { double('AWS Client') }
 
