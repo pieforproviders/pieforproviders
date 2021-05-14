@@ -56,7 +56,7 @@ module App
     config.active_job.queue_adapter = :good_job
 
     # custom configuration
-    config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == true
+    config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == "true"
     config.aws_access_key_id = ENV.fetch('AWS_ACCESS_KEY_ID', '')
     config.aws_secret_access_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
     config.aws_region = ENV.fetch('AWS_REGION', '')
