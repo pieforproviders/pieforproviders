@@ -55,6 +55,7 @@ module Wonderschool
         CSV.parse(
           contents,
           headers: true,
+          liberal_parsing: true,
           return_headers: false,
           skip_lines: /^(,*|\s*)$/,
           unconverted_fields: %i[child_id],
