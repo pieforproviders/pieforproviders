@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_30_210817) do
+ActiveRecord::Schema.define(version: 2021_05_14_160219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -29,11 +29,12 @@ ActiveRecord::Schema.define(version: 2021_04_30_210817) do
 
   create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
-    t.datetime "check_out", null: false
+    t.datetime "check_out"
     t.interval "total_time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
+    t.string "wonderschool_id"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
   end
 

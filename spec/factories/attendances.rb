@@ -45,11 +45,12 @@ end
 #
 #  id                                                             :uuid             not null, primary key
 #  check_in                                                       :datetime         not null
-#  check_out                                                      :datetime         not null
+#  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  wonderschool_id                                                :string
 #
 # Indexes
 #

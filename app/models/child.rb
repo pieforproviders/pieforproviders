@@ -44,7 +44,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_child_approval(date)
-    active_approval(date).child_approvals.find_by(child: self)
+    active_approval(date)&.child_approvals&.find_by(child: self)
   end
 
   def attendances

@@ -11,8 +11,7 @@ class Attendance < UuidApplicationRecord
   attribute :total_time_in_care, :interval
 
   validates :check_in, time_param: true
-  validates :check_out, time_param: true
-  validates :total_time_in_care, exclusion: { in: [0] }
+  validates :check_out, time_param: true, allow_nil: true
 
   scope :for_month, ->(month = Time.current) { where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month) }
 
@@ -34,11 +33,12 @@ end
 #
 #  id                                                             :uuid             not null, primary key
 #  check_in                                                       :datetime         not null
-#  check_out                                                      :datetime         not null
+#  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  wonderschool_id                                                :string
 #
 # Indexes
 #
