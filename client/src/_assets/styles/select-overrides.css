@@ -1,0 +1,21 @@
+.ant-select.ant-select-borderless.inactive-select.ant-select-single.ant-select-show-arrow > div.ant-select-selector {
+  padding-left: 0;
+}
+
+.ant-select.ant-select-borderless.inactive-select.ant-select-single.ant-select-show-arrow > div.ant-select-selector > span.ant-select-selection-placeholder {
+  color: #006C9E;
+  font-size: 1rem;
+}
+
+.ant-select.ant-select-borderless.inactive-select.ant-select-single.ant-select-show-arrow {
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+ }
+
+ .ant-picker-input > input {
+   color: #BFBFBF
+ }
+
+ .ant-select-selection-selected-value {
+  width: 100%;
+}

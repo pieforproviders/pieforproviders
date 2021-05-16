@@ -135,6 +135,7 @@ export function Dashboard() {
         return business.cases.flatMap((childCase, index) => {
           return user.state === 'NE'
             ? {
+                id: childCase.id ?? '',
                 key: `${index}-${childCase.full_name}`,
                 absences: childCase.absences ?? '',
                 child: {
@@ -151,9 +152,11 @@ export function Dashboard() {
                 hours: childCase.hours ?? '',
                 transportationRevenue: childCase.transportation_revenue ?? '',
                 hoursAttended: childCase.hours_attended ?? '',
-                familyFee: childCase.family_fee ?? ''
+                familyFee: childCase.family_fee ?? '',
+                active: childCase.active ?? true
               }
             : {
+                id: childCase.id ?? '',
                 key: `${index}-${childCase.full_name}`,
                 childName: childCase.full_name ?? '',
                 cNumber: childCase.case_number ?? '',
@@ -164,7 +167,8 @@ export function Dashboard() {
                 },
                 guaranteedRevenue: childCase.guaranteed_revenue ?? '',
                 maxApprovedRevenue: childCase.max_approved_revenue ?? '',
-                potentialRevenue: childCase.potential_revenue ?? ''
+                potentialRevenue: childCase.potential_revenue ?? '',
+                active: childCase.active ?? true
               }
         })
       })
