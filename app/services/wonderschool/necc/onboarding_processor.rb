@@ -53,9 +53,14 @@ module Wonderschool
         return false if @input.is_a?(Pathname) && !File.exist?(@input)
 
         contents = @input.is_a?(Pathname) ? File.read(@input.to_s) : @input
+        parse_contents(contents)
+      end
+
+      def parse_contents(contents)
         CSV.parse(
           contents,
           headers: true,
+          liberal_parsing: true,
           return_headers: false,
           skip_lines: /^(,*|\s*)$/,
           unconverted_fields: %i[child_id],

@@ -154,6 +154,7 @@ def create_case(full_name,
   end
 
   child = Child.find_or_initialize_by(business: business,
+                                      wonderschool_id: business == @business_nebraska ? Faker::Name.wonderschool_id.to_i : nil,
                                       full_name: full_name,
                                       date_of_birth: date_of_birth)
   child.approvals << approvals
