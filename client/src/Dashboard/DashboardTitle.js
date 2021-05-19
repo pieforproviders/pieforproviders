@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button, Typography, Select } from 'antd'
-// import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
 
@@ -9,6 +10,7 @@ const { Option } = Select
 
 export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const { t } = useTranslation()
+  const history = useHistory()
   // keeping this dropdown icon logic in hope it can eventually work
   // const [isDropdownVisible, setDropdownVisible] = useState(false)
   // const dropdownStyle = { color: '#006C9E' }
@@ -66,6 +68,12 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         <Typography.Text className="text-gray3">
           {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
         </Typography.Text>
+        <Button
+          className="ml-auto border-primaryBlue text-primaryBlue flex"
+          onClick={() => history.push('/attendance')}
+        >
+          Add attendance <PlusOutlined />
+        </Button>
       </div>
       <Typography.Text className="md-3 text-base">
         {t('revenueProjections')}

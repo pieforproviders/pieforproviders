@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -7,6 +8,7 @@ import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
+import { setCaseData } from '_reducers/casesReducer'
 
 export function Dashboard() {
   const dispatch = useDispatch()
@@ -292,6 +294,9 @@ export function Dashboard() {
 
     if (!parsedResponse.error) {
       const tableData = reduceTableData(parsedResponse)
+      dispatch(
+        setCaseData(tableData.reduce((acc, cv) => [...acc, cv.child], []))
+      )
       const updatedSummaryDataTotals = reduceSummaryData(
         tableData,
         parsedResponse
