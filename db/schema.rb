@@ -155,9 +155,9 @@ ActiveRecord::Schema.define(version: 2021_05_14_160219) do
     t.decimal "max_age", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "state_rule_type"
-    t.uuid "state_rule_id"
-    t.index ["state_rule_type", "state_rule_id"], name: "state_rule_index"
+    t.string "rateable_type"
+    t.uuid "rateable_id"
+    t.index ["rateable_type", "rateable_id"], name: "rateable_index"
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

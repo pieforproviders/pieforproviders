@@ -38,7 +38,7 @@ Rate.first_or_create!(
   county: 'Cook',
   state: 'IL',
   effective_on: Date.current - 4.years,
-  state_rule: IllinoisRate.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
+  rateable: IllinoisRate.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
 )
 
 puts_records_in_db(Rate)

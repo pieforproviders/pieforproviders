@@ -16,20 +16,20 @@ end
 #
 # Table name: rates
 #
-#  id              :uuid             not null, primary key
-#  county          :string
-#  effective_on    :date
-#  expires_on      :date
-#  license_type    :string           not null
-#  max_age         :decimal(, )      not null
-#  name            :string           not null
-#  state           :string
-#  state_rule_type :string
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  state_rule_id   :uuid
+#  id            :uuid             not null, primary key
+#  county        :string
+#  effective_on  :date
+#  expires_on    :date
+#  license_type  :string           not null
+#  max_age       :decimal(, )      not null
+#  name          :string           not null
+#  rateable_type :string
+#  state         :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  rateable_id   :uuid
 #
 # Indexes
 #
-#  state_rule_index  (state_rule_type,state_rule_id)
+#  rateable_index  (rateable_type,rateable_id)
 #

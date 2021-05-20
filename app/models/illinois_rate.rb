@@ -2,7 +2,7 @@
 
 # Subsidy rules that apply for Illinois
 class IllinoisRate < UuidApplicationRecord
-  has_one :rate, as: :state_rule, dependent: :restrict_with_error
+  has_one :rate, as: :rateable, dependent: :restrict_with_error
 
   validates :bronze_percentage, numericality: true, allow_nil: true
   validates :full_day_rate, numericality: true, allow_nil: true
