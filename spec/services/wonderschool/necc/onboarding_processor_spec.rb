@@ -7,7 +7,7 @@ module Wonderschool
     RSpec.describe OnboardingProcessor do
       let!(:onboarding_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv') }
       let!(:user_does_not_exist_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_invalid_user.csv') }
-      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_invalid_format.csv') }
+      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv') }
       let!(:valid_string) do
         <<~CSV
           Full Name,Client ID,Provider Name,Date of birth (required),Enrolled in School (Kindergarten or later),Case number,Authorized full day units,Authorized hourly units,Effective on,Expires on,Special Needs Rate?,Special Needs Daily Rate,Special Needs Hourly Rate,Provider Email,Business Zip Code,Business County,Business License,Business QRIS rating,Accredited,Approval #1 - Family Fee,Approval #1 - Begin Date,Approval #1 - End Date,Approval #1 - Allocated Family Fee,Approval #2 - Family Fee,Approval #2 - Begin Date,Approval #2 - End Date,Approval #2 - Allocated Family Fee,Approval #3 - Family Fee,Approval #3 - Begin Date,Approval #3 - End Date,Approval #3 - Allocated Family Fee,Approval #4 - Family Fee,Approval #4 - Begin Date,Approval #4 - End Date,Approval #4 - Allocated Family Fee,Approval #5 - Family Fee,Approval #5 - Begin Date,Approval #5 - End Date,Approval #5 - Allocated Family Fee

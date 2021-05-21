@@ -6,7 +6,7 @@ module Wonderschool
   module Necc
     RSpec.describe AttendanceProcessor do
       let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv') }
-      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_invalid_format.csv') }
+      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv') }
       let!(:missing_field_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv') }
       let!(:valid_string) do
         <<~CSV

@@ -6,7 +6,7 @@ module Wonderschool
   module Necc
     RSpec.describe DashboardProcessor do
       let!(:dashboard_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data.csv') }
-      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_invalid_format.csv') }
+      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv') }
       let!(:missing_field_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv') }
       let!(:valid_string) do
         <<~CSV
