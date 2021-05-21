@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_14_160219) do
+ActiveRecord::Schema.define(version: 2021_05_21_155206) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -73,10 +73,10 @@ ActiveRecord::Schema.define(version: 2021_05_14_160219) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.uuid "rate_id"
+    t.uuid "illinois_rate_id"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
-    t.index ["rate_id"], name: "index_child_approvals_on_rate_id"
+    t.index ["illinois_rate_id"], name: "index_child_approvals_on_illinois_rate_id"
   end
 
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -132,6 +132,12 @@ ActiveRecord::Schema.define(version: 2021_05_14_160219) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
+    t.string "county", default: " ", null: false
+    t.date "effective_on", default: "2021-05-21", null: false
+    t.date "expires_on"
+    t.string "license_type", default: "licensed_family_home", null: false
+    t.decimal "max_age", default: "0.0", null: false
+    t.string "name", default: "Rule Name Filler", null: false
   end
 
   create_table "nebraska_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -143,21 +149,6 @@ ActiveRecord::Schema.define(version: 2021_05_14_160219) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
-  end
-
-  create_table "rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name", null: false
-    t.date "effective_on"
-    t.date "expires_on"
-    t.string "license_type", null: false
-    t.string "county"
-    t.string "state"
-    t.decimal "max_age", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "rateable_type"
-    t.uuid "rateable_id"
-    t.index ["rateable_type", "rateable_id"], name: "rateable_index"
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -215,7 +206,7 @@ ActiveRecord::Schema.define(version: 2021_05_14_160219) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "child_approvals", "rates"
+  add_foreign_key "child_approvals", "illinois_rates"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"

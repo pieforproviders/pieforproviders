@@ -13,8 +13,7 @@ class Child < UuidApplicationRecord
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
   validates :approvals, presence: true
-  validates :date_of_birth, date_param: true
-  validates :date_of_birth, presence: true
+  validates :date_of_birth, date_param: true, presence: true
   validates :full_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
@@ -27,7 +26,7 @@ class Child < UuidApplicationRecord
   ].freeze
 
   validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
-  validates :last_active_date, date_param: true, unless: proc { |c| c.last_active_date_before_type_cast.nil? }
+  validates :last_active_date, date_param: true, unless: proc { |child| child.last_active_date_before_type_cast.nil? }
 
   accepts_nested_attributes_for :approvals, :child_approvals
 

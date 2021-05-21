@@ -15,6 +15,25 @@ RSpec.describe Approval, type: :model do
     expect(approval.valid?).to be_truthy
     approval.effective_on = "I'm a string"
     expect(approval.valid?).to be_falsey
+    approval.effective_on = nil
+    expect(approval.valid?).to be_falsey
+    approval.effective_on = '2021-02-01'
+    expect(approval.valid?).to be_truthy
+    approval.effective_on = Date.new(2021, 12, 11)
+    expect(approval.valid?).to be_truthy
+  end
+
+  it 'validates expires_on as an optional date' do
+    approval.update(expires_on: Time.zone.now)
+    expect(approval.valid?).to be_truthy
+    approval.expires_on = "I'm a string"
+    expect(approval.valid?).to be_falsey
+    approval.expires_on = nil
+    expect(approval.valid?).to be_truthy
+    approval.expires_on = '2021-02-01'
+    expect(approval.valid?).to be_truthy
+    approval.expires_on = Date.new(2021, 12, 11)
+    expect(approval.valid?).to be_truthy
   end
 
   it 'case number can be nil' do

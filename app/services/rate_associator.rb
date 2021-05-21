@@ -29,8 +29,8 @@ class RateAssociator
     Time.current
   end
 
-  def rate
-    Rate.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
+  def illinois_rate
+    IllinoisRate.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
   end
 
   def age
@@ -41,6 +41,6 @@ class RateAssociator
   end
 
   def illinois_rate_associator
-    @child.active_child_approval(today).update!(rate: rate)
+    @child.active_child_approval(today).update!(illinois_rate: illinois_rate)
   end
 end
