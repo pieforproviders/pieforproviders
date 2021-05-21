@@ -28,17 +28,17 @@ end
 #  updated_at                :datetime         not null
 #  approval_id               :uuid             not null
 #  child_id                  :uuid             not null
-#  rate_id                   :uuid
+#  illinois_rate_id          :uuid
 #
 # Indexes
 #
-#  index_child_approvals_on_approval_id  (approval_id)
-#  index_child_approvals_on_child_id     (child_id)
-#  index_child_approvals_on_rate_id      (rate_id)
+#  index_child_approvals_on_approval_id       (approval_id)
+#  index_child_approvals_on_child_id          (child_id)
+#  index_child_approvals_on_illinois_rate_id  (illinois_rate_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (approval_id => approvals.id)
 #  fk_rails_...  (child_id => children.id)
-#  fk_rails_...  (rate_id => rates.id)
+#  fk_rails_...  (illinois_rate_id => illinois_rates.id)
 #

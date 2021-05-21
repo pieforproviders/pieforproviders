@@ -14,70 +14,30 @@ RSpec.describe Child, type: :model do
   it { should validate_presence_of(:date_of_birth) }
   it { should validate_presence_of(:full_name) }
 
-  it 'validates that date_of_birth is a date_param' do
-    child.save!
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
-    child.date_of_birth = 'not a date'
-    child.valid?
-    expect(child.errors.messages.keys).to eq([:date_of_birth])
-    expect(child.errors.messages[:date_of_birth]).to include('no implicit conversion of nil into String')
-
-    child.date_of_birth = 32.6
-    child.valid?
-    expect(child.errors.messages.keys).to eq([:date_of_birth])
-    expect(child.errors.messages[:date_of_birth]).to include('no implicit conversion of Float into String')
-    expect(child).not_to be_valid
-
+  it 'validates date_of_birth as a date' do
+    child.update(date_of_birth: Time.zone.now)
+    expect(child.valid?).to be_truthy
+    child.date_of_birth = "I'm a string"
+    expect(child.valid?).to be_falsey
+    child.date_of_birth = nil
+    expect(child.valid?).to be_falsey
     child.date_of_birth = '2021-02-01'
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
+    expect(child.valid?).to be_truthy
     child.date_of_birth = Date.new(2021, 12, 11)
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
-    child.date_of_birth = Time.new(2021, 12, 11, 0, 0, 0, timezone)
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
+    expect(child.valid?).to be_truthy
   end
 
-  it 'validates that last_active_date is a date_param' do
-    child.save!
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
-    child.last_active_date = 'not a date'
-    child.valid?
-    expect(child.errors.messages.keys).to eq([:last_active_date])
-    expect(child.errors.messages[:last_active_date]).to include('no implicit conversion of nil into String')
-
-    child.last_active_date = 32.6
-    child.valid?
-    expect(child.errors.messages.keys).to eq([:last_active_date])
-    expect(child.errors.messages[:last_active_date]).to include('no implicit conversion of Float into String')
-    expect(child).not_to be_valid
-
+  it 'validates last_active_date as an optional date' do
+    child.update(last_active_date: Time.zone.now)
+    expect(child.valid?).to be_truthy
+    child.last_active_date = "I'm a string"
+    expect(child.valid?).to be_falsey
+    child.last_active_date = nil
+    expect(child.valid?).to be_truthy
     child.last_active_date = '2021-02-01'
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
+    expect(child.valid?).to be_truthy
     child.last_active_date = Date.new(2021, 12, 11)
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
-
-    child.last_active_date = Time.new(2021, 12, 11, 0, 0, 0, timezone)
-    child.valid?
-    expect(child.errors.messages).to eq({})
-    expect(child).to be_valid
+    expect(child.valid?).to be_truthy
   end
 
   it 'validates that inactive_reason is a permitted value only' do

@@ -89,7 +89,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def threshold
-    active_child_approval&.rate&.rateable&.attendance_threshold&.to_f
+    active_child_approval&.illinois_rate&.attendance_threshold&.to_f
   end
 
   def latest_user_attendance
