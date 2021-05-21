@@ -27,21 +27,21 @@ def puts_records_in_db(klass)
 end
 
 # ---------------------------------------------
-# Subsidy Rules
+# Rates
 # ---------------------------------------------
 
 # currently active rule
-SubsidyRule.first_or_create!(
-  name: 'Rule 1',
+Rate.first_or_create!(
+  name: 'Rate 1',
   max_age: 18,
   license_type: Licenses::TYPES.sample,
   county: 'Cook',
   state: 'IL',
   effective_on: Date.current - 4.years,
-  subsidy_ruleable: IllinoisSubsidyRule.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
+  rateable: IllinoisRate.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
 )
 
-puts_records_in_db(SubsidyRule)
+puts_records_in_db(Rate)
 
 # ---------------------------------------------
 # Users

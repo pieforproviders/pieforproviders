@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_subsidy_rule, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
+  after_commit :associate_rate, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
@@ -59,8 +59,8 @@ class Child < UuidApplicationRecord
     AttendanceRiskCalculator.new(self, filter_date).call
   end
 
-  def active_subsidy_rule(date)
-    active_child_approval(date).subsidy_rule
+  def active_rate(date)
+    active_child_approval(date).rate
   end
 
   def illinois_approval_amounts
@@ -77,8 +77,8 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def associate_subsidy_rule
-    SubsidyRuleAssociatorJob.perform_later(id)
+  def associate_rate
+    RateAssociatorJob.perform_later(id)
   end
 end
 
