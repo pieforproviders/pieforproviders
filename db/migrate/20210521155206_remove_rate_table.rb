@@ -9,17 +9,6 @@ class RemoveRateTable < ActiveRecord::Migration[6.1]
     remove_reference :child_approvals, :rate, type: :uuid, foreign_key: true
     add_reference :child_approvals, :illinois_rate, type: :uuid, foreign_key: true
 
-    IllinoisRate.all.each do |il_rate|
-      il_rate.update!(
-        county: il_rate.rate.county || ' ',
-        effective_on: il_rate.rate.effective_on,
-        expires_on: il_rate.rate.expires_on,
-        license_type: il_rate.rate.license_type,
-        max_age: il_rate.rate.max_age,
-        name: il_rate.rate.name
-      )
-    end
-
     drop_table :rates
   end
 end
