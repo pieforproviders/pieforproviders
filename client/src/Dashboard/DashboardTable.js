@@ -1,9 +1,8 @@
-/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
 import { Button, DatePicker, Modal, Select, Table, Tag } from 'antd'
-import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -376,9 +375,6 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     ]
   }
 
-  const datePickerProps =
-    isMIModalVisible && !inactiveDate ? { value: inactiveDate } : {}
-
   useEffect(() => {
     setSortedRows(
       [...tableData].sort((a, b) =>
@@ -391,10 +387,18 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     )
   }, [inactiveCases, tableData])
 
+  useEffect(() => {
+    setSortedRows(
+      [...tableData].sort((a, b) =>
+        !a.active && !b.active ? 0 : !a.active ? 1 : -1
+      )
+    )
+  }, [tableData])
+
   return (
     <>
       <Table
-        dataSource={inactiveCases.length > 0 ? sortedRows : tableData}
+        dataSource={sortedRows}
         columns={
           userState === 'NE'
             ? generateColumns(columnConfig['ne'])
@@ -469,7 +473,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             color: '#BFBFBF'
           }}
           onChange={(_, dateString) => setInactiveDate(dateString)}
-          {...datePickerProps}
+          {...(isMIModalVisible && !inactiveDate
+            ? { value: inactiveDate }
+            : {})}
         />
       </Modal>
     </>
