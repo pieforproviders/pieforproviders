@@ -2,6 +2,7 @@
   padding-left: 0;
 }
 
+.ant-select.ant-select-borderless.inactive-select.ant-select-single.ant-select-show-arrow > div.ant-select-selector,
 .ant-select.ant-select-borderless.inactive-select.ant-select-single.ant-select-show-arrow > div.ant-select-selector > span.ant-select-selection-placeholder {
   color: #006C9E;
   font-size: 1rem;

@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -16,7 +17,7 @@ import '_assets/styles/select-overrides.css'
 
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
-  const [selectedChild, setSelectedChild] = useState('')
+  const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(dayjs())
   const [inactiveReason, setInactiveReason] = useState(null)
   const [inactiveCases, setInactiveCases] = useState([])
@@ -204,7 +205,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           src={isInactive(record) ? grayVector : vector}
           className="mr-2"
         />
-        Mark inactive
+        {t('markInactive')}
       </Button>
     </div>
   )
@@ -215,7 +216,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
   }
 
   const handleModalClose = () => {
-    setSelectedChild('')
+    setSelectedChild({})
     setInactiveReason(null)
     setInactiveDate(null)
     setIsMIModalVisible(false)
@@ -414,7 +415,11 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <Modal
         title={
           <div className="text-gray9 font-semibold text-lg">
-            <p>Mark Inactive: {selectedChild.child?.childName}</p>
+            <p>
+              {t('markInactive') +
+                ': ' +
+                (selectedChild?.child?.childName || selectedChild?.childName)}
+            </p>
           </div>
         }
         visible={isMIModalVisible}
@@ -422,7 +427,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         onCancel={handleModalClose}
         footer={[
           <Button key="cancelModal" onClick={handleModalClose}>
-            Cancel
+            {t('cancel')}
           </Button>,
           <Button
             key="okModal"
@@ -430,7 +435,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             onClick={handleMIModalOk}
             type="primary"
           >
-            Mark Inactive
+            {t('markInactive')}
           </Button>
         ]}
       >
@@ -440,9 +445,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         <Select
           className="inactive-select"
           dropdownStyle={{ minWidth: `28%` }}
-          placeholder="Reason for making inactive"
+          placeholder={t('markInactiveReason')}
           bordered={false}
           onChange={value => setInactiveReason(value)}
+          value={inactiveReason}
         >
           <Select.Option value="no_longer_in_my_care">
             {t('inactiveReason1')}
