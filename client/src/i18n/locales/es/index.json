@@ -229,5 +229,15 @@
   "addAnotherDate": "Agregar otra fecha",
   "success": "¡Registro exitoso!",
   "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
-  "gotToDashboard": "Ir al panel principal"
+  "gotToDashboard": "Ir al panel principal",
+  
+  "actions": "Acciones",
+  "markInactive": "Marca inactivo",
+  "markInactiveInfo1": "Una vez que marques este niño inactivo, no podrás ver ninguna información futura sobre la asistienca y los ingresos en tu tablero de Pie for Providers.",
+  "markInactiveInfo2": "Todavía podrás repasar asistencia y ingresos pasados.",
+  "markInactiveReason": "Razón para marcar inactivo.",
+  "inactiveReason1": "Ya no en mi cuidado",
+  "inactiveReason2": "Ya no recibiendo los subsidios",
+  "inactiveReason3": "Otro",
+  "markInactiveCalendarPrompt": "Dinos cuando este niño debe convertirse inactivo."
 }

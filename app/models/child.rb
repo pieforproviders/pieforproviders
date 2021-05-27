@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_subsidy_rule, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
+  after_commit :associate_rate, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
@@ -13,8 +13,7 @@ class Child < UuidApplicationRecord
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
   validates :approvals, presence: true
-  validates :date_of_birth, date_param: true
-  validates :date_of_birth, presence: true
+  validates :date_of_birth, date_param: true, presence: true
   validates :full_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
@@ -22,12 +21,12 @@ class Child < UuidApplicationRecord
 
   REASONS = %w[
     no_longer_in_my_care
-    no_longer_recieving_subsidies
+    no_longer_receiving_subsidies
     other
   ].freeze
 
   validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
-  validates :last_active_date, date_param: true, unless: proc { |c| c.last_active_date_before_type_cast.nil? }
+  validates :last_active_date, date_param: true, unless: proc { |child| child.last_active_date_before_type_cast.nil? }
 
   accepts_nested_attributes_for :approvals, :child_approvals
 
@@ -44,7 +43,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_child_approval(date)
-    active_approval(date).child_approvals.find_by(child: self)
+    active_approval(date)&.child_approvals&.find_by(child: self)
   end
 
   def attendances
@@ -59,8 +58,8 @@ class Child < UuidApplicationRecord
     AttendanceRiskCalculator.new(self, filter_date).call
   end
 
-  def active_subsidy_rule(date)
-    active_child_approval(date).subsidy_rule
+  def active_rate(date)
+    active_child_approval(date).rate
   end
 
   def illinois_approval_amounts
@@ -77,8 +76,8 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def associate_subsidy_rule
-    SubsidyRuleAssociatorJob.perform_later(id)
+  def associate_rate
+    RateAssociatorJob.perform_later(id)
   end
 end
 

@@ -10,8 +10,8 @@ class Approval < UuidApplicationRecord
 
   accepts_nested_attributes_for :child_approvals, :children
 
-  validates :effective_on, date_param: true
-  validates :expires_on, date_param: true
+  validates :effective_on, date_param: true, presence: true
+  validates :expires_on, date_param: true, unless: proc { |approval| approval.expires_on_before_type_cast.nil? }
 
   # need to do it this way because postgres/rails enums don't allow for nils
   # and there's a possibility we'll be handling approvals without copays, so

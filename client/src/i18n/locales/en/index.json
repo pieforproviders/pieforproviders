@@ -229,5 +229,15 @@
   "addAnotherDate": "Add another date",
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
-  "gotToDashboard": "Go to dashboard"
+  "gotToDashboard": "Go to dashboard",
+  
+  "actions": "Actions",
+  "markInactive": "Mark inactive",
+  "markInactiveInfo1": "Once you mark this child inactive, you will not see any future attendance or revenue information on your Pie for Providers dashboard.",
+  "markInactiveInfo2": "You will still be able to review past attendance and revenue.",
+  "markInactiveReason": "Reason for marking inactive",
+  "inactiveReason1": "No longer in my care",
+  "inactiveReason2": "No longer receiving subsidies",
+  "inactiveReason3": "Other",
+  "markInactiveCalendarPrompt": "Let us know when this child should become inactive."
 }

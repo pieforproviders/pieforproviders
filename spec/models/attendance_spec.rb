@@ -4,7 +4,6 @@ require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
   it { should belong_to(:child_approval) }
-  it { should validate_exclusion_of(:total_time_in_care).in_array([0]) }
 
   it 'calculates the total_time_in_care before validation' do
     attend = create(:attendance, child_approval: create(:child_approval))
@@ -69,11 +68,12 @@ end
 #
 #  id                                                             :uuid             not null, primary key
 #  check_in                                                       :datetime         not null
-#  check_out                                                      :datetime         not null
+#  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  wonderschool_id                                                :string
 #
 # Indexes
 #

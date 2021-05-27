@@ -27,21 +27,22 @@ def puts_records_in_db(klass)
 end
 
 # ---------------------------------------------
-# Subsidy Rules
+# Rates
 # ---------------------------------------------
 
 # currently active rule
-SubsidyRule.first_or_create!(
-  name: 'Rule 1',
+IllinoisRate.first_or_create!(
+  name: 'Rate 1',
   max_age: 18,
   license_type: Licenses::TYPES.sample,
   county: 'Cook',
-  state: 'IL',
   effective_on: Date.current - 4.years,
-  subsidy_ruleable: IllinoisSubsidyRule.first_or_create!(full_day_rate: 29.5, part_day_rate: 15.4, attendance_threshold: 0.49)
+  full_day_rate: 29.5,
+  part_day_rate: 15.4,
+  attendance_threshold: 0.49
 )
 
-puts_records_in_db(SubsidyRule)
+puts_records_in_db(IllinoisRate)
 
 # ---------------------------------------------
 # Users
@@ -154,6 +155,7 @@ def create_case(full_name,
   end
 
   child = Child.find_or_initialize_by(business: business,
+                                      wonderschool_id: business == @business_nebraska ? Faker::Name.wonderschool_id.to_i : nil,
                                       full_name: full_name,
                                       date_of_birth: date_of_birth)
   child.approvals << approvals
