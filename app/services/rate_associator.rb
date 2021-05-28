@@ -2,7 +2,7 @@
 
 # Service to associate a child with a rate based on their age and
 # county where care is received
-class RateAssociator
+class RateAssociator < ApplicationService
   def initialize(child)
     @child = child
   end

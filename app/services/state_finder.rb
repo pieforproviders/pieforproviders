@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Get State by Zipcode
-class StateFinder
+class StateFinder < ApplicationService
   ZIP_RANGES = [
     { start: 35_000, end: 36_999, abbr: 'AL', name: 'Alabama' },
     { start: 99_500, end: 99_999, abbr: 'AK', name: 'Alaska' },

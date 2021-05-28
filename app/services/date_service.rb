@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Date helpers for date math and providing values for dropdowns
-class DateService
+class DateService < ApplicationService
   # how many weeks have days that count as part of this month?
   # i.e. Jan 2021:
   #  M   T   W   R   F   S   S

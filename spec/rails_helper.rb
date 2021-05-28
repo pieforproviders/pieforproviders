@@ -106,6 +106,9 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   # start by truncating all the tables, but then use the faster transaction strategy
+  config.before do
+    Aws.config.update(stub_responses: true)
+  end
   config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
   config.before(:each) do |example|
     DatabaseCleaner.strategy = if example.metadata[:use_truncation]

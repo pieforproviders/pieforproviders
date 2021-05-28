@@ -2,6 +2,7 @@
 
 # Base controller methods for API controllers
 class ApplicationController < ActionController::API
+  include Logging
   before_action :set_raven_context
   before_action :set_locale
   around_action :collect_metrics
@@ -37,7 +38,7 @@ class ApplicationController < ActionController::API
     start = Time.zone.now
     yield
     duration = Time.zone.now - start
-    Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
+    log(:info,"#{controller_name}##{action_name}: #{duration}s")
   end
 
   def set_locale

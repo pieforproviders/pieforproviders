@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Service to extract locale from the `Accept-Language` header
-class LocaleExtractor
+class LocaleExtractor < ApplicationService
   def initialize(accept_lang_header)
     @header = accept_lang_header
   end

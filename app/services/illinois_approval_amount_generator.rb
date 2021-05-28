@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Service to create approval amounts when a child is created in IL
-class IllinoisApprovalAmountGenerator
+class IllinoisApprovalAmountGenerator < ApplicationService
   def initialize(child, params)
     @child = child
     @month_amounts = params[:month_amounts]

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Service to create approval amounts when a child is created in NE
-class NebraskaApprovalAmountGenerator
+class NebraskaApprovalAmountGenerator < ApplicationService
   def initialize(child, params)
     @child = child
     @approval_periods = params[:approval_periods]

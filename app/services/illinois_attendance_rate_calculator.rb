@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Service to calculate a family's attendance rate
-class IllinoisAttendanceRateCalculator
+class IllinoisAttendanceRateCalculator < ApplicationService
   def initialize(child, filter_date)
     @child = child
     @filter_date = filter_date

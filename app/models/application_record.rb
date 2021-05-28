@@ -6,5 +6,6 @@
 # implementation of the Active Record pattern which itself is a description of an
 # Object Relational Mapping system.
 class ApplicationRecord < ActiveRecord::Base
+  include Logging
   self.abstract_class = true
 end
