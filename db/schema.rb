@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_155206) do
+ActiveRecord::Schema.define(version: 2021_05_28_142352) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -151,6 +151,19 @@ ActiveRecord::Schema.define(version: 2021_05_21_155206) do
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
   end
 
+  create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "effective_on", null: false
+    t.datetime "end_time", null: false
+    t.date "expires_on"
+    t.datetime "start_time", null: false
+    t.integer "weekday", null: false
+    t.uuid "child_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_id"], name: "index_schedules_on_child_id"
+    t.index ["effective_on", "child_id"], name: "unique_child_schedules", unique: true
+  end
+
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.text "attendance_risk"
@@ -210,5 +223,6 @@ ActiveRecord::Schema.define(version: 2021_05_21_155206) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "schedules", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

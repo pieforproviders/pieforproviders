@@ -21,6 +21,9 @@ FactoryBot.define do
 
     factory :necc_child do
       wonderschool_id { SecureRandom.uuid }
+      after(:create) do |child|
+        create(:schedule, child: child)
+      end
     end
 
     trait :with_three_attendances do
