@@ -14,6 +14,7 @@ FactoryBot.define do
       business { create(:business) }
     end
 
+    # unless create_children is set to false, if we create an approval, this will create N number of children to belong to that approval
     after(:create) do |approval, evaluator|
       approval.children << create_list(:child, evaluator.num_children, business: evaluator.business) if evaluator.create_children
     end
