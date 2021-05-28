@@ -67,6 +67,13 @@ class Child < UuidApplicationRecord
     IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
   end
 
+  # NE dashboard hours calculator
+  def nebraska_hours(filter_date)
+    # "feature flag" for using live algorithms rather than uploaded data
+    ff_live_algorithms = Rails.application.config.respond_to?(:ff_live_algorithms) ? Rails.application.config.ff_live_algorithms == 'true' : false
+    ff_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
+  end
+
   private
 
   def find_or_create_approvals
