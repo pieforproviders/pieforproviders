@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :schedule do
     child
     effective_on { (Time.current - 6.months).to_date }
-    end_time { '7:00pm' }
-    start_time { '1:00pm' }
+    end_time { '4:00pm' }
+    start_time { '11:00am' }
     weekday { rand(1..7) }
 
     trait :expires do
@@ -20,9 +20,9 @@ end
 #
 #  id           :uuid             not null, primary key
 #  effective_on :date             not null
-#  end_time     :datetime         not null
+#  end_time     :time             not null
 #  expires_on   :date
-#  start_time   :datetime         not null
+#  start_time   :time             not null
 #  weekday      :integer          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

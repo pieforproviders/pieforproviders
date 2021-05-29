@@ -22,6 +22,7 @@ gem 'pundit', '~> 2.1'
 gem 'rails', '~> 6.1.3'
 gem 'rswag-api', '>= 2.3.0'
 gem 'rswag-ui', '>= 2.3.0'
+gem 'tod'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'

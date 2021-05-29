@@ -153,9 +153,9 @@ ActiveRecord::Schema.define(version: 2021_05_28_142352) do
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
-    t.datetime "end_time", null: false
+    t.time "end_time", null: false
     t.date "expires_on"
-    t.datetime "start_time", null: false
+    t.time "start_time", null: false
     t.integer "weekday", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false

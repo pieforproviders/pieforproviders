@@ -59,15 +59,15 @@ RSpec.describe ChildBlueprint do
     end
     it 'includes the correct information from the temporary dashboard case' do
       allow(Rails.application.config).to receive(:ff_live_algorithms).and_return('false')
-      expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq(11.0)
+      expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('11.0')
     end
     context 'when using live algorithms' do
       it 'includes the child name and all cases' do
         allow(Rails.application.config).to receive(:ff_live_algorithms).and_return('true')
-        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq(3.0)
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('3.0')
         create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
                             check_out: attendance_date.to_datetime + 1.day + 6.hours + 15.minutes)
-        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq(6.25)
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('6.25')
       end
     end
   end

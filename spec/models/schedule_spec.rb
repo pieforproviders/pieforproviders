@@ -76,9 +76,9 @@ end
 #
 #  id           :uuid             not null, primary key
 #  effective_on :date             not null
-#  end_time     :datetime         not null
+#  end_time     :time             not null
 #  expires_on   :date
-#  start_time   :datetime         not null
+#  start_time   :time             not null
 #  weekday      :integer          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

@@ -15,21 +15,18 @@ class NebraskaHoursCalculator
 
   def calculate_hours
     @child.attendances.for_month(@filter_date).reduce(0) do |sum, attendance|
-      return sum unless attendance.check_out
-
-      duration = (attendance.check_out - attendance.check_in) / 60
-      sum + round_hourly_to_quarters(duration)
+      sum + round_hourly_to_quarters(attendance.total_time_in_care)
     end
   end
 
   def round_hourly_to_quarters(duration)
-    adjusted_duration = if duration < 360
+    adjusted_duration = if duration < (5.hours + 45.minutes)
                           duration
-                        elsif duration > 600 && duration < 886
-                          duration - 600
+                        elsif duration > 10.hours && duration < (14.hours + 45.minutes)
+                          duration - 10.hours
                         else
-                          0
+                          0.minutes
                         end
-    (adjusted_duration / 60 * 4).round / 4.0
+    (adjusted_duration.in_minutes / 60 * 4).round / 4.0
   end
 end

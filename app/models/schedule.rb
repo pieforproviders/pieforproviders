@@ -5,11 +5,17 @@
 class Schedule < ApplicationRecord
   belongs_to :child
 
+  validates :end_time, presence: true
+  attribute :end_time, :time_only
+  validates :start_time, presence: true
+  attribute :start_time, :time_only
+
   validates :effective_on, date_param: true, presence: true
-  validates :end_time, time_param: true, presence: true
   validates :expires_on, date_param: true, unless: proc { |schedule| schedule.expires_on_before_type_cast.nil? }
-  validates :start_time, time_param: true, presence: true
   validates :weekday, numericality: true, presence: true
+
+  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
+  scope :for_weekday, ->(weekday) { where(weekday: weekday).order(updated_at: :desc) }
 end
 
 # == Schema Information
@@ -18,9 +24,9 @@ end
 #
 #  id           :uuid             not null, primary key
 #  effective_on :date             not null
-#  end_time     :datetime         not null
+#  end_time     :time             not null
 #  expires_on   :date
-#  start_time   :datetime         not null
+#  start_time   :time             not null
 #  weekday      :integer          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

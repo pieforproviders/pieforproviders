@@ -20,6 +20,7 @@ FactoryBot.define do
     end
 
     factory :necc_child do
+      business { create(:business, :nebraska) }
       wonderschool_id { SecureRandom.uuid }
       after(:create) do |child|
         create(:schedule, child: child)
