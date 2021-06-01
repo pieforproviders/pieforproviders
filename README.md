@@ -93,7 +93,7 @@ Docker should be installed on your local machine.
 ---
 
 <details>
-  <summary>Non-Docker Setup and configuration</summary>
+  <summary>Non-Docker Setup</summary>
 
 ---
 **for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript** 
