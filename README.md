@@ -129,15 +129,15 @@ Docker should be installed on your local machine.
 
 You have several convenient options for running the app locally.
 
-- 1. Rake task (requires `heroku cli`)
-  - `rails start`
-  - This spins up both the front end and the back end in the same terminal window
-- 2. Foreman (requires `foreman`)
-  - Run `foreman start`
-  - This spins up both the front end and the back end in the same terminal window
-- 3. Without Foreman or Heroku
-  - Start rails in one terminal: `rails s -p 3001`
-  - Open a second terminal and start react: `cd client && yarn start`
+1. Rake task (requires `heroku cli`)
+    - `rails start`
+    - This spins up both the front end and the back end in the same terminal window
+2. Foreman (requires `foreman`)
+    - Run `foreman start`
+    - This spins up both the front end and the back end in the same terminal window
+3. Without Foreman or Heroku
+    - Start rails in one terminal: `rails s -p 3001`
+    - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
 
