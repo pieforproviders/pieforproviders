@@ -26,40 +26,6 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 <br />
 
-<details>
-  <summary>Docker Setup (Easy Setup)</summary>
-
-### Prerequisites
-Docker should be installed on your local machine.
-
-### Procedure
-* Use the "git clone" command to download this repository.
-* Use the "cd" command to enter the root directory of this repository.
-* Enter the command "docker/build".  You will be asked to enter database parameters.  The docker/build script automatically sets up the app, runs the test suite, seeds the database, draws the block diagram, runs quality checks of this code base, and logs the screen output.
-* After the build process is complete, enter the command "docker/server" to start the Rails server.
-* Start a second terminal tab for entering additional commands.
-
-### URLs
-* App: http://localhost:3000
-* API: http://localhost:3000/api-docs
-* MailCatcher: http://localhost:1080
-
-### Database Parameters
-* Host: localhost
-* Port number: 15432
-* Database: pie_development
-* Username and password: specified in .docker-env/development/database
-
-### Other Important Scripts
-* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sanity check to allow you to make sure to commit quality working code only.
-* Enter the command "docker/qserver" for the quick version of "docker/server".  Note that the "docker/qserver" script does not log the screen output, does not remove tmp/pids/server.pid, skips "docker-compose down", skips "bundle install", and skips the database migration.
-* Enter "docker/nuke" to destroy the Docker image, container, and networks.
-* Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
-
----
-
-</details>
-
 ---
 
 <details>
@@ -93,16 +59,51 @@ Docker should be installed on your local machine.
 ---
 
 <details>
-  <summary>Prerequisites</summary>
+  <summary>Docker Setup</summary>
+
+### Prerequisites
+Docker should be installed on your local machine.
+
+### Procedure
+* Use the "git clone" command to download this repository.
+* Use the "cd" command to enter the root directory of this repository.
+* Enter the command "docker/build".  You will be asked to enter database parameters.  The docker/build script automatically sets up the app, runs the test suite, seeds the database, draws the block diagram, runs quality checks of this code base, and logs the screen output.
+* After the build process is complete, enter the command "docker/server" to start the Rails server.
+* Start a second terminal tab for entering additional commands.
+
+### URLs
+* App: http://localhost:3000
+* API: http://localhost:3000/api-docs
+* MailCatcher: http://localhost:1080
+
+### Database Parameters
+* Host: localhost
+* Port number: 15432
+* Database: pie_development
+* Username and password: specified in .docker-env/development/database
+
+### Other Important Scripts
+* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sanity check to allow you to make sure to commit quality working code only.
+* Enter the command "docker/qserver" for the quick version of "docker/server".  Note that the "docker/qserver" script does not log the screen output, does not remove tmp/pids/server.pid, skips "docker-compose down", skips "bundle install", and skips the database migration.
+* Enter "docker/nuke" to destroy the Docker image, container, and networks.
+* Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
+
+</details>
 
 ---
 
-### Required
+<details>
+  <summary>Non-Docker Setup and configuration</summary>
+
+---
+**for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript** 
+
+### Prerequisites
 
 - `postgres` v12.3
 - `bundler`
 - `git`
-- `npm`
+- `yarn`
 - `graphviz` - [https://graphviz.org/download/](https://graphviz.org/download/)
 - `XCode Select` tools if you're on Mac
 
@@ -110,15 +111,10 @@ Docker should be installed on your local machine.
 
 - `heroku cli` - [https://devcenter.heroku.com/articles/heroku-cli#download-and-install](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
 - `foreman`
+- `rvm`
+- `nvm`
 
-</details>  
-
----
-
-<details>
-  <summary>Setup and configuration</summary>
-
----
+### Procedure
 
 - clone the repo: `git clone git@github.com:pieforproviders/pieforproviders.git`
 - navigate to the app directory: `cd pieforproviders`
@@ -127,18 +123,8 @@ Docker should be installed on your local machine.
 - set up an environment file: copy `.env.sample` to `.env`
 - configure Devise: run `rails secret` to generate a secret string, add it to `.env` as the `DEVISE_JWT_SECRET_KEY` value
 - create and seed the database: `bundle exec rails db:setup`
-- install yarn globally if you don't have it yet: `npm install yarn -g`
-- navigate to the frontend directory: `cd client`
-- install front-end and end-to-end packages: `yarn install`
+- install front-end and end-to-end packages: `yarn install-all`
 
-</details>  
-
----
-
-<details>
-  <summary>Running the app locally</summary>
-
----
 You have several convenient options for running the app locally.
 
 ### 1. Rake task (requires `heroku cli`)
@@ -161,7 +147,7 @@ Visit `localhost:3000` to see the React frontend. 🥳
 Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑  
   
 > ***NOTE:*** Swagger UI is currently not configured to use authentication, so any authenticated endpoints will not be accessible at this route, you'll get unauthorized errors.
-</details>  
+</details>
 
 ---
 
