@@ -294,13 +294,12 @@ export function Dashboard() {
 
     if (!parsedResponse.error) {
       const tableData = reduceTableData(parsedResponse)
-      dispatch(
-        setCaseData(tableData.reduce((acc, cv) => [...acc, cv.child], []))
-      )
       const updatedSummaryDataTotals = reduceSummaryData(
         tableData,
         parsedResponse
       )
+
+      dispatch(setCaseData(tableData))
       setDates(reduceDates(parsedResponse, filterDate))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
