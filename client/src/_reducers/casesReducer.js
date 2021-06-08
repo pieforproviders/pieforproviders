@@ -8,7 +8,6 @@ const cases = createSlice({
   reducers: {
     setCaseData(state, action) {
       const cases = action.payload
-
       return [...state, ...cases]
     }
   }
