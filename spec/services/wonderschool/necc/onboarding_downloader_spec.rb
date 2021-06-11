@@ -23,6 +23,7 @@ module Wonderschool
       let!(:stubbed_processor) { double('Wonderschool Necc Onboarding Processor') }
       let!(:stubbed_object) { double('S3 Object') }
 
+      # TODO: change this to #call describe
       describe '.call' do
         context 'when aws environment variables are set' do
           before(:each) do

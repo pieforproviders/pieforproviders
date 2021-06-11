@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisRate, type: :model do
+  # TODO: make these all expected or shoulda, not both
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:max_age) }
   it { is_expected.to validate_presence_of(:county) }
