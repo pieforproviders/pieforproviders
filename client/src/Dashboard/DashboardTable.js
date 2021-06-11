@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
-import { Button, DatePicker, Modal, Select, Table, Tag } from 'antd'
+import { Button, Modal, Select, Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import DatePicker from './DatePicker'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
@@ -17,7 +18,7 @@ import '_assets/styles/select-overrides.css'
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
-  const [inactiveDate, setInactiveDate] = useState(dayjs())
+  const [inactiveDate, setInactiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [inactiveCases, setInactiveCases] = useState([])
   const [sortedRows, setSortedRows] = useState([])
@@ -103,7 +104,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <div>
         <p className="text-lg mb-1">
           {child.childName}
-          {isInactive(record) ? ' (Inactive)' : ''}
+          {isInactive(record) ? `(${t('inactive')})` : ''}
         </p>
         <p className="flex flex-wrap mt-0.5">
           {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
@@ -331,7 +332,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           isInactive(record) ? (
             <div>
               <p>{text}</p>
-              <p>Inactive</p>
+              <p>{t('inactive')}</p>
             </div>
           ) : (
             text
@@ -473,9 +474,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             color: '#BFBFBF'
           }}
           onChange={(_, dateString) => setInactiveDate(dateString)}
-          {...(isMIModalVisible && !inactiveDate
-            ? { value: inactiveDate }
-            : {})}
+          value={
+            inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
+          }
         />
       </Modal>
     </>
