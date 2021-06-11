@@ -7,6 +7,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
   let!(:multiple_child_family_approval) { create(:approval, create_children: false) }
   let!(:multiple_child_family) { create_list(:child, 2, approvals: [multiple_child_family_approval]) }
 
+  # TODO: change this to #call describe and break down contexts
   describe 'when calling the attendance rate calculator' do
     before do
       travel_to Date.parse('December 11th, 2020')

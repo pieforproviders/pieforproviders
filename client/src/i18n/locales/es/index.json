@@ -232,7 +232,7 @@
   "gotToDashboard": "Ir al panel principal",
   
   "actions": "Acciones",
-  "markInactive": "Marca inactivo",
+  "markInactive": "Desactivar",
   "markInactiveInfo1": "Una vez que marques este niño inactivo, no podrás ver ninguna información futura sobre la asistienca y los ingresos en tu tablero de Pie for Providers.",
   "markInactiveInfo2": "Todavía podrás repasar asistencia y ingresos pasados.",
   "markInactiveReason": "Razón para marcar inactivo.",

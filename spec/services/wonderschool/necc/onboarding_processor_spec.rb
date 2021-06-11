@@ -224,6 +224,7 @@ module Wonderschool
         end
       end
 
+      # TODO: change this to #call describe
       describe '.call' do
         let!(:file_name) { 'failed_onboarding_cases' }
         let!(:archive_bucket) { 'archive_bucket' }
