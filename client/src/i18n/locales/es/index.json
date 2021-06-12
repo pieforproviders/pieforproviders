@@ -222,5 +222,6 @@
   "inactiveReason1": "Ya no en mi cuidado",
   "inactiveReason2": "Ya no recibiendo los subsidios",
   "inactiveReason3": "Otro",
-  "markInactiveCalendarPrompt": "Dinos cuando este niño debe convertirse inactivo."
+  "markInactiveCalendarPrompt": "Dinos cuando este niño debe convertirse inactivo.",
+  "inactive": "Inactivo/a"
 }
