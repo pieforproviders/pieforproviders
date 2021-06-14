@@ -29,14 +29,17 @@ export function Attendance() {
       cols.push({
         dataIndex: 'date' + i,
         key: 'date' + i,
-        width: 200,
+        width: 398,
         // eslint-disable-next-line react/display-name
         title: () => <DatePicker bordered={false} />,
         // eslint-disable-next-line react/display-name
-        render: () => <AttendanceDataCell />
+        render: (_, record) => {
+          // eslint-disable-next-line no-debugger
+          return <AttendanceDataCell record={record} />
+        }
       })
     }
-
+    console.log(attendanceData)
     return [
       {
         title: 'Child Name',
@@ -60,7 +63,7 @@ export function Attendance() {
       ...cols
     ]
   })
-  console.log(attendanceData)
+
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">
