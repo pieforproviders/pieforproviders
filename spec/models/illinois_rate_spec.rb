@@ -15,6 +15,8 @@ RSpec.describe IllinoisRate, type: :model do
   it { should validate_numericality_of(:part_day_rate) }
   it { should validate_numericality_of(:silver_percentage) }
 
+  it_behaves_like 'licenses'
+
   let(:illinois_rate) { build(:illinois_rate) }
 
   it 'validates effective_on as a date' do

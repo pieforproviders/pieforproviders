@@ -12,6 +12,7 @@ module Licenses
     license_exempt_center
     family_child_care_home_i
     family_child_care_home_ii
+    family_in_home
   ].freeze
 
   included do
