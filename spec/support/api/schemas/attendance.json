@@ -8,28 +8,43 @@
       "type": "string",
       "format": "time"
     },
-    "created_at": {
-      "type": "string",
-      "format": "date-time"
+    "child_approval_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "id": {
-      "type": "string",
-      "format": "uuid"
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "total_time_in_care": {
-      "type": "string",
-      "format": "interval"
-    },
-    "updated_at": {
-      "type": "string",
-      "format": "date-time"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
+      ]
     }
   },
   "required": [
     "check_in",
-    "created_at",
-    "id",
-    "updated_at"
+    "child_approval_id",
+    "id"
   ],
   "type": "object"
 }
