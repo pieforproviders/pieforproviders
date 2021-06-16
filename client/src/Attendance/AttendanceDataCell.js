@@ -3,13 +3,12 @@ import PropTypes from 'prop-types'
 // import dayjs from 'dayjs'
 import { Checkbox, TimePicker } from 'antd'
 
-export default function AttendanceDataCell({ record }) {
-  const handleChange = (...args) => {
+export default function AttendanceDataCell({ updateAttendanceData }) {
+  const handleChange = (key, ...args) => {
     console.log(args)
+    updateAttendanceData(...args)
   }
-  console.log(record)
-  // eslint-disable-next-line no-debugger
-  debugger
+
   return (
     <div className="flex">
       <div>
@@ -17,7 +16,7 @@ export default function AttendanceDataCell({ record }) {
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={handleChange}
+          onChange={() => handleChange('check_in')}
           suffixIcon={null}
         />
       </div>
@@ -26,7 +25,7 @@ export default function AttendanceDataCell({ record }) {
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={handleChange}
+          onChange={() => handleChange('check_out')}
           suffixIcon={null}
         />
       </div>
@@ -39,5 +38,5 @@ export default function AttendanceDataCell({ record }) {
 }
 
 AttendanceDataCell.propTypes = {
-  record: PropTypes.object.isRequired
+  updateAttendanceData: PropTypes.func.isRequired
 }
