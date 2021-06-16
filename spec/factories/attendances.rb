@@ -8,7 +8,8 @@ FactoryBot.define do
       Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
-    absence { Attendance::ABSENCE_TYPES.sample }
+
+    absence { Random.rand(10) > 7 ? nil : Attendance::ABSENCE_TYPES.sample }
 
     factory :illinois_part_day_attendance do
       check_in do
