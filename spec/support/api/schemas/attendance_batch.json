@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "errors": {
+          "type": "array"
+        }
+      }
+    },
+    "attendances": {
+      "type": "array",
+      "items": {
+        "$ref":"attendance.json"
+      }
+    }
+  }
+}

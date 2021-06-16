@@ -6,6 +6,8 @@ RSpec.describe Business, type: :model do
   it { should belong_to(:user) }
   it { should validate_presence_of(:name) }
 
+  it_behaves_like 'licenses'
+
   it 'validates uniqueness of business name' do
     create(:business)
     should validate_uniqueness_of(:name).scoped_to(:user_id)
