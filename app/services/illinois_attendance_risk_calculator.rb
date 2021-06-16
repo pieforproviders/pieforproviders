@@ -22,8 +22,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def risk_label
-    return 'not_enough_info' if less_than_halfway_through_month || !approval_amount
-    return '' unless threshold
+    return 'not_enough_info' if less_than_halfway_through_month || !approval_amount || !threshold
 
     attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @filter_date).call
 
