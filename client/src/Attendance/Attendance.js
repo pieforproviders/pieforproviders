@@ -1,7 +1,9 @@
+/* eslint-disable no-debugger */
 import React, { useState } from 'react'
 import { Alert, DatePicker, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import merge from 'deepmerge'
 import ellipse from '_assets/ellipse.svg'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
@@ -13,7 +15,7 @@ import '_assets/styles/alert-overrides.css'
 export function Attendance() {
   const { t } = useTranslation()
   const cases = useSelector(state => state.cases)
-  const [attendanceData] = useState(() =>
+  const [attendanceData, setAttendanceData] = useState(() =>
     cases.reduce((acc, cv) => {
       return {
         ...acc,
@@ -23,6 +25,7 @@ export function Attendance() {
       }
     }, {})
   )
+
   const [columns] = useState(() => {
     let cols = []
     for (let i = 0; i < 7; i++) {
@@ -33,13 +36,26 @@ export function Attendance() {
         // eslint-disable-next-line react/display-name
         title: () => <DatePicker bordered={false} />,
         // eslint-disable-next-line react/display-name
-        render: (_, record) => {
-          // eslint-disable-next-line no-debugger
-          return <AttendanceDataCell record={record} />
+        render: (_, record, i) => {
+          const boop = merge({}, { hi: 'hi' })
+          console.log(boop)
+          debugger
+          return (
+            <AttendanceDataCell
+              updateAttendanceData={updates => {
+                console.log(attendanceData)
+                console.log(updates)
+                console.log(record)
+                console.log(i)
+                debugger
+                setAttendanceData(attendanceData)
+              }}
+            />
+          )
         }
       })
     }
-    console.log(attendanceData)
+
     return [
       {
         title: 'Child Name',
