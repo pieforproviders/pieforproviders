@@ -22,8 +22,8 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def risk_label
-    less_than_halfway_through_month = Time.current < halfway || (latest_user_attendance && latest_user_attendance < halfway)
     return 'not_enough_info' if less_than_halfway_through_month || !approval_amount
+    return '' unless threshold
 
     attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @filter_date).call
 
@@ -34,6 +34,10 @@ class IllinoisAttendanceRiskCalculator
     else
       'on_track'
     end
+  end
+
+  def less_than_halfway_through_month
+    Time.current < halfway || (latest_user_attendance && latest_user_attendance < halfway)
   end
 
   def approval_amount
