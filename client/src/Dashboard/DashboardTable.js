@@ -104,7 +104,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <div>
         <p className="text-lg mb-1">
           {child.childName}
-          {isInactive(record) ? `(${t('inactive')})` : ''}
+          {isInactive(record) ? ` (${t('inactive')})` : ''}
         </p>
         <p className="flex flex-wrap mt-0.5">
           {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
