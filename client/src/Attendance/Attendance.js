@@ -56,10 +56,14 @@ export function Attendance() {
                 })
                 console.log(
                   merge(attendanceData, {
-                    [record.id]: newArr
+                    [record.id]: merge(attendanceData[record.id], newArr, {
+                      arrayMerge: (_destinationArray, sourceArray) => {
+                        debugger
+                        return sourceArray
+                      }
+                    })
                   })
                 )
-                debugger
                 setAttendanceData(attendanceData)
               }}
             />
