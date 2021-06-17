@@ -39,6 +39,7 @@ export function Attendance() {
         render: (_, record, i) => {
           const boop = merge({}, { hi: 'hi' })
           console.log(boop)
+          console.log(i)
           debugger
           return (
             <AttendanceDataCell
@@ -46,7 +47,18 @@ export function Attendance() {
                 console.log(attendanceData)
                 console.log(updates)
                 console.log(record)
-                console.log(i)
+                const newArr = attendanceData[record.id].map((value, index) => {
+                  if (index === i) {
+                    return merge(value, updates)
+                  } else {
+                    return value
+                  }
+                })
+                console.log(
+                  merge(attendanceData, {
+                    [record.id]: newArr
+                  })
+                )
                 debugger
                 setAttendanceData(attendanceData)
               }}

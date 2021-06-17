@@ -6,7 +6,7 @@ import { Checkbox, TimePicker } from 'antd'
 export default function AttendanceDataCell({ updateAttendanceData }) {
   const handleChange = (key, ...args) => {
     console.log(args)
-    updateAttendanceData(...args)
+    updateAttendanceData({ [key]: args })
   }
 
   return (
@@ -16,7 +16,7 @@ export default function AttendanceDataCell({ updateAttendanceData }) {
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={() => handleChange('check_in')}
+          onChange={(...args) => handleChange('check_in', ...args)}
           suffixIcon={null}
         />
       </div>
@@ -25,7 +25,7 @@ export default function AttendanceDataCell({ updateAttendanceData }) {
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={() => handleChange('check_out')}
+          onChange={(...args) => handleChange('check_out', ...args)}
           suffixIcon={null}
         />
       </div>
