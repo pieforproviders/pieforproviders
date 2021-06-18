@@ -3,10 +3,16 @@ import PropTypes from 'prop-types'
 // import dayjs from 'dayjs'
 import { Checkbox, TimePicker } from 'antd'
 
-export default function AttendanceDataCell({ updateAttendanceData }) {
+export default function AttendanceDataCell({
+  // eslint-disable-next-line react/prop-types
+  record,
+  // eslint-disable-next-line react/prop-types
+  index,
+  updateAttendanceData
+}) {
   const handleChange = (key, ...args) => {
     console.log(args)
-    updateAttendanceData({ [key]: args })
+    updateAttendanceData({ [key]: args }, record, index)
   }
 
   return (

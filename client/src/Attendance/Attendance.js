@@ -26,6 +26,46 @@ export function Attendance() {
     }, {})
   )
 
+  const updateAttendanceData = (updates, record, i) => {
+    // this function taken from deepmerge documentation
+    const combineMerge = (target, source, options) => {
+      const destination = target.slice()
+
+      source.forEach((item, index) => {
+        if (typeof destination[index] === 'undefined') {
+          destination[index] = options.cloneUnlessOtherwiseSpecified(
+            item,
+            options
+          )
+        } else if (options.isMergeableObject(item)) {
+          destination[index] = merge(target[index], item, options)
+        } else if (target.indexOf(item) === -1) {
+          destination.push(item)
+        }
+      })
+      return destination
+    }
+    const newArr = attendanceData[record.id].map((value, index) => {
+      debugger
+      return index === i ? merge(value, updates) : value
+    })
+    const mergedArray = merge(attendanceData[record.id], newArr, {
+      arrayMerge: combineMerge
+    })
+    const newAttendanceData = merge(
+      attendanceData,
+      {
+        [record.id]: mergedArray
+      },
+      {
+        arrayMerge: (_, sourceArray) => sourceArray
+      }
+    )
+    console.log(newAttendanceData)
+    debugger
+    setAttendanceData(newAttendanceData)
+  }
+
   const [columns] = useState(() => {
     let cols = []
     for (let i = 0; i < 7; i++) {
@@ -37,35 +77,11 @@ export function Attendance() {
         title: () => <DatePicker bordered={false} />,
         // eslint-disable-next-line react/display-name
         render: (_, record, i) => {
-          const boop = merge({}, { hi: 'hi' })
-          console.log(boop)
-          console.log(i)
-          debugger
           return (
             <AttendanceDataCell
-              updateAttendanceData={updates => {
-                console.log(attendanceData)
-                console.log(updates)
-                console.log(record)
-                const newArr = attendanceData[record.id].map((value, index) => {
-                  if (index === i) {
-                    return merge(value, updates)
-                  } else {
-                    return value
-                  }
-                })
-                console.log(
-                  merge(attendanceData, {
-                    [record.id]: merge(attendanceData[record.id], newArr, {
-                      arrayMerge: (_destinationArray, sourceArray) => {
-                        debugger
-                        return sourceArray
-                      }
-                    })
-                  })
-                )
-                setAttendanceData(attendanceData)
-              }}
+              record={record}
+              index={i}
+              updateAttendanceData={updateAttendanceData}
             />
           )
         }
@@ -95,7 +111,7 @@ export function Attendance() {
       ...cols
     ]
   })
-
+  console.log(attendanceData, 'attednance DATAAAAA')
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">
