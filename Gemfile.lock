@@ -71,6 +71,8 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    appsignal (3.0.7)
+      rack
     ast (2.4.2)
     aws-eventstream (1.1.1)
     aws-partitions (1.466.0)
@@ -143,15 +145,6 @@ GEM
       railties (>= 5.0.0)
     faker (2.18.0)
       i18n (>= 1.6, < 2)
-    faraday (1.4.1)
-      faraday-excon (~> 1.1)
-      faraday-net_http (~> 1.0)
-      faraday-net_http_persistent (~> 1.1)
-      multipart-post (>= 1.2, < 3)
-      ruby2_keywords (>= 0.0.4)
-    faraday-excon (1.1.0)
-    faraday-net_http (1.0.1)
-    faraday-net_http_persistent (1.1.0)
     ffi (1.15.0)
     formatador (0.2.5)
     globalid (0.4.2)
@@ -218,7 +211,6 @@ GEM
       money (~> 6.13.2)
       railties (>= 3.0)
     msgpack (1.4.2)
-    multipart-post (2.1.1)
     nenv (0.3.0)
     nio4r (2.5.7)
     nokogiri (1.11.7)
@@ -340,9 +332,6 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
-    ruby2_keywords (0.0.4)
-    sentry-raven (3.1.2)
-      faraday (>= 1.0)
     shellany (0.0.1)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
@@ -385,6 +374,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate!
+  appsignal
   aws-sdk-s3 (~> 1)
   blueprinter (~> 0.25.3)
   bootsnap (>= 1.4.2)
@@ -421,7 +411,6 @@ DEPENDENCIES
   rswag-ui (>= 2.3.0)
   rubocop-performance
   rubocop-rails
-  sentry-raven
   shoulda-matchers
   simplecov
   spring

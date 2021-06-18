@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.1'
 
+gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '>= 1.4.2', require: false
@@ -64,10 +65,6 @@ group :test do
   gem 'json-schema'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
-end
-
-group :production do
-  gem 'sentry-raven'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
