@@ -11,7 +11,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
     include_context 'correct api version header'
 
     before do
-      logged_in_user = create(:confirmed_user)
       sign_in logged_in_user
     end
 

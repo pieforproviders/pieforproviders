@@ -20,7 +20,14 @@ class Attendance < UuidApplicationRecord
 
   validates :absence, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
 
-  scope :for_month, ->(month = Time.current) { where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month) }
+  scope :for_month, lambda { |month = nil|
+    month ||= Time.current
+    where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
+  }
+  scope :for_week, lambda { |week = nil|
+    week ||= Time.current
+    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week, week.at_end_of_week)
+  }
 
   scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }
   scope :illinois_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '5 hours', '12 hours') }
