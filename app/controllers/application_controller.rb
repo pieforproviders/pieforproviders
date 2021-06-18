@@ -2,7 +2,7 @@
 
 # Base controller methods for API controllers
 class ApplicationController < ActionController::API
-  before_action :set_raven_context
+  before_action :set_appsignal_context
   before_action :set_locale
   around_action :collect_metrics
 
@@ -26,11 +26,16 @@ class ApplicationController < ActionController::API
 
   private
 
-  def set_raven_context
+  def set_appsignal_context
     return unless Rails.env.production?
 
-    Raven.user_context(id: current_user.id) if current_user
-    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
+    Appsignal.tag_request(
+      user_id: current_user&.id,
+      url: request.url,
+      params: params.to_unsafe_h.to_s,
+      locale: I18n.locale,
+      default_locale: I18n.default_locale
+    )
   end
 
   def collect_metrics
