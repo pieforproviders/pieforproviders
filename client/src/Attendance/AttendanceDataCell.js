@@ -10,9 +10,8 @@ export default function AttendanceDataCell({
   index,
   updateAttendanceData
 }) {
-  const handleChange = (key, ...args) => {
-    console.log(args)
-    updateAttendanceData({ [key]: args }, record, index)
+  const handleChange = (key, value) => {
+    updateAttendanceData({ [key]: value }, record, index)
   }
 
   return (
@@ -22,7 +21,7 @@ export default function AttendanceDataCell({
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={(...args) => handleChange('check_in', ...args)}
+          onChange={(_m, ds) => handleChange('check_in', ds)}
           suffixIcon={null}
         />
       </div>
@@ -31,13 +30,31 @@ export default function AttendanceDataCell({
         <TimePicker
           use12Hours
           format={'HH:mm'}
-          onChange={(...args) => handleChange('check_out', ...args)}
+          onChange={(_m, ds) => handleChange('check_out', ds)}
           suffixIcon={null}
         />
       </div>
       <div>
-        <Checkbox />
-        <Checkbox />
+        <p>
+          <Checkbox
+            onChange={e =>
+              e.target.checked
+                ? handleChange('absense', 'absence')
+                : handleChange('absense', false)
+            }
+          />
+          Absent
+        </p>
+        <p>
+          <Checkbox
+            onChange={e =>
+              e.target.checked
+                ? handleChange('absense', 'covid-related')
+                : handleChange('absense', false)
+            }
+          />
+          Absent - Covid-related
+        </p>
       </div>
     </div>
   )
