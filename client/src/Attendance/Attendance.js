@@ -1,5 +1,5 @@
 /* eslint-disable no-debugger */
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { Alert, DatePicker, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -25,6 +25,7 @@ export function Attendance() {
       }
     }, {})
   )
+  const latestAttendanceData = useRef(attendanceData)
 
   const updateAttendanceData = (updates, record, i) => {
     // this function taken from deepmerge documentation
@@ -45,25 +46,23 @@ export function Attendance() {
       })
       return destination
     }
-    const newArr = attendanceData[record.id].map((value, index) => {
-      debugger
-      return index === i ? merge(value, updates) : value
-    })
-    const mergedArray = merge(attendanceData[record.id], newArr, {
-      arrayMerge: combineMerge
-    })
-    const newAttendanceData = merge(
-      attendanceData,
-      {
-        [record.id]: mergedArray
-      },
-      {
-        arrayMerge: (_, sourceArray) => sourceArray
+    const newArr = latestAttendanceData.current[record?.id].map(
+      (value, index) => {
+        return index === i
+          ? merge(value, updates, {
+              arrayMerge: (_t, s) => s
+            })
+          : value
       }
     )
-    console.log(newAttendanceData)
-    debugger
-    setAttendanceData(newAttendanceData)
+    const mergedArray = merge(latestAttendanceData.current[record.id], newArr, {
+      arrayMerge: combineMerge
+    })
+    latestAttendanceData.current = {
+      ...attendanceData,
+      [record.id]: mergedArray
+    }
+    setAttendanceData(prevData => ({ ...prevData, [record.id]: mergedArray }))
   }
 
   const [columns] = useState(() => {
@@ -112,6 +111,7 @@ export function Attendance() {
     ]
   })
   console.log(attendanceData, 'attednance DATAAAAA')
+  console.log(latestAttendanceData, 'latest attednance DATAAAAA')
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">
