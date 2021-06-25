@@ -36,7 +36,7 @@ module Api
       end
 
       def attendance_batch_params
-        params.permit(attendance_batch: %i[check_in check_out child_id]).require(:attendance_batch)
+        params.permit(attendance_batch: %i[absence check_in check_out child_id]).require(:attendance_batch)
       end
 
       def serialized_response

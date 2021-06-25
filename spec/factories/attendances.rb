@@ -9,7 +9,12 @@ FactoryBot.define do
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
-    absence { Random.rand(10) > 7 ? nil : Attendance::ABSENCE_TYPES.sample }
+    factory :nebraska_absence do
+      child_approval { create(:child_approval, child: create(:necc_child)) }
+      check_out { nil }
+      absence { Attendance::ABSENCE_TYPES.sample }
+    end
+
 
     factory :illinois_part_day_attendance do
       check_in do

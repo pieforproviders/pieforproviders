@@ -8,6 +8,16 @@
       "type": "string",
       "format": "time"
     },
+    "absence": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "child_approval_id": {
       "anyOf": [
         {
