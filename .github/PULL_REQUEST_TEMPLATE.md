@@ -1,5 +1,7 @@
-# 💅🏼 What issue does this fix?
-<!-- Which Github Issue is this related to?  Summarize the work in a sentence or two.  DO NOT use "Fixes #123" or anything that will auto-close the ticket, we want the ticket open until it's QAed. -->
+## 💅🏼 What issue does this fix?
+<!-- Which Github Issue is this related to?  Summarize the work in a sentence or two.  To automatically link your PR to its issue, use keywords like "closes #714" -->
+<!-- Githubs docs on linking issues: https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword -->
+
 
 ## 🍂 Before You Submit
 <!-- Check steps as necessary - this list is a reminder -->
