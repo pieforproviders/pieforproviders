@@ -12,6 +12,7 @@ class IllinoisRate < UuidApplicationRecord
 
   scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
 
+  # TODO: reorder so scope is at the bottom
   validates :bronze_percentage, numericality: true, allow_nil: true
   validates :full_day_rate, numericality: true, allow_nil: true
   validates :gold_percentage, numericality: true, allow_nil: true
@@ -27,7 +28,7 @@ end
 #  attendance_threshold :decimal(, )
 #  bronze_percentage    :decimal(, )
 #  county               :string           default(" "), not null
-#  effective_on         :date             default(Fri, 21 May 2021), not null
+#  effective_on         :date             default(Sat, 12 Jun 2021), not null
 #  expires_on           :date
 #  full_day_rate        :decimal(, )
 #  gold_percentage      :decimal(, )

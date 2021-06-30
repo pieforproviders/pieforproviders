@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.1'
 
+gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '>= 1.4.2', require: false
@@ -12,14 +13,14 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 1.9'
+gem 'good_job', '~> 1.10'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.3'
 gem 'pundit', '~> 2.1'
-gem 'rails', '~> 6.1.3'
+gem 'rails', '~> 6.1.4'
 gem 'rswag-api', '>= 2.3.0'
 gem 'rswag-ui', '>= 2.3.0'
 gem 'tod'
@@ -65,10 +66,6 @@ group :test do
   gem 'json-schema'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
-end
-
-group :production do
-  gem 'sentry-raven'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

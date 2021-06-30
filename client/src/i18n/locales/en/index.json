@@ -222,5 +222,6 @@
   "inactiveReason1": "No longer in my care",
   "inactiveReason2": "No longer receiving subsidies",
   "inactiveReason3": "Other",
-  "markInactiveCalendarPrompt": "Let us know when this child should become inactive."
+  "markInactiveCalendarPrompt": "Let us know when this child should become inactive.",
+  "inactive": "Inactive"
 }

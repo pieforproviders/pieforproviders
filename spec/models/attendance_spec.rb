@@ -5,9 +5,50 @@ require 'rails_helper'
 RSpec.describe Attendance, type: :model do
   it { should belong_to(:child_approval) }
 
-  it 'calculates the total_time_in_care before validation' do
-    attend = create(:attendance, child_approval: create(:child_approval))
-    expect(attend).to be_valid
+  it { should validate_presence_of(:check_in) }
+
+  let(:attendance) { build(:attendance) }
+  it 'validates check_in as a Time' do
+    attendance.update(check_in: Time.zone.now)
+    expect(attendance.valid?).to be_truthy
+    attendance.check_in = "I'm a string"
+    expect(attendance.valid?).to be_falsey
+    attendance.check_in = nil
+    expect(attendance.valid?).to be_falsey
+    attendance.check_in = '2021-02-01 11pm'
+    expect(attendance.valid?).to be_truthy
+    attendance.check_in = Date.new(2021, 12, 11)
+    expect(attendance.valid?).to be_truthy
+  end
+
+  it 'validates check_out as an optional Time' do
+    attendance.update(check_out: Time.zone.now)
+    expect(attendance.valid?).to be_truthy
+    attendance.check_out = "I'm a string"
+    expect(attendance.valid?).to be_falsey
+    attendance.check_out = nil
+    expect(attendance.valid?).to be_truthy
+    attendance.check_out = '2021-02-01 11pm'
+    expect(attendance.valid?).to be_truthy
+    attendance.check_out = Date.new(2021, 12, 11)
+    expect(attendance.valid?).to be_truthy
+  end
+
+  it 'validates that absence is a permitted value only' do
+    attendance.save!
+
+    attendance.absence = 'covid_absence'
+    expect(attendance).to be_valid
+    expect(attendance.errors.messages).to eq({})
+
+    attendance.absence = 'not a valid reason'
+    expect(attendance).not_to be_valid
+    expect(attendance.errors.messages.keys).to eq([:absence])
+    expect(attendance.errors.messages[:absence]).to include('is not included in the list')
+  end
+
+  it 'factory should be valid (default; no args)' do
+    expect(build(:attendance)).to be_valid
   end
 
   context 'for_month scope' do
@@ -26,6 +67,25 @@ RSpec.describe Attendance, type: :model do
       expect(Attendance.for_month(date)).to include(past_attendance)
       expect(Attendance.for_month(date)).not_to include(current_attendance)
       expect(Attendance.for_month(date - 1.month).size).to eq(0)
+    end
+  end
+
+  context 'for_week scope' do
+    let(:child) { create(:child) }
+    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+    let(:child_approval) { child.child_approvals.first }
+    let(:current_attendance) { create(:attendance, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week, to: Time.current), child_approval: child_approval) }
+    let(:past_attendance) do
+      create(:attendance, child_approval: child_approval, check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
+                          check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
+    end
+    it 'returns attendances for given weeks' do
+      date = Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date
+      expect(Attendance.for_week).to include(current_attendance)
+      expect(Attendance.for_week).not_to include(past_attendance)
+      expect(Attendance.for_week(date)).to include(past_attendance)
+      expect(Attendance.for_week(date)).not_to include(current_attendance)
+      expect(Attendance.for_week(date - 1.week).size).to eq(0)
     end
   end
 
@@ -67,6 +127,7 @@ end
 # Table name: attendances
 #
 #  id                                                             :uuid             not null, primary key
+#  absence                                                        :string
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null

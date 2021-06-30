@@ -6,7 +6,10 @@
       "licensed_family_home",
       "licensed_group_home",
       "license_exempt_home",
-      "license_exempt_center"
+      "license_exempt_center",
+      "family_child_care_home_i",
+      "family_child_care_home_ii",
+      "family_in_home"
     ]
   }
 }

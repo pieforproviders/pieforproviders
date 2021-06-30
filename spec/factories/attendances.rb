@@ -9,6 +9,8 @@ FactoryBot.define do
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
+    absence { Random.rand(10) > 7 ? nil : Attendance::ABSENCE_TYPES.sample }
+
     factory :illinois_part_day_attendance do
       check_in do
         Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
@@ -44,6 +46,7 @@ end
 # Table name: attendances
 #
 #  id                                                             :uuid             not null, primary key
+#  absence                                                        :string
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null

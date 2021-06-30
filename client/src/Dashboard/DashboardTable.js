@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Button, DatePicker, Modal, Select, Table, Tag } from 'antd'
 import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
+import { Button, Modal, Select, Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import DatePicker from './DatePicker'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
@@ -16,8 +17,8 @@ import '_assets/styles/select-overrides.css'
 
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
-  const [selectedChild, setSelectedChild] = useState('')
-  const [inactiveDate, setInactiveDate] = useState(dayjs())
+  const [selectedChild, setSelectedChild] = useState({})
+  const [inactiveDate, setInactiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [inactiveCases, setInactiveCases] = useState([])
   const [sortedRows, setSortedRows] = useState([])
@@ -103,7 +104,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <div>
         <p className="text-lg mb-1">
           {child.childName}
-          {isInactive(record) ? ' (Inactive)' : ''}
+          {isInactive(record) ? `  (${t('inactive')})` : ''}
         </p>
         <p className="flex flex-wrap mt-0.5">
           {child.business} <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
@@ -204,7 +205,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           src={isInactive(record) ? grayVector : vector}
           className="mr-2"
         />
-        Mark inactive
+        {t('markInactive')}
       </Button>
     </div>
   )
@@ -215,7 +216,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
   }
 
   const handleModalClose = () => {
-    setSelectedChild('')
+    setSelectedChild({})
     setInactiveReason(null)
     setInactiveDate(null)
     setIsMIModalVisible(false)
@@ -331,7 +332,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           isInactive(record) ? (
             <div>
               <p>{text}</p>
-              <p>Inactive</p>
+              <p>{t('inactive')}</p>
             </div>
           ) : (
             text
@@ -375,9 +376,6 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     ]
   }
 
-  const datePickerProps =
-    isMIModalVisible && !inactiveDate ? { value: inactiveDate } : {}
-
   useEffect(() => {
     setSortedRows(
       [...tableData].sort((a, b) =>
@@ -390,10 +388,18 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     )
   }, [inactiveCases, tableData])
 
+  useEffect(() => {
+    setSortedRows(
+      [...tableData].sort((a, b) =>
+        !a.active && !b.active ? 0 : !a.active ? 1 : -1
+      )
+    )
+  }, [tableData])
+
   return (
     <>
       <Table
-        dataSource={inactiveCases.length > 0 ? sortedRows : tableData}
+        dataSource={sortedRows}
         columns={
           userState === 'NE'
             ? generateColumns(columnConfig['ne'])
@@ -414,7 +420,11 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <Modal
         title={
           <div className="text-gray9 font-semibold text-lg">
-            <p>Mark Inactive: {selectedChild.child?.childName}</p>
+            <p>
+              {t('markInactive') +
+                ': ' +
+                (selectedChild?.child?.childName || selectedChild?.childName)}
+            </p>
           </div>
         }
         visible={isMIModalVisible}
@@ -422,7 +432,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         onCancel={handleModalClose}
         footer={[
           <Button key="cancelModal" onClick={handleModalClose}>
-            Cancel
+            {t('cancel')}
           </Button>,
           <Button
             key="okModal"
@@ -430,7 +440,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             onClick={handleMIModalOk}
             type="primary"
           >
-            Mark Inactive
+            {t('markInactive')}
           </Button>
         ]}
       >
@@ -440,9 +450,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         <Select
           className="inactive-select"
           dropdownStyle={{ minWidth: `28%` }}
-          placeholder="Reason for making inactive"
+          placeholder={t('markInactiveReason')}
           bordered={false}
           onChange={value => setInactiveReason(value)}
+          value={inactiveReason}
         >
           <Select.Option value="no_longer_in_my_care">
             {t('inactiveReason1')}
@@ -463,7 +474,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
             color: '#BFBFBF'
           }}
           onChange={(_, dateString) => setInactiveDate(dateString)}
-          {...datePickerProps}
+          value={
+            inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
+          }
         />
       </Modal>
     </>

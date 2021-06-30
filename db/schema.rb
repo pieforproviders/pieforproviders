@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_28_142352) do
+ActiveRecord::Schema.define(version: 2021_06_04_184925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 2021_05_28_142352) do
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
     t.string "wonderschool_id"
+    t.string "absence"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
   end
 
@@ -133,7 +134,7 @@ ActiveRecord::Schema.define(version: 2021_05_28_142352) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-05-21", null: false
+    t.date "effective_on", default: "2021-06-12", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false

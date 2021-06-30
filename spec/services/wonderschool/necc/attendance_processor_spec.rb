@@ -207,6 +207,7 @@ module Wonderschool
         end
       end
 
+      # TODO: change this to #call describe
       describe '.call' do
         before do
           allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket).and_return(archive_bucket)

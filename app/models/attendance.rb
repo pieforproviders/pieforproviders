@@ -10,10 +10,24 @@ class Attendance < UuidApplicationRecord
   # this uses the new behavior in advance of that release
   attribute :total_time_in_care, :interval
 
-  validates :check_in, time_param: true
-  validates :check_out, time_param: true, allow_nil: true
+  validates :check_in, time_param: true, presence: true
+  validates :check_out, time_param: true, unless: proc { |attendance| attendance.check_out_before_type_cast.nil? }
 
-  scope :for_month, ->(month = Time.current) { where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month) }
+  ABSENCE_TYPES = %w[
+    absence
+    covid_absence
+  ].freeze
+
+  validates :absence, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
+
+  scope :for_month, lambda { |month = nil|
+    month ||= Time.current
+    where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
+  }
+  scope :for_week, lambda { |week = nil|
+    week ||= Time.current
+    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week, week.at_end_of_week)
+  }
 
   scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }
   scope :illinois_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '5 hours', '12 hours') }
@@ -46,6 +60,7 @@ end
 # Table name: attendances
 #
 #  id                                                             :uuid             not null, primary key
+#  absence                                                        :string
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null

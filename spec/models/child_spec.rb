@@ -141,7 +141,7 @@ RSpec.describe Child, type: :model do
       expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
       current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
       expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
-      expect(child.attendances.pluck(:id)).to eq(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
+      expect(child.attendances.pluck(:id)).to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
     end
   end
 

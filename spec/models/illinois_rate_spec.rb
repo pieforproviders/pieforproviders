@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisRate, type: :model do
+  # TODO: make these all expected or shoulda, not both
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:max_age) }
   it { is_expected.to validate_presence_of(:county) }
@@ -13,6 +14,8 @@ RSpec.describe IllinoisRate, type: :model do
   it { should validate_numericality_of(:gold_percentage) }
   it { should validate_numericality_of(:part_day_rate) }
   it { should validate_numericality_of(:silver_percentage) }
+
+  it_behaves_like 'licenses'
 
   let(:illinois_rate) { build(:illinois_rate) }
 
@@ -55,7 +58,7 @@ end
 #  attendance_threshold :decimal(, )
 #  bronze_percentage    :decimal(, )
 #  county               :string           default(" "), not null
-#  effective_on         :date             default(Fri, 21 May 2021), not null
+#  effective_on         :date             default(Sat, 12 Jun 2021), not null
 #  expires_on           :date
 #  full_day_rate        :decimal(, )
 #  gold_percentage      :decimal(, )
