@@ -16,7 +16,7 @@
     "@reduxjs/toolkit": "^1.6.0",
     "antd": "^4.16.6",
     "antd-mask-input": "^0.1.15",
-    "craco-less": "^1.17.1",
+    "craco-less": "^1.18.0",
     "csv": "^5.5.0",
     "dayjs": "^1.10.5",
     "eslint-config-prettier": "^6.15.0",
