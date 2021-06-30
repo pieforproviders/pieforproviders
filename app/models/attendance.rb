@@ -33,7 +33,7 @@ class Attendance < UuidApplicationRecord
   end
 
   def calculate_from_schedule
-    child_schedule ? child_schedule.end_time.on(check_in.to_date) - check_in : 8.hours
+    child_schedule ? child_schedule.end_time.on(check_in.to_date) - child_schedule.start_time.on(check_in.to_date) : 8.hours
   end
 
   def child_schedule
