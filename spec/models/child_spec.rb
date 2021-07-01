@@ -104,7 +104,7 @@ RSpec.describe Child, type: :model do
       it 'calls the NebraskaHoursCalculator service' do
         calculator_instance = instance_double(NebraskaHoursCalculator)
 
-        allow(Rails.application.config).to receive(:ff_live_algorithms).and_return('true')
+        allow(Rails.application.config).to receive(:ff_live_algorithms_hours).and_return('true')
         expect(NebraskaHoursCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
         expect(calculator_instance).to receive(:call)
         child.nebraska_hours(Time.current.to_date)
@@ -112,7 +112,7 @@ RSpec.describe Child, type: :model do
     end
     context 'using temporary dashboard values' do
       it 'does not call the NebraskaHoursCalculator service' do
-        allow(Rails.application.config).to receive(:ff_live_algorithms).and_return('false')
+        allow(Rails.application.config).to receive(:ff_live_algorithms_hours).and_return('false')
         expect(NebraskaHoursCalculator).not_to receive(:new)
         child.nebraska_hours(Time.current.to_date)
       end
