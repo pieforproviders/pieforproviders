@@ -70,8 +70,8 @@ class Child < UuidApplicationRecord
   # NE dashboard hours calculator
   def nebraska_hours(filter_date)
     # "feature flag" for using live algorithms rather than uploaded data
-    ff_live_algorithms = Rails.application.config.respond_to?(:ff_live_algorithms) ? Rails.application.config.ff_live_algorithms == 'true' : false
-    ff_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
+    ff_live_algorithms_hours = Rails.application.config.respond_to?(:ff_live_algorithms_hours) ? Rails.application.config.ff_live_algorithms_hours == 'true' : false
+    ff_live_algorithms_hours ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
   end
 
   private

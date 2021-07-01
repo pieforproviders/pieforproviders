@@ -9,5 +9,5 @@
 # Rails.backtrace_cleaner.remove_silencers!
 
 Rails.backtrace_cleaner.add_filter { |line| line.gsub(Rails.root.to_s, '<root>') }
-Rails.backtrace_cleaner.add_silencer { |line| line.index('<root>').nil? && line.index('/').zero? }
-Rails.backtrace_cleaner.add_silencer { |line| line.index('<root>/vendor/').zero? }
+Rails.backtrace_cleaner.add_silencer { |line| line.index('<root>').nil? && line.index('/')&.zero? }
+Rails.backtrace_cleaner.add_silencer { |line| line.index('<root>/vendor/')&.zero? }

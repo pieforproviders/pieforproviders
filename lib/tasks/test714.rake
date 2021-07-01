@@ -26,16 +26,16 @@ namespace :test714 do
         child.attendances.destroy_all
       end
 
-      Schedule.create!(child: children.first, weekday: 1, start_time: '8:00AM', end_time: '12:00PM', effective_on: 'May 1, 2021')
+      Schedule.create!(child: children.first, weekday: 4, start_time: '8:00AM', end_time: '12:00PM', effective_on: 'May 1, 2021')
 
       children.map do |child|
         child.reload
         active_child_approval = child.active_child_approval(Time.current)
         next unless child && active_child_approval
 
-        puts "\n\n\n\nChild: #{child.full_name} should have: #{child.schedules.empty? ? 'no hours' : 'an entry for the number of hours in their schedule (5)'}\n\n\n\n"
+        puts "\n\n\n\nChild: #{child.full_name} should have: #{child.schedules.empty? ? 'no hours' : 'an entry for the number of hours in their schedule (4)'}\n\n\n\n"
 
-        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 5, 3, 7, 0, 0), check_out: nil)
+        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 7, 1, 7, 0, 0), check_out: nil)
       end
 
     else
