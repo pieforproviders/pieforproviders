@@ -2,7 +2,7 @@
 
 # Attendance of a child during a specific cycle for a child case
 class Attendance < UuidApplicationRecord
-  before_validation :calc_total_time_in_care
+  before_validation :calc_total_time_in_care, if: :child_approval
 
   belongs_to :child_approval
 
@@ -37,7 +37,21 @@ class Attendance < UuidApplicationRecord
   private
 
   def calc_total_time_in_care
-    self.total_time_in_care = (check_out.nil? || check_in.nil? ? 0 : check_out - check_in)
+    self.total_time_in_care = if check_in && check_out
+                                check_out - check_in
+                              elsif child_approval.child.state == 'NE'
+                                calculate_from_schedule
+                              else
+                                0.seconds
+                              end
+  end
+
+  def calculate_from_schedule
+    child_schedule ? child_schedule.end_time.on(check_in.to_date) - child_schedule.start_time.on(check_in.to_date) : 8.hours
+  end
+
+  def child_schedule
+    child_approval.child.schedules.active_on_date(check_in.to_date).for_weekday(check_in.wday).first
   end
 end
 

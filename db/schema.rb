@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_04_184925) do
+ActiveRecord::Schema.define(version: 2021_06_30_235146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -110,6 +110,12 @@ ActiveRecord::Schema.define(version: 2021_06_04_184925) do
     t.text "error"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.uuid "active_job_id"
+    t.text "concurrency_key"
+    t.text "cron_key"
+    t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
+    t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
+    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
@@ -150,6 +156,19 @@ ActiveRecord::Schema.define(version: 2021_06_04_184925) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
+  end
+
+  create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "effective_on", null: false
+    t.time "end_time", null: false
+    t.date "expires_on"
+    t.time "start_time", null: false
+    t.integer "weekday", null: false
+    t.uuid "child_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_id"], name: "index_schedules_on_child_id"
+    t.index ["effective_on", "child_id"], name: "unique_child_schedules", unique: true
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -211,5 +230,6 @@ ActiveRecord::Schema.define(version: 2021_06_04_184925) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "schedules", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

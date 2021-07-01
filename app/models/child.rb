@@ -9,6 +9,7 @@ class Child < UuidApplicationRecord
 
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
   has_many :approvals, through: :child_approvals
+  has_many :schedules, dependent: :destroy
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
@@ -64,6 +65,13 @@ class Child < UuidApplicationRecord
 
   def illinois_approval_amounts
     IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
+  end
+
+  # NE dashboard hours calculator
+  def nebraska_hours(filter_date)
+    # "feature flag" for using live algorithms rather than uploaded data
+    ff_live_algorithms = Rails.application.config.respond_to?(:ff_live_algorithms) ? Rails.application.config.ff_live_algorithms == 'true' : false
+    ff_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
   end
 
   private

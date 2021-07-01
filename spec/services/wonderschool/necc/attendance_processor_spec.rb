@@ -36,9 +36,24 @@ module Wonderschool
       end
       let!(:business1) { create(:business, name: 'Test Daycare') }
       let!(:business2) { create(:business, name: 'Fake Daycare') }
-      let!(:first_child) { create(:necc_child, wonderschool_id: '1234', business: business1) }
-      let!(:second_child) { create(:necc_child, wonderschool_id: '5678', business: business2) }
-      let!(:third_child) { create(:necc_child, wonderschool_id: '5677', business: business2) }
+      let!(:first_child) do
+        create(:necc_child,
+               wonderschool_id: '1234',
+               business: business1,
+               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), create_children: false)])
+      end
+      let!(:second_child) do
+        create(:necc_child,
+               wonderschool_id: '5678',
+               business: business2,
+               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), create_children: false)])
+      end
+      let!(:third_child) do
+        create(:necc_child,
+               wonderschool_id: '5677',
+               business: business2,
+               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), create_children: false)])
+      end
 
       let!(:file_name) { 'failed_attendances' }
       let!(:archive_bucket) { 'archive_bucket' }
