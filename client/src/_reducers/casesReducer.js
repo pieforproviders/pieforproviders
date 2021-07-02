@@ -6,9 +6,9 @@ const cases = createSlice({
   name: 'cases',
   initialState,
   reducers: {
-    setCaseData(state, action) {
+    setCaseData(_state, action) {
       const cases = action.payload
-      return [...state, ...cases]
+      return [...cases]
     }
   }
 })
