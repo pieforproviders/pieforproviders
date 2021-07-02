@@ -1,20 +1,24 @@
-/* eslint-disable no-debugger */
 import React, { useState, useRef } from 'react'
-import { Alert, DatePicker, Table } from 'antd'
+import { Alert, Button, DatePicker, Modal, Table } from 'antd'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import merge from 'deepmerge'
 import ellipse from '_assets/ellipse.svg'
+import { PaddedButton } from '_shared/PaddedButton'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
 
-// TODO: figure out logic for adding columns
-// figure out logic for updating dates data
-//  figure out logic for
 export function Attendance() {
   const { t } = useTranslation()
-  const cases = useSelector(state => state.cases)
+  const history = useHistory()
+  const { makeRequest } = useApiResponse()
+  const { cases, token } = useSelector(state => ({
+    cases: state.cases,
+    token: state.auth.token
+  }))
+  const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [attendanceData, setAttendanceData] = useState(() =>
     cases.reduce((acc, cv) => {
       return {
@@ -25,44 +29,42 @@ export function Attendance() {
       }
     }, {})
   )
+  const [columnDates, setColumnDates] = useState(
+    [...Array(7).keys()].map(() => '')
+  )
   const latestAttendanceData = useRef(attendanceData)
+  const latestColumnDates = useRef(columnDates)
 
   const updateAttendanceData = (updates, record, i) => {
-    // this function taken from deepmerge documentation
-    const combineMerge = (target, source, options) => {
-      const destination = target.slice()
-
-      source.forEach((item, index) => {
-        if (typeof destination[index] === 'undefined') {
-          destination[index] = options.cloneUnlessOtherwiseSpecified(
-            item,
-            options
-          )
-        } else if (options.isMergeableObject(item)) {
-          destination[index] = merge(target[index], item, options)
-        } else if (target.indexOf(item) === -1) {
-          destination.push(item)
-        }
-      })
-      return destination
-    }
     const newArr = latestAttendanceData.current[record?.id].map(
       (value, index) => {
+        // this logic adds and removes fields as needed depending on whether checkin/out or an absence is selected
         return index === i
-          ? merge(value, updates, {
-              arrayMerge: (_t, s) => s
-            })
+          ? Object.keys(updates).length === 0 ||
+            (Object.keys(value).includes('absence') &&
+              (Object.keys(updates).includes('check_in') ||
+                Object.keys(updates).includes('check_out'))) ||
+            (Object.keys(updates).includes('absence') &&
+              (Object.keys(value).includes('check_in') ||
+                Object.keys(value).includes('check_out')))
+            ? updates
+            : { ...value, ...updates }
           : value
       }
     )
-    const mergedArray = merge(latestAttendanceData.current[record.id], newArr, {
-      arrayMerge: combineMerge
-    })
     latestAttendanceData.current = {
       ...attendanceData,
-      [record.id]: mergedArray
+      [record.id]: newArr
     }
-    setAttendanceData(prevData => ({ ...prevData, [record.id]: mergedArray }))
+    setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
+  }
+
+  const handleDateChange = (index, ds) => {
+    const updatedDates = latestColumnDates.current.map((value, i) =>
+      index === i ? ds : value
+    )
+    latestColumnDates.current = updatedDates
+    setColumnDates(updatedDates)
   }
 
   const [columns] = useState(() => {
@@ -73,13 +75,19 @@ export function Attendance() {
         key: 'date' + i,
         width: 398,
         // eslint-disable-next-line react/display-name
-        title: () => <DatePicker bordered={false} />,
+        title: () => (
+          <DatePicker
+            disabledDate={c => c && c.valueOf() > Date.now()}
+            onChange={(_, ds) => handleDateChange(i, ds)}
+            bordered={false}
+          />
+        ),
         // eslint-disable-next-line react/display-name
-        render: (_, record, i) => {
+        render: (_, record) => {
           return (
             <AttendanceDataCell
               record={record}
-              index={i}
+              columnIndex={i}
               updateAttendanceData={updateAttendanceData}
             />
           )
@@ -91,17 +99,19 @@ export function Attendance() {
       {
         title: 'Child Name',
         dataIndex: 'name',
-        width: 200,
+        width: 250,
         key: 'name',
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
           return (
             <div>
-              <p className="text-lg mb-1">{record.childName}</p>
+              <p className="text-lg mb-1">
+                {record.childName || record.child.childName}
+              </p>
               <p className="flex flex-wrap mt-0.5">
-                {record.business}{' '}
+                {record.business || record.child.business}{' '}
                 <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
-                {record.cNumber}
+                {record.cNumber || record.child.cNumber}
               </p>
             </div>
           )
@@ -110,8 +120,40 @@ export function Attendance() {
       ...cols
     ]
   })
-  console.log(attendanceData, 'attednance DATAAAAA')
-  console.log(latestAttendanceData, 'latest attednance DATAAAAA')
+
+  const handleSave = async () => {
+    const attendanceBatch = Object.entries(attendanceData).flatMap(cv =>
+      cv[1]
+        .filter(v => Object.keys(v).length > 0)
+        .map((v, k) =>
+          Object.keys(v).includes('absence')
+            ? { ...v, check_in: columnDates[k], child_id: cv[0] }
+            : {
+                check_in: `${columnDates[k]} ${v.check_in}`,
+                check_out: `${columnDates[k]} ${v.check_out}`,
+                child_id: cv[0]
+              }
+        )
+    )
+    const response = await makeRequest({
+      type: 'post',
+      url: '/api/v1/attendance_batches',
+      headers: {
+        Authorization: token
+      },
+      data: {
+        attendance_batch: attendanceBatch
+      }
+    })
+
+    if (response.ok) {
+      setSuccessModalVisibile(true)
+    } else {
+      // TODO: handle bad request
+      console.log(response, 'bad request')
+    }
+  }
+
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">
@@ -139,13 +181,36 @@ export function Attendance() {
           dataSource={cases}
           columns={columns}
           bordered={true}
-          // size={'medium'}
           pagination={false}
           sticky
           scroll={{ x: 1500 }}
           className="my-5"
         ></Table>
       </p>
+      <div className="flex justify-center">
+        <PaddedButton classes="mt-3 w-40" text={'Save'} onClick={handleSave} />
+      </div>
+      <Modal
+        title={<div className="eyebrow-large text-gray9">Success!</div>}
+        visible={isSuccessModalVisible}
+        footer={[
+          <Button
+            type="primary"
+            key="ok"
+            onClick={() => {
+              setSuccessModalVisibile(false)
+              history.push('/dashboard')
+            }}
+          >
+            Go to dashboard
+          </Button>
+        ]}
+      >
+        <p>
+          You just entered some attendance history for the children in your
+          care.
+        </p>
+      </Modal>
     </div>
   )
 }
