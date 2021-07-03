@@ -1,11 +1,13 @@
-import React, { useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Alert, Button, DatePicker, Modal, Table } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ellipse from '_assets/ellipse.svg'
 import { PaddedButton } from '_shared/PaddedButton'
+import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
@@ -13,11 +15,15 @@ import '_assets/styles/alert-overrides.css'
 export function Attendance() {
   const { t } = useTranslation()
   const history = useHistory()
+  const dispatch = useDispatch()
+  const { reduceTableData } = useCaseData()
   const { makeRequest } = useApiResponse()
-  const { cases, token } = useSelector(state => ({
+  const { cases, token, user } = useSelector(state => ({
     cases: state.cases,
-    token: state.auth.token
+    token: state.auth.token,
+    user: state.user
   }))
+  const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [attendanceData, setAttendanceData] = useState(() =>
     cases.reduce((acc, cv) => {
@@ -154,6 +160,28 @@ export function Attendance() {
     }
   }
 
+  useEffect(() => {
+    const getCaseData = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/case_list_for_dashboard',
+        headers: { Authorization: token }
+      })
+
+      if (response.ok) {
+        const parsedResponse = await response.json()
+        const caseData = reduceTableData(parsedResponse, user)
+        dispatch(setCaseData(caseData))
+        setTableData(caseData)
+      }
+    }
+
+    if (cases.length === 0) {
+      getCaseData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">
@@ -178,7 +206,7 @@ export function Attendance() {
           closable
         />
         <Table
-          dataSource={cases}
+          dataSource={tableData}
           columns={columns}
           bordered={true}
           pagination={false}
@@ -193,6 +221,10 @@ export function Attendance() {
       <Modal
         title={<div className="eyebrow-large text-gray9">Success!</div>}
         visible={isSuccessModalVisible}
+        onCancel={() => {
+          setSuccessModalVisibile(false)
+          history.push('/dashboard')
+        }}
         footer={[
           <Button
             type="primary"

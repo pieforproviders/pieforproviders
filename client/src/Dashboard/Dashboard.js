@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
@@ -12,6 +13,7 @@ import { setCaseData } from '_reducers/casesReducer'
 
 export function Dashboard() {
   const dispatch = useDispatch()
+  const { reduceTableData } = useCaseData()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -131,52 +133,6 @@ export function Dashboard() {
 
   i18n.on('languageChanged', () => setSummaryData(generateSummaryData()))
 
-  const reduceTableData = res => {
-    return res.flatMap(userResponse => {
-      return userResponse.businesses.flatMap(business => {
-        return business.cases.flatMap((childCase, index) => {
-          return user.state === 'NE'
-            ? {
-                id: childCase.id ?? '',
-                key: `${index}-${childCase.full_name}`,
-                absences: childCase.absences ?? '',
-                child: {
-                  childName: childCase.full_name ?? '',
-                  cNumber: childCase.case_number ?? '',
-                  business: business.name ?? ''
-                },
-                earnedRevenue: childCase.earned_revenue ?? '',
-                estimatedRevenue: childCase.estimated_revenue ?? '',
-                fullDays: {
-                  text: childCase.full_days ?? '',
-                  tag: childCase.attendance_risk ?? ''
-                },
-                hours: childCase.hours ?? '',
-                transportationRevenue: childCase.transportation_revenue ?? '',
-                hoursAttended: childCase.hours_attended ?? '',
-                familyFee: childCase.family_fee ?? '',
-                active: childCase.active ?? true
-              }
-            : {
-                id: childCase.id ?? '',
-                key: `${index}-${childCase.full_name}`,
-                childName: childCase.full_name ?? '',
-                cNumber: childCase.case_number ?? '',
-                business: business.name ?? '',
-                attendanceRate: {
-                  rate: childCase.attendance_rate ?? '',
-                  riskCategory: childCase.attendance_risk ?? ''
-                },
-                guaranteedRevenue: childCase.guaranteed_revenue ?? '',
-                maxApprovedRevenue: childCase.max_approved_revenue ?? '',
-                potentialRevenue: childCase.potential_revenue ?? '',
-                active: childCase.active ?? true
-              }
-        })
-      })
-    })
-  }
-
   const reduceSummaryData = (data, res) => {
     if (user.state === 'NE') {
       return {
@@ -293,7 +249,7 @@ export function Dashboard() {
     const parsedResponse = await response.json()
 
     if (!parsedResponse.error) {
-      const tableData = reduceTableData(parsedResponse)
+      const tableData = reduceTableData(parsedResponse, user)
       const updatedSummaryDataTotals = reduceSummaryData(
         tableData,
         parsedResponse
