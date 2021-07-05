@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
 import { Button, Modal, Select, Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { updateCase } from '_reducers/casesReducer'
 import DatePicker from './DatePicker'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
@@ -16,6 +17,7 @@ import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
 
 export default function DashboardTable({ tableData, userState, setActiveKey }) {
+  const dispatch = useDispatch()
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(null)
@@ -28,7 +30,10 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
     currency: 'USD',
     minimumFractionDigits: 2
   })
-  const { token } = useSelector(state => ({ token: state.auth.token }))
+  const { token } = useSelector(state => ({
+    token: state.auth.token,
+    user: state.user
+  }))
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
   const onHeaderCell = () => {
@@ -240,6 +245,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
 
     if (response.ok) {
       setInactiveCases(inactiveCases.concat(selectedChild.key))
+      dispatch(
+        updateCase({ childId: selectedChild?.id, updates: { active: false } })
+      )
     }
     handleModalClose()
   }

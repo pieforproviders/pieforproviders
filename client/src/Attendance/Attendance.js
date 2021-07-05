@@ -206,7 +206,7 @@ export function Attendance() {
           closable
         />
         <Table
-          dataSource={tableData}
+          dataSource={tableData.filter(c => c.active)}
           columns={columns}
           bordered={true}
           pagination={false}
