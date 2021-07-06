@@ -13,7 +13,7 @@ import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
 
 export function Attendance() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const history = useHistory()
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseData()
@@ -73,7 +73,7 @@ export function Attendance() {
     setColumnDates(updatedDates)
   }
 
-  const [columns] = useState(() => {
+  const generateColumns = () => {
     let cols = []
     for (let i = 0; i < 7; i++) {
       cols.push({
@@ -86,6 +86,8 @@ export function Attendance() {
             disabledDate={c => c && c.valueOf() > Date.now()}
             onChange={(_, ds) => handleDateChange(i, ds)}
             bordered={false}
+            placeholder={t('selectDate')}
+            style={{ width: '8rem ', color: '#004A6E' }}
           />
         ),
         // eslint-disable-next-line react/display-name
@@ -103,7 +105,7 @@ export function Attendance() {
 
     return [
       {
-        title: 'Child Name',
+        title: t('childNameCap'),
         dataIndex: 'name',
         width: 250,
         key: 'name',
@@ -125,7 +127,11 @@ export function Attendance() {
       },
       ...cols
     ]
-  })
+  }
+
+  const [columns, setColumns] = useState(generateColumns())
+
+  i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleSave = async () => {
     const attendanceBatch = Object.entries(attendanceData).flatMap(cv =>
@@ -216,10 +222,14 @@ export function Attendance() {
         ></Table>
       </p>
       <div className="flex justify-center">
-        <PaddedButton classes="mt-3 w-40" text={'Save'} onClick={handleSave} />
+        <PaddedButton
+          classes="mt-3 w-40"
+          text={t('save')}
+          onClick={handleSave}
+        />
       </div>
       <Modal
-        title={<div className="eyebrow-large text-gray9">Success!</div>}
+        title={<div className="eyebrow-large text-gray9">{t('success')}</div>}
         visible={isSuccessModalVisible}
         onCancel={() => {
           setSuccessModalVisibile(false)
@@ -234,14 +244,11 @@ export function Attendance() {
               history.push('/dashboard')
             }}
           >
-            Go to dashboard
+            {t('gotToDashboard')}
           </Button>
         ]}
       >
-        <p>
-          You just entered some attendance history for the children in your
-          care.
-        </p>
+        <p>{t('successText')}</p>
       </Modal>
     </div>
   )

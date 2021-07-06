@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, TimePicker } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 export default function AttendanceDataCell({
   record,
   columnIndex,
   updateAttendanceData
 }) {
+  const { t } = useTranslation()
   const [absence, setAbsence] = useState(null)
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
@@ -19,7 +21,7 @@ export default function AttendanceDataCell({
     <div className="flex m-">
       <div className="mr-4">
         <p className="font-proxima-nova-alt font-semibold mb-1">
-          {'Check In'.toUpperCase()}
+          {t('checkIn').toUpperCase()}
         </p>
         <TimePicker
           className="w-20 h-8"
@@ -36,7 +38,7 @@ export default function AttendanceDataCell({
       </div>
       <div className="mr-4">
         <p className="font-proxima-nova-alt font-semibold mb-1">
-          {'Check out'.toUpperCase()}
+          {t('checkOut').toUpperCase()}
         </p>
         <TimePicker
           className="w-20 h-8"
@@ -64,7 +66,7 @@ export default function AttendanceDataCell({
                 : handleChange({}, setAbsence(null))
             }
           />
-          <span className="ml-3">Absent</span>
+          <span className="ml-3">{t('absent')}</span>
         </p>
         <p className="mt-2">
           <Checkbox
@@ -81,7 +83,7 @@ export default function AttendanceDataCell({
                 : handleChange({}, setAbsence(null))
             }
           />
-          <span className="ml-3">Absent - Covid-related</span>
+          <span className="ml-3">{t('absent') + '- Covid-related'}</span>
         </p>
       </div>
     </div>
