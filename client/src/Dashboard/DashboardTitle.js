@@ -72,7 +72,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
           className="ml-auto border-primaryBlue text-primaryBlue flex"
           onClick={() => history.push('/attendance')}
         >
-          Add attendance <PlusOutlined />
+          {t('addAttendance')} <PlusOutlined />
         </Button>
       </div>
       <Typography.Text className="md-3 text-base">
