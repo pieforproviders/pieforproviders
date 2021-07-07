@@ -224,6 +224,7 @@
   "checkIn": "Hora de entrada",
   "checkOut": "Hora de salida",
   "absent": "Ausente",
+  "covidRelated": "Relacionado con covid",
   "save": "Guardar",
   "validTime": "Por favor ingresa una fecha válida",
   "today": "Hoy",

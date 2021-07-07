@@ -11,6 +11,7 @@ import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
+import dayjs from 'dayjs'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
@@ -25,8 +26,8 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
-  const [attendanceData, setAttendanceData] = useState(() =>
-    cases.reduce((acc, cv) => {
+  const reduceAttendanceData = data =>
+    data.reduce((acc, cv) => {
       return {
         ...acc,
         ...{
@@ -34,6 +35,8 @@ export function Attendance() {
         }
       }
     }, {})
+  const [attendanceData, setAttendanceData] = useState(
+    reduceAttendanceData(cases)
   )
   const [columnDates, setColumnDates] = useState(
     [...Array(7).keys()].map(() => '')
@@ -137,15 +140,34 @@ export function Attendance() {
     const attendanceBatch = Object.entries(attendanceData).flatMap(cv =>
       cv[1]
         .filter(v => Object.keys(v).length > 0)
-        .map((v, k) =>
-          Object.keys(v).includes('absence')
-            ? { ...v, check_in: columnDates[k], child_id: cv[0] }
-            : {
-                check_in: `${columnDates[k]} ${v.check_in}`,
-                check_out: `${columnDates[k]} ${v.check_out}`,
-                child_id: cv[0]
-              }
-        )
+        .map((v, k) => {
+          if (Object.keys(v).includes('absence')) {
+            return { ...v, check_in: columnDates[k], child_id: cv[0] }
+          }
+
+          const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
+          const parsedTime1 = v.check_in.match(timeRegex)
+          const parsedTime2 = v.check_out.match(timeRegex)
+          const currentDate = dayjs(columnDates[k])
+          let checkoutDate
+
+          if (
+            (parsedTime1[3] === 'am' &&
+              parsedTime2[3] === 'am' &&
+              parsedTime1[1] > parsedTime2[1]) ||
+            (parsedTime1[3] === 'pm' && parsedTime2[3] === 'am')
+          ) {
+            checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
+          } else {
+            checkoutDate = currentDate.format('YYYY-MM-DD')
+          }
+
+          return {
+            check_in: `${columnDates[k]} ${v.check_in}`,
+            check_out: `${checkoutDate} ${v.check_out}`,
+            child_id: cv[0]
+          }
+        })
     )
     const response = await makeRequest({
       type: 'post',
@@ -177,7 +199,11 @@ export function Attendance() {
       if (response.ok) {
         const parsedResponse = await response.json()
         const caseData = reduceTableData(parsedResponse, user)
+        const reducedAttendanceData = reduceAttendanceData(caseData)
+
         dispatch(setCaseData(caseData))
+        latestAttendanceData.current = reducedAttendanceData
+        setAttendanceData(reducedAttendanceData)
         setTableData(caseData)
       }
     }

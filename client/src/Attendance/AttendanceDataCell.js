@@ -26,7 +26,7 @@ export default function AttendanceDataCell({
         <TimePicker
           className="w-20 h-8"
           use12Hours={true}
-          format={'HH:mm'}
+          format="h:mm a"
           disabled={absence}
           onChange={(m, ds) =>
             m
@@ -43,7 +43,7 @@ export default function AttendanceDataCell({
         <TimePicker
           className="w-20 h-8"
           use12Hours={true}
-          format={'HH:mm'}
+          format="h:mm a"
           disabled={absence}
           onChange={(m, ds) =>
             m
@@ -83,7 +83,9 @@ export default function AttendanceDataCell({
                 : handleChange({}, setAbsence(null))
             }
           />
-          <span className="ml-3">{t('absent') + '- Covid-related'}</span>
+          <span className="ml-3">
+            {t('absent') + ' - ' + t('covidRelated')}
+          </span>
         </p>
       </div>
     </div>
