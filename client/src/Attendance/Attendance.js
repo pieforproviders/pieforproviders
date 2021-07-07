@@ -154,7 +154,7 @@ export function Attendance() {
           if (
             (parsedTime1[3] === 'am' &&
               parsedTime2[3] === 'am' &&
-              parsedTime1[1] > parsedTime2[1]) ||
+              Number(parsedTime1[1]) > Number(parsedTime2[1])) ||
             (parsedTime1[3] === 'pm' && parsedTime2[3] === 'am')
           ) {
             checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
