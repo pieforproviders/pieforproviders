@@ -53,7 +53,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "faker": "^5.5.3",
     "prettier": "^2.3.2",
-    "start-server-and-test": "^1.12.5"
+    "start-server-and-test": "^1.12.6"
   },
   "dependencies": {}
 }
