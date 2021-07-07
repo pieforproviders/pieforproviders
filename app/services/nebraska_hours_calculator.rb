@@ -20,13 +20,13 @@ class NebraskaHoursCalculator
   end
 
   def round_hourly_to_quarters(duration)
-    adjusted_duration = if duration < (5.hours + 45.minutes)
+    adjusted_duration = if duration <= (5.hours + 45.minutes)
                           duration
-                        elsif duration > 10.hours && duration < (14.hours + 45.minutes)
+                        elsif duration > 10.hours && duration <= (14.hours + 45.minutes)
                           duration - 10.hours
                         else
                           0.minutes
                         end
-    (adjusted_duration.in_minutes / 60 * 4).round / 4.0
+    (adjusted_duration.in_minutes / 15.0).ceil * 15 / 60.0
   end
 end

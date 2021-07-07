@@ -56,17 +56,19 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
           first_check_in = first_attendance_date.to_datetime + 8.hours
           first_check_out = first_check_in + 5.hours + 10.minutes
           second_check_in = second_attendance_date.to_datetime + 8.hours
+          second_check_out = second_check_in + 8.hours
           create(:attendance, child_approval: child_approval, check_in: first_check_in, check_out: first_check_out)
-          create(:attendance, child_approval: child_approval, check_in: second_check_in, check_out: nil)
+          create(:attendance, child_approval: child_approval, check_in: second_check_in, check_out: second_check_out)
           expect(described_class.new(child, first_attendance_date).call).to eq(5.25)
         end
       end
       context 'neither count for hourly units' do
         it 'returns 0' do
           first_check_in = first_attendance_date.to_datetime + 8.hours
+          first_check_out = first_check_in + 8.hours
           second_check_in = second_attendance_date.to_datetime + 8.hours
           second_check_out = second_check_in + 8.hours
-          create(:attendance, child_approval: child_approval, check_in: first_check_in, check_out: nil)
+          create(:attendance, child_approval: child_approval, check_in: first_check_in, check_out: first_check_out)
           create(:attendance, child_approval: child_approval, check_in: second_check_in, check_out: second_check_out)
           expect(described_class.new(child, first_attendance_date).call).to eq(0)
         end
@@ -79,7 +81,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
           second_check_out = second_check_in + 10.hours + 22.minutes
           create(:attendance, child_approval: child_approval, check_in: first_check_in, check_out: first_check_out)
           create(:attendance, child_approval: child_approval, check_in: second_check_in, check_out: second_check_out)
-          expect(described_class.new(child, first_attendance_date).call).to eq(5.25 + 0.25)
+          expect(described_class.new(child, first_attendance_date).call).to eq(5.25 + 0.5)
         end
       end
     end
