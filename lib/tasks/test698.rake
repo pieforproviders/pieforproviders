@@ -19,9 +19,9 @@ namespace :test698 do
         active_child_approval = child.active_child_approval(Time.current)
         next unless child && active_child_approval
 
-        puts "\n\n\n\nChild: #{child.full_name} should have: #{child.schedules.empty? ? 'no hours' : 'an entry for the number of hours in their schedule (7)'}\n\n\n\n"
+        puts "\n\n\n\nChild: #{child.full_name} should have an entry for the number of days in their schedule (1)'}\n\n\n\n"
 
-        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 6, 3, 7, 0, 0), check_out: nil)
+        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 7, 3, 7, 0, 0), check_out: nil)
       end
 
     else
