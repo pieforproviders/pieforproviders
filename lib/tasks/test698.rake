@@ -21,7 +21,7 @@ namespace :test698 do
 
         puts "\n\n\n\nChild: #{child.full_name} should have an entry for the number of days in their schedule (1)'}\n\n\n\n"
 
-        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 7, 3, 7, 0, 0), check_out: nil)
+        Attendance.create!(child_approval: active_child_approval, check_in: DateTime.new(2021, 7, 5, 7, 0, 0), check_out: nil)
       end
 
     else
