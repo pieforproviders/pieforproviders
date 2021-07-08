@@ -40,14 +40,14 @@ RSpec.describe Attendance, type: :model do
     attendance.absence = 'covid_absence'
     expect(attendance).not_to be_valid
     expect(attendance.errors.messages[:absence]).to include("can't create for a day without a schedule")
-    
+
     absence = create(:nebraska_absence, absence: 'covid_absence')
-    expect(attendance).to be_valid
+    expect(absence).to be_valid
     expect(absence.errors.messages).to eq({})
-    
+
     absence = build(:nebraska_absence, absence: 'fake_reason')
-    expect(attendance).not_to be_valid
-    expect(attendance.errors.messages[:absence]).to include('is not included in the list')
+    expect(absence).not_to be_valid
+    expect(absence.errors.messages[:absence]).to include('is not included in the list')
   end
 
   it 'validates that an absence only occurs on a scheduled day' do

@@ -11,10 +11,13 @@ FactoryBot.define do
 
     factory :nebraska_absence do
       child_approval { create(:child_approval, child: create(:necc_child)) }
+      check_in do
+        date = child_approval.child.schedules.first.effective_on + 30.days
+        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      end
       check_out { nil }
       absence { Attendance::ABSENCE_TYPES.sample }
     end
-
 
     factory :illinois_part_day_attendance do
       check_in do

@@ -5,8 +5,15 @@
       "format": "time"
     },
     "check_out": {
-      "type": "string",
-      "format": "time"
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "time"
+        },
+        {
+          "type": "null"
+        }
+      ]
     },
     "absence": {
       "anyOf": [

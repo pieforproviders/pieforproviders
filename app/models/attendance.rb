@@ -49,9 +49,7 @@ class Attendance < UuidApplicationRecord
   end
 
   def prevent_creation_of_absence_without_schedule
-    if absence && !child_schedule
-      errors.add(:absence, "can't create for a day without a schedule")
-    end
+    errors.add(:absence, "can't create for a day without a schedule") if absence && !child_schedule
   end
 
   def calculate_from_schedule
