@@ -40,8 +40,8 @@ RSpec.describe ChildBlueprint do
 
       create(:attendance,
              child_approval: child_approval,
-             check_in: attendance_date.to_datetime + 3.hours,
-             check_out: attendance_date.to_datetime + 9.hours)
+             check_in: attendance_date.to_datetime + 1.day + 3.hours,
+             check_out: attendance_date.to_datetime + 1.day + 9.hours)
     end
 
     it 'includes the child name and all cases' do
@@ -72,13 +72,13 @@ RSpec.describe ChildBlueprint do
       it 'includes the child name and all cases' do
         allow(Rails.application.config).to receive(:ff_live_algorithms_hours).and_return(true)
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('3.0')
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 6.hours + 15.minutes)
+        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 2.days + 3.hours,
+                            check_out: attendance_date.to_datetime + 2.days + 6.hours + 15.minutes)
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('6.25')
         allow(Rails.application.config).to receive(:ff_live_algorithms_full_days).and_return(true)
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('1')
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
+        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 2.days + 3.hours,
+                            check_out: attendance_date.to_datetime + 2.days + 9.hours + 18.minutes)
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('2')
       end
     end
