@@ -219,34 +219,29 @@ export function Attendance() {
       <p className="h1-large mb-4 flex justify-center">
         {t('enterAttendance')}
       </p>
-      <p>
-        <Alert
-          className="attendance-alert"
-          message={
-            <div className="text-gray1">
-              <span className="font-bold">{t('important')}</span>
-              {t('attendanceWarning') + ' ' + t('attendanceQuestions') + ' '}
-              <a
-                className="underline"
-                href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}
-              >
-                {PIE_FOR_PROVIDERS_EMAIL}
-              </a>
-            </div>
-          }
-          type="error"
-          closable
-        />
-        <Table
-          dataSource={tableData.filter(c => c.active)}
-          columns={columns}
-          bordered={true}
-          pagination={false}
-          sticky
-          scroll={{ x: 1500 }}
-          className="my-5"
-        ></Table>
-      </p>
+      <Alert
+        className="attendance-alert"
+        message={
+          <div className="text-gray1">
+            <span className="font-bold">{t('important')}</span>
+            {t('attendanceWarning') + ' ' + t('attendanceQuestions') + ' '}
+            <a className="underline" href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}>
+              {PIE_FOR_PROVIDERS_EMAIL}
+            </a>
+          </div>
+        }
+        type="error"
+        closable
+      />
+      <Table
+        dataSource={tableData.filter(c => c.active)}
+        columns={columns}
+        bordered={true}
+        pagination={false}
+        sticky
+        scroll={{ x: 1500 }}
+        className="my-5"
+      />
       <div className="flex justify-center">
         <PaddedButton
           classes="mt-3 w-40"
