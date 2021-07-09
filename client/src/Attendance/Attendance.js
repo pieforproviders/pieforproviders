@@ -137,25 +137,25 @@ export function Attendance() {
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleSave = async () => {
-    const attendanceBatch = Object.entries(attendanceData).flatMap(cv =>
-      cv[1]
-        .filter(v => Object.keys(v).length > 0)
-        .map((v, k) => {
-          if (Object.keys(v).includes('absence')) {
-            return { ...v, check_in: columnDates[k], child_id: cv[0] }
+    const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
+      data[1]
+        .filter(value => Object.keys(value).length > 0)
+        .map((value, key) => {
+          if (Object.keys(value).includes('absence')) {
+            return { ...value, check_in: columnDates[key], child_id: data[0] }
           }
 
           const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
-          const parsedTime1 = v.check_in.match(timeRegex)
-          const parsedTime2 = v.check_out.match(timeRegex)
-          const currentDate = dayjs(columnDates[k])
+          const parsedCheckIn = value.check_in.match(timeRegex)
+          const parsedCheckOut = value.check_out.match(timeRegex)
+          const currentDate = dayjs(columnDates[key])
           let checkoutDate
 
           if (
-            (parsedTime1[3] === 'am' &&
-              parsedTime2[3] === 'am' &&
-              Number(parsedTime1[1]) > Number(parsedTime2[1])) ||
-            (parsedTime1[3] === 'pm' && parsedTime2[3] === 'am')
+            (parsedCheckIn[3] === 'am' &&
+              parsedCheckOut[3] === 'am' &&
+              Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
+            (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
           ) {
             checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
           } else {
@@ -163,9 +163,9 @@ export function Attendance() {
           }
 
           return {
-            check_in: `${columnDates[k]} ${v.check_in}`,
-            check_out: `${checkoutDate} ${v.check_out}`,
-            child_id: cv[0]
+            check_in: `${columnDates[key]} ${value.check_in}`,
+            check_out: `${checkoutDate} ${value.check_out}`,
+            child_id: data[0]
           }
         })
     )
