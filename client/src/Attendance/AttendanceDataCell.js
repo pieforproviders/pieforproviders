@@ -12,9 +12,9 @@ export default function AttendanceDataCell({
   const [absence, setAbsence] = useState(null)
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
-  const handleChange = (update = {}, cb = () => {}) => {
+  const handleChange = (update = {}, callback = () => {}) => {
     updateAttendanceData(update, record, columnIndex)
-    cb()
+    callback()
   }
 
   return (
@@ -45,9 +45,12 @@ export default function AttendanceDataCell({
           use12Hours={true}
           format="h:mm a"
           disabled={absence}
-          onChange={(m, ds) =>
-            m
-              ? handleChange({ check_out: ds }, setCheckOutSelected(true))
+          onChange={(dateObject, dateString) =>
+            dateObject
+              ? handleChange(
+                  { check_out: dateString },
+                  setCheckOutSelected(true)
+                )
               : handleChange({ check_out: '' }, setCheckOutSelected(false))
           }
           suffixIcon={null}
