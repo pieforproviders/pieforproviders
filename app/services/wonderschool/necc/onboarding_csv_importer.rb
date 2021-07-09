@@ -20,18 +20,23 @@ module Wonderschool
 
       def process_row(row)
         @row = row
-        @business = Business.find_or_create_by!(business_params)
+        @business = Business.find_or_create_by!(required_business_params)
         @child = Child.find_or_initialize_by(child_params)
-        @approval = approval
+        approval = existing_or_new_approval
         @child.save!
-        @child_approval = ChildApproval.find_by(child: @child, approval: @approval)
-        @child_approval.update!(child_approval_params)
-        generate_approval_amounts
+        @child_approval = ChildApproval.find_by(child: @child, approval: approval)
+        update_records
+        approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       rescue StandardError => e
-        send_error(e) # returns false
+        send_error(e, @row['Case number']) # returns false
       end
 
-      def approval
+      def update_records
+        @business.update!(optional_business_params)
+        @child_approval.update!(child_approval_params)
+      end
+
+      def existing_or_new_approval
         existing_approval = Approval.includes(children: :business).where(children: { full_name: @child.full_name, business: @business }).find_by(approval_params)
         existing_approval || (@child.approvals << Approval.find_or_create_by!(approval_params)).first
       end
@@ -44,14 +49,19 @@ module Wonderschool
         }
       end
 
-      def business_params
+      def required_business_params
         {
           user: User.find_by!(email: @row['Provider Email']&.downcase),
           name: @row['Provider Name'],
           zipcode: @row['Business Zip Code'],
           county: @row['Business County'],
+          license_type: @row['Business License'].downcase.tr(' ', '_')
+        }
+      end
+
+      def optional_business_params
+        {
           qris_rating: @row['Business QRIS rating'],
-          license_type: @row['Business License'].downcase.tr(' ', '_'),
           accredited: to_boolean(@row['Accredited'])
         }
       end
@@ -74,10 +84,6 @@ module Wonderschool
           date_of_birth: @row['Date of birth (required)'],
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
-      end
-
-      def generate_approval_amounts
-        approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       end
 
       def approval_amount_params
@@ -103,7 +109,7 @@ module Wonderschool
       def group_approval_periods
         approval_fields = @row.delete_if { |header, field| !header.to_s.start_with?('Approval') || field.nil? }
 
-        approval_headers(approval_fields).map! do |approval_number|
+        approval_fields.headers.map { |header| header.split(' - ')[0] }.uniq.map! do |approval_number|
           {
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
@@ -114,17 +120,7 @@ module Wonderschool
       end
 
       def find_field(approval_number, include_key, exclude_key = nil)
-        index = @row.to_h.keys.find do |key|
-          key.include?(approval_number) &&
-            key.include?(include_key) &&
-            (exclude_key.nil? || key.exclude?(exclude_key))
-        end
-        @row[index]
-      end
-
-      # These are the only headers in the CSV w/ hyphens so we're deliniating on that
-      def approval_headers(approval_fields)
-        approval_fields.headers.map { |header| header.split(' - ')[0] }.uniq
+        @row[@row.to_h.keys.find { |key| key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key)) }]
       end
     end
   end

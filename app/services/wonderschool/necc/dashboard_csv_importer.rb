@@ -24,7 +24,7 @@ module Wonderschool
         dashboard_case = TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child)
         dashboard_case.update!(dashboard_params(row))
       rescue StandardError => e
-        send_error(e) # returns false
+        send_error(e, row['Case Number']) # returns false
       end
 
       # rubocop:disable Metrics/MethodLength
