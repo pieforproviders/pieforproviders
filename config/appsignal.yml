@@ -40,7 +40,6 @@ default: &defaults
 development:
   <<: *defaults
   active: true
-  debug: true
 
 production:
   <<: *defaults
