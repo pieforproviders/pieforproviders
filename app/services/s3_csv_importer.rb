@@ -64,10 +64,10 @@ class S3CsvImporter
     @client.delete_object({ bucket: source_bucket, key: file_name })
   end
 
-  def send_error(message)
+  def send_error(message, identifier = nil)
     Appsignal.send_error(message) do |transaction|
       transaction.set_action(action)
-      transaction.params = { time: Time.current.to_s, case_number: @row['Case number'] }
+      transaction.params = { time: Time.current.to_s, identifier: identifier }
     end
     false
   end

@@ -27,7 +27,7 @@ module Wonderschool
         attendance = child.attendances.find_or_initialize_by(wonderschool_id: row['attendance_id'])
         attendance.update!(child_approval: child.active_child_approval(check_in), check_in: check_in, check_out: check_out)
       rescue StandardError => e
-        send_error(e) # returns false
+        send_error(e, row['child_id']) # returns false
       end
     end
   end

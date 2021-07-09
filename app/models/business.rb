@@ -23,7 +23,7 @@ class Business < UuidApplicationRecord
   private
 
   def prevent_deactivation_with_active_children
-    return unless children.pluck(:active).uniq.include?(true)
+    return unless children.pluck(:active).uniq.include?(true) && will_save_change_to_active?(from: true, to: false)
 
     errors.add(:active, 'Cannot deactivate a business with active cases')
     throw :abort
