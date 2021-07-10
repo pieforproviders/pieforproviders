@@ -9,6 +9,7 @@ RSpec.describe AttendanceBlueprint do
     it 'only includes the ID' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
         'id',
+        'absence',
         'check_in',
         'check_out',
         'total_time_in_care',
