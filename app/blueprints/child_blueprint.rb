@@ -49,8 +49,9 @@ class ChildBlueprint < Blueprinter::Base
     field :estimated_revenue do |child|
       child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
     end
-    field :full_days do |child|
-      child.temporary_nebraska_dashboard_case&.full_days
+    field :full_days do |child, options|
+      # Uses a feature flag in the child model methods
+      child.nebraska_full_days(options[:filter_date])&.to_s
     end
     field :full_name
     field :hours do |child, options|

@@ -13,7 +13,7 @@ module.exports = {
         gray4: '#3B3B3B',
         gray5: '#E0E0E0',
         gray8: '#595959',
-        gray9: "#262626",
+        gray9: '#262626',
         darkGray: '#676767',
         mediumGray: '#F2F2F2',
         lightGray: '#979797',
@@ -64,10 +64,10 @@ module.exports = {
       sm: '768px',
       md: '1024px',
       lg: '1280px'
-  },
-  plugins: [require('./tailwind/plugins/base')()],
-  future: {
-    removeDeprecatedGapUtilities: true
+    },
+    plugins: [require('./tailwind/plugins/base')()],
+    future: {
+      removeDeprecatedGapUtilities: true
+    }
   }
-}
 }

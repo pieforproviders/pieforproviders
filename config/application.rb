@@ -66,7 +66,8 @@ module App
     config.aws_necc_dashboard_archive_bucket = ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
     config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
-    config.ff_live_algorithms_hours = ENV.fetch('FF_LIVE_ALGORITHMS_HOURS', '')
+    config.ff_live_algorithms_hours = ENV.fetch('FF_LIVE_ALGORITHMS_HOURS', '') == 'true'
+    config.ff_live_algorithms_full_days = ENV.fetch('FF_LIVE_ALGORITHMS_FULL_DAYS', '') == 'true'
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
   end
 end
