@@ -10,11 +10,10 @@ env:
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
   DEVISE_JWT_SECRET_KEY: imasecretkey
-defaults:
-  runs_on: ubuntu-latest
 jobs:
   backend:
     name: Backend linting and tests
+    runs_on: ubuntu-latest
     services:
       postgres:
         image: postgres:12
@@ -48,6 +47,7 @@ jobs:
         run: bundle exec rspec --require rails_helper
   frontend:
     name: Frontend linting and tests
+    runs_on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.4
       - name: Get Yarn cache directory path
@@ -72,6 +72,7 @@ jobs:
           yarn test --watchAll=false
   e2e_tests:
     name: E2E tests
+    runs_on: ubuntu-latest
     services:
       postgres:
         image: postgres:12
