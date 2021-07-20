@@ -1863,20 +1863,6 @@
     lz-string "^1.4.4"
     pretty-format "^27.0.2"
 
-"@testing-library/dom@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.1.0.tgz#f8358b1883844ea569ba76b7e94582168df5370d"
-  integrity sha512-kmW9alndr19qd6DABzQ978zKQ+J65gU2Rzkl8hriIetPnwpesRaK4//jEQyYh8fEALmGhomD/LBQqt+o+DL95Q==
-  dependencies:
-    "@babel/code-frame" "^7.10.4"
-    "@babel/runtime" "^7.12.5"
-    "@types/aria-query" "^4.2.0"
-    aria-query "^4.2.2"
-    chalk "^4.1.0"
-    dom-accessibility-api "^0.5.6"
-    lz-string "^1.4.4"
-    pretty-format "^27.0.2"
-
 "@testing-library/jest-dom@^5.14.1":
   version "5.14.1"
   resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.14.1.tgz#8501e16f1e55a55d675fe73eecee32cdaddb9766"
@@ -2630,10 +2616,10 @@ antd-mask-input@^0.1.15:
   resolved "https://registry.yarnpkg.com/antd-mask-input/-/antd-mask-input-0.1.15.tgz#7a2b5035dfa0fcb1ecb409c40181b31cff1f738d"
   integrity sha512-PXSD/chUJySWam2jj/NW1LHF3X92rJGecjU1BGfbdfrMGabVTNRsjNhO+xEUpjdi5VR/E60WAmcIKGnRFj6H6w==
 
-antd@^4.16.7:
-  version "4.16.7"
-  resolved "https://registry.yarnpkg.com/antd/-/antd-4.16.7.tgz#c51fb143288adb8b008a786efe8d5df13320ac4c"
-  integrity sha512-9XQnTpQ21zqnXWAvFvt1mm0j5+r4E7N/eK0kSEBqxuoTCzTrrn5iwhXFEZ2htJx9QJFlihST/T1Wd8JzRf9J3Q==
+antd@^4.16.8:
+  version "4.16.8"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-4.16.8.tgz#0a81f846eb6b356159839d18247b713d04b526d6"
+  integrity sha512-xM1zheIYvS/0x05sM3Yj5cwBu6TjzS7RdwQug1bgbtDAk94dacuFvdLa4PjsvEiG6kz0uNzaaIaDBis7LRH5hA==
   dependencies:
     "@ant-design/colors" "^6.0.0"
     "@ant-design/icons" "^4.6.2"
