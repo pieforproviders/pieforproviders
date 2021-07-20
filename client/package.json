@@ -14,7 +14,7 @@
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.6.0",
-    "antd": "^4.16.7",
+    "antd": "^4.16.8",
     "antd-mask-input": "^0.1.15",
     "craco-less": "^1.18.0",
     "csv": "^5.5.0",
