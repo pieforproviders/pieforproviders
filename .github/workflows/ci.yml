@@ -5,22 +5,31 @@ on:
       - "develop"
   pull_request:
     types: [opened, synchronize]
+env:
+  RAILS_ENV: test
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  DEVISE_JWT_SECRET_KEY: imasecretkey
+defaults:
+  runs_on: ubuntu-latest
 jobs:
-  lint_backend:
-    name: Backend linting
-    runs-on: ubuntu-latest
+  backend:
+    name: Backend linting and tests
+    services:
+      postgres:
+        image: postgres:12
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v2.3.4
+      - name: Install libraries
+        run: sudo apt-get install libpq-dev
       - name: Setup Ruby
-        uses: actions/setup-ruby@v1.1.3
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.0.1
-      - uses: actions/cache@v2.1.6
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-
+          bundler-cache: true
       - name: Rubocop
         run: |
           sudo apt-get -yqq install libpq-dev
@@ -28,97 +37,41 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
-  brakeman:
-    name: Brakeman Static Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - name: Analyze code statically using Brakeman
+      - name: Brakeman
         uses: artplan1/brakeman-action@v1.2.1
-  lint_frontend:
-    name: Frontend linting
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - name: Cache NPM dependencies
-        uses: actions/cache@v2.1.6
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-      - name: Linting
-        run: |
-          cd client
-          yarn
-          yarn lint
-  test_backend:
-    name: Backend tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:12
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    steps:
-      - uses: actions/checkout@v2.3.4
-      - name: Setup Ruby
-        uses: actions/setup-ruby@v1.1.3
-        with:
-          ruby-version: 3.0.1
-      - uses: actions/cache@v2.1.6
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-
-      - name: Install libraries
-        run: sudo apt-get install libpq-dev
-      - name: Bundle install
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Setup Database
+      - name: Database Setup
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
           bundle exec rake db:schema:load
-        env:
-          RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-      - name: Run RSpec
+      - name: RSpec
         run: bundle exec rspec --require rails_helper
-        env:
-          RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          DEVISE_JWT_SECRET_KEY: imasecretkey
-  test_frontend:
-    name: Frontend tests
-    runs-on: ubuntu-latest
+  frontend:
+    name: Frontend linting and tests
     steps:
       - uses: actions/checkout@v2.3.4
-      - name: Cache NPM dependencies
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache Yarn dependencies
         uses: actions/cache@v2.1.6
         with:
-          path: node_modules
-          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/yarn.lock') }}
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-npm-cache-
-      - name: yarn test
+            ${{ runner.os }}-yarn-
+      - name: ESLint
+        run: |
+          cd client
+          yarn
+          yarn lint
+      - name: Jest
         run: |
           cd client
           yarn
           yarn test --watchAll=false
   e2e_tests:
     name: E2E tests
-    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:12
@@ -129,35 +82,19 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2.3.4
+      - name: Install libraries
+        run: sudo apt-get install libpq-dev
       - name: Setup Ruby
-        uses: actions/setup-ruby@v1.1.3
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.0.1
-      - uses: actions/cache@v2.1.6
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gem-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gem-
-      - name: Install dependent libraries
-        run: sudo apt-get install libpq-dev
-      - name: Bundle install
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
+          bundler-cache: true
       - name: Set up database
         run: |
           cp config/database.yml.github-actions config/database.yml
           bundle exec rake db:create
           bundle exec rake db:schema:load
-        env:
-          RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          DEVISE_JWT_SECRET_KEY: imasecretkey
       - name: Get Yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
