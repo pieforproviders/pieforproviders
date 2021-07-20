@@ -1863,20 +1863,6 @@
     lz-string "^1.4.4"
     pretty-format "^27.0.2"
 
-"@testing-library/dom@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.1.0.tgz#f8358b1883844ea569ba76b7e94582168df5370d"
-  integrity sha512-kmW9alndr19qd6DABzQ978zKQ+J65gU2Rzkl8hriIetPnwpesRaK4//jEQyYh8fEALmGhomD/LBQqt+o+DL95Q==
-  dependencies:
-    "@babel/code-frame" "^7.10.4"
-    "@babel/runtime" "^7.12.5"
-    "@types/aria-query" "^4.2.0"
-    aria-query "^4.2.2"
-    chalk "^4.1.0"
-    dom-accessibility-api "^0.5.6"
-    lz-string "^1.4.4"
-    pretty-format "^27.0.2"
-
 "@testing-library/jest-dom@^5.14.1":
   version "5.14.1"
   resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.14.1.tgz#8501e16f1e55a55d675fe73eecee32cdaddb9766"
@@ -10489,10 +10475,10 @@ react-error-overlay@^6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-i18next@^11.11.1:
-  version "11.11.1"
-  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.1.tgz#758edd7ef521f6703c2d6b83f3165d078f7acf35"
-  integrity sha512-MtfzPEOvx0ev2cz0HmrEcduuqkktSa5bfeN8Flp0cvN0xP3H3MRSTa8P6pxPtqstHbRe1cD9QBOr5T/FEV2gOw==
+react-i18next@^11.11.3:
+  version "11.11.3"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.11.3.tgz#38d083bb079c3e6ee376b3321b0d6e409d798f68"
+  integrity sha512-upzG5/SpyOlYP5oSF4K8TZBvDWVhnCo38JNV+KnWjrg0+IaJCBltyh6lRGZDO5ovLyA4dU6Ip0bwbUCjb6Yyxw==
   dependencies:
     "@babel/runtime" "^7.14.5"
     html-parse-stringify "^3.0.1"
