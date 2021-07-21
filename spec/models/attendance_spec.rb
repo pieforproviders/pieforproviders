@@ -7,7 +7,7 @@ RSpec.describe Attendance, type: :model do
 
   it { should validate_presence_of(:check_in) }
 
-  let(:attendance) { build(:attendance) }
+  let(:attendance) { build(:attendance, check_out: nil) }
   it 'validates check_in as a Time' do
     attendance.update(check_in: Time.zone.now)
     expect(attendance.valid?).to be_truthy
@@ -15,7 +15,7 @@ RSpec.describe Attendance, type: :model do
     expect(attendance.valid?).to be_falsey
     attendance.check_in = nil
     expect(attendance.valid?).to be_falsey
-    attendance.check_in = '2021-02-01 11pm'
+    attendance.check_in = Time.zone.now.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance.valid?).to be_truthy
     attendance.check_in = Date.new(2021, 12, 11)
     expect(attendance.valid?).to be_truthy
@@ -28,7 +28,7 @@ RSpec.describe Attendance, type: :model do
     expect(attendance.valid?).to be_falsey
     attendance.check_out = nil
     expect(attendance.valid?).to be_truthy
-    attendance.check_out = '2021-02-01 11pm'
+    attendance.check_out = Time.zone.now.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance.valid?).to be_truthy
     attendance.check_out = Date.new(2021, 12, 11)
     expect(attendance.valid?).to be_truthy
@@ -45,6 +45,15 @@ RSpec.describe Attendance, type: :model do
     expect(attendance).not_to be_valid
     expect(attendance.errors.messages.keys).to eq([:absence])
     expect(attendance.errors.messages[:absence]).to include('is not included in the list')
+  end
+
+  it 'validates that the check_out is after the check_in if it is present' do
+    attendance.update(check_out: Time.current - 90.years)
+    expect(attendance.errors.messages[:check_out]).to be_present
+    attendance.update(check_out: Time.current + 3.days)
+    expect(attendance.errors.messages[:check_out]).not_to be_present
+    attendance.update(check_out: nil)
+    expect(attendance.errors.messages[:check_out]).not_to be_present
   end
 
   it 'factory should be valid (default; no args)' do

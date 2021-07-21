@@ -12,6 +12,7 @@ class Attendance < UuidApplicationRecord
 
   validates :check_in, time_param: true, presence: true
   validates :check_out, time_param: true, unless: proc { |attendance| attendance.check_out_before_type_cast.nil? }
+  validate :check_out_after_check_in
 
   ABSENCE_TYPES = %w[
     absence
@@ -52,6 +53,12 @@ class Attendance < UuidApplicationRecord
 
   def child_schedule
     child_approval.child.schedules.active_on_date(check_in.to_date).for_weekday(check_in.wday).first
+  end
+
+  def check_out_after_check_in
+    return if check_out.blank? || check_in.blank?
+
+    errors.add(:check_out, 'must be after the check in time') if check_out < check_in
   end
 end
 
