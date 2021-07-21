@@ -3,15 +3,15 @@
 module Wonderschool
   module Necc
     # Wonderschool NECC Attendance CSV Importer
-    class AttendanceCsvImporter < S3CsvImporter
+    class AttendanceCsvImporter < RemoteCsvImporter
       private
 
       def action
         'attendance csv importer'
       end
 
-      def source_bucket
-        Rails.application.config.aws_necc_attendance_bucket
+      def uri
+        Rails.application.config.wonderschool_attendance_url
       end
 
       def archive_bucket
@@ -19,7 +19,7 @@ module Wonderschool
       end
 
       def process_row(row)
-        child = Child.find_by!(wonderschool_id: row['child_id'], business: Business.find_by(name: row['school_name']))
+        child = Child.find_by!(wonderschool_id: row['child_id'])
 
         check_in = row['checked_in_at']
         check_out = row['checked_out_at']

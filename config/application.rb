@@ -69,5 +69,6 @@ module App
     config.ff_live_algorithms_hours = ENV.fetch('FF_LIVE_ALGORITHMS_HOURS', '') == 'true'
     config.ff_live_algorithms_full_days = ENV.fetch('FF_LIVE_ALGORITHMS_FULL_DAYS', '') == 'true'
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
+    config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
   end
 end
