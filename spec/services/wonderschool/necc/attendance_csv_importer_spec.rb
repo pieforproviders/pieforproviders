@@ -78,15 +78,17 @@ module Wonderschool
         it "continues processing if the child doesn't exist" do
           allow(stubbed_uri_open).to receive(:open).and_return(attendance_csv)
           first_child.destroy!
+          expect(stubbed_client).to receive(:put_object).and_return({ put_object_result: {} })
+          expect(Rails.logger).to receive(:tagged).and_yield.exactly(4).times
+          expect(Rails.logger).to receive(:info).with('Child with Wonderschool ID 1234 not in Pie; skipping').exactly(4).times
           described_class.new.call
-          expect(stubbed_client).not_to receive(:put_object)
         end
 
         it 'continues processing if the record is invalid or missing a required field' do
           allow(stubbed_uri_open).to receive(:open).and_return(invalid_csv)
           described_class.new.call
           expect(stubbed_client).not_to receive(:put_object)
-          allow(stubbed_uri_open).to receive(:open).and_return(invalid_csv)
+          allow(stubbed_uri_open).to receive(:open).and_return(missing_field_csv)
           described_class.new.call
           expect(stubbed_client).not_to receive(:put_object)
         end

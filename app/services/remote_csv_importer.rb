@@ -27,7 +27,7 @@ class RemoteCsvImporter
 
   # subclasses must implement action, uri, archive_bucket and process_row
   def import_and_process_csv
-    process_and_archive("#{Time.current}-#{action.split(' ').join('-')}", CSV.parse(contents, **csv_options))
+    process_and_archive("#{Time.current}-#{action}".tr(' ', '-'), CSV.parse(contents, **csv_options))
   end
 
   def process_and_archive(file_name, contents)
@@ -69,7 +69,8 @@ class RemoteCsvImporter
       return_headers: false,
       skip_lines: /^(,*|\s*)$/,
       unconverted_fields: %i[child_id],
-      converters: %i[date]
+      converters: %i[date],
+      skip_blanks: true
     }
   end
 
@@ -83,5 +84,9 @@ class RemoteCsvImporter
 
   def to_boolean(value)
     value == 'Yes'
+  end
+
+  def logger
+    Rails.logger
   end
 end
