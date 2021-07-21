@@ -54,7 +54,7 @@ group :development do
   gem 'annotate', github: 'Vasfed/annotate_models', branch: 'rails6_warning'
   gem 'guard-rspec', require: false
   gem 'letter_opener_web', '~> 1.4'
-  gem 'listen', '>= 3.0.5', '< 3.6'
+  gem 'listen', '>= 3.0.5', '< 3.7'
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
   gem 'spring'
