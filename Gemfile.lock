@@ -145,7 +145,7 @@ GEM
       railties (>= 5.0.0)
     faker (2.18.0)
       i18n (>= 1.6, < 2)
-    ffi (1.15.0)
+    ffi (1.15.3)
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -186,7 +186,7 @@ GEM
       actionmailer (>= 3.2)
       letter_opener (~> 1.0)
       railties (>= 3.2)
-    listen (3.5.1)
+    listen (3.6.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
     loofah (2.10.0)
@@ -273,7 +273,7 @@ GEM
       thor (~> 1.0)
     rainbow (3.0.0)
     rake (13.0.6)
-    rb-fsevent (0.10.4)
+    rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     regexp_parser (2.1.1)
@@ -395,7 +395,7 @@ DEPENDENCIES
   holidays
   json-schema
   letter_opener_web (~> 1.4)
-  listen (>= 3.0.5, < 3.6)
+  listen (>= 3.0.5, < 3.7)
   mocha
   money-rails
   pg (>= 0.18, < 2.0)
