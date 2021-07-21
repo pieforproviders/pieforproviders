@@ -3,15 +3,15 @@
 module Wonderschool
   module Necc
     # Wonderschool NECC Attendance CSV Importer
-    class AttendanceCsvImporter < S3CsvImporter
+    class AttendanceCsvImporter < RemoteCsvImporter
       private
 
       def action
         'attendance csv importer'
       end
 
-      def source_bucket
-        Rails.application.config.aws_necc_attendance_bucket
+      def uri
+        Rails.application.config.wonderschool_attendance_url
       end
 
       def archive_bucket
@@ -19,15 +19,35 @@ module Wonderschool
       end
 
       def process_row(row)
-        child = Child.find_by!(wonderschool_id: row['child_id'], business: Business.find_by(name: row['school_name']))
+        return false unless row['child_id']
 
-        check_in = row['checked_in_at']
-        check_out = row['checked_out_at']
+        @row = row
+        @child = child
 
-        attendance = child.attendances.find_or_initialize_by(wonderschool_id: row['attendance_id'])
-        attendance.update!(child_approval: child.active_child_approval(check_in), check_in: check_in, check_out: check_out)
+        unless @child
+          logger.tagged('attendance import') { logger.info "Child with Wonderschool ID #{@row['child_id']} not in Pie; skipping" }
+          return true
+        end
+
+        attendance.update!(child_approval: @child.active_child_approval(check_in), check_in: check_in, check_out: check_out)
       rescue StandardError => e
         send_error(e, row['child_id']) # returns false
+      end
+
+      def child
+        Child.find_by(wonderschool_id: @row['child_id'])
+      end
+
+      def check_in
+        @row['checked_in_at']
+      end
+
+      def check_out
+        @row['checked_out_at']
+      end
+
+      def attendance
+        @child.attendances.find_or_initialize_by(wonderschool_id: @row['attendance_id'])
       end
     end
   end
