@@ -6,8 +6,7 @@ module Api
     class UsersController < Api::V1::ApiController
       # GET /users
       def index
-        authorize User
-        @users = User.all
+        @users = policy_scope(User)
 
         render json: UserBlueprint.render(@users)
       end

@@ -5,7 +5,7 @@ module Api
     # API for user children
     class ChildrenController < Api::V1::ApiController
       before_action :set_child, only: %i[show update destroy]
-      before_action :authorize_user, only: %i[update destroy]
+      before_action :authorize_user, only: %i[show update destroy]
 
       # GET /children
       def index
@@ -21,6 +21,7 @@ module Api
 
       # POST /children
       def create
+        authorize Business.find(child_params[:business_id]), :update? unless current_user.admin?
         @child = Child.new(child_params)
         if @child.approvals.each(&:save) && @child.save
           make_approval_amounts

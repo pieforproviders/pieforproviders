@@ -3,7 +3,7 @@
 # Authorization policies for attendances
 class AttendancePolicy < ApplicationPolicy
   # Scope defining which attendances a user has access to
-  class Scope < Scope
+  class Scope < ApplicationScope
     def resolve
       if user.admin?
         scope.all

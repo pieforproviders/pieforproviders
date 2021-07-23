@@ -3,7 +3,7 @@
 # Authorization policies for businesses
 class BusinessPolicy < ApplicationPolicy
   # Scope defining which businesses a user has access to
-  class Scope < Scope
+  class Scope < ApplicationScope
     def resolve
       if user.admin?
         scope.all
