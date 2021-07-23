@@ -38,17 +38,33 @@ FactoryBot.define do
       end
     end
 
-    trait :with_three_attendances do
+    trait :with_two_illinois_attendances do
+      after(:create) do |child|
+        create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:illinois_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+      end
+    end
+
+    trait :with_three_illinois_attendances do
       after(:create) do |child|
         create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
         create(:illinois_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
         create(:illinois_full_plus_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
       end
     end
-    trait :with_two_attendances do
+
+    trait :with_two_nebraska_attendances do
       after(:create) do |child|
-        create(:illinois_part_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
-        create(:illinois_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:nebraska_hourly_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:nebraska_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+      end
+    end
+
+    trait :with_three_nebraska_attendances do
+      after(:create) do |child|
+        create(:nebraska_hourly_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:nebraska_full_day_attendance, child_approval: child.active_child_approval(Time.zone.today))
+        create(:nebraska_full_day_plus_hourly_attendance, child_approval: child.active_child_approval(Time.zone.today))
       end
     end
   end
