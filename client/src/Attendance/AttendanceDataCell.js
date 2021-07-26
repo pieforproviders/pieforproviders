@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, TimePicker } from 'antd'
 import { useTranslation } from 'react-i18next'
+import '_assets/styles/checkbox-overrides.css'
 
 export default function AttendanceDataCell({
   record,
@@ -25,6 +26,9 @@ export default function AttendanceDataCell({
         </p>
         <TimePicker
           className="w-20 h-8"
+          style={{
+            border: '1px solid #D9D9D9'
+          }}
           use12Hours={true}
           format="h:mm a"
           disabled={absence}
@@ -42,6 +46,9 @@ export default function AttendanceDataCell({
         </p>
         <TimePicker
           className="w-20 h-8"
+          style={{
+            border: '1px solid #D9D9D9'
+          }}
           use12Hours={true}
           format="h:mm a"
           disabled={absence}
@@ -59,6 +66,7 @@ export default function AttendanceDataCell({
       <div>
         <p>
           <Checkbox
+            className="absence"
             checked={absence === 'absence'}
             disabled={
               absence === 'covid-related' || checkInSelected || checkOutSelected
@@ -73,6 +81,7 @@ export default function AttendanceDataCell({
         </p>
         <p className="mt-2">
           <Checkbox
+            className="absence"
             checked={absence === 'covid-related'}
             disabled={
               absence === 'absence' || checkInSelected || checkOutSelected

@@ -108,7 +108,9 @@ export function Attendance() {
 
     return [
       {
-        title: t('childNameCap'),
+        title: (
+          <div className="text-gray9 font-semibold">{t('childNameCap')}</div>
+        ),
         dataIndex: 'name',
         width: 250,
         key: 'name',
@@ -143,6 +145,16 @@ export function Attendance() {
         .map((value, key) => {
           if (Object.keys(value).includes('absence')) {
             return { ...value, check_in: columnDates[key], child_id: data[0] }
+          }
+
+          if (
+            Object.keys(value).includes('check_in') &&
+            !Object.keys(value).includes('check_out')
+          ) {
+            return {
+              check_in: `${columnDates[key]} ${value.check_in}`,
+              child_id: data[0]
+            }
           }
 
           const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
@@ -223,11 +235,20 @@ export function Attendance() {
         className="attendance-alert"
         message={
           <div className="text-gray1">
-            <span className="font-bold">{t('important')}</span>
-            {t('attendanceWarning') + ' ' + t('attendanceQuestions') + ' '}
-            <a className="underline" href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}>
-              {PIE_FOR_PROVIDERS_EMAIL}
-            </a>
+            <div>
+              <span className="font-bold">{t('important')}</span>
+              {t('attendanceWarning') + ' ' + t('attendanceQuestions') + ' '}
+              <a
+                className="underline"
+                href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}
+              >
+                {PIE_FOR_PROVIDERS_EMAIL + '.'}
+              </a>
+            </div>
+            <div>
+              <span className="font-bold">{t('pleaseNote')}</span>
+              {' ' + t('pleaseNoteMsg')}
+            </div>
           </div>
         }
         type="error"
