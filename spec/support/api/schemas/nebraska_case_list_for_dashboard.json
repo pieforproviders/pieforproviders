@@ -3,13 +3,9 @@
   "items": {
     "properties": {
       "as_of": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
+        "type": [
+          "string",
+          "null"
         ]
       },
       "businesses": {
@@ -24,164 +20,93 @@
                     "type": "string"
                   },
                   "absences": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "attendance_risk": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "case_number": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "earned_revenue": {
-                    "anyOf": [
-                      {
-                        "type": "decimal"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "decimal",
+                      "null"
                     ]
                   },
                   "estimated_revenue": {
-                    "anyOf": [
-                      {
-                        "type": "decimal"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "decimal",
+                      "null"
                     ]
                   },
                   "family_fee": {
-                    "anyOf": [
-                      {
-                        "type": "decimal"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "decimal",
+                      "null"
                     ]
                   },
                   "full_days": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "full_name": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "hours": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "hours_attended": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   },
                   "active": {
                     "type": "boolean"
                   },
                   "last_active_date": {
-                    "anyOf": [
-                      {
-                        "type": "date"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "date",
+                      "null"
                     ]
                   },
                   "inactive_reason": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   }
-                },
-                "required": [
-                  "id",
-                  "attendance_risk",
-                  "case_number",
-                  "earned_revenue",
-                  "estimated_revenue",
-                  "family_fee",
-                  "full_days",
-                  "full_name",
-                  "hours",
-                  "hours_attended",
-                  "active",
-                  "last_active_date",
-                  "inactive_reason"
-                ]
+                }
               }
             },
             "name": {
               "type": "string"
             }
-          },
-          "required": [
-            "cases",
-            "name"
-          ]
+          }
         }
       },
       "first_approval_effective_date": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
+        "type": [
+          "string",
+          "null"
         ]
       },
       "max_revenue": {
@@ -190,12 +115,6 @@
       "total_approved": {
         "type": "decimal"
       }
-    },
-    "required": [
-      "as_of",
-      "businesses",
-      "max_revenue",
-      "total_approved"
-    ]
+    }
   }
 }

@@ -66,18 +66,10 @@ module Api
 
       def make_approval_amounts
         case @child.state
-        when 'NE'
-          # TODO
-          # NebraskaApprovalAmountGenerator.new(@child, child_params.merge(nebraska_approval_amount_params)).call
         when 'IL'
           IllinoisApprovalAmountGenerator.new(@child, child_params.merge(illinois_approval_amount_params)).call
         end
-      end
-
-      def nebraska_approval_amount_params
-        {
-          approval_periods: params[:approval_periods]
-        }
+        # TODO: right now we're doing approval amounts on onboarding CSV processing for NE kids, rather than through the controller
       end
 
       def illinois_approval_amount_params

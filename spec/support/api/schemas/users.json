@@ -1,5 +1,6 @@
 {
   "type": "array",
-  "required": ["users"],
-  "items": { "$ref":"user.json" }
+  "items": {
+    "$ref": "user.json"
+  }
 }

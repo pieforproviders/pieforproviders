@@ -23,11 +23,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'returns only the user' do
         get '/api/v1/users', headers: headers
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).to include(logged_in_user.greeting_name)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).not_to include(other_user.greeting_name)
-        expect(response.status).to eq(200)
-        expect(response).to match_response_schema('users')
+        expect(response.status).to eq(403)
       end
     end
 
@@ -71,11 +67,10 @@ RSpec.describe 'Api::V1::Users', type: :request do
         expect(response).to match_response_schema('user')
       end
 
-      # TODO: requires user policy changes
-      # it 'does not return another user' do
-      #   get "/api/v1/users/#{other_user.id}", headers: headers
-      #   expect(response.status).to eq(404)
-      # end
+      it 'does not return another user' do
+        get "/api/v1/users/#{other_user.id}", headers: headers
+        expect(response.status).to eq(404)
+      end
     end
 
     context 'for admin user' do
@@ -83,19 +78,25 @@ RSpec.describe 'Api::V1::Users', type: :request do
         sign_in admin_user
       end
 
-      # TODO: requires user policy changes
-      # it 'returns the user' do
-      #   get "/api/v1/users/#{logged_in_user.id}", headers: headers
-      #   parsed_response = JSON.parse(response.body)
-      #   expect(parsed_response['greeting_name']).to eq(logged_in_user.greeting_name)
-      #   expect(response).to match_response_schema('user')
-      # end
+      it 'returns the user' do
+        get "/api/v1/users/#{logged_in_user.id}", headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq(logged_in_user.greeting_name)
+        expect(response).to match_response_schema('user')
+      end
 
       it 'returns the admin user using /profile' do
         get '/api/v1/profile', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['greeting_name']).to eq(admin_user.greeting_name)
         expect(response.status).to eq(200)
+        expect(response).to match_response_schema('user')
+      end
+
+      it 'returns the other user' do
+        get "/api/v1/users/#{other_user.id}", headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq(other_user.greeting_name)
         expect(response).to match_response_schema('user')
       end
 

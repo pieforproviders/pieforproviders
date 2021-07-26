@@ -6,6 +6,8 @@ class AttendanceBlueprint < Blueprinter::Base
   field :absence
   field :check_in
   field :check_out
-  field :total_time_in_care
+  field :total_time_in_care do |attendance|
+    attendance.total_time_in_care.to_s
+  end
   field :child_approval_id
 end
