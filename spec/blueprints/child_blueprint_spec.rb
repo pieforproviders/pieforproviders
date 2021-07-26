@@ -29,8 +29,8 @@ RSpec.describe ChildBlueprint do
   context 'returns the correct fields when NE view is requested' do
     let!(:child) { create(:necc_child) }
     let!(:child_approval) { child.child_approvals.first }
-    let!(:attendance_date) { child_approval.approval.effective_on.at_end_of_month + 12.days }
-    let!(:temporary_nebraska_dashboard_case) { create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3) }
+    let!(:attendance_date) { (child_approval.approval.effective_on.at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
+    let!(:temporary_nebraska_dashboard_case) { create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12) }
 
     before do
       create(:attendance,
@@ -65,21 +65,35 @@ RSpec.describe ChildBlueprint do
     it 'includes the correct information from the temporary dashboard case' do
       allow(Rails.application.config).to receive(:ff_live_algorithms_hours).and_return(false)
       allow(Rails.application.config).to receive(:ff_live_algorithms_full_days).and_return(false)
+      allow(Rails.application.config).to receive(:ff_live_algorithms_weekly_hours_attended).and_return(false)
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('11.0')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('3')
+      expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours_attended']).to eq('12.0')
     end
     context 'when using live algorithms' do
       it 'includes the child name and all cases' do
         allow(Rails.application.config).to receive(:ff_live_algorithms_hours).and_return(true)
+        allow(Rails.application.config).to receive(:ff_live_algorithms_full_days).and_return(true)
+        allow(Rails.application.config).to receive(:ff_live_algorithms_weekly_hours_attended).and_return(true)
+
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('3.0')
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
+                                                        filter_date: attendance_date))['hours_attended']).to eq("9.0 of #{child_approval.authorized_weekly_hours}")
+
         create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 2.days + 3.hours,
                             check_out: attendance_date.to_datetime + 2.days + 6.hours + 15.minutes)
+
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('6.25')
-        allow(Rails.application.config).to receive(:ff_live_algorithms_full_days).and_return(true)
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('1')
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
+                                                        filter_date: attendance_date))['hours_attended']).to eq("12.3 of #{child_approval.authorized_weekly_hours}")
+
         create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 2.days + 3.hours,
                             check_out: attendance_date.to_datetime + 2.days + 9.hours + 18.minutes)
+
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('2')
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
+                                                        filter_date: attendance_date))['hours_attended']).to eq("18.6 of #{child_approval.authorized_weekly_hours}")
       end
     end
   end

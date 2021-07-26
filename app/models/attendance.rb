@@ -27,7 +27,7 @@ class Attendance < UuidApplicationRecord
   }
   scope :for_week, lambda { |week = nil|
     week ||= Time.current
-    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week, week.at_end_of_week)
+    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:saturday))
   }
 
   scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }

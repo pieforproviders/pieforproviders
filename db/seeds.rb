@@ -177,6 +177,19 @@ def create_case(full_name,
     total_days = rand(0..25).round
     total_hours = rand(0.0..10.0).round
 
+    child.approvals.each do |approval|
+      special_needs_rate = Faker::Boolean.boolean
+      ChildApproval.find_by(child: child, approval: approval).update!(
+        full_days: rand(0..30),
+        hours: rand(0..120),
+        special_needs_rate: special_needs_rate,
+        special_needs_daily_rate: special_needs_rate ? rand(0.0..20).round(2) : nil,
+        special_needs_hourly_rate: special_needs_rate ? rand(0.0..10).round(2) : nil,
+        enrolled_in_school: Faker::Boolean.boolean,
+        authorized_weekly_hours: rand(0..45)
+      )
+    end
+
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: %w[on_track exceeded_limit at_risk].sample,
       absences: "#{rand(0..total_absences)} of #{total_absences}",

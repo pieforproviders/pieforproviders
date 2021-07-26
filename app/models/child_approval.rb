@@ -19,6 +19,7 @@ end
 # Table name: child_approvals
 #
 #  id                        :uuid             not null, primary key
+#  authorized_weekly_hours   :integer
 #  enrolled_in_school        :boolean
 #  full_days                 :integer
 #  hours                     :decimal(, )

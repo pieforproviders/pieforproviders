@@ -58,8 +58,9 @@ class ChildBlueprint < Blueprinter::Base
       # Uses a feature flag in the child model methods
       child.nebraska_hours(options[:filter_date])&.to_f.to_s
     end
-    field :hours_attended do |child|
-      child.temporary_nebraska_dashboard_case&.hours_attended
+    field :hours_attended do |child, options|
+      # Uses a feature flag in the child model methods
+      child.nebraska_weekly_hours_attended(options[:filter_date])&.to_s
     end
   end
 end

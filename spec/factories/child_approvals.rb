@@ -4,6 +4,13 @@ FactoryBot.define do
   factory :child_approval do
     child
     approval
+    full_days { rand(0..30) }
+    hours { rand(0..120) }
+    special_needs_rate { Faker::Boolean.boolean }
+    special_needs_daily_rate { special_needs_rate ? rand(0.0..20).round(2) : nil }
+    special_needs_hourly_rate { special_needs_rate ? rand(0.0..10).round(2) : nil }
+    enrolled_in_school { Faker::Boolean.boolean }
+    authorized_weekly_hours { rand(0..45) }
 
     factory :child_approval_with_attendances do
       after :create do |child_approval|
@@ -18,6 +25,7 @@ end
 # Table name: child_approvals
 #
 #  id                        :uuid             not null, primary key
+#  authorized_weekly_hours   :integer
 #  enrolled_in_school        :boolean
 #  full_days                 :integer
 #  hours                     :decimal(, )

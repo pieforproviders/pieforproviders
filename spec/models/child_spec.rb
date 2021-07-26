@@ -139,6 +139,26 @@ RSpec.describe Child, type: :model do
     end
   end
 
+  describe '#nebraska_weekly_hours_attended' do
+    context 'using live algorithms' do
+      it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
+        calculator_instance = instance_double(NebraskaWeeklyHoursAttendedCalculator)
+
+        allow(Rails.application.config).to receive(:ff_live_algorithms_weekly_hours_attended).and_return(true)
+        expect(NebraskaWeeklyHoursAttendedCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+        expect(calculator_instance).to receive(:call)
+        child.nebraska_weekly_hours_attended(Time.current.to_date)
+      end
+    end
+    context 'using temporary dashboard values' do
+      it 'does not call the NebraskaWeeklyHoursAttendedCalculator service' do
+        allow(Rails.application.config).to receive(:ff_live_algorithms_weekly_hours_attended).and_return(false)
+        expect(NebraskaWeeklyHoursAttendedCalculator).not_to receive(:new)
+        child.nebraska_weekly_hours_attended(Time.current.to_date)
+      end
+    end
+  end
+
   context 'approval methods' do
     it 'returns an active approval for a specific date' do
       current_approval = child.approvals.first
