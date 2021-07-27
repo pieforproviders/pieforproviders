@@ -66,7 +66,8 @@ module Api
       def make_approval_amounts
         case @child.state
         when 'NE'
-          NebraskaApprovalAmountGenerator.new(@child, child_params.merge(nebraska_approval_amount_params)).call
+          # TODO
+          # NebraskaApprovalAmountGenerator.new(@child, child_params.merge(nebraska_approval_amount_params)).call
         when 'IL'
           IllinoisApprovalAmountGenerator.new(@child, child_params.merge(illinois_approval_amount_params)).call
         end
