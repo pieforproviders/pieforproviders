@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'swagger_helper'
 
 RSpec.describe 'POST /login', type: :request do
   let(:user) { create(:confirmed_user) }

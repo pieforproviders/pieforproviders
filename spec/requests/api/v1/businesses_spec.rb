@@ -1,63 +1,246 @@
 # frozen_string_literal: true
 
-require 'swagger_helper'
+require 'rails_helper'
 
-RSpec.describe 'businesses API', type: :request do
-  let!(:user) { create(:confirmed_user) }
-  let!(:admin) { create(:admin) }
-  let!(:record_params) do
-    {
-      name: 'Happy Hearts Child Care',
-      license_type: 'licensed_center',
-      user_id: user.id,
-      zipcode: '60606',
-      county: 'Cook'
-    }
+RSpec.describe 'Api::V1::Businesses', type: :request do
+  let!(:logged_in_user) { create(:confirmed_user) }
+  let!(:user_business) { create(:business_with_children, user: logged_in_user) }
+  let!(:non_user_business) { create(:business_with_children) }
+  let!(:admin_user) { create(:confirmed_user, admin: true) }
+
+  describe 'GET /api/v1/businesses' do
+    include_context 'correct api version header'
+
+    context 'for non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it "returns the user's businesses" do
+        get '/api/v1/businesses', headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['name'] }).to include(user_business.name)
+        expect(parsed_response.collect { |x| x['name'] }).not_to include(non_user_business.name)
+        expect(response).to match_response_schema('businesses')
+      end
+    end
+
+    context 'for admin user' do
+      before do
+        sign_in admin_user
+      end
+
+      it "returns all users' businesses" do
+        get '/api/v1/businesses', headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['name'] }).to include(user_business.name)
+        expect(parsed_response.collect { |x| x['name'] }).to include(non_user_business.name)
+        expect(response).to match_response_schema('businesses')
+      end
+    end
   end
-  let(:count) { 2 }
-  let(:owner) { user }
-  let(:owner_attributes) { { user: owner, zipcode: '60606', county: 'Cook' } }
-  let(:non_owner_attributes) { { zipcode: '60606', county: 'Cook' } }
-  let(:record) { Business.create! record_params }
 
-  it_behaves_like 'it lists all records for a user', Business
+  describe 'GET /api/v1/businesses/:id' do
+    include_context 'correct api version header'
 
-  it_behaves_like 'it creates a record', Business
+    context 'for non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
 
-  it_behaves_like 'admins and resource owners can retrieve a record', Business
+      it "returns the user's business" do
+        get "/api/v1/businesses/#{user_business.id}", headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq(user_business.name)
+        expect(response).to match_response_schema('business')
+      end
 
-  it_behaves_like 'admins and resource owners can update a record', Business, 'name', 'Hogwarts School', nil
+      it 'does not return a business for another user' do
+        get "/api/v1/businesses/#{non_user_business.id}", headers: headers
+        expect(response.status).to eq(404)
+      end
+    end
 
-  it_behaves_like 'admins and resource owners can delete a record', Business
+    context 'for admin user' do
+      before do
+        sign_in admin_user
+      end
 
-  describe '#update' do
-    let(:business_with_cases) { create(:business_with_children, user: owner, zipcode: '60606', county: 'Cook') }
-    let(:id) { business_with_cases.id }
-    path '/api/v1/businesses/{id}' do
-      parameter name: :id, in: :path, type: :string
+      it "returns the user's business" do
+        get "/api/v1/businesses/#{user_business.id}", headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq(user_business.name)
+        expect(response).to match_response_schema('business')
+      end
 
-      put 'cannot update active on a business with active children' do
-        tags 'businesses'
+      it 'returns a business for another user' do
+        get "/api/v1/businesses/#{non_user_business.id}", headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq(non_user_business.name)
+        expect(response).to match_response_schema('business')
+      end
+    end
+  end
 
-        produces 'application/json'
-        consumes 'application/json'
+  describe 'POST /api/v1/businesses' do
+    include_context 'correct api version header'
 
-        parameter name: :business, in: :body, schema: {
-          '$ref' => '#/components/schemas/updateBusiness'
+    let(:params_without_user) do
+      {
+        business: {
+          name: 'Happy Hearts Child Care',
+          license_type: 'licensed_center',
+          zipcode: '60606',
+          county: 'Cook'
         }
-        context 'on the right api version' do
-          include_context 'correct api version header'
-          context 'when authenticated' do
-            context 'admin' do
-              before { sign_in admin }
+      }
+    end
+    let(:params_with_user) { { business: params_without_user[:business].merge({ user_id: logged_in_user.id }) } }
 
-              response '422', 'Business cannot be updated' do
-                let(:business) { { 'business' => { 'active' => 'false' } } }
-                run_test!
-              end
-            end
-          end
-        end
+    context 'for non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it 'creates a business for that user' do
+        post '/api/v1/businesses', params: params_without_user, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq('Happy Hearts Child Care')
+        expect(logged_in_user.businesses.pluck(:name)).to include('Happy Hearts Child Care')
+        expect(response).to match_response_schema('business')
+      end
+    end
+
+    context 'for admin user' do
+      before do
+        sign_in admin_user
+      end
+
+      it 'creates a business for the passed user' do
+        post '/api/v1/businesses', params: params_with_user, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq('Happy Hearts Child Care')
+        expect(logged_in_user.businesses.pluck(:name)).to include('Happy Hearts Child Care')
+        expect(response).to match_response_schema('business')
+      end
+
+      it 'fails unless the user is passed' do
+        post '/api/v1/businesses', params: params_without_user, headers: headers
+        expect(response.status).to eq(422)
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/businesses/:id' do
+    include_context 'correct api version header'
+
+    let(:params) do
+      {
+        business: {
+          name: 'Hogwarts School of Witchcraft and Wizardry'
+        }
+      }
+    end
+
+    context 'for non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it "updates the user's business" do
+        put "/api/v1/businesses/#{user_business.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(user_business.reload.name).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(response).to match_response_schema('business')
+      end
+
+      it 'does not update a business for another user' do
+        put "/api/v1/businesses/#{non_user_business.id}", params: params, headers: headers
+        expect(response.status).to eq(404)
+      end
+
+      it 'cannot update a business to inactive' do
+        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        expect(response.status).to eq(200)
+        expect(user_business.reload.active).to eq(true)
+      end
+    end
+
+    context 'for admin user' do
+      before do
+        sign_in admin_user
+      end
+
+      it "updates the user's business" do
+        put "/api/v1/businesses/#{user_business.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(user_business.reload.name).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(response).to match_response_schema('business')
+      end
+
+      it 'updates a business for another user' do
+        put "/api/v1/businesses/#{non_user_business.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['name']).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(non_user_business.reload.name).to eq('Hogwarts School of Witchcraft and Wizardry')
+        expect(response).to match_response_schema('business')
+      end
+
+      it 'cannot update a business to inactive if it has active children' do
+        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        expect(response.status).to eq(422)
+        expect(user_business.reload.active).to eq(true)
+      end
+
+      it 'can update a business to inactive if it has no children' do
+        user_business.children.destroy_all
+        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        expect(response.status).to eq(200)
+        expect(user_business.reload.active).to eq(false)
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/businesses/:id' do
+    include_context 'correct api version header'
+
+    context 'for non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it "soft-deletes the user's business if there are no active children" do
+        user_business.children.destroy_all
+        delete "/api/v1/businesses/#{user_business.id}", headers: headers
+        expect(response.status).to eq(204)
+        expect(user_business.reload.active).to eq(false)
+      end
+
+      it "does not soft-delete the user's business if there are active children" do
+        delete "/api/v1/businesses/#{user_business.id}", headers: headers
+        expect(response.status).to eq(422)
+        expect(user_business.reload.active).to eq(true)
+      end
+    end
+
+    context 'for admin user' do
+      before do
+        sign_in admin_user
+      end
+
+      it "soft-deletes the user's business if there are no active children" do
+        user_business.children.destroy_all
+        delete "/api/v1/businesses/#{user_business.id}", headers: headers
+        expect(response.status).to eq(204)
+        expect(user_business.reload.active).to eq(false)
+      end
+
+      it "does not soft-delete the user's business if there are active children" do
+        delete "/api/v1/businesses/#{user_business.id}", headers: headers
+        expect(response.status).to eq(422)
+        expect(user_business.reload.active).to eq(true)
       end
     end
   end
