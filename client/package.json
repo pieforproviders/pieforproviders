@@ -36,7 +36,7 @@
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^4.0.3",
-    "tailwindcss": "^1.9.6",
+    "tailwindcss": "^2.2.7",
     "uuid": "^8.3.2",
     "xlsx": "^0.17.0"
   },
