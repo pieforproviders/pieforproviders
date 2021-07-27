@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(version: 2021_07_26_202000) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-07-26", null: false
+    t.date "effective_on", default: "2021-07-27", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false

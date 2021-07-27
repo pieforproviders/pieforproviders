@@ -21,8 +21,6 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.3'
 gem 'pundit', '~> 2.1'
 gem 'rails', '~> 6.1.4'
-gem 'rswag-api', '>= 2.3.0'
-gem 'rswag-ui', '>= 2.3.0'
 gem 'tod'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -45,7 +43,6 @@ group :development, :test do
   gem 'pry'
   gem 'pry-remote'
   gem 'rspec-rails'
-  gem 'rswag-specs', '>= 2.3.0'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
 end
