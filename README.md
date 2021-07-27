@@ -45,10 +45,8 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
     - DatabaseCleaner
     - FactoryBot
     - Faker
-    - RSwag
   - v1 API Routes returning JSON
   - Postgres DB
-  - API Documentation with swagger
 - Frontend: React
   - ESLint/Prettier
   - Jest/React Testing Library
@@ -73,7 +71,6 @@ Docker should be installed on your local machine.
 
 ### URLs
 * App: http://localhost:3000
-* API: http://localhost:3000/api-docs
 * MailCatcher: http://localhost:1080
 
 ### Database Parameters
@@ -140,10 +137,6 @@ You have several convenient options for running the app locally.
     - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
-
-Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑  
-  
-> ***NOTE:*** Swagger UI is currently not configured to use authentication, so any authenticated endpoints will not be accessible at this route, you'll get unauthorized errors.
 </details>
 
 ---
@@ -168,7 +161,6 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 ### API
 
 - `bundle exec rspec` or `bundle exec guard` to watch
-- When tests pass and you're ready for a PR, please run `rails rswag` to update the API documentation
 
 ### Frontend
 
