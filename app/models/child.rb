@@ -78,6 +78,16 @@ class Child < UuidApplicationRecord
     Rails.application.config.ff_live_algorithms_full_days ? NebraskaFullDaysCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.full_days
   end
 
+  # NE dashboard used hours calculator
+  def nebraska_weekly_hours_attended(filter_date)
+    if Rails.application.config.ff_live_algorithms_weekly_hours_attended
+      NebraskaWeeklyHoursAttendedCalculator.new(self,
+                                                filter_date).call
+    else
+      temporary_nebraska_dashboard_case&.hours_attended&.to_f
+    end
+  end
+
   private
 
   def find_or_create_approvals

@@ -70,6 +70,7 @@ module Wonderschool
         {
           full_days: to_integer(@row['Authorized full day units']),
           hours: to_float(@row['Authorized hourly units']),
+          authorized_weekly_hours: to_float(@row['Authorized weekly hours']),
           special_needs_rate: to_boolean(@row['Special Needs Rate?']),
           special_needs_daily_rate: to_float(@row['Special Needs Daily Rate']),
           special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate'])

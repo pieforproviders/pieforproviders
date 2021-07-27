@@ -68,6 +68,7 @@ module App
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
     config.ff_live_algorithms_hours = ENV.fetch('FF_LIVE_ALGORITHMS_HOURS', '') == 'true'
     config.ff_live_algorithms_full_days = ENV.fetch('FF_LIVE_ALGORITHMS_FULL_DAYS', '') == 'true'
+    config.ff_live_algorithms_weekly_hours_attended = ENV.fetch('FF_LIVE_ALGORITHMS_WEEKLY_HOURS_ATTENDED', '') == 'true'
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
   end

@@ -100,7 +100,8 @@ module Wonderschool
                 hours: 1656,
                 special_needs_rate: false,
                 special_needs_daily_rate: nil,
-                special_needs_hourly_rate: nil
+                special_needs_hourly_rate: nil,
+                authorized_weekly_hours: 30
               }
             )
             expect(thomas.child_approvals.first.nebraska_approval_amounts.count).to eq(1)
@@ -143,7 +144,8 @@ module Wonderschool
                 hours: 1760,
                 special_needs_rate: true,
                 special_needs_daily_rate: 90.77,
-                special_needs_hourly_rate: 9.43
+                special_needs_hourly_rate: 9.43,
+                authorized_weekly_hours: 45
               }
             )
             expect(becky.child_approvals.first.nebraska_approval_amounts.count).to eq(2)
