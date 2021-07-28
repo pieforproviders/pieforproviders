@@ -37,6 +37,31 @@ RSpec.describe User, type: :model do
       expect(user.first_approval_effective_date).to eq(Date.parse('Jan 10, 2020'))
     end
   end
+
+  describe '#latest_attendance_in_month' do
+    let!(:six_months_ago) { Time.now.in_time_zone(user.timezone).at_beginning_of_month - 6.months }
+    let!(:first_attendance) do
+      create(:attendance,
+             check_in: six_months_ago,
+             child_approval: create(:child_approval,
+                                    approval: create(:approval,
+                                                     effective_on: six_months_ago - 6.months,
+                                                     create_children: false),
+                                    child: create(:child,
+                                                  business: create(:business, user: user))))
+    end
+    let!(:second_attendance) { create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval) }
+    let!(:third_attendance) { create(:attendance, check_in: Time.now.in_time_zone(user.timezone).at_beginning_of_day, child_approval: first_attendance.child_approval) }
+    it 'works without a date passed' do
+      expect(user.latest_attendance_in_month(nil)).to eq(third_attendance.check_in)
+    end
+    it 'returns nil for a month without an attendance' do
+      expect(user.latest_attendance_in_month(Time.now.in_time_zone(user.timezone).at_beginning_of_day - 2.months)).to eq(nil)
+    end
+    it 'returns the latest attendance for a month with multiple attendances' do
+      expect(user.latest_attendance_in_month(Time.now.in_time_zone(user.timezone).at_beginning_of_day - 6.months)).to eq(second_attendance.check_in)
+    end
+  end
 end
 
 # == Schema Information
