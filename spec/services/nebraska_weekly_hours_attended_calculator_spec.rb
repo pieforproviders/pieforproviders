@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe NebraskaWeeklyHoursAttendedCalculator, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:child_approval) { child.child_approvals.first }
-  let(:first_attendance_date) { (child_approval.approval.effective_on.at_end_of_month).at_beginning_of_week(:sunday) + 2.days }
-  let(:second_attendance_date) { (child_approval.approval.effective_on.at_end_of_month).at_beginning_of_week(:sunday) + 4.days }
+  let(:first_attendance_date) { (child_approval.approval.effective_on + 1.month).at_beginning_of_week(:sunday) + 2.days }
+  let(:second_attendance_date) { (child_approval.approval.effective_on + 1.month).at_beginning_of_week(:sunday) + 4.days }
   let(:check_in) { first_attendance_date.to_datetime + 8.hours + 21.minutes }
 
   describe '#call' do
