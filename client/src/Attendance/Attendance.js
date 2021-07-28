@@ -43,10 +43,16 @@ export function Attendance() {
   )
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
+  const removeEmptyString = obj =>
+    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
 
   const updateAttendanceData = (updates, record, i) => {
     const newArr = latestAttendanceData.current[record?.id].map(
       (value, index) => {
+        if (index === i && Object.values(updates).includes('')) {
+          // eslint-disable-next-line no-debugger
+          debugger
+        }
         // this logic adds and removes fields as needed depending on whether checkin/out or an absence is selected
         return index === i
           ? Object.keys(updates).length === 0 ||
@@ -56,8 +62,8 @@ export function Attendance() {
             (Object.keys(updates).includes('absence') &&
               (Object.keys(value).includes('check_in') ||
                 Object.keys(value).includes('check_out')))
-            ? updates
-            : { ...value, ...updates }
+            ? removeEmptyString(updates)
+            : removeEmptyString({ ...value, ...updates })
           : value
       }
     )
@@ -85,13 +91,20 @@ export function Attendance() {
         width: 398,
         // eslint-disable-next-line react/display-name
         title: () => (
-          <DatePicker
-            disabledDate={c => c && c.valueOf() > Date.now()}
-            onChange={(_, ds) => handleDateChange(i, ds)}
-            bordered={false}
-            placeholder={t('selectDate')}
-            style={{ width: '8rem ', color: '#004A6E' }}
-          />
+          <div className="flex">
+            <DatePicker
+              disabledDate={c => c && c.valueOf() > Date.now()}
+              onChange={(_, ds) => handleDateChange(i, ds)}
+              bordered={false}
+              placeholder={t('selectDate')}
+              style={{ width: '8rem ', color: '#004A6E' }}
+            />
+            {Object.values(latestAttendanceData.current).find(row => {
+              return Object.keys(row[i]).length > 0
+            }) && latestColumnDates.current[i] === '' ? (
+              <div className="text-red1">THERE IS AN ERROR</div>
+            ) : null}
+          </div>
         ),
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
