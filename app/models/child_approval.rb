@@ -5,9 +5,9 @@ class ChildApproval < UuidApplicationRecord
   belongs_to :child
   belongs_to :approval
   belongs_to :illinois_rate, optional: true
-  has_many :illinois_approval_amounts, dependent: :restrict_with_error
-  has_many :nebraska_approval_amounts, dependent: :restrict_with_error
-  has_many :attendances, dependent: :restrict_with_error
+  has_many :illinois_approval_amounts, dependent: :destroy
+  has_many :nebraska_approval_amounts, dependent: :destroy
+  has_many :attendances, dependent: :destroy
 
   delegate :user, to: :child
 

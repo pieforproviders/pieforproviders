@@ -8,8 +8,9 @@ class Child < UuidApplicationRecord
   belongs_to :business
 
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
-  has_many :approvals, through: :child_approvals
+  has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :schedules, dependent: :destroy
+  has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
@@ -63,24 +64,40 @@ class Child < UuidApplicationRecord
     active_child_approval(date).rate
   end
 
+  def active_nebraska_approval_amount(date)
+    nebraska_approval_amounts.active_on_date(date).first
+  end
+
   def illinois_approval_amounts
     IllinoisApprovalAmount.where(child_approval: ChildApproval.where(child: self))
+  end
+
+  # NE dashboard family_fee calculator
+  def nebraska_family_fee(filter_date)
+    # "feature flag" for using live algorithms rather than uploaded data
+    if Rails.application.config.ff_ne_live_algorithms
+      format('%.2f',
+             active_nebraska_approval_amount(filter_date)&.family_fee)
+    else
+      format('%.2f',
+             temporary_nebraska_dashboard_case&.family_fee.to_f)
+    end
+  end
+
+  # NE dashboard full days calculator
+  def nebraska_full_days(filter_date)
+    Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.full_days
   end
 
   # NE dashboard hours calculator
   def nebraska_hours(filter_date)
     # "feature flag" for using live algorithms rather than uploaded data
-    Rails.application.config.ff_live_algorithms_hours ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
+    Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
   end
 
-  # NE dashboard full days calculator
-  def nebraska_full_days(filter_date)
-    Rails.application.config.ff_live_algorithms_full_days ? NebraskaFullDaysCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.full_days
-  end
-
-  # NE dashboard used hours calculator
+  # NE dashboard weekly used hours calculator
   def nebraska_weekly_hours_attended(filter_date)
-    if Rails.application.config.ff_live_algorithms_weekly_hours_attended
+    if Rails.application.config.ff_ne_live_algorithms
       NebraskaWeeklyHoursAttendedCalculator.new(self,
                                                 filter_date).call
     else
