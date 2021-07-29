@@ -5,14 +5,14 @@
       "type": "object",
       "properties": {
         "errors": {
-          "type": "array"
+          "type": "object"
         }
       }
     },
     "attendances": {
       "type": "array",
       "items": {
-        "$ref":"attendance.json"
+        "$ref": "attendance.json"
       }
     }
   }

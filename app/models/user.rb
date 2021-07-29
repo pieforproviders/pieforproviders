@@ -36,6 +36,7 @@ class User < UuidApplicationRecord
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
   end
 
+  # don't return the user's admin status in the API JSON
   def as_json(_options = {})
     super(except: [:admin])
   end

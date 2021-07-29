@@ -21,6 +21,8 @@ class Attendance < UuidApplicationRecord
 
   validates :absence, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
 
+  validate :prevent_creation_of_absence_without_schedule
+
   scope :for_month, lambda { |month = nil|
     month ||= Time.current
     where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
@@ -45,6 +47,12 @@ class Attendance < UuidApplicationRecord
                               else
                                 0.seconds
                               end
+  end
+
+  def prevent_creation_of_absence_without_schedule
+    return unless absence
+
+    errors.add(:absence, "can't create for a day without a schedule") unless child_schedule
   end
 
   def calculate_from_schedule

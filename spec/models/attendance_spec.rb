@@ -38,13 +38,16 @@ RSpec.describe Attendance, type: :model do
     attendance.save!
 
     attendance.absence = 'covid_absence'
-    expect(attendance).to be_valid
-    expect(attendance.errors.messages).to eq({})
-
-    attendance.absence = 'not a valid reason'
     expect(attendance).not_to be_valid
-    expect(attendance.errors.messages.keys).to eq([:absence])
-    expect(attendance.errors.messages[:absence]).to include('is not included in the list')
+    expect(attendance.errors.messages[:absence]).to include("can't create for a day without a schedule")
+
+    absence = create(:nebraska_absence, absence: 'covid_absence')
+    expect(absence).to be_valid
+    expect(absence.errors.messages).to eq({})
+
+    absence = build(:nebraska_absence, absence: 'fake_reason')
+    expect(absence).not_to be_valid
+    expect(absence.errors.messages[:absence]).to include('is not included in the list')
   end
 
   it 'validates that the check_out is after the check_in if it is present' do
@@ -56,8 +59,44 @@ RSpec.describe Attendance, type: :model do
     expect(attendance.errors.messages[:check_out]).not_to be_present
   end
 
+  it 'validates that an absence only occurs on a scheduled day' do
+    child = create(:necc_child)
+    # ensures the attendance check in falls on the calendar weekday in the schedule
+    attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday + 1)
+    attendance = build(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
+    expect(attendance).not_to be_valid
+  end
+
   it 'factory should be valid (default; no args)' do
     expect(build(:attendance)).to be_valid
+  end
+
+  context 'calculates time in care' do
+    it 'uses the check_in and check_out when they are both present' do
+      attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+      attendance.save!
+      expect(attendance.total_time_in_care.in_seconds).to eq(attendance.check_out - attendance.check_in)
+    end
+    it 'uses the check_in and schedule when check_out is null and the child has a schedule' do
+      child = create(:necc_child)
+      # ensures the attendance check in falls on the calendar weekday in the schedule
+      attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
+      attendance = create(:attendance, child_approval: child.child_approvals.first, check_in: attendance_check_in, check_out: nil)
+      expect(attendance.total_time_in_care.in_seconds).to eq(Tod::Shift.new(child.schedules.first.start_time, child.schedules.first.end_time).duration)
+    end
+    it 'uses the check_in and makes the attendance 8 hours when check_out is null and the child has no schedule' do
+      child = create(:necc_child)
+      child.schedules.destroy_all
+      attendance = create(:attendance, child_approval: child.child_approvals.first, check_out: nil)
+      expect(attendance.total_time_in_care.in_seconds).to eq(8.hours.in_seconds)
+    end
+    it 'uses the check_in and schedule when creating an absence' do
+      child = create(:necc_child)
+      # ensures the attendance check in falls on the calendar weekday in the schedule
+      attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
+      attendance = create(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
+      expect(attendance.total_time_in_care.in_seconds).to eq(Tod::Shift.new(child.schedules.first.start_time, child.schedules.first.end_time).duration)
+    end
   end
 
   context 'for_month scope' do
