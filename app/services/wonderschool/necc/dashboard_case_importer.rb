@@ -2,20 +2,29 @@
 
 module Wonderschool
   module Necc
-    # Wonderschool NECC Dashboard CSV Importer
-    class DashboardCsvImporter < S3CsvImporter
+    # Wonderschool NECC Dashboard Case Importer
+    class DashboardCaseImporter
+      include AppsignalReporting
+      def initialize
+        @client = AwsClient.new
+        @source_bucket = Rails.application.config.aws_necc_dashboard_bucket
+        @archive_bucket = Rails.application.config.aws_necc_dashboard_archive_bucket
+      end
+
+      def call
+        process_dashboard_cases
+      end
+
       private
 
-      def action
-        'dashboard csv importer'
-      end
-
-      def source_bucket
-        Rails.application.config.aws_necc_dashboard_bucket
-      end
-
-      def archive_bucket
-        Rails.application.config.aws_necc_dashboard_archive_bucket
+      def process_dashboard_cases
+        file_names = @client.list_file_names(@source_bucket)
+        contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
+        contents.each do |body|
+          parsed_csv = CsvParser.new(body).call
+          parsed_csv.each { |row| process_row(row) }
+        end
+        file_names.each { |file_name| @client.archive_file(@source_bucket, @archive_bucket, file_name) }
       end
 
       def process_row(row)
@@ -24,7 +33,7 @@ module Wonderschool
         dashboard_case = TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child)
         dashboard_case.update!(dashboard_params(row))
       rescue StandardError => e
-        send_error(e, row['Case Number']) # returns false
+        send_appsignal_error('dashboard-case-importer', e.message, row['Case Number']) # returns false
       end
 
       # rubocop:disable Metrics/MethodLength
