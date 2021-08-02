@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:business) { create(:business, user: logged_in_user) }

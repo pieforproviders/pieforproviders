@@ -18,6 +18,15 @@ RSpec.describe UserPolicy do
     end
   end
 
+  permissions :create? do
+    it 'grants access to everyone' do
+      expect(subject).to permit(admin)
+      expect(subject).to permit(user)
+      expect(subject).to permit(non_owner)
+      expect(subject).to permit('random string?')
+    end
+  end
+
   permissions :update?, :destroy? do
     it 'grants access to admins' do
       expect(subject).to permit(admin, user)

@@ -202,10 +202,6 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'dashboard methods' do
-    # TODO
-  end
-
   it 'enqueues a rate association job' do
     include ActiveJob::TestHelper
     ActiveJob::Base.queue_adapter = :test
