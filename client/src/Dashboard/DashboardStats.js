@@ -54,7 +54,7 @@ export default function DashboardStats({ summaryData }) {
                 })
               ) : (
                 <div className="mt-2">
-                  <p className="h-6 xs:whitespace-no-wrap">
+                  <p className="h-6 xs:whitespace-nowrap">
                     <Typography.Text>{stat.title}</Typography.Text>
                   </p>
                   <p>
