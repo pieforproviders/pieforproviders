@@ -9,6 +9,7 @@ class PasswordsController < Devise::PasswordsController
     if successfully_sent?(resource)
       render json: { success: true }
     else
+      errors(resource.errors.details)
       render json: error_response, status: :unprocessable_entity
     end
   end
@@ -16,44 +17,44 @@ class PasswordsController < Devise::PasswordsController
   def update
     self.resource = resource_class.reset_password_by_token(resource_params)
     if resource.errors.empty?
-      sign_in_resource
-      render json: resource
+      sign_in_resource(resource)
     else
+      errors(resource.errors.details)
       render json: error_response, status: :unprocessable_entity
     end
   end
 
   private
 
-  def sign_in_resource
+  def errors(details = nil)
+    @errors ||= details
+  end
+
+  def error_response
+    {
+      error: I18n.t('errors.messages.password'),
+      attribute: error_attribute.to_s,
+      type: error_type.to_s
+    }
+  end
+
+  def sign_in_resource(resource)
     return unless resource.confirmed?
 
     sign_in(resource)
     response.headers['authorization'] = current_token
+    render json: UserBlueprint.render(resource)
   end
 
   def current_token
     request.env['warden-jwt_auth.token']
   end
 
-  def error_response
-    @errors = resource.errors.details
-
-    {
-      attribute: error_attribute.to_s,
-      type: error_type.to_s
-    }
-  end
-
   def error_attribute
-    @errors.keys.first
+    @error_attribute ||= @errors.keys.first
   end
 
   def error_type
-    @errors[error_attribute].first[:error]
-  end
-
-  def resource_params
-    params.fetch(:user, {})
+    @error_type ||= @errors[@error_attribute].first[:error]
   end
 end

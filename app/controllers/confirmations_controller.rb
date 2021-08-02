@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
+# TODO: Make sure the front end isn't using the response from confirmations to do anything
+# TODO: ensure the front end sends confirmation, password and signup information nested under user:
+
 # Create Confirmations for Users
 class ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
   def create
-    self.resource = resource_class.send_confirmation_instructions(email: params[:email])
+    self.resource = resource_class.send_confirmation_instructions(resource_params)
     if successfully_sent?(resource)
-      respond_with(resource)
+      render json: { success: true }
     else
       errors(resource.errors.details)
       render json: error_response, status: :unprocessable_entity
@@ -39,6 +42,8 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def sign_in_resource(resource)
+    return unless resource.confirmed?
+
     sign_in(resource)
     response.headers['authorization'] = current_token
     render json: UserBlueprint.render(resource)

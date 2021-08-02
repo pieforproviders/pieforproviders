@@ -55,17 +55,18 @@ export const NewPassword = () => {
 
     setLoading(false)
 
-    const data = await response.json()
-
     if (!response.ok) {
+      // debugger
+      const errorMessage = await response.json()
       dispatch(removeAuth())
-      history.push({
+      history.replace({
         pathname: '/login',
         state: {
           error: {
             status: response.status,
-            attribute: data.attribute,
-            type: data.type
+            message: errorMessage.error,
+            attribute: errorMessage.attribute,
+            type: errorMessage.type
           }
         }
       })
@@ -74,16 +75,17 @@ export const NewPassword = () => {
 
     const authToken = response.headers.get('authorization')
     if (!authToken) {
+      const errorMessage = await response.json()
       dispatch(removeAuth())
       // Unconfirmed users
-      history.push({
+      history.replace({
         pathname: '/login',
         state: {
           error: {
             status: 401,
             attribute: 'email',
             type: 'unconfirmed',
-            context: { email: data.email }
+            context: { email: errorMessage.email }
           }
         }
       })

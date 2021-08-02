@@ -38,7 +38,9 @@ const ConfirmationSent = ({ userEmail }) => {
       type: 'post',
       url: '/confirmation',
       data: {
-        email: userEmail
+        user: {
+          email: userEmail
+        }
       }
     })
     if (response.ok) {
