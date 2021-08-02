@@ -3,13 +3,9 @@
   "items": {
     "properties": {
       "as_of": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
+        "type": [
+          "string",
+          "null"
         ]
       },
       "businesses": {
@@ -48,65 +44,32 @@
                     "type": "boolean"
                   },
                   "last_active_date": {
-                    "anyOf": [
-                      {
-                        "type": "date"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "date",
+                      "null"
                     ]
                   },
                   "inactive_reason": {
-                    "anyOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "null"
-                      }
+                    "type": [
+                      "string",
+                      "null"
                     ]
                   }
                 }
-              },
-              "required": [
-                "id",
-                "attendance_risk",
-                "attendance_rate",
-                "case_number",
-                "full_name",
-                "guaranteed_revenue",
-                "max_approved_revenue",
-                "potential_revenue",
-                "active",
-                "last_active_date",
-                "inactive_reason"
-              ]
+              }
             },
             "name": {
               "type": "string"
             }
-          },
-          "required": [
-            "cases",
-            "name"
-          ]
+          }
         }
       },
       "first_approval_effective_date": {
-        "anyOf": [
-          {
-            "type": "string"
-          },
-          {
-            "type": "null"
-          }
+        "type": [
+          "string",
+          "null"
         ]
       }
-    },
-    "required": [
-      "as_of",
-      "businesses"
-    ]
+    }
   }
 }

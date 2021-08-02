@@ -4,31 +4,7 @@ require 'rails_helper'
 
 VALID_API_PATH = '/api/v1'
 
-# These are shared examples for typical API calls for a Rails model.
-#
-# Some examples expect _record_params_ to be defined (e.g. with a let(:record_params) block)
-# to be used as parameters that are sent to the server.
-# The examples that expect record_params to be defined end with '... with parameters'.
-#
-# Ex: Assume you are testing the API calls for creating a Business. The
-#     record_params are the parameters needed to create a Business.
-#
-#     let!(:business_params) do
-#       {
-#         "name": 'Happy Hearts Child Care',
-#         "license_type": 'licensed_center',
-#         "user_id": user.id
-#       }
-#     end
-#
-#     it_behaves_like 'it creates a record', Business do
-#       let(:record_params) { business_params }
-#     end
-#
-#     You should define 'user_id' and any other values/variables
-#     as needed.
-# ------------------------------------------------------------------------------
-
+# TODO: reintegrate these examples in the specs
 # ------------------------------------------------------------------------------
 # Examples that test for common error conditions:
 

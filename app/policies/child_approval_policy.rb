@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Authorization policies for children
-class ChildPolicy < ApplicationPolicy
-  # Scope defining which children a user has access to
+# Authorization policies for child approvals
+class ChildApprovalPolicy < ApplicationPolicy
+  # Scope defining which child approvals a user has access to
   class Scope < ApplicationScope
     def resolve
       if user.admin?

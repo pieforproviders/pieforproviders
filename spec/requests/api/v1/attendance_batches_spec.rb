@@ -4,8 +4,9 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let(:logged_in_user) { create(:confirmed_user) }
-  let(:business) { create(:business, user: logged_in_user) }
+  let(:business) { create(:business, :nebraska, user: logged_in_user) }
   let(:children) { create_list(:necc_child, 3, business: business) }
+  let(:non_owner_child) { create(:necc_child) }
 
   describe 'POST /api/v1/attendance_batches' do
     include_context 'correct api version header'
@@ -319,7 +320,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
         expect(parsed_response['meta']['errors']).to be_present
         expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_id'])
-        expect(parsed_response['meta']['errors'].values.flatten).to eq(["can't be blank"])
+        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("can't be blank")
         expect(response).to match_response_schema('attendance_batch')
       end
     end
@@ -347,8 +348,53 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         parsed_response = JSON.parse(response.body)
 
         expect(parsed_response['meta']['errors']).to be_present
+        expect(parsed_response['meta']['errors'].keys.flatten).to eq(%w[child_id])
+        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("can't be blank")
+        expect(response).to match_response_schema('attendance_batch')
+      end
+    end
+
+    context "when adding an attendance for a child not in the user's care" do
+      let(:batch_with_child_not_in_care) do
+        {
+          attendance_batch:
+          [
+            {
+              check_in: '2021/03/25 12:33pm',
+              check_out: '2021/03/25 5:16pm',
+              child_id: children[0].id
+            },
+            {
+              check_in: '2021/03/28 8:12am',
+              check_out: '2021/03/28 11:48am',
+              child_id: non_owner_child.id
+            }
+          ]
+        }
+      end
+
+      it 'returns json errors' do
+        post '/api/v1/attendance_batches', params: batch_with_child_not_in_care, headers: headers
+
+        parsed_response = JSON.parse(response.body)
+        first_parsed_response_object, = parsed_response['attendances']
+        first_input_object, = batch_with_child_not_in_care[:attendance_batch]
+
+        expect(DateTime.parse(first_parsed_response_object['check_in']))
+          .to be_within(1.second)
+          .of(DateTime.parse(first_input_object[:check_in]))
+        expect(DateTime.parse(first_parsed_response_object['check_out']))
+          .to be_within(1.second)
+          .of(DateTime.parse(first_input_object[:check_out]))
+        expect(first_parsed_response_object['child_approval_id'])
+          .to eq(
+            Child.find(first_input_object[:child_id])
+              .active_child_approval(Date.parse(first_input_object[:check_in])).id
+          )
+
+        expect(parsed_response['meta']['errors']).to be_present
         expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_id'])
-        expect(parsed_response['meta']['errors'].values.flatten).to eq(["can't be blank", "can't be blank"])
+        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("not allowed to create an attendance for child #{non_owner_child.id}")
         expect(response).to match_response_schema('attendance_batch')
       end
     end

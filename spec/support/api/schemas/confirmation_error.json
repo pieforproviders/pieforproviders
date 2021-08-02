@@ -1,9 +1,14 @@
 {
   "type": "object",
-  "required": ["type", "attribute", "error"],
   "properties": {
-    "type": { "type": "string" },
-    "attribute": { "type": "string" },
-    "error": { "type": "string" }
+    "type": {
+      "type": "string"
+    },
+    "attribute": {
+      "type": "string"
+    },
+    "error": {
+      "type": "string"
+    }
   }
 }

@@ -1,5 +1,6 @@
 {
   "type": "array",
-  "required": ["attendances"],
-  "items": {"$ref":"attendance.json"}
+  "items": {
+    "$ref": "attendance.json"
+  }
 }

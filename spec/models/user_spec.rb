@@ -25,6 +25,10 @@ RSpec.describe User, type: :model do
     expect(user.phone_number).to eq('8888888888')
   end
 
+  it "doesn't include admin info about a user when returned in json" do
+    expect(user.as_json.keys).not_to include('admin')
+  end
+
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
     let!(:approval1) { create(:approval, effective_on: Date.parse('Mar 3, 2020'), create_children: false) }

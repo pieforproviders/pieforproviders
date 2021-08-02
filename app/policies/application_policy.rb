@@ -12,7 +12,11 @@ class ApplicationPolicy
   end
 
   def index?
-    true
+    admin_or_owner?
+  end
+
+  def show?
+    admin_or_owner?
   end
 
   def create?
@@ -28,7 +32,7 @@ class ApplicationPolicy
   end
 
   # Base policy scope class
-  class Scope
+  class ApplicationScope
     def initialize(user, scope)
       raise Pundit::NotAuthorizedError, 'must be logged in' unless user
 

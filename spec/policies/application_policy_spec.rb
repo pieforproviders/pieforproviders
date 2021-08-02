@@ -13,14 +13,14 @@ RSpec.describe ApplicationPolicy do
     expect { ApplicationPolicy.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)
   end
 
-  permissions :index?, :create? do
-    it 'grants access to all users' do
+  permissions :create? do
+    it 'grants access to everyone' do
       expect(subject).to permit(admin)
       expect(subject).to permit(user)
     end
   end
 
-  permissions :update?, :destroy? do
+  permissions :index?, :update?, :destroy? do
     it 'grants access to admins' do
       expect(subject).to permit(admin, business)
     end
@@ -34,9 +34,9 @@ RSpec.describe ApplicationPolicy do
     end
   end
 
-  describe ApplicationPolicy::Scope do
+  describe ApplicationPolicy::ApplicationScope do
     it 'raises an exception if user is nil' do
-      expect { ApplicationPolicy::Scope.new(nil, Business) }.to raise_error(Pundit::NotAuthorizedError)
+      expect { ApplicationPolicy::ApplicationScope.new(nil, Business) }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end

@@ -28,14 +28,16 @@ module Api
       def batch
         attendance_batch_params.to_a.map! do |attendance|
           next add_error_and_return_nil(:child_id) unless attendance[:child_id]
+
+          authorize Child.find(attendance[:child_id]), :update?
           next add_error_and_return_nil(:check_in) unless attendance[:check_in]
 
           child_approval_id = child_approval_id(attendance)
-          unless child_approval_id
-            next add_error_and_return_nil(:child_approval_id, "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}")
-          end
+          next unless child_approval_id
 
           attendance.except(:child_id).merge(child_approval_id: child_approval_id)
+        rescue Pundit::NotAuthorizedError
+          next add_error_and_return_nil(:child_id, "not allowed to create an attendance for child #{attendance[:child_id]}")
         end
       end
 
@@ -45,7 +47,12 @@ module Api
       end
 
       def child_approval_id(attendance)
-        Child.find(attendance[:child_id])&.active_child_approval(Date.parse(attendance[:check_in]))&.id
+        Child.find(attendance[:child_id])
+          &.active_child_approval(Date.parse(attendance[:check_in]))
+          &.id || add_error_and_return_nil(
+            :child_approval_id,
+            "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}"
+          )
       end
 
       def attendance_batch_params

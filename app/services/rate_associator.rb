@@ -36,11 +36,11 @@ class RateAssociator
   def age
     dob = @child.date_of_birth
     years_since_birth = today.year - dob.year
-    birthday_passed = dob.month <= today.month && dob.day <= today.day
+    birthday_passed = dob.month <= today.month || dob.day <= today.day
     birthday_passed ? years_since_birth : years_since_birth - 1
   end
 
   def illinois_rate_associator
-    @child.active_child_approval(today).update!(illinois_rate: illinois_rate)
+    @child.active_child_approval(today).update!(rate: illinois_rate)
   end
 end

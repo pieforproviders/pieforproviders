@@ -74,11 +74,12 @@ ActiveRecord::Schema.define(version: 2021_07_26_202000) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.uuid "illinois_rate_id"
     t.integer "authorized_weekly_hours"
+    t.string "rate_type"
+    t.uuid "rate_id"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
-    t.index ["illinois_rate_id"], name: "index_child_approvals_on_illinois_rate_id"
+    t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -227,7 +228,6 @@ ActiveRecord::Schema.define(version: 2021_07_26_202000) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "child_approvals", "illinois_rates"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"

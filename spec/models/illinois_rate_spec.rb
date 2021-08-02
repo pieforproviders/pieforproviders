@@ -3,12 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisRate, type: :model do
-  # TODO: make these all expected or shoulda, not both
-  it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_presence_of(:max_age) }
-  it { is_expected.to validate_presence_of(:county) }
-  it { is_expected.to validate_presence_of(:effective_on) }
-  it { is_expected.to validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
+  it { should have_many(:child_approvals) }
+
+  it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:max_age) }
+  it { should validate_presence_of(:county) }
+  it { should validate_presence_of(:effective_on) }
+  it { should validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
   it { should validate_numericality_of(:bronze_percentage) }
   it { should validate_numericality_of(:full_day_rate) }
   it { should validate_numericality_of(:gold_percentage) }

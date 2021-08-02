@@ -1,6 +1,7 @@
 {
-  "anyOf": [
-    { "type": "string", "format": "date" },
-    { "type": "null" }
-  ]
+  "type": [
+    "string",
+    "null"
+  ],
+  "format": "date"
 }

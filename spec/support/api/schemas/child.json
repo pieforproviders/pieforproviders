@@ -26,70 +26,38 @@
       "format": "uuid"
     },
     "wonderschool_id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
     "dhs_id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
     "enrolled_in_school": {
-      "anyOf": [
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "boolean",
+        "null"
       ]
     },
     "last_active_date": {
-      "anyOf": [
-        {
-          "type": "date"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "date",
+        "null"
       ]
     },
     "inactive_reason": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
     "deleted": {
       "type": "boolean"
     }
   },
-  "required": [
-    "active",
-    "created_at",
-    "date_of_birth",
-    "full_name",
-    "id",
-    "updated_at",
-    "business_id",
-    "last_active_date",
-    "inactive_reason",
-    "deleted"
-  ],
   "type": "object"
 }

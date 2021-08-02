@@ -71,6 +71,11 @@ RSpec.describe Approval, type: :model do
     expect(approval.valid?).to be_truthy
   end
 
+  it 'returns the timezone from the first child on the record' do
+    approval = create(:approval) # this creates children along with the approval, which build does not do
+    expect(approval.timezone).to eq(approval.children.first.timezone)
+  end
+
   it 'factory should be valid (default; no args)' do
     expect(build(:approval)).to be_valid
   end

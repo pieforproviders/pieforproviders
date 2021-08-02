@@ -5,7 +5,7 @@ module Api
     # API for user businesses
     class BusinessesController < Api::V1::ApiController
       before_action :set_business, only: %i[show update destroy]
-      before_action :authorize_user, only: %i[update destroy]
+      before_action :authorize_user, only: %i[show update destroy]
 
       # GET /businesses
       def index

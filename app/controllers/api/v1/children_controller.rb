@@ -5,7 +5,7 @@ module Api
     # API for user children
     class ChildrenController < Api::V1::ApiController
       before_action :set_child, only: %i[show update destroy]
-      before_action :authorize_user, only: %i[update destroy]
+      before_action :authorize_user, only: %i[show update destroy]
 
       # GET /children
       def index
@@ -21,6 +21,7 @@ module Api
 
       # POST /children
       def create
+        authorize Business.find(child_params[:business_id]), :update? unless current_user.admin?
         @child = Child.new(child_params)
         if @child.approvals.each(&:save) && @child.save
           make_approval_amounts
@@ -65,18 +66,10 @@ module Api
 
       def make_approval_amounts
         case @child.state
-        when 'NE'
-          # TODO
-          # NebraskaApprovalAmountGenerator.new(@child, child_params.merge(nebraska_approval_amount_params)).call
         when 'IL'
           IllinoisApprovalAmountGenerator.new(@child, child_params.merge(illinois_approval_amount_params)).call
         end
-      end
-
-      def nebraska_approval_amount_params
-        {
-          approval_periods: params[:approval_periods]
-        }
+        # TODO: right now we're doing approval amounts on onboarding CSV processing for NE kids, rather than through the controller
       end
 
       def illinois_approval_amount_params

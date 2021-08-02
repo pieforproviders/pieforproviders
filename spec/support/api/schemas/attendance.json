@@ -5,63 +5,38 @@
       "format": "time"
     },
     "check_out": {
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "time"
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "time"
     },
     "absence": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
     "child_approval_id": {
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "uuid"
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
     },
     "id": {
-      "anyOf": [
-        {
-          "type": "string",
-          "format": "uuid"
-        },
-        {
-          "type": "null"
-        }
-      ]
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
     },
     "total_time_in_care": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     }
   },
-  "required": [
-    "check_in",
-    "child_approval_id",
-    "id"
-  ],
   "type": "object"
 }

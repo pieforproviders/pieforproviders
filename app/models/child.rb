@@ -3,7 +3,7 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
-  after_commit :associate_rate, unless: proc { |child| child.deleted || child.active_previously_changed?(from: true, to: false) }
+  after_save_commit :associate_rate, unless: proc { |child| child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
