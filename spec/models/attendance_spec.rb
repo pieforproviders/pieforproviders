@@ -122,7 +122,9 @@ RSpec.describe Attendance, type: :model do
     let(:child) { create(:child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) { create(:attendance, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week, to: Time.current), child_approval: child_approval) }
+    let(:current_attendance) do
+      create(:attendance, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current), child_approval: child_approval)
+    end
     let(:past_attendance) do
       create(:attendance, child_approval: child_approval, check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
                           check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
