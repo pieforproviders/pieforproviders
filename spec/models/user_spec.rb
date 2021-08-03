@@ -31,14 +31,12 @@ RSpec.describe User, type: :model do
 
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
-    let!(:approval1) { create(:approval, effective_on: Date.parse('Mar 3, 2020'), create_children: false) }
-    let!(:approval2) { create(:approval, effective_on: Date.parse('Jan 10, 2020'), create_children: false) }
-    let!(:approval3) { create(:approval, effective_on: Date.parse('May 6, 2020'), create_children: false) }
-    let!(:approval4) { create(:approval, effective_on: Date.parse('Feb 21, 2020'), create_children: false) }
-    let!(:child) { create(:child, business: business, approvals: [approval1, approval2, approval3]) }
-    let!(:child2) { create(:child, business: business, approvals: [approval4]) }
+    before do
+      create_list(:child, 3, business: business)
+    end
+
     it 'returns the correct date' do
-      expect(user.first_approval_effective_date).to eq(Date.parse('Jan 10, 2020'))
+      expect(user.first_approval_effective_date).to eq(Approval.all.order(effective_on: :desc).first.effective_on)
     end
   end
 

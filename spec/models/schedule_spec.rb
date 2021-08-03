@@ -87,7 +87,7 @@ end
 # Indexes
 #
 #  index_schedules_on_child_id  (child_id)
-#  unique_child_schedules       (effective_on,child_id) UNIQUE
+#  unique_child_schedules       (effective_on,child_id,weekday) UNIQUE
 #
 # Foreign Keys
 #

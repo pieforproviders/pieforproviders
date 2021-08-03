@@ -23,6 +23,7 @@ module Wonderschool
       let!(:second_user) { create(:confirmed_user, email: 'kate@kate.com') }
 
       before(:each) do
+        travel_to Date.parse('May 20th, 2021') # this lands us in the 'effective' period for all the approvals in the CSV fixture
         allow(Rails.application.config).to receive(:aws_access_key_id).and_return(akid)
         allow(Rails.application.config).to receive(:aws_secret_access_key).and_return(secret)
         allow(Rails.application.config).to receive(:aws_access_key_id).and_return(akid)

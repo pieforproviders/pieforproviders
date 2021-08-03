@@ -59,8 +59,6 @@ end
 #                    new_user_confirmation GET    /confirmation/new(.:format)                                                                       confirmations#new
 #                        user_confirmation GET    /confirmation(.:format)                                                                           confirmations#show
 #                                          POST   /confirmation(.:format)                                                                           confirmations#create
-#                                 rswag_ui        /api-docs                                                                                         Rswag::Ui::Engine
-#                                rswag_api        /api-docs                                                                                         Rswag::Api::Engine
 #                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
 #                                    users GET    /api/v1/users(.:format)                                                                           api/v1/users#index {:format=>:json}
 #                                     user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show {:format=>:json}
@@ -105,12 +103,6 @@ end
 #                       rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
 #                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
-#
-# Routes for Rswag::Ui::Engine:
-#
-#
-# Routes for Rswag::Api::Engine:
-#
 #
 # Routes for LetterOpenerWeb::Engine:
 # clear_letters DELETE /clear(.:format)                 letter_opener_web/letters#clear
