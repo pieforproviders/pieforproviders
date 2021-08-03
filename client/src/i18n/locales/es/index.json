@@ -234,6 +234,7 @@
   "success": "¡Registro exitoso!",
   "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
   "gotToDashboard": "Ir al panel principal",
+  "dateError": "Por favor selecciona una fecha”",
   
   "actions": "Acciones",
   "markInactive": "Desactivar",
