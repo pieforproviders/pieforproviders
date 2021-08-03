@@ -26,6 +26,7 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
+  const [disableSave, setDisableSave] = useState(false)
   const reduceAttendanceData = data =>
     data.reduce((acc, cv) => {
       return {
@@ -43,6 +44,7 @@ export function Attendance() {
   )
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
+  const latestestDisableSave = useRef(disableSave)
   const removeEmptyString = obj =>
     Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
 
@@ -90,22 +92,32 @@ export function Attendance() {
         key: 'date' + i,
         width: 398,
         // eslint-disable-next-line react/display-name
-        title: () => (
-          <div className="flex">
-            <DatePicker
-              disabledDate={c => c && c.valueOf() > Date.now()}
-              onChange={(_, ds) => handleDateChange(i, ds)}
-              bordered={false}
-              placeholder={t('selectDate')}
-              style={{ width: '8rem ', color: '#004A6E' }}
-            />
-            {Object.values(latestAttendanceData.current).find(row => {
-              return Object.keys(row[i]).length > 0
-            }) && latestColumnDates.current[i] === '' ? (
-              <div className="text-red1">THERE IS AN ERROR</div>
-            ) : null}
-          </div>
-        ),
+        title: () => {
+          const errorIsPresent =
+            Object.values(latestAttendanceData.current).find(
+              row => Object.keys(row[i]).length > 0
+            ) && latestColumnDates.current[i] === ''
+
+          if (errorIsPresent !== latestestDisableSave.current) {
+            latestestDisableSave.current = errorIsPresent
+            setDisableSave(errorIsPresent)
+          }
+
+          return (
+            <div className="flex items-center">
+              <DatePicker
+                disabledDate={c => c && c.valueOf() > Date.now()}
+                onChange={(_, ds) => handleDateChange(i, ds)}
+                bordered={false}
+                placeholder={t('selectDate')}
+                style={{ width: '8rem ', color: '#004A6E' }}
+              />
+              {errorIsPresent ? (
+                <div className="text-red1 font-semibold">{t('dateError')}</div>
+              ) : null}
+            </div>
+          )
+        },
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
           return (
@@ -281,6 +293,7 @@ export function Attendance() {
           classes="mt-3 w-40"
           text={t('save')}
           onClick={handleSave}
+          disabled={latestestDisableSave.current}
         />
       </div>
       <Modal
