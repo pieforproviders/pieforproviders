@@ -7,7 +7,6 @@ import {
   useLocation
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
@@ -21,8 +20,7 @@ import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
-
-const env = runtimeEnv()
+import TagManager from 'react-gtm-module'
 
 const Routes = () => {
   const { t } = useTranslation()
@@ -30,12 +28,20 @@ const Routes = () => {
   const user = useSelector(state => state.user)
   let location = useLocation()
 
+  const tagManagerArgs = {
+    dataLayer: {
+      userId: user.id
+    }
+  }
+
+  TagManager.dataLayer(tagManagerArgs)
+
   useEffect(() => {
-    if (!window.gtag) return
-    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
-      page_path: location.pathname,
-      user_id: user.id ?? ''
-    })
+    // if (!window.gtag) return
+    // window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
+    //   page_path: location.pathname,
+    //   user_id: user.id ?? ''
+    // })
   }, [location, user])
 
   return (
