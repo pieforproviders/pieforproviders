@@ -20,7 +20,10 @@ import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 import TagManager from 'react-gtm-module'
+
+const env = runtimeEnv()
 
 const Routes = () => {
   const { t } = useTranslation()
@@ -28,20 +31,17 @@ const Routes = () => {
   const user = useSelector(state => state.user)
   let location = useLocation()
 
-  const tagManagerArgs = {
-    dataLayer: {
-      userId: user.id
-    }
-  }
-
-  TagManager.dataLayer(tagManagerArgs)
-
   useEffect(() => {
-    // if (!window.gtag) return
-    // window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
-    //   page_path: location.pathname,
-    //   user_id: user.id ?? ''
-    // })
+    const tagManagerArgs = {
+      gtmId: env.REACT_APP_GTM_ID,
+      auth: env.REACT_APP_GTM_AUTH,
+      preview: env.REACT_APP_GTM_PREVIEW,
+      dataLayer: {
+        userId: user.id
+      }
+    }
+
+    TagManager.initialize(tagManagerArgs)
   }, [location, user])
 
   return (
