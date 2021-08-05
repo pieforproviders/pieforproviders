@@ -26,7 +26,7 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
-  const [disableSave, setDisableSave] = useState(false)
+  const [errors, setErrors] = useState(false)
   const reduceAttendanceData = data =>
     data.reduce((acc, cv) => {
       return {
@@ -44,17 +44,18 @@ export function Attendance() {
   )
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
-  const latestestDisableSave = useRef(disableSave)
+  const latestError = useRef(errors)
   const removeEmptyString = obj =>
     Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
+
+  const columnErrorIsPresent = columnIndex =>
+    !!Object.values(latestAttendanceData.current).find(
+      row => Object.keys(row[columnIndex]).length > 0
+    ) && latestColumnDates.current[columnIndex] === ''
 
   const updateAttendanceData = (updates, record, i) => {
     const newArr = latestAttendanceData.current[record?.id].map(
       (value, index) => {
-        if (index === i && Object.values(updates).includes('')) {
-          // eslint-disable-next-line no-debugger
-          debugger
-        }
         // this logic adds and removes fields as needed depending on whether checkin/out or an absence is selected
         return index === i
           ? Object.keys(updates).length === 0 ||
@@ -72,6 +73,13 @@ export function Attendance() {
     latestAttendanceData.current = {
       ...attendanceData,
       [record.id]: newArr
+    }
+    const errorIsPresent = columnErrorIsPresent(i)
+
+    if (errorIsPresent !== latestError.current) {
+      latestError.current = errorIsPresent
+      setErrors(errorIsPresent)
+      setColumns(generateColumns())
     }
     setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
   }
@@ -93,16 +101,6 @@ export function Attendance() {
         width: 398,
         // eslint-disable-next-line react/display-name
         title: () => {
-          const errorIsPresent =
-            Object.values(latestAttendanceData.current).find(
-              row => Object.keys(row[i]).length > 0
-            ) && latestColumnDates.current[i] === ''
-
-          if (errorIsPresent !== latestestDisableSave.current) {
-            latestestDisableSave.current = errorIsPresent
-            setDisableSave(errorIsPresent)
-          }
-
           return (
             <div className="flex items-center">
               <DatePicker
@@ -112,7 +110,7 @@ export function Attendance() {
                 placeholder={t('selectDate')}
                 style={{ width: '8rem ', color: '#004A6E' }}
               />
-              {errorIsPresent ? (
+              {columnErrorIsPresent(i) ? (
                 <div className="text-red1 font-semibold">{t('dateError')}</div>
               ) : null}
             </div>
@@ -293,7 +291,7 @@ export function Attendance() {
           classes="mt-3 w-40"
           text={t('save')}
           onClick={handleSave}
-          disabled={latestestDisableSave.current}
+          disabled={latestError.current}
         />
       </div>
       <Modal
