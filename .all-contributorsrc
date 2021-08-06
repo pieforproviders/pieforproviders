@@ -231,6 +231,18 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "JTBassett",
+      "name": "J.T. Bassett",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44791973?v=4",
+      "profile": "https://github.com/JTBassett",
+      "contributions": [
+        "doc",
+        "data",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
