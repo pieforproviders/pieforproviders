@@ -1,0 +1,27 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "arku",
+      "name": "Arun Kumar Mohan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7039523?v=4",
+      "profile": "https://github.com/arku",
+      "contributions": [
+        "infra",
+        "test",
+        "doc",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "pieforproviders",
+  "projectOwner": "pieforproviders",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
