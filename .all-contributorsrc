@@ -122,6 +122,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "rebeldroid12",
+      "name": "Loren",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5873894?v=4",
+      "profile": "https://github.com/rebeldroid12",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
