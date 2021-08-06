@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -243,8 +243,11 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/jessehall3"><img src="https://avatars.githubusercontent.com/u/5696388?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jesse</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jessehall3" title="Code">💻</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/nora-harris/"><img src="https://avatars.githubusercontent.com/u/31748798?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nora Harris</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=noragharris" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=noragharris" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/sassygrody"><img src="https://avatars.githubusercontent.com/u/6587024?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sasha</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=sassygrody" title="Code">💻</a></td>
+  </tr>
+  <tr>
     <td align="center"><a href="https://github.com/cyranix"><img src="https://avatars.githubusercontent.com/u/161077?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andrew Harrison</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=cyranix" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/weedySeaDragon"><img src="https://avatars.githubusercontent.com/u/673794?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ashley Engelund</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/carolinekinnen"><img src="https://avatars.githubusercontent.com/u/41166358?v=4?s=100" width="100px;" alt=""/><br /><sub><b>carolinekinnen</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=carolinekinnen" title="Documentation">📖</a></td>
   </tr>
 </table>
 
