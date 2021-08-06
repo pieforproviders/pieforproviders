@@ -26,7 +26,7 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
-  const [errors, setErrors] = useState(false)
+  const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
     data.reduce((acc, cv) => {
       return {
@@ -84,11 +84,18 @@ export function Attendance() {
     setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
   }
 
-  const handleDateChange = (index, ds) => {
+  const handleDateChange = (index, dateString) => {
     const updatedDates = latestColumnDates.current.map((value, i) =>
-      index === i ? ds : value
+      index === i ? dateString : value
     )
     latestColumnDates.current = updatedDates
+    const errorIsPresent = columnErrorIsPresent(index)
+
+    if (errorIsPresent !== latestError.current) {
+      latestError.current = errorIsPresent
+      setErrors(errorIsPresent)
+      setColumns(generateColumns())
+    }
     setColumnDates(updatedDates)
   }
 
