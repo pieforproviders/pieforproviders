@@ -191,6 +191,22 @@
         "ideas",
         "review"
       ]
+    },
+    {
+      "login": "rebeccakarasiktw",
+      "name": "rebeccakarasiktw",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26929739?v=4",
+      "profile": "https://github.com/rebeccakarasiktw",
+      "contributions": [
+        "doc",
+        "ideas",
+        "userTesting",
+        "design",
+        "translation",
+        "review",
+        "projectManagement",
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
