@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -249,6 +249,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/weedySeaDragon"><img src="https://avatars.githubusercontent.com/u/673794?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ashley Engelund</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/carolinekinnen"><img src="https://avatars.githubusercontent.com/u/41166358?v=4?s=100" width="100px;" alt=""/><br /><sub><b>carolinekinnen</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=carolinekinnen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Jess-White"><img src="https://avatars.githubusercontent.com/u/58121322?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jess-White</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://huntermarcks.net"><img src="https://avatars.githubusercontent.com/u/6887982?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hunter Marcks</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=hmarcks" title="Code">💻</a></td>
   </tr>
 </table>
 
