@@ -132,6 +132,16 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "nneka-nu",
+      "name": "Nneka Udoh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13953987?v=4",
+      "profile": "https://github.com/nneka-nu",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
