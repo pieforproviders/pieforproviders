@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -237,6 +237,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tr>
     <td align="center"><a href="https://github.com/arku"><img src="https://avatars.githubusercontent.com/u/7039523?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Arun Kumar Mohan</b></sub></a><br /><a href="#infra-arku" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jontrainor"><img src="https://avatars.githubusercontent.com/u/1022615?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jon Trainor</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
