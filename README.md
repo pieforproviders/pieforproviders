@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -255,6 +255,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/wittejm"><img src="https://avatars.githubusercontent.com/u/2104990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jordan Witte</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/cjhaddad"><img src="https://avatars.githubusercontent.com/u/4565578?v=4?s=100" width="100px;" alt=""/><br /><sub><b>cjhaddad</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
