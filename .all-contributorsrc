@@ -219,6 +219,18 @@
         "review",
         "test"
       ]
+    },
+    {
+      "login": "joseluisrangel-dataheim",
+      "name": "joseluisrangel-dataheim",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60363977?v=4",
+      "profile": "https://github.com/joseluisrangel-dataheim",
+      "contributions": [
+        "doc",
+        "data",
+        "review",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
