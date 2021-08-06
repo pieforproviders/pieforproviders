@@ -73,6 +73,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "cyranix",
+      "name": "Andrew Harrison",
+      "avatar_url": "https://avatars.githubusercontent.com/u/161077?v=4",
+      "profile": "https://github.com/cyranix",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
