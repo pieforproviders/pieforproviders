@@ -267,7 +267,8 @@
         "data",
         "review",
         "test",
-        "code"
+        "code",
+        "design"
       ]
     }
   ],
