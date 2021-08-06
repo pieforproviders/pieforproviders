@@ -93,6 +93,15 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "carolinekinnen",
+      "name": "carolinekinnen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/41166358?v=4",
+      "profile": "https://github.com/carolinekinnen",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
