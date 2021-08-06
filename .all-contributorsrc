@@ -24,6 +24,9 @@
       "profile": "https://github.com/nemiasalc56",
       "contributions": [
         "code"
+      ],
+    },
+    {
       "login": "jontrainor",
       "name": "Jon Trainor",
       "avatar_url": "https://avatars.githubusercontent.com/u/1022615?v=4",
@@ -32,6 +35,15 @@
         "code",
         "doc",
         "test"
+      ]
+    },
+    {
+      "login": "rahman-aj",
+      "name": "Rahman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/59799545?v=4",
+      "profile": "https://github.com/rahman-aj",
+      "contributions": [
+        "code"
       ]
     }
   ],
