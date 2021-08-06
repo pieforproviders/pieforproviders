@@ -163,6 +163,20 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "csprayregen",
+      "name": "csprayregen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26717304?v=4",
+      "profile": "http://www.pieforproviders.com",
+      "contributions": [
+        "doc",
+        "business",
+        "ideas",
+        "projectManagement",
+        "review",
+        "translation"
+      ]
     }
   ],
   "contributorsPerLine": 7,
