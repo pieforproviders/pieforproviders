@@ -152,6 +152,17 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "cjhaddad",
+      "name": "cjhaddad",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4565578?v=4",
+      "profile": "https://github.com/cjhaddad",
+      "contributions": [
+        "doc",
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
