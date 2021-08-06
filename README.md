@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-21-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-22-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -261,6 +261,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/rebeccakarasiktw"><img src="https://avatars.githubusercontent.com/u/26929739?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rebeccakarasiktw</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeccakarasiktw" title="Documentation">📖</a> <a href="#ideas-rebeccakarasiktw" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-rebeccakarasiktw" title="User Testing">📓</a> <a href="#design-rebeccakarasiktw" title="Design">🎨</a> <a href="#translation-rebeccakarasiktw" title="Translation">🌍</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Arebeccakarasiktw" title="Reviewed Pull Requests">👀</a> <a href="#projectManagement-rebeccakarasiktw" title="Project Management">📆</a> <a href="#content-rebeccakarasiktw" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/JonErvin"><img src="https://avatars.githubusercontent.com/u/58059331?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JonErvin</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=JonErvin" title="Documentation">📖</a> <a href="#data-JonErvin" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AJonErvin" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=JonErvin" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/joseluisrangel-dataheim"><img src="https://avatars.githubusercontent.com/u/60363977?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joseluisrangel-dataheim</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=joseluisrangel-dataheim" title="Documentation">📖</a> <a href="#data-joseluisrangel-dataheim" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Ajoseluisrangel-dataheim" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=joseluisrangel-dataheim" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/JTBassett"><img src="https://avatars.githubusercontent.com/u/44791973?v=4?s=100" width="100px;" alt=""/><br /><sub><b>J.T. Bassett</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Documentation">📖</a> <a href="#data-JTBassett" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AJTBassett" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
