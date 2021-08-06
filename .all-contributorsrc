@@ -82,6 +82,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "weedySeaDragon",
+      "name": "Ashley Engelund",
+      "avatar_url": "https://avatars.githubusercontent.com/u/673794?v=4",
+      "profile": "https://github.com/weedySeaDragon",
+      "contributions": [
+        "code",
+        "doc",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
