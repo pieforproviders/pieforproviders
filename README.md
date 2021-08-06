@@ -1,6 +1,6 @@
 # README
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
@@ -252,6 +252,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://huntermarcks.net"><img src="https://avatars.githubusercontent.com/u/6887982?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hunter Marcks</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=hmarcks" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/rebeldroid12"><img src="https://avatars.githubusercontent.com/u/5873894?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Loren</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeldroid12" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeldroid12" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/nneka-nu"><img src="https://avatars.githubusercontent.com/u/13953987?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nneka Udoh</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=nneka-nu" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=nneka-nu" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wittejm"><img src="https://avatars.githubusercontent.com/u/2104990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jordan Witte</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
