@@ -102,6 +102,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "Jess-White",
+      "name": "Jess-White",
+      "avatar_url": "https://avatars.githubusercontent.com/u/58121322?v=4",
+      "profile": "https://github.com/Jess-White",
+      "contributions": [
+        "doc",
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
