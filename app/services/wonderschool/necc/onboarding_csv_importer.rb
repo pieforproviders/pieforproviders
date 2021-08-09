@@ -20,25 +20,25 @@ module Wonderschool
 
       def process_row(row)
         @row = row
-        @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(child_params)
-        approval = existing_or_new_approval
-        @child.save!
-        @child_approval = ChildApproval.find_by(child: @child, approval: approval)
-        update_records
+        build_case
+        @business.update!(optional_business_params)
+        @child_approval.update!(child_approval_params)
         approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       rescue StandardError => e
         send_error(e, @row['Case number']) # returns false
       end
 
-      def update_records
-        @business.update!(optional_business_params)
-        @child_approval.update!(child_approval_params)
+      def build_case
+        @business = Business.find_or_create_by!(required_business_params)
+        @child = Child.find_or_initialize_by(child_params)
+        approval = existing_or_new_approval
+        @child.approvals.include?(approval) || @child.approvals << approval # idempotency - add only if it's not already associated
+        @child.save!
+        @child_approval = ChildApproval.find_by(child: @child, approval: approval)
       end
 
       def existing_or_new_approval
-        existing_approval = Approval.includes(children: :business).where(children: { full_name: @child.full_name, business: @business }).find_by(approval_params)
-        existing_approval || (@child.approvals << Approval.find_or_create_by!(approval_params)).first
+        Approval.includes(children: :business).where(children: { business: @business }).find_by(approval_params) || Approval.find_or_create_by!(approval_params)
       end
 
       def approval_params

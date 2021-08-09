@@ -101,6 +101,21 @@ RSpec.describe Child, type: :model do
 
   context 'for nebraska children' do
     let(:child) { create(:necc_child, create_dashboard_case: true) }
+
+    describe '#create_default_schedule' do
+      it 'creates default schedules if no schedules_attributes are passed' do
+        child.reload
+        expect(child.schedules.length).to eq(5)
+        expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('9:00am'))
+        expect(child.schedules.first.weekday).to eq(1)
+      end
+      it "doesn't create default schedules if schedules_attributes are passed" do
+        child = create(:necc_child, schedules_attributes: [attributes_for(:schedule)])
+        expect(child.schedules.length).to eq(1)
+        expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('11:00am'))
+      end
+    end
+
     describe '#nebraska_family_fee' do
       context 'using live algorithms' do
         it 'returns the database value' do
@@ -176,6 +191,7 @@ RSpec.describe Child, type: :model do
       end
     end
   end
+
   context 'approval methods' do
     it 'returns an active approval for a specific date' do
       current_approval = child.approvals.first
@@ -265,7 +281,7 @@ RSpec.describe Child, type: :model do
           approvals_attributes: [
             {
               case_number: approval.case_number,
-              effective_on: Time.current + 3.months,
+              effective_on: approval.effective_on + 15.days,
               expires_on: approval.expires_on,
               copay: 20_000,
               copay_frequency: 'monthly'

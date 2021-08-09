@@ -3,31 +3,34 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
-  let(:logged_in_user) { create(:confirmed_user) }
-  let(:business) { create(:business, :nebraska, user: logged_in_user) }
-  let(:children) { create_list(:necc_child, 3, business: business) }
-  let(:non_owner_child) { create(:necc_child) }
+  let!(:logged_in_user) { create(:confirmed_user) }
+  let!(:business) { create(:business, :nebraska, user: logged_in_user) }
+  let!(:children) { create_list(:necc_child, 3, business: business) }
+  let!(:non_owner_child) { create(:necc_child) }
 
   describe 'POST /api/v1/attendance_batches' do
     include_context 'correct api version header'
 
     before do
       sign_in logged_in_user
+      children.each(&:reload) # triggers changes as a result of the callbacks in the model
+      non_owner_child.reload # triggers changes as a result of the callbacks in the model
     end
 
     context 'when sent with an absence string' do
       context 'with a permitted absence type' do
         let(:valid_absence_batch) do
+          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               }
@@ -67,16 +70,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with a non-permitted absence type on one record' do
         let(:single_invalid_absence_batch) do
+          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               }
@@ -110,16 +114,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with a non-permitted absence type on all records' do
         let(:all_invalid_absence_batch) do
+          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               }
@@ -141,16 +146,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with an absence on a non-scheduled day on one record' do
         let(:single_non_scheduled_absence_batch) do
+          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 15.days, children[0].schedules.first.weekday + 1).to_s,
+                check_in: prior_weekday(effective_date + 15.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
                 absence: 'absence',
                 child_id: children[0].id
               }
@@ -184,16 +190,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with an absence on a non-scheduled day on all records' do
         let(:all_non_scheduled_absence_batch) do
+          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 30.days, children[0].schedules.first.weekday + 1).to_s,
+                check_in: prior_weekday(effective_date + 30.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(children[0].schedules.first.effective_on + 15.days, children[0].schedules.first.weekday + 1).to_s,
+                check_in: prior_weekday(effective_date + 15.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
                 absence: 'absence',
                 child_id: children[0].id
               }

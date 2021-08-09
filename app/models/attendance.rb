@@ -52,14 +52,16 @@ class Attendance < UuidApplicationRecord
   def prevent_creation_of_absence_without_schedule
     return unless absence
 
-    errors.add(:absence, "can't create for a day without a schedule") unless child_schedule
+    errors.add(:absence, "can't create for a day without a schedule") unless schedule_for_weekday
   end
 
   def calculate_from_schedule
-    child_schedule ? child_schedule.end_time.on(check_in.to_date) - child_schedule.start_time.on(check_in.to_date) : 8.hours
+    return 8.hours unless schedule_for_weekday
+
+    schedule_for_weekday.end_time.on(check_in.to_date) - schedule_for_weekday.start_time.on(check_in.to_date)
   end
 
-  def child_schedule
+  def schedule_for_weekday
     child_approval.child.schedules.active_on_date(check_in.to_date).for_weekday(check_in.wday).first
   end
 

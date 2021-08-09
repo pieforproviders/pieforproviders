@@ -3,13 +3,14 @@
 # A child in care at businesses who need subsidy assistance
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
+  after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
   after_save_commit :associate_rate, unless: proc { |child| child.active_previously_changed?(from: true, to: false) }
 
   belongs_to :business
 
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
   has_many :approvals, through: :child_approvals, dependent: :destroy
-  has_many :schedules, dependent: :destroy
+  has_many :schedules, dependent: :delete_all
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
@@ -30,7 +31,7 @@ class Child < UuidApplicationRecord
   validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
   validates :last_active_date, date_param: true, unless: proc { |child| child.last_active_date_before_type_cast.nil? }
 
-  accepts_nested_attributes_for :approvals, :child_approvals
+  accepts_nested_attributes_for :approvals, :child_approvals, :schedules
 
   scope :active, -> { where(active: true) }
   scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
@@ -112,6 +113,19 @@ class Child < UuidApplicationRecord
       Approval.find_or_create_by(case_number: approval.case_number,
                                  effective_on: approval.effective_on,
                                  expires_on: approval.expires_on)
+    end
+  end
+
+  def create_default_schedule
+    # this will run for Mon (1) - Fri (5)
+    5.times do |idx|
+      Schedule.create!(
+        child: self,
+        weekday: idx + 1,
+        start_time: '9:00am',
+        end_time: '5:00pm',
+        effective_on: active_child_approval(Time.current.in_time_zone(timezone)).approval.effective_on
+      )
     end
   end
 
