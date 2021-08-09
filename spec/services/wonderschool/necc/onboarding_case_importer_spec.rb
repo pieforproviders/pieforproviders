@@ -4,16 +4,11 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
-    RSpec.describe OnboardingCsvImporter do
+    RSpec.describe OnboardingCaseImporter do
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
-      let!(:akid) { 'akid' }
-      let!(:secret) { 'secret' }
-      let!(:region) { 'region' }
-      let!(:action) { 'action' }
-      let!(:stubbed_client) { double('AWS Client') }
-      let!(:stubbed_object) { double('S3 Object') }
+      let!(:stubbed_client) { double('AwsClient') }
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
@@ -24,23 +19,17 @@ module Wonderschool
 
       before(:each) do
         travel_to Date.parse('May 20th, 2021') # this lands us in the 'effective' period for all the approvals in the CSV fixture
-        allow(Rails.application.config).to receive(:aws_access_key_id).and_return(akid)
-        allow(Rails.application.config).to receive(:aws_secret_access_key).and_return(secret)
-        allow(Rails.application.config).to receive(:aws_access_key_id).and_return(akid)
-        allow(Rails.application.config).to receive(:aws_region).and_return(region)
-        allow(Aws::S3::Client).to receive(:new) { stubbed_client }
-        allow_any_instance_of(described_class).to receive(:source_bucket).and_return(source_bucket)
-        allow_any_instance_of(described_class).to receive(:archive_bucket).and_return(archive_bucket)
-        allow(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }] })
-        allow(stubbed_client).to receive(:get_object).and_return(stubbed_object)
+        allow(Rails.application.config).to receive(:aws_necc_onboarding_bucket) { source_bucket }
+        allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket) { archive_bucket }
+        allow(AwsClient).to receive(:new) { stubbed_client }
+        allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
       end
 
       describe '#call' do
         context 'with valid data' do
           before(:each) do
-            allow(stubbed_object).to receive(:body).and_return(onboarding_csv)
-            allow(stubbed_client).to receive(:copy_object).and_return({ copy_object_result: {} })
-            allow(stubbed_client).to receive(:delete_object).and_return({})
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
           end
 
           it 'creates case records for every row in the file, idempotently' do
@@ -55,11 +44,6 @@ module Wonderschool
               .from(0).to(3)
               .and change { NebraskaApprovalAmount.count }
               .from(0).to(6)
-            allow(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }] })
-            allow(stubbed_client).to receive(:get_object).and_return(stubbed_object)
-            allow(stubbed_object).to receive(:body).and_return(onboarding_csv)
-            allow(stubbed_client).to receive(:copy_object).and_return({ copy_object_result: {} })
-            allow(stubbed_client).to receive(:delete_object).and_return({})
             expect { described_class.new.call }
               .to not_change(Child, :count)
               .and not_change(Business, :count)
@@ -173,24 +157,26 @@ module Wonderschool
           end
 
           it "continues processing if the user doesn't exist" do
-            allow(stubbed_object).to receive(:body).and_return(onboarding_csv)
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             first_user.destroy!
             described_class.new.call
-            expect(stubbed_client).not_to receive(:copy_object)
+            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
+            expect(Child.find_by(full_name: 'Becky Falzone')).to be_present
             expect(stubbed_client).not_to receive(:delete_object)
           end
 
           it 'continues processing if the record is invalid or missing a required field' do
-            allow(stubbed_object).to receive(:body).and_return(invalid_csv)
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             described_class.new.call
-            expect(stubbed_client).not_to receive(:copy_object)
-            expect(stubbed_client).not_to receive(:delete_object)
-            allow(stubbed_client).to receive(:list_objects_v2).with({ bucket: source_bucket }).and_return({ contents: [{ key: file_name }] })
-            allow(stubbed_client).to receive(:get_object).and_return(stubbed_object)
-            allow(stubbed_object).to receive(:body).and_return(missing_field_csv)
+            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
+            expect(Child.find_by(full_name: 'Becky Falzone')).to be_nil
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { missing_field_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             described_class.new.call
-            expect(stubbed_client).not_to receive(:copy_object)
-            expect(stubbed_client).not_to receive(:delete_object)
+            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
+            expect(Child.find_by(full_name: 'Becky Falzone')).to be_nil
           end
         end
       end

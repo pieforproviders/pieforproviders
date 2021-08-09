@@ -1,21 +1,33 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module Wonderschool
   module Necc
     # Wonderschool NECC Onboarding CSV Importer
-    class OnboardingCsvImporter < S3CsvImporter
+    class OnboardingCaseImporter
+      include AppsignalReporting
+      include CsvTypecasting
+
+      def initialize
+        @client = AwsClient.new
+        @source_bucket = Rails.application.config.aws_necc_onboarding_bucket
+        @archive_bucket = Rails.application.config.aws_necc_onboarding_archive_bucket
+      end
+
+      def call
+        process_onboarding_cases
+      end
+
       private
 
-      def action
-        'onboarding csv importer'
-      end
-
-      def source_bucket
-        Rails.application.config.aws_necc_onboarding_bucket
-      end
-
-      def archive_bucket
-        Rails.application.config.aws_necc_onboarding_archive_bucket
+      def process_onboarding_cases
+        file_names = @client.list_file_names(@source_bucket)
+        contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
+        contents.each do |body|
+          parsed_csv = CsvParser.new(body).call
+          parsed_csv.each { |row| process_row(row) }
+        end
+        file_names.each { |file_name| @client.archive_file(@source_bucket, @archive_bucket, file_name) }
       end
 
       def process_row(row)
@@ -25,7 +37,7 @@ module Wonderschool
         @child_approval.update!(child_approval_params)
         approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       rescue StandardError => e
-        send_error(e, @row['Case number']) # returns false
+        send_appsignal_error('onboarding-case-importer', e.message, @row['Case number'])
       end
 
       def build_case
@@ -35,6 +47,10 @@ module Wonderschool
         @child.approvals.include?(approval) || @child.approvals << approval # idempotency - add only if it's not already associated
         @child.save!
         @child_approval = ChildApproval.find_by(child: @child, approval: approval)
+      end
+
+      def create_approval_amounts
+        approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       end
 
       def existing_or_new_approval
@@ -126,3 +142,4 @@ module Wonderschool
     end
   end
 end
+# rubocop:enable Metrics/ClassLength
