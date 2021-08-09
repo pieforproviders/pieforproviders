@@ -234,6 +234,7 @@
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
+  "dateError": "Please select a date",
   
   "actions": "Actions",
   "markInactive": "Mark inactive",

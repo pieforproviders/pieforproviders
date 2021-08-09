@@ -26,6 +26,7 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
+  const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
     data.reduce((acc, cv) => {
       return {
@@ -43,6 +44,14 @@ export function Attendance() {
   )
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
+  const latestError = useRef(errors)
+  const removeEmptyString = obj =>
+    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
+
+  const columnErrorIsPresent = columnIndex =>
+    !!Object.values(latestAttendanceData.current).find(
+      row => Object.keys(row[columnIndex]).length > 0
+    ) && latestColumnDates.current[columnIndex] === ''
 
   const updateAttendanceData = (updates, record, i) => {
     const newArr = latestAttendanceData.current[record?.id].map(
@@ -56,8 +65,8 @@ export function Attendance() {
             (Object.keys(updates).includes('absence') &&
               (Object.keys(value).includes('check_in') ||
                 Object.keys(value).includes('check_out')))
-            ? updates
-            : { ...value, ...updates }
+            ? removeEmptyString(updates)
+            : removeEmptyString({ ...value, ...updates })
           : value
       }
     )
@@ -65,14 +74,28 @@ export function Attendance() {
       ...attendanceData,
       [record.id]: newArr
     }
+    const errorIsPresent = columnErrorIsPresent(i)
+
+    if (errorIsPresent !== latestError.current) {
+      latestError.current = errorIsPresent
+      setErrors(errorIsPresent)
+      setColumns(generateColumns())
+    }
     setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
   }
 
-  const handleDateChange = (index, ds) => {
+  const handleDateChange = (index, dateString) => {
     const updatedDates = latestColumnDates.current.map((value, i) =>
-      index === i ? ds : value
+      index === i ? dateString : value
     )
     latestColumnDates.current = updatedDates
+    const errorIsPresent = columnErrorIsPresent(index)
+
+    if (errorIsPresent !== latestError.current) {
+      latestError.current = errorIsPresent
+      setErrors(errorIsPresent)
+      setColumns(generateColumns())
+    }
     setColumnDates(updatedDates)
   }
 
@@ -84,15 +107,22 @@ export function Attendance() {
         key: 'date' + i,
         width: 398,
         // eslint-disable-next-line react/display-name
-        title: () => (
-          <DatePicker
-            disabledDate={c => c && c.valueOf() > Date.now()}
-            onChange={(_, ds) => handleDateChange(i, ds)}
-            bordered={false}
-            placeholder={t('selectDate')}
-            style={{ width: '8rem ', color: '#004A6E' }}
-          />
-        ),
+        title: () => {
+          return (
+            <div className="flex items-center">
+              <DatePicker
+                disabledDate={c => c && c.valueOf() > Date.now()}
+                onChange={(_, ds) => handleDateChange(i, ds)}
+                bordered={false}
+                placeholder={t('selectDate')}
+                style={{ width: '8rem ', color: '#004A6E' }}
+              />
+              {columnErrorIsPresent(i) ? (
+                <div className="text-red1 font-semibold">{t('dateError')}</div>
+              ) : null}
+            </div>
+          )
+        },
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
           return (
@@ -268,6 +298,7 @@ export function Attendance() {
           classes="mt-3 w-40"
           text={t('save')}
           onClick={handleSave}
+          disabled={latestError.current}
         />
       </div>
       <Modal
