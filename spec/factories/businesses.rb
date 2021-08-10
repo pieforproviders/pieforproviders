@@ -48,6 +48,14 @@ FactoryBot.define do
     trait :not_rated do
       qris_rating { 'not_rated' }
     end
+
+    trait :step_five do
+      qris_rating { 'step_five' }
+    end
+
+    trait :not_rated do
+      qris_rating { 'not_rated' }
+    end
   end
 end
 
