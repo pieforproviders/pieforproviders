@@ -41,6 +41,12 @@ class Child < UuidApplicationRecord
   delegate :state, to: :user
   delegate :timezone, to: :user
 
+  def age(date = Time.current)
+    years_since_birth = date.year - date_of_birth.year
+    birthday_passed = date_of_birth.month <= date.month || date_of_birth.day <= date.day
+    birthday_passed ? years_since_birth : years_since_birth - 1
+  end
+
   def active_approval(date)
     approvals.active_on_date(date).first
   end
@@ -77,11 +83,9 @@ class Child < UuidApplicationRecord
   def nebraska_family_fee(filter_date)
     # "feature flag" for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      format('%.2f',
-             active_nebraska_approval_amount(filter_date)&.family_fee)
+      format('%.2f', active_nebraska_approval_amount(filter_date)&.family_fee)
     else
-      format('%.2f',
-             temporary_nebraska_dashboard_case&.family_fee.to_f)
+      format('%.2f', temporary_nebraska_dashboard_case&.family_fee.to_f)
     end
   end
 
