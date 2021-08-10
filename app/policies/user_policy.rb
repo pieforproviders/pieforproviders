@@ -6,8 +6,12 @@ class UserPolicy < ApplicationPolicy
     admin?
   end
 
+  def create?
+    true
+  end
+
   # Scope defining which users a user has access to
-  class Scope < Scope
+  class Scope < ApplicationScope
     def resolve
       if user.admin?
         scope.all

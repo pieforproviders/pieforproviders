@@ -6,7 +6,7 @@ FactoryBot.define do
     effective_on { (Time.current - 6.months).to_date }
     end_time { '4:00pm' }
     start_time { '11:00am' }
-    weekday { rand(1..7) }
+    weekday { rand(0..6) }
 
     trait :expires do
       expires_on { effective_on + 1.year }
@@ -31,7 +31,7 @@ end
 # Indexes
 #
 #  index_schedules_on_child_id  (child_id)
-#  unique_child_schedules       (effective_on,child_id) UNIQUE
+#  unique_child_schedules       (effective_on,child_id,weekday) UNIQUE
 #
 # Foreign Keys
 #

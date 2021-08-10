@@ -125,12 +125,11 @@ puts_records_in_db(Business)
 def create_case(full_name,
                 business: @business,
                 case_number: Faker::Number.number(digits: 10),
-                effective_on: Faker::Date.between(from: 8.months.ago, to: Time.zone.today),
+                effective_on: Faker::Date.between(from: 11.months.ago, to: 2.months.ago),
                 date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
                 copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
                 copay_frequency: nil,
                 add_expired_approval: false)
-  expires_on = effective_on + 1.year - 1.day
 
   copay_frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
 
@@ -140,7 +139,7 @@ def create_case(full_name,
       copay_cents: copay,
       copay_frequency: copay_frequency,
       effective_on: effective_on,
-      expires_on: expires_on
+      expires_on: effective_on + 1.year - 1.day
     )
   ]
 
@@ -176,6 +175,28 @@ def create_case(full_name,
     total_absences = rand(0..10).round
     total_days = rand(0..25).round
     total_hours = rand(0.0..10.0).round
+
+    child.approvals.each do |approval|
+      special_needs_rate = Faker::Boolean.boolean
+      ChildApproval.find_by(child: child, approval: approval).update!(
+        full_days: rand(0..30),
+        hours: rand(0..120),
+        special_needs_rate: special_needs_rate,
+        special_needs_daily_rate: special_needs_rate ? rand(0.0..20).round(2) : nil,
+        special_needs_hourly_rate: special_needs_rate ? rand(0.0..10).round(2) : nil,
+        enrolled_in_school: Faker::Boolean.boolean,
+        authorized_weekly_hours: rand(0..45)
+      )
+    end
+    
+    start_time = Tod::TimeOfDay.new(rand(0..10), ((rand(0..59) / 15.0).floor * 15))
+
+    Schedule.find_or_initialize_by(child: child).update!(
+      effective_on: Faker::Date.between(from: 8.months.ago, to: 4.months.ago),
+      end_time: start_time + rand(start_time.hour..23).hours,
+      start_time: start_time,
+      weekday: rand(0..6)
+    )
 
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: %w[on_track exceeded_limit at_risk].sample,

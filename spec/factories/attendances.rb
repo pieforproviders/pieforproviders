@@ -9,7 +9,16 @@ FactoryBot.define do
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
-    absence { Random.rand(10) > 7 ? nil : Attendance::ABSENCE_TYPES.sample }
+    factory :nebraska_absence do
+      child_approval { create(:child_approval, child: create(:necc_child)) }
+      check_in do
+        child_approval.child.reload
+        date = child_approval.child.schedules.first.effective_on + 30.days
+        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      end
+      check_out { nil }
+      absence { Attendance::ABSENCE_TYPES.sample }
+    end
 
     factory :illinois_part_day_attendance do
       check_in do
@@ -37,6 +46,27 @@ FactoryBot.define do
         Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
       end
       check_out { check_in + 18.hours + 11.minutes }
+    end
+
+    factory :nebraska_hourly_attendance do
+      check_in do
+        Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
+      end
+      check_out { check_in + 4.hours + 9.minutes }
+    end
+
+    factory :nebraska_full_day_attendance do
+      check_in do
+        Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
+      end
+      check_out { check_in + 7.hours + 19.minutes }
+    end
+
+    factory :nebraska_full_day_plus_hourly_attendance do
+      check_in do
+        Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
+      end
+      check_out { check_in + 14.hours + 42.minutes }
     end
   end
 end

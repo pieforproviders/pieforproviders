@@ -21,13 +21,15 @@ class Attendance < UuidApplicationRecord
 
   validates :absence, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
 
+  validate :prevent_creation_of_absence_without_schedule
+
   scope :for_month, lambda { |month = nil|
     month ||= Time.current
     where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
   }
   scope :for_week, lambda { |week = nil|
     week ||= Time.current
-    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week, week.at_end_of_week)
+    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:saturday))
   }
 
   scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }
@@ -47,11 +49,19 @@ class Attendance < UuidApplicationRecord
                               end
   end
 
-  def calculate_from_schedule
-    child_schedule ? child_schedule.end_time.on(check_in.to_date) - child_schedule.start_time.on(check_in.to_date) : 8.hours
+  def prevent_creation_of_absence_without_schedule
+    return unless absence
+
+    errors.add(:absence, "can't create for a day without a schedule") unless schedule_for_weekday
   end
 
-  def child_schedule
+  def calculate_from_schedule
+    return 8.hours unless schedule_for_weekday
+
+    schedule_for_weekday.end_time.on(check_in.to_date) - schedule_for_weekday.start_time.on(check_in.to_date)
+  end
+
+  def schedule_for_weekday
     child_approval.child.schedules.active_on_date(check_in.to_date).for_weekday(check_in.wday).first
   end
 

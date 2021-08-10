@@ -1,13 +1,16 @@
 {
   "allOf": [
-    {"$ref": "user.json"},
+    {
+      "$ref": "user.json"
+    },
     {
       "properties": {
         "businesses": {
           "type": "array",
-          "items": { "$ref": "business.json" }
+          "items": {
+            "$ref": "business.json"
+          }
         },
-        "required": ["businesses"]
       }
     }
   ]

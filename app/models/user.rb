@@ -36,6 +36,7 @@ class User < UuidApplicationRecord
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
   end
 
+  # don't return the user's admin status in the API JSON
   def as_json(_options = {})
     super(except: [:admin])
   end
@@ -46,10 +47,8 @@ class User < UuidApplicationRecord
 
   def latest_attendance_in_month(filter_date)
     filter_date ||= Time.current
-    # TODO: Fix this query using joins to eager load the child approvals and businesses
-    Attendance.where('check_in BETWEEN ? AND ?', filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-              .where(child_approval: ChildApproval.where(child: Child.where(business: Business.where(user: self))))
-              .max_by(&:check_in)&.check_in
+    attendances.where('check_in BETWEEN ? AND ?', filter_date.in_time_zone(timezone).at_beginning_of_month,
+                      filter_date.in_time_zone(timezone).at_end_of_month).max_by(&:check_in)&.check_in
   end
 
   def first_approval_effective_date

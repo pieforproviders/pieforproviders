@@ -11,6 +11,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
   describe '#call' do
     context 'the child has an attendance with no checkout' do
       it 'determines hours attended from the schedule' do
+        child.reload
         child.schedules.destroy_all
         child.schedules << create(:schedule,
                                   effective_on: first_attendance_date - 3.months,
@@ -21,6 +22,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(5.5)
       end
       it 'defaults to 8 hours, which will not count as hourly units, if they have no schedule' do
+        child.reload
         child.schedules.destroy_all
         create(:attendance, child_approval: child_approval, check_in: first_attendance_date.to_datetime + 8.hours, check_out: nil)
         expect(described_class.new(child, first_attendance_date).call).to eq(0)
@@ -48,6 +50,14 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         check_out = check_in + 13.hours + 40.minutes
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out)
         expect(described_class.new(child, first_attendance_date).call).to eq(3.75)
+      end
+    end
+    context 'the child has an attendance more than 18 hours' do
+      it 'counts as 8 hourly units' do
+        check_in = first_attendance_date.to_datetime + 8.hours
+        check_out = check_in + 18.hours + 27.minutes
+        create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out)
+        expect(described_class.new(child, first_attendance_date).call).to eq(8.0)
       end
     end
     context 'the child has multiple attendances' do

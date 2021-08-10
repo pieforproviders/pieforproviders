@@ -9,7 +9,6 @@
 * [ ] Did you run Google Lighthouse and/or WebAIM (Wave) on UI components in your PR?
 * [ ] Does your PR contain any required translations?
 * [ ] Did you run `bundle exec rspec` from the root?
-* [ ] Did you run `bundle exec rails rswag` from the root?
 * [ ] Did you run `bundle exec rubocop` from the root?
 * [ ] Did you run `yarn lint` in `/client`?
 * [ ] Did you run `yarn test` in `/client`?

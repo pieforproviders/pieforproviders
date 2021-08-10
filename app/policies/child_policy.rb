@@ -3,7 +3,7 @@
 # Authorization policies for children
 class ChildPolicy < ApplicationPolicy
   # Scope defining which children a user has access to
-  class Scope < Scope
+  class Scope < ApplicationScope
     def resolve
       if user.admin?
         scope.all

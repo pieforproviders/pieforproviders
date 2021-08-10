@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_30_235146) do
+ActiveRecord::Schema.define(version: 2021_08_03_170531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -74,10 +74,12 @@ ActiveRecord::Schema.define(version: 2021_06_30_235146) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.uuid "illinois_rate_id"
+    t.integer "authorized_weekly_hours"
+    t.string "rate_type"
+    t.uuid "rate_id"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
-    t.index ["illinois_rate_id"], name: "index_child_approvals_on_illinois_rate_id"
+    t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
   create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -140,7 +142,7 @@ ActiveRecord::Schema.define(version: 2021_06_30_235146) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-06-12", null: false
+    t.date "effective_on", default: "2021-07-27", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
@@ -168,7 +170,7 @@ ActiveRecord::Schema.define(version: 2021_06_30_235146) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_id"], name: "index_schedules_on_child_id"
-    t.index ["effective_on", "child_id"], name: "unique_child_schedules", unique: true
+    t.index ["effective_on", "child_id", "weekday"], name: "unique_child_schedules", unique: true
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -226,7 +228,6 @@ ActiveRecord::Schema.define(version: 2021_06_30_235146) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "child_approvals", "illinois_rates"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"

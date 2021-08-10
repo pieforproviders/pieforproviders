@@ -7,7 +7,6 @@ task prep: :environment do
     bundle exec rubocop -a && \
     bundle exec rspec && \
     bundle exec rails db:migrate:with_data && \
-    COVERAGE=false bundle exec rails rswag && \
     yarn cy:ci"
   end
 end

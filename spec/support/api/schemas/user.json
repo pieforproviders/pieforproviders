@@ -10,21 +10,11 @@
       "type": "string"
     },
     "state": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     }
   },
-  "required": [
-    "id",
-    "greeting_name",
-    "language",
-    "state"
-  ],
   "type": "object"
 }

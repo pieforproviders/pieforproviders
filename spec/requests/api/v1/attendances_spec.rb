@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-require 'swagger_helper'
+require 'rails_helper'
 
 RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:business) { create(:business, user: logged_in_user) }
   let!(:child) { create(:child, business: business) }
   let!(:this_week_attendances) do
-    create_list(:attendance, 3, child_approval: child.child_approvals.first, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week, to: Time.current))
+    create_list(:attendance, 3, child_approval: child.child_approvals.first, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current))
   end
   let!(:past_attendances) do
     create_list(:attendance, 2, child_approval: child.child_approvals.first,
-                                check_in: Faker::Time.between(from: (Time.current - 2.weeks).at_beginning_of_week, to: (Time.current - 2.weeks).at_end_of_week))
+                                check_in: Faker::Time.between(from: (Time.current - 2.weeks).at_beginning_of_week(:sunday), to: (Time.current - 2.weeks).at_end_of_week(:saturday)))
   end
-  let!(:extra_attendances) { create_list(:attendance, 3, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week, to: Time.current)) }
+  let!(:extra_attendances) { create_list(:attendance, 3, check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current)) }
 
   describe 'GET /api/v1/attendances' do
     include_context 'correct api version header'
@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
     end
 
     context 'when sent with a filter date' do
-      let(:params) { { filter_date: Time.zone.today - 2.weeks } }
+      let(:params) { { filter_date: (Time.zone.today - 2.weeks).at_end_of_week(:saturday) } }
       it 'displays the attendances' do
         get '/api/v1/attendances', params: params, headers: headers
         parsed_response = JSON.parse(response.body)

@@ -8,18 +8,21 @@ unless ENV['COVERAGE'] == 'false'
     add_filter '/config/'
     add_filter '/vendor/'
     add_filter '/test/'
-    add_filter '/lib/'
     add_filter '/db/'
     add_filter '/log/'
     add_filter '/tmp/'
 
+    add_group 'Blueprints', 'app/blueprints'
     add_group 'Channels', 'app/channels'
     add_group 'Constraints', 'app/constraints'
     add_group 'Controllers', ['app/controllers', 'app/controllers/api/v1']
     add_group 'Jobs', 'app/jobs'
+    add_group 'Lib', 'app/lib'
     add_group 'Models', ['app/models', 'app/models/concerns']
     add_group 'Mailers', 'app/mailers'
+    add_group 'Policies', 'app/policies'
     add_group 'Services', 'app/services'
+    add_group 'Validators', 'app/validators'
     add_group 'Views', 'app/views'
   end
 end
@@ -29,6 +32,7 @@ require 'spec_helper'
 ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../config/environment', __dir__)
+Rails.application.eager_load!
 
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
@@ -70,11 +74,15 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-RSpec.configure do |config|
-  # add FactoryBot methods
-  config.include FactoryBot::Syntax::Methods
+# Add ActiveJob Test helpers and configure
+ActiveJob::Base.queue_adapter = :test
 
-  # add Devise helpers
+RSpec.configure do |config|
+  # add helper methods
+  config.include Helpers
+  config.extend Helpers
+  config.include FactoryBot::Syntax::Methods
+  config.include ActiveJob::TestHelper
   config.include Devise::Test::IntegrationHelpers, type: :request
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

@@ -13,16 +13,14 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 1.11'
+gem 'good_job', '~> 1.12'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 5.3'
+gem 'puma', '~> 5.4'
 gem 'pundit', '~> 2.1'
 gem 'rails', '~> 6.1.4'
-gem 'rswag-api', '>= 2.3.0'
-gem 'rswag-ui', '>= 2.3.0'
 gem 'tod'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -39,13 +37,12 @@ gem 'tod'
 group :development, :test do
   gem 'brakeman'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'cypress-on-rails', '~> 1.10'
+  gem 'cypress-on-rails', '~> 1.11'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
   gem 'pry-remote'
   gem 'rspec-rails'
-  gem 'rswag-specs', '>= 2.3.0'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
 end

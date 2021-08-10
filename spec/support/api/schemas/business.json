@@ -1,13 +1,9 @@
 {
   "properties": {
     "accredited": {
-      "anyOf": [
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "boolean",
+        "null"
       ]
     },
     "active": {
@@ -31,13 +27,9 @@
       "type": "string"
     },
     "qris_rating": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
+      "type": [
+        "string",
+        "null"
       ]
     },
     "state": {
@@ -56,16 +48,5 @@
       "format": "uuid"
     }
   },
-  "required": [
-    "county",
-    "created_at",
-    "id",
-    "license_type",
-    "name",
-    "state",
-    "updated_at",
-    "user_id",
-    "zipcode"
-  ],
   "type": "object"
 }

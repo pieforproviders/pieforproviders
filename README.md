@@ -1,4 +1,7 @@
 # README
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
 
@@ -45,10 +48,8 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
     - DatabaseCleaner
     - FactoryBot
     - Faker
-    - RSwag
   - v1 API Routes returning JSON
   - Postgres DB
-  - API Documentation with swagger
 - Frontend: React
   - ESLint/Prettier
   - Jest/React Testing Library
@@ -73,7 +74,6 @@ Docker should be installed on your local machine.
 
 ### URLs
 * App: http://localhost:3000
-* API: http://localhost:3000/api-docs
 * MailCatcher: http://localhost:1080
 
 ### Database Parameters
@@ -140,10 +140,6 @@ You have several convenient options for running the app locally.
     - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
-
-Visit `localhost:3001/api-docs` to see Swagger UI for API endpoints 📑  
-  
-> ***NOTE:*** Swagger UI is currently not configured to use authentication, so any authenticated endpoints will not be accessible at this route, you'll get unauthorized errors.
 </details>
 
 ---
@@ -168,7 +164,6 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 ### API
 
 - `bundle exec rspec` or `bundle exec guard` to watch
-- When tests pass and you're ready for a PR, please run `rails rswag` to update the API documentation
 
 ### Frontend
 
@@ -231,3 +226,52 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
 
 </details>
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/arku"><img src="https://avatars.githubusercontent.com/u/7039523?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Arun Kumar Mohan</b></sub></a><br /><a href="#infra-arku" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=arku" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/nemiasalc56"><img src="https://avatars.githubusercontent.com/u/57147732?v=4?s=100" width="100px;" alt=""/><br /><sub><b>nemiasalc56</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=nemiasalc56" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jontrainor"><img src="https://avatars.githubusercontent.com/u/1022615?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jon Trainor</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jontrainor" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/rahman-aj"><img src="https://avatars.githubusercontent.com/u/59799545?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Rahman</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=rahman-aj" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/jessehall3"><img src="https://avatars.githubusercontent.com/u/5696388?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jesse</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jessehall3" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/nora-harris/"><img src="https://avatars.githubusercontent.com/u/31748798?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nora Harris</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=noragharris" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=noragharris" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/sassygrody"><img src="https://avatars.githubusercontent.com/u/6587024?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sasha</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=sassygrody" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/cyranix"><img src="https://avatars.githubusercontent.com/u/161077?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andrew Harrison</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=cyranix" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/weedySeaDragon"><img src="https://avatars.githubusercontent.com/u/673794?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ashley Engelund</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=weedySeaDragon" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/carolinekinnen"><img src="https://avatars.githubusercontent.com/u/41166358?v=4?s=100" width="100px;" alt=""/><br /><sub><b>carolinekinnen</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=carolinekinnen" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Jess-White"><img src="https://avatars.githubusercontent.com/u/58121322?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jess-White</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Jess-White" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://huntermarcks.net"><img src="https://avatars.githubusercontent.com/u/6887982?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Hunter Marcks</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=hmarcks" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/rebeldroid12"><img src="https://avatars.githubusercontent.com/u/5873894?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Loren</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeldroid12" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeldroid12" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/nneka-nu"><img src="https://avatars.githubusercontent.com/u/13953987?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nneka Udoh</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=nneka-nu" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=nneka-nu" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/wittejm"><img src="https://avatars.githubusercontent.com/u/2104990?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jordan Witte</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=wittejm" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/cjhaddad"><img src="https://avatars.githubusercontent.com/u/4565578?v=4?s=100" width="100px;" alt=""/><br /><sub><b>cjhaddad</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=cjhaddad" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://www.pieforproviders.com"><img src="https://avatars.githubusercontent.com/u/26717304?v=4?s=100" width="100px;" alt=""/><br /><sub><b>csprayregen</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=csprayregen" title="Documentation">📖</a> <a href="#business-csprayregen" title="Business development">💼</a> <a href="#ideas-csprayregen" title="Ideas, Planning, & Feedback">🤔</a> <a href="#projectManagement-csprayregen" title="Project Management">📆</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Acsprayregen" title="Reviewed Pull Requests">👀</a> <a href="#translation-csprayregen" title="Translation">🌍</a></td>
+    <td align="center"><a href="http://www.katelovescode.com"><img src="https://avatars.githubusercontent.com/u/8364647?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kate Donaldson</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=katelovescode" title="Documentation">📖</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=katelovescode" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=katelovescode" title="Code">💻</a> <a href="#projectManagement-katelovescode" title="Project Management">📆</a> <a href="#ideas-katelovescode" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Akatelovescode" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="https://github.com/rebeccakarasiktw"><img src="https://avatars.githubusercontent.com/u/26929739?v=4?s=100" width="100px;" alt=""/><br /><sub><b>rebeccakarasiktw</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=rebeccakarasiktw" title="Documentation">📖</a> <a href="#ideas-rebeccakarasiktw" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-rebeccakarasiktw" title="User Testing">📓</a> <a href="#design-rebeccakarasiktw" title="Design">🎨</a> <a href="#translation-rebeccakarasiktw" title="Translation">🌍</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Arebeccakarasiktw" title="Reviewed Pull Requests">👀</a> <a href="#projectManagement-rebeccakarasiktw" title="Project Management">📆</a> <a href="#content-rebeccakarasiktw" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/JonErvin"><img src="https://avatars.githubusercontent.com/u/58059331?v=4?s=100" width="100px;" alt=""/><br /><sub><b>JonErvin</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=JonErvin" title="Documentation">📖</a> <a href="#data-JonErvin" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AJonErvin" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=JonErvin" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/joseluisrangel-dataheim"><img src="https://avatars.githubusercontent.com/u/60363977?v=4?s=100" width="100px;" alt=""/><br /><sub><b>joseluisrangel-dataheim</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=joseluisrangel-dataheim" title="Documentation">📖</a> <a href="#data-joseluisrangel-dataheim" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Ajoseluisrangel-dataheim" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=joseluisrangel-dataheim" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/JTBassett"><img src="https://avatars.githubusercontent.com/u/44791973?v=4?s=100" width="100px;" alt=""/><br /><sub><b>J.T. Bassett</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Documentation">📖</a> <a href="#data-JTBassett" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AJTBassett" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/jacqzwy"><img src="https://avatars.githubusercontent.com/u/25641018?v=4?s=100" width="100px;" alt=""/><br /><sub><b>jacqzwy</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Documentation">📖</a> <a href="#data-jacqzwy" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Ajacqzwy" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/abbie"><img src="https://avatars.githubusercontent.com/u/7609014?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Abbie</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Documentation">📖</a> <a href="#data-Abbie" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AAbbie" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Code">💻</a> <a href="#design-Abbie" title="Design">🎨</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

@@ -30,7 +30,7 @@ end
 #  attendance_threshold :decimal(, )
 #  bronze_percentage    :decimal(, )
 #  county               :string           default(" "), not null
-#  effective_on         :date             default(Sat, 12 Jun 2021), not null
+#  effective_on         :date             default(Tue, 27 Jul 2021), not null
 #  expires_on           :date
 #  full_day_rate        :decimal(, )
 #  gold_percentage      :decimal(, )
