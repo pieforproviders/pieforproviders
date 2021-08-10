@@ -93,6 +93,8 @@ RSpec.describe ChildBlueprint do
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('2')
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
                                                         filter_date: attendance_date))['hours_attended']).to eq("18.6 of #{child_approval.authorized_weekly_hours}")
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['earned_revenue'])
+          .to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (2 * 25.15 * (1.05**1))) - family_fee))
       end
     end
   end
