@@ -78,6 +78,7 @@ RSpec.describe UserBlueprint do
         travel_to Time.now.in_time_zone(user.timezone).at_end_of_day
         blueprint = UserBlueprint.render(user, view: :nebraska_dashboard)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.now.in_time_zone(user.timezone).strftime('%m/%d/%Y'))
+        travel_back
       end
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
@@ -94,6 +95,7 @@ RSpec.describe UserBlueprint do
         travel_to Time.now.in_time_zone(user.timezone).at_end_of_day
         blueprint = UserBlueprint.render(user, view: :illinois_dashboard)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.now.in_time_zone(user.timezone).strftime('%m/%d/%Y'))
+        travel_back
       end
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)

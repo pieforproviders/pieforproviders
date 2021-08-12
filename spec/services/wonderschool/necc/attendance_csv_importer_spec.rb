@@ -17,23 +17,24 @@ module Wonderschool
 
       let!(:business1) { create(:business, name: 'Test Daycare') }
       let!(:business2) { create(:business, name: 'Fake Daycare') }
+      let!(:approvals) { create_list(:approval, 3, effective_on: Date.parse('November 28, 2020'), expires_on: nil, create_children: false) }
       let!(:first_child) do
         create(:necc_child,
                wonderschool_id: '1234',
                business: business1,
-               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), expires_on: nil, create_children: false)])
+               approvals: [approvals[0]])
       end
       let!(:second_child) do
         create(:necc_child,
                wonderschool_id: '5678',
                business: business2,
-               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), expires_on: nil, create_children: false)])
+               approvals: [approvals[1]])
       end
       let!(:third_child) do
         create(:necc_child,
                wonderschool_id: '5677',
                business: business2,
-               approvals: [create(:approval, effective_on: Date.parse('November 28, 2020'), expires_on: nil, create_children: false)])
+               approvals: [approvals[2]])
       end
 
       before(:each) do

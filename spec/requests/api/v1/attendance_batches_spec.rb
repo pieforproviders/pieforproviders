@@ -260,6 +260,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         first_parsed_response_object, second_parsed_response_object = parsed_response['attendances']
         first_input_object, second_input_object = valid_batch[:attendance_batch]
 
+        # TODO: this seemed flaky but I can't reproduce right now?
+        # binding.pry if [first_parsed_response_object, second_parsed_response_object, first_input_object, second_input_object].map(&:nil?).any?
+
         expect(DateTime.parse(first_parsed_response_object['check_in']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_in]))
