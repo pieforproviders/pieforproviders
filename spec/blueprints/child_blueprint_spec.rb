@@ -115,8 +115,7 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['hours']).to eq('6.25')
         expect(parsed_body['full_days']).to eq('1')
         expect(parsed_body['hours_attended']).to eq("12.3 of #{child_approval.authorized_weekly_hours}")
-        expect(parsed_body['earned_revenue'])
-          .to eq(format('%.2f', 0.0))
+        expect(parsed_body['earned_revenue']).to eq(format('%.2f', 0.0))
 
         create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
                             check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
