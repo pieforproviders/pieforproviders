@@ -85,11 +85,11 @@ RSpec.describe ChildBlueprint do
         child.active_nebraska_approval_amount(attendance_date).update!(family_fee: '80.00')
       end
       let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
-      let(:earned_revenue) { ((6.25 * 5.15 * 1.05) + (2 * 25.15 * 1.05)) - family_fee }
+      let(:earned_revenue) { ((6.25 * 5.15 * (1.05**1)) + (2 * 25.15 * (1.05**1))) - family_fee }
       let(:estimated_revenue) do
         # the child will by default have an 8-hour schedule Mon-Fri, all full-day attendances
         # after Aug 8th there are 4 Mon, 4 Tue, 3 Wed, 3 Thu, and 3 Fri, 18 more scheduled days
-        earned_revenue + (17 * 25.15 * 1.05)
+        earned_revenue + (17 * 25.15 * (1.05**1))
       end
       it 'includes the child name and all live attendance data' do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
