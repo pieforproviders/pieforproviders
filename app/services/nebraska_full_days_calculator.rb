@@ -11,19 +11,19 @@ class NebraskaFullDaysCalculator
     calculate_full_days
   end
 
-  private
-
-  def calculate_full_days
-    @child.attendances.for_month(@filter_date).reduce(0) do |sum, attendance|
-      sum + calculate_full_days_based_on_duration(attendance.total_time_in_care)
-    end
-  end
-
   def calculate_full_days_based_on_duration(duration)
     if duration > (5.hours + 45.minutes)
       1
     else
       0
+    end
+  end
+
+  private
+
+  def calculate_full_days
+    @child.attendances.non_absences.for_month(@filter_date).reduce(0) do |sum, attendance|
+      sum + calculate_full_days_based_on_duration(attendance.total_time_in_care)
     end
   end
 end

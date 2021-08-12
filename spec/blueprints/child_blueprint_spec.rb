@@ -30,9 +30,15 @@ RSpec.describe ChildBlueprint do
     let!(:child) { create(:necc_child) }
     let!(:child_approval) { child.child_approvals.first }
     let!(:attendance_date) { (child_approval.approval.effective_on.at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
-    let!(:temporary_nebraska_dashboard_case) { create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12, family_fee: 120.50) }
+    let!(:temporary_nebraska_dashboard_case) do
+      create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12, family_fee: 120.50, earned_revenue: 175.60)
+    end
 
     before do
+      child.business.update!(accredited: true, qris_rating: 'step_four')
+      child_approval.update!(special_needs_rate: false)
+      create(:nebraska_rate, :accredited, :hourly, :ldds, amount: 5.15)
+      create(:nebraska_rate, :accredited, :daily, :ldds, amount: 25.15)
       create(:attendance,
              child_approval: child_approval,
              check_in: attendance_date.to_datetime + 3.hours,
@@ -68,14 +74,16 @@ RSpec.describe ChildBlueprint do
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('3')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours_attended']).to eq('12.0')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['family_fee']).to eq('120.50')
+      expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['earned_revenue']).to eq('175.60')
     end
     context 'when using live algorithms' do
-      it 'includes the child name and all cases' do
+      before { child.active_nebraska_approval_amount(attendance_date).update!(family_fee: '80.00') }
+      let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
+      it 'includes the child name and all live attendance data' do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
 
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('3.0')
-        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['family_fee'])
-          .to eq(format('%.2f', child.active_nebraska_approval_amount(attendance_date).family_fee))
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['family_fee']).to eq(format('%.2f', family_fee))
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
                                                         filter_date: attendance_date))['hours_attended']).to eq("9.0 of #{child_approval.authorized_weekly_hours}")
 
@@ -86,6 +94,8 @@ RSpec.describe ChildBlueprint do
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['full_days']).to eq('1')
         expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard,
                                                         filter_date: attendance_date))['hours_attended']).to eq("12.3 of #{child_approval.authorized_weekly_hours}")
+        expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['earned_revenue'])
+          .to eq(format('%.2f', 0.0))
 
         create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 2.days + 3.hours,
                             check_out: attendance_date.to_datetime + 2.days + 9.hours + 18.minutes)

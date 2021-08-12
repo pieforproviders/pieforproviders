@@ -60,12 +60,12 @@ module Wonderschool
 
           it 'creates attendance records for the correct child with the correct data' do
             described_class.new.call
-            expect(first_child.attendances.order(:check_in).first.check_in).to be_within(1.second).of Time.zone.parse('2020-12-03 11:23:14+00')
+            expect(first_child.attendances.order(:check_in).first.check_in).to be_within(1.minute).of Time.zone.parse('2020-12-03 11:23:14+00')
             expect(first_child.attendances.order(:check_in).first.check_out).to be_nil
-            expect(second_child.attendances.order(:check_in).first.check_in).to be_within(1.second).of Time.zone.parse('2021-02-24 12:04:58+00')
-            expect(second_child.attendances.order(:check_in).first.check_out).to be_within(1.second).of Time.zone.parse('2021-02-24 22:35:29+00')
-            expect(third_child.attendances.order(:check_in).first.check_in).to be_within(1.second).of Time.zone.parse('2021-03-10 12:54:39+00')
-            expect(third_child.attendances.order(:check_in).first.check_out).to be_within(1.second).of Time.zone.parse('2021-03-11 00:27:53+00')
+            expect(second_child.attendances.order(:check_in).first.check_in).to be_within(1.minute).of Time.zone.parse('2021-02-24 12:04:58+00')
+            expect(second_child.attendances.order(:check_in).first.check_out).to be_within(1.minute).of Time.zone.parse('2021-02-24 22:35:29+00')
+            expect(third_child.attendances.order(:check_in).first.check_in).to be_within(1.minute).of Time.zone.parse('2021-03-10 12:54:39+00')
+            expect(third_child.attendances.order(:check_in).first.check_out).to be_within(1.minute).of Time.zone.parse('2021-03-11 00:27:53+00')
           end
         end
 

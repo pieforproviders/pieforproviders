@@ -190,13 +190,16 @@ def create_case(full_name,
     end
     
     start_time = Tod::TimeOfDay.new(rand(0..10), ((rand(0..59) / 15.0).floor * 15))
+    effective_on = Faker::Date.between(from: 8.months.ago, to: 4.months.ago)
 
-    Schedule.find_or_initialize_by(child: child).update!(
-      effective_on: Faker::Date.between(from: 8.months.ago, to: 4.months.ago),
-      end_time: start_time + rand(start_time.hour..23).hours,
-      start_time: start_time,
-      weekday: rand(0..6)
-    )
+    5.times do |idx|
+      Schedule.find_or_initialize_by(child: child).update!(
+        effective_on: effective_on,
+        end_time: start_time + rand(start_time.hour..23).hours,
+        start_time: start_time,
+        weekday: idx + 1
+      )
+    end
 
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: %w[on_track exceeded_limit at_risk].sample,

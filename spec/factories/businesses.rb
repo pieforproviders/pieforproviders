@@ -18,6 +18,11 @@ FactoryBot.define do
 
     trait :nebraska do
       zipcode { '68123' }
+      county { 'Douglas' }
+    end
+
+    trait :accredited do
+      accredited { true }
     end
 
     trait :step_five do

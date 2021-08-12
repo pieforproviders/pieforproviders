@@ -41,10 +41,10 @@ class ChildBlueprint < Blueprinter::Base
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
     end
     field :family_fee do |child, options|
-      child.nebraska_family_fee(options[:filter_date])
+      format('%.2f', child.nebraska_family_fee(options[:filter_date]))
     end
-    field :earned_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
+    field :earned_revenue do |child, options|
+      format('%.2f', child.nebraska_earned_revenue(options[:filter_date]))
     end
     field :estimated_revenue do |child|
       child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0

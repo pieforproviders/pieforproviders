@@ -6,6 +6,7 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
+    enrolled_in_school { false }
 
     factory :child_in_illinois do
       after(:create) do |child|

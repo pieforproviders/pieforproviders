@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # A child in care at businesses who need subsidy assistance
+# rubocop:disable Metrics/ClassLength
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
@@ -37,6 +38,7 @@ class Child < UuidApplicationRecord
   scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
   scope :not_deleted, -> { where(deleted: false) }
 
+  delegate :county, to: :business
   delegate :user, to: :business
   delegate :state, to: :user
   delegate :timezone, to: :user
@@ -45,6 +47,13 @@ class Child < UuidApplicationRecord
     years_since_birth = date.year - date_of_birth.year
     birthday_passed = date_of_birth.month <= date.month || date_of_birth.day <= date.day
     birthday_passed ? years_since_birth : years_since_birth - 1
+  end
+
+  def age_in_months(date = Time.current)
+    years_since_birth = date.year - date_of_birth.year
+    months_since_birth = date.month - date_of_birth.month
+    birthday_passed = date_of_birth.day <= date.day
+    birthday_passed ? (years_since_birth * 12) + months_since_birth : (years_since_birth * 12) + months_since_birth - 1
   end
 
   def active_approval(date)
@@ -81,27 +90,45 @@ class Child < UuidApplicationRecord
 
   # NE dashboard family_fee calculator
   def nebraska_family_fee(filter_date)
-    # "feature flag" for using live algorithms rather than uploaded data
+    # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      format('%.2f', active_nebraska_approval_amount(filter_date)&.family_fee)
+      family_fee = active_nebraska_approval_amount(filter_date)&.family_fee
+      family_fee || 0.00
     else
-      format('%.2f', temporary_nebraska_dashboard_case&.family_fee.to_f)
+      temporary_nebraska_dashboard_case&.family_fee.to_f
     end
+  end
+
+  # NE dashboard family_fee calculator
+  def nebraska_earned_revenue(filter_date)
+    # feature flag for using live algorithms rather than uploaded data
+    if Rails.application.config.ff_ne_live_algorithms
+      revenue_less_family_fee(filter_date)
+    else
+      temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
+    end
+  end
+
+  def revenue_less_family_fee(filter_date)
+    revenue = attendances.for_month(filter_date).pluck(:earned_revenue).sum - (active_nebraska_approval_amount(filter_date)&.family_fee || 0.0)
+    revenue.negative? ? 0.0 : revenue
   end
 
   # NE dashboard full days calculator
   def nebraska_full_days(filter_date)
+    # feature flag for using live algorithms rather than uploaded data
     Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.full_days
   end
 
   # NE dashboard hours calculator
   def nebraska_hours(filter_date)
-    # "feature flag" for using live algorithms rather than uploaded data
+    # feature flag for using live algorithms rather than uploaded data
     Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
   end
 
   # NE dashboard weekly used hours calculator
   def nebraska_weekly_hours_attended(filter_date)
+    # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
       NebraskaWeeklyHoursAttendedCalculator.new(self,
                                                 filter_date).call
@@ -137,6 +164,7 @@ class Child < UuidApplicationRecord
     RateAssociatorJob.perform_later(id)
   end
 end
+# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #
