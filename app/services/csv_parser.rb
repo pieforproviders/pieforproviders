@@ -19,7 +19,7 @@ class CsvParser
   def parse_csv
     CSV.parse(@contents, **csv_options)
   rescue StandardError => e
-    send_appsignal_error('csv-parser', e.message)
+    send_appsignal_error('csv-parser', e)
   end
 
   def csv_options
