@@ -21,15 +21,19 @@ class AwsClient
   end
 
   def list_file_names(source_bucket)
-    file_names = @client.list_objects_v2({ bucket: source_bucket })[:contents].map! { |file| file[:key] }
-    raise NoFilesFoundError unless file_names
+    file_names = @client.list_objects_v2({ bucket: source_bucket })
+    raise NoFilesFoundError if file_names.empty?
+
+    file_names[:contents].map! { |file| file[:key] }
   rescue StandardError => e
     send_appsignal_error('aws-list-file-names', e.message, source_bucket)
   end
 
   def get_file_contents(source_bucket, file_name)
-    body = @client.get_object({ bucket: source_bucket, key: file_name }).body
-    raise EmptyContentsError if body.blank?
+    object = @client.get_object({ bucket: source_bucket, key: file_name })
+    raise EmptyContentsError if object.blank?
+
+    object.body
   rescue StandardError => e
     send_appsignal_error('aws-get-file-contents', e.message, [source_bucket, file_name].join(' - '))
   end
