@@ -40,7 +40,7 @@ module Wonderschool
 
         attendance.update!(child_approval: child.active_child_approval(check_in), check_in: check_in, check_out: row['checked_out_at'])
       rescue StandardError => e
-        send_appsignal_error('attendance-csv-importer', e.message, row['child_id'])
+        send_appsignal_error('attendance-csv-importer', e, row['child_id'])
       end
 
       def log_missing_child(id)
