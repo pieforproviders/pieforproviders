@@ -93,13 +93,25 @@ export function Header() {
         src={pieSliceLogo}
         className="w-8 mr-2"
       />
-      <div
+      {screens.lg ? (
+        <div className="text-lg font-semibold flex-grow ml-10">
+          <div className="flex">
+            <div>Dashboard</div>
+            <div className="ml-8">Attendance</div>
+          </div>
+        </div>
+      ) : (
+        <div className={`text-2xl font-semibold flex-grow`}>
+          Pie for Providers
+        </div>
+      )}
+      {/* <div
         className={`text-2xl font-semibold flex-grow ${
           screens.lg ? 'visible' : 'invisible'
         }`}
       >
         Pie for Providers
-      </div>
+      </div> */}
       {windowWidth > 768 ? renderDesktopMenu() : renderMobileMenu()}
     </header>
   )
