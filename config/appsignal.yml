@@ -43,6 +43,12 @@ development:
 
 production:
   <<: *defaults
+  running_in_container: true
+  active: true
+
+staging:
+  <<: *defaults
+  running_in_container: true
   active: true
 
 test:

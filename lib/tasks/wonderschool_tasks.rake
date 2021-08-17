@@ -6,6 +6,7 @@ task read_wonderschool_necc_attendances: :environment do
   # Archive file to S3
   Wonderschool::Necc::AttendanceCsvImporter.new.call
   Appsignal.stop 'read_wonderschool_necc_attendances'
+  sleep 5
 end
 
 task read_wonderschool_necc_dashboard_cases: :environment do
@@ -14,6 +15,7 @@ task read_wonderschool_necc_dashboard_cases: :environment do
   # Archive each file to S3
   Wonderschool::Necc::DashboardCaseImporter.new.call
   Appsignal.stop 'read_wonderschool_necc_dashboard_cases'
+  sleep 5
 end
 
 task read_wonderschool_necc_onboarding_cases: :environment do
@@ -22,4 +24,5 @@ task read_wonderschool_necc_onboarding_cases: :environment do
   # Archive each file to S3
   Wonderschool::Necc::OnboardingCaseImporter.new.call
   Appsignal.stop 'read_wonderschool_necc_onboarding_cases'
+  sleep 5
 end
