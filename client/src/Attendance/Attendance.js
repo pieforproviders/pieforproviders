@@ -171,8 +171,11 @@ export function Attendance() {
   const handleSave = async () => {
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
-        .filter(value => Object.keys(value).length > 0)
         .map((value, key) => {
+          if (Object.keys(value).length === 0) {
+            return value
+          }
+
           if (Object.keys(value).includes('absence')) {
             return { ...value, check_in: columnDates[key], child_id: data[0] }
           }
@@ -210,7 +213,9 @@ export function Attendance() {
             child_id: data[0]
           }
         })
+        .filter(value => Object.keys(value).length > 0)
     )
+
     const response = await makeRequest({
       type: 'post',
       url: '/api/v1/attendance_batches',
