@@ -149,12 +149,12 @@ GEM
       i18n (>= 1.6, < 2)
     ffi (1.15.3)
     formatador (0.2.5)
-    fugit (1.5.0)
+    fugit (1.5.1)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     globalid (0.5.2)
       activesupport (>= 5.0)
-    good_job (1.12.2)
+    good_job (1.13.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -270,7 +270,7 @@ GEM
       activesupport (>= 4.2)
       choice (~> 0.2.0)
       ruby-graphviz (~> 1.2)
-    rails-html-sanitizer (1.3.0)
+    rails-html-sanitizer (1.4.0)
       loofah (~> 2.3)
     railties (6.1.4)
       actionpack (= 6.1.4)
@@ -387,7 +387,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  good_job (~> 1.12)
+  good_job (~> 1.13)
   guard-rspec
   hash_dig_and_collect
   holidays
