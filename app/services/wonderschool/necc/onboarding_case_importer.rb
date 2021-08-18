@@ -37,7 +37,7 @@ module Wonderschool
         @child_approval.update!(child_approval_params)
         approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
       rescue StandardError => e
-        send_appsignal_error('onboarding-case-importer', e.message, @row['Case number'])
+        send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
       end
 
       def build_case

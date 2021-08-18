@@ -25,6 +25,10 @@ module Wonderschool
         allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
       end
 
+      after(:each) do
+        travel_back
+      end
+
       describe '#call' do
         context 'with valid data' do
           before(:each) do
