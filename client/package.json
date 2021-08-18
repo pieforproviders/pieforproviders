@@ -38,7 +38,7 @@
     "react-scripts": "^4.0.3",
     "tailwindcss": "^1.9.6",
     "uuid": "^8.3.2",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.17.1"
   },
   "scripts": {
     "build": "craco build",
