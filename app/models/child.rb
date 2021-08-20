@@ -99,7 +99,7 @@ class Child < UuidApplicationRecord
     end
   end
 
-  # NE dashboard family_fee calculator
+  # NE dashboard earned_revenue calculator
   def nebraska_earned_revenue(filter_date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
@@ -109,9 +109,98 @@ class Child < UuidApplicationRecord
     end
   end
 
+  # NE dashboard estimated_revenue calculator
+  def nebraska_estimated_revenue(filter_date)
+    # feature flag for using live algorithms rather than uploaded data
+    if Rails.application.config.ff_ne_live_algorithms
+      estimated_revenue_less_family_fee(filter_date)
+    else
+      temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
+    end
+  end
+
   def revenue_less_family_fee(filter_date)
     revenue = attendances.for_month(filter_date).pluck(:earned_revenue).sum - (active_nebraska_approval_amount(filter_date)&.family_fee || 0.0)
     revenue.negative? ? 0.0 : revenue
+  end
+
+  def estimated_revenue_less_family_fee(filter_date)
+    revenue = revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)
+    revenue.negative? ? 0.0 : revenue
+  end
+
+  def remaining_scheduled_revenue(filter_date)
+    (0..6).reduce(0) do |sum, weekday|
+      sum + weekday_scheduled_rate(filter_date, weekday)
+    end
+  end
+
+  # TODO: these methods are duplicative and need to be moved to a concern so child and attendance can both use them [PIE-1529]
+
+  def weekday_scheduled_rate(filter_date, weekday)
+    schedule_for_weekday = schedule(filter_date, weekday)
+    return 0 unless schedule_for_weekday
+
+    num_remaining_this_month = (filter_date.to_date..filter_date.to_date.at_end_of_month).count { |day| weekday == day.wday }
+    return 0 unless num_remaining_this_month.positive?
+
+    daily_revenue = if active_child_approval(filter_date).special_needs_rate
+                      ne_special_needs_revenue(filter_date, schedule_for_weekday)
+                    else
+                      ne_base_revenue(filter_date, schedule_for_weekday)
+                    end
+    daily_revenue * num_remaining_this_month
+  end
+
+  def schedule(filter_date, weekday)
+    schedules.active_on_date(filter_date).for_weekday(weekday).first
+  end
+
+  def ne_hours(filter_date, schedule_for_weekday)
+    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
+    NebraskaHoursCalculator.new(self, filter_date).round_hourly_to_quarters(scheduled_time.seconds)
+  end
+
+  def ne_days(filter_date, schedule_for_weekday)
+    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
+    NebraskaFullDaysCalculator.new(self, filter_date).calculate_full_days_based_on_duration(scheduled_time.seconds)
+  end
+
+  # TODO: open question - does qris bump impact this rate?
+  def ne_special_needs_revenue(filter_date, schedule_for_weekday)
+    (ne_hours(filter_date, schedule_for_weekday) * active_child_approval(filter_date).special_needs_hourly_rate) +
+      (ne_days(filter_date, schedule_for_weekday) * active_child_approval(filter_date).special_needs_daily_rate)
+  end
+
+  def ne_base_revenue(filter_date, schedule_for_weekday)
+    (ne_hours(filter_date, schedule_for_weekday) * ne_hourly_rate(filter_date) * business.ne_qris_bump) +
+      (ne_days(filter_date, schedule_for_weekday) * ne_daily_rate(filter_date) * business.ne_qris_bump)
+  end
+
+  def ne_hourly_rate(filter_date)
+    # TODO: License Types - possibly post-new-data-model
+    ne_rates(filter_date).hourly.first&.amount || 0
+  end
+
+  def ne_daily_rate(filter_date)
+    # TODO: License Types - possibly post-new-data-model
+    ne_rates(filter_date).daily.first&.amount || 0
+  end
+
+  def ne_rates(filter_date)
+    NebraskaRate
+      .active_on_date(filter_date)
+      .where(school_age: active_child_approval(filter_date).enrolled_in_school || false)
+      .where('max_age >= ? OR max_age IS NULL', age_in_months(filter_date))
+      .where(region: ne_region)
+      .where(accredited_rate: business.accredited)
+      .order_max_age
+  end
+
+  def ne_region
+    %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
   end
 
   # NE dashboard full days calculator

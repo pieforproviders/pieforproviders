@@ -131,7 +131,7 @@ class Attendance < UuidApplicationRecord
   def calculate_from_schedule
     return 8.hours unless schedule_for_weekday
 
-    schedule_for_weekday.end_time.on(check_in.to_date) - schedule_for_weekday.start_time.on(check_in.to_date)
+    Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
   end
 
   def schedule_for_weekday

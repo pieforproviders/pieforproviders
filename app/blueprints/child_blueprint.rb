@@ -46,8 +46,8 @@ class ChildBlueprint < Blueprinter::Base
     field :earned_revenue do |child, options|
       format('%.2f', child.nebraska_earned_revenue(options[:filter_date]))
     end
-    field :estimated_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
+    field :estimated_revenue do |child, options|
+      format('%.2f', child.nebraska_estimated_revenue(options[:filter_date]))
     end
     field :full_days do |child, options|
       # Uses a feature flag in the child model methods
