@@ -2,9 +2,9 @@
 
 Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with this project.
 
-Pie for Providers' [open issues](https://github.com/pieforproviders/pieforproviders/projects/3) are on our project board in the To Do column. We'll tag issues that would make a good first pull request for new contributors.
+Pie for Providers' [open issues](https://github.com/pieforproviders/pieforproviders/projects/3) are on our project board in the To Do column. We'll tag issues that would make a good first pull request for new contributors w/ the `good first issue` tag.  The `help-wanted` tag is also a good one to look for.
 
-An easy way to get started helping the project is to *file an issue*. You can do that on the Pie for Providers' issues page by clicking on the green button at the right. Issues can include bugs to fix, features to add, or documentation that looks outdated.
+One way to get started helping the project is to *file an issue*. You can do that on the Pie for Providers' issues page by clicking on the green button at the right. Issues can include bugs to fix, features to add, or documentation that looks outdated.  Our goal is to build an open and accessible API (with authentication and authorization protocols), as well as our front-end UI (see `/client`).  If you see any way to help these goals that that we haven't flagged ourselves, please feel free to create an issue.
 
 Contributions to Pie for Providers should be made in the form of GitHub pull requests. When contributing to this repository with a pull request, please fill out the pull request template as completely as is reasonable. Each pull request will be reviewed by a core contributor (someone with permission to merge) and either merged into `develop` or given feedback for requested changes.
 
@@ -18,10 +18,10 @@ When you're ready to start working on an issue:
   - if you can't find something in "To Do", check with the admins on Slack
 - [ ] Branch from `develop` and, if needed, rebase to the current `develop` branch before submitting your pull request
 - [ ] Add tests relevant to the fixed bug or new feature
-- [ ] There's a convenience rake task to run all linters, tests, and auto-documenting API routes: `bundle exec rails prep` - if you run this before making a pull request, you can be confident your PR will pass CI
+- [ ] There's a convenience rake task to run all linters and tests and regenerating the Entity-Relationship Diagram if anything has changed: `bundle exec rails prep` - if you run this before making a pull request, you can be confident your PR will pass CI and that your table documentation is up to date
 - [ ] when your code is ready, make a pull request to `develop` - we prefer direct PRs rather than from forks, if possible!
-- [ ] when you have one approval, the admins will merge, but do not close the ticket itself, we want that open until QA
-- [ ] move your ticket to "In QA" on the [project board](https://github.com/pieforproviders/pieforproviders/projects/3); one of our QAs will check it and close the ticket, OR move the ticket back to in progress if there are issues during QA
+- [ ] when you have one approval, one of the admins will merge and the ticket will be moved to "In QA" automatically
+- [ ] one of our QAs will check it and move the ticket to "Approved", OR move the ticket back to "in progress" and comment/tag you if there are issues during QA
 
 ## Translations
 
@@ -37,14 +37,10 @@ Also if you notice something that isn't translated (i.e. the English text is har
 
 - We use uuids for the id primary key in API tables
 - We validate the JSON response of the API on every endpoint
-- A diagram of the db is saved using database markup language in [`/docs/dbdiagram.dbml`](/docs/dbdiagram.dbml) and a PDF version is available at [`/docs/dbdiagram.pdf`](/docs/dbdiagram.pdf).  A live version can be found here: [dbdiagram.io](https://dbdiagram.io/d/5f7b95883a78976d7b767120).  When making changes to the schema, ensure they are also recorded here.
-
-There's a helper rake task that runs all test suites and linting steps; use `rails prep` to run this command.
 
 ## Adding/Updating Models
 
 Please make sure you write specs that include JSON validation of the request output for schema (see [spec/support/api/schemas/user.json](spec/support/api/schemas/user.json))
-
 
 ## Data Model
 
