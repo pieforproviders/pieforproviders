@@ -73,7 +73,26 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_risk(filter_date)
-    AttendanceRiskCalculator.new(self, filter_date).call
+    if state == 'IL'
+      AttendanceRiskCalculator.new(self, filter_date).call
+    elsif Rails.application.config.ff_ne_live_algorithms
+      risk_calculation(filter_date)
+    else
+      temporary_nebraska_dashboard_case&.attendance_risk
+    end
+  end
+
+  def risk_calculation(filter_date)
+    scheduled_revenue = remaining_scheduled_revenue(filter_date.in_time_zone(timezone).at_beginning_of_month)
+    estimated_revenue = nebraska_estimated_revenue(filter_date)
+    ratio = (estimated_revenue - scheduled_revenue) / scheduled_revenue.to_f
+    if ratio <= -0.2
+      'at_risk'
+    elsif ratio > -0.2 && ratio <= 0.2
+      'on_track'
+    else
+      'ahead_of_schedule'
+    end
   end
 
   def active_rate(date)

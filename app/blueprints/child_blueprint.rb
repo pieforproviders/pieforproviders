@@ -31,8 +31,8 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :nebraska_dashboard do
-    field :attendance_risk do |child|
-      child.temporary_nebraska_dashboard_case&.attendance_risk
+    field :attendance_risk do |child, options|
+      child.attendance_risk(options[:filter_date])
     end
     field :absences do |child|
       child.temporary_nebraska_dashboard_case&.absences

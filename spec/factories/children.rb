@@ -35,6 +35,7 @@ FactoryBot.define do
         create(:nebraska_approval_amount,
                child_approval: child.active_child_approval(evaluator.effective_date),
                effective_on: evaluator.effective_date - 2.months)
+        child.child_approvals.first.update!(authorized_weekly_hours: 20)
       end
     end
 
