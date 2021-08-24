@@ -59,7 +59,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 ---
 
 <details>
-  <summary>Local Setup</summary>
+  <summary>Local Setup (Option One: Direct Install)</summary>
 
 ---
 **for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript** 
@@ -91,7 +91,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - create and seed the database: `bundle exec rails db:setup`
 - install front-end and end-to-end packages: `yarn install-all`
 
-### Running Locally
+### Running the App
 
 You have several convenient options for running the app locally.
 
@@ -111,7 +111,7 @@ Visit `localhost:3000` to see the React frontend. 🥳
 ---
 
 <details>
-  <summary>Optional Docker Setup</summary>
+  <summary>Local Setup (Option Two: Docker)</summary>
   
 We also have a dockerized setup if you prefer to develop that way.
 
