@@ -147,13 +147,20 @@ class Child < UuidApplicationRecord
   end
 
   def revenue_less_family_fee(filter_date)
-    revenue = attendances.for_month(filter_date).pluck(:earned_revenue).sum - (active_nebraska_approval_amount(filter_date)&.family_fee || 0.0)
-    revenue.negative? ? 0.0 : revenue
+    [(absence_revenue(filter_date) + attendance_revenue(filter_date) - active_nebraska_approval_amount(filter_date)&.family_fee.to_f), 0.0].max
+  end
+
+  def attendance_revenue(filter_date)
+    attendances.non_absences.for_month(filter_date).pluck(:earned_revenue).sum
+  end
+
+  def absence_revenue(filter_date)
+    absences, covid_absences = attendances.absences.for_month(filter_date).partition { |absence| absence.absence == 'absence' }
+    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
   end
 
   def estimated_revenue_less_family_fee(filter_date)
-    revenue = revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)
-    revenue.negative? ? 0.0 : revenue
+    [(revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)), 0.0].max
   end
 
   def remaining_scheduled_revenue(filter_date)

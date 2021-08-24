@@ -133,14 +133,26 @@ RSpec.describe ChildBlueprint do
         create_list(:nebraska_absence, 3, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours, absence: 'absence')
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
-        expect(parsed_body['attendance_risk']).to eq('on_track')
         expect(parsed_body['absences']).to eq('3 of 5')
+        expect(parsed_body['earned_revenue']).to eq(format('%.2f', earned_revenue + (8 * 25.15 * 1.05)))
+        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue + (8 * 25.15 * 1.05)))
+        expect(parsed_body['attendance_risk']).to eq('on_track')
 
         create_list(:nebraska_absence, 3, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours, absence: 'absence')
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
-        expect(parsed_body['attendance_risk']).to eq('on_track')
         expect(parsed_body['absences']).to eq('6 of 5')
+        expect(parsed_body['earned_revenue']).to eq(format('%.2f', earned_revenue + (10 * 25.15 * 1.05)))
+        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue + (10 * 25.15 * 1.05)))
+        expect(parsed_body['attendance_risk']).to eq('on_track')
+
+        create(:nebraska_absence, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours, absence: 'covid_absence')
+
+        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
+        expect(parsed_body['absences']).to eq('7 of 5')
+        expect(parsed_body['earned_revenue']).to eq(format('%.2f', earned_revenue + (11 * 25.15 * 1.05)))
+        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue + (11 * 25.15 * 1.05)))
+        expect(parsed_body['attendance_risk']).to eq('on_track')
       end
     end
   end
