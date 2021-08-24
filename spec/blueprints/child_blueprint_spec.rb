@@ -34,7 +34,7 @@ RSpec.describe ChildBlueprint do
     let!(:attendance_date) { (child_approval.approval.effective_on.at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
     let!(:temporary_nebraska_dashboard_case) do
       create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12, family_fee: 120.50, earned_revenue: 175.60, estimated_revenue: 265.40,
-                                                 attendance_risk: 'ahead_of_schedule')
+                                                 attendance_risk: 'ahead_of_schedule', absences: '1 of 5')
     end
 
     before do
@@ -80,6 +80,7 @@ RSpec.describe ChildBlueprint do
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['earned_revenue']).to eq('175.60')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['estimated_revenue']).to eq('265.40')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['attendance_risk']).to eq('ahead_of_schedule')
+      expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['absences']).to eq('1 of 5')
     end
     context 'when using live algorithms' do
       before do
@@ -127,21 +128,19 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue))
         expect(parsed_body['attendance_risk']).to eq(attendance_risk)
 
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
-        create(:attendance, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
-                            check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
+        create_list(:attendance, 5, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours,
+                                    check_out: attendance_date.to_datetime + 1.day + 9.hours + 18.minutes)
+        create_list(:nebraska_absence, 3, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours, absence: 'absence')
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
         expect(parsed_body['attendance_risk']).to eq('on_track')
+        expect(parsed_body['absences']).to eq('3 of 5')
+
+        create_list(:nebraska_absence, 3, child_approval: child_approval, check_in: attendance_date.to_datetime + 1.day + 3.hours, absence: 'absence')
+
+        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
+        expect(parsed_body['attendance_risk']).to eq('on_track')
+        expect(parsed_body['absences']).to eq('6 of 5')
       end
     end
   end

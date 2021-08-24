@@ -68,6 +68,14 @@ class Child < UuidApplicationRecord
     Attendance.joins(:child_approval).where(child_approvals: { child: self })
   end
 
+  def absences(filter_date)
+    if Rails.application.config.ff_ne_live_algorithms
+      "#{attendances.for_month(filter_date).absences.length} of 5"
+    else
+      temporary_nebraska_dashboard_case&.absences
+    end
+  end
+
   def attendance_rate(filter_date)
     AttendanceRateCalculator.new(self, filter_date).call
   end
