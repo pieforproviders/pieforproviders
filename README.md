@@ -136,7 +136,7 @@ Docker should be installed on your local machine.
 * Username and password: specified in .docker-env/development/database
 
 ### Other Important Scripts
-* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sanity check to allow you to make sure to commit quality working code only.
+* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sense check to allow you to make sure to commit quality working code only.
 * Enter the command "docker/qserver" for the quick version of "docker/server".  Note that the "docker/qserver" script does not log the screen output, does not remove tmp/pids/server.pid, skips "docker-compose down", skips "bundle install", and skips the database migration.
 * Enter "docker/nuke" to destroy the Docker image, container, and networks.
 * Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
