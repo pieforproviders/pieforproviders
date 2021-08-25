@@ -70,7 +70,7 @@ class Child < UuidApplicationRecord
 
   def absences(filter_date)
     if Rails.application.config.ff_ne_live_algorithms
-      "#{attendances.for_month(filter_date).absences.length} of 5"
+      attendances.for_month(filter_date).absences.length
     else
       temporary_nebraska_dashboard_case&.absences
     end
@@ -155,7 +155,7 @@ class Child < UuidApplicationRecord
   end
 
   def absence_revenue(filter_date)
-    absences, covid_absences = attendances.absences.for_month(filter_date).partition { |absence| absence.absence == 'absence' }
+    absences, covid_absences = attendances.absences.for_month(filter_date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
     absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
   end
 
