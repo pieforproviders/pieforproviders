@@ -68,12 +68,39 @@ class Child < UuidApplicationRecord
     Attendance.joins(:child_approval).where(child_approvals: { child: self })
   end
 
+  def absences(filter_date)
+    if Rails.application.config.ff_ne_live_algorithms
+      attendances.for_month(filter_date).absences.length
+    else
+      temporary_nebraska_dashboard_case&.absences
+    end
+  end
+
   def attendance_rate(filter_date)
     AttendanceRateCalculator.new(self, filter_date).call
   end
 
   def attendance_risk(filter_date)
-    AttendanceRiskCalculator.new(self, filter_date).call
+    if state == 'IL'
+      AttendanceRiskCalculator.new(self, filter_date).call
+    elsif Rails.application.config.ff_ne_live_algorithms
+      risk_calculation(filter_date)
+    else
+      temporary_nebraska_dashboard_case&.attendance_risk
+    end
+  end
+
+  def risk_calculation(filter_date)
+    scheduled_revenue = remaining_scheduled_revenue(filter_date.in_time_zone(timezone).at_beginning_of_month)
+    estimated_revenue = nebraska_estimated_revenue(filter_date)
+    ratio = (estimated_revenue - scheduled_revenue) / scheduled_revenue.to_f
+    if ratio <= -0.2
+      'at_risk'
+    elsif ratio > -0.2 && ratio <= 0.2
+      'on_track'
+    else
+      'ahead_of_schedule'
+    end
   end
 
   def active_rate(date)
@@ -120,13 +147,20 @@ class Child < UuidApplicationRecord
   end
 
   def revenue_less_family_fee(filter_date)
-    revenue = attendances.for_month(filter_date).pluck(:earned_revenue).sum - (active_nebraska_approval_amount(filter_date)&.family_fee || 0.0)
-    revenue.negative? ? 0.0 : revenue
+    [(absence_revenue(filter_date) + attendance_revenue(filter_date) - active_nebraska_approval_amount(filter_date)&.family_fee.to_f), 0.0].max
+  end
+
+  def attendance_revenue(filter_date)
+    attendances.non_absences.for_month(filter_date).pluck(:earned_revenue).sum
+  end
+
+  def absence_revenue(filter_date)
+    absences, covid_absences = attendances.absences.for_month(filter_date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
+    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
   end
 
   def estimated_revenue_less_family_fee(filter_date)
-    revenue = revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)
-    revenue.negative? ? 0.0 : revenue
+    [(revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)), 0.0].max
   end
 
   def remaining_scheduled_revenue(filter_date)
