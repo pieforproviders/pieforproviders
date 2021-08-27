@@ -34,8 +34,16 @@ class ChildBlueprint < Blueprinter::Base
     field :attendance_risk do |child, options|
       child.attendance_risk(options[:filter_date])
     end
-    field :absences do |child|
-      child.temporary_nebraska_dashboard_case&.absences
+    field :absences do |child, options|
+      # Uses a feature flag in the child model methods
+      absences = child.absences(options[:filter_date])
+      if absences
+        "#{absences}#{absences.to_s.include?('of') ? '' : ' of 5'}"
+      else
+        '0 of 5'
+      end
+      # nebraska restricts absences to 5 allowed
+      # the csv imports for temporary dashboard cases will probably have "of 5" in their string, so we don't want it to duplicate
     end
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
