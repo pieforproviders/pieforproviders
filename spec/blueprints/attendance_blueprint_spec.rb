@@ -12,6 +12,7 @@ RSpec.describe AttendanceBlueprint do
         'absence',
         'check_in',
         'check_out',
+        'child',
         'total_time_in_care',
         'child_approval_id'
       )

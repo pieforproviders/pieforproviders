@@ -10,4 +10,5 @@ class AttendanceBlueprint < Blueprinter::Base
     attendance.total_time_in_care.to_s
   end
   field :child_approval_id
+  association :child, blueprint: ChildBlueprint
 end

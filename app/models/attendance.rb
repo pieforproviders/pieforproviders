@@ -37,6 +37,8 @@ class Attendance < UuidApplicationRecord
   scope :illinois_full_plus_part_days, -> { where('total_time_in_care > ? AND total_time_in_care < ?', '12 hours', '17 hours') }
   scope :illinois_full_plus_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '17 hours', '24 hours') }
 
+  delegate :child, to: :child_approval
+
   private
 
   def calc_total_time_in_care
