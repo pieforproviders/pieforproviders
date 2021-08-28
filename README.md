@@ -1,9 +1,11 @@
-# README
+| CI | Analytics |
+| :-: | :-: |
+| [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop) | [![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge) |
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
 
 We help child care providers and families claim the government funding for which they are already eligible.
 

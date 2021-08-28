@@ -19,7 +19,7 @@ FactoryBot.define do
       region { 'LDDS' }
     end
     trait :other_region do
-      region { 'other' }
+      region { 'Other' }
     end
 
     trait :hourly do
