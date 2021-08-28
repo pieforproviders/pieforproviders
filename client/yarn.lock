@@ -4028,10 +4028,10 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-craco-less@^1.18.0:
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/craco-less/-/craco-less-1.18.0.tgz#6952adc93ea597c37ef2b6977593e0ac66a4069f"
-  integrity sha512-Q11HHh5rh2u2Ujub/FgkjLzRtrnEOQIt/kMxyflIGW1xJTm/5FFkM2+RRZ77Vo2ma7MDcEFhvU/vp6oA7FKY8w==
+craco-less@^1.20.0:
+  version "1.20.0"
+  resolved "https://registry.yarnpkg.com/craco-less/-/craco-less-1.20.0.tgz#7f68679b84c7756f785f9c5ee4e4f795662acad1"
+  integrity sha512-oP7kMRFOwwCPAlS+RBfA0yt9qAfSH8EOzJOQyzspVOECDtATTLXYyEYd0ghoybbReVRZbOmGxNtPWh4ALpVRng==
   dependencies:
     less "^4.1.1"
     less-loader "^7.3.0"
