@@ -17,7 +17,7 @@ export function PaddedButton({
       shape={shape}
       size={size}
       htmlType={htmlType}
-      className={`${classes} py-4 px-8 h-auto w-auto font-semibold uppercase`}
+      className={`py-4 px-8 h-auto font-semibold uppercase ${classes}`}
       {...props}
     >
       {text}

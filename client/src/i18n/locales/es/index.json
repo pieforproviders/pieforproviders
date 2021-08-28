@@ -64,14 +64,10 @@
   "resendConfirmationEmail": "Haga clic aquí para reenviar el correo.",
   "toResendConfirmationEmail": "para reenviar el correo de confirmación.",
   "confirmationEmailResent": "Correo reenviado",
-
   "here": "aquí",
   "clickHere": "Haga clic aquí",
-
   "reportFeedback": "Da comentarios",
-
   "taken": "ya ha sido tomado",
-
   "setup": "Configuración",
   "steps": "Pasos",
   "gettingStartedBusinesses": "Cuéntanos sobre las empresas y los sitios que gestionas, para que sepamos cuales tarifas del subsidio aplican a tus casos",
@@ -86,9 +82,7 @@
   "gettingStartedTitle": "Comencemos",
   "gettingStartedInstructions": "Sigue estas instrucciones para configurar tu pantalla principal de casos. Esto debería tardar unos 15 minutos y solo tendrás que hacerlo una vez. ¡Prepárate para aumentar tu porción del pastel!",
   "gettingStartedButton": "Comienza",
-
   "genericErrorMessage": "Algo salió mal, inténtalo de nuevo más tarde.",
-
   "invalidEmailOrPassword": "Correo y/o contraseña inválido(s).",
   "unauthenticated": "Tienes que registrarte o iniciar sesión antes de continuar.",
   "alreadyConfirmed": "Ya has verificado tu cuenta. Ahora puedes iniciar sesión.",
@@ -97,7 +91,6 @@
   "genericEmailConfirmationError": "Hemos tenido un problema en confirmar tu correo.",
   "emailNotFound": "No se ha encontrado el correo.",
   "resetPasswordRequestSuccess": "Recibirás un correo con instrucciones para resetear tu contraseña en unos minutos.",
-
   "yourConfirmationToken": "Tu token de confirmación es",
   "blank": "en blanco",
   "invalid": "inválido",
@@ -107,16 +100,13 @@
   "genericConfirmationError": "Hubo un problema desconocido con tu confirmación",
   "contactUs": "Contáctanos",
   "forSupport": "para el soporte técnico.",
-
   "passwordResetTokenBlank": "Tu token de resetear la contraseña está en blanco. Debes hacer clic en el enlace de resetear la contraseña enviado a tu correo.",
   "passwordResetTokenInvalid": "Tu token de resetear la contraseña es inválido. Por favor, solicita una nueva.",
   "passwordResetTokenExpired": "Tu token de resetear la contraseña ha expirado. Por favor, solicita un token nuevo.",
   "passwordUpdated": "Contraseña actualizada",
-
   "uploadCases": "Sube tus casos",
   "uploadCasesInvalidFileFormat": "Formato de archivo inválido. Formatos admitidos: CSV, XLS y XLSX",
   "reviewImportedCases": "Revisa los casos importados",
-
   "firstName": "Nombre",
   "lastName": "Apellido",
   "dateOfBirth": "Fecha de nacimiento",
@@ -129,12 +119,10 @@
   "expiresOn": "Expira en",
   "copay": "Copago",
   "copayFrequency": "Frecuencia de copago",
-
   "oops": "¡Ups!",
   "notFound": "Lo sentimos, pero parece que algo salió mal de parte de nosotros. Por favor regresa a tu tablero para continuar.",
   "goBack": "Volver",
   "notFoundImageAltText": "Tarta y bebidas",
-
   "dashboardTitle": "Tu pantalla principal",
   "revenueProjections": "Predicción de ingresos en tiempo real basada en datos de asistencia",
   "childName": "Nombre del niño",
@@ -157,7 +145,6 @@
   "transportation": "Transportación",
   "transportationDef": "Ingresos máximos si se usa toda la transportación",
   "comingSoon": "¡Promixamente!",
-
   "attendance": "Asistencia",
   "revenue": "Ingresos",
   "child": "Niño",
@@ -169,7 +156,6 @@
   "hoursAttended": "Horas asistidas",
   "transportationRevenue": "Ingresos de la transportación",
   "familyFee": "Cuota familiar",
-
   "onTrack": "En camino",
   "sureBet": "Sin duda",
   "atRisk": "En riesgo",
@@ -177,7 +163,6 @@
   "notEnoughInfo": "Información insuficiente",
   "exceededLimit": "Excedió el límite",
   "aheadOfSchedule": "Antes de lo previsto",
-
   "asOf": "A partir de",
   "jan": "Enero",
   "feb": "Feb",
@@ -191,7 +176,6 @@
   "oct": "Oct",
   "nov": "Nov",
   "dec": "Dic",
-
   "definitions": "Definiciones",
   "neExceededLimitDef": "El niño ha asistido a más días de la que fueron aprobados para este mes. Has ganado el pago mensual máximo, y no estarás pagado por días adicionales.",
   "neOnTrackDef": "El niño está asistiendo a la mayoría o todas sus días y probablemente recibirás la mayoría del pago del subsido este mes.",
@@ -206,14 +190,11 @@
   "neHoursAttendedDef": "Horas que el niño ha asistido esta semana. Si excedes tus hora máximas para la semana, no estarás pagado por el estado para esas horas adicionales.",
   "neFamilyFeeDef": "La cantidad que los padres te deben para este niño este mes.",
   "backToTop": "Volver",
-
   "of": "de",
   "trips": "viajes",
-
   "sortAsc": "Ordenar ascendente",
   "sortDesc": "Ordenar descendiente",
   "sortCancel": "Cancelar orden",
-
   "actions": "Acciones",
   "markInactive": "Desactivar",
   "markInactiveInfo1": "Una vez que marques este niño inactivo, no podrás ver ninguna información futura sobre la asistienca y los ingresos en tu tablero de Pie for Providers.",
@@ -223,5 +204,25 @@
   "inactiveReason2": "Ya no recibiendo los subsidios",
   "inactiveReason3": "Otro",
   "markInactiveCalendarPrompt": "Dinos cuando este niño debe convertirse inactivo.",
-  "inactive": "Inactivo/a"
+  "inactive": "Inactivo/a",
+  "addAttendance": "Ingresar asistencia",
+  "enterAttendance": "Ingresar asistencia",
+  "important": "Aviso importante:",
+  "attendanceWarning": " Si ya contamos con tus registros de asistencia mediante otro portal (ejemplo: Wonderschool), por favor no realices el registro de asistencia por este medio.",
+  "attendanceQuestions": "Para cualquier duda, por favor contáctanos en el siguiente correo electrónico:",
+  "pleaseNote": "Aviso:",
+  "pleaseNoteMsg": "Niños que has marcado inactivo no aparecerán en la lista abajo.",
+  "childNameCap": "Nombre",
+  "selectDate": "Fecha",
+  "checkIn": "Entrada",
+  "checkOut": "Salida",
+  "absent": "Ausente",
+  "covidRelated": "Relacionado con covid",
+  "save": "Guardar",
+  "validTime": "Por favor ingresa una fecha válida",
+  "today": "Hoy",
+  "addAnotherDate": "Otra fecha",
+  "success": "¡Registro exitoso!",
+  "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
+  "gotToDashboard": "Ir al panel principal"
 }

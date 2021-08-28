@@ -9,6 +9,7 @@ import {
 import { useSelector } from 'react-redux'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
+import Attendance from './Attendance'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
@@ -76,6 +77,9 @@ const Routes = () => {
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/dashboard">
           <Dashboard />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/attendance">
+          <Attendance />
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/cases/import">
           <CasesImport />
