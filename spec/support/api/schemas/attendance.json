@@ -24,6 +24,10 @@
       ],
       "format": "uuid"
     },
+    "child": {
+      "type": "object",
+      "$ref": "child.json"
+    },
     "id": {
       "type": [
         "string",
