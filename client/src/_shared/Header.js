@@ -94,10 +94,26 @@ export function Header() {
         className="w-8 mr-2"
       />
       {screens.lg ? (
-        <div className="text-lg font-semibold flex-grow ml-10">
+        <div className="flex-grow ml-10">
           <div className="flex">
-            <div>Dashboard</div>
-            <div className="ml-8">Attendance</div>
+            <div>
+              <Button
+                className="text-lg font-semibold"
+                type="link"
+                onClick={() => history.push('/dashboard')}
+              >
+                Dashboard
+              </Button>
+            </div>
+            <div className="ml-8">
+              <Button
+                className="text-lg font-semibold"
+                type="link"
+                onClick={() => history.push('/attendance')}
+              >
+                Attendance
+              </Button>
+            </div>
           </div>
         </div>
       ) : (
