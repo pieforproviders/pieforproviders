@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe ChildBlueprint do
   let(:child) { create(:child) }
   context 'returns the correct fields when no view option is passed' do
-    it 'only includes the ID' do
-      expect(JSON.parse(described_class.render(child)).keys).to contain_exactly('id', 'active', 'last_active_date', 'inactive_reason')
+    it 'includes the ID, full name, and active info' do
+      expect(JSON.parse(described_class.render(child)).keys).to contain_exactly('id', 'active', 'full_name', 'last_active_date', 'inactive_reason')
     end
   end
   context 'returns the correct fields when IL view is requested' do

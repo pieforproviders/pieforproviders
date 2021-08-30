@@ -7,9 +7,9 @@ class ChildBlueprint < Blueprinter::Base
   field :active
   field :last_active_date
   field :inactive_reason
+  field :full_name
 
   view :illinois_dashboard do
-    field :full_name
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
     end
@@ -53,7 +53,6 @@ class ChildBlueprint < Blueprinter::Base
       # Uses a feature flag in the child model methods
       child.nebraska_full_days(options[:filter_date])&.to_s
     end
-    field :full_name
     field :hours do |child, options|
       # Uses a feature flag in the child model methods
       child.nebraska_hours(options[:filter_date])&.to_f.to_s
