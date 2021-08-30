@@ -80,7 +80,6 @@ export function AttendanceView() {
         const parsedResponse = await response.json()
         const day = dayjs()
         console.log(day)
-        console.log(cases)
         debugger
         setAttendanceData(parsedResponse)
       }

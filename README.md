@@ -13,7 +13,7 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in
 
 ## Why You Should Contribute
 
-We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities. We’re building the market for early childhood technology that educators, families and children deserve.
+We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities in this field. We’re building the market for early childhood technology that educators, families and children deserve.
 
 We need your help!
 
@@ -25,7 +25,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 ## Important URLs
 
-- Staging: [https://pie-staging.herokuapp.com/](https://pie-staging.herokuapp.com/)  
+- Staging: [https://staging.pieforproviders.com/](https://staging.pieforproviders.com/)  
 
 <br />
 
@@ -53,47 +53,13 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - Frontend: React
   - ESLint/Prettier
   - Jest/React Testing Library
-  - Husky for pre-commit hooks
   
-</details>  
-
----
-
-<details>
-  <summary>Docker Setup</summary>
-
-### Prerequisites
-Docker should be installed on your local machine.
-
-### Procedure
-* Use the "git clone" command to download this repository.
-* Use the "cd" command to enter the root directory of this repository.
-* Enter the command "docker/build".  You will be asked to enter database parameters.  The docker/build script automatically sets up the app, runs the test suite, seeds the database, draws the block diagram, runs quality checks of this code base, and logs the screen output.
-* After the build process is complete, enter the command "docker/server" to start the Rails server.
-* Start a second terminal tab for entering additional commands.
-
-### URLs
-* App: http://localhost:3000
-* MailCatcher: http://localhost:1080
-
-### Database Parameters
-* Host: localhost
-* Port number: 15432
-* Database: pie_development
-* Username and password: specified in .docker-env/development/database
-
-### Other Important Scripts
-* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sanity check to allow you to make sure to commit quality working code only.
-* Enter the command "docker/qserver" for the quick version of "docker/server".  Note that the "docker/qserver" script does not log the screen output, does not remove tmp/pids/server.pid, skips "docker-compose down", skips "bundle install", and skips the database migration.
-* Enter "docker/nuke" to destroy the Docker image, container, and networks.
-* Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
-
 </details>
 
 ---
 
 <details>
-  <summary>Non-Docker Setup</summary>
+  <summary>Local Setup (Option One: Direct Install)</summary>
 
 ---
 **for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript** 
@@ -125,7 +91,7 @@ Docker should be installed on your local machine.
 - create and seed the database: `bundle exec rails db:setup`
 - install front-end and end-to-end packages: `yarn install-all`
 
-### Running Locally
+### Running the App
 
 You have several convenient options for running the app locally.
 
@@ -140,6 +106,41 @@ You have several convenient options for running the app locally.
     - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
+</details>
+
+---
+
+<details>
+  <summary>Local Setup (Option Two: Docker)</summary>
+  
+We also have a dockerized setup if you prefer to develop that way.
+
+### Prerequisites
+Docker should be installed on your local machine.
+
+### Procedure
+* Use the "git clone" command to download this repository.
+* Use the "cd" command to enter the root directory of this repository.
+* Enter the command "docker/build".  You will be asked to enter database parameters.  The docker/build script automatically sets up the app, runs the test suite, seeds the database, draws the block diagram, runs quality checks of this code base, and logs the screen output.
+* After the build process is complete, enter the command "docker/server" to start the Rails server.
+* Start a second terminal tab for entering additional commands.
+
+### URLs
+* App: http://localhost:3000
+* MailCatcher: http://localhost:1080
+
+### Database Parameters
+* Host: localhost
+* Port number: 15432
+* Database: pie_development
+* Username and password: specified in .docker-env/development/database
+
+### Other Important Scripts
+* Enter the command "docker/git_check" before "git add" and "git commit".  This runs the tests, Rubocop, and Brakeman.  The docker/git_check script is a sense check to allow you to make sure to commit quality working code only.
+* Enter the command "docker/qserver" for the quick version of "docker/server".  Note that the "docker/qserver" script does not log the screen output, does not remove tmp/pids/server.pid, skips "docker-compose down", skips "bundle install", and skips the database migration.
+* Enter "docker/nuke" to destroy the Docker image, container, and networks.
+* Enter "docker/nukec" to destroy the Docker container but leave the base images in place.
+
 </details>
 
 ---

@@ -64,14 +64,10 @@
   "resendConfirmationEmail": "Click here to resend the email.",
   "toResendConfirmationEmail": "to resend the confirmation email.",
   "confirmationEmailResent": "Email resent",
-
   "here": "here",
   "clickHere": "Click here",
-
   "reportFeedback": "Report feedback",
-
   "taken": "has already been taken",
-
   "setup": "Setup",
   "steps": "Steps",
   "gettingStartedBusinesses": "Tell us about the businesses and sites you manage, so we know which subsidy payment rates to apply to your cases.",
@@ -86,9 +82,7 @@
   "gettingStartedTitle": "Let's Get Started",
   "gettingStartedInstructions": "Follow these instructions to set up your case dashboard. This should take about 15 minutes, and you'll only have to do this once. Get ready to increase your slice of the pie!",
   "gettingStartedButton": "Get Started",
-
   "genericErrorMessage": "Something went wrong, try again later.",
-
   "invalidEmailOrPassword": "Invalid email or password.",
   "unauthenticated": "You need to sign in or sign up before continuing.",
   "alreadyConfirmed": "You have already verified your account. You can now log in.",
@@ -97,7 +91,6 @@
   "genericEmailConfirmationError": "We've run into a problem confirming your email.",
   "emailNotFound": "Email address not found.",
   "resetPasswordRequestSuccess": "You will receive an email with instructions on how to reset your password in a few minutes.",
-
   "yourConfirmationToken": "Your confirmation token is",
   "blank": "blank",
   "invalid": "invalid",
@@ -107,16 +100,13 @@
   "genericConfirmationError": "There was an unknown problem with your confirmation.",
   "contactUs": "Contact us",
   "forSupport": "for support.",
-
   "passwordResetTokenBlank": "Your password reset token is blank. You must click on the reset password link sent to your email address.",
   "passwordResetTokenInvalid": "Your password reset token is invalid. Please request a new one.",
   "passwordResetTokenExpired": "Your password reset token has expired. Please request a new one.",
   "passwordUpdated": "Password updated",
-
   "uploadCases": "Upload Cases",
   "uploadCasesInvalidFileFormat": "Invalid file format. Supported formats: CSV, XLS, and XLSX",
   "reviewImportedCases": "Review Imported Cases",
-
   "firstName": "First Name",
   "lastName": "Last Name",
   "dateOfBirth": "Date of birth",
@@ -129,12 +119,10 @@
   "expiresOn": "Expires on",
   "copay": "Co-pay",
   "copayFrequency": "Co-pay frequency",
-
   "oops": "Oops!",
   "notFound": "We’re sorry, but it looks like something went wrong on our end. Please return to your dashboard to continue.",
   "goBack": "Go back",
   "notFoundImageAltText": "Pie and drinks",
-
   "dashboardTitle": "Your dashboard",
   "revenueProjections": "Real-time revenue projections based on attendance data.",
   "childName": "Child name",
@@ -157,7 +145,6 @@
   "transportation": "Transportation",
   "transportationDef": "Max revenue if all transportation is used",
   "comingSoon": "Coming soon!",
-
   "attendance": "Attendance",
   "revenue": "Revenue",
   "child": "Child",
@@ -169,7 +156,6 @@
   "hoursAttended": "Hours attended",
   "transportationRevenue": "Transportation revenue",
   "familyFee": "Family fee",
-
   "onTrack": "On track",
   "sureBet": "Sure bet",
   "atRisk": "At risk",
@@ -177,7 +163,6 @@
   "notEnoughInfo": "Not enough info",
   "exceededLimit": "Exceeded limit",
   "aheadOfSchedule": "Ahead of schedule",
-
   "asOf": "As of",
   "jan": "Jan",
   "feb": "Feb",
@@ -191,7 +176,6 @@
   "oct": "Oct",
   "nov": "Nov",
   "dec": "Dec",
-
   "definitions": "Definitions",
   "neExceededLimitDef": "The child has attended more days than they were approved for this month. You have earned the max monthly payment and will not be paid for additional days.",
   "neOnTrackDef": "The child is attending most or all of their days and you will likely receive most of the subsidy payment this month.",
@@ -206,14 +190,22 @@
   "neHoursAttendedDef": "Hours the child has attended this week. If you exceed your maximum hours for the week, you will not be paid by the state for those additional hours.",
   "neFamilyFeeDef": "The amount the parent owes you for this child for the month.",
   "backToTop": "Back to top",
-
   "of": "of",
   "trips": "trips",
-
   "sortAsc": "Click to sort ascending ",
   "sortDesc": "Click to sort descending",
   "sortCancel": "Click to cancel sort",
 
+  "actions": "Actions",
+  "markInactive": "Mark inactive",
+  "markInactiveInfo1": "Once you mark this child inactive, you will not see any future attendance or revenue information on your Pie for Providers dashboard.",
+  "markInactiveInfo2": "You will still be able to review past attendance and revenue.",
+  "markInactiveReason": "Reason for marking inactive",
+  "inactiveReason1": "No longer in my care",
+  "inactiveReason2": "No longer receiving subsidies",
+  "inactiveReason3": "Other",
+  "markInactiveCalendarPrompt": "Let us know when this child should become inactive.",
+  "inactive": "Inactive",
   "addAttendance": "Add attendance",
   "enterAttendance": "Enter attendance history",
   "important": "Important:",
@@ -234,16 +226,5 @@
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
-  "dateError": "Please select a date",
-  
-  "actions": "Actions",
-  "markInactive": "Mark inactive",
-  "markInactiveInfo1": "Once you mark this child inactive, you will not see any future attendance or revenue information on your Pie for Providers dashboard.",
-  "markInactiveInfo2": "You will still be able to review past attendance and revenue.",
-  "markInactiveReason": "Reason for marking inactive",
-  "inactiveReason1": "No longer in my care",
-  "inactiveReason2": "No longer receiving subsidies",
-  "inactiveReason3": "Other",
-  "markInactiveCalendarPrompt": "Let us know when this child should become inactive.",
-  "inactive": "Inactive"
+  "dateError": "Please select a date"
 }
