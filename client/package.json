@@ -16,7 +16,7 @@
     "@reduxjs/toolkit": "^1.6.1",
     "antd": "^4.16.13",
     "antd-mask-input": "^0.1.15",
-    "craco-less": "^1.18.0",
+    "craco-less": "^1.20.0",
     "csv": "^5.5.2",
     "dayjs": "^1.10.6",
     "deepmerge": "^4.2.2",
