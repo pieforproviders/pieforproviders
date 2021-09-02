@@ -176,6 +176,30 @@ RSpec.describe Attendance, type: :model do
         county: attendance.county
       )
     end
+    let!(:nebraska_school_age_unaccredited_non_urban_hourly_rate) do
+      create(
+        :nebraska_rate,
+        :hourly,
+        :other_region,
+        school_age: true,
+        max_age: nil,
+        effective_on: attendance.check_in - 1.year,
+        expires_on: attendance.check_in + 1.year,
+        county: attendance.county
+      )
+    end
+    let!(:nebraska_school_age_unaccredited_non_urban_daily_rate) do
+      create(
+        :nebraska_rate,
+        :daily,
+        :other_region,
+        school_age: true,
+        max_age: nil,
+        effective_on: attendance.check_in - 1.year,
+        expires_on: attendance.check_in + 1.year,
+        county: attendance.county
+      )
+    end
     before { attendance.business.update!(county: 'Douglas') }
     context 'with an accredited business' do
       before do
@@ -483,6 +507,74 @@ RSpec.describe Attendance, type: :model do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
+      end
+    end
+    context 'with a school age child with an unaccredited qris bump in a non-LDDS county' do
+      before do
+        attendance.business.update!(accredited: false, qris_rating: 'step_five', county: 'Parker')
+        attendance.child_approval.update!(special_needs_rate: false, enrolled_in_school: true)
+      end
+      it 'gets rates on creation of an hourly-only attendance' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue).to eq(3.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
+      end
+      it 'gets rates on creation of a daily-only attendance' do
+        attendance.check_out = attendance.check_in + 6.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
+      end
+      it 'gets rates on creation of a daily-plus-hourly attendance' do
+        attendance.check_out = attendance.check_in + 12.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue)
+          .to eq(
+            (2.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3)) +
+            (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
+          )
+      end
+      it 'gets rates on creation of an attendance at the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 21.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue)
+          .to eq(
+            (8 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3)) +
+            (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
+          )
+      end
+      context 'with a special needs approved child' do
+        before do
+          attendance.business.update!(accredited: true, qris_rating: 'step_five')
+          attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
+        end
+        it 'gets rates on creation of an hourly-only attendance' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
+        end
+        it 'gets rates on creation of a daily-only attendance' do
+          attendance.check_out = attendance.check_in + 6.hours + 12.minutes
+          attendance.save!
+          expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+        it 'gets rates on creation of a daily-plus-hourly attendance' do
+          attendance.check_out = attendance.check_in + 12.hours + 12.minutes
+          attendance.save!
+          expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
+        end
+        it 'gets rates on creation of an attendance at the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 21.hours + 12.minutes
+          attendance.save!
+          expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
+        end
+      end
+      it 'changes rates on edit' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue).to eq(3.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
+        attendance.check_out = attendance.check_in + 6.hours + 12.minutes
+        attendance.save!
+        expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
       end
     end
   end

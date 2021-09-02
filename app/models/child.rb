@@ -119,10 +119,17 @@ class Child < UuidApplicationRecord
   def nebraska_family_fee(filter_date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      family_fee = active_nebraska_approval_amount(filter_date)&.family_fee
-      family_fee || 0.00
+      return 0 unless self == active_approval(filter_date).child_with_most_scheduled_hours(filter_date)
+
+      active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
     else
       temporary_nebraska_dashboard_case&.family_fee.to_f
+    end
+  end
+
+  def total_time_scheduled_this_month(filter_date)
+    (0..6).reduce(0) do |sum, weekday|
+      sum + weekday_scheduled_duration(filter_date.at_beginning_of_month, weekday)
     end
   end
 
@@ -147,7 +154,7 @@ class Child < UuidApplicationRecord
   end
 
   def revenue_less_family_fee(filter_date)
-    [(absence_revenue(filter_date) + attendance_revenue(filter_date) - active_nebraska_approval_amount(filter_date)&.family_fee.to_f), 0.0].max
+    [(absence_revenue(filter_date) + attendance_revenue(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
   end
 
   def attendance_revenue(filter_date)
@@ -184,6 +191,17 @@ class Child < UuidApplicationRecord
                       ne_base_revenue(filter_date, schedule_for_weekday)
                     end
     daily_revenue * num_remaining_this_month
+  end
+
+  def weekday_scheduled_duration(filter_date, weekday)
+    schedule_for_weekday = schedule(filter_date, weekday)
+    return 0 unless schedule_for_weekday
+
+    num_remaining_this_month = (filter_date.to_date..filter_date.to_date.at_end_of_month).count { |day| weekday == day.wday }
+    return 0 unless num_remaining_this_month.positive?
+
+    duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
+    duration * num_remaining_this_month
   end
 
   def schedule(filter_date, weekday)

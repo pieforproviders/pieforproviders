@@ -154,6 +154,34 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue + (11 * 25.15 * 1.05)))
         expect(parsed_body['attendance_risk']).to eq('on_track')
       end
+      it 'subtracts the family fee from the correct child' do
+        child.reload
+        child.schedules.destroy_all
+        child.attendances.destroy_all
+        child.schedules << create(:schedule)
+        child_with_more_hours = build(:necc_child,
+                                      business: child.business,
+                                      date_of_birth: child.date_of_birth,
+                                      effective_date: Time.zone.parse('July 1st, 2021'),
+                                      schedules: create_list(:schedule, 5) do |schedule, idx|
+                                        schedule.weekday = idx
+                                      end)
+        approval.children << child_with_more_hours
+        create(:nebraska_approval_amount, family_fee: '80.00', child_approval: child_with_more_hours.child_approvals.first)
+
+        create_list(:attendance, 10, child_approval: child_approval, check_in: '9:00am', check_out: '2:30pm')
+        create_list(:attendance, 10, child_approval: child_with_more_hours.child_approvals.first, check_in: '9:00am', check_out: '2:30pm')
+
+        child_with_less_hours_json = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
+        child_with_more_hours_json = JSON.parse(described_class.render(child_with_more_hours, view: :nebraska_dashboard, filter_date: Time.zone.now))
+
+        expect(child_with_more_hours_json['family_fee']).to eq(format('%.2f', family_fee))
+        expect(child_with_less_hours_json['family_fee']).to eq(format('%.2f', 0))
+
+        # even though they've both attended 10 times, the expectation is that the one with more hours will have less
+        # revenue because we're subtracting the family fee from that child
+        expect(child_with_more_hours_json['earned_revenue']).to eq(format('%.2f', child_with_less_hours_json['earned_revenue'].to_f - 80.00))
+      end
     end
   end
 end
