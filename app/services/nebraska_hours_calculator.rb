@@ -11,16 +11,16 @@ class NebraskaHoursCalculator
     calculate_hours
   end
 
+  def round_hourly_to_quarters(duration)
+    (adjusted_duration(duration).in_minutes / 15.0).ceil * 15 / 60.0
+  end
+
   private
 
   def calculate_hours
-    @child.attendances.for_month(@filter_date).reduce(0) do |sum, attendance|
+    @child.attendances.non_absences.for_month(@filter_date).reduce(0) do |sum, attendance|
       sum + round_hourly_to_quarters(attendance.total_time_in_care)
     end
-  end
-
-  def round_hourly_to_quarters(duration)
-    (adjusted_duration(duration).in_minutes / 15.0).ceil * 15 / 60.0
   end
 
   def adjusted_duration(duration)

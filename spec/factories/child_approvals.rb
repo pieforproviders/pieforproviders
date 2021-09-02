@@ -9,7 +9,7 @@ FactoryBot.define do
     special_needs_rate { Faker::Boolean.boolean }
     special_needs_daily_rate { special_needs_rate ? rand(0.0..20).round(2) : nil }
     special_needs_hourly_rate { special_needs_rate ? rand(0.0..10).round(2) : nil }
-    enrolled_in_school { Faker::Boolean.boolean }
+    enrolled_in_school { false }
     authorized_weekly_hours { rand(0..45) }
 
     factory :child_approval_with_attendances do

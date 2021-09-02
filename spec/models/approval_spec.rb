@@ -79,6 +79,16 @@ RSpec.describe Approval, type: :model do
   it 'factory should be valid (default; no args)' do
     expect(build(:approval)).to be_valid
   end
+
+  describe '#child_with_most_scheduled_hours' do
+    before { approval.save! }
+    it 'returns the child with the most scheduled hours' do
+      child_with_more_hours = create(:child, approvals: [approval])
+      create(:child, approvals: [approval], schedules: [create(:schedule)])
+      expect(approval.child_with_most_scheduled_hours(Time.current.in_time_zone(child_with_more_hours.timezone)))
+        .to eq(child_with_more_hours)
+    end
+  end
 end
 
 # == Schema Information

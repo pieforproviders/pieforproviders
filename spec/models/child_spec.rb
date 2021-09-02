@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Child, type: :model do
-  let(:child) { create(:child) }
+  let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
   it { should belong_to(:business) }
   it { should have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
@@ -118,15 +118,26 @@ RSpec.describe Child, type: :model do
 
     describe '#nebraska_family_fee' do
       context 'using live algorithms' do
-        it 'returns the database value' do
+        before do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(format('%.2f', child.active_nebraska_approval_amount(Time.current.to_date).family_fee))
+          child.reload
+        end
+        it 'returns the database value' do
+          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+        end
+        context 'when there are two children' do
+          it 'returns the correct allocation of the family fee' do
+            # child object should have a default schedule, which is 40 hours a week, in whatever given month
+            child_with_less_hours = create(:child, approvals: [child.approvals.first], schedules: [create(:schedule, weekday: 1)])
+            expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+            expect(child_with_less_hours.nebraska_family_fee(Time.current.to_date)).to eq(0)
+          end
         end
       end
       context 'using temporary dashboard values' do
         it 'does not call the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(format('%.2f', child.temporary_nebraska_dashboard_case.family_fee))
+          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.temporary_nebraska_dashboard_case.family_fee)
         end
       end
     end

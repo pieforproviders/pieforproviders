@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_03_170531) do
+ActiveRecord::Schema.define(version: 2021_08_13_153945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 2021_08_03_170531) do
     t.uuid "child_approval_id", null: false
     t.string "wonderschool_id"
     t.string "absence"
+    t.decimal "earned_revenue"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
   end
 
@@ -57,8 +58,8 @@ ActiveRecord::Schema.define(version: 2021_08_03_170531) do
     t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "qris_rating"
     t.boolean "accredited"
+    t.string "qris_rating"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -158,6 +159,22 @@ ActiveRecord::Schema.define(version: 2021_08_03_170531) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
+  end
+
+  create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "region", null: false
+    t.string "rate_type", null: false
+    t.decimal "amount", null: false
+    t.string "county"
+    t.boolean "accredited_rate", default: false, null: false
+    t.date "effective_on", null: false
+    t.date "expires_on"
+    t.string "license_type", null: false
+    t.decimal "max_age"
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "school_age", default: false
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
