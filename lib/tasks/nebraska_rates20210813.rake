@@ -3,7 +3,7 @@
 # This will enter all NE Hourly & Daily Rates for Family Child Care Home I & II as of 2021/08/13, subject to change
 desc 'Import all Nebraska Hourly and Daily Rates for Family Child Care Home I & II as of 2021/08/13'
 task nebraska_rates20210813: :environment do
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly LDDS unaccredited FCCHI',
     rate_type: 'hourly',
@@ -14,7 +14,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly LDDS unaccredited FCCHII',
     rate_type: 'hourly',
@@ -25,7 +25,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly LDDS accredited FCCHI',
     rate_type: 'hourly',
@@ -36,7 +36,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly LDDS accredited FCCHII',
     rate_type: 'hourly',
@@ -47,7 +47,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly Other county unaccredited FCCHI',
     rate_type: 'hourly',
@@ -58,7 +58,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly Other county unaccredited FCCHII',
     rate_type: 'hourly',
@@ -69,7 +69,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly Other county accredited FCCHI',
     rate_type: 'hourly',
@@ -80,7 +80,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Hourly Other county accredited FCCHII',
     rate_type: 'hourly',
@@ -91,7 +91,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly LDDS unaccredited FCCHI',
     rate_type: 'hourly',
@@ -102,7 +102,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly LDDS unaccredited FCCHII',
     rate_type: 'hourly',
@@ -113,7 +113,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly LDDS accredited FCCHI',
     rate_type: 'hourly',
@@ -124,7 +124,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly LDDS accredited FCCHII',
     rate_type: 'hourly',
@@ -135,7 +135,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly Other county unaccredited FCCHI',
     rate_type: 'hourly',
@@ -146,7 +146,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly Other county unaccredited FCCHII',
     rate_type: 'hourly',
@@ -157,7 +157,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly Other county accredited FCCHI',
     rate_type: 'hourly',
@@ -168,7 +168,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Hourly Other county accredited FCCHII',
     rate_type: 'hourly',
@@ -179,7 +179,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly LDDS unaccredited FCCHI',
     rate_type: 'hourly',
@@ -190,7 +190,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly LDDS unaccredited FCCHII',
     rate_type: 'hourly',
@@ -201,7 +201,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly LDDS accredited FCCHI',
     rate_type: 'hourly',
@@ -212,7 +212,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly LDDS accredited FCCHII',
     rate_type: 'hourly',
@@ -223,7 +223,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly Other county unaccredited FCCHI',
     rate_type: 'hourly',
@@ -234,7 +234,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly Other county unaccredited FCCHII',
     rate_type: 'hourly',
@@ -245,7 +245,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly Other county accredited FCCHI',
     rate_type: 'hourly',
@@ -256,7 +256,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Hourly Other county accredited FCCHII',
     rate_type: 'hourly',
@@ -267,7 +267,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly LDDS unaccredited FCCHI',
     school_age: true,
@@ -279,7 +279,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly LDDS unaccredited FCCHII',
     school_age: true,
@@ -291,7 +291,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly LDDS accredited FCCHI',
     school_age: true,
@@ -303,7 +303,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly LDDS accredited FCCHII',
     school_age: true,
@@ -315,7 +315,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly Other county unaccredited FCCHI',
     school_age: true,
@@ -327,7 +327,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly Other county unaccredited FCCHII',
     school_age: true,
@@ -339,7 +339,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly Other county accredited FCCHI',
     school_age: true,
@@ -351,7 +351,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Hourly Other county accredited FCCHII',
     school_age: true,
@@ -363,7 +363,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily LDDS unaccredited FCCHI',
     rate_type: 'daily',
@@ -374,7 +374,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily LDDS unaccredited FCCHII',
     rate_type: 'daily',
@@ -385,7 +385,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily LDDS accredited FCCHI',
     rate_type: 'daily',
@@ -396,7 +396,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily LDDS accredited FCCHII',
     rate_type: 'daily',
@@ -407,7 +407,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily Other county unaccredited FCCHI',
     rate_type: 'daily',
@@ -418,7 +418,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily Other county unaccredited FCCHII',
     rate_type: 'daily',
@@ -429,7 +429,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily Other county accredited FCCHI',
     rate_type: 'daily',
@@ -440,7 +440,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Infant Daily Other county accredited FCCHII',
     rate_type: 'daily',
@@ -451,7 +451,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily LDDS unaccredited FCCHI',
     rate_type: 'daily',
@@ -462,7 +462,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily LDDS unaccredited FCCHII',
     rate_type: 'daily',
@@ -473,7 +473,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily LDDS accredited FCCHI',
     rate_type: 'daily',
@@ -484,7 +484,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily LDDS accredited FCCHII',
     rate_type: 'daily',
@@ -495,7 +495,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily Other county unaccredited FCCHI',
     rate_type: 'daily',
@@ -506,7 +506,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily Other county unaccredited FCCHII',
     rate_type: 'daily',
@@ -517,7 +517,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily Other county accredited FCCHI',
     rate_type: 'daily',
@@ -528,7 +528,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Toddler Daily Other county accredited FCCHII',
     rate_type: 'daily',
@@ -539,7 +539,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily LDDS unaccredited FCCHI',
     rate_type: 'daily',
@@ -550,7 +550,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily LDDS unaccredited FCCHII',
     rate_type: 'daily',
@@ -561,7 +561,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily LDDS accredited FCCHI',
     rate_type: 'daily',
@@ -572,7 +572,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily LDDS accredited FCCHII',
     rate_type: 'daily',
@@ -583,7 +583,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily Other county unaccredited FCCHI',
     rate_type: 'daily',
@@ -594,7 +594,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily Other county unaccredited FCCHII',
     rate_type: 'daily',
@@ -605,7 +605,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily Other county accredited FCCHI',
     rate_type: 'daily',
@@ -616,7 +616,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'Preschool Daily Other county accredited FCCHII',
     rate_type: 'daily',
@@ -627,7 +627,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily LDDS unaccredited FCCHI',
     school_age: true,
@@ -639,7 +639,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily LDDS unaccredited FCCHII',
     school_age: true,
@@ -651,7 +651,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily LDDS accredited FCCHI',
     school_age: true,
@@ -663,7 +663,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily LDDS accredited FCCHII',
     school_age: true,
@@ -675,7 +675,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily Other county unaccredited FCCHI',
     school_age: true,
@@ -687,7 +687,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily Other county unaccredited FCCHII',
     school_age: true,
@@ -699,7 +699,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: false
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily Other county accredited FCCHI',
     school_age: true,
@@ -711,7 +711,7 @@ task nebraska_rates20210813: :environment do
     accredited_rate: true
   )
 
-  NebraskaRate.create!(
+  NebraskaRate.find_or_create_by!(
     effective_on: '2021-01-01',
     name: 'SchoolAge Daily Other county accredited FCCHII',
     school_age: true,

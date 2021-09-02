@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.boolean "accredited"
     t.string "qris_rating"
+    t.boolean "accredited"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -75,9 +75,9 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.integer "authorized_weekly_hours"
     t.string "rate_type"
     t.uuid "rate_id"
+    t.integer "authorized_weekly_hours"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-07-27", null: false
+    t.date "effective_on", default: "2021-09-02", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
