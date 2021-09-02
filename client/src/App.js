@@ -7,6 +7,7 @@ import {
   useLocation
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { hotjar } from 'react-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
@@ -32,12 +33,9 @@ const Routes = () => {
   let location = useLocation()
 
   useEffect(() => {
-    if (!window.gtag) return
-    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
-      page_path: location.pathname,
-      user_id: user.id ?? ''
-    })
-  }, [location, user])
+    hotjar.initialize(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
+    hotjar.identify('USER_ID', { user_id: user.id ?? '' })
+  }, [user])
 
   return (
     <div
