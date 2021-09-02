@@ -13,12 +13,37 @@ class Business < UuidApplicationRecord
 
   accepts_nested_attributes_for :children
 
+  QRIS_RATINGS = %w[
+    not_rated
+    step_one
+    step_two
+    step_three
+    step_four
+    step_five
+    gold
+    silver
+    bronze
+  ].freeze
+
   validates :active, inclusion: { in: [true, false] }
+  validates :qris_rating, inclusion: { in: QRIS_RATINGS }, allow_nil: true
   validates :name, presence: true, uniqueness: { scope: :user_id }
   validates :county, presence: true
   validates :zipcode, presence: true
 
   scope :active, -> { where(active: true) }
+
+  def ne_qris_bump
+    exponents = {
+      step_one: 0,
+      step_two: 0,
+      step_three: accredited ? 0 : 1,
+      step_four: accredited ? 1 : 2,
+      step_five: accredited ? 2 : 3
+    }
+    exponent = qris_rating && exponents[qris_rating.to_sym] ? exponents[qris_rating.to_sym] : 0
+    1.05**exponent # compounding qris formula
+  end
 
   private
 

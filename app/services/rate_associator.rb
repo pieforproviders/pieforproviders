@@ -30,14 +30,7 @@ class RateAssociator
   end
 
   def illinois_rate
-    IllinoisRate.active_on_date(today).where('max_age >= ?', age).where(county: county).order(:max_age).first
-  end
-
-  def age
-    dob = @child.date_of_birth
-    years_since_birth = today.year - dob.year
-    birthday_passed = dob.month <= today.month || dob.day <= today.day
-    birthday_passed ? years_since_birth : years_since_birth - 1
+    IllinoisRate.active_on_date(today).where('max_age >= ?', @child.age).where(county: county).order(:max_age).first
   end
 
   def illinois_rate_associator
