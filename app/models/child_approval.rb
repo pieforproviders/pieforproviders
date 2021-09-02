@@ -10,6 +10,7 @@ class ChildApproval < UuidApplicationRecord
   has_many :attendances, dependent: :destroy
 
   delegate :user, to: :child
+  delegate :business, to: :child
 
   accepts_nested_attributes_for :nebraska_approval_amounts, :approval
 end

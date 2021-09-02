@@ -14,7 +14,7 @@ class NebraskaWeeklyHoursAttendedCalculator
   private
 
   def calculate_weekly_hours_attended
-    "#{weekly_hours.in_hours.round(1)} of #{@child.active_child_approval(@filter_date).authorized_weekly_hours}"
+    "#{weekly_hours.seconds.in_hours.round(1)} of #{@child.active_child_approval(@filter_date).authorized_weekly_hours}"
   end
 
   def weekly_hours

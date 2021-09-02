@@ -54,6 +54,7 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.8'
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
+  gem 'solargraph'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end

@@ -6,6 +6,7 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
+    enrolled_in_school { false }
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -33,7 +34,9 @@ FactoryBot.define do
         create(:temporary_nebraska_dashboard_case, child: child) if evaluator.create_dashboard_case
         create(:nebraska_approval_amount,
                child_approval: child.active_child_approval(evaluator.effective_date),
-               effective_on: evaluator.effective_date - 2.months)
+               effective_on: evaluator.effective_date - 2.months,
+               family_fee: 80.00)
+        child.child_approvals.first.update!(authorized_weekly_hours: 20)
       end
     end
 

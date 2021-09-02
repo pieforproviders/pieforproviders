@@ -26,6 +26,10 @@ class Approval < UuidApplicationRecord
   def timezone
     children.first.timezone
   end
+
+  def child_with_most_scheduled_hours(filter_date)
+    children.max_by { |child| child.total_time_scheduled_this_month(filter_date) }
+  end
 end
 
 # == Schema Information
