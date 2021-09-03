@@ -33,7 +33,7 @@ class Attendance < UuidApplicationRecord
     week ||= Time.current
     where('check_in BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:saturday))
   }
-  
+
   scope :for_day, lambda { |day = nil|
     day ||= Time.current
     where('check_in BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
