@@ -37,6 +37,7 @@ class Child < UuidApplicationRecord
   scope :active, -> { where(active: true) }
   scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
   scope :not_deleted, -> { where(deleted: false) }
+  scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
 
   delegate :county, to: :business
   delegate :user, to: :business
