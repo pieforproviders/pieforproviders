@@ -67,6 +67,16 @@ module Wonderschool
             expect(third_child.attendances.order(:check_in).first.check_in).to be_within(1.minute).of Time.zone.parse('2021-03-10 12:54:39+00')
             expect(third_child.attendances.order(:check_in).first.check_out).to be_within(1.minute).of Time.zone.parse('2021-03-11 00:27:53+00')
           end
+          
+          it 'removes existing absences records for the correct child with the correct data' do
+            create(:attendance, child_approval: second_child.child_approvals.first, check_in: DateTime.parse("2021-02-24"), check_out: nil, absence: "absence")
+            expect(second_child.attendances.for_day(DateTime.parse("2021-02-24")).length).to eq(1)
+            expect(second_child.attendances.for_day(DateTime.parse("2021-02-24")).absences.length).to eq(1)
+            second_child.reload
+            described_class.new.call
+            expect(second_child.attendances.for_day(DateTime.parse("2021-02-24")).length).to eq(1)
+            expect(second_child.attendances.for_day(DateTime.parse("2021-02-24")).absences.length).to eq(0)
+          end
         end
 
         it "continues processing if the child doesn't exist" do
