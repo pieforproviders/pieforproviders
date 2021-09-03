@@ -11,6 +11,8 @@ class ChildApproval < UuidApplicationRecord
 
   delegate :user, to: :child
   delegate :business, to: :child
+  delegate :effective_on, to: :approval
+  delegate :expires_on, to: :approval
 
   accepts_nested_attributes_for :nebraska_approval_amounts, :approval
 end
