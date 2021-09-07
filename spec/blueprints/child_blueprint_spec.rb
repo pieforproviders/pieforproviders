@@ -85,7 +85,7 @@ RSpec.describe ChildBlueprint do
     context 'when using live algorithms' do
       before do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-        travel_to attendance_date + 5.days # dashboard view date is August 13, 2021
+        travel_to attendance_date.in_time_zone(child.timezone) + 5.days + 16.hours # dashboard view date is August 13, 2021 at 4pm
       end
       after do
         travel_back
@@ -155,6 +155,13 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', earned_revenue + (11 * 25.15 * 1.05)))
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', estimated_revenue + (11 * 25.15 * 1.05)))
         expect(parsed_body['attendance_risk']).to eq('on_track')
+
+        create(:attendance, child_approval: child_approval, check_in: Time.zone.now - 7.hours, check_out: Time.zone.now - 10.minutes)
+
+        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.zone.now))
+        expect(parsed_body['earned_revenue']).to eq(format('%.2f', earned_revenue + (12 * 25.15 * 1.05)))
+        # earned revenue + 12 attended days and 12 remaining days
+        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', earned_revenue + (12 * 25.15 * 1.05) + (12 * 25.15 * 1.05)))
       end
       it 'subtracts the family fee from the correct child' do
         child.attendances.destroy_all

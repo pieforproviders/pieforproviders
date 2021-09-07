@@ -183,26 +183,27 @@ class Child < UuidApplicationRecord
     schedule_for_weekday = schedule(filter_date, weekday)
     return 0 unless schedule_for_weekday
 
-    num_remaining_this_month = (filter_date.to_date..filter_date.to_date.at_end_of_month).count { |day| weekday == day.wday }
-    return 0 unless num_remaining_this_month.positive?
-
     daily_revenue = if active_child_approval(filter_date).special_needs_rate
                       ne_special_needs_revenue(filter_date, schedule_for_weekday)
                     else
                       ne_base_revenue(filter_date, schedule_for_weekday)
                     end
-    daily_revenue * num_remaining_this_month
+    daily_revenue * num_remaining_this_month(filter_date, weekday)
   end
 
   def weekday_scheduled_duration(filter_date, weekday)
     schedule_for_weekday = schedule(filter_date, weekday)
     return 0 unless schedule_for_weekday
 
+    duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
+    duration * num_remaining_this_month(filter_date, weekday)
+  end
+
+  def num_remaining_this_month(filter_date, weekday)
     num_remaining_this_month = (filter_date.to_date..filter_date.to_date.at_end_of_month).count { |day| weekday == day.wday }
     return 0 unless num_remaining_this_month.positive?
 
-    duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    duration * num_remaining_this_month
+    filter_date.wday == weekday && attendances.for_day(filter_date).present? ? num_remaining_this_month - 1 : num_remaining_this_month
   end
 
   def schedule(filter_date, weekday)
