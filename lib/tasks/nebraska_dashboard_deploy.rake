@@ -9,6 +9,8 @@ task nebraska_dashboard_deploy: :environment do
     today = Time.current.in_time_zone(child.timezone)
     # generate default schedules
     5.times do |idx|
+      next if child.schedules.pluck(:weekday).include?(idx + 1)
+
       Schedule.create!(
         child: child,
         weekday: idx + 1,

@@ -14,11 +14,11 @@ class NebraskaWeeklyHoursAttendedCalculator
   private
 
   def calculate_weekly_hours_attended
-    "#{weekly_hours.seconds.in_hours.round(1)} of #{@child.active_child_approval(@filter_date).authorized_weekly_hours}"
+    weekly_hours.seconds.in_hours.round(1)
   end
 
   def weekly_hours
-    @child.attendances.for_week(@filter_date).reduce(0) do |sum, attendance|
+    @child.attendances.non_absences.for_week(@filter_date).reduce(0) do |sum, attendance|
       sum + attendance.total_time_in_care
     end
   end

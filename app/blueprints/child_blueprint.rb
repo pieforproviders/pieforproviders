@@ -38,7 +38,7 @@ class ChildBlueprint < Blueprinter::Base
       # Uses a feature flag in the child model methods
       absences = child.absences(options[:filter_date])
       if absences
-        "#{absences}#{absences.to_s.include?('of') ? '' : ' of 5'}"
+        absences.to_s.include?('of') ? absences : "#{absences} of 5"
       else
         '0 of 5'
       end
@@ -59,15 +59,21 @@ class ChildBlueprint < Blueprinter::Base
     end
     field :full_days do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_full_days(options[:filter_date])&.to_s
+      child.nebraska_full_days(options[:filter_date])&.to_f&.to_s
     end
     field :hours do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_hours(options[:filter_date])&.to_f.to_s
+      child.nebraska_hours(options[:filter_date])&.to_f&.to_s
     end
     field :hours_attended do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_weekly_hours_attended(options[:filter_date])&.to_s
+      authorized_weekly_hours = child.active_child_approval(options[:filter_date]).authorized_weekly_hours
+      hours_attended = child.nebraska_weekly_hours_attended(options[:filter_date])
+      if hours_attended.respond_to?(:positive?) && hours_attended >= 0
+        "#{hours_attended} of #{authorized_weekly_hours}"
+      else
+        hours_attended&.to_s
+      end
     end
   end
 end
