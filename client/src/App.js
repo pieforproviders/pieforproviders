@@ -7,7 +7,7 @@ import {
   useLocation
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { hotjar } from 'react-hotjar'
+import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
@@ -28,14 +28,19 @@ const env = runtimeEnv()
 
 const Routes = () => {
   const { t } = useTranslation()
+  const { identifyHotjar, initHotjar } = useHotjar()
   const isAuthenticated = useAuthentication()
   const user = useSelector(state => state.user)
   let location = useLocation()
 
   useEffect(() => {
-    hotjar.initialize(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
-    hotjar.identify('USER_ID', { user_id: user.id ?? '' })
-  }, [user])
+    initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    identifyHotjar(user.id ?? '')
+  }, [identifyHotjar, user])
 
   return (
     <div
