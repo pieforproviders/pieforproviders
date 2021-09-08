@@ -35,12 +35,9 @@ const Routes = () => {
 
   useEffect(() => {
     initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
     identifyHotjar(user.id ?? '')
-  }, [identifyHotjar, user])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   return (
     <div
