@@ -13,32 +13,32 @@ RSpec.describe NebraskaWeeklyHoursAttendedCalculator, type: :service do
     context 'with one attendance less than 6 hours' do
       it 'returns the total attended hours of authorized weekly hours as a string' do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 4.hours + 5.minutes)
-        expect(described_class.new(child, first_attendance_date).call).to eq("4.1 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(4.1)
       end
     end
     context 'with one attendance more than 6 hours but less than 10 hours' do
       it 'returns the total attended hours of authorized weekly hours as a string' do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 6.hours + 15.minutes)
-        expect(described_class.new(child, first_attendance_date).call).to eq("6.3 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(6.3)
       end
     end
     context 'with one attendance greater than 10 hours but less than 18 hours' do
       it 'returns the total attended hours of authorized weekly hours as a string' do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 12.hours + 42.minutes)
-        expect(described_class.new(child, first_attendance_date).call).to eq("12.7 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(12.7)
       end
     end
     context 'with one attendance greater than 18 hours' do
       it 'returns the total attended hours of authorized weekly hours as a string' do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 19.hours + 11.minutes)
-        expect(described_class.new(child, first_attendance_date).call).to eq("19.2 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(19.2)
       end
     end
     context 'with one attendance during the filter week and one before the filter week' do
       it 'returns the total attended hours of authorized weekly hours as a string' do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 12.hours + 42.minutes)
         create(:attendance, child_approval: child_approval, check_in: check_in.at_beginning_of_week(:sunday) - 1.day + 8.hours, check_out: nil)
-        expect(described_class.new(child, first_attendance_date).call).to eq("12.7 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(12.7)
       end
     end
     context 'with multiple attendances during the filter week' do
@@ -46,7 +46,7 @@ RSpec.describe NebraskaWeeklyHoursAttendedCalculator, type: :service do
         create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_in + 6.hours + 15.minutes)
         create(:attendance, child_approval: child_approval, check_in: check_in + 1.day, check_out: check_in + 1.day + 12.hours + 42.minutes)
         create(:attendance, child_approval: child_approval, check_in: check_in + 2.days, check_out: check_in + 2.days + 4.hours + 5.minutes)
-        expect(described_class.new(child, first_attendance_date).call).to eq("23.0 of #{child_approval.authorized_weekly_hours}")
+        expect(described_class.new(child, first_attendance_date).call).to eq(23.0)
       end
     end
   end

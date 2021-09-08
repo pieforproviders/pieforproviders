@@ -92,9 +92,15 @@ class Child < UuidApplicationRecord
   end
 
   def risk_calculation(filter_date)
+    return 'not_enough_info' if filter_date < halfway(filter_date)
+
     scheduled_revenue = remaining_scheduled_revenue(filter_date.in_time_zone(timezone).at_beginning_of_month)
     estimated_revenue = nebraska_estimated_revenue(filter_date)
-    ratio = (estimated_revenue - scheduled_revenue) / scheduled_revenue.to_f
+    ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
+    risk_ratio_label(ratio)
+  end
+
+  def risk_ratio_label(ratio)
     if ratio <= -0.2
       'at_risk'
     elsif ratio > -0.2 && ratio <= 0.2
@@ -102,6 +108,10 @@ class Child < UuidApplicationRecord
     else
       'ahead_of_schedule'
     end
+  end
+
+  def halfway(filter_date)
+    filter_date.at_beginning_of_month + 14.days
   end
 
   def active_rate(date)
@@ -138,7 +148,7 @@ class Child < UuidApplicationRecord
   def nebraska_earned_revenue(filter_date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      revenue_less_family_fee(filter_date)
+      [(earned_revenue_as_of_date(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
     else
       temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
     end
@@ -148,14 +158,14 @@ class Child < UuidApplicationRecord
   def nebraska_estimated_revenue(filter_date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      estimated_revenue_less_family_fee(filter_date)
+      [(estimated_remaining_revenue(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
     else
       temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
     end
   end
 
-  def revenue_less_family_fee(filter_date)
-    [(absence_revenue(filter_date) + attendance_revenue(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
+  def earned_revenue_as_of_date(filter_date)
+    (absence_revenue(filter_date) + attendance_revenue(filter_date))
   end
 
   def attendance_revenue(filter_date)
@@ -167,8 +177,36 @@ class Child < UuidApplicationRecord
     absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
   end
 
-  def estimated_revenue_less_family_fee(filter_date)
-    [(revenue_less_family_fee(filter_date) + remaining_scheduled_revenue(filter_date)), 0.0].max
+  def estimated_remaining_revenue(filter_date)
+    (earned_revenue_as_of_date(filter_date) + remaining_scheduled_revenue(filter_date))
+  end
+
+  def scheduled_hours_this_month(filter_date)
+    schedules.active_on_date(filter_date).reduce(0) do |sum, schedule|
+      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
+      hours = hours_by_duration(duration)
+      sum + (hours * num_remaining_this_month(filter_date.at_beginning_of_month, schedule.weekday))
+    end
+  end
+
+  def hours_by_duration(duration)
+    if duration <= (5.hours + 45.minutes)
+      duration
+    elsif duration > 10.hours && duration <= 18.hours
+      duration - 10.hours
+    elsif duration > 18.hours
+      8.hours
+    else
+      0.minutes
+    end
+  end
+
+  def scheduled_days_this_month(filter_date)
+    schedules.active_on_date(filter_date).reduce(0) do |sum, schedule|
+      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
+      days = duration > (5.hours + 45.minutes) ? 1 : 0
+      sum + (days * num_remaining_this_month(filter_date.at_beginning_of_month, schedule.weekday))
+    end
   end
 
   def remaining_scheduled_revenue(filter_date)
@@ -276,7 +314,7 @@ class Child < UuidApplicationRecord
       NebraskaWeeklyHoursAttendedCalculator.new(self,
                                                 filter_date).call
     else
-      temporary_nebraska_dashboard_case&.hours_attended&.to_f
+      temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s # hacky workaround to be able to tell the dashboard blueprint to add 'of X' only to live algorithms
     end
   end
 
