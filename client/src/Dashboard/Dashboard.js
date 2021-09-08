@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useDispatch, useSelector } from 'react-redux'
+import useHotjar from 'react-use-hotjar'
 import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
@@ -12,6 +13,7 @@ import { setCaseData } from '_reducers/casesReducer'
 
 export function Dashboard() {
   const dispatch = useDispatch()
+  const { identifyHotjar } = useHotjar()
   const { reduceTableData } = useCaseData()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -275,6 +277,7 @@ export function Dashboard() {
       if (response.ok) {
         const resp = await response.json()
         dispatch(setUser(resp))
+        identifyHotjar(resp.id ?? null)
         setSummaryTotals(
           summaryDataTotalsConfig[`${resp.state === 'NE' ? 'ne' : 'default'}`]
         )
