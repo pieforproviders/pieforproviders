@@ -36,15 +36,17 @@ export function AttendanceView() {
             </div>
           )
         },
+        // eslint-disable-next-line react/display-name
         render: (_, record) => {
-          return record
+          console.log(columnDate)
+          if (columnDate.format("YYYY-MM-DD")) {
+            
+          }
+          debugger
+          return <div>boop</div>
         }
       })
     }
-    // set week start date:
-    // get current day, reset to sunday, if not already sunday
-    console.log(dateSelected)
-    debugger
 
     return [
       {
@@ -55,7 +57,9 @@ export function AttendanceView() {
           <div className="text-gray9 font-semibold grid justify-items-center ">
             Name
           </div>
-        )
+        ),
+        // eslint-disable-next-line react/display-name
+        render: (_, record) => <div>{record.child}</div>
       },
       ...dateColumns
     ]
@@ -78,22 +82,47 @@ export function AttendanceView() {
 
       if (response.ok) {
         const parsedResponse = await response.json()
-        const day = dayjs()
-        console.log(day)
-        debugger
-        setAttendanceData(parsedResponse)
+        const reducedAttendanceData = parsedResponse.reduce(
+          (accumulator, currentValue) => {
+            // eslint-disable-next-line no-constant-condition
+            if (
+              accumulator.some(e => e.child === currentValue.child.full_name)
+            ) {
+              return accumulator.map(child => {
+                if (child.child === currentValue.child.full_name) {
+                  debugger
+                  return {
+                    child: child.child,
+                    attendances: [...child.attendances, currentValue]
+                  }
+                } else {
+                  return child
+                }
+              })
+            } else {
+              return [
+                ...accumulator,
+                // eslint-disable-next-line prettier/prettier
+                { child: currentValue.child.full_name, attendances: [currentValue] }
+              ]
+            }
+          },
+          []
+        )
+
+        setAttendanceData(reducedAttendanceData)
       }
     }
 
     getResponse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  // eslint-disable-next-line react/react-in-jsx-scope
-  console.log(attendanceData)
+
   return (
     <div>
       <p className="h1-large mb-4 flex justify-center">{t('attendance')}</p>
       <Table
+        dataSource={attendanceData}
         columns={columns}
         bordered={true}
         pagination={false}
