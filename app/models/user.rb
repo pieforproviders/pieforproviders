@@ -52,8 +52,8 @@ class User < UuidApplicationRecord
     # that are between 03-01-2021 and 03-31-2021 *in the user's timezone*
     # then we want to return the check_in time of that latest attendance
     # also in the user's timezone so the "as_of" date on the dashboard is correct
-    start_time = filter_date.in_time_zone(timezone).at_beginning_of_month
-    end_time = filter_date.in_time_zone(timezone).at_end_of_month
+    start_time = filter_date.at_beginning_of_month
+    end_time = filter_date.at_end_of_month
     attendances.where('check_in BETWEEN ? AND ?', start_time, end_time).max_by(&:check_in)&.check_in
   end
 

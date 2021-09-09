@@ -31,7 +31,7 @@ RSpec.describe ChildBlueprint do
     let!(:child) { create(:necc_child, approvals: [approval], effective_date: Time.zone.parse('June 1st, 2021')) }
     let!(:child_approval) { child.child_approvals.first }
     # Attendance Date is Jul 11th, 2021
-    let!(:attendance_date) { (child_approval.approval.effective_on.at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
+    let!(:attendance_date) { (child_approval.approval.effective_on.in_time_zone(child.timezone).at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
     let!(:temporary_nebraska_dashboard_case) do
       create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12, family_fee: 120.50, earned_revenue: 175.60, estimated_revenue: 265.40,
                                                  attendance_risk: 'ahead_of_schedule', absences: '1 of 5')
