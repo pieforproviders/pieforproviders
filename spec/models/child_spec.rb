@@ -15,7 +15,7 @@ RSpec.describe Child, type: :model do
   it { should validate_presence_of(:full_name) }
 
   it 'validates date_of_birth as a date' do
-    child.update(date_of_birth: Time.zone.now)
+    child.update(date_of_birth: Time.current)
     expect(child.valid?).to be_truthy
     child.date_of_birth = "I'm a string"
     expect(child.valid?).to be_falsey
@@ -28,7 +28,7 @@ RSpec.describe Child, type: :model do
   end
 
   it 'validates last_active_date as an optional date' do
-    child.update(last_active_date: Time.zone.now)
+    child.update(last_active_date: Time.current)
     expect(child.valid?).to be_truthy
     child.last_active_date = "I'm a string"
     expect(child.valid?).to be_falsey

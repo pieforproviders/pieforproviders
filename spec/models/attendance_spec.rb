@@ -9,26 +9,26 @@ RSpec.describe Attendance, type: :model do
 
   let(:attendance) { build(:attendance, check_out: nil) }
   it 'validates check_in as a Time' do
-    attendance.update(check_in: Time.zone.now)
+    attendance.update(check_in: Time.current)
     expect(attendance.valid?).to be_truthy
     attendance.check_in = "I'm a string"
     expect(attendance.valid?).to be_falsey
     attendance.check_in = nil
     expect(attendance.valid?).to be_falsey
-    attendance.check_in = Time.zone.now.strftime('%Y-%m-%d %I:%M%P')
+    attendance.check_in = Time.current.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance.valid?).to be_truthy
     attendance.check_in = Date.new(2021, 12, 11)
     expect(attendance.valid?).to be_truthy
   end
 
   it 'validates check_out as an optional Time' do
-    attendance.update(check_out: Time.zone.now)
+    attendance.update(check_out: Time.current)
     expect(attendance.valid?).to be_truthy
     attendance.check_out = "I'm a string"
     expect(attendance.valid?).to be_falsey
     attendance.check_out = nil
     expect(attendance.valid?).to be_truthy
-    attendance.check_out = Time.zone.now.strftime('%Y-%m-%d %I:%M%P')
+    attendance.check_out = Time.current.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance.valid?).to be_truthy
     attendance.check_out = Date.new(2021, 12, 11)
     expect(attendance.valid?).to be_truthy

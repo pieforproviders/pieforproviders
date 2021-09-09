@@ -11,7 +11,7 @@ RSpec.describe Approval, type: :model do
   let(:effective_date) { (Time.current - 6.months).to_date }
 
   it 'validates effective_on as a date' do
-    approval.update(effective_on: Time.zone.now)
+    approval.update(effective_on: Time.current)
     expect(approval.valid?).to be_truthy
     approval.effective_on = "I'm a string"
     expect(approval.valid?).to be_falsey
@@ -24,7 +24,7 @@ RSpec.describe Approval, type: :model do
   end
 
   it 'validates expires_on as an optional date' do
-    approval.update(expires_on: Time.zone.now)
+    approval.update(expires_on: Time.current)
     expect(approval.valid?).to be_truthy
     approval.expires_on = "I'm a string"
     expect(approval.valid?).to be_falsey

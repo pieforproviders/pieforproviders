@@ -40,9 +40,9 @@ class ApplicationController < ActionController::API
   end
 
   def collect_metrics
-    start = Time.zone.now
+    start = Time.current
     yield
-    duration = Time.zone.now - start
+    duration = Time.current - start
     Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
   end
 

@@ -17,7 +17,7 @@ RSpec.describe NebraskaRate, type: :model do
   let(:nebraska_rate) { build(:nebraska_rate) }
 
   it 'validates effective_on as a date' do
-    nebraska_rate.update(effective_on: Time.zone.now)
+    nebraska_rate.update(effective_on: Time.current)
     expect(nebraska_rate.valid?).to be_truthy
     nebraska_rate.effective_on = "I'm a string"
     expect(nebraska_rate.valid?).to be_falsey
@@ -30,7 +30,7 @@ RSpec.describe NebraskaRate, type: :model do
   end
 
   it 'validates expires_on as an optional date' do
-    nebraska_rate.update(expires_on: Time.zone.now)
+    nebraska_rate.update(expires_on: Time.current)
     expect(nebraska_rate.valid?).to be_truthy
     nebraska_rate.expires_on = "I'm a string"
     expect(nebraska_rate.valid?).to be_falsey

@@ -48,4 +48,7 @@ Rails.application.configure do
 
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
+
+  # CI environment runs on UTC so this should help us catch and reproduce timezone errors locally
+  config.time_zone = 'UTC'
 end
