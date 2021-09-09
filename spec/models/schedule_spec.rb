@@ -13,7 +13,7 @@ RSpec.describe Schedule, type: :model do
   let(:schedule) { build(:schedule) }
 
   it 'validates effective_on as a date' do
-    schedule.update(effective_on: Time.zone.now)
+    schedule.update(effective_on: Time.current)
     expect(schedule.valid?).to be_truthy
     schedule.effective_on = "I'm a string"
     expect(schedule.valid?).to be_falsey
@@ -26,7 +26,7 @@ RSpec.describe Schedule, type: :model do
   end
 
   it 'validates expires_on as an optional date' do
-    schedule.update(expires_on: Time.zone.now)
+    schedule.update(expires_on: Time.current)
     expect(schedule.valid?).to be_truthy
     schedule.expires_on = "I'm a string"
     expect(schedule.valid?).to be_falsey
@@ -39,7 +39,7 @@ RSpec.describe Schedule, type: :model do
   end
 
   it 'validates start_time as a time' do
-    schedule.update(start_time: Time.zone.now)
+    schedule.update(start_time: Time.current)
     expect(schedule.valid?).to be_truthy
     schedule.start_time = "I'm a string"
     expect(schedule.valid?).to be_falsey
@@ -52,7 +52,7 @@ RSpec.describe Schedule, type: :model do
   end
 
   it 'validates end_time as a time' do
-    schedule.update(end_time: Time.zone.now)
+    schedule.update(end_time: Time.current)
     expect(schedule.valid?).to be_truthy
     schedule.end_time = "I'm a string"
     expect(schedule.valid?).to be_falsey

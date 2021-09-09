@@ -14,9 +14,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     include_context 'correct api version header'
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it "returns the user's children" do
         get '/api/v1/children', headers: headers
@@ -28,9 +26,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it "returns all users' children" do
         get '/api/v1/children', headers: headers
@@ -46,9 +42,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     include_context 'correct api version header'
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it "returns the user's child" do
         get "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -64,9 +58,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it "returns the user's child" do
         get "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -100,9 +92,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     let(:params_without_business) { { child: params[:child].except(:business_id) } }
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it "creates a child for that user's business" do
         post '/api/v1/children', params: params, headers: headers
@@ -212,9 +202,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it 'creates a child for the passed business' do
         post '/api/v1/children', params: params, headers: headers
@@ -243,9 +231,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it "updates the user's child" do
         put "/api/v1/children/#{user_children.first.id}", params: params, headers: headers
@@ -272,9 +258,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it "updates the user's child" do
         put "/api/v1/children/#{user_children.first.id}", params: params, headers: headers
@@ -298,9 +282,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     include_context 'correct api version header'
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -310,9 +292,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers

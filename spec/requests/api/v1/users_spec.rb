@@ -17,9 +17,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     include_context 'correct api version header'
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it 'returns only the user' do
         get '/api/v1/users', headers: headers
@@ -28,9 +26,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it 'returns all users' do
         get '/api/v1/users', headers: headers
@@ -47,9 +43,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     include_context 'correct api version header'
 
     context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+      before { sign_in logged_in_user }
 
       it 'returns the user using their ID' do
         get "/api/v1/users/#{logged_in_user.id}", headers: headers
@@ -74,9 +68,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it 'returns the user' do
         get "/api/v1/users/#{logged_in_user.id}", headers: headers
@@ -136,9 +128,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     context 'for non-admin user in illinois' do
-      before do
-        sign_in illinois_user
-      end
+      before { sign_in illinois_user }
 
       it 'returns the correct data schema' do
         get '/api/v1/case_list_for_dashboard', headers: headers
@@ -158,9 +148,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     context 'for non-admin user in nebraska' do
-      before do
-        sign_in nebraska_user
-      end
+      before { sign_in nebraska_user }
 
       it 'returns the correct data schema' do
         get '/api/v1/case_list_for_dashboard', headers: headers
@@ -180,9 +168,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     end
 
     context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+      before { sign_in admin_user }
 
       it 'returns the correct data schema' do
         get '/api/v1/case_list_for_dashboard', headers: headers

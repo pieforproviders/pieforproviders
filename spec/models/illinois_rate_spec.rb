@@ -21,7 +21,7 @@ RSpec.describe IllinoisRate, type: :model do
   let(:illinois_rate) { build(:illinois_rate) }
 
   it 'validates effective_on as a date' do
-    illinois_rate.update(effective_on: Time.zone.now)
+    illinois_rate.update(effective_on: Time.current)
     expect(illinois_rate.valid?).to be_truthy
     illinois_rate.effective_on = "I'm a string"
     expect(illinois_rate.valid?).to be_falsey
@@ -34,7 +34,7 @@ RSpec.describe IllinoisRate, type: :model do
   end
 
   it 'validates expires_on as an optional date' do
-    illinois_rate.update(expires_on: Time.zone.now)
+    illinois_rate.update(expires_on: Time.current)
     expect(illinois_rate.valid?).to be_truthy
     illinois_rate.expires_on = "I'm a string"
     expect(illinois_rate.valid?).to be_falsey
