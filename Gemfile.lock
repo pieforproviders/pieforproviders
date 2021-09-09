@@ -157,7 +157,7 @@ GEM
       raabro (~> 1.4)
     globalid (0.5.2)
       activesupport (>= 5.0)
-    good_job (2.0.5)
+    good_job (2.1.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -414,7 +414,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  good_job (~> 2.0)
+  good_job (~> 2.1)
   guard-rspec
   hash_dig_and_collect
   holidays
