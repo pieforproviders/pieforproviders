@@ -7,9 +7,9 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:business)       { create(:business, user: logged_in_user) }
   let!(:child)          { create(:child, business: business) }
 
-  let!(:week_mid_date)   { Time.new(2021, 9, 8) }    # Wed, 8th Sept, 2021
-  let!(:week_start_date) { week_mid_date - 3.days }  # Sun, 5th Sept, 2021
-  let!(:week_end_date)   { week_mid_date + 3.days }  # Sat, 11th Sept, 2021
+  let!(:week_mid_date)   { Time.new(2021, 9, 8).in_time_zone }  # Wed, 8th Sept, 2021
+  let!(:week_start_date) { week_mid_date - 3.days }             # Sun, 5th Sept, 2021
+  let!(:week_end_date)   { week_mid_date + 3.days }             # Sat, 11th Sept, 2021
 
   let!(:two_weeks_ago_week_mid_date)   { week_mid_date - 2.weeks }   # Wed, 25th Aug, 2021
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks } # Sun, 22th Aug, 2021
