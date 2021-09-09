@@ -59,13 +59,13 @@ class Attendance < UuidApplicationRecord
   def round_check_in
     return unless check_in
 
-    self.check_in = Time.at(check_in - check_in.sec).in_time_zone(timezone)
+    self.check_in = Time.zone.at(check_in - check_in.sec)
   end
 
   def round_check_out
     return unless check_out
 
-    self.check_out = Time.at(check_out - check_out.sec).in_time_zone(timezone)
+    self.check_out = Time.zone.at(check_out - check_out.sec)
   end
 
   def calc_total_time_in_care
