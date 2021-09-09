@@ -45,10 +45,16 @@ class User < UuidApplicationRecord
     businesses&.first&.state || ''
   end
 
-  def latest_attendance_in_month(filter_date)
+  # return the user's latest attendance check_in in UTC
+  def latest_attendance_in_month_utc(filter_date)
     filter_date ||= Time.current
-    attendances.where('check_in BETWEEN ? AND ?', filter_date.in_time_zone(timezone).at_beginning_of_month,
-                      filter_date.in_time_zone(timezone).at_end_of_month).max_by(&:check_in)&.check_in
+    # if the filter_date we send is 03-01-2021, we are looking for checkins
+    # that are between 03-01-2021 and 03-31-2021 *in the user's timezone*
+    # then we want to return the check_in time of that latest attendance
+    # also in the user's timezone so the "as_of" date on the dashboard is correct
+    start_time = filter_date.at_beginning_of_month
+    end_time = filter_date.at_end_of_month
+    attendances.where('check_in BETWEEN ? AND ?', start_time, end_time).max_by(&:check_in)&.check_in
   end
 
   def first_approval_effective_date

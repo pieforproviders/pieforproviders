@@ -69,33 +69,33 @@ class Child < UuidApplicationRecord
     Attendance.joins(:child_approval).where(child_approvals: { child: self })
   end
 
-  def absences(filter_date)
+  def absences(date)
     if Rails.application.config.ff_ne_live_algorithms
-      attendances.for_month(filter_date).absences.length
+      attendances.for_month(date).absences.length
     else
       temporary_nebraska_dashboard_case&.absences
     end
   end
 
-  def attendance_rate(filter_date)
-    AttendanceRateCalculator.new(self, filter_date).call
+  def attendance_rate(date)
+    AttendanceRateCalculator.new(self, date).call
   end
 
-  def attendance_risk(filter_date)
+  def attendance_risk(date)
     if state == 'IL'
-      AttendanceRiskCalculator.new(self, filter_date).call
+      AttendanceRiskCalculator.new(self, date).call
     elsif Rails.application.config.ff_ne_live_algorithms
-      risk_calculation(filter_date)
+      risk_calculation(date)
     else
       temporary_nebraska_dashboard_case&.attendance_risk
     end
   end
 
-  def risk_calculation(filter_date)
-    return 'not_enough_info' if filter_date < halfway(filter_date)
+  def risk_calculation(date)
+    return 'not_enough_info' if date < halfway(date)
 
-    scheduled_revenue = remaining_scheduled_revenue(filter_date.in_time_zone(timezone).at_beginning_of_month)
-    estimated_revenue = nebraska_estimated_revenue(filter_date)
+    scheduled_revenue = remaining_scheduled_revenue(date.at_beginning_of_month)
+    estimated_revenue = nebraska_estimated_revenue(date)
     ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
     risk_ratio_label(ratio)
   end
@@ -110,8 +110,8 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def halfway(filter_date)
-    filter_date.at_beginning_of_month + 14.days
+  def halfway(date)
+    date.at_beginning_of_month + 14.days
   end
 
   def active_rate(date)
@@ -127,65 +127,65 @@ class Child < UuidApplicationRecord
   end
 
   # NE dashboard family_fee calculator
-  def nebraska_family_fee(filter_date)
+  def nebraska_family_fee(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      return 0 unless self == active_approval(filter_date).child_with_most_scheduled_hours(filter_date)
+      return 0 unless self == active_approval(date).child_with_most_scheduled_hours(date)
 
-      active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
+      active_nebraska_approval_amount(date)&.family_fee || 0.00
     else
       temporary_nebraska_dashboard_case&.family_fee.to_f
     end
   end
 
-  def total_time_scheduled_this_month(filter_date)
+  def total_time_scheduled_this_month(date)
     (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_duration(filter_date.at_beginning_of_month, weekday)
+      sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
     end
   end
 
   # NE dashboard earned_revenue calculator
-  def nebraska_earned_revenue(filter_date)
+  def nebraska_earned_revenue(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      [(earned_revenue_as_of_date(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
+      [(earned_revenue_as_of_date(date) - nebraska_family_fee(date)), 0.0].max
     else
       temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
     end
   end
 
   # NE dashboard estimated_revenue calculator
-  def nebraska_estimated_revenue(filter_date)
+  def nebraska_estimated_revenue(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      [(estimated_remaining_revenue(filter_date) - nebraska_family_fee(filter_date)), 0.0].max
+      [(estimated_remaining_revenue(date) - nebraska_family_fee(date)), 0.0].max
     else
       temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
     end
   end
 
-  def earned_revenue_as_of_date(filter_date)
-    (absence_revenue(filter_date) + attendance_revenue(filter_date))
+  def earned_revenue_as_of_date(date)
+    (absence_revenue(date) + attendance_revenue(date))
   end
 
-  def attendance_revenue(filter_date)
-    attendances.non_absences.for_month(filter_date).pluck(:earned_revenue).sum
+  def attendance_revenue(date)
+    attendances.non_absences.for_month(date).pluck(:earned_revenue).sum
   end
 
-  def absence_revenue(filter_date)
-    absences, covid_absences = attendances.absences.for_month(filter_date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
+  def absence_revenue(date)
+    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
     absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
   end
 
-  def estimated_remaining_revenue(filter_date)
-    (earned_revenue_as_of_date(filter_date) + remaining_scheduled_revenue(filter_date))
+  def estimated_remaining_revenue(date)
+    (earned_revenue_as_of_date(date) + remaining_scheduled_revenue(date))
   end
 
-  def scheduled_hours_this_month(filter_date)
-    schedules.active_on_date(filter_date).reduce(0) do |sum, schedule|
+  def scheduled_hours_this_month(date)
+    schedules.active_on_date(date).reduce(0) do |sum, schedule|
       duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
       hours = hours_by_duration(duration)
-      sum + (hours * num_remaining_this_month(filter_date.at_beginning_of_month, schedule.weekday))
+      sum + (hours * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
     end
   end
 
@@ -201,91 +201,91 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def scheduled_days_this_month(filter_date)
-    schedules.active_on_date(filter_date).reduce(0) do |sum, schedule|
+  def scheduled_days_this_month(date)
+    schedules.active_on_date(date).reduce(0) do |sum, schedule|
       duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
       days = duration > (5.hours + 45.minutes) ? 1 : 0
-      sum + (days * num_remaining_this_month(filter_date.at_beginning_of_month, schedule.weekday))
+      sum + (days * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
     end
   end
 
-  def remaining_scheduled_revenue(filter_date)
+  def remaining_scheduled_revenue(date)
     (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_rate(filter_date, weekday)
+      sum + weekday_scheduled_rate(date, weekday)
     end
   end
 
   # TODO: these methods are duplicative and need to be moved to a concern so child and attendance can both use them [PIE-1529]
 
-  def weekday_scheduled_rate(filter_date, weekday)
-    schedule_for_weekday = schedule(filter_date, weekday)
+  def weekday_scheduled_rate(date, weekday)
+    schedule_for_weekday = schedule(date, weekday)
     return 0 unless schedule_for_weekday
 
-    daily_revenue = if active_child_approval(filter_date).special_needs_rate
-                      ne_special_needs_revenue(filter_date, schedule_for_weekday)
+    daily_revenue = if active_child_approval(date).special_needs_rate
+                      ne_special_needs_revenue(date, schedule_for_weekday)
                     else
-                      ne_base_revenue(filter_date, schedule_for_weekday)
+                      ne_base_revenue(date, schedule_for_weekday)
                     end
-    daily_revenue * num_remaining_this_month(filter_date, weekday)
+    daily_revenue * num_remaining_this_month(date, weekday)
   end
 
-  def weekday_scheduled_duration(filter_date, weekday)
-    schedule_for_weekday = schedule(filter_date, weekday)
+  def weekday_scheduled_duration(date, weekday)
+    schedule_for_weekday = schedule(date, weekday)
     return 0 unless schedule_for_weekday
 
     duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    duration * num_remaining_this_month(filter_date, weekday)
+    duration * num_remaining_this_month(date, weekday)
   end
 
-  def num_remaining_this_month(filter_date, weekday)
-    num_remaining_this_month = (filter_date.to_date..filter_date.to_date.at_end_of_month).count { |day| weekday == day.wday }
+  def num_remaining_this_month(date, weekday)
+    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| weekday == day.wday }
     return 0 unless num_remaining_this_month.positive?
 
-    filter_date.wday == weekday && attendances.for_day(filter_date).present? ? num_remaining_this_month - 1 : num_remaining_this_month
+    date.wday == weekday && attendances.for_day(date).present? ? num_remaining_this_month - 1 : num_remaining_this_month
   end
 
-  def schedule(filter_date, weekday)
-    schedules.active_on_date(filter_date).for_weekday(weekday).first
+  def schedule(date, weekday)
+    schedules.active_on_date(date).for_weekday(weekday).first
   end
 
-  def ne_hours(filter_date, schedule_for_weekday)
+  def ne_hours(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    NebraskaHoursCalculator.new(self, filter_date).round_hourly_to_quarters(scheduled_time.seconds)
+    NebraskaHoursCalculator.new(self, date).round_hourly_to_quarters(scheduled_time.seconds)
   end
 
-  def ne_days(filter_date, schedule_for_weekday)
+  def ne_days(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    NebraskaFullDaysCalculator.new(self, filter_date).calculate_full_days_based_on_duration(scheduled_time.seconds)
+    NebraskaFullDaysCalculator.new(self, date).calculate_full_days_based_on_duration(scheduled_time.seconds)
   end
 
   # TODO: open question - does qris bump impact this rate?
-  def ne_special_needs_revenue(filter_date, schedule_for_weekday)
-    (ne_hours(filter_date, schedule_for_weekday) * active_child_approval(filter_date).special_needs_hourly_rate) +
-      (ne_days(filter_date, schedule_for_weekday) * active_child_approval(filter_date).special_needs_daily_rate)
+  def ne_special_needs_revenue(date, schedule_for_weekday)
+    (ne_hours(date, schedule_for_weekday) * active_child_approval(date).special_needs_hourly_rate) +
+      (ne_days(date, schedule_for_weekday) * active_child_approval(date).special_needs_daily_rate)
   end
 
-  def ne_base_revenue(filter_date, schedule_for_weekday)
-    (ne_hours(filter_date, schedule_for_weekday) * ne_hourly_rate(filter_date) * business.ne_qris_bump) +
-      (ne_days(filter_date, schedule_for_weekday) * ne_daily_rate(filter_date) * business.ne_qris_bump)
+  def ne_base_revenue(date, schedule_for_weekday)
+    (ne_hours(date, schedule_for_weekday) * ne_hourly_rate(date) * business.ne_qris_bump) +
+      (ne_days(date, schedule_for_weekday) * ne_daily_rate(date) * business.ne_qris_bump)
   end
 
-  def ne_hourly_rate(filter_date)
+  def ne_hourly_rate(date)
     # TODO: License Types - possibly post-new-data-model
-    ne_rates(filter_date).hourly.first&.amount || 0
+    ne_rates(date).hourly.first&.amount || 0
   end
 
-  def ne_daily_rate(filter_date)
+  def ne_daily_rate(date)
     # TODO: License Types - possibly post-new-data-model
-    ne_rates(filter_date).daily.first&.amount || 0
+    ne_rates(date).daily.first&.amount || 0
   end
 
-  def ne_rates(filter_date)
+  def ne_rates(date)
     NebraskaRate
-      .active_on_date(filter_date)
-      .where(school_age: active_child_approval(filter_date).enrolled_in_school || false)
-      .where('max_age >= ? OR max_age IS NULL', age_in_months(filter_date))
+      .active_on_date(date)
+      .where(school_age: active_child_approval(date).enrolled_in_school || false)
+      .where('max_age >= ? OR max_age IS NULL', age_in_months(date))
       .where(region: ne_region)
       .where(accredited_rate: business.accredited)
       .order_max_age
@@ -296,23 +296,23 @@ class Child < UuidApplicationRecord
   end
 
   # NE dashboard full days calculator
-  def nebraska_full_days(filter_date)
+  def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.full_days
+    Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.full_days
   end
 
   # NE dashboard hours calculator
-  def nebraska_hours(filter_date)
+  def nebraska_hours(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, filter_date).call : temporary_nebraska_dashboard_case&.hours.to_f
+    Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.hours.to_f
   end
 
   # NE dashboard weekly used hours calculator
-  def nebraska_weekly_hours_attended(filter_date)
+  def nebraska_weekly_hours_attended(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
       NebraskaWeeklyHoursAttendedCalculator.new(self,
-                                                filter_date).call
+                                                date).call
     else
       temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s # hacky workaround to be able to tell the dashboard blueprint to add 'of X' only to live algorithms
     end
@@ -336,7 +336,7 @@ class Child < UuidApplicationRecord
         weekday: idx + 1,
         start_time: '9:00am',
         end_time: '5:00pm',
-        effective_on: active_child_approval(Time.current.in_time_zone(timezone)).approval.effective_on
+        effective_on: active_child_approval(Time.current).approval.effective_on
       )
     end
   end
