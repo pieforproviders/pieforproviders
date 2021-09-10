@@ -1,10 +1,11 @@
 /* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
-import { Table } from 'antd'
+import { Button, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { WeekPicker } from './WeekPicker'
 
 export function AttendanceView() {
   const { t } = useTranslation()
@@ -26,7 +27,7 @@ export function AttendanceView() {
       dateColumns.push({
         dataIndex: i,
         key: i,
-        width: 150,
+        width: 275,
         // eslint-disable-next-line react/display-name
         title: () => {
           return (
@@ -38,12 +39,51 @@ export function AttendanceView() {
         },
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
-          console.log(columnDate)
-          if (columnDate.format("YYYY-MM-DD")) {
-            
+          const matchingAttendances = record.attendances.filter(attendance => {
+            return new RegExp(columnDate.format('YYYY-MM-DD')).test(
+              attendance.check_in
+            )
+          })
+          if (matchingAttendances.length > 0) {
+            let totalCareTime = '',
+              checkInCheckOutTime = ''
+            matchingAttendances.forEach(attendance => {
+              const checkIn = dayjs(attendance.check_in)
+              const checkOut = dayjs(attendance.check_out)
+              checkInCheckOutTime =
+                checkInCheckOutTime.length > 0
+                  ? checkInCheckOutTime +
+                    ', ' +
+                    checkIn.format('h:mm a') +
+                    ' - ' +
+                    checkOut.format('h:mm a')
+                  : checkIn.format('h:mm a') + ' - ' + checkOut.format('h:mm a')
+
+              const hour = Math.floor(
+                Number(attendance.total_time_in_care) / 3600
+              )
+              const minute = Math.floor(
+                Number(attendance.total_time_in_care % 3600) / 60
+              )
+              totalCareTime =
+                totalCareTime.length > 0
+                  ? totalCareTime + ', ' + hour + ' hrs ' + minute + '  mins'
+                  : hour + ' hrs ' + minute + '  mins'
+            })
+            return (
+              <div className="body-2 text-center">
+                <div className="text-gray8 font-semiBold mb-2">
+                  {totalCareTime}
+                </div>
+                <div className="text-darkGray">{checkInCheckOutTime}</div>
+              </div>
+            )
           }
-          debugger
-          return <div>boop</div>
+          return (
+            <div className="flex justify-center">
+              <div className="bg-mediumGray box-border p-1">no info</div>
+            </div>
+          )
         }
       })
     }
@@ -59,7 +99,9 @@ export function AttendanceView() {
           </div>
         ),
         // eslint-disable-next-line react/display-name
-        render: (_, record) => <div>{record.child}</div>
+        render: (_, record) => (
+          <div className="eyebrow-large text-gray1">{record.child}</div>
+        )
       },
       ...dateColumns
     ]
@@ -90,7 +132,6 @@ export function AttendanceView() {
             ) {
               return accumulator.map(child => {
                 if (child.child === currentValue.child.full_name) {
-                  debugger
                   return {
                     child: child.child,
                     attendances: [...child.attendances, currentValue]
@@ -120,7 +161,13 @@ export function AttendanceView() {
 
   return (
     <div>
-      <p className="h1-large mb-4 flex justify-center">{t('attendance')}</p>
+      <p className="h1-large mb-4 flex justify-center">
+       <div>{t('attendance')}</div>
+        <Button>Input Attendance</Button>
+      </p>
+      <p>
+        <WeekPicker />
+      </p>
       <Table
         dataSource={attendanceData}
         columns={columns}
