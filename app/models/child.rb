@@ -92,7 +92,7 @@ class Child < UuidApplicationRecord
   end
 
   def risk_calculation(date)
-    return 'not_enough_info' if date < minimum_days_to_calculate(date)
+    return 'not_enough_info' if date <= minimum_days_to_calculate(date)
 
     scheduled_revenue = remaining_scheduled_revenue(date.at_beginning_of_month)
     estimated_revenue = nebraska_estimated_revenue(date)
@@ -111,7 +111,7 @@ class Child < UuidApplicationRecord
   end
 
   def minimum_days_to_calculate(date)
-    date.in_time_zone(timezone).at_beginning_of_month + 10.days
+    date.in_time_zone(timezone).at_beginning_of_month + 9.days
   end
 
   def active_rate(date)
