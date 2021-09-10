@@ -30,8 +30,8 @@ RSpec.describe ChildBlueprint do
     let!(:approval) { create(:approval, create_children: false, effective_on: Time.zone.parse('June 1st, 2021'), expires_on: nil) }
     let!(:child) { create(:necc_child, approvals: [approval], effective_date: Time.zone.parse('June 1st, 2021')) }
     let!(:child_approval) { child.child_approvals.first }
-    # Attendance Date is Jul 11th, 2021
-    let!(:attendance_date) { (child_approval.approval.effective_on.in_time_zone(child.timezone).at_end_of_month + 12.days).at_beginning_of_week(:sunday) }
+    # Attendance Date is Jul 4th, 2021
+    let!(:attendance_date) { (child_approval.approval.effective_on.in_time_zone(child.timezone).at_end_of_month + 5.days).at_beginning_of_week(:sunday) }
     let!(:temporary_nebraska_dashboard_case) do
       create(:temporary_nebraska_dashboard_case, child: child, hours: 11, full_days: 3, hours_attended: 12, family_fee: 120.50, earned_revenue: 175.60, estimated_revenue: 265.40,
                                                  attendance_risk: 'ahead_of_schedule', absences: '1 of 5')
@@ -85,7 +85,7 @@ RSpec.describe ChildBlueprint do
     context 'when using live algorithms' do
       before do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-        travel_to attendance_date.in_time_zone(child.timezone) + 16.hours # first dashboard view date is Jul 11th, 2021 at 4pm
+        travel_to attendance_date.in_time_zone(child.timezone) + 4.days + 16.hours # first dashboard view date is Jul 8th, 2021 at 4pm
       end
       after do
         travel_back
@@ -93,22 +93,22 @@ RSpec.describe ChildBlueprint do
       let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
       it 'includes the child name and all live attendance data' do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
-        # 3 hours of attendance from the hourly attendance created above on the 8th
+        # 3 hours of attendance from the hourly attendance created above on the 4th
         expect(parsed_body['hours']).to eq('3.0')
-        # 1 full day of attendance from the daily attendance created above on the 8th
+        # 1 full day of attendance from the daily attendance created above on the 7th
         expect(parsed_body['full_days']).to eq('1.0')
         # hours this week only
         expect(parsed_body['hours_attended']).to eq("9.0 of #{child_approval.authorized_weekly_hours}")
         # no revenue because of family fee
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', 0.0))
-        # this includes 3.0 of hourly attendance, 1 full day attendance + 11 remaining scheduled days of the month
-        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((3.0 * 5.15 * (1.05**1)) + (16 * 25.15 * (1.05**1))) - family_fee))
+        # this includes 3.0 of hourly attendance, 1 full day attendance + 17 remaining scheduled days of the month including today
+        expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((3.0 * 5.15 * (1.05**1)) + (18 * 25.15 * (1.05**1))) - family_fee))
         # static over the course of the month
         expect(parsed_body['family_fee']).to eq(format('%.2f', family_fee))
         # too early in the month to show risk
         expect(parsed_body['attendance_risk']).to eq('not_enough_info')
 
-        travel_to Time.current + 11.days # second dashboard view date is Jul 22nd, 2021 at 4pm
+        travel_to Time.current + 14.days # second dashboard view date is Jul 22nd, 2021 at 4pm
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # no new hourly attendance
@@ -127,8 +127,8 @@ RSpec.describe ChildBlueprint do
         create(
           :attendance,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 9.days + 3.hours,
-          check_out: attendance_date.to_datetime + 9.days + 6.hours + 15.minutes
+          check_in: attendance_date.to_datetime + 16.days + 3.hours,
+          check_out: attendance_date.to_datetime + 16.days + 6.hours + 15.minutes
         )
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
@@ -148,8 +148,8 @@ RSpec.describe ChildBlueprint do
         create(
           :attendance,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 8.days + 3.hours,
-          check_out: attendance_date.to_datetime + 8.days + 9.hours + 18.minutes
+          check_in: attendance_date.to_datetime + 15.days + 3.hours,
+          check_out: attendance_date.to_datetime + 15.days + 9.hours + 18.minutes
         )
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
@@ -170,14 +170,14 @@ RSpec.describe ChildBlueprint do
           :attendance,
           5,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 8.days + 3.hours,
-          check_out: attendance_date.to_datetime + 8.days + 9.hours + 18.minutes
+          check_in: attendance_date.to_datetime + 15.days + 3.hours,
+          check_out: attendance_date.to_datetime + 15.days + 9.hours + 18.minutes
         )
         create_list(
           :nebraska_absence,
           3,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 8.days + 3.hours, absence: 'absence'
+          check_in: attendance_date.to_datetime + 15.days + 3.hours, absence: 'absence'
         )
 
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
@@ -196,7 +196,7 @@ RSpec.describe ChildBlueprint do
           :nebraska_absence,
           3,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 8.days + 3.hours,
+          check_in: attendance_date.to_datetime + 15.days + 3.hours,
           absence: 'absence'
         )
 
@@ -215,7 +215,7 @@ RSpec.describe ChildBlueprint do
         create(
           :nebraska_absence,
           child_approval: child_approval,
-          check_in: attendance_date.to_datetime + 8.days + 3.hours,
+          check_in: attendance_date.to_datetime + 15.days + 3.hours,
           absence: 'covid_absence'
         )
 
