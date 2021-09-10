@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
+import useHotjar from 'react-use-hotjar'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { PasswordResetRequest } from '../PasswordReset'
@@ -13,6 +14,7 @@ import { setUser } from '_reducers/userReducer'
 export function Login() {
   const dispatch = useDispatch()
   const location = useLocation()
+  const { identifyHotjar } = useHotjar()
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
   const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
@@ -68,6 +70,7 @@ export function Login() {
       batch(() => {
         dispatch(addAuth(authToken))
         dispatch(setUser(resp))
+        identifyHotjar(resp.id ?? null)
       })
       history.push('/dashboard')
     }

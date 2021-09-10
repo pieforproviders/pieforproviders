@@ -45,7 +45,9 @@ export function Confirmation({ location }) {
     }
     confirm()
     return () => (isSubscribed = false)
-  }, [dispatch, history, location.pathname, location.search, makeRequest])
+    // we only want this to run once; making the makeRequest hook a dependency causes an infinite re-run of this query
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return null
 }

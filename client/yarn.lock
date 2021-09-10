@@ -10873,11 +10873,6 @@ react-error-overlay@^6.0.9:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz#3c743010c9359608c375ecd6bc76f35d93995b0a"
   integrity sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==
 
-react-hotjar@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/react-hotjar/-/react-hotjar-3.0.1.tgz#7917b57223d37f9ce3bf4638e5f83c5bc46e5e06"
-  integrity sha512-3ZiZQhbsisJkK+iUlPVVTa7hUJXVQ/o/3+Bzocpjb2+of8lMh7uiDXLsSKxD6T4J3JR9sZ+L3v9CYyUgrp1R8g==
-
 react-i18next@^11.12.0:
   version "11.12.0"
   resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.12.0.tgz#2a053321b9b7a876d5baa7af55a12d986117bffc"
@@ -11017,6 +11012,11 @@ react-transition-group@^4.4.0:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-use-hotjar@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-use-hotjar/-/react-use-hotjar-1.2.0.tgz#0ed52be087385548d83f0e79cbde167dbb95b1f1"
+  integrity sha512-Sr41fGpj159M+jh/RbwlSRVopcvd/Z3m/XD4PJWiPHcT846RO20PoEdmh/cLdnGCJQyqfCpxZqjeayWdIxeJDw==
 
 react@^17.0.2:
   version "17.0.2"
