@@ -18,7 +18,7 @@
     "antd-mask-input": "^0.1.15",
     "craco-less": "^1.20.0",
     "csv": "^5.5.3",
-    "dayjs": "^1.10.6",
+    "dayjs": "^1.10.7",
     "deepmerge": "^4.2.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^6.15.0",
