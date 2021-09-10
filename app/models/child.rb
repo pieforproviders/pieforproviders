@@ -111,7 +111,7 @@ class Child < UuidApplicationRecord
   end
 
   def minimum_days_to_calculate(date)
-    date.at_beginning_of_month + 10.days
+    date.in_time_zone(timezone).at_beginning_of_month + 10.days
   end
 
   def active_rate(date)
