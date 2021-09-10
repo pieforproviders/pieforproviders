@@ -9,7 +9,7 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
 
   describe '#call' do
     before do
-      travel_to attendance_date
+      travel_to attendance_date.in_time_zone(child.timezone)
       child.reload
     end
     after { travel_back }
@@ -31,9 +31,9 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
         child.reload
         expect { described_class.new(child).call }.not_to change(Attendance, :count)
       end
-      it 'does not create an absence if the child already has 5 absences this month' do
-        create_list(:attendance, 5, child_approval: child_approval, check_in: attendance_date, absence: 'absence')
-        expect { described_class.new(child).call }.not_to change(Attendance, :count)
+      it 'creates an absence even if the child already has 5 absences this month' do
+        create_list(:attendance, 5, child_approval: child_approval, check_in: attendance_date - 1.week, absence: 'absence')
+        expect { described_class.new(child).call }.to change { Attendance.count }.from(5).to(6)
       end
       it 'creates an absence if the child has less than 5 absences this month' do
         create_list(:attendance, 2, child_approval: child_approval, check_in: attendance_date - 1.week, absence: 'absence')

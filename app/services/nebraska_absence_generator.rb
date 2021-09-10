@@ -14,13 +14,9 @@ class NebraskaAbsenceGenerator
   private
 
   def generate_absences
-    return if attendance_on_date.present? || absences_this_month.length >= 5 || schedule.empty? || child_approval.nil?
+    return if attendance_on_date.present? || schedule.empty? || child_approval.nil?
 
     Attendance.find_or_create_by(child_approval: child_approval, check_in: @date.at_beginning_of_day, check_out: nil, absence: 'absence')
-  end
-
-  def absences_this_month
-    @child.attendances.absences.where('check_in between ? and ?', @date.at_beginning_of_month, [@date.at_end_of_month, Time.current.in_time_zone(@child.timezone)].min)
   end
 
   def schedule
