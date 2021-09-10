@@ -87,9 +87,6 @@ RSpec.describe ChildBlueprint do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
         travel_to attendance_date.in_time_zone(child.timezone) + 16.hours # first dashboard view date is Jul 11th, 2021 at 4pm
       end
-      after do
-        travel_back
-      end
       let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
       it 'includes the child name and all live attendance data' do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))

@@ -12,7 +12,6 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       travel_to attendance_date
       child.reload
     end
-    after { travel_back }
     context 'the child has an attendance on the date' do
       before do
         create(:attendance, child_approval: child_approval, check_in: attendance_date)
