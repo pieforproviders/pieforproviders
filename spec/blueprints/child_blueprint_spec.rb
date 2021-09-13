@@ -121,7 +121,9 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', 0.0))
         # no new attendances, stays the same even though we've traveled
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((3.0 * 5.15 * (1.05**1)) + (8 * 25.15 * (1.05**1))) - family_fee))
-        # we haven't met the ratio threshold yet
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (3.0 * 5.15 * (1.05**1)) + (8 * 25.15 * (1.05**1)) = 227.4825
+        # ratio: (227.48 - 580.97) / 580.97 = -0.61
         expect(parsed_body['attendance_risk']).to eq('at_risk')
 
         create(
@@ -142,7 +144,9 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', 0.0))
         # this includes prior 3.0 hourly, 1 full day, and new 3.25 hours of attendance + remaining 7 days
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (8 * 25.15 * (1.05**1))) - family_fee))
-        # we haven't met the ratio threshold yet
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (8 * 25.15 * (1.05**1)) = 245.06
+        # ratio: (245.06 - 580.97) / 580.97 = -0.58
         expect(parsed_body['attendance_risk']).to eq('at_risk')
 
         create(
@@ -163,7 +167,9 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (2 * 25.15 * (1.05**1))) - family_fee))
         # this includes prior 6.25 hourly, 1 full day, and new 1 full day of attendance + remaining 7 days
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (9 * 25.15 * (1.05**1))) - family_fee))
-        # we haven't met the ratio threshold yet
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (9 * 25.15 * (1.05**1)) = 271.46
+        # ratio: (271.46 - 580.97) / 580.97 = -0.53
         expect(parsed_body['attendance_risk']).to eq('at_risk')
 
         create_list(
@@ -189,8 +195,10 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (10 * 25.15 * (1.05**1))) - family_fee))
         # this includes prior 6.25 hourly, 2 full days, and 10 full days of attendance + remaining 7 days
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (17 * 25.15 * (1.05**1))) - family_fee))
-        # we haven't met the ratio threshold yet
-        expect(parsed_body['attendance_risk']).to eq('at_risk')
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (17 * 25.15 * (1.05**1)) = 482.72
+        # ratio: (482.72 - 580.97) / 580.97 = -0.17
+        expect(parsed_body['attendance_risk']).to eq('on_track')
 
         create_list(
           :nebraska_absence,
@@ -209,8 +217,10 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (12 * 25.15 * (1.05**1))) - family_fee))
         # earned revenue + remaining 7 days
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (19 * 25.15 * (1.05**1))) - family_fee))
-        # we haven't met the ratio threshold yet
-        expect(parsed_body['attendance_risk']).to eq('at_risk')
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (19 * 25.15 * (1.05**1)) = 535.54
+        # ratio: (535.54 - 580.97) / 580.97 = -0.08
+        expect(parsed_body['attendance_risk']).to eq('on_track')
 
         create(
           :nebraska_absence,
@@ -226,7 +236,9 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (13 * 25.15 * (1.05**1))) - family_fee))
         # earned revenue + remaining 7 days
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (20 * 25.15 * (1.05**1))) - family_fee))
-        # we're now on track
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (20 * 25.15 * (1.05**1)) = 561.95
+        # ratio: (561.95 - 580.97) / 580.97 = -0.03
         expect(parsed_body['attendance_risk']).to eq('on_track')
 
         create(
@@ -243,7 +255,9 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['earned_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (14 * 25.15 * (1.05**1))) - family_fee))
         # earned revenue + remaining 6 days because there's an attendance today
         expect(parsed_body['estimated_revenue']).to eq(format('%.2f', ((6.25 * 5.15 * (1.05**1)) + (20 * 25.15 * (1.05**1))) - family_fee))
-        # we're now on track
+        # scheduled: 22 total scheduled days * 25.15 * (1.05**1) = 580.965
+        # estimated: (6.25 * 5.15 * (1.05**1)) + (20 * 25.15 * (1.05**1)) = 561.95
+        # ratio: (561.95 - 580.97) / 580.97 = -0.03
         expect(parsed_body['attendance_risk']).to eq('on_track')
       end
       it 'subtracts the family fee from the correct child' do

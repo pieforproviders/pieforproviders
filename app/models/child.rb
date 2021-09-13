@@ -94,8 +94,8 @@ class Child < UuidApplicationRecord
   def risk_calculation(date)
     return 'not_enough_info' if date <= minimum_days_to_calculate(date)
 
+    estimated_revenue = estimated_remaining_revenue(date)
     scheduled_revenue = remaining_scheduled_revenue(date.at_beginning_of_month)
-    estimated_revenue = nebraska_estimated_revenue(date)
     ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
     risk_ratio_label(ratio)
   end
@@ -138,12 +138,6 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def total_time_scheduled_this_month(date)
-    (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
-    end
-  end
-
   # NE dashboard earned_revenue calculator
   def nebraska_earned_revenue(date)
     # feature flag for using live algorithms rather than uploaded data
@@ -181,14 +175,6 @@ class Child < UuidApplicationRecord
     (earned_revenue_as_of_date(date) + remaining_scheduled_revenue(date))
   end
 
-  def scheduled_hours_this_month(date)
-    schedules.active_on_date(date).reduce(0) do |sum, schedule|
-      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
-      hours = hours_by_duration(duration)
-      sum + (hours * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
-    end
-  end
-
   def hours_by_duration(duration)
     if duration <= (5.hours + 45.minutes)
       duration
@@ -201,32 +187,41 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def scheduled_days_this_month(date)
-    schedules.active_on_date(date).reduce(0) do |sum, schedule|
-      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
-      days = duration > (5.hours + 45.minutes) ? 1 : 0
-      sum + (days * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
-    end
-  end
-
   def remaining_scheduled_revenue(date)
     (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_rate(date, weekday)
+      if attendances.for_day(date).present? && weekday == date.wday
+        sum + weekday_scheduled_rate_excluding_today(date, weekday)
+      else
+        sum + weekday_scheduled_rate_including_today(date, weekday)
+      end
     end
   end
 
   # TODO: these methods are duplicative and need to be moved to a concern so child and attendance can both use them [PIE-1529]
 
-  def weekday_scheduled_rate(date, weekday)
+  def weekday_scheduled_revenue(date, weekday)
     schedule_for_weekday = schedule(date, weekday)
     return 0 unless schedule_for_weekday
 
-    daily_revenue = if active_child_approval(date).special_needs_rate
-                      ne_special_needs_revenue(date, schedule_for_weekday)
-                    else
-                      ne_base_revenue(date, schedule_for_weekday)
-                    end
-    daily_revenue * num_remaining_this_month(date, weekday)
+    if active_child_approval(date).special_needs_rate
+      ne_special_needs_revenue(date, schedule_for_weekday)
+    else
+      ne_base_revenue(date, schedule_for_weekday)
+    end
+  end
+
+  def weekday_scheduled_rate_including_today(date, weekday)
+    weekday_scheduled_revenue(date, weekday) * DateService.remaining_days_in_month_including_today(date, weekday)
+  end
+
+  def weekday_scheduled_rate_excluding_today(date, weekday)
+    weekday_scheduled_revenue(date, weekday) * (DateService.remaining_days_in_month_including_today(date, weekday) - 1)
+  end
+
+  def total_time_scheduled_this_month(date)
+    (0..6).reduce(0) do |sum, weekday|
+      sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
+    end
   end
 
   def weekday_scheduled_duration(date, weekday)
@@ -234,14 +229,7 @@ class Child < UuidApplicationRecord
     return 0 unless schedule_for_weekday
 
     duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    duration * num_remaining_this_month(date, weekday)
-  end
-
-  def num_remaining_this_month(date, weekday)
-    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| weekday == day.wday }
-    return 0 unless num_remaining_this_month.positive?
-
-    date.wday == weekday && attendances.for_day(date).present? ? num_remaining_this_month - 1 : num_remaining_this_month
+    duration * DateService.remaining_days_in_month_including_today(date, weekday)
   end
 
   def schedule(date, weekday)
