@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { Button, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
@@ -13,10 +12,7 @@ export function AttendanceView() {
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
   const { token } = useSelector(state => ({ token: state.auth.token }))
-  const [
-    dateSelected
-    // setDateSelected
-  ] = useState(dayjs())
+  const [dateSelected, setDateSelected] = useState(dayjs())
 
   // create seven columns for each day of the week
   const generateColumns = () => {
@@ -106,16 +102,17 @@ export function AttendanceView() {
       ...dateColumns
     ]
   }
-  const [
-    columns
-    // setColumns when a new date/week is selected
-  ] = useState(generateColumns())
+  const [columns, setColumns] = useState(generateColumns())
+
+  const handleDateChange = newDate => setDateSelected(newDate)
 
   useEffect(() => {
     const getResponse = async () => {
       const response = await makeRequest({
         type: 'get',
-        url: '/api/v1/attendances',
+        url:
+          '/api/v1/attendances?filter_date=' +
+          dateSelected.format('YYYY-MM-DD'),
         headers: {
           Authorization: token
         },
@@ -152,21 +149,27 @@ export function AttendanceView() {
         )
 
         setAttendanceData(reducedAttendanceData)
+        setColumns(generateColumns())
       }
     }
 
     getResponse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dateSelected])
 
   return (
     <div>
-      <p className="h1-large mb-4 flex justify-center">
-       <div>{t('attendance')}</div>
-        <Button>Input Attendance</Button>
-      </p>
+      <div className="h1-large mb-4 flex justify-center">
+        <div>
+          <div>{t('attendance')}</div>
+        </div>
+        <Button className="ml-auto">Input Attendance</Button>
+      </div>
       <p>
-        <WeekPicker />
+        <WeekPicker
+          dateSelected={dateSelected}
+          handleDateChange={handleDateChange}
+        />
       </p>
       <Table
         dataSource={attendanceData}
