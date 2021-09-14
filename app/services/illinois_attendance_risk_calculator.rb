@@ -63,7 +63,7 @@ class IllinoisAttendanceRiskCalculator
 
   def wont_meet_threshold
     active_approval = @child.approvals.active_on_date(@filter_date).first
-    (threshold * family_days_approved - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
+    ((threshold * family_days_approved) - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
   end
 
   def at_risk

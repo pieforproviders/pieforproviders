@@ -44,7 +44,7 @@ module Wonderschool
         @business = Business.find_or_create_by!(required_business_params)
         @child = Child.find_or_initialize_by(child_params)
         approval = existing_or_new_approval
-        @child.approvals.include?(approval) || @child.approvals << approval # idempotency - add only if it's not already associated
+        @child.approvals.include?(approval) || (@child.approvals << approval) # idempotency - add only if it's not already associated
         @child.save!
         @child_approval = ChildApproval.find_by(child: @child, approval: approval)
       end
