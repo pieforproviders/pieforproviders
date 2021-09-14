@@ -95,7 +95,7 @@ class Child < UuidApplicationRecord
     return 'not_enough_info' if date <= minimum_days_to_calculate(date)
 
     estimated_revenue = estimated_remaining_revenue(date)
-    scheduled_revenue = total_scheduled_revenue(date)
+    scheduled_revenue = remaining_scheduled_revenue(date.at_beginning_of_month)
     ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
     risk_ratio_label(ratio)
   end
@@ -163,7 +163,10 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_revenue(date)
-    attendances.non_absences.for_month(date).pluck(:earned_revenue).sum
+    non_absences = attendances&.non_absences&.for_month(date)
+    return 0 unless non_absences
+
+    non_absences.pluck(:earned_revenue).sum
   end
 
   def absence_revenue(date)
@@ -184,12 +187,6 @@ class Child < UuidApplicationRecord
       8.hours
     else
       0.minutes
-    end
-  end
-
-  def total_scheduled_revenue(date)
-    (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_rate_including_today(date.at_beginning_of_month, weekday)
     end
   end
 
