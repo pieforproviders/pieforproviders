@@ -2,18 +2,22 @@
 
 require 'rails_helper'
 
+# Since the for_week scope on attendance model uses the Sunday to Friday week range, we should make
+# sure we don't work with a Saturday date to avoid flakiness in spec runs. A way to do this is to set
+# the week_current_date value to a day that falls within the expected week range
+
 RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:business)       { create(:business, user: logged_in_user) }
-  let!(:child)          { create(:child, business: business) }
+  let!(:business) { create(:business, user: logged_in_user) }
+  let!(:child) { create(:child, business: business) }
 
-  let!(:week_mid_date)   { Time.new(2021, 9, 8).in_time_zone }  # Wed, 8th Sept, 2021
-  let!(:week_start_date) { week_mid_date - 3.days }             # Sun, 5th Sept, 2021
-  let!(:week_end_date)   { week_mid_date + 3.days }             # Sat, 11th Sept, 2021
+  let!(:week_current_date) { Time.zone.local(2021, 9, 15) } # Wednesday
+  let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) } # Sunday
+  let!(:week_end_date) { week_current_date.at_end_of_week(:saturday) } # Friday
 
-  let!(:two_weeks_ago_week_mid_date)   { week_mid_date - 2.weeks }   # Wed, 25th Aug, 2021
-  let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks } # Sun, 22th Aug, 2021
-  let!(:two_weeks_ago_week_end_date)   { week_end_date - 2.weeks }   # Sat, 28th Aug, 2021
+  let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
+  let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
+  let!(:two_weeks_ago_week_end_date) { week_end_date - 2.weeks }
 
   let!(:this_week_attendances) do
     check_in_date = Faker::Time.between(from: week_start_date, to: week_end_date)
@@ -28,7 +32,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   end
 
   let!(:extra_attendances) do
-    create_list(:attendance, 3, check_in: Faker::Time.between(from: week_start_date, to: week_mid_date))
+    create_list(:attendance, 3, check_in: Faker::Time.between(from: week_start_date, to: week_current_date))
   end
 
   describe 'GET /api/v1/attendances' do
@@ -37,7 +41,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
     before { sign_in logged_in_user }
 
     context 'when sent with a filter date' do
-      let(:params) { { filter_date: two_weeks_ago_week_mid_date } }
+      let(:params) { { filter_date: two_weeks_ago_week_current_date } }
 
       it 'displays the attendances' do
         get '/api/v1/attendances', params: params, headers: headers
@@ -61,10 +65,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
     end
 
     context 'when viewed by an admin' do
-      before do
-        admin = create(:admin)
-        sign_in admin
-      end
+      let!(:logged_in_user) { create(:admin) }
 
       it 'displays the attendances' do
         get '/api/v1/attendances', params: {}, headers: headers
