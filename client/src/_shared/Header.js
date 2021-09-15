@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Button, Dropdown, Grid, Menu } from 'antd'
+import { Button, Divider, Dropdown, Grid, Menu } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
 import { deleteUser } from '_reducers/userReducer'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import '_assets/styles/button-header.css'
 
 const { useBreakpoint } = Grid
 
@@ -48,6 +49,28 @@ export function Header() {
   const renderMobileMenu = () => {
     const mobileMenu = (
       <Menu>
+        <Menu.Item>
+          {isAuthenticated && (
+            <Button type="link" onClick={() => history.push('/dashboard')}>
+              Dashboard
+            </Button>
+          )}
+        </Menu.Item>
+        <Menu.Item>
+          {isAuthenticated && (
+            <Button type="link" onClick={() => history.push('/attendance')}>
+              Attendance
+            </Button>
+          )}
+        </Menu.Item>
+        <Divider />
+        <Menu.Item>
+          {isAuthenticated && (
+            <Button type="link" onClick={logout}>
+              {t('logout')}
+            </Button>
+          )}
+        </Menu.Item>
         {i18n.language === 'es' ? (
           <Menu.Item>
             <Button type="link" onClick={() => changeLanguage('en')}>
@@ -61,13 +84,6 @@ export function Header() {
             </Button>
           </Menu.Item>
         )}
-        <Menu.Item>
-          {isAuthenticated && (
-            <Button type="link" onClick={logout}>
-              {t('logout')}
-            </Button>
-          )}
-        </Menu.Item>
       </Menu>
     )
 
@@ -93,10 +109,10 @@ export function Header() {
         src={pieSliceLogo}
         className="w-8 mr-2"
       />
-      {screens.lg ? (
+      {screens.md ? (
         <div className="flex-grow ml-10">
           <div className="flex">
-            <div>
+            <div className="header-nav-button">
               <Button
                 className="text-lg font-semibold"
                 type="link"
@@ -105,7 +121,7 @@ export function Header() {
                 Dashboard
               </Button>
             </div>
-            <div className="ml-8">
+            <div className="header-nav-button ml-8">
               <Button
                 className="text-lg font-semibold"
                 type="link"

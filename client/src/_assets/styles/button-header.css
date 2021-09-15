@@ -1,0 +1,5 @@
+div.header-nav-button:hover {
+  margin-bottom: -1rem;
+  border-bottom-width: 4px;
+  border-color: #006C9E;
+}

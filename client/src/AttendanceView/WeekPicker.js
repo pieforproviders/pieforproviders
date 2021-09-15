@@ -9,7 +9,13 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
       <Button onClick={() => handleDateChange(dateSelected.weekday(-7))}>
         <LeftOutlined />
       </Button>
-      <Button className="mx-2">
+      <Button
+        className="mx-2"
+        style={{
+          color: '#1b82ab',
+          borderColor: '#1b82ab'
+        }}
+      >
         {dateSelected.weekday(0).format('MMM D') +
           ' - ' +
           dateSelected.weekday(6).format('MMM D, YYYY')}

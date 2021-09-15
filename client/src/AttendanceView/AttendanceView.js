@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Table } from 'antd'
+import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
+import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import smallPie from '../_assets/smallPie.png'
 import { WeekPicker } from './WeekPicker'
+
+const { useBreakpoint } = Grid
 
 export function AttendanceView() {
   const { t } = useTranslation()
+  const screens = useBreakpoint()
+  const history = useHistory()
   const { makeRequest } = useApiResponse()
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
@@ -159,27 +165,49 @@ export function AttendanceView() {
 
   return (
     <div>
-      <div className="h1-large mb-4 flex justify-center">
+      {screens.sm ? (
         <div>
-          <div>{t('attendance')}</div>
+          <div className="h1-large mb-4 flex justify-center">
+            <div>
+              <div>{t('attendance')}</div>
+            </div>
+            <Button
+              type="primary"
+              className="absolute"
+              style={{ right: '3rem' }}
+              onClick={() => history.push('/attendance/edit')}
+            >
+              Input Attendance
+            </Button>
+          </div>
+          <p>
+            <WeekPicker
+              dateSelected={dateSelected}
+              handleDateChange={handleDateChange}
+            />
+          </p>
+          <Table
+            dataSource={attendanceData}
+            columns={columns}
+            bordered={true}
+            pagination={false}
+            sticky
+            scroll={{ x: 1500 }}
+            className="my-5"
+          />
         </div>
-        <Button className="ml-auto">Input Attendance</Button>
-      </div>
-      <p>
-        <WeekPicker
-          dateSelected={dateSelected}
-          handleDateChange={handleDateChange}
-        />
-      </p>
-      <Table
-        dataSource={attendanceData}
-        columns={columns}
-        bordered={true}
-        pagination={false}
-        sticky
-        scroll={{ x: 1500 }}
-        className="my-5"
-      />
+      ) : (
+        <div className="flex flex-col">
+          <div className="h3-large text-center mb-8 font-semibold">
+            Screen size not compatible
+          </div>
+          <img src={smallPie} alt={'a small lemon pie'} />
+          <div className="text-center body-1 text-black mt-8">
+            Either your browser window is too small, or you’re on a mobile
+            device. Please switch to a desktop or tablet to view this page.
+          </div>
+        </div>
+      )}
     </div>
   )
 }
