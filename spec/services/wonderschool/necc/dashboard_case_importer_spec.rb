@@ -35,7 +35,7 @@ module Wonderschool
           end
 
           it 'creates dashboard records for every row in the file, idempotently' do
-            expect { described_class.new.call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
+            expect { described_class.new.call }.to change(TemporaryNebraskaDashboardCase, :count).from(0).to(3)
             expect { described_class.new.call }.not_to change(TemporaryNebraskaDashboardCase, :count)
           end
 
@@ -63,7 +63,7 @@ module Wonderschool
           allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
           first_child.destroy!
           children = [first_child, second_child, third_child]
-          expect { described_class.new.call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(2)
+          expect { described_class.new.call }.to change(TemporaryNebraskaDashboardCase, :count).from(0).to(2)
           expect { described_class.new.call }.not_to change(TemporaryNebraskaDashboardCase, :count)
           children.each_with_index do |child, idx|
             next if idx == 0 # we deleted the first kid!
