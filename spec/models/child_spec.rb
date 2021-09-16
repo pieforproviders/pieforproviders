@@ -153,7 +153,7 @@ RSpec.describe Child, type: :model do
           calculator_instance = instance_double(NebraskaFullDaysCalculator)
 
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaFullDaysCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaFullDaysCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           expect(calculator_instance).to receive(:call)
           child.nebraska_full_days(Time.current.to_date)
         end
@@ -174,7 +174,7 @@ RSpec.describe Child, type: :model do
           calculator_instance = instance_double(NebraskaHoursCalculator)
 
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaHoursCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaHoursCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           expect(calculator_instance).to receive(:call)
           child.nebraska_hours(Time.current.to_date)
         end
@@ -195,7 +195,7 @@ RSpec.describe Child, type: :model do
           calculator_instance = instance_double(NebraskaWeeklyHoursAttendedCalculator)
 
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaWeeklyHoursAttendedCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaWeeklyHoursAttendedCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           expect(calculator_instance).to receive(:call)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
         end
@@ -280,15 +280,15 @@ RSpec.describe Child, type: :model do
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change { Child.count }.by(1)
+        expect { Child.create! new_child_params }.to change(Child, :count).by(1)
       end
 
       it 'does not create an approval' do
-        expect { Child.create! new_child_params }.to change { Approval.count }.by(0)
+        expect { Child.create! new_child_params }.to change(Approval, :count).by(0)
       end
 
       it 'does create a child approval' do
-        expect { Child.create! new_child_params }.to change { ChildApproval.count }.by(1)
+        expect { Child.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
 
@@ -312,19 +312,19 @@ RSpec.describe Child, type: :model do
 
       it 'does not associate the approval' do
         new_child = Child.create! new_child_params
-        expect(new_child.approvals.first.id).to_not eq(approval.id)
+        expect(new_child.approvals.first.id).not_to eq(approval.id)
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change { Child.count }.by(1)
+        expect { Child.create! new_child_params }.to change(Child, :count).by(1)
       end
 
       it 'creates an approval' do
-        expect { Child.create! new_child_params }.to change { Approval.count }.by(1)
+        expect { Child.create! new_child_params }.to change(Approval, :count).by(1)
       end
 
       it 'creates a child approval' do
-        expect { Child.create! new_child_params }.to change { ChildApproval.count }.by(1)
+        expect { Child.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
   end
