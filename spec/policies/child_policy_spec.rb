@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ChildPolicy do
   subject { described_class }
+
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:business) { create(:business, user: user) }
