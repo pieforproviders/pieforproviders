@@ -1,6 +1,6 @@
-| CI | Analytics |
-| :-: | :-: |
-| [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop) | [![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge) |
+[![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop) [![Maintainability](https://api.codeclimate.com/v1/badges/593c088e5aa9ac0913a1/maintainability)](https://codeclimate.com/github/pieforproviders/pieforproviders/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/593c088e5aa9ac0913a1/test_coverage)](https://codeclimate.com/github/pieforproviders/pieforproviders/test_coverage)
+
+[![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge) 
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
