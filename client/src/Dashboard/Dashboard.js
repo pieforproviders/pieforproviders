@@ -53,7 +53,6 @@ export function Dashboard() {
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
-    debugger // eslint-disable-line no-debugger
     if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
       return [
         {
