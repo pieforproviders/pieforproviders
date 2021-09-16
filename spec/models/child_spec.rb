@@ -109,6 +109,7 @@ RSpec.describe Child, type: :model do
         expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('9:00am'))
         expect(child.schedules.first.weekday).to eq(1)
       end
+
       it "doesn't create default schedules if schedules_attributes are passed" do
         child = create(:necc_child, schedules_attributes: [attributes_for(:schedule)])
         expect(child.schedules.length).to eq(1)
@@ -125,6 +126,7 @@ RSpec.describe Child, type: :model do
         it 'returns the database value' do
           expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
         end
+
         context 'when there are two children' do
           it 'returns the correct allocation of the family fee' do
             # child object should have a default schedule, which is 40 hours a week, in whatever given month

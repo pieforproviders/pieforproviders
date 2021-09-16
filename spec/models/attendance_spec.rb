@@ -79,6 +79,7 @@ RSpec.describe Attendance, type: :model do
       attendance.save!
       expect(attendance.total_time_in_care.in_seconds).to eq(attendance.check_out - attendance.check_in)
     end
+
     it 'uses the check_in and schedule when check_out is null and the child has a schedule' do
       child = create(:necc_child)
       child.reload
@@ -87,12 +88,14 @@ RSpec.describe Attendance, type: :model do
       attendance = create(:attendance, child_approval: child.child_approvals.first, check_in: attendance_check_in, check_out: nil)
       expect(attendance.total_time_in_care.in_seconds).to eq(Tod::Shift.new(child.schedules.first.start_time, child.schedules.first.end_time).duration)
     end
+
     it 'uses the check_in and makes the attendance 8 hours when check_out is null and the child has no schedule' do
       child = create(:necc_child)
       child.schedules.destroy_all
       attendance = create(:attendance, child_approval: child.child_approvals.first, check_out: nil)
       expect(attendance.total_time_in_care.in_seconds).to eq(8.hours.in_seconds)
     end
+
     it 'uses the check_in and schedule when creating an absence' do
       child = create(:necc_child)
       child.reload
@@ -211,21 +214,25 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_accredited_hourly_rate.amount)
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount)
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((2.25 * nebraska_accredited_hourly_rate.amount) + (1 * nebraska_accredited_daily_rate.amount))
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((8 * nebraska_accredited_hourly_rate.amount) + (1 * nebraska_accredited_daily_rate.amount))
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
@@ -236,16 +243,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
@@ -271,21 +281,25 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount)
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount)
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((2.25 * nebraska_unaccredited_hourly_rate.amount) + (1 * nebraska_unaccredited_daily_rate.amount))
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((8 * nebraska_unaccredited_hourly_rate.amount) + (1 * nebraska_unaccredited_daily_rate.amount))
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
@@ -296,16 +310,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
@@ -331,21 +348,25 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_accredited_hourly_rate.amount * (1.05**2))
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount * (1.05**2))
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((2.25 * nebraska_accredited_hourly_rate.amount * (1.05**2)) + (1 * nebraska_accredited_daily_rate.amount * (1.05**2)))
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((8 * nebraska_accredited_hourly_rate.amount * (1.05**2)) + (1 * nebraska_accredited_daily_rate.amount * (1.05**2)))
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -356,16 +377,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
@@ -391,21 +415,25 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((2.25 * nebraska_unaccredited_hourly_rate.amount * (1.05**3)) + (1 * nebraska_unaccredited_daily_rate.amount * (1.05**3)))
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq((8 * nebraska_unaccredited_hourly_rate.amount * (1.05**3)) + (1 * nebraska_unaccredited_daily_rate.amount * (1.05**3)))
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -416,16 +444,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
@@ -451,11 +482,13 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
@@ -465,6 +498,7 @@ RSpec.describe Attendance, type: :model do
             (1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
           )
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
@@ -474,6 +508,7 @@ RSpec.describe Attendance, type: :model do
             (1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
           )
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -484,16 +519,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
@@ -519,11 +557,13 @@ RSpec.describe Attendance, type: :model do
         attendance.save!
         expect(attendance.earned_revenue).to eq(3.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
         expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
       end
+
       it 'gets rates on creation of a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
@@ -533,6 +573,7 @@ RSpec.describe Attendance, type: :model do
             (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
           )
       end
+
       it 'gets rates on creation of an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
@@ -542,6 +583,7 @@ RSpec.describe Attendance, type: :model do
             (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
           )
       end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -552,16 +594,19 @@ RSpec.describe Attendance, type: :model do
           attendance.save!
           expect(attendance.earned_revenue).to eq(3.25 * attendance.child_approval.special_needs_hourly_rate)
         end
+
         it 'gets rates on creation of a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
         end
+
         it 'gets rates on creation of a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
           expect(attendance.earned_revenue).to eq((2.25 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
+
         it 'gets rates on creation of an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!

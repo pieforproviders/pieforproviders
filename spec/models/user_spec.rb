@@ -57,9 +57,11 @@ RSpec.describe User, type: :model do
     it 'works without a date passed' do
       expect(user.latest_attendance_in_month_utc(nil)).to eq(third_attendance.check_in)
     end
+
     it 'returns nil for a month without an attendance' do
       expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months)).to eq(nil)
     end
+
     it 'returns the latest attendance for a month with multiple attendances' do
       expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months)).to eq(second_attendance.check_in)
     end

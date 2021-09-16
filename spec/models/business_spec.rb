@@ -34,6 +34,7 @@ RSpec.describe Business, type: :model do
       business.update!(accredited: false)
       expect(business.ne_qris_bump).to eq(1.05**3)
     end
+
     it 'uses the correct qris_rating' do
       business = create(:business, :nebraska, :accredited, :step_five)
       expect(business.ne_qris_bump).to eq(1.05**2)

@@ -9,6 +9,7 @@ RSpec.describe ChildApproval, type: :model do
   it { should have_many(:illinois_approval_amounts).dependent(:destroy) }
   it { should have_many(:nebraska_approval_amounts).dependent(:destroy) }
   it { should have_many(:attendances).dependent(:destroy) }
+
   it 'factory should be valid (default; no args)' do
     expect(build(:child_approval)).to be_valid
   end

@@ -71,6 +71,7 @@ RSpec.describe ChildBlueprint do
         'inactive_reason'
       )
     end
+
     it 'includes the correct information from the temporary dashboard case' do
       allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['hours']).to eq('11.0')
@@ -82,6 +83,7 @@ RSpec.describe ChildBlueprint do
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['attendance_risk']).to eq('ahead_of_schedule')
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: attendance_date))['absences']).to eq('1 of 5')
     end
+
     context 'when using live algorithms' do
       before do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
@@ -260,6 +262,7 @@ RSpec.describe ChildBlueprint do
         # ratio: (561.95 - 580.97) / 580.97 = -0.03
         expect(parsed_body['attendance_risk']).to eq('on_track')
       end
+
       it 'subtracts the family fee from the correct child' do
         child.attendances.destroy_all
         child_with_less_hours = create(

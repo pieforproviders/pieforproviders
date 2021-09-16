@@ -27,6 +27,7 @@ RSpec.describe UserBlueprint do
         'first_approval_effective_date'
       )
     end
+
     context "when there are approvals for this user's children" do
       let!(:illinois_business) { create(:business, user: user) }
       let!(:child) { create(:child, :with_two_illinois_attendances, business: illinois_business) }
@@ -54,6 +55,7 @@ RSpec.describe UserBlueprint do
       expect(parsed_response['max_revenue']).to eq('N/A')
       expect(parsed_response['total_approved']).to eq('N/A')
     end
+
     context "when there are approvals for this user's children" do
       let!(:nebraska_business) { create(:business, :nebraska, user: user) }
       let!(:child) { create(:necc_child, :with_two_nebraska_attendances, business: nebraska_business) }
@@ -81,11 +83,13 @@ RSpec.describe UserBlueprint do
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
         travel_back
       end
+
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
         blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
+
       it 'returns the as_of date as today for a month with no attendances' do
         blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month - 6.months)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
@@ -98,11 +102,13 @@ RSpec.describe UserBlueprint do
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
         travel_back
       end
+
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
         blueprint = UserBlueprint.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
+
       it 'returns the as_of date as today for a month with no attendances' do
         blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month - 6.months)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
