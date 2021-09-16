@@ -22,28 +22,28 @@ RSpec.describe IllinoisRate, type: :model do
 
   it 'validates effective_on as a date' do
     illinois_rate.update(effective_on: Time.current)
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
     illinois_rate.effective_on = "I'm a string"
-    expect(illinois_rate.valid?).to be_falsey
+    expect(illinois_rate).not_to be_valid
     illinois_rate.effective_on = nil
-    expect(illinois_rate.valid?).to be_falsey
+    expect(illinois_rate).not_to be_valid
     illinois_rate.effective_on = '2021-02-01'
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
     illinois_rate.effective_on = Date.new(2021, 12, 11)
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
   end
 
   it 'validates expires_on as an optional date' do
     illinois_rate.update(expires_on: Time.current)
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
     illinois_rate.expires_on = "I'm a string"
-    expect(illinois_rate.valid?).to be_falsey
+    expect(illinois_rate).not_to be_valid
     illinois_rate.expires_on = nil
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
     illinois_rate.expires_on = '2021-02-01'
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
     illinois_rate.expires_on = Date.new(2021, 12, 11)
-    expect(illinois_rate.valid?).to be_truthy
+    expect(illinois_rate).to be_valid
   end
 
   it 'factory should be valid (default; no args)' do

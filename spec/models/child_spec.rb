@@ -17,28 +17,28 @@ RSpec.describe Child, type: :model do
 
   it 'validates date_of_birth as a date' do
     child.update(date_of_birth: Time.current)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.date_of_birth = "I'm a string"
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.date_of_birth = nil
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.date_of_birth = '2021-02-01'
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.date_of_birth = Date.new(2021, 12, 11)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
   end
 
   it 'validates last_active_date as an optional date' do
     child.update(last_active_date: Time.current)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = "I'm a string"
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.last_active_date = nil
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = '2021-02-01'
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = Date.new(2021, 12, 11)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
   end
 
   it 'validates that inactive_reason is a permitted value only' do

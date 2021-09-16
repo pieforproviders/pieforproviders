@@ -18,28 +18,28 @@ RSpec.describe NebraskaRate, type: :model do
 
   it 'validates effective_on as a date' do
     nebraska_rate.update(effective_on: Time.current)
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
     nebraska_rate.effective_on = "I'm a string"
-    expect(nebraska_rate.valid?).to be_falsey
+    expect(nebraska_rate).not_to be_valid
     nebraska_rate.effective_on = nil
-    expect(nebraska_rate.valid?).to be_falsey
+    expect(nebraska_rate).not_to be_valid
     nebraska_rate.effective_on = '2021-02-01'
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
     nebraska_rate.effective_on = Date.new(2021, 12, 11)
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
   end
 
   it 'validates expires_on as an optional date' do
     nebraska_rate.update(expires_on: Time.current)
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
     nebraska_rate.expires_on = "I'm a string"
-    expect(nebraska_rate.valid?).to be_falsey
+    expect(nebraska_rate).not_to be_valid
     nebraska_rate.expires_on = nil
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
     nebraska_rate.expires_on = '2021-02-01'
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
     nebraska_rate.expires_on = Date.new(2021, 12, 11)
-    expect(nebraska_rate.valid?).to be_truthy
+    expect(nebraska_rate).to be_valid
   end
 
   it 'factory should be valid (default; no args)' do

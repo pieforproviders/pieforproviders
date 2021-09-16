@@ -14,54 +14,54 @@ RSpec.describe Schedule, type: :model do
 
   it 'validates effective_on as a date' do
     schedule.update(effective_on: Time.current)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.effective_on = "I'm a string"
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.effective_on = nil
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.effective_on = '2021-02-01'
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.effective_on = Date.new(2021, 12, 11)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
   end
 
   it 'validates expires_on as an optional date' do
     schedule.update(expires_on: Time.current)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.expires_on = "I'm a string"
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.expires_on = nil
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.expires_on = '2021-02-01'
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.expires_on = Date.new(2021, 12, 11)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
   end
 
   it 'validates start_time as a time' do
     schedule.update(start_time: Time.current)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.start_time = "I'm a string"
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.start_time = nil
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.start_time = '5:00PM'
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.start_time = Time.new(2007, 11, 1, 15, 25, 0, '+09:00')
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
   end
 
   it 'validates end_time as a time' do
     schedule.update(end_time: Time.current)
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.end_time = "I'm a string"
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.end_time = nil
-    expect(schedule.valid?).to be_falsey
+    expect(schedule).not_to be_valid
     schedule.end_time = '5:00PM'
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
     schedule.end_time = Time.new(2007, 11, 1, 15, 25, 0, '+09:00')
-    expect(schedule.valid?).to be_truthy
+    expect(schedule).to be_valid
   end
 
   it 'factory should be valid (default; no args)' do
