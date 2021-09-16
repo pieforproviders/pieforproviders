@@ -10,8 +10,8 @@ RSpec.describe Business, type: :model do
   it_behaves_like 'licenses'
 
   it 'validates uniqueness of business name' do
-    create(:business)
-    is_expected.to validate_uniqueness_of(:name).scoped_to(:user_id)
+    business = create(:business)
+    expect(business).to validate_uniqueness_of(:name).scoped_to(:user_id)
   end
 
   it 'factory should be valid (default; no args)' do
