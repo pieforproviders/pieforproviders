@@ -82,6 +82,7 @@ RSpec.describe Approval, type: :model do
 
   describe '#child_with_most_scheduled_hours' do
     before { approval.save! }
+
     it 'returns the child with the most scheduled hours' do
       child_with_more_hours = create(:child, approvals: [approval])
       create(:child, approvals: [approval], schedules: [create(:schedule)])

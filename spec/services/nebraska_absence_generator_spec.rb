@@ -13,12 +13,15 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       child.reload
     end
     # rubocop:disable Rails/RedundantTravelBack
+
     after { travel_back }
     # rubocop:enable Rails/RedundantTravelBack
+
     context 'the child has an attendance on the date' do
       before do
         create(:attendance, child_approval: child_approval, check_in: attendance_date)
       end
+
       it 'does not create an absence for that child' do
         expect { described_class.new(child).call }.not_to change(Attendance, :count)
       end

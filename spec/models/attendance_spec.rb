@@ -206,11 +206,13 @@ RSpec.describe Attendance, type: :model do
     end
 
     before { attendance.business.update!(county: 'Douglas') }
+
     context 'with an accredited business' do
       before do
         attendance.business.update!(accredited: true, qris_rating: 'not_rated')
         attendance.child_approval.update!(special_needs_rate: false)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -240,6 +242,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
@@ -280,6 +283,7 @@ RSpec.describe Attendance, type: :model do
         attendance.business.update!(accredited: false, qris_rating: 'not_rated')
         attendance.child_approval.update!(special_needs_rate: false)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -309,6 +313,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
@@ -349,6 +354,7 @@ RSpec.describe Attendance, type: :model do
         attendance.business.update!(accredited: true, qris_rating: 'step_five')
         attendance.child_approval.update!(special_needs_rate: false)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -378,6 +384,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
@@ -418,6 +425,7 @@ RSpec.describe Attendance, type: :model do
         attendance.business.update!(accredited: false, qris_rating: 'step_five')
         attendance.child_approval.update!(special_needs_rate: false)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -447,6 +455,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
@@ -487,6 +496,7 @@ RSpec.describe Attendance, type: :model do
         attendance.business.update!(accredited: false, qris_rating: 'step_five')
         attendance.child_approval.update!(special_needs_rate: false, enrolled_in_school: true)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -524,6 +534,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
@@ -564,6 +575,7 @@ RSpec.describe Attendance, type: :model do
         attendance.business.update!(accredited: false, qris_rating: 'step_five', county: 'Parker')
         attendance.child_approval.update!(special_needs_rate: false, enrolled_in_school: true)
       end
+
       it 'gets rates on creation of an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -601,6 +613,7 @@ RSpec.describe Attendance, type: :model do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
           attendance.child_approval.update!(special_needs_rate: true, special_needs_daily_rate: 20.0, special_needs_hourly_rate: 5.60)
         end
+
         it 'gets rates on creation of an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!

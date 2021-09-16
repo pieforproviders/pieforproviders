@@ -82,6 +82,7 @@ RSpec.describe UserBlueprint do
     before do
       create(:attendance, check_in: last_month, child_approval: create(:child_approval, child: create(:child, business: create(:business, user: user))))
     end
+
     context 'in nebraska' do
       it "returns the as_of date in the user's timezone" do
         travel_to Time.current.at_end_of_day

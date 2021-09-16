@@ -28,6 +28,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
       end
     end
     # rubocop:disable Rails/RedundantTravelBack
+
     after { travel_back }
     # rubocop:enable Rails/RedundantTravelBack
 

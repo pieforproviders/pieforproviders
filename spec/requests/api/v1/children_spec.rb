@@ -106,6 +106,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
         let(:nebraska_business) { create(:business, :nebraska, user: create(:confirmed_user)) }
 
         before { sign_in nebraska_business.user }
+
         it "creates a child for that user's business" do
           params[:child][:business_id] = nebraska_business.id
           post '/api/v1/children', params: params, headers: headers

@@ -124,6 +124,7 @@ RSpec.describe Child, type: :model do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           child.reload
         end
+
         it 'returns the database value' do
           expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
         end
