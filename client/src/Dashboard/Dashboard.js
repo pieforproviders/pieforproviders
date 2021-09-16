@@ -31,7 +31,7 @@ export function Dashboard() {
       estimatedRevenueTotal: 0,
       maxRevenueTotal: 0,
       totalApprovedTotal: 0,
-      transportationRevenueTotal: 0
+      totalApprovedRevenueWithFamilyFeeTotal: 0
     },
     default: {
       guaranteedRevenueTotal: 0,
@@ -89,10 +89,10 @@ export function Dashboard() {
             definition: t(`comingSoon`)
           },
           {
-            title: t(`transportation`),
+            title: t(`totalApprovedWithFamilyFee`),
             stat: 'n/a',
             // `${currencyFormatter.format(
-            //   totals.transportationRevenueTotal.toFixed()
+            //   totals.totalApprovedRevenueWithFamilyFeeTotal.toFixed()
             // )}`
             definition: t(`comingSoon`)
           }
@@ -143,7 +143,8 @@ export function Dashboard() {
             earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
             estimatedRevenueTotal:
               acc.estimatedRevenueTotal + cv.estimatedRevenue,
-            transportationRevenueTotal: acc.transportationRevenueTotal
+            totalApprovedRevenueWithFamilyFeeTotal:
+              acc.totalApprovedWithFamilyFeeTotal
           }
         }, summaryDataTotalsConfig['ne']),
         ...res.reduce((acc, cv) => {
