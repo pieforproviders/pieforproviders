@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Child, type: :model do
   let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+
   it { should belong_to(:business) }
   it { should have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
   it { should have_many(:approvals).through(:child_approvals) }
@@ -271,6 +272,7 @@ RSpec.describe Child, type: :model do
           ]
         }
       end
+
       it 'associates the approval' do
         new_child = Child.create! new_child_params
         expect(new_child.approvals.first.id).to eq(approval.id)

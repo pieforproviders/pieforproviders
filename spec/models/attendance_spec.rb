@@ -8,6 +8,7 @@ RSpec.describe Attendance, type: :model do
   it { should validate_presence_of(:check_in) }
 
   let(:attendance) { build(:attendance, check_out: nil) }
+
   it 'validates check_in as a Time' do
     attendance.update(check_in: Time.current)
     expect(attendance.valid?).to be_truthy
@@ -203,6 +204,7 @@ RSpec.describe Attendance, type: :model do
         county: attendance.county
       )
     end
+
     before { attendance.business.update!(county: 'Douglas') }
     context 'with an accredited business' do
       before do
@@ -644,6 +646,7 @@ RSpec.describe Attendance, type: :model do
       create(:attendance, child_approval: child_approval, check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
                           check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
     end
+
     it 'returns attendances for given months' do
       date = Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date
       expect(Attendance.for_month).to include(current_attendance)
@@ -665,6 +668,7 @@ RSpec.describe Attendance, type: :model do
       create(:attendance, child_approval: child_approval, check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
                           check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
     end
+
     it 'returns attendances for given weeks' do
       date = Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date
       expect(Attendance.for_week).to include(current_attendance)
@@ -695,6 +699,7 @@ RSpec.describe Attendance, type: :model do
       create(:attendance, child_approval: child_approval, check_in: Time.new(2020, 12, 4, 9, 31, 0, timezone),
                           check_out: Time.new(2020, 12, 5, 2, 31, 0, timezone))
     end
+
     it 'returns attendances based on length of time in care' do
       expect(Attendance.illinois_part_days).to include(part_day)
       expect(Attendance.illinois_part_days).not_to include([full_day, full_plus_part_day, full_plus_full_day])

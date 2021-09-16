@@ -21,6 +21,7 @@ RSpec.describe User, type: :model do
   end
 
   let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
+
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')
   end
@@ -31,6 +32,7 @@ RSpec.describe User, type: :model do
 
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
+
     before do
       create_list(:child, 3, business: business)
     end
@@ -54,6 +56,7 @@ RSpec.describe User, type: :model do
     end
     let!(:second_attendance) { create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval) }
     let!(:third_attendance) { create(:attendance, check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day, child_approval: first_attendance.child_approval) }
+
     it 'works without a date passed' do
       expect(user.latest_attendance_in_month_utc(nil)).to eq(third_attendance.check_in)
     end

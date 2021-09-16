@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ChildBlueprint do
   let(:child) { create(:child) }
+
   context 'returns the correct fields when no view option is passed' do
     it 'includes the ID, full name, and active info' do
       expect(JSON.parse(described_class.render(child)).keys).to contain_exactly('id', 'active', 'full_name', 'last_active_date', 'inactive_reason')
@@ -95,6 +96,7 @@ RSpec.describe ChildBlueprint do
       after { travel_back }
       # rubocop:enable Rails/RedundantTravelBack
       let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
+
       it 'includes the child name and all live attendance data' do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 3 hours of attendance from the hourly attendance created above on the 4th

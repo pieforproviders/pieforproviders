@@ -37,6 +37,7 @@ RSpec.describe 'POST /signup', type: :request do
 
   context 'when signup params are incorrect' do
     let(:bad_params) { { user: { title: 'whatever ' } } }
+
     before { post '/signup', params: bad_params }
 
     it 'returns unprocessable entity' do
