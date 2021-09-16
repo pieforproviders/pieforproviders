@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Approval, type: :model do
-  it { should have_many(:child_approvals).dependent(:destroy) }
-  it { should have_many(:children).through(:child_approvals) }
+  it { is_expected.to have_many(:child_approvals).dependent(:destroy) }
+  it { is_expected.to have_many(:children).through(:child_approvals) }
   it { is_expected.to monetize(:copay) }
 
   let(:approval) { build(:approval) }

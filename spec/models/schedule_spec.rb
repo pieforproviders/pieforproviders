@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Schedule, type: :model do
-  it { should belong_to(:child) }
-  it { should validate_presence_of(:weekday) }
-  it { should validate_numericality_of(:weekday) }
-  it { should validate_presence_of(:start_time) }
-  it { should validate_presence_of(:end_time) }
-  it { should validate_presence_of(:effective_on) }
+  it { is_expected.to belong_to(:child) }
+  it { is_expected.to validate_presence_of(:weekday) }
+  it { is_expected.to validate_numericality_of(:weekday) }
+  it { is_expected.to validate_presence_of(:start_time) }
+  it { is_expected.to validate_presence_of(:end_time) }
+  it { is_expected.to validate_presence_of(:effective_on) }
 
   let(:schedule) { build(:schedule) }
 

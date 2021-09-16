@@ -5,15 +5,15 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   subject { create(:confirmed_user) }
 
-  it { should validate_presence_of(:email) }
-  it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
-  it { should validate_presence_of(:full_name) }
-  it { should validate_presence_of(:greeting_name) }
-  it { should validate_presence_of(:language) }
-  it { should validate_presence_of(:organization) }
-  it { should validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
-  it { should validate_presence_of(:timezone) }
-  it { should validate_presence_of(:service_agreement_accepted) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
+  it { is_expected.to validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:greeting_name) }
+  it { is_expected.to validate_presence_of(:language) }
+  it { is_expected.to validate_presence_of(:organization) }
+  it { is_expected.to validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
+  it { is_expected.to validate_presence_of(:timezone) }
+  it { is_expected.to validate_presence_of(:service_agreement_accepted) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:confirmed_user)).to be_valid

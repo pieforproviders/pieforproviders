@@ -6,14 +6,14 @@ RSpec.describe Child, type: :model do
   let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 
-  it { should belong_to(:business) }
-  it { should have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
-  it { should have_many(:approvals).through(:child_approvals) }
-  it { should have_one(:temporary_nebraska_dashboard_case) }
+  it { is_expected.to belong_to(:business) }
+  it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
+  it { is_expected.to have_many(:approvals).through(:child_approvals) }
+  it { is_expected.to have_one(:temporary_nebraska_dashboard_case) }
 
-  it { should validate_presence_of(:approvals) }
-  it { should validate_presence_of(:date_of_birth) }
-  it { should validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:approvals) }
+  it { is_expected.to validate_presence_of(:date_of_birth) }
+  it { is_expected.to validate_presence_of(:full_name) }
 
   it 'validates date_of_birth as a date' do
     child.update(date_of_birth: Time.current)
@@ -59,8 +59,8 @@ RSpec.describe Child, type: :model do
     expect(build(:child)).to be_valid
   end
 
-  it { should accept_nested_attributes_for :approvals }
-  it { should accept_nested_attributes_for :child_approvals }
+  it { is_expected.to accept_nested_attributes_for :approvals }
+  it { is_expected.to accept_nested_attributes_for :child_approvals }
 
   context 'scopes' do
     let(:inactive_child) { create(:child, active: false) }

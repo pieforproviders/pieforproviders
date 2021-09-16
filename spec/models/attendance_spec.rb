@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
-  it { should belong_to(:child_approval) }
+  it { is_expected.to belong_to(:child_approval) }
 
-  it { should validate_presence_of(:check_in) }
+  it { is_expected.to validate_presence_of(:check_in) }
 
   let(:attendance) { build(:attendance, check_out: nil) }
 

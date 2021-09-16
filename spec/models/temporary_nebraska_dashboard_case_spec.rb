@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe TemporaryNebraskaDashboardCase, type: :model do
-  it { should belong_to(:child) }
-  it { should validate_presence_of(:absences) }
-  it { should validate_presence_of(:attendance_risk) }
-  it { should validate_presence_of(:earned_revenue) }
-  it { should validate_presence_of(:estimated_revenue) }
-  it { should validate_presence_of(:full_days) }
-  it { should validate_presence_of(:hours) }
+  it { is_expected.to belong_to(:child) }
+  it { is_expected.to validate_presence_of(:absences) }
+  it { is_expected.to validate_presence_of(:attendance_risk) }
+  it { is_expected.to validate_presence_of(:earned_revenue) }
+  it { is_expected.to validate_presence_of(:estimated_revenue) }
+  it { is_expected.to validate_presence_of(:full_days) }
+  it { is_expected.to validate_presence_of(:hours) }
 
   let(:temporary_nebraska_dashboard_case) { build(:temporary_nebraska_dashboard_case) }
 

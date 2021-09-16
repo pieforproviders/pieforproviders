@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe NebraskaRate, type: :model do
-  it { should have_many(:child_approvals) }
+  it { is_expected.to have_many(:child_approvals) }
 
-  it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:effective_on) }
-  it { should validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
-  it { should validate_numericality_of(:amount) }
-  it { should validate_inclusion_of(:rate_type).in_array(NebraskaRate::TYPES) }
-  it { should validate_inclusion_of(:region).in_array(NebraskaRate::REGIONS) }
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:effective_on) }
+  it { is_expected.to validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
+  it { is_expected.to validate_numericality_of(:amount) }
+  it { is_expected.to validate_inclusion_of(:rate_type).in_array(NebraskaRate::TYPES) }
+  it { is_expected.to validate_inclusion_of(:region).in_array(NebraskaRate::REGIONS) }
 
   it_behaves_like 'licenses'
 
