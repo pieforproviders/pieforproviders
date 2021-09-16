@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module Wonderschool
   module Necc
     # Wonderschool NECC Onboarding CSV Importer
@@ -157,4 +156,3 @@ module Wonderschool
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

@@ -6,7 +6,6 @@ class DeviseCustomMailer < Devise::Mailer
   default template_path: 'devise/mailer' # to make sure that your mailer uses the devise views
   layout 'mailer'
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def confirmation_instructions(record, token, opts = {})
     @greeting_name = record.greeting_name
     @token = token
@@ -20,7 +19,6 @@ class DeviseCustomMailer < Devise::Mailer
     attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
     super
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def reset_password_instructions(record, token, opts = {})
     @token = token

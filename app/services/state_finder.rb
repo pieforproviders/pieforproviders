@@ -77,8 +77,6 @@ class StateFinder
 
     # update_column doesn't trigger callbacks, so this prevents the infinite loop
 
-    # rubocop:disable Rails/SkipsModelValidations
     @business.update_column(:state, state[:abbr])
-    # rubocop:enable Rails/SkipsModelValidations
   end
 end

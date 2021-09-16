@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # A child in care at businesses who need subsidy assistance
-# rubocop:disable Metrics/ClassLength
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
@@ -342,7 +341,6 @@ class Child < UuidApplicationRecord
     RateAssociatorJob.perform_later(id)
   end
 end
-# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #

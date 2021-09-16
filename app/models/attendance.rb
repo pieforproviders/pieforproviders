@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Attendance of a child during a specific cycle for a child case
-# rubocop:disable Metrics/ClassLength
 class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_total_time_in_care, if: :child_approval
@@ -149,7 +148,6 @@ class Attendance < UuidApplicationRecord
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
   end
 end
-# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #

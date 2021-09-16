@@ -22,14 +22,12 @@ RSpec.shared_context 'server error responses for wrong api version with paramete
       end
     end
 
-    # rubocop:disable RSpec/EmptyExampleGroup
     context 'when not authenticated' do
       response '500', 'internal server error' do
         let(record_name.to_sym) { { record_name => record_params } }
         run_test!
       end
     end
-    # rubocop:enable RSpec/EmptyExampleGroup
   end
 end
 
@@ -43,37 +41,31 @@ RSpec.shared_context 'server error responses for wrong api version' do
       end
     end
 
-    # rubocop:disable RSpec/EmptyExampleGroup
     context 'when not authenticated' do
       response '500', 'internal server error' do
         run_test!
       end
     end
-    # rubocop:enable RSpec/EmptyExampleGroup
   end
 end
 
 # This example expects the following to be defined with a let(:) block:
 #  record_params - parameters to be passed to the server
 RSpec.shared_context '401 error if not authenticated with parameters' do |record_name|
-  # rubocop:disable RSpec/EmptyExampleGroup
   context 'when not authenticated' do
     response '401', 'not authorized' do
       let(record_name.to_sym) { { record_name => record_params } }
       run_test!
     end
   end
-  # rubocop:enable RSpec/EmptyExampleGroup
 end
 
 RSpec.shared_examples '401 error if not authenticated' do
-  # rubocop:disable RSpec/EmptyExampleGroup
   context 'when not authenticated' do
     response '401', 'not authorized' do
       run_test!
     end
   end
-  # rubocop:enable RSpec/EmptyExampleGroup
 end
 
 # This example expects the following to be defined with a let(:) block:
