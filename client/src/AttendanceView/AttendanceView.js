@@ -97,7 +97,7 @@ export function AttendanceView() {
         width: 150,
         title: (
           <div className="text-gray9 font-semibold grid justify-items-center ">
-            Name
+            {t('name')}
           </div>
         ),
         // eslint-disable-next-line react/display-name
@@ -177,7 +177,7 @@ export function AttendanceView() {
               style={{ right: '3rem' }}
               onClick={() => history.push('/attendance/edit')}
             >
-              Input Attendance
+              {t('inputAttendance')}
             </Button>
           </div>
           <p>

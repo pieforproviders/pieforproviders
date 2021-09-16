@@ -28,6 +28,6 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
 }
 
 WeekPicker.propTypes = {
-  dateSelected: PropTypes.number,
+  dateSelected: PropTypes.object,
   handleDateChange: PropTypes.func
 }

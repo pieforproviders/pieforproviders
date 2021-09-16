@@ -226,5 +226,15 @@
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
-  "dateError": "Please select a date"
+  "dateError": "Please select a date",
+
+  "inputAttendance": "Input Attendance",
+  "name": "Name",
+  "mon": "on",
+  "tues": "tues",
+  "wed": "wed",
+  "thurs": "thurs",
+  "fri": "fri",
+  "sat": "sat",
+  "sun": "sun"
 }
