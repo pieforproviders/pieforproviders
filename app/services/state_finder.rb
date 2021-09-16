@@ -72,11 +72,7 @@ class StateFinder
 
     # Ensure we don't parse strings starting with 0 as octal values
     zip_integer = Integer(@zipcode, 10)
-
     state = ZIP_RANGES.find { |range| zip_integer.between?(range[:start], range[:end]) }
-
-    # update_column doesn't trigger callbacks, so this prevents the infinite loop
-
-    @business.update_column(:state, state[:abbr])
+    @business.state = state[:abbr]
   end
 end

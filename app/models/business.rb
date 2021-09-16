@@ -4,8 +4,8 @@
 class Business < UuidApplicationRecord
   include Licenses
 
+  before_save :state_from_zipcode
   before_update :prevent_deactivation_with_active_children
-  after_commit :state_from_zipcode
 
   belongs_to :user
 
