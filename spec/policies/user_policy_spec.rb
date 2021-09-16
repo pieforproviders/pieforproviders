@@ -10,17 +10,17 @@ RSpec.describe UserPolicy do
   let(:admin) { create(:admin) }
 
   permissions :index? do
-    it 'grants access to admins' do
+    it 'grants access to the index for admins' do
       expect(subject).to permit(admin, User)
     end
 
-    it 'denies access to non-admin users' do
+    it 'denies access to the index to non-admin users' do
       expect(subject).not_to permit(user, User)
     end
   end
 
   permissions :create? do
-    it 'grants access to everyone' do
+    it 'grants access to the create method to everyone' do
       expect(subject).to permit(admin)
       expect(subject).to permit(user)
       expect(subject).to permit(non_owner)
@@ -29,15 +29,15 @@ RSpec.describe UserPolicy do
   end
 
   permissions :update?, :destroy? do
-    it 'grants access to admins' do
+    it 'grants access to the update and destroy methods to admins' do
       expect(subject).to permit(admin, user)
     end
 
-    it 'grants access to owners' do
+    it 'grants access to the update and destroy methods to owners' do
       expect(subject).to permit(user, user)
     end
 
-    it 'denies access to non-owners' do
+    it 'denies access to the update and destroy methods to non-owners' do
       expect(subject).not_to permit(non_owner, user)
     end
   end
