@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
+  let(:attendance) { build(:attendance, check_out: nil) }
+
   it { is_expected.to belong_to(:child_approval) }
 
   it { is_expected.to validate_presence_of(:check_in) }
-
-  let(:attendance) { build(:attendance, check_out: nil) }
 
   it 'validates check_in as a Time' do
     attendance.update(check_in: Time.current)

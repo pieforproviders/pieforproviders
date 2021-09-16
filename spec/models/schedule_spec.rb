@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe Schedule, type: :model do
+  let(:schedule) { build(:schedule) }
+
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:weekday) }
   it { is_expected.to validate_numericality_of(:weekday) }
   it { is_expected.to validate_presence_of(:start_time) }
   it { is_expected.to validate_presence_of(:end_time) }
   it { is_expected.to validate_presence_of(:effective_on) }
-
-  let(:schedule) { build(:schedule) }
 
   it 'validates effective_on as a date' do
     schedule.update(effective_on: Time.current)

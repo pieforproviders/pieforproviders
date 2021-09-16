@@ -5,6 +5,8 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   subject { create(:confirmed_user) }
 
+  let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
+
   it { is_expected.to validate_presence_of(:email) }
   it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
   it { is_expected.to validate_presence_of(:full_name) }
@@ -20,8 +22,6 @@ RSpec.describe User, type: :model do
     expect(build(:unconfirmed_user)).to be_valid
     expect(build(:admin)).to be_valid
   end
-
-  let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
 
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')

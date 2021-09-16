@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe NebraskaRate, type: :model do
+  let(:nebraska_rate) { build(:nebraska_rate) }
+
   it { is_expected.to have_many(:child_approvals) }
 
   it { is_expected.to validate_presence_of(:name) }
@@ -13,8 +15,6 @@ RSpec.describe NebraskaRate, type: :model do
   it { is_expected.to validate_inclusion_of(:region).in_array(NebraskaRate::REGIONS) }
 
   it_behaves_like 'licenses'
-
-  let(:nebraska_rate) { build(:nebraska_rate) }
 
   it 'validates effective_on as a date' do
     nebraska_rate.update(effective_on: Time.current)

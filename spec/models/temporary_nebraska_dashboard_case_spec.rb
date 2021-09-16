@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe TemporaryNebraskaDashboardCase, type: :model do
+  let(:temporary_nebraska_dashboard_case) { build(:temporary_nebraska_dashboard_case) }
+
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:absences) }
   it { is_expected.to validate_presence_of(:attendance_risk) }
@@ -10,8 +12,6 @@ RSpec.describe TemporaryNebraskaDashboardCase, type: :model do
   it { is_expected.to validate_presence_of(:estimated_revenue) }
   it { is_expected.to validate_presence_of(:full_days) }
   it { is_expected.to validate_presence_of(:hours) }
-
-  let(:temporary_nebraska_dashboard_case) { build(:temporary_nebraska_dashboard_case) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:temporary_nebraska_dashboard_case)).to be_valid

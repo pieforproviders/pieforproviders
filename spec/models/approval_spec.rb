@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Approval, type: :model do
+  let(:effective_date) { (Time.current - 6.months).to_date }
+  let(:approval) { build(:approval) }
+
   it { is_expected.to have_many(:child_approvals).dependent(:destroy) }
   it { is_expected.to have_many(:children).through(:child_approvals) }
   it { is_expected.to monetize(:copay) }
-
-  let(:approval) { build(:approval) }
-  let(:effective_date) { (Time.current - 6.months).to_date }
 
   it 'validates effective_on as a date' do
     approval.update(effective_on: Time.current)

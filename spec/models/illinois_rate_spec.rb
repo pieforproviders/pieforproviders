@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisRate, type: :model do
+  let(:illinois_rate) { build(:illinois_rate) }
+
   it { is_expected.to have_many(:child_approvals) }
 
   it { is_expected.to validate_presence_of(:name) }
@@ -17,8 +19,6 @@ RSpec.describe IllinoisRate, type: :model do
   it { is_expected.to validate_numericality_of(:silver_percentage) }
 
   it_behaves_like 'licenses'
-
-  let(:illinois_rate) { build(:illinois_rate) }
 
   it 'validates effective_on as a date' do
     illinois_rate.update(effective_on: Time.current)
