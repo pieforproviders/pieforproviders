@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe ApplicationPolicy do
-  subject { described_class }
-
   let(:user) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
   let(:non_owner) { create(:confirmed_user) }
@@ -16,22 +14,22 @@ RSpec.describe ApplicationPolicy do
 
   permissions :create? do
     it 'grants access to everyone' do
-      expect(subject).to permit(admin)
-      expect(subject).to permit(user)
+      expect(described_class).to permit(admin)
+      expect(described_class).to permit(user)
     end
   end
 
   permissions :index?, :update?, :destroy? do
     it 'grants access to admins' do
-      expect(subject).to permit(admin, business)
+      expect(described_class).to permit(admin, business)
     end
 
     it 'grants access to owners' do
-      expect(subject).to permit(user, business)
+      expect(described_class).to permit(user, business)
     end
 
     it 'denies access to non-owners' do
-      expect(subject).not_to permit(non_owner, business)
+      expect(described_class).not_to permit(non_owner, business)
     end
   end
 

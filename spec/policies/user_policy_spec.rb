@@ -3,42 +3,40 @@
 require 'rails_helper'
 
 RSpec.describe UserPolicy do
-  subject { described_class }
-
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
 
   permissions :index? do
     it 'grants access to the index for admins' do
-      expect(subject).to permit(admin, User)
+      expect(described_class).to permit(admin, User)
     end
 
     it 'denies access to the index to non-admin users' do
-      expect(subject).not_to permit(user, User)
+      expect(described_class).not_to permit(user, User)
     end
   end
 
   permissions :create? do
     it 'grants access to the create method to everyone' do
-      expect(subject).to permit(admin)
-      expect(subject).to permit(user)
-      expect(subject).to permit(non_owner)
-      expect(subject).to permit('random string?')
+      expect(described_class).to permit(admin)
+      expect(described_class).to permit(user)
+      expect(described_class).to permit(non_owner)
+      expect(described_class).to permit('random string?')
     end
   end
 
   permissions :update?, :destroy? do
     it 'grants access to the update and destroy methods to admins' do
-      expect(subject).to permit(admin, user)
+      expect(described_class).to permit(admin, user)
     end
 
     it 'grants access to the update and destroy methods to owners' do
-      expect(subject).to permit(user, user)
+      expect(described_class).to permit(user, user)
     end
 
     it 'denies access to the update and destroy methods to non-owners' do
-      expect(subject).not_to permit(non_owner, user)
+      expect(described_class).not_to permit(non_owner, user)
     end
   end
 
