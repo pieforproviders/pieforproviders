@@ -17,19 +17,19 @@ RSpec.describe RateAssociatorJob, type: :job do
     context 'when the job is performed' do
       it 'calls the subsidy rule associator with a valid child id' do
         allow(service).to receive(:call).and_return(true)
-        expect(service).to receive(:call)
         expect(described_class.perform_now(child.id)).to eq(true)
+        expect(service).to have_received(:call)
       end
 
       it 'calls the subsidy rule associator with a valid child id and raises an error if the associator does' do
         allow(service).to receive(:call).and_raise(StandardError)
-        expect(service).to receive(:call)
         expect { described_class.perform_now(child.id) }.to raise_error(StandardError)
+        expect(service).to have_received(:call)
       end
 
       it 'does not call the subsidy rule associator with an invalid child id' do
-        expect(service).not_to receive(:call)
         expect(described_class.perform_now('notanid')).to eq(nil)
+        expect(service).not_to have_received(:call)
       end
     end
   end

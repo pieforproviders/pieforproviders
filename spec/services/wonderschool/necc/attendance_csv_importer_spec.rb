@@ -79,13 +79,15 @@ module Wonderschool
         end
 
         it "continues processing if the child doesn't exist" do
+          allow(Rails.logger).to receive(:tagged).and_yield
+          allow(Rails.logger).to receive(:info)
           first_child.destroy!
-          expect(Rails.logger).to receive(:tagged).and_yield.exactly(4).times
-          expect(Rails.logger).to receive(:info).with('Child with Wonderschool ID 1234 not in Pie; skipping').exactly(4).times
           allow(stubbed_client)
             .to receive(:archive_contents)
             .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
           described_class.new.call
+          expect(Rails.logger).to have_received(:tagged).exactly(4).times
+          expect(Rails.logger).to have_received(:info).with('Child with Wonderschool ID 1234 not in Pie; skipping').exactly(4).times
         end
 
         it 'continues processing if the record is invalid or missing a required field' do

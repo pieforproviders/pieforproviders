@@ -10,8 +10,8 @@ RSpec.xdescribe AppsignalReporting do
 
   describe '#send_error' do
     it "calls Appsignal's #send_error method with an exception and an identifier" do
-      expect(stubbed_appsignal).to receive(:send_error).with(exception).and_yield
       included_class.new.send_appsignal_error(exception, identifier)
+      expect(stubbed_appsignal).to have_received(:send_error).with(exception).and_yield
     end
   end
 end
