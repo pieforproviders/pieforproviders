@@ -65,7 +65,10 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
     end
 
     context 'when viewed by an admin' do
-      let!(:logged_in_user) { create(:admin) }
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
 
       it 'displays the attendances' do
         get '/api/v1/attendances', params: {}, headers: headers

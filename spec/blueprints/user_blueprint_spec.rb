@@ -31,7 +31,8 @@ RSpec.describe UserBlueprint do
 
     context "when there are approvals for this user's children" do
       let!(:illinois_business) { create(:business, user: user) }
-      let!(:child) { create(:child, :with_two_illinois_attendances, business: illinois_business) }
+
+      before { create(:child, :with_two_illinois_attendances, business: illinois_business) }
 
       it 'displays the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)
@@ -62,7 +63,8 @@ RSpec.describe UserBlueprint do
 
     context "when there are approvals for this user's children" do
       let!(:nebraska_business) { create(:business, :nebraska, user: user) }
-      let!(:child) { create(:necc_child, :with_two_nebraska_attendances, business: nebraska_business) }
+
+      before { create(:necc_child, :with_two_nebraska_attendances, business: nebraska_business) }
 
       it 'displays the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)

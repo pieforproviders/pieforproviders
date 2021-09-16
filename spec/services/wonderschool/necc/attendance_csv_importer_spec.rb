@@ -9,7 +9,6 @@ module Wonderschool
       let!(:archive_bucket) { 'archive_bucket' }
       let!(:stubbed_client) { double('AwsClient') }
       let!(:stubbed_uri) { double('URI') }
-      let!(:stubbed_csv_parser) { double('CsvParser') }
 
       let!(:attendance_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
@@ -37,7 +36,7 @@ module Wonderschool
                approvals: [approvals[2]])
       end
 
-      before(:each) do
+      before do
         allow(Rails.application.config).to receive(:wonderschool_attendance_url).and_return(uri)
         allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }
@@ -54,7 +53,7 @@ module Wonderschool
           end
 
           it 'creates attendance records for every row in the file, idempotently' do
-            expect { described_class.new.call }.to change { Attendance.count }.from(0).to(8)
+            expect { described_class.new.call }.to change(Attendance, :count).from(0).to(8)
             expect { described_class.new.call }.not_to change(Attendance, :count)
           end
 

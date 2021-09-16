@@ -106,26 +106,29 @@ RSpec.describe 'Api::V1::Users', type: :request do
   describe 'GET /api/v1/case_list_for_dashboard' do
     include_context 'correct api version header'
     let!(:nebraska_user) { create(:confirmed_user) }
-    let!(:nebraska_business) { create(:business, :nebraska, user: nebraska_user) }
-    let!(:nebraska_user_children) do
-      create_list(:child, 2, {
-                    business: nebraska_business,
-                    approvals: [
-                      create(:expired_approval, create_children: false),
-                      create(:approval, create_children: false)
-                    ]
-                  })
-    end
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
-    let!(:illinois_user_children) do
-      create_list(:child, 2, {
-                    business: illinois_business,
-                    approvals: [
-                      create(:expired_approval, create_children: false),
-                      create(:approval, create_children: false)
-                    ]
-                  })
+    let!(:nebraska_business) { create(:business, :nebraska, user: nebraska_user) }
+
+    before do
+      create_list(
+        :child, 2, {
+          business: nebraska_business,
+          approvals: [
+            create(:expired_approval, create_children: false),
+            create(:approval, create_children: false)
+          ]
+        }
+      )
+      create_list(
+        :child, 2, {
+          business: illinois_business,
+          approvals: [
+            create(:expired_approval, create_children: false),
+            create(:approval, create_children: false)
+          ]
+        }
+      )
     end
 
     context 'for non-admin user in illinois' do
