@@ -336,6 +336,9 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
+    rubocop-rspec (2.4.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
@@ -432,6 +435,7 @@ DEPENDENCIES
   rspec-rails
   rubocop-performance
   rubocop-rails
+  rubocop-rspec
   shoulda-matchers
   simplecov
   solargraph
