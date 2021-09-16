@@ -1,5 +1,5 @@
 require:
-  - rubocop-performance
+  # - rubocop-performance
   - rubocop-rails
 
 AllCops:
