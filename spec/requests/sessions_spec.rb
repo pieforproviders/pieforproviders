@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'POST /login', type: :request do
+RSpec.describe 'sessions requests', type: :request do
   let(:user) { create(:confirmed_user) }
   let(:url) { '/login' }
   let(:params) do
@@ -14,36 +14,38 @@ RSpec.describe 'POST /login', type: :request do
     }
   end
 
-  context 'when params are correct' do
-    before do
-      post url, params: params
+  context 'post /login' do
+    context 'when params are correct' do
+      before do
+        post url, params: params
+      end
+
+      it 'returns 200' do
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)['state']).to eq(user.state)
+        expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+      end
+
+      it 'returns JWT token in authorization header' do
+        expect(response.headers['Authorization']).to be_present
+      end
     end
 
-    it 'returns 200' do
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)['state']).to eq(user.state)
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
-    end
+    context 'when login params are incorrect' do
+      before { post url }
 
-    it 'returns JWT token in authorization header' do
-      expect(response.headers['Authorization']).to be_present
+      it 'returns unathorized status' do
+        expect(response.status).to eq 401
+      end
     end
   end
 
-  context 'when login params are incorrect' do
-    before { post url }
+  context 'delete /logout' do
+    let(:url) { '/logout' }
 
-    it 'returns unathorized status' do
-      expect(response.status).to eq 401
+    it 'returns 204, no content' do
+      delete url
+      expect(response).to have_http_status(:no_content)
     end
-  end
-end
-
-RSpec.describe 'DELETE /logout', type: :request do
-  let(:url) { '/logout' }
-
-  it 'returns 204, no content' do
-    delete url
-    expect(response).to have_http_status(:no_content)
   end
 end
