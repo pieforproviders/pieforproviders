@@ -4,14 +4,15 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Users', type: :request do
   # Do not send any emails (no confirmation emails, no password was changed emails)
-  before(:each) do
-    allow_any_instance_of(User).to receive(:send_confirmation_notification?).and_return(false)
-    allow_any_instance_of(User).to receive(:send_password_change_notification?).and_return(false)
-  end
-
+  let(:user) { instance_double(User) }
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:other_user) { create(:confirmed_user) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
+
+  before do
+    allow(user).to receive(:send_confirmation_notification?).and_return(false)
+    allow(user).to receive(:send_password_change_notification?).and_return(false)
+  end
 
   describe 'GET /api/v1/users' do
     include_context 'correct api version header'
