@@ -12,7 +12,9 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       travel_to attendance_date.in_time_zone(child.timezone)
       child.reload
     end
+    # rubocop:disable Rails/RedundantTravelBack
     after { travel_back }
+    # rubocop:enable Rails/RedundantTravelBack
     context 'the child has an attendance on the date' do
       before do
         create(:attendance, child_approval: child_approval, check_in: attendance_date)
