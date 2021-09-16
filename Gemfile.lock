@@ -94,7 +94,7 @@ GEM
     bcrypt (3.1.16)
     benchmark (0.1.1)
     blueprinter (0.25.3)
-    bootsnap (1.8.1)
+    bootsnap (1.9.0)
       msgpack (~> 1.0)
     brakeman (5.1.1)
     builder (3.2.4)
