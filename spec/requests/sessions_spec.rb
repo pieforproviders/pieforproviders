@@ -20,7 +20,7 @@ RSpec.describe 'POST /login', type: :request do
     end
 
     it 'returns 200' do
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['state']).to eq(user.state)
       expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
     end
@@ -44,6 +44,6 @@ RSpec.describe 'DELETE /logout', type: :request do
 
   it 'returns 204, no content' do
     delete url
-    expect(response).to have_http_status(204)
+    expect(response).to have_http_status(:no_content)
   end
 end
