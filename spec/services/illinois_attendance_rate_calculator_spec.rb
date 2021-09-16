@@ -27,7 +27,9 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
         create_list(:illinois_part_day_attendance, 3, child_approval: child.child_approvals.first)
       end
     end
+    # rubocop:disable Rails/RedundantTravelBack
     after { travel_back }
+    # rubocop:enable Rails/RedundantTravelBack
 
     it 'calculates the rate correctly for single-child families and multiple-child families' do
       expect(described_class.new(single_child_family, Time.current).call).to eq(0.3)
