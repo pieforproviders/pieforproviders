@@ -9,6 +9,7 @@ RSpec.describe ChildBlueprint do
       expect(JSON.parse(described_class.render(child)).keys).to contain_exactly('id', 'active', 'full_name', 'last_active_date', 'inactive_reason')
     end
   end
+
   context 'returns the correct fields when IL view is requested' do
     it 'includes IL dashboard fields' do
       expect(JSON.parse(described_class.render(child, view: :illinois_dashboard)).keys).to contain_exactly(
@@ -26,6 +27,7 @@ RSpec.describe ChildBlueprint do
       )
     end
   end
+
   context 'returns the correct fields when NE view is requested' do
     let!(:approval) { create(:approval, create_children: false, effective_on: Time.zone.parse('June 1st, 2021'), expires_on: nil) }
     let!(:child) { create(:necc_child, approvals: [approval], effective_date: Time.zone.parse('June 1st, 2021')) }

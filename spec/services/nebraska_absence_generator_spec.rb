@@ -23,6 +23,7 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
         expect { described_class.new(child).call }.not_to change(Attendance, :count)
       end
     end
+
     context 'the child does not have an attendance on that date' do
       it 'creates an absence if the child is scheduled for that day' do
         expect { described_class.new(child).call }.to change { Attendance.count }.from(0).to(1)

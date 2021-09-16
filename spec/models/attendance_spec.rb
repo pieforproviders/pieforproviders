@@ -262,6 +262,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -271,6 +272,7 @@ RSpec.describe Attendance, type: :model do
         expect(attendance.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount)
       end
     end
+
     context 'with an unaccredited business' do
       before do
         attendance.business.update!(accredited: false, qris_rating: 'not_rated')
@@ -329,6 +331,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -338,6 +341,7 @@ RSpec.describe Attendance, type: :model do
         expect(attendance.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount)
       end
     end
+
     context 'with an accredited business with a qris_bump' do
       before do
         attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -396,6 +400,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -405,6 +410,7 @@ RSpec.describe Attendance, type: :model do
         expect(attendance.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount * (1.05**2))
       end
     end
+
     context 'with an unaccredited business with a qris_bump' do
       before do
         attendance.business.update!(accredited: false, qris_rating: 'step_five')
@@ -463,6 +469,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -472,6 +479,7 @@ RSpec.describe Attendance, type: :model do
         expect(attendance.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount * (1.05**3))
       end
     end
+
     context 'with a school age child with an unaccredited qris bump' do
       before do
         attendance.business.update!(accredited: false, qris_rating: 'step_five')
@@ -538,6 +546,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
@@ -547,6 +556,7 @@ RSpec.describe Attendance, type: :model do
         expect(attendance.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
       end
     end
+
     context 'with a school age child with an unaccredited qris bump in a non-LDDS county' do
       before do
         attendance.business.update!(accredited: false, qris_rating: 'step_five', county: 'Parker')
@@ -613,6 +623,7 @@ RSpec.describe Attendance, type: :model do
           expect(attendance.earned_revenue).to eq((8 * attendance.child_approval.special_needs_hourly_rate) + (1 * attendance.child_approval.special_needs_daily_rate))
         end
       end
+
       it 'changes rates on edit' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!

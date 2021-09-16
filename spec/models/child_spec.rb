@@ -136,6 +136,7 @@ RSpec.describe Child, type: :model do
           end
         end
       end
+
       context 'using temporary dashboard values' do
         it 'does not call the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
@@ -155,6 +156,7 @@ RSpec.describe Child, type: :model do
           child.nebraska_full_days(Time.current.to_date)
         end
       end
+
       context 'using temporary dashboard values' do
         it 'does not call the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
@@ -175,6 +177,7 @@ RSpec.describe Child, type: :model do
           child.nebraska_hours(Time.current.to_date)
         end
       end
+
       context 'using temporary dashboard values' do
         it 'does not call the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
@@ -195,6 +198,7 @@ RSpec.describe Child, type: :model do
           child.nebraska_weekly_hours_attended(Time.current.to_date)
         end
       end
+
       context 'using temporary dashboard values' do
         it 'does not call the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)

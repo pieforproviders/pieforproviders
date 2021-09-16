@@ -35,6 +35,7 @@ RSpec.describe UserBlueprint do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)
       end
     end
+
     context "when there are no approvals for this user's children" do
       it 'displays nil for the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to be_nil
@@ -63,6 +64,7 @@ RSpec.describe UserBlueprint do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)
       end
     end
+
     context "when there are no approvals for this user's children" do
       it 'displays nil for the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to be_nil
@@ -95,6 +97,7 @@ RSpec.describe UserBlueprint do
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
       end
     end
+
     context 'in illinois' do
       it "returns the as_of date in the user's timezone" do
         travel_to Time.current.at_end_of_day

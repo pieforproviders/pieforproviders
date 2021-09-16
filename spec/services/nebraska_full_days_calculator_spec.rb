@@ -27,6 +27,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(1)
       end
     end
+
     context 'the child has an attendance less than or equal to 6 hours' do
       it 'will not count as a full day' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -35,6 +36,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(0)
       end
     end
+
     context 'the child has an attendance more than 6 hours but less than 10 hours' do
       it 'counts as a full day' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -43,6 +45,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(1)
       end
     end
+
     context 'the child has an attendance more than 10 hours but less than or equal to 18 hours' do
       it 'counts as a full day + hours (handled by the other calculator)' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -51,6 +54,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(1)
       end
     end
+
     context 'the child has multiple attendances' do
       context 'one counts for full day units and the other does not' do
         it 'only returns the full day units for the correct attendance' do
@@ -63,6 +67,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
           expect(described_class.new(child, first_attendance_date).call).to eq(1)
         end
       end
+
       context 'neither count for full day units' do
         it 'returns 0' do
           first_check_in = first_attendance_date.to_datetime + 8.hours
@@ -74,6 +79,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
           expect(described_class.new(child, first_attendance_date).call).to eq(0)
         end
       end
+
       context 'both count for full day units' do
         it 'sums them' do
           first_check_in = first_attendance_date.to_datetime + 8.hours

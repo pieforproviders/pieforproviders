@@ -29,6 +29,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(0)
       end
     end
+
     context 'the child has an attendance less than 6 hours' do
       it 'counts as hourly units by 15-min increments' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -37,6 +38,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(5.25)
       end
     end
+
     context 'the child has an attendance more than 6 hours but less than 10 hours' do
       it 'does not count as hourly units' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -45,6 +47,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(0)
       end
     end
+
     context 'the child has an attendance more than 10 hours but less than 866 minutes' do
       it 'counts only the as hourly units by 15-min increments that occur after the 10 hour mark' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -53,6 +56,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(3.75)
       end
     end
+
     context 'the child has an attendance more than 18 hours' do
       it 'counts as 8 hourly units' do
         check_in = first_attendance_date.to_datetime + 8.hours
@@ -61,6 +65,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(8.0)
       end
     end
+
     context 'the child has multiple attendances' do
       context 'one counts for hourly units and the other does not' do
         it 'only returns the hourly units for the correct attendance' do
@@ -73,6 +78,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
           expect(described_class.new(child, first_attendance_date).call).to eq(5.25)
         end
       end
+
       context 'neither count for hourly units' do
         it 'returns 0' do
           first_check_in = first_attendance_date.to_datetime + 8.hours
@@ -84,6 +90,7 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
           expect(described_class.new(child, first_attendance_date).call).to eq(0)
         end
       end
+
       context 'both count for hourly units' do
         it 'sums them' do
           first_check_in = first_attendance_date.to_datetime + 8.hours

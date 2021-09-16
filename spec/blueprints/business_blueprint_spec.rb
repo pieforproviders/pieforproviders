@@ -10,6 +10,7 @@ RSpec.describe BusinessBlueprint do
       expect(JSON.parse(blueprint).keys).to contain_exactly('id')
     end
   end
+
   context 'returns the correct fields when IL view is requested' do
     let(:blueprint) { BusinessBlueprint.render(business, view: :illinois_dashboard) }
     it 'includes the business name and all cases' do
@@ -19,6 +20,7 @@ RSpec.describe BusinessBlueprint do
       )
     end
   end
+
   context 'returns the correct fields when NE view is requested' do
     let(:blueprint) { BusinessBlueprint.render(business, view: :nebraska_dashboard) }
     it 'includes the business name and all cases' do
