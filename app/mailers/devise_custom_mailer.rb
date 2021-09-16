@@ -16,7 +16,7 @@ class DeviseCustomMailer < Devise::Mailer
     @hello = I18n.t('hello')
     @questions = I18n.t('mailers.confirmation_instructions.questions')
     @sender = Devise.mailer_sender
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
 
@@ -26,7 +26,7 @@ class DeviseCustomMailer < Devise::Mailer
     @password_update_path = password_update_path
 
     opts[:subject] = I18n.t('mailers.reset_password_instructions.subject')
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
 
@@ -34,7 +34,7 @@ class DeviseCustomMailer < Devise::Mailer
     @greeting_name = record.greeting_name
 
     opts[:subject] = I18n.t('mailers.password_change.subject')
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
 
@@ -42,6 +42,10 @@ class DeviseCustomMailer < Devise::Mailer
 
   def confirmation_path
     "#{domain}/confirm?confirmation_token=#{@token}"
+  end
+
+  def pie_logo
+    File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
   end
 
   def password_update_path
