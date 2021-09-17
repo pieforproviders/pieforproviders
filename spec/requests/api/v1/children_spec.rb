@@ -11,9 +11,9 @@ RSpec.describe 'Api::V1::Children', type: :request do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   describe 'GET /api/v1/children' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "returns the user's children" do
@@ -25,7 +25,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "returns all users' children" do
@@ -39,9 +39,9 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'GET /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "returns the user's child" do
@@ -57,7 +57,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "returns the user's child" do
@@ -77,7 +77,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'POST /api/v1/children' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params) do
       {
@@ -91,7 +91,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
     let(:params_without_business) { { child: params[:child].except(:business_id) } }
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "creates a child for that user's business" do
@@ -102,7 +102,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('child')
       end
 
-      context 'for nebraska' do
+      context 'when logged in as a nebraska user' do
         let(:nebraska_business) { create(:business, :nebraska, user: create(:confirmed_user)) }
 
         before { sign_in nebraska_business.user }
@@ -203,7 +203,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'creates a child for the passed business' do
@@ -222,7 +222,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'PUT /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params) do
       {
@@ -232,7 +232,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       }
     end
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "updates the user's child" do
@@ -259,7 +259,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "updates the user's child" do
@@ -281,9 +281,9 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'DELETE /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "soft-deletes the user's child" do
@@ -293,7 +293,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "soft-deletes the user's child" do

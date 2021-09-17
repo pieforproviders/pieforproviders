@@ -14,21 +14,21 @@ RSpec.describe BusinessPolicy do
   end
 
   describe BusinessPolicy::Scope do
-    context 'admin user' do
+    context 'when authenticated as an admin' do
       it 'returns all businesses' do
         businesses = described_class.new(admin, Business).resolve
         expect(businesses).to match_array([business, inactive_business])
       end
     end
 
-    context 'owner user' do
+    context 'when logged in as an owner user' do
       it "returns the user's active businesses" do
         businesses = described_class.new(user, Business).resolve
         expect(businesses).to match_array([business])
       end
     end
 
-    context 'non-owner user' do
+    context 'when logged in as a non-owner user' do
       it 'returns an empty relation' do
         businesses = described_class.new(non_owner, Business).resolve
         expect(businesses).to be_empty

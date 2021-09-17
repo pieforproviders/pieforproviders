@@ -74,7 +74,7 @@ RSpec.describe Attendance, type: :model do
     expect(build(:attendance)).to be_valid
   end
 
-  context 'calculates time in care' do
+  describe '#total_time_in_care' do
     it 'uses the check_in and check_out when they are both present' do
       attendance.check_out = attendance.check_in + 3.hours + 12.minutes
       attendance.save!
@@ -114,7 +114,7 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  context 'calculates earned revenue' do
+  describe '#earned_revenue' do
     let!(:child) { create(:necc_child) }
     let(:attendance) { build(:attendance, child_approval: child.child_approvals.first) }
     let!(:nebraska_accredited_hourly_rate) do
@@ -747,7 +747,7 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  context 'for_month scope' do
+  describe '#for_month' do
     let(:child) { create(:child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
@@ -769,7 +769,7 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  context 'for_week scope' do
+  describe '#for_week' do
     let(:child) { create(:child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
@@ -795,7 +795,7 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  context 'illinois day length scopes' do
+  describe '#illinois_*_days scopes' do
     let(:child) { create(:child, business: create(:business, zipcode: '60606')) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }

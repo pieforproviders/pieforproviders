@@ -5,19 +5,17 @@ require 'rails_helper'
 RSpec.describe ChildBlueprint do
   let(:child) { create(:child) }
 
-  context 'returns the correct fields when no view option is passed' do
-    it 'includes the ID, full name, and active info' do
-      expect(JSON.parse(described_class.render(child)).keys).to contain_exactly(
-        'id',
-        'active',
-        'full_name',
-        'last_active_date',
-        'inactive_reason'
-      )
-    end
+  it 'includes the ID, full name, and active info' do
+    expect(JSON.parse(described_class.render(child)).keys).to contain_exactly(
+      'id',
+      'active',
+      'full_name',
+      'last_active_date',
+      'inactive_reason'
+    )
   end
 
-  context 'returns the correct fields when IL view is requested' do
+  context 'when IL view is requested' do
     it 'includes IL dashboard fields' do
       expect(JSON.parse(described_class.render(child, view: :illinois_dashboard)).keys).to contain_exactly(
         'id',
@@ -35,7 +33,7 @@ RSpec.describe ChildBlueprint do
     end
   end
 
-  context 'returns the correct fields when NE view is requested' do
+  context 'when NE view is requested' do
     let!(:approval) do
       create(:approval, create_children: false, effective_on: Time.zone.parse('June 1st, 2021'), expires_on: nil)
     end

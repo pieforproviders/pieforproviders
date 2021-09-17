@@ -62,7 +62,7 @@ RSpec.describe Child, type: :model do
   it { is_expected.to accept_nested_attributes_for :approvals }
   it { is_expected.to accept_nested_attributes_for :child_approvals }
 
-  context 'scopes' do
+  describe 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
     let(:deleted_child) { create(:child, deleted: true) }
 
@@ -86,7 +86,7 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'delegated attributes' do
+  describe 'delegated attributes' do
     it 'gets user from business' do
       expect(child.user).to eq(child.business.user)
     end
@@ -100,7 +100,8 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'for nebraska children' do
+  # TODO: this is sloppy and these need to be named better and moved eventually
+  describe 'nebraska methods' do
     let(:child) { create(:necc_child, create_dashboard_case: true) }
 
     describe '#create_default_schedule' do
@@ -119,7 +120,7 @@ RSpec.describe Child, type: :model do
     end
 
     describe '#nebraska_family_fee' do
-      context 'using live algorithms' do
+      context 'when using live algorithms' do
         before do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           child.reload
@@ -141,7 +142,7 @@ RSpec.describe Child, type: :model do
         end
       end
 
-      context 'using temporary dashboard values' do
+      context 'when using temporary dashboard values' do
         it 'returns the temporary dashboard case family fee' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           expect(child.nebraska_family_fee(Time.current.to_date))
@@ -154,7 +155,7 @@ RSpec.describe Child, type: :model do
       let(:calculator_class) { class_double(NebraskaFullDaysCalculator, new: nil) }
       let(:calculator_instance) { instance_double(NebraskaFullDaysCalculator, call: nil) }
 
-      context 'using live algorithms' do
+      context 'when using live algorithms' do
         it 'calls the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaFullDaysCalculator)
@@ -164,7 +165,7 @@ RSpec.describe Child, type: :model do
         end
       end
 
-      context 'using temporary dashboard values' do
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_full_days(Time.current.to_date)
@@ -177,7 +178,7 @@ RSpec.describe Child, type: :model do
       let(:calculator_class) { class_double(NebraskaHoursCalculator, new: nil) }
       let(:calculator_instance) { instance_double(NebraskaHoursCalculator, call: nil) }
 
-      context 'using live algorithms' do
+      context 'when using live algorithms' do
         it 'calls the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaHoursCalculator)
@@ -187,7 +188,7 @@ RSpec.describe Child, type: :model do
         end
       end
 
-      context 'using temporary dashboard values' do
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_hours(Time.current.to_date)
@@ -200,7 +201,7 @@ RSpec.describe Child, type: :model do
       let(:calculator_class) { class_double(NebraskaWeeklyHoursAttendedCalculator, new: nil) }
       let(:calculator_instance) { instance_double(NebraskaWeeklyHoursAttendedCalculator, call: nil) }
 
-      context 'using live algorithms' do
+      context 'when using live algorithms' do
         it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaWeeklyHoursAttendedCalculator)
@@ -210,7 +211,7 @@ RSpec.describe Child, type: :model do
         end
       end
 
-      context 'using temporary dashboard values' do
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
@@ -220,7 +221,7 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'approval methods' do
+  describe 'approval methods' do
     it 'returns an active approval for a specific date' do
       current_approval = child.approvals.first
       expect(child.active_approval(Time.current)).to eq(current_approval)
@@ -239,7 +240,7 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'attendance methods' do
+  describe 'attendance methods' do
     it 'returns all attendances regardless of approval date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
       expired_child_approval = create(
@@ -263,7 +264,7 @@ RSpec.describe Child, type: :model do
     expect(RateAssociatorJob).to have_been_enqueued.exactly(:twice)
   end
 
-  context 'associates approval with child if applicable' do
+  describe '#associate_rate' do
     let!(:user) { create(:confirmed_user) }
     let!(:created_business) { create(:business, user: user) }
     let!(:child) do
@@ -275,7 +276,7 @@ RSpec.describe Child, type: :model do
     end
     let!(:approval) { child.approvals.first }
 
-    context 'child has the same approval as a previous child in our system' do
+    context 'when the child has the same approval as a previous child in our system' do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',
@@ -311,7 +312,7 @@ RSpec.describe Child, type: :model do
       end
     end
 
-    context 'child has a unique approval' do
+    context 'when the child has a unique approval' do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',

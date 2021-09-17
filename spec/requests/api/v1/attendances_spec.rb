@@ -36,7 +36,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   end
 
   describe 'GET /api/v1/attendances' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     before { sign_in logged_in_user }
 

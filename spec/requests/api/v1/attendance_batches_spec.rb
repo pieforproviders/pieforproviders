@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:non_owner_child) { create(:necc_child) }
 
   describe 'POST /api/v1/attendance_batches' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     before do
       sign_in logged_in_user

@@ -17,7 +17,7 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
 
     after { travel_back }
 
-    context 'the child has an attendance on the date' do
+    context 'when the child has an attendance on the date' do
       before do
         create(:attendance, child_approval: child_approval, check_in: attendance_date)
       end
@@ -27,7 +27,7 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       end
     end
 
-    context 'the child does not have an attendance on that date' do
+    context 'when the child does not have an attendance on that date' do
       it 'creates an absence if the child is scheduled for that day' do
         expect { described_class.new(child).call }.to change(Attendance, :count).from(0).to(1)
       end

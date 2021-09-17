@@ -15,9 +15,9 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/users' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it 'returns only the user' do
@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns all users' do
@@ -41,9 +41,9 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/users/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it 'returns the user using their ID' do
@@ -68,7 +68,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns the user' do
@@ -104,7 +104,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/case_list_for_dashboard' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
     let!(:nebraska_user) { create(:confirmed_user) }
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
@@ -135,7 +135,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       )
     end
 
-    context 'for non-admin user in illinois' do
+    context 'when logged in as a non-admin user in illinois' do
       before { sign_in illinois_user }
 
       it 'returns the correct data schema' do
@@ -155,7 +155,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for non-admin user in nebraska' do
+    context 'when logged in as a non-admin user in nebraska' do
       before { sign_in nebraska_user }
 
       it 'returns the correct data schema' do
@@ -175,7 +175,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns the correct data schema' do

@@ -9,9 +9,9 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   describe 'GET /api/v1/businesses' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "returns the user's businesses" do
@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "returns all users' businesses" do
@@ -37,9 +37,9 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
   end
 
   describe 'GET /api/v1/businesses/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "returns the user's business" do
@@ -55,7 +55,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "returns the user's business" do
@@ -75,7 +75,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
   end
 
   describe 'POST /api/v1/businesses' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params_without_user) do
       {
@@ -89,7 +89,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
     end
     let(:params_with_user) { { business: params_without_user[:business].merge({ user_id: logged_in_user.id }) } }
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it 'creates a business for that user' do
@@ -101,7 +101,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'creates a business for the passed user' do
@@ -120,7 +120,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
   end
 
   describe 'PUT /api/v1/businesses/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params) do
       {
@@ -130,7 +130,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       }
     end
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "updates the user's business" do
@@ -157,7 +157,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "updates the user's business" do
@@ -200,9 +200,9 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
   end
 
   describe 'DELETE /api/v1/businesses/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it "soft-deletes the user's business if there are no active children" do
@@ -219,7 +219,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it "soft-deletes the user's business if there are no active children" do

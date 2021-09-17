@@ -14,7 +14,7 @@ RSpec.describe 'sessions requests', type: :request do
     }
   end
 
-  context 'post /login' do
+  describe 'POST /login' do
     context 'when params are correct' do
       before do
         post url, params: params
@@ -40,7 +40,7 @@ RSpec.describe 'sessions requests', type: :request do
     end
   end
 
-  context 'delete /logout' do
+  describe 'DELETE /logout' do
     let(:url) { '/logout' }
 
     it 'returns 204, no content' do
