@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe UserBlueprint do
   let(:user) { create(:user) }
-  let(:blueprint) { UserBlueprint.render(user) }
+  let(:blueprint) { described_class.render(user) }
   let(:parsed_response) { JSON.parse(blueprint) }
 
   context 'returns the correct fields when no view option is passed' do
@@ -19,7 +19,7 @@ RSpec.describe UserBlueprint do
   end
 
   context 'returns the correct fields when IL view is requested' do
-    let(:blueprint) { UserBlueprint.render(user, view: :illinois_dashboard) }
+    let(:blueprint) { described_class.render(user, view: :illinois_dashboard) }
 
     it 'includes IL dashboard fields' do
       expect(parsed_response.keys).to contain_exactly(
@@ -47,7 +47,7 @@ RSpec.describe UserBlueprint do
   end
 
   context 'returns the correct fields when NE view is requested' do
-    let(:blueprint) { UserBlueprint.render(user, view: :nebraska_dashboard) }
+    let(:blueprint) { described_class.render(user, view: :nebraska_dashboard) }
 
     it 'includes the user name and all cases' do
       expect(parsed_response.keys).to contain_exactly(
@@ -91,19 +91,19 @@ RSpec.describe UserBlueprint do
       it "returns the as_of date in the user's timezone" do
         travel_to Time.current.at_end_of_day
 
-        blueprint = UserBlueprint.render(user, view: :nebraska_dashboard)
+        blueprint = described_class.render(user, view: :nebraska_dashboard)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
         travel_back
       end
 
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
-        blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
+        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 
       it 'returns the as_of date as today for a month with no attendances' do
-        blueprint = UserBlueprint.render(
+        blueprint = described_class.render(
           user,
           view: :nebraska_dashboard,
           filter_date: last_month.at_end_of_month - 6.months
@@ -115,19 +115,19 @@ RSpec.describe UserBlueprint do
     context 'in illinois' do
       it "returns the as_of date in the user's timezone" do
         travel_to Time.current.at_end_of_day
-        blueprint = UserBlueprint.render(user, view: :illinois_dashboard)
+        blueprint = described_class.render(user, view: :illinois_dashboard)
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
         travel_back
       end
 
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
-        blueprint = UserBlueprint.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
+        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 
       it 'returns the as_of date as today for a month with no attendances' do
-        blueprint = UserBlueprint.render(
+        blueprint = described_class.render(
           user,
           view: :nebraska_dashboard,
           filter_date: last_month.at_end_of_month - 6.months

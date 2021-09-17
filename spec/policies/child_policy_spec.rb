@@ -14,21 +14,21 @@ RSpec.describe ChildPolicy do
   describe ChildPolicy::Scope do
     context 'admin user' do
       it 'returns all children' do
-        children = ChildPolicy::Scope.new(admin, Child).resolve
+        children = described_class.new(admin, Child).resolve
         expect(children).to match_array([child])
       end
     end
 
     context 'owner user' do
       it 'returns the children associated to the user' do
-        children = ChildPolicy::Scope.new(user, Child).resolve
+        children = described_class.new(user, Child).resolve
         expect(children).to match_array([child])
       end
     end
 
     context 'non-owner user' do
       it 'returns an empty relation' do
-        children = ChildPolicy::Scope.new(non_owner, Child).resolve
+        children = described_class.new(non_owner, Child).resolve
         expect(children).to be_empty
       end
     end

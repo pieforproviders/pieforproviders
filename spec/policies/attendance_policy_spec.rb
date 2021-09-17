@@ -16,21 +16,21 @@ RSpec.describe AttendancePolicy do
   describe AttendancePolicy::Scope do
     context 'admin user' do
       it 'returns all attendances' do
-        attendances = AttendancePolicy::Scope.new(admin, Attendance).resolve
+        attendances = described_class.new(admin, Attendance).resolve
         expect(attendances).to match_array([attendance])
       end
     end
 
     context 'owner user' do
       it 'returns the attendances associated to the user' do
-        attendances = AttendancePolicy::Scope.new(user, Attendance).resolve
+        attendances = described_class.new(user, Attendance).resolve
         expect(attendances).to match_array([attendance])
       end
     end
 
     context 'non-owner user' do
       it 'returns an empty relation' do
-        attendances = AttendancePolicy::Scope.new(non_owner, Attendance).resolve
+        attendances = described_class.new(non_owner, Attendance).resolve
         expect(attendances).to be_empty
       end
     end

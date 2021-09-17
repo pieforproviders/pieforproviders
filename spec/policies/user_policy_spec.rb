@@ -43,14 +43,14 @@ RSpec.describe UserPolicy do
   describe UserPolicy::Scope do
     context 'admin user' do
       it 'returns all users' do
-        users = UserPolicy::Scope.new(admin, User).resolve
+        users = described_class.new(admin, User).resolve
         expect(users).to match_array([user, non_owner, admin])
       end
     end
 
     context 'non-admin user' do
       it 'returns only the user' do
-        users = UserPolicy::Scope.new(user, User).resolve
+        users = described_class.new(user, User).resolve
         expect(users).to match_array([user])
       end
     end

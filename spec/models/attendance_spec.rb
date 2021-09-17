@@ -761,11 +761,11 @@ RSpec.describe Attendance, type: :model do
 
     it 'returns attendances for given months' do
       date = Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date
-      expect(Attendance.for_month).to include(current_attendance)
-      expect(Attendance.for_month).not_to include(past_attendance)
-      expect(Attendance.for_month(date)).to include(past_attendance)
-      expect(Attendance.for_month(date)).not_to include(current_attendance)
-      expect(Attendance.for_month(date - 1.month).size).to eq(0)
+      expect(described_class.for_month).to include(current_attendance)
+      expect(described_class.for_month).not_to include(past_attendance)
+      expect(described_class.for_month(date)).to include(past_attendance)
+      expect(described_class.for_month(date)).not_to include(current_attendance)
+      expect(described_class.for_month(date - 1.month).size).to eq(0)
     end
   end
 
@@ -787,11 +787,11 @@ RSpec.describe Attendance, type: :model do
 
     it 'returns attendances for given weeks' do
       date = Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date
-      expect(Attendance.for_week).to include(current_attendance)
-      expect(Attendance.for_week).not_to include(past_attendance)
-      expect(Attendance.for_week(date)).to include(past_attendance)
-      expect(Attendance.for_week(date)).not_to include(current_attendance)
-      expect(Attendance.for_week(date - 1.week).size).to eq(0)
+      expect(described_class.for_week).to include(current_attendance)
+      expect(described_class.for_week).not_to include(past_attendance)
+      expect(described_class.for_week(date)).to include(past_attendance)
+      expect(described_class.for_week(date)).not_to include(current_attendance)
+      expect(described_class.for_week(date - 1.week).size).to eq(0)
     end
   end
 
@@ -825,14 +825,14 @@ RSpec.describe Attendance, type: :model do
     end
 
     it 'returns attendances based on length of time in care' do
-      expect(Attendance.illinois_part_days).to include(part_day)
-      expect(Attendance.illinois_part_days).not_to include([full_day, full_plus_part_day, full_plus_full_day])
-      expect(Attendance.illinois_full_days).to include(full_day)
-      expect(Attendance.illinois_full_days).not_to include([part_day, full_plus_part_day, full_plus_full_day])
-      expect(Attendance.illinois_full_plus_part_days).to include(full_plus_part_day)
-      expect(Attendance.illinois_full_plus_part_days).not_to include([part_day, full_day, full_plus_full_day])
-      expect(Attendance.illinois_full_plus_full_days).to include(full_plus_full_day)
-      expect(Attendance.illinois_full_plus_full_days).not_to include([part_day, full_day, full_plus_part_day])
+      expect(described_class.illinois_part_days).to include(part_day)
+      expect(described_class.illinois_part_days).not_to include([full_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_full_days).to include(full_day)
+      expect(described_class.illinois_full_days).not_to include([part_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_full_plus_part_days).to include(full_plus_part_day)
+      expect(described_class.illinois_full_plus_part_days).not_to include([part_day, full_day, full_plus_full_day])
+      expect(described_class.illinois_full_plus_full_days).to include(full_plus_full_day)
+      expect(described_class.illinois_full_plus_full_days).not_to include([part_day, full_day, full_plus_part_day])
     end
   end
 end

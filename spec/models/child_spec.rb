@@ -67,22 +67,22 @@ RSpec.describe Child, type: :model do
     let(:deleted_child) { create(:child, deleted: true) }
 
     it 'only displays active children in the active scope' do
-      expect(Child.active).to include(child)
-      expect(Child.active).to not_include(inactive_child)
-      expect(Child.active).to include(deleted_child)
+      expect(described_class.active).to include(child)
+      expect(described_class.active).to not_include(inactive_child)
+      expect(described_class.active).to include(deleted_child)
     end
 
     it 'only displays children approved for the requested date in the approved_for_date scope' do
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do
-      expect(Child.not_deleted).to include(child)
-      expect(Child.not_deleted).to include(inactive_child)
-      expect(Child.not_deleted).to not_include(deleted_child)
+      expect(described_class.not_deleted).to include(child)
+      expect(described_class.not_deleted).to include(inactive_child)
+      expect(described_class.not_deleted).to not_include(deleted_child)
     end
   end
 
@@ -294,20 +294,20 @@ RSpec.describe Child, type: :model do
       end
 
       it 'associates the approval' do
-        new_child = Child.create! new_child_params
+        new_child = described_class.create! new_child_params
         expect(new_child.approvals.first.id).to eq(approval.id)
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change(Child, :count).by(1)
+        expect { described_class.create! new_child_params }.to change(described_class, :count).by(1)
       end
 
       it 'does not create an approval' do
-        expect { Child.create! new_child_params }.to change(Approval, :count).by(0)
+        expect { described_class.create! new_child_params }.to change(Approval, :count).by(0)
       end
 
       it 'does create a child approval' do
-        expect { Child.create! new_child_params }.to change(ChildApproval, :count).by(1)
+        expect { described_class.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
 
@@ -330,20 +330,20 @@ RSpec.describe Child, type: :model do
       end
 
       it 'does not associate the approval' do
-        new_child = Child.create! new_child_params
+        new_child = described_class.create! new_child_params
         expect(new_child.approvals.first.id).not_to eq(approval.id)
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change(Child, :count).by(1)
+        expect { described_class.create! new_child_params }.to change(described_class, :count).by(1)
       end
 
       it 'creates an approval' do
-        expect { Child.create! new_child_params }.to change(Approval, :count).by(1)
+        expect { described_class.create! new_child_params }.to change(Approval, :count).by(1)
       end
 
       it 'creates a child approval' do
-        expect { Child.create! new_child_params }.to change(ChildApproval, :count).by(1)
+        expect { described_class.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
   end

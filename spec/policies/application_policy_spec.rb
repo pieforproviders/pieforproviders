@@ -9,7 +9,7 @@ RSpec.describe ApplicationPolicy do
   let(:business) { create(:business, user: user) }
 
   it 'raises an exception if user is nil' do
-    expect { ApplicationPolicy.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)
+    expect { described_class.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)
   end
 
   permissions :create? do
@@ -35,7 +35,7 @@ RSpec.describe ApplicationPolicy do
 
   describe ApplicationPolicy::ApplicationScope do
     it 'raises an exception if user is nil' do
-      expect { ApplicationPolicy::ApplicationScope.new(nil, Business) }.to raise_error(Pundit::NotAuthorizedError)
+      expect { described_class.new(nil, Business) }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 end
