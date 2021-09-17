@@ -3,43 +3,43 @@
 require 'rails_helper'
 
 RSpec.describe LocaleExtractor do
-  context 'empty header' do
+  context 'with an empty header' do
     it 'returns "en"' do
-      locale = LocaleExtractor.new('').extract
+      locale = described_class.new('').extract
       expect(locale).to eq('en')
     end
   end
 
-  context 'wildcard header' do
+  context 'with a wildcard header' do
     it 'returns "en"' do
-      locale = LocaleExtractor.new('*').extract
+      locale = described_class.new('*').extract
       expect(locale).to eq('en')
     end
   end
 
-  context 'unavailable locale' do
+  context 'with an unavailable locale' do
     it 'returns "en"' do
-      locale = LocaleExtractor.new('fr').extract
+      locale = described_class.new('fr').extract
       expect(locale).to eq('en')
     end
   end
 
-  context 'header without quality values' do
+  context 'with a header without quality values' do
     it 'returns the user\'s preferred locale' do
-      locale = LocaleExtractor.new('es-MX,en,fr').extract
+      locale = described_class.new('es-MX,en,fr').extract
       expect(locale).to eq('es')
 
-      locale = LocaleExtractor.new('en-US,es').extract
+      locale = described_class.new('en-US,es').extract
       expect(locale).to eq('en')
     end
   end
 
-  context 'header with quality values' do
+  context 'with a header with quality values' do
     it 'returns the user\'s preferred locale' do
-      locale = LocaleExtractor.new('es-CO,es;q=0.5').extract
+      locale = described_class.new('es-CO,es;q=0.5').extract
       expect(locale).to eq('es')
 
-      locale = LocaleExtractor.new('de-CH,de;q=0.7,ja;q=0.3').extract
+      locale = described_class.new('de-CH,de;q=0.7,ja;q=0.3').extract
       expect(locale).to eq('en')
     end
   end

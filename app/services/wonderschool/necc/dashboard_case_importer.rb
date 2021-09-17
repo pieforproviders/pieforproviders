@@ -36,7 +36,6 @@ module Wonderschool
         send_appsignal_error('dashboard-case-importer', e, row['Case Number']) # returns false
       end
 
-      # rubocop:disable Metrics/MethodLength
       def dashboard_params(row)
         {
           as_of: row['As of Date'],
@@ -50,7 +49,6 @@ module Wonderschool
           hours_attended: row['Hours Attended']
         }
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end

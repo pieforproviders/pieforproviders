@@ -22,7 +22,8 @@ class ApplicationController < ActionController::API
       errors: resource.errors.details,
       detail: resource.errors,
       code: '100'
-    }, status: :unprocessable_entity
+    },
+           status: :unprocessable_entity
   end
 
   private

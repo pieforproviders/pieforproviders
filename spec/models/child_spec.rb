@@ -5,39 +5,40 @@ require 'rails_helper'
 RSpec.describe Child, type: :model do
   let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
-  it { should belong_to(:business) }
-  it { should have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
-  it { should have_many(:approvals).through(:child_approvals) }
-  it { should have_one(:temporary_nebraska_dashboard_case) }
 
-  it { should validate_presence_of(:approvals) }
-  it { should validate_presence_of(:date_of_birth) }
-  it { should validate_presence_of(:full_name) }
+  it { is_expected.to belong_to(:business) }
+  it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
+  it { is_expected.to have_many(:approvals).through(:child_approvals) }
+  it { is_expected.to have_one(:temporary_nebraska_dashboard_case) }
+
+  it { is_expected.to validate_presence_of(:approvals) }
+  it { is_expected.to validate_presence_of(:date_of_birth) }
+  it { is_expected.to validate_presence_of(:full_name) }
 
   it 'validates date_of_birth as a date' do
     child.update(date_of_birth: Time.current)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.date_of_birth = "I'm a string"
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.date_of_birth = nil
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.date_of_birth = '2021-02-01'
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.date_of_birth = Date.new(2021, 12, 11)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
   end
 
   it 'validates last_active_date as an optional date' do
     child.update(last_active_date: Time.current)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = "I'm a string"
-    expect(child.valid?).to be_falsey
+    expect(child).not_to be_valid
     child.last_active_date = nil
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = '2021-02-01'
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
     child.last_active_date = Date.new(2021, 12, 11)
-    expect(child.valid?).to be_truthy
+    expect(child).to be_valid
   end
 
   it 'validates that inactive_reason is a permitted value only' do
@@ -58,34 +59,34 @@ RSpec.describe Child, type: :model do
     expect(build(:child)).to be_valid
   end
 
-  it { should accept_nested_attributes_for :approvals }
-  it { should accept_nested_attributes_for :child_approvals }
+  it { is_expected.to accept_nested_attributes_for :approvals }
+  it { is_expected.to accept_nested_attributes_for :child_approvals }
 
-  context 'scopes' do
+  describe 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
     let(:deleted_child) { create(:child, deleted: true) }
 
     it 'only displays active children in the active scope' do
-      expect(Child.active).to include(child)
-      expect(Child.active).to not_include(inactive_child)
-      expect(Child.active).to include(deleted_child)
+      expect(described_class.active).to include(child)
+      expect(described_class.active).to not_include(inactive_child)
+      expect(described_class.active).to include(deleted_child)
     end
 
     it 'only displays children approved for the requested date in the approved_for_date scope' do
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
-      expect(Child.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
+      expect(described_class.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do
-      expect(Child.not_deleted).to include(child)
-      expect(Child.not_deleted).to include(inactive_child)
-      expect(Child.not_deleted).to not_include(deleted_child)
+      expect(described_class.not_deleted).to include(child)
+      expect(described_class.not_deleted).to include(inactive_child)
+      expect(described_class.not_deleted).to not_include(deleted_child)
     end
   end
 
-  context 'delegated attributes' do
+  describe 'delegated attributes' do
     it 'gets user from business' do
       expect(child.user).to eq(child.business.user)
     end
@@ -99,7 +100,8 @@ RSpec.describe Child, type: :model do
     end
   end
 
-  context 'for nebraska children' do
+  # TODO: this is sloppy and these need to be named better and moved eventually
+  describe 'nebraska methods' do
     let(:child) { create(:necc_child, create_dashboard_case: true) }
 
     describe '#create_default_schedule' do
@@ -109,6 +111,7 @@ RSpec.describe Child, type: :model do
         expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('9:00am'))
         expect(child.schedules.first.weekday).to eq(1)
       end
+
       it "doesn't create default schedules if schedules_attributes are passed" do
         child = create(:necc_child, schedules_attributes: [attributes_for(:schedule)])
         expect(child.schedules.length).to eq(1)
@@ -117,93 +120,108 @@ RSpec.describe Child, type: :model do
     end
 
     describe '#nebraska_family_fee' do
-      context 'using live algorithms' do
+      context 'when using live algorithms' do
         before do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           child.reload
         end
+
         it 'returns the database value' do
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
         end
-        context 'when there are two children' do
-          it 'returns the correct allocation of the family fee' do
-            # child object should have a default schedule, which is 40 hours a week, in whatever given month
-            child_with_less_hours = create(:child, approvals: [child.approvals.first], schedules: [create(:schedule, weekday: 1)])
-            expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
-            expect(child_with_less_hours.nebraska_family_fee(Time.current.to_date)).to eq(0)
-          end
+
+        it 'returns the correct allocation of the family fee when there are two children' do
+          # child object should have a default schedule, which is 40 hours a week, in whatever given month
+          child_with_less_hours = create(:child,
+                                         approvals: [child.approvals.first],
+                                         schedules: [create(:schedule, weekday: 1)])
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+          expect(child_with_less_hours.nebraska_family_fee(Time.current.to_date)).to eq(0)
         end
       end
-      context 'using temporary dashboard values' do
-        it 'does not call the NebraskaFullDaysCalculator service' do
+
+      context 'when using temporary dashboard values' do
+        it 'returns the temporary dashboard case family fee' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.temporary_nebraska_dashboard_case.family_fee)
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.temporary_nebraska_dashboard_case.family_fee)
         end
       end
     end
 
     describe '#nebraska_full_days' do
-      context 'using live algorithms' do
-        it 'calls the NebraskaFullDaysCalculator service' do
-          calculator_instance = instance_double(NebraskaFullDaysCalculator)
+      let(:calculator_class) { class_double(NebraskaFullDaysCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(NebraskaFullDaysCalculator, call: nil) }
 
+      context 'when using live algorithms' do
+        it 'calls the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaFullDaysCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
-          expect(calculator_instance).to receive(:call)
+          allow(NebraskaFullDaysCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_full_days(Time.current.to_date)
+          expect(calculator_instance).to have_received(:call)
         end
       end
-      context 'using temporary dashboard values' do
+
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(NebraskaFullDaysCalculator).not_to receive(:new)
           child.nebraska_full_days(Time.current.to_date)
+          expect(calculator_class).not_to have_received(:new)
         end
       end
     end
 
     describe '#nebraska_hours' do
-      context 'using live algorithms' do
-        it 'calls the NebraskaHoursCalculator service' do
-          calculator_instance = instance_double(NebraskaHoursCalculator)
+      let(:calculator_class) { class_double(NebraskaHoursCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(NebraskaHoursCalculator, call: nil) }
 
+      context 'when using live algorithms' do
+        it 'calls the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaHoursCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
-          expect(calculator_instance).to receive(:call)
+          allow(NebraskaHoursCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_hours(Time.current.to_date)
+          expect(calculator_instance).to have_received(:call)
         end
       end
-      context 'using temporary dashboard values' do
+
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(NebraskaHoursCalculator).not_to receive(:new)
           child.nebraska_hours(Time.current.to_date)
+          expect(calculator_class).not_to have_received(:new)
         end
       end
     end
 
     describe '#nebraska_weekly_hours_attended' do
-      context 'using live algorithms' do
-        it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
-          calculator_instance = instance_double(NebraskaWeeklyHoursAttendedCalculator)
+      let(:calculator_class) { class_double(NebraskaWeeklyHoursAttendedCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(NebraskaWeeklyHoursAttendedCalculator, call: nil) }
 
+      context 'when using live algorithms' do
+        it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          expect(NebraskaWeeklyHoursAttendedCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
-          expect(calculator_instance).to receive(:call)
+          allow(NebraskaWeeklyHoursAttendedCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
+          expect(calculator_instance).to have_received(:call)
         end
       end
-      context 'using temporary dashboard values' do
+
+      context 'when using temporary dashboard values' do
         it 'does not call the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(NebraskaWeeklyHoursAttendedCalculator).not_to receive(:new)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
+          expect(calculator_class).not_to have_received(:new)
         end
       end
     end
   end
 
-  context 'approval methods' do
+  describe 'approval methods' do
     it 'returns an active approval for a specific date' do
       current_approval = child.approvals.first
       expect(child.active_approval(Time.current)).to eq(current_approval)
@@ -214,18 +232,27 @@ RSpec.describe Child, type: :model do
     it 'returns an active child_approval for a specific date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current)).to eq(current_child_approval)
-      expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
+      expired_child_approval = create(:approval,
+                                      effective_on: 3.years.ago,
+                                      expires_on: 2.years.ago,
+                                      children: [child]).child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current - 2.years - 6.months)).to eq(expired_child_approval)
     end
   end
 
-  context 'attendance methods' do
+  describe 'attendance methods' do
     it 'returns all attendances regardless of approval date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
-      expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
+      expired_child_approval = create(
+        :approval,
+        effective_on: 3.years.ago,
+        expires_on: 2.years.ago,
+        children: [child]
+      ).child_approvals.where(child: child).first
       current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
       expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
-      expect(child.attendances.pluck(:id)).to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
+      expect(child.attendances.pluck(:id))
+        .to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
     end
   end
 
@@ -237,18 +264,19 @@ RSpec.describe Child, type: :model do
     expect(RateAssociatorJob).to have_been_enqueued.exactly(:twice)
   end
 
-  context 'associates approval with child if applicable' do
+  describe '#associate_rate' do
     let!(:user) { create(:confirmed_user) }
     let!(:created_business) { create(:business, user: user) }
     let!(:child) do
-      create(:child, full_name: 'Parvati Patil',
-                     date_of_birth: '2010-04-09',
-                     business_id: created_business.id,
-                     approvals_attributes: [attributes_for(:approval)])
+      create(:child,
+             full_name: 'Parvati Patil',
+             date_of_birth: '2010-04-09',
+             business_id: created_business.id,
+             approvals_attributes: [attributes_for(:approval)])
     end
     let!(:approval) { child.approvals.first }
 
-    context 'child has the same approval as a previous child in our system' do
+    context 'when the child has the same approval as a previous child in our system' do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',
@@ -265,25 +293,26 @@ RSpec.describe Child, type: :model do
           ]
         }
       end
+
       it 'associates the approval' do
-        new_child = Child.create! new_child_params
+        new_child = described_class.create! new_child_params
         expect(new_child.approvals.first.id).to eq(approval.id)
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change { Child.count }.by(1)
+        expect { described_class.create! new_child_params }.to change(described_class, :count).by(1)
       end
 
       it 'does not create an approval' do
-        expect { Child.create! new_child_params }.to change { Approval.count }.by(0)
+        expect { described_class.create! new_child_params }.to change(Approval, :count).by(0)
       end
 
       it 'does create a child approval' do
-        expect { Child.create! new_child_params }.to change { ChildApproval.count }.by(1)
+        expect { described_class.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
 
-    context 'child has a unique approval' do
+    context 'when the child has a unique approval' do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',
@@ -302,20 +331,20 @@ RSpec.describe Child, type: :model do
       end
 
       it 'does not associate the approval' do
-        new_child = Child.create! new_child_params
-        expect(new_child.approvals.first.id).to_not eq(approval.id)
+        new_child = described_class.create! new_child_params
+        expect(new_child.approvals.first.id).not_to eq(approval.id)
       end
 
       it 'creates a child' do
-        expect { Child.create! new_child_params }.to change { Child.count }.by(1)
+        expect { described_class.create! new_child_params }.to change(described_class, :count).by(1)
       end
 
       it 'creates an approval' do
-        expect { Child.create! new_child_params }.to change { Approval.count }.by(1)
+        expect { described_class.create! new_child_params }.to change(Approval, :count).by(1)
       end
 
       it 'creates a child approval' do
-        expect { Child.create! new_child_params }.to change { ChildApproval.count }.by(1)
+        expect { described_class.create! new_child_params }.to change(ChildApproval, :count).by(1)
       end
     end
   end

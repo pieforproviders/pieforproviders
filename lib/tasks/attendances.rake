@@ -16,12 +16,6 @@ def now
   Time.current
 end
 
-# rubocop:disable Naming/AccessorMethodName
-def set_child(child)
-  @child = child
-end
-# rubocop:enable Naming/AccessorMethodName
-
 def last_attendance_check_out
   active_child_approval
     .attendances
@@ -70,7 +64,7 @@ end
 
 def generate_attendances
   Child.all.each do |child|
-    set_child(child)
+    @child = child
 
     # if the child doesn't have an approval for this month or if we don't have any weeks to populate, skip this child
     next unless weeks_to_populate.positive? && current_approval_amounts

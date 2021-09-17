@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisApprovalAmount, type: :model do
-  it { should belong_to(:child_approval) }
-  it { should validate_presence_of(:month) }
-  it { should validate_numericality_of(:part_days_approved_per_week) }
-  it { should validate_numericality_of(:full_days_approved_per_week) }
+  it { is_expected.to belong_to(:child_approval) }
+  it { is_expected.to validate_presence_of(:month) }
+  it { is_expected.to validate_numericality_of(:part_days_approved_per_week) }
+  it { is_expected.to validate_numericality_of(:full_days_approved_per_week) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:illinois_approval_amount)).to be_valid

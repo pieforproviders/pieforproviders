@@ -39,7 +39,11 @@ module Wonderschool
         check_in = row['checked_in_at']
         find_and_remove_existing_absences(child, check_in)
 
-        attendance.update!(child_approval: child.active_child_approval(check_in), check_in: check_in, check_out: row['checked_out_at'])
+        attendance.update!(
+          child_approval: child.active_child_approval(check_in),
+          check_in: check_in,
+          check_out: row['checked_out_at']
+        )
       rescue StandardError => e
         send_appsignal_error('attendance-csv-importer', e, row['child_id'])
       end

@@ -10,6 +10,10 @@ module Helpers
   end
 
   def last_elapsed_date(date)
-    Date.parse(date).month > Time.current.month ? Date.parse("#{date}, #{Time.current.year - 1}") : Date.parse("#{date}, #{Time.current.year}")
+    if Date.parse(date).month > Time.current.month
+      Date.parse("#{date}, #{Time.current.year - 1}")
+    else
+      Date.parse("#{date}, #{Time.current.year}")
+    end
   end
 end

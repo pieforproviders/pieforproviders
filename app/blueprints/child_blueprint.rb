@@ -43,7 +43,8 @@ class ChildBlueprint < Blueprinter::Base
         '0 of 5'
       end
       # nebraska restricts absences to 5 allowed
-      # the csv imports for temporary dashboard cases will probably have "of 5" in their string, so we don't want it to duplicate
+      # the csv imports for temporary dashboard cases will
+      # probably have "of 5" in their string, so we don't want it to duplicate
     end
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number

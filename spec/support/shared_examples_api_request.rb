@@ -11,58 +11,35 @@ VALID_API_PATH = '/api/v1'
 # TODO: implement these without rswag dsl
 # This example expects the following to be defined with a let(:) block:
 #  record_params - parameters to be passed to the server
-RSpec.shared_examples 'server error responses for wrong api version with parameters' do |record_name|
-  context 'on the wrong api version' do
-    include_context 'incorrect api version header'
-    context 'when authenticated' do
-      include_context 'authenticated user'
-      response '500', 'internal server error' do
-        let(record_name.to_sym) { { record_name => record_params } }
-        run_test!
-      end
-    end
-
-    context 'when not authenticated' do
-      response '500', 'internal server error' do
-        let(record_name.to_sym) { { record_name => record_params } }
-        run_test!
-      end
+RSpec.shared_context 'with wrong api version with parameters' do |record_name|
+  include_context 'with incorrect api version header'
+  context 'when authenticated' do
+    include_context 'when authenticated'
+    response '500', 'internal server error' do
+      let(record_name.to_sym) { { record_name => record_params } }
+      run_test!
     end
   end
-end
 
-RSpec.shared_examples 'server error responses for wrong api version' do
-  context 'on the wrong api version' do
-    include_context 'incorrect api version header'
-    context 'when authenticated' do
-      include_context 'authenticated user'
-      response '500', 'internal server error' do
-        run_test!
-      end
-    end
-
-    context 'when not authenticated' do
-      response '500', 'internal server error' do
-        run_test!
-      end
-    end
-  end
-end
-
-# This example expects the following to be defined with a let(:) block:
-#  record_params - parameters to be passed to the server
-RSpec.shared_examples '401 error if not authenticated with parameters' do |record_name|
   context 'when not authenticated' do
-    response '401', 'not authorized' do
+    response '500', 'internal server error' do
       let(record_name.to_sym) { { record_name => record_params } }
       run_test!
     end
   end
 end
 
-RSpec.shared_examples '401 error if not authenticated' do
+RSpec.shared_context 'with wrong api version' do
+  include_context 'with incorrect api version header'
+  context 'when authenticated' do
+    include_context 'when authenticated'
+    response '500', 'internal server error' do
+      run_test!
+    end
+  end
+
   context 'when not authenticated' do
-    response '401', 'not authorized' do
+    response '500', 'internal server error' do
       run_test!
     end
   end
@@ -70,7 +47,22 @@ end
 
 # This example expects the following to be defined with a let(:) block:
 #  record_params - parameters to be passed to the server
-RSpec.shared_examples '404 not found with parameters' do |record_name|
+RSpec.shared_context 'when not authenticated with parameters' do |record_name|
+  response '401', 'not authorized' do
+    let(record_name.to_sym) { { record_name => record_params } }
+    run_test!
+  end
+end
+
+RSpec.shared_examples 'when not authenticated' do
+  response '401', 'not authorized' do
+    run_test!
+  end
+end
+
+# This example expects the following to be defined with a let(:) block:
+#  record_params - parameters to be passed to the server
+RSpec.shared_context 'when not found with parameters' do |record_name|
   response '404', "#{record_name} not found" do
     let(:id) { 'invalid' }
     let(record_name.to_sym) { { record_name => record_params } }
@@ -78,7 +70,7 @@ RSpec.shared_examples '404 not found with parameters' do |record_name|
   end
 end
 
-RSpec.shared_examples '404 not found' do |record_name|
+RSpec.shared_context 'when not found' do |record_name|
   response '404', "#{record_name} not found" do
     let(:id) { 'invalid' }
     run_test!

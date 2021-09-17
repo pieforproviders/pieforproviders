@@ -4,15 +4,18 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   subject { create(:confirmed_user) }
-  it { should validate_presence_of(:email) }
-  it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
-  it { should validate_presence_of(:full_name) }
-  it { should validate_presence_of(:greeting_name) }
-  it { should validate_presence_of(:language) }
-  it { should validate_presence_of(:organization) }
-  it { should validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
-  it { should validate_presence_of(:timezone) }
-  it { should validate_presence_of(:service_agreement_accepted) }
+
+  let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
+
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
+  it { is_expected.to validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:greeting_name) }
+  it { is_expected.to validate_presence_of(:language) }
+  it { is_expected.to validate_presence_of(:organization) }
+  it { is_expected.to validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
+  it { is_expected.to validate_presence_of(:timezone) }
+  it { is_expected.to validate_presence_of(:service_agreement_accepted) }
 
   it 'factory should be valid (default; no args)' do
     expect(build(:confirmed_user)).to be_valid
@@ -20,7 +23,6 @@ RSpec.describe User, type: :model do
     expect(build(:admin)).to be_valid
   end
 
-  let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')
   end
@@ -31,6 +33,7 @@ RSpec.describe User, type: :model do
 
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
+
     before do
       create_list(:child, 3, business: business)
     end
@@ -52,16 +55,33 @@ RSpec.describe User, type: :model do
                                     child: create(:child,
                                                   business: create(:business, user: user))))
     end
-    let!(:second_attendance) { create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval) }
-    let!(:third_attendance) { create(:attendance, check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day, child_approval: first_attendance.child_approval) }
+    let!(:second_attendance) do
+      create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval)
+    end
+    let!(:third_attendance) do
+      create(:attendance,
+             check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day,
+             child_approval: first_attendance.child_approval)
+    end
+
     it 'works without a date passed' do
       expect(user.latest_attendance_in_month_utc(nil)).to eq(third_attendance.check_in)
     end
+
     it 'returns nil for a month without an attendance' do
-      expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months)).to eq(nil)
+      expect(
+        user.latest_attendance_in_month_utc(
+          Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months
+        )
+      ).to eq(nil)
     end
+
     it 'returns the latest attendance for a month with multiple attendances' do
-      expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months)).to eq(second_attendance.check_in)
+      expect(
+        user.latest_attendance_in_month_utc(
+          Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months
+        )
+      ).to eq(second_attendance.check_in)
     end
   end
 end

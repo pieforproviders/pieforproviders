@@ -14,7 +14,10 @@ class Schedule < ApplicationRecord
   validates :expires_on, date_param: true, unless: proc { |schedule| schedule.expires_on_before_type_cast.nil? }
   validates :weekday, numericality: true, presence: true
 
-  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
+  scope :active_on_date,
+        lambda { |date|
+          where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
+        }
   scope :for_weekday, ->(weekday) { where(weekday: weekday).order(updated_at: :desc) }
 end
 
