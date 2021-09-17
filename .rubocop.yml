@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require:
   # - rubocop-performance
   - rubocop-rails
@@ -14,55 +16,23 @@ AllCops:
     - client/**/**
   SuggestExtensions: false
 
-Style/SymbolProc:
-  Exclude:
-    - app/blueprints/**
-    - spec/factories/**/**
-
-Naming/FileName:
-  Exclude:
-    - config/initializers/**
-
 Metrics/BlockLength:
-  Exclude:
-    - spec/**/**
-    - lib/tasks/**
-    - config/initializers/**
-    - config/environments/**
-    - config/routes.rb
-    - app/blueprints/**
+  CountAsOne: ['array', 'heredoc', 'hash']
+
+Metrics/ClassLength:
+  CountAsOne: ['array', 'heredoc', 'hash']
+
+Metrics/MethodLength:
+  CountAsOne: ['array', 'heredoc', 'hash']
 
 Metrics/ModuleLength:
-  Exclude:
-    - spec/**/**
+  CountAsOne: ['array', 'heredoc', 'hash']
 
-# screens are bigger now and long lines are more acceptable
-Layout/LineLength:
-  Max: 180
-  IgnoredPatterns: ['\A#']
-
-# pending auto-enable
-Lint/RaiseException:
+Layout/MultilineArrayLineBreaks:
   Enabled: true
 
-# pending auto-enable
-Lint/StructNewOverride:
+Layout/MultilineHashKeyLineBreaks:
   Enabled: true
 
-Rails:
-  Enabled: true
-
-Style/Encoding:
-  Enabled: false
-
-# pending auto-enable
-Style/HashEachMethods:
-  Enabled: true
-
-# pending auto-enable
-Style/HashTransformKeys:
-  Enabled: true
-
-# pending auto-enable
-Style/HashTransformValues:
+Layout/MultilineMethodArgumentLineBreaks:
   Enabled: true
