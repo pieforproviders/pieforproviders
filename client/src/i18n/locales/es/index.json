@@ -236,5 +236,9 @@
   "thurs": "thurs",
   "fri": "fri",
   "sat": "sat",
-  "sun": "sun"
+  "sun": "sun",
+
+  "screenSize": "Tamaño de pantalla no compatible",
+  "incompatibleMsg": "O tu navegador is demasiado pequeño o estás en un aparato movil. Por favor cambia a una computadora o tableta para ver esta pagina.",
+  "noInfo": "no info"
 }

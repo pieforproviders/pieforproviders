@@ -199,12 +199,11 @@ export function AttendanceView() {
       ) : (
         <div className="flex flex-col">
           <div className="h3-large text-center mb-8 font-semibold">
-            Screen size not compatible
+            {t('screenSize')}
           </div>
           <img src={smallPie} alt={'a small lemon pie'} />
           <div className="text-center body-1 text-black mt-8">
-            Either your browser window is too small, or you’re on a mobile
-            device. Please switch to a desktop or tablet to view this page.
+            {t('incompatibleMsg')}
           </div>
         </div>
       )}

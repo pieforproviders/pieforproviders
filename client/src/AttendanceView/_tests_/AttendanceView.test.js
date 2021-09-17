@@ -25,17 +25,7 @@ describe('<AttendanceView />', () => {
   it('renders content', async () => {
     const { container } = doRender()
     await waitFor(() => {
-      // expect(container).toHaveTextContent('Attendance')
+      expect(container).toHaveTextContent('Screen')
     })
   })
-
-  // it('renders mobile content', async () => {
-  //   const { container } = doRender()
-  //   await waitFor(() => {
-  //     global.innerWidth = 300
-  //     expect(container).toHaveTextContent(
-  //       'Screen size not compatibleEither your browser window is too small, or you’re on a mobile device. Please switch to a desktop or tablet to view this page.'
-  //     )
-  //   })
-  // })
 })
