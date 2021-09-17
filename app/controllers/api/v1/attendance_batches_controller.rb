@@ -37,7 +37,10 @@ module Api
 
           attendance.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next add_error_and_return_nil(:child_id, "not allowed to create an attendance for child #{attendance[:child_id]}")
+          next add_error_and_return_nil(
+            :child_id,
+            "not allowed to create an attendance for child #{attendance[:child_id]}"
+          )
         end
       end
 

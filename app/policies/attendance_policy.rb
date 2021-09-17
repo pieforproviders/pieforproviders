@@ -8,7 +8,9 @@ class AttendancePolicy < ApplicationPolicy
       if user.admin?
         scope.all
       else
-        scope.joins(child_approval: { child: { business: :user } }).where(child_approvals: { children: { businesses: { user: user } } })
+        scope.joins(child_approval: {
+                      child: { business: :user }
+                    }).where(child_approvals: { children: { businesses: { user: user } } })
       end
     end
   end

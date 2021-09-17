@@ -82,7 +82,9 @@ RSpec.describe UserBlueprint do
     let(:last_month) { Time.current.at_beginning_of_day - 1.month }
 
     before do
-      create(:attendance, check_in: last_month, child_approval: create(:child_approval, child: create(:child, business: create(:business, user: user))))
+      create(:attendance,
+             check_in: last_month,
+             child_approval: create(:child_approval, child: create(:child, business: create(:business, user: user))))
     end
 
     context 'in nebraska' do
@@ -101,7 +103,11 @@ RSpec.describe UserBlueprint do
       end
 
       it 'returns the as_of date as today for a month with no attendances' do
-        blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month - 6.months)
+        blueprint = UserBlueprint.render(
+          user,
+          view: :nebraska_dashboard,
+          filter_date: last_month.at_end_of_month - 6.months
+        )
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
       end
     end
@@ -121,7 +127,11 @@ RSpec.describe UserBlueprint do
       end
 
       it 'returns the as_of date as today for a month with no attendances' do
-        blueprint = UserBlueprint.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month - 6.months)
+        blueprint = UserBlueprint.render(
+          user,
+          view: :nebraska_dashboard,
+          filter_date: last_month.at_end_of_month - 6.months
+        )
         expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
       end
     end

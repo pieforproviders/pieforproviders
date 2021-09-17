@@ -13,13 +13,16 @@ module Wonderschool
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
-      let!(:missing_field_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv')) }
+      let!(:missing_field_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
+      end
 
       let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }
       let!(:second_user) { create(:confirmed_user, email: 'kate@kate.com') }
 
       before do
-        travel_to Date.parse('May 20th, 2021') # this lands us in the 'effective' period for all the approvals in the CSV fixture
+        # this lands us in the 'effective' period for all the approvals in the CSV fixture
+        travel_to Date.parse('May 20th, 2021')
         allow(Rails.application.config).to receive(:aws_necc_onboarding_bucket) { source_bucket }
         allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }

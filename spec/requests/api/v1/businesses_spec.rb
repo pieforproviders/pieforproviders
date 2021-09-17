@@ -147,7 +147,11 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
 
       it 'cannot update a business to inactive' do
-        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        put "/api/v1/businesses/#{user_business.id}",
+            params: {
+              business: params.merge({ active: false })
+            },
+            headers: headers
         expect(response.status).to eq(200)
         expect(user_business.reload.active).to eq(true)
       end
@@ -173,14 +177,22 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       end
 
       it 'cannot update a business to inactive if it has active children' do
-        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        put "/api/v1/businesses/#{user_business.id}",
+            params: {
+              business: params.merge({ active: false })
+            },
+            headers: headers
         expect(response.status).to eq(422)
         expect(user_business.reload.active).to eq(true)
       end
 
       it 'can update a business to inactive if it has no children' do
         user_business.children.destroy_all
-        put "/api/v1/businesses/#{user_business.id}", params: { business: params.merge({ active: false }) }, headers: headers
+        put "/api/v1/businesses/#{user_business.id}",
+            params: {
+              business: params.merge({ active: false })
+            },
+            headers: headers
         expect(response.status).to eq(200)
         expect(user_business.reload.active).to eq(false)
       end

@@ -189,7 +189,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
           expect(response).to match_response_schema('child')
         end
 
-        it 'creates exactly the number of approval amounts passed, if more than 1 and less than 12 months are present' do
+        it 'creates exactly the number of approval amounts passed when the number is between 1 and 12' do
           post '/api/v1/children', params: some_month_amounts, headers: headers
           expect(response.status).to eq(201)
           json = JSON.parse(response.body)

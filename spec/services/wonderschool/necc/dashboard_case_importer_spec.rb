@@ -12,7 +12,9 @@ module Wonderschool
 
       let!(:dashboard_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
-      let!(:missing_field_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv')) }
+      let!(:missing_field_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv'))
+      end
       let!(:parsed_valid_csv) { CsvParser.new(dashboard_csv).call }
 
       let!(:business) { create(:business, name: 'Test Day Care') }

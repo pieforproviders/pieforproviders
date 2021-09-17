@@ -169,8 +169,11 @@ class Child < UuidApplicationRecord
   end
 
   def absence_revenue(date)
-    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
-    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
+    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition do |absence|
+      absence.absence == 'absence'
+    end
+    # only five absences are allowed per month in Nebraska
+    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum
   end
 
   def estimated_remaining_revenue(date)
@@ -205,7 +208,8 @@ class Child < UuidApplicationRecord
     end
   end
 
-  # TODO: these methods are duplicative and need to be moved to a concern so child and attendance can both use them [PIE-1529]
+  # TODO: these methods are duplicative and need to be moved to a
+  # concern so child and attendance can both use them [PIE-1529]
 
   def weekday_scheduled_revenue(date, weekday)
     schedule_for_weekday = schedule(date, weekday)
@@ -245,13 +249,15 @@ class Child < UuidApplicationRecord
   end
 
   def ne_hours(date, schedule_for_weekday)
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a service class
+    # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaHoursCalculator.new(self, date).round_hourly_to_quarters(scheduled_time.seconds)
   end
 
   def ne_days(date, schedule_for_weekday)
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a service class
+    # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaFullDaysCalculator.new(self, date).calculate_full_days_based_on_duration(scheduled_time.seconds)
   end
@@ -294,23 +300,30 @@ class Child < UuidApplicationRecord
   # NE dashboard full days calculator
   def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.full_days
+    if Rails.application.config.ff_ne_live_algorithms
+      NebraskaFullDaysCalculator.new(self, date).call
+    else
+      temporary_nebraska_dashboard_case&.full_days
+    end
   end
 
   # NE dashboard hours calculator
   def nebraska_hours(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.hours.to_f
+    if Rails.application.config.ff_ne_live_algorithms
+      NebraskaHoursCalculator.new(self, date).call
+    else
+      temporary_nebraska_dashboard_case&.hours.to_f
+    end
   end
 
   # NE dashboard weekly used hours calculator
   def nebraska_weekly_hours_attended(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaWeeklyHoursAttendedCalculator.new(self,
-                                                date).call
+      NebraskaWeeklyHoursAttendedCalculator.new(self, date).call
     else
-      temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s # hacky workaround to be able to tell the dashboard blueprint to add 'of X' only to live algorithms
+      temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s
     end
   end
 
@@ -318,9 +331,11 @@ class Child < UuidApplicationRecord
 
   def find_or_create_approvals
     self.approvals = approvals.map do |approval|
-      Approval.find_or_create_by(case_number: approval.case_number,
-                                 effective_on: approval.effective_on,
-                                 expires_on: approval.expires_on)
+      Approval.find_or_create_by(
+        case_number: approval.case_number,
+        effective_on: approval.effective_on,
+        expires_on: approval.expires_on
+      )
     end
   end
 

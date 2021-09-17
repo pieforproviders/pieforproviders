@@ -112,7 +112,9 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
     before do
       create_list(
-        :child, 2, {
+        :child,
+        2,
+        {
           business: nebraska_business,
           approvals: [
             create(:expired_approval, create_children: false),
@@ -121,7 +123,9 @@ RSpec.describe 'Api::V1::Users', type: :request do
         }
       )
       create_list(
-        :child, 2, {
+        :child,
+        2,
+        {
           business: illinois_business,
           approvals: [
             create(:expired_approval, create_children: false),

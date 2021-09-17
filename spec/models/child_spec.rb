@@ -126,13 +126,17 @@ RSpec.describe Child, type: :model do
         end
 
         it 'returns the database value' do
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
         end
 
         it 'returns the correct allocation of the family fee when there are two children' do
           # child object should have a default schedule, which is 40 hours a week, in whatever given month
-          child_with_less_hours = create(:child, approvals: [child.approvals.first], schedules: [create(:schedule, weekday: 1)])
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
+          child_with_less_hours = create(:child,
+                                         approvals: [child.approvals.first],
+                                         schedules: [create(:schedule, weekday: 1)])
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
           expect(child_with_less_hours.nebraska_family_fee(Time.current.to_date)).to eq(0)
         end
       end
@@ -140,7 +144,8 @@ RSpec.describe Child, type: :model do
       context 'using temporary dashboard values' do
         it 'returns the temporary dashboard case family fee' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(child.nebraska_family_fee(Time.current.to_date)).to eq(child.temporary_nebraska_dashboard_case.family_fee)
+          expect(child.nebraska_family_fee(Time.current.to_date))
+            .to eq(child.temporary_nebraska_dashboard_case.family_fee)
         end
       end
     end
@@ -152,7 +157,8 @@ RSpec.describe Child, type: :model do
       context 'using live algorithms' do
         it 'calls the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaFullDaysCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaFullDaysCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_full_days(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -174,7 +180,8 @@ RSpec.describe Child, type: :model do
       context 'using live algorithms' do
         it 'calls the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaHoursCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaHoursCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_hours(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -196,7 +203,8 @@ RSpec.describe Child, type: :model do
       context 'using live algorithms' do
         it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaWeeklyHoursAttendedCalculator).to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+          allow(NebraskaWeeklyHoursAttendedCalculator)
+            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -223,7 +231,10 @@ RSpec.describe Child, type: :model do
     it 'returns an active child_approval for a specific date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current)).to eq(current_child_approval)
-      expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
+      expired_child_approval = create(:approval,
+                                      effective_on: 3.years.ago,
+                                      expires_on: 2.years.ago,
+                                      children: [child]).child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current - 2.years - 6.months)).to eq(expired_child_approval)
     end
   end
@@ -231,10 +242,16 @@ RSpec.describe Child, type: :model do
   context 'attendance methods' do
     it 'returns all attendances regardless of approval date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
-      expired_child_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child]).child_approvals.where(child: child).first
+      expired_child_approval = create(
+        :approval,
+        effective_on: 3.years.ago,
+        expires_on: 2.years.ago,
+        children: [child]
+      ).child_approvals.where(child: child).first
       current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
       expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
-      expect(child.attendances.pluck(:id)).to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
+      expect(child.attendances.pluck(:id))
+        .to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
     end
   end
 
@@ -250,10 +267,11 @@ RSpec.describe Child, type: :model do
     let!(:user) { create(:confirmed_user) }
     let!(:created_business) { create(:business, user: user) }
     let!(:child) do
-      create(:child, full_name: 'Parvati Patil',
-                     date_of_birth: '2010-04-09',
-                     business_id: created_business.id,
-                     approvals_attributes: [attributes_for(:approval)])
+      create(:child,
+             full_name: 'Parvati Patil',
+             date_of_birth: '2010-04-09',
+             business_id: created_business.id,
+             approvals_attributes: [attributes_for(:approval)])
     end
     let!(:approval) { child.approvals.first }
 

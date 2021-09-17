@@ -18,14 +18,20 @@ RSpec.describe NebraskaHoursCalculator, type: :service do
                                   weekday: first_attendance_date.wday,
                                   start_time: first_attendance_date.to_datetime + 8.hours,
                                   end_time: first_attendance_date.to_datetime + 13.hours + 30.minutes)
-        create(:attendance, child_approval: child_approval, check_in: first_attendance_date.to_datetime + 8.hours + 21.minutes, check_out: nil)
+        create(:attendance,
+               child_approval: child_approval,
+               check_in: first_attendance_date.to_datetime + 8.hours + 21.minutes,
+               check_out: nil)
         expect(described_class.new(child, first_attendance_date).call).to eq(5.5)
       end
 
       it 'defaults to 8 hours, which will not count as hourly units, if they have no schedule' do
         child.reload
         child.schedules.destroy_all
-        create(:attendance, child_approval: child_approval, check_in: first_attendance_date.to_datetime + 8.hours, check_out: nil)
+        create(:attendance,
+               child_approval: child_approval,
+               check_in: first_attendance_date.to_datetime + 8.hours,
+               check_out: nil)
         expect(described_class.new(child, first_attendance_date).call).to eq(0)
       end
     end

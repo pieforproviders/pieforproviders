@@ -22,9 +22,16 @@ class NebraskaRate < UuidApplicationRecord
   validates :max_age, numericality: { greater_than_or_equal_to: 0.00 }, allow_nil: true
   validates :amount, numericality: { greater_than_or_equal_to: 0.00 }, presence: true
   validates :effective_on, date_param: true, presence: true
-  validates :expires_on, date_param: true, unless: proc { |nebraska_rate| nebraska_rate.expires_on_before_type_cast.nil? }
+  validates :expires_on,
+            date_param: true,
+            unless: proc { |nebraska_rate|
+                      nebraska_rate.expires_on_before_type_cast.nil?
+                    }
 
-  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
+  scope :active_on_date,
+        lambda { |date|
+          where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
+        }
 
   scope :hourly, -> { where(rate_type: 'hourly') }
   scope :daily, -> { where(rate_type: 'daily') }

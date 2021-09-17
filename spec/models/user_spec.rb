@@ -55,19 +55,33 @@ RSpec.describe User, type: :model do
                                     child: create(:child,
                                                   business: create(:business, user: user))))
     end
-    let!(:second_attendance) { create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval) }
-    let!(:third_attendance) { create(:attendance, check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day, child_approval: first_attendance.child_approval) }
+    let!(:second_attendance) do
+      create(:attendance, check_in: six_months_ago + 2.days, child_approval: first_attendance.child_approval)
+    end
+    let!(:third_attendance) do
+      create(:attendance,
+             check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day,
+             child_approval: first_attendance.child_approval)
+    end
 
     it 'works without a date passed' do
       expect(user.latest_attendance_in_month_utc(nil)).to eq(third_attendance.check_in)
     end
 
     it 'returns nil for a month without an attendance' do
-      expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months)).to eq(nil)
+      expect(
+        user.latest_attendance_in_month_utc(
+          Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months
+        )
+      ).to eq(nil)
     end
 
     it 'returns the latest attendance for a month with multiple attendances' do
-      expect(user.latest_attendance_in_month_utc(Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months)).to eq(second_attendance.check_in)
+      expect(
+        user.latest_attendance_in_month_utc(
+          Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months
+        )
+      ).to eq(second_attendance.check_in)
     end
   end
 end

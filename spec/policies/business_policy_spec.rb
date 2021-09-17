@@ -9,7 +9,9 @@ RSpec.describe BusinessPolicy do
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
   let(:business) { create(:business, zipcode: '60606', county: 'Cook', user: user) }
-  let(:inactive_business) { create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user: user, active: false) }
+  let(:inactive_business) do
+    create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user: user, active: false)
+  end
 
   describe BusinessPolicy::Scope do
     context 'admin user' do

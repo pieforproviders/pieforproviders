@@ -24,26 +24,32 @@ class Attendance < UuidApplicationRecord
 
   validates :absence, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
 
-  scope :for_month, lambda { |month = nil|
-    month ||= Time.current
-    where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
-  }
-  scope :for_week, lambda { |week = nil|
-    week ||= Time.current
-    where('check_in BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:saturday))
-  }
+  scope :for_month,
+        lambda { |month = nil|
+          month ||= Time.current
+          where('check_in BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
+        }
+  scope :for_week,
+        lambda { |week = nil|
+          week ||= Time.current
+          where('check_in BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:saturday))
+        }
 
-  scope :for_day, lambda { |day = nil|
-    day ||= Time.current
-    where('check_in BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
-  }
+  scope :for_day,
+        lambda { |day = nil|
+          day ||= Time.current
+          where('check_in BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
+        }
 
   scope :absences, -> { where.not(absence: nil) }
   scope :non_absences, -> { where(absence: nil) }
 
   scope :illinois_part_days, -> { where('total_time_in_care < ?', '5 hours') }
   scope :illinois_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '5 hours', '12 hours') }
-  scope :illinois_full_plus_part_days, -> { where('total_time_in_care > ? AND total_time_in_care < ?', '12 hours', '17 hours') }
+  scope :illinois_full_plus_part_days,
+        lambda {
+          where('total_time_in_care > ? AND total_time_in_care < ?', '12 hours', '17 hours')
+        }
   scope :illinois_full_plus_full_days, -> { where('total_time_in_care BETWEEN ? AND ?', '17 hours', '24 hours') }
 
   delegate :business, to: :child_approval
@@ -84,12 +90,14 @@ class Attendance < UuidApplicationRecord
   end
 
   def ne_hours
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a
+    # service class but we haven't refactored these to procedures yet
     NebraskaHoursCalculator.new(child, check_in).round_hourly_to_quarters(total_time_in_care.seconds)
   end
 
   def ne_days
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a
+    # service class but we haven't refactored these to procedures yet
     NebraskaFullDaysCalculator.new(child, check_in).calculate_full_days_based_on_duration(total_time_in_care.seconds)
   end
 

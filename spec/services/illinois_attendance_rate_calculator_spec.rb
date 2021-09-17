@@ -3,8 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
-  let!(:multiple_child_family_approval) { create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil)) }
-  let!(:single_child_family_approval) { create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil)) }
+  let!(:multiple_child_family_approval) do
+    create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil))
+  end
+  let!(:single_child_family_approval) do
+    create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil))
+  end
   let!(:single_child_family) { create(:child, approvals: [single_child_family_approval]) }
 
   # TODO: change this to #call describe and break down contexts

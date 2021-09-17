@@ -69,7 +69,8 @@ module Api
         when 'IL'
           IllinoisApprovalAmountGenerator.new(@child, child_params.merge(illinois_approval_amount_params)).call
         end
-        # TODO: right now we're doing approval amounts on onboarding CSV processing for NE kids, rather than through the controller
+        # TODO: right now we're doing approval amounts on
+        # onboarding CSV processing for NE kids, rather than through the controller
       end
 
       def illinois_approval_amount_params

@@ -4,8 +4,13 @@
 class User < UuidApplicationRecord
   # Include default devise modules. Others available are:
   # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
-  devise :confirmable, :database_authenticatable, :registerable,
-         :recoverable, :trackable, :validatable, :jwt_authenticatable,
+  devise :confirmable,
+         :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :trackable,
+         :validatable,
+         :jwt_authenticatable,
          jwt_revocation_strategy: BlockedToken
 
   has_many :businesses, dependent: :restrict_with_error

@@ -7,7 +7,10 @@ FactoryBot.define do
     amount { Faker::Number.within(range: 10.0..50.0) }
     license_type { Licenses::TYPES.sample }
     effective_on { (Time.current - 11.months).to_date }
-    expires_on { Random.rand(10) > 7 ? nil : effective_on + 1.year } # TODO: make this a trait and control it rather than randomizing
+    # TODO: make this a trait and control it rather than randomizing
+    expires_on do
+      Random.rand(10) > 7 ? nil : effective_on + 1.year
+    end
     county { 'Douglas' }
     rate_type { NebraskaRate::TYPES.sample }
     region { NebraskaRate::REGIONS.sample }
