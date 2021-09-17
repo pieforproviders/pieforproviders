@@ -326,7 +326,8 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['full_days']).to eq('7.0')
         # 3 new absences
         expect(parsed_body['absences']).to eq('6 of 5')
-        # This includes the 7 prior dailies, the 3 prior absences, and 2 of the new full-day absences because we've hit the monthly limit
+        # This includes the 7 prior dailies, the 3 prior absences,
+        # and 2 of the new full-day absences because we've hit the monthly limit
         expect(parsed_body['earned_revenue'])
           .to eq((((6.25 * hourly_rate * qris_bump) + (12 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
         # earned revenue + remaining 7 days
@@ -347,7 +348,8 @@ RSpec.describe ChildBlueprint do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 1 new covid absence
         expect(parsed_body['absences']).to eq('7 of 5')
-        # This includes the 7 prior dailies, the 5 prior absences, and this absence because COVID absences are unlimited at this time
+        # This includes the 7 prior dailies, the 5 prior absences,
+        # and this absence because COVID absences are unlimited at this time
         expect(parsed_body['earned_revenue'])
           .to eq((((6.25 * hourly_rate * qris_bump) + (13 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
         # earned revenue + remaining 7 days
