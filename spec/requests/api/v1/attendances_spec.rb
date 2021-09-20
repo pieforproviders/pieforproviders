@@ -38,7 +38,10 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   describe 'GET /api/v1/attendances' do
     include_context 'with correct api version header'
 
-    before { sign_in logged_in_user }
+    before do
+      travel_to week_current_date
+      sign_in logged_in_user
+    end
 
     context 'when sent with a filter date' do
       let(:params) { { filter_date: two_weeks_ago_week_current_date } }
