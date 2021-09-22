@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_13_153945) do
+ActiveRecord::Schema.define(version: 2021_09_22_172801) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-09-02", null: false
+    t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
