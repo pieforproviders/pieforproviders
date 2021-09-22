@@ -245,7 +245,7 @@ GEM
       pry (~> 0.9)
       slop (~> 3.0)
     public_suffix (4.0.6)
-    puma (5.4.0)
+    puma (5.5.0)
       nio4r (~> 2.0)
     pundit (2.1.1)
       activesupport (>= 3.0.0)
@@ -428,7 +428,7 @@ DEPENDENCIES
   pgreset (~> 0.3)
   pry
   pry-remote
-  puma (~> 5.4)
+  puma (~> 5.5)
   pundit (~> 2.1)
   rails (~> 6.1.4)
   rails-erd
