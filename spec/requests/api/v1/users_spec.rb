@@ -4,19 +4,20 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Users', type: :request do
   # Do not send any emails (no confirmation emails, no password was changed emails)
-  before(:each) do
-    allow_any_instance_of(User).to receive(:send_confirmation_notification?).and_return(false)
-    allow_any_instance_of(User).to receive(:send_password_change_notification?).and_return(false)
-  end
-
+  let(:user) { instance_double(User) }
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:other_user) { create(:confirmed_user) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
-  describe 'GET /api/v1/users' do
-    include_context 'correct api version header'
+  before do
+    allow(user).to receive(:send_confirmation_notification?).and_return(false)
+    allow(user).to receive(:send_password_change_notification?).and_return(false)
+  end
 
-    context 'for non-admin user' do
+  describe 'GET /api/v1/users' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it 'returns only the user' do
@@ -25,7 +26,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns all users' do
@@ -40,9 +41,9 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/users/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
+    context 'when logged in as a non-admin user' do
       before { sign_in logged_in_user }
 
       it 'returns the user using their ID' do
@@ -67,7 +68,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns the user' do
@@ -103,31 +104,38 @@ RSpec.describe 'Api::V1::Users', type: :request do
   end
 
   describe 'GET /api/v1/case_list_for_dashboard' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
     let!(:nebraska_user) { create(:confirmed_user) }
-    let!(:nebraska_business) { create(:business, :nebraska, user: nebraska_user) }
-    let!(:nebraska_user_children) do
-      create_list(:child, 2, {
-                    business: nebraska_business,
-                    approvals: [
-                      create(:expired_approval, create_children: false),
-                      create(:approval, create_children: false)
-                    ]
-                  })
-    end
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
-    let!(:illinois_user_children) do
-      create_list(:child, 2, {
-                    business: illinois_business,
-                    approvals: [
-                      create(:expired_approval, create_children: false),
-                      create(:approval, create_children: false)
-                    ]
-                  })
+    let!(:nebraska_business) { create(:business, :nebraska, user: nebraska_user) }
+
+    before do
+      create_list(
+        :child,
+        2,
+        {
+          business: nebraska_business,
+          approvals: [
+            create(:expired_approval, create_children: false),
+            create(:approval, create_children: false)
+          ]
+        }
+      )
+      create_list(
+        :child,
+        2,
+        {
+          business: illinois_business,
+          approvals: [
+            create(:expired_approval, create_children: false),
+            create(:approval, create_children: false)
+          ]
+        }
+      )
     end
 
-    context 'for non-admin user in illinois' do
+    context 'when logged in as a non-admin user in illinois' do
       before { sign_in illinois_user }
 
       it 'returns the correct data schema' do
@@ -147,7 +155,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for non-admin user in nebraska' do
+    context 'when logged in as a non-admin user in nebraska' do
       before { sign_in nebraska_user }
 
       it 'returns the correct data schema' do
@@ -167,7 +175,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       end
     end
 
-    context 'for admin user' do
+    context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
       it 'returns the correct data schema' do

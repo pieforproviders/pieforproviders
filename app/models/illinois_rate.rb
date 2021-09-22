@@ -10,14 +10,21 @@ class IllinoisRate < UuidApplicationRecord
   validates :county, presence: true
   validates :max_age, numericality: { greater_than_or_equal_to: 0.00 }, presence: true
   validates :effective_on, date_param: true, presence: true
-  validates :expires_on, date_param: true, unless: proc { |illinois_rate| illinois_rate.expires_on_before_type_cast.nil? }
+  validates :expires_on,
+            date_param: true,
+            unless: proc { |illinois_rate|
+                      illinois_rate.expires_on_before_type_cast.nil?
+                    }
   validates :bronze_percentage, numericality: true, allow_nil: true
   validates :full_day_rate, numericality: true, allow_nil: true
   validates :gold_percentage, numericality: true, allow_nil: true
   validates :part_day_rate, numericality: true, allow_nil: true
   validates :silver_percentage, numericality: true, allow_nil: true
 
-  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
+  scope :active_on_date,
+        lambda { |date|
+          where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
+        }
 end
 
 # == Schema Information

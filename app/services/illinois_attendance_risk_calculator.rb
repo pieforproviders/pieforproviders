@@ -48,7 +48,8 @@ class IllinoisAttendanceRiskCalculator
 
     must_attend_part_days = approval_amount.part_days_approved_per_week.positive?
     must_attend_full_days = approval_amount.full_days_approved_per_week.positive?
-    (!must_attend_part_days || part_day_attendances.positive?) && (!must_attend_full_days || full_day_attendances.positive?)
+    (!must_attend_part_days || part_day_attendances.positive?) &&
+      (!must_attend_full_days || full_day_attendances.positive?)
   end
 
   def threshold_not_met_risks
@@ -63,7 +64,9 @@ class IllinoisAttendanceRiskCalculator
 
   def wont_meet_threshold
     active_approval = @child.approvals.active_on_date(@filter_date).first
-    (threshold * family_days_approved - family_days_attended) > active_approval.child_approvals.count * days_left_in_month
+    (
+      (threshold * family_days_approved) - family_days_attended
+    ) > active_approval.child_approvals.count * days_left_in_month
   end
 
   def at_risk

@@ -6,7 +6,10 @@ FactoryBot.define do
     max_age { 18 }
     license_type { Licenses::TYPES.sample }
     effective_on { (Time.current - 11.months).to_date }
-    expires_on { Random.rand(10) > 7 ? nil : effective_on + 1.year } # TODO: make this a trait and control it rather than randomizing
+    # TODO: make this a trait and control it rather than randomizing
+    expires_on do
+      Random.rand(10) > 7 ? nil : effective_on + 1.year
+    end
     county { 'Cook' }
 
     trait :fifty_percent do
@@ -15,8 +18,12 @@ FactoryBot.define do
 
     # set a decimal value 90% of the time; 10% set to nil
     # TODO: make these traits and control it rather than randomizing
-    bronze_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
-    silver_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
+    bronze_percentage do
+      Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil
+    end
+    silver_percentage do
+      Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil
+    end
     gold_percentage { Faker::Boolean.boolean(true_ratio: 0.9) ? Faker::Number.decimal(l_digits: 2, r_digits: 2) : nil }
     attendance_threshold { Faker::Number.decimal(l_digits: 0, r_digits: 3) }
   end

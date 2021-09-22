@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe AttendancePolicy do
   subject { described_class }
+
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:business) { create(:business, user: user) }
@@ -13,23 +14,23 @@ RSpec.describe AttendancePolicy do
   let(:attendance) { create(:attendance, child_approval: child_approval) }
 
   describe AttendancePolicy::Scope do
-    context 'admin user' do
+    context 'when authenticated as an admin' do
       it 'returns all attendances' do
-        attendances = AttendancePolicy::Scope.new(admin, Attendance).resolve
+        attendances = described_class.new(admin, Attendance).resolve
         expect(attendances).to match_array([attendance])
       end
     end
 
-    context 'owner user' do
+    context 'when logged in as an owner user' do
       it 'returns the attendances associated to the user' do
-        attendances = AttendancePolicy::Scope.new(user, Attendance).resolve
+        attendances = described_class.new(user, Attendance).resolve
         expect(attendances).to match_array([attendance])
       end
     end
 
-    context 'non-owner user' do
+    context 'when logged in as a non-owner user' do
       it 'returns an empty relation' do
-        attendances = AttendancePolicy::Scope.new(non_owner, Attendance).resolve
+        attendances = described_class.new(non_owner, Attendance).resolve
         expect(attendances).to be_empty
       end
     end

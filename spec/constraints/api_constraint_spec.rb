@@ -8,7 +8,7 @@ RSpec.describe ApiConstraint do
     bad_headers = { 'HTTP_ACCEPT' => 'application/vnd.pieforproviders.v11+json' }
     request = ActionDispatch::TestRequest.create(headers)
     bad_request = ActionDispatch::TestRequest.create(bad_headers)
-    expect(ApiConstraint.new(version: 1, default: true).matches?(request)).to eq(true)
-    expect(ApiConstraint.new(version: 1, default: true).matches?(bad_request)).to eq(false)
+    expect(described_class.new(version: 1, default: true).matches?(request)).to eq(true)
+    expect(described_class.new(version: 1, default: true).matches?(bad_request)).to eq(false)
   end
 end

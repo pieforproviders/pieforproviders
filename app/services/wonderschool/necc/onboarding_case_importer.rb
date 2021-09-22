@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module Wonderschool
   module Necc
     # Wonderschool NECC Onboarding CSV Importer
@@ -35,7 +34,9 @@ module Wonderschool
         build_case
         @business.update!(optional_business_params)
         @child_approval.update!(child_approval_params)
-        approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
+        approval_amount_params[:approval_periods].each do |period|
+          NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period))
+        end
       rescue StandardError => e
         send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
       end
@@ -44,17 +45,23 @@ module Wonderschool
         @business = Business.find_or_create_by!(required_business_params)
         @child = Child.find_or_initialize_by(child_params)
         approval = existing_or_new_approval
-        @child.approvals.include?(approval) || @child.approvals << approval # idempotency - add only if it's not already associated
+        # idempotency - add only if it's not already associated
+        @child.approvals.include?(approval) || (@child.approvals << approval)
         @child.save!
         @child_approval = ChildApproval.find_by(child: @child, approval: approval)
       end
 
       def create_approval_amounts
-        approval_amount_params[:approval_periods].each { |period| NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period)) }
+        approval_amount_params[:approval_periods].each do |period|
+          NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period))
+        end
       end
 
       def existing_or_new_approval
-        Approval.includes(children: :business).where(children: { business: @business }).find_by(approval_params) || Approval.find_or_create_by!(approval_params)
+        Approval
+          .includes(children: :business)
+          .where(children: { business: @business })
+          .find_by(approval_params) || Approval.find_or_create_by!(approval_params)
       end
 
       def approval_params
@@ -152,9 +159,10 @@ module Wonderschool
       end
 
       def find_field(approval_number, include_key, exclude_key = nil)
-        @row[@row.to_h.keys.find { |key| key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key)) }]
+        @row[@row.to_h.keys.find do |key|
+          key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key))
+        end ]
       end
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

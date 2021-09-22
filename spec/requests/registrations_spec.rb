@@ -28,7 +28,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     it 'signs up a new user; creates the user, returns 200' do
-      expect(response).to have_http_status(201)
+      expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('')
       expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
@@ -37,6 +37,7 @@ RSpec.describe 'POST /signup', type: :request do
 
   context 'when signup params are incorrect' do
     let(:bad_params) { { user: { title: 'whatever ' } } }
+
     before { post '/signup', params: bad_params }
 
     it 'returns unprocessable entity' do

@@ -1,0 +1,19 @@
+version: "2"
+plugins:
+  rubocop:
+    enabled: true
+    channel: rubocop-1-18-3
+  bundler-audit:
+    enabled: true
+  fixme:
+    enabled: true
+  eslint:
+    enabled: true
+  flog:
+    enabled: true
+  editorconfig:
+    enabled: true
+  brakeman:
+    enabled: true
+  reek:
+    enabled: true

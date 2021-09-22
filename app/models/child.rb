@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # A child in care at businesses who need subsidy assistance
-# rubocop:disable Metrics/ClassLength
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
@@ -92,10 +91,10 @@ class Child < UuidApplicationRecord
   end
 
   def risk_calculation(date)
-    return 'not_enough_info' if date < halfway(date)
+    return 'not_enough_info' if date <= minimum_days_to_calculate(date)
 
-    scheduled_revenue = remaining_scheduled_revenue(date.at_beginning_of_month)
-    estimated_revenue = nebraska_estimated_revenue(date)
+    estimated_revenue = estimated_remaining_revenue(date)
+    scheduled_revenue = total_scheduled_revenue(date)
     ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
     risk_ratio_label(ratio)
   end
@@ -110,8 +109,8 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def halfway(date)
-    date.at_beginning_of_month + 14.days
+  def minimum_days_to_calculate(date)
+    date.in_time_zone(timezone).at_beginning_of_month + 9.days
   end
 
   def active_rate(date)
@@ -135,12 +134,6 @@ class Child < UuidApplicationRecord
       active_nebraska_approval_amount(date)&.family_fee || 0.00
     else
       temporary_nebraska_dashboard_case&.family_fee.to_f
-    end
-  end
-
-  def total_time_scheduled_this_month(date)
-    (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
     end
   end
 
@@ -169,24 +162,22 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_revenue(date)
-    attendances.non_absences.for_month(date).pluck(:earned_revenue).sum
+    non_absences = attendances&.non_absences&.for_month(date)
+    return 0 unless non_absences
+
+    non_absences.pluck(:earned_revenue).sum
   end
 
   def absence_revenue(date)
-    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition { |absence| absence.absence == 'absence' }
-    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum # only five absences are allowed per month in Nebraska
+    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition do |absence|
+      absence.absence == 'absence'
+    end
+    # only five absences are allowed per month in Nebraska
+    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum
   end
 
   def estimated_remaining_revenue(date)
     (earned_revenue_as_of_date(date) + remaining_scheduled_revenue(date))
-  end
-
-  def scheduled_hours_this_month(date)
-    schedules.active_on_date(date).reduce(0) do |sum, schedule|
-      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
-      hours = hours_by_duration(duration)
-      sum + (hours * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
-    end
   end
 
   def hours_by_duration(duration)
@@ -201,32 +192,48 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def scheduled_days_this_month(date)
-    schedules.active_on_date(date).reduce(0) do |sum, schedule|
-      duration = Tod::Shift.new(schedule.start_time, schedule.end_time).duration
-      days = duration > (5.hours + 45.minutes) ? 1 : 0
-      sum + (days * num_remaining_this_month(date.at_beginning_of_month, schedule.weekday))
+  def total_scheduled_revenue(date)
+    (0..6).reduce(0) do |sum, weekday|
+      sum + weekday_scheduled_rate_including_today(date.at_beginning_of_month, weekday)
     end
   end
 
   def remaining_scheduled_revenue(date)
     (0..6).reduce(0) do |sum, weekday|
-      sum + weekday_scheduled_rate(date, weekday)
+      if attendances.for_day(date).present? && weekday == date.wday
+        sum + weekday_scheduled_rate_excluding_today(date, weekday)
+      else
+        sum + weekday_scheduled_rate_including_today(date, weekday)
+      end
     end
   end
 
-  # TODO: these methods are duplicative and need to be moved to a concern so child and attendance can both use them [PIE-1529]
+  # TODO: these methods are duplicative and need to be moved to a
+  # concern so child and attendance can both use them [PIE-1529]
 
-  def weekday_scheduled_rate(date, weekday)
+  def weekday_scheduled_revenue(date, weekday)
     schedule_for_weekday = schedule(date, weekday)
     return 0 unless schedule_for_weekday
 
-    daily_revenue = if active_child_approval(date).special_needs_rate
-                      ne_special_needs_revenue(date, schedule_for_weekday)
-                    else
-                      ne_base_revenue(date, schedule_for_weekday)
-                    end
-    daily_revenue * num_remaining_this_month(date, weekday)
+    if active_child_approval(date).special_needs_rate
+      ne_special_needs_revenue(date, schedule_for_weekday)
+    else
+      ne_base_revenue(date, schedule_for_weekday)
+    end
+  end
+
+  def weekday_scheduled_rate_including_today(date, weekday)
+    weekday_scheduled_revenue(date, weekday) * DateService.remaining_days_in_month_including_today(date, weekday)
+  end
+
+  def weekday_scheduled_rate_excluding_today(date, weekday)
+    weekday_scheduled_revenue(date, weekday) * (DateService.remaining_days_in_month_including_today(date, weekday) - 1)
+  end
+
+  def total_time_scheduled_this_month(date)
+    (0..6).reduce(0) do |sum, weekday|
+      sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
+    end
   end
 
   def weekday_scheduled_duration(date, weekday)
@@ -234,14 +241,7 @@ class Child < UuidApplicationRecord
     return 0 unless schedule_for_weekday
 
     duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    duration * num_remaining_this_month(date, weekday)
-  end
-
-  def num_remaining_this_month(date, weekday)
-    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| weekday == day.wday }
-    return 0 unless num_remaining_this_month.positive?
-
-    date.wday == weekday && attendances.for_day(date).present? ? num_remaining_this_month - 1 : num_remaining_this_month
+    duration * DateService.remaining_days_in_month_including_today(date, weekday)
   end
 
   def schedule(date, weekday)
@@ -249,13 +249,15 @@ class Child < UuidApplicationRecord
   end
 
   def ne_hours(date, schedule_for_weekday)
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a service class
+    # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaHoursCalculator.new(self, date).round_hourly_to_quarters(scheduled_time.seconds)
   end
 
   def ne_days(date, schedule_for_weekday)
-    # TODO: this is super sloppy because this shouldn't be a service class but we haven't refactored these to procedures yet
+    # TODO: this is super sloppy because this shouldn't be a service class
+    # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaFullDaysCalculator.new(self, date).calculate_full_days_based_on_duration(scheduled_time.seconds)
   end
@@ -298,23 +300,30 @@ class Child < UuidApplicationRecord
   # NE dashboard full days calculator
   def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaFullDaysCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.full_days
+    if Rails.application.config.ff_ne_live_algorithms
+      NebraskaFullDaysCalculator.new(self, date).call
+    else
+      temporary_nebraska_dashboard_case&.full_days
+    end
   end
 
   # NE dashboard hours calculator
   def nebraska_hours(date)
     # feature flag for using live algorithms rather than uploaded data
-    Rails.application.config.ff_ne_live_algorithms ? NebraskaHoursCalculator.new(self, date).call : temporary_nebraska_dashboard_case&.hours.to_f
+    if Rails.application.config.ff_ne_live_algorithms
+      NebraskaHoursCalculator.new(self, date).call
+    else
+      temporary_nebraska_dashboard_case&.hours.to_f
+    end
   end
 
   # NE dashboard weekly used hours calculator
   def nebraska_weekly_hours_attended(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaWeeklyHoursAttendedCalculator.new(self,
-                                                date).call
+      NebraskaWeeklyHoursAttendedCalculator.new(self, date).call
     else
-      temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s # hacky workaround to be able to tell the dashboard blueprint to add 'of X' only to live algorithms
+      temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s
     end
   end
 
@@ -322,9 +331,11 @@ class Child < UuidApplicationRecord
 
   def find_or_create_approvals
     self.approvals = approvals.map do |approval|
-      Approval.find_or_create_by(case_number: approval.case_number,
-                                 effective_on: approval.effective_on,
-                                 expires_on: approval.expires_on)
+      Approval.find_or_create_by(
+        case_number: approval.case_number,
+        effective_on: approval.effective_on,
+        expires_on: approval.expires_on
+      )
     end
   end
 
@@ -345,7 +356,6 @@ class Child < UuidApplicationRecord
     RateAssociatorJob.perform_later(id)
   end
 end
-# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #

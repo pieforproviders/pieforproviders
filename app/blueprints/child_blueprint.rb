@@ -43,19 +43,20 @@ class ChildBlueprint < Blueprinter::Base
         '0 of 5'
       end
       # nebraska restricts absences to 5 allowed
-      # the csv imports for temporary dashboard cases will probably have "of 5" in their string, so we don't want it to duplicate
+      # the csv imports for temporary dashboard cases will
+      # probably have "of 5" in their string, so we don't want it to duplicate
     end
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
     end
     field :family_fee do |child, options|
-      format('%.2f', child.nebraska_family_fee(options[:filter_date]))
+      format('%.2f', child.nebraska_family_fee(options[:filter_date]))&.to_f
     end
     field :earned_revenue do |child, options|
-      format('%.2f', child.nebraska_earned_revenue(options[:filter_date]))
+      format('%.2f', child.nebraska_earned_revenue(options[:filter_date]))&.to_f
     end
     field :estimated_revenue do |child, options|
-      format('%.2f', child.nebraska_estimated_revenue(options[:filter_date]))
+      format('%.2f', child.nebraska_estimated_revenue(options[:filter_date]))&.to_f
     end
     field :full_days do |child, options|
       # Uses a feature flag in the child model methods

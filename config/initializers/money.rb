@@ -2,7 +2,6 @@
 
 # encoding : utf-8
 
-# rubocop:disable Style/AsciiComments
 MoneyRails.configure do |config|
   # To set the default currency
   #
@@ -114,6 +113,4 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.raise_error_on_money_parsing = false
-
-  # rubocop:enable Style/AsciiComments
 end

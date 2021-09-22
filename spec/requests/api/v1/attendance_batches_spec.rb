@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:non_owner_child) { create(:necc_child) }
 
   describe 'POST /api/v1/attendance_batches' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     before do
       sign_in logged_in_user
@@ -156,7 +156,8 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(effective_date + 15.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
+                # attendance on a Sunday, not a default scheduled day
+                check_in: prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               }
@@ -195,12 +196,14 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             attendance_batch:
             [
               {
-                check_in: prior_weekday(effective_date + 30.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
+                # attendance on a Sunday, not a default scheduled day
+                check_in: prior_weekday(effective_date + 30.days, 0).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(effective_date + 15.days, 0).to_s, # attendance on a Sunday, not a default scheduled day
+                # attendance on a Sunday, not a default scheduled day
+                check_in: prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               }
@@ -248,7 +251,8 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['meta']['errors']).to be_present
           expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_approval_id'])
-          expect(parsed_response['meta']['errors'].values.flatten[0]).to include('has no active approval for attendance date')
+          expect(parsed_response['meta']['errors'].values.flatten[0])
+            .to include('has no active approval for attendance date')
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -261,7 +265,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         first_input_object, second_input_object = valid_batch[:attendance_batch]
 
         # TODO: this seemed flaky but I can't reproduce right now?
-        # binding.pry if [first_parsed_response_object, second_parsed_response_object, first_input_object, second_input_object].map(&:nil?).any?
+        # binding.pry if [
+        #   first_parsed_response_object,
+        #   second_parsed_response_object,
+        #   first_input_object,
+        #   second_input_object
+        # ].map(&:nil?).any?
 
         expect(DateTime.parse(first_parsed_response_object['check_in']))
           .to be_within(1.second)
@@ -404,7 +413,8 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
         expect(parsed_response['meta']['errors']).to be_present
         expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_id'])
-        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("not allowed to create an attendance for child #{non_owner_child.id}")
+        expect(parsed_response['meta']['errors'].values.flatten[0])
+          .to eq("not allowed to create an attendance for child #{non_owner_child.id}")
         expect(response).to match_response_schema('attendance_batch')
       end
     end

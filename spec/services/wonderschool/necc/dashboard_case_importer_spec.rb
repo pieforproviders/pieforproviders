@@ -12,7 +12,9 @@ module Wonderschool
 
       let!(:dashboard_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
-      let!(:missing_field_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv')) }
+      let!(:missing_field_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_dashboard_data_missing_field.csv'))
+      end
       let!(:parsed_valid_csv) { CsvParser.new(dashboard_csv).call }
 
       let!(:business) { create(:business, name: 'Test Day Care') }
@@ -35,7 +37,7 @@ module Wonderschool
           end
 
           it 'creates dashboard records for every row in the file, idempotently' do
-            expect { described_class.new.call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(3)
+            expect { described_class.new.call }.to change(TemporaryNebraskaDashboardCase, :count).from(0).to(3)
             expect { described_class.new.call }.not_to change(TemporaryNebraskaDashboardCase, :count)
           end
 
@@ -63,7 +65,7 @@ module Wonderschool
           allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
           first_child.destroy!
           children = [first_child, second_child, third_child]
-          expect { described_class.new.call }.to change { TemporaryNebraskaDashboardCase.count }.from(0).to(2)
+          expect { described_class.new.call }.to change(TemporaryNebraskaDashboardCase, :count).from(0).to(2)
           expect { described_class.new.call }.not_to change(TemporaryNebraskaDashboardCase, :count)
           children.each_with_index do |child, idx|
             next if idx == 0 # we deleted the first kid!

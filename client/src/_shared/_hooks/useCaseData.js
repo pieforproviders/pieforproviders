@@ -20,7 +20,6 @@ export function useCaseData() {
                   tag: childCase.attendance_risk ?? ''
                 },
                 hours: childCase.hours ?? '',
-                transportationRevenue: childCase.transportation_revenue ?? '',
                 hoursAttended: childCase.hours_attended ?? '',
                 familyFee: childCase.family_fee ?? '',
                 active: childCase.active ?? true
