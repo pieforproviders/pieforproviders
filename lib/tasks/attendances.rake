@@ -28,9 +28,7 @@ def active_child_approval
 end
 
 def current_approval_amounts
-  if @child.state == 'NE'
-    puts 'No attendance logic for Nebraska has been implemented'
-  else
+  if @child.state == 'IL'
     active_child_approval.illinois_approval_amounts.find_by('month = ?', now.beginning_of_month)
   end
 end
@@ -101,8 +99,8 @@ end
 
 def generate_nebraska_attendance
   # create a random number of attendances based on their schedule
-  rand(0..(weeks_to_populate.to_i)).times do |week|
-    @child.schedules.each do |_schedule|
+  weeks_to_populate.to_i.times do |week|
+    @child.schedules.each do
       rand(0..1) == 1 ? add_attendance('full_day_ne', week) : add_attendance('hourly_ne', week)
     end
   end
