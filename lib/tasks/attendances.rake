@@ -28,9 +28,7 @@ def active_child_approval
 end
 
 def current_approval_amounts
-  if @child.state == 'IL'
-    active_child_approval.illinois_approval_amounts.find_by('month = ?', now.beginning_of_month)
-  end
+  active_child_approval.illinois_approval_amounts.find_by('month = ?', now.beginning_of_month) if @child.state == 'IL'
 end
 
 def weeks_to_populate
