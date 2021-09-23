@@ -176,6 +176,7 @@ export function AttendanceView() {
               className="absolute"
               style={{ right: '3rem' }}
               onClick={() => history.push('/attendance/edit')}
+              data-cy="inputAttendance"
             >
               {t('inputAttendance')}
             </Button>

@@ -6,7 +6,10 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 export function WeekPicker({ dateSelected, handleDateChange }) {
   return (
     <div>
-      <Button onClick={() => handleDateChange(dateSelected.weekday(-7))}>
+      <Button
+        onClick={() => handleDateChange(dateSelected.weekday(-7))}
+        data-cy="backWeekButton"
+      >
         <LeftOutlined />
       </Button>
       <Button
@@ -20,7 +23,10 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
           ' - ' +
           dateSelected.weekday(6).format('MMM D, YYYY')}
       </Button>
-      <Button onClick={() => handleDateChange(dateSelected.weekday(7))}>
+      <Button
+        onClick={() => handleDateChange(dateSelected.weekday(7))}
+        data-cy="forwardWeekButton"
+      >
         <RightOutlined />
       </Button>
     </div>
