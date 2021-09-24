@@ -6,7 +6,7 @@ import {
   Switch,
   useLocation
 } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
@@ -28,17 +28,14 @@ const env = runtimeEnv()
 
 const Routes = () => {
   const { t } = useTranslation()
+  const { initHotjar } = useHotjar()
   const isAuthenticated = useAuthentication()
-  const user = useSelector(state => state.user)
   let location = useLocation()
 
   useEffect(() => {
-    if (!window.gtag) return
-    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
-      page_path: location.pathname,
-      user_id: user.id ?? ''
-    })
-  }, [location, user])
+    initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div

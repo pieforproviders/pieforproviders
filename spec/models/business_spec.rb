@@ -3,14 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Business, type: :model do
-  it { should belong_to(:user) }
-  it { should validate_presence_of(:name) }
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_inclusion_of(:qris_rating).in_array(Business::QRIS_RATINGS) }
 
   it_behaves_like 'licenses'
 
   it 'validates uniqueness of business name' do
-    create(:business)
-    should validate_uniqueness_of(:name).scoped_to(:user_id)
+    business = create(:business)
+    expect(business).to validate_uniqueness_of(:name).scoped_to(:user_id)
   end
 
   it 'factory should be valid (default; no args)' do
@@ -24,6 +25,22 @@ RSpec.describe Business, type: :model do
     business.children.each { |child| child.update(active: false) }
     business.update(active: false)
     expect(business.errors.messages[:active]).not_to be_present
+  end
+
+  describe '#ne_qris_bump' do
+    it 'uses the accredited bump if the business is accredited' do
+      business = create(:business, :nebraska, :accredited, :step_five)
+      expect(business.ne_qris_bump).to eq(1.05**2)
+      business.update!(accredited: false)
+      expect(business.ne_qris_bump).to eq(1.05**3)
+    end
+
+    it 'uses the correct qris_rating' do
+      business = create(:business, :nebraska, :accredited, :step_five)
+      expect(business.ne_qris_bump).to eq(1.05**2)
+      business.update!(qris_rating: 'not_rated')
+      expect(business.ne_qris_bump).to eq(1.05**0)
+    end
   end
 end
 

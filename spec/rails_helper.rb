@@ -115,7 +115,7 @@ RSpec.configure do |config|
 
   # start by truncating all the tables, but then use the faster transaction strategy
   config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
-  config.before(:each) do |example|
+  config.before do |example|
     DatabaseCleaner.strategy = if example.metadata[:use_truncation]
                                  :truncation
                                else
@@ -125,7 +125,7 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.append_after(:each) { DatabaseCleaner.clean }
+  config.append_after { DatabaseCleaner.clean }
 end
 
 # configure shoulda matchers to use rspec as the test framework and full matcher libraries for rails

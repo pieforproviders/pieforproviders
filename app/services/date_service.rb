@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Date helpers for date math and providing values for dropdowns
+# Date helpers for date math
 class DateService
   # how many weeks have days that count as part of this month?
   # i.e. Jan 2021:
@@ -20,5 +20,10 @@ class DateService
   # a better idea of how this works in practice
   def self.weeks_in_month(date)
     (date.to_date.all_month.count / 7.0).ceil
+  end
+
+  def self.remaining_days_in_month_including_today(date, day_of_week)
+    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| day_of_week == day.wday }
+    num_remaining_this_month.positive? ? num_remaining_this_month : 0
   end
 end

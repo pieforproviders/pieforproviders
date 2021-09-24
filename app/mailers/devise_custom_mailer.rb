@@ -6,29 +6,22 @@ class DeviseCustomMailer < Devise::Mailer
   default template_path: 'devise/mailer' # to make sure that your mailer uses the devise views
   layout 'mailer'
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def confirmation_instructions(record, token, opts = {})
     @greeting_name = record.greeting_name
-    @token = token
-    @confirmation_path = confirmation_path
-    opts[:subject] = I18n.t('mailers.confirmation_instructions.subject')
+    @confirmation_path = confirmation_path(token)
     @reply_subject = 'Pie for Providers: question after signup'
-    @body = I18n.t('mailers.confirmation_instructions.body')
-    @hello = I18n.t('hello')
-    @questions = I18n.t('mailers.confirmation_instructions.questions')
     @sender = Devise.mailer_sender
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    opts[:subject] = I18n.t('mailers.confirmation_instructions.subject')
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def reset_password_instructions(record, token, opts = {})
-    @token = token
     @greeting_name = record.greeting_name
-    @password_update_path = password_update_path
+    @password_update_path = password_update_path(token)
 
     opts[:subject] = I18n.t('mailers.reset_password_instructions.subject')
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
 
@@ -36,18 +29,22 @@ class DeviseCustomMailer < Devise::Mailer
     @greeting_name = record.greeting_name
 
     opts[:subject] = I18n.t('mailers.password_change.subject')
-    attachments.inline['pielogo.png'] = File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    attachments.inline['pielogo.png'] = pie_logo
     super
   end
 
   private
 
-  def confirmation_path
-    "#{domain}/confirm?confirmation_token=#{@token}"
+  def confirmation_path(token)
+    "#{domain}/confirm?confirmation_token=#{token}"
   end
 
-  def password_update_path
-    "#{domain}/password/update?reset_password_token=#{@token}"
+  def pie_logo
+    File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+  end
+
+  def password_update_path(token)
+    "#{domain}/password/update?reset_password_token=#{token}"
   end
 
   def domain

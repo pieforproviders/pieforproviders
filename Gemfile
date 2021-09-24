@@ -13,12 +13,12 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 2.0'
+gem 'good_job', '~> 2.2'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
-gem 'puma', '~> 5.4'
+gem 'puma', '~> 5.5'
 gem 'pundit', '~> 2.1'
 gem 'rails', '~> 6.1.4'
 gem 'tod'
@@ -45,6 +45,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
+  gem 'rubocop-rspec'
 end
 
 group :development do
@@ -54,6 +55,7 @@ group :development do
   gem 'listen', '>= 3.0.5', '< 3.8'
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
+  gem 'solargraph'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
@@ -67,5 +69,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
-
-gem 'mocha', group: :test

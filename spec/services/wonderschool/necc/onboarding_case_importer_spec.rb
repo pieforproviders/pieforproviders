@@ -8,45 +8,47 @@ module Wonderschool
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
-      let!(:stubbed_client) { double('AwsClient') }
+      let!(:stubbed_client) { instance_double(AwsClient) }
+      let!(:stubbed_aws_s3_client) { instance_double(Aws::S3::Client, delete_object: nil) }
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
-      let!(:missing_field_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv')) }
+      let!(:missing_field_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
+      end
 
       let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }
       let!(:second_user) { create(:confirmed_user, email: 'kate@kate.com') }
 
-      before(:each) do
-        travel_to Date.parse('May 20th, 2021') # this lands us in the 'effective' period for all the approvals in the CSV fixture
+      before do
+        # this lands us in the 'effective' period for all the approvals in the CSV fixture
+        travel_to Date.parse('May 20th, 2021')
         allow(Rails.application.config).to receive(:aws_necc_onboarding_bucket) { source_bucket }
         allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }
         allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
       end
 
-      after(:each) do
-        travel_back
-      end
+      after { travel_back }
 
       describe '#call' do
         context 'with valid data' do
-          before(:each) do
+          before do
             allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
             allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
           end
 
           it 'creates case records for every row in the file, idempotently' do
             expect { described_class.new.call }
-              .to change { Child.count }
+              .to change(Child, :count)
               .from(0).to(5)
-              .and change { Business.count }
+              .and change(Business, :count)
               .from(0).to(2)
-              .and change { ChildApproval.count }
+              .and change(ChildApproval, :count)
               .from(0).to(5)
-              .and change { Approval.count }
+              .and change(Approval, :count)
               .from(0).to(3)
-              .and change { NebraskaApprovalAmount.count }
+              .and change(NebraskaApprovalAmount, :count)
               .from(0).to(6)
             expect { described_class.new.call }
               .to not_change(Child, :count)
@@ -71,7 +73,7 @@ module Wonderschool
                 name: "Rebecca's Childcare",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'Step 4',
+                qris_rating: 'step_four',
                 accredited: true
               }
             )
@@ -115,7 +117,7 @@ module Wonderschool
                 name: "Kate's Kids",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'Step 5',
+                qris_rating: 'step_five',
                 accredited: false
               }
             )
@@ -167,7 +169,7 @@ module Wonderschool
             described_class.new.call
             expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
             expect(Child.find_by(full_name: 'Becky Falzone')).to be_present
-            expect(stubbed_client).not_to receive(:delete_object)
+            expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
           end
 
           it 'continues processing if the record is invalid or missing a required field' do

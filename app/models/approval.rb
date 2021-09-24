@@ -19,12 +19,19 @@ class Approval < UuidApplicationRecord
   enum copay_frequency: Copays.frequencies
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
-  scope :active_on_date, ->(date) { where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc) }
+  scope :active_on_date,
+        lambda { |date|
+          where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
+        }
 
   monetize :copay_cents, allow_nil: true
 
   def timezone
     children.first.timezone
+  end
+
+  def child_with_most_scheduled_hours(filter_date)
+    children.max_by { |child| child.total_time_scheduled_this_month(filter_date) }
   end
 end
 

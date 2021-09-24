@@ -4,6 +4,7 @@
 class ApplicationController < ActionController::API
   before_action :set_appsignal_context
   before_action :set_locale
+  before_action :set_user_time_zone
   around_action :collect_metrics
 
   def render_resource(resource)
@@ -21,7 +22,8 @@ class ApplicationController < ActionController::API
       errors: resource.errors.details,
       detail: resource.errors,
       code: '100'
-    }, status: :unprocessable_entity
+    },
+           status: :unprocessable_entity
   end
 
   private
@@ -39,9 +41,9 @@ class ApplicationController < ActionController::API
   end
 
   def collect_metrics
-    start = Time.zone.now
+    start = Time.current
     yield
-    duration = Time.zone.now - start
+    duration = Time.current - start
     Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
   end
 
@@ -55,5 +57,9 @@ class ApplicationController < ActionController::API
 
   def accept_lang_header
     request.headers['Accept-Language'].presence || ''
+  end
+
+  def set_user_time_zone
+    Time.zone = current_user.timezone if current_user.present?
   end
 end

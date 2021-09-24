@@ -3,13 +3,18 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
-  let!(:single_child_family) { create(:child) }
-  let!(:multiple_child_family_approval) { create(:approval, create_children: false) }
-  let!(:multiple_child_family) { create_list(:child, 2, approvals: [multiple_child_family_approval]) }
+  let!(:multiple_child_family_approval) do
+    create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil))
+  end
+  let!(:single_child_family_approval) do
+    create(:approval, create_children: false, effective_on: Date.parse('December 1st, 2020', expires_on: nil))
+  end
+  let!(:single_child_family) { create(:child, approvals: [single_child_family_approval]) }
 
   # TODO: change this to #call describe and break down contexts
   describe '#call' do
     before do
+      create_list(:child, 2, approvals: [multiple_child_family_approval])
       travel_to Date.parse('December 11th, 2020')
       create(:illinois_approval_amount,
              part_days_approved_per_week: 2,
@@ -26,6 +31,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
         create_list(:illinois_part_day_attendance, 3, child_approval: child.child_approvals.first)
       end
     end
+
     after { travel_back }
 
     it 'calculates the rate correctly for single-child families and multiple-child families' do

@@ -11,12 +11,10 @@ RSpec.describe 'Api::V1::Children', type: :request do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   describe 'GET /api/v1/children' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
       it "returns the user's children" do
         get '/api/v1/children', headers: headers
@@ -27,10 +25,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
 
       it "returns all users' children" do
         get '/api/v1/children', headers: headers
@@ -43,12 +39,10 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'GET /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
       it "returns the user's child" do
         get "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -63,10 +57,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
 
       it "returns the user's child" do
         get "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -85,7 +77,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'POST /api/v1/children' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params) do
       {
@@ -99,10 +91,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
     let(:params_without_business) { { child: params[:child].except(:business_id) } }
 
-    context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
       it "creates a child for that user's business" do
         post '/api/v1/children', params: params, headers: headers
@@ -112,9 +102,11 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('child')
       end
 
-      context 'for nebraska' do
+      context 'when logged in as a nebraska user' do
         let(:nebraska_business) { create(:business, :nebraska, user: create(:confirmed_user)) }
+
         before { sign_in nebraska_business.user }
+
         it "creates a child for that user's business" do
           params[:child][:business_id] = nebraska_business.id
           post '/api/v1/children', params: params, headers: headers
@@ -197,7 +189,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
           expect(response).to match_response_schema('child')
         end
 
-        it 'creates exactly the number of approval amounts passed, if more than 1 and less than 12 months are present' do
+        it 'creates exactly the number of approval amounts passed when the number is between 1 and 12' do
           post '/api/v1/children', params: some_month_amounts, headers: headers
           expect(response.status).to eq(201)
           json = JSON.parse(response.body)
@@ -211,10 +203,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
 
       it 'creates a child for the passed business' do
         post '/api/v1/children', params: params, headers: headers
@@ -232,7 +222,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'PUT /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
     let(:params) do
       {
@@ -242,10 +232,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       }
     end
 
-    context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
       it "updates the user's child" do
         put "/api/v1/children/#{user_children.first.id}", params: params, headers: headers
@@ -271,10 +259,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
 
       it "updates the user's child" do
         put "/api/v1/children/#{user_children.first.id}", params: params, headers: headers
@@ -295,12 +281,10 @@ RSpec.describe 'Api::V1::Children', type: :request do
   end
 
   describe 'DELETE /api/v1/children/:id' do
-    include_context 'correct api version header'
+    include_context 'with correct api version header'
 
-    context 'for non-admin user' do
-      before do
-        sign_in logged_in_user
-      end
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers
@@ -309,10 +293,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
     end
 
-    context 'for admin user' do
-      before do
-        sign_in admin_user
-      end
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers

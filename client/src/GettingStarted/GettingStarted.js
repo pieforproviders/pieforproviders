@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Card, Typography } from 'antd'
+import useHotjar from 'react-use-hotjar'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import Icon from '@material-ui/core/Icon'
 import AssignmentIcon from '@material-ui/icons/Assignment'
@@ -17,6 +18,7 @@ import { setUser } from '_reducers/userReducer'
 
 export function GettingStarted() {
   const dispatch = useDispatch()
+  const { identifyHotjar } = useHotjar()
   const { token, user } = useSelector(state => ({
     token: state.auth.token,
     user: state.user
@@ -37,6 +39,7 @@ export function GettingStarted() {
       if (response.ok) {
         const resp = await response.json()
         dispatch(setUser(resp))
+        identifyHotjar(resp.id ?? null)
       }
     }
 

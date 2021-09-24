@@ -31,35 +31,50 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :nebraska_dashboard do
-    field :attendance_risk do |child|
-      child.temporary_nebraska_dashboard_case&.attendance_risk
+    field :attendance_risk do |child, options|
+      child.attendance_risk(options[:filter_date])
     end
-    field :absences do |child|
-      child.temporary_nebraska_dashboard_case&.absences
+    field :absences do |child, options|
+      # Uses a feature flag in the child model methods
+      absences = child.absences(options[:filter_date])
+      if absences
+        absences.to_s.include?('of') ? absences : "#{absences} of 5"
+      else
+        '0 of 5'
+      end
+      # nebraska restricts absences to 5 allowed
+      # the csv imports for temporary dashboard cases will
+      # probably have "of 5" in their string, so we don't want it to duplicate
     end
     field :case_number do |child, options|
       child.approvals.active_on_date(options[:filter_date]).first&.case_number
     end
     field :family_fee do |child, options|
-      child.nebraska_family_fee(options[:filter_date])
+      format('%.2f', child.nebraska_family_fee(options[:filter_date]))&.to_f
     end
-    field :earned_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.earned_revenue&.to_f || 0.0
+    field :earned_revenue do |child, options|
+      format('%.2f', child.nebraska_earned_revenue(options[:filter_date]))&.to_f
     end
-    field :estimated_revenue do |child|
-      child.temporary_nebraska_dashboard_case&.estimated_revenue&.to_f || 0.0
+    field :estimated_revenue do |child, options|
+      format('%.2f', child.nebraska_estimated_revenue(options[:filter_date]))&.to_f
     end
     field :full_days do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_full_days(options[:filter_date])&.to_s
+      child.nebraska_full_days(options[:filter_date])&.to_f&.to_s
     end
     field :hours do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_hours(options[:filter_date])&.to_f.to_s
+      child.nebraska_hours(options[:filter_date])&.to_f&.to_s
     end
     field :hours_attended do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_weekly_hours_attended(options[:filter_date])&.to_s
+      authorized_weekly_hours = child.active_child_approval(options[:filter_date]).authorized_weekly_hours
+      hours_attended = child.nebraska_weekly_hours_attended(options[:filter_date])
+      if hours_attended.respond_to?(:positive?) && hours_attended >= 0
+        "#{hours_attended} of #{authorized_weekly_hours}"
+      else
+        hours_attended&.to_s
+      end
     end
   end
 end

@@ -18,8 +18,8 @@ APR_1 = Date.new(THIS_YEAR, 4, 1)
 JUN_30 = Date.new(THIS_YEAR, 6, 30)
 
 # minimum birthdates (ages)
-MIN_BIRTHDAY = (Time.zone.now - 2.weeks)
-MAX_BIRTHDAY = (Time.zone.now - 14.years)
+MIN_BIRTHDAY = (Time.current - 2.weeks)
+MAX_BIRTHDAY = (Time.current - 14.years)
 
 # Use puts to show the number of records in the database for a given class
 def puts_records_in_db(klass)
@@ -190,13 +190,16 @@ def create_case(full_name,
     end
     
     start_time = Tod::TimeOfDay.new(rand(0..10), ((rand(0..59) / 15.0).floor * 15))
+    effective_on = Faker::Date.between(from: 8.months.ago, to: 4.months.ago)
 
-    Schedule.find_or_initialize_by(child: child).update!(
-      effective_on: Faker::Date.between(from: 8.months.ago, to: 4.months.ago),
-      end_time: start_time + rand(start_time.hour..23).hours,
-      start_time: start_time,
-      weekday: rand(0..6)
-    )
+    5.times do |idx|
+      Schedule.find_or_initialize_by(child: child).update!(
+        effective_on: effective_on,
+        end_time: start_time + rand(start_time.hour..23).hours,
+        start_time: start_time,
+        weekday: idx + 1
+      )
+    end
 
     TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
       attendance_risk: %w[on_track exceeded_limit at_risk].sample,

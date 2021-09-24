@@ -3,12 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe ChildApproval, type: :model do
-  it { should belong_to(:child) }
-  it { should belong_to(:approval) }
-  it { should belong_to(:rate).optional }
-  it { should have_many(:illinois_approval_amounts).dependent(:destroy) }
-  it { should have_many(:nebraska_approval_amounts).dependent(:destroy) }
-  it { should have_many(:attendances).dependent(:destroy) }
+  it { is_expected.to belong_to(:child) }
+  it { is_expected.to belong_to(:approval) }
+  it { is_expected.to belong_to(:rate).optional }
+  it { is_expected.to have_many(:illinois_approval_amounts).dependent(:destroy) }
+  it { is_expected.to have_many(:nebraska_approval_amounts).dependent(:destroy) }
+  it { is_expected.to have_many(:attendances).dependent(:destroy) }
+
   it 'factory should be valid (default; no args)' do
     expect(build(:child_approval)).to be_valid
   end
