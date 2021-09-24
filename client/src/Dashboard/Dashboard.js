@@ -53,7 +53,7 @@ export function Dashboard() {
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
-    if (user.state === 'NE' && totals.earnedRevenueTotal >= 0) {
+    if (user.state === 'NE') {
       return [
         {
           title: t('earnedRevenue'),
@@ -68,35 +68,35 @@ export function Dashboard() {
             totals.estimatedRevenueTotal.toFixed()
           )}`,
           definition: t(`estimatedRevenueDef`)
-        },
-        {
-          title: t(`maxRevenue`),
-          stat: `${
-            totals.maxRevenueTotal === 'n/a'
-              ? totals.maxRevenueTotal
-              : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
-          }`,
-          definition: t(`comingSoon`)
-        },
-        [
-          {
-            title: t(`totalApproved`),
-            stat: `${
-              totals.totalApprovedTotal === 'n/a'
-                ? totals.totalApprovedTotal
-                : currencyFormatter.format(totals.totalApprovedTotal.toFixed())
-            }`,
-            definition: t(`comingSoon`)
-          },
-          {
-            title: t(`totalApprovedWithFamilyFee`),
-            stat: 'n/a',
-            // `${currencyFormatter.format(
-            //   totals.totalApprovedRevenueWithFamilyFeeTotal.toFixed()
-            // )}`
-            definition: t(`comingSoon`)
-          }
-        ]
+        }
+        // {
+        //   title: t(`maxRevenue`),
+        //   stat: `${
+        //     totals.maxRevenueTotal === 'n/a'
+        //       ? totals.maxRevenueTotal
+        //       : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
+        //   }`,
+        //   definition: t(`comingSoon`)
+        // },
+        // [
+        //   {
+        //     title: t(`totalApproved`),
+        //     stat: `${
+        //       totals.totalApprovedTotal === 'n/a'
+        //         ? totals.totalApprovedTotal
+        //         : currencyFormatter.format(totals.totalApprovedTotal.toFixed())
+        //     }`,
+        //     definition: t(`comingSoon`)
+        //   },
+        //   {
+        //     title: t(`totalApprovedWithFamilyFee`),
+        //     stat: 'n/a',
+        //     // `${currencyFormatter.format(
+        //     //   totals.totalApprovedRevenueWithFamilyFeeTotal.toFixed()
+        //     // )}`
+        //     definition: t(`comingSoon`)
+        //   }
+        // ]
       ]
     } else if (totals.guaranteedRevenueTotal >= 0) {
       return [
