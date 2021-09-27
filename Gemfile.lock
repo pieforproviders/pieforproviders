@@ -141,7 +141,7 @@ GEM
       concurrent-ruby (~> 1.0)
     e2mmap (0.1.0)
     erubi (1.10.0)
-    et-orbi (1.2.4)
+    et-orbi (1.2.5)
       tzinfo
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
@@ -152,12 +152,12 @@ GEM
       i18n (>= 1.6, < 2)
     ffi (1.15.3)
     formatador (0.2.5)
-    fugit (1.5.1)
+    fugit (1.5.2)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     globalid (0.5.2)
       activesupport (>= 5.0)
-    good_job (2.2.0)
+    good_job (2.3.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -415,7 +415,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  good_job (~> 2.2)
+  good_job (~> 2.3)
   guard-rspec
   hash_dig_and_collect
   holidays
