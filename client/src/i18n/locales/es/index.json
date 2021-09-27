@@ -221,5 +221,9 @@
   "addAnotherDate": "Otra fecha",
   "success": "¡Registro exitoso!",
   "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
-  "gotToDashboard": "Ir al panel principal"
+  "gotToDashboard": "Ir al panel principal",
+  "recordDropdown": "Anotar nuevo",
+  "recordPaymentButton": "Pago",
+  "recordAPayment": "Anota un pago",
+  "recordAChildsPayment": "Anota el pago de cada niño para chequear si haya contradicciones"
 }

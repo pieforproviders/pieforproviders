@@ -221,5 +221,9 @@
   "addAnotherDate": "Add another date",
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
-  "gotToDashboard": "Go to dashboard"
+  "gotToDashboard": "Go to dashboard",
+  "recordDropdown": "Record new",
+  "recordPaymentButton": "Payment",
+  "recordAPayment": "Record a payment",
+  "recordAChildsPayment": "Record each child's payment to check if there are any inconsistencies"
 }

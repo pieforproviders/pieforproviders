@@ -47,7 +47,10 @@ spec/cypress/screenshots
 
 # yarn releases
 .yarn
+.yarnrc
 
 Dockerfile
 init.sql
 .docker-env/development/database
+
+.idea/
