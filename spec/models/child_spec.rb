@@ -225,17 +225,17 @@ RSpec.describe Child, type: :model do
     it 'returns an active approval for a specific date' do
       current_approval = child.approvals.first
       expect(child.active_approval(Time.current)).to eq(current_approval)
-      expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, children: [child])
+      expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
+      child.approvals << expired_approval
       expect(child.active_approval(Time.current - 2.years - 6.months)).to eq(expired_approval)
     end
 
     it 'returns an active child_approval for a specific date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current)).to eq(current_child_approval)
-      expired_child_approval = create(:approval,
-                                      effective_on: 3.years.ago,
-                                      expires_on: 2.years.ago,
-                                      children: [child]).child_approvals.where(child: child).first
+      expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
+      child.approvals << expired_approval
+      expired_child_approval = expired_approval.child_approvals.where(child: child).first
       expect(child.active_child_approval(Time.current - 2.years - 6.months)).to eq(expired_child_approval)
     end
   end
@@ -243,12 +243,9 @@ RSpec.describe Child, type: :model do
   describe 'attendance methods' do
     it 'returns all attendances regardless of approval date' do
       current_child_approval = child.approvals.first.child_approvals.where(child: child).first
-      expired_child_approval = create(
-        :approval,
-        effective_on: 3.years.ago,
-        expires_on: 2.years.ago,
-        children: [child]
-      ).child_approvals.where(child: child).first
+      expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
+      child.approvals << expired_approval
+      expired_child_approval = expired_approval.child_approvals.where(child: child).first
       current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
       expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
       expect(child.attendances.pluck(:id))
