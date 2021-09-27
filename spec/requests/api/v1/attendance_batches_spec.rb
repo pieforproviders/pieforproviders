@@ -5,22 +5,24 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:business) { create(:business, :nebraska, user: logged_in_user) }
-  let!(:children) { create_list(:necc_child, 3, business: business) }
+  let!(:approval) { create(:approval, num_children: 3, business: business) }
+  let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }
 
-  describe 'POST /api/v1/attendance_batches' do
-    include_context 'with correct api version header'
+  include_context 'with correct api version header'
 
-    before do
-      sign_in logged_in_user
-      children.each(&:reload) # triggers changes as a result of the callbacks in the model
-      non_owner_child.reload # triggers changes as a result of the callbacks in the model
-    end
+  before do
+    sign_in logged_in_user
+    children.each(&:reload) # triggers changes as a result of the callbacks in the model
+    non_owner_child.reload # triggers changes as a result of the callbacks in the model
+  end
+
+  describe 'POST /api/v1/attendance_batches' do
+    let!(:effective_date) { children[0].schedules.first.effective_on.in_time_zone(children[0].timezone) }
 
     context 'when sent with an absence string' do
       context 'with a permitted absence type' do
         let(:valid_absence_batch) do
-          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
@@ -70,7 +72,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with a non-permitted absence type on one record' do
         let(:single_invalid_absence_batch) do
-          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
@@ -114,7 +115,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with a non-permitted absence type on all records' do
         let(:all_invalid_absence_batch) do
-          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
@@ -146,7 +146,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with an absence on a non-scheduled day on one record' do
         let(:single_non_scheduled_absence_batch) do
-          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
@@ -191,7 +190,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
       context 'with an absence on a non-scheduled day on all records' do
         let(:all_non_scheduled_absence_batch) do
-          effective_date = children[0].schedules.first.effective_on.in_time_zone(children[0].timezone)
           {
             attendance_batch:
             [
