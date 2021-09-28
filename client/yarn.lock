@@ -36,28 +36,28 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
-"@appsignal/core@=1.1.10":
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.10.tgz#07af1d6c04131415079af5937621761cf0c4624f"
-  integrity sha512-iUQIL6l96GUErmk+WDYxDJWiCVDgNKTgkY72/SXLg1A+aOH320D6PM3Vts4LdVhCSXzviTix7i2PDwjbpD+q0A==
+"@appsignal/core@=1.1.11":
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.11.tgz#dd361b1130ec6b0f4516beabd98813bd045ea9a6"
+  integrity sha512-k3/JXDm8W7Uvz9Jr+esnxZyrDmHeHY6BiivFpIBndxTQd9eGoXHGyws3o+POoNjyFIruZ8mPijsvJ+w8XtZdVg==
   dependencies:
-    "@appsignal/types" "=2.1.2"
+    "@appsignal/types" "=2.1.3"
     isomorphic-unfetch "^3.1.0"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.15":
-  version "1.3.15"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.15.tgz#67fb3e57f227488c2ad72830fe819b491ee31be9"
-  integrity sha512-MigJqY0vgTIMFQ0e3oIT8PQgofH3Xv2jKn9bh5qsij3/a9152W76QL+a+Jd9IcqAMDxSq3NbJ/UnyUwRvFDT/A==
+"@appsignal/javascript@^1.3.16":
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.16.tgz#9b7c3b2a1204bfcae3588329d4b689649088e960"
+  integrity sha512-g8RD9Bm3wadmMuZon74VAViRpRDEwDaPYRmqXqEKs/W7DvoQvIYxOpfxY7ao4W1NTmiqHKg+C0VE3Oqs9AErHw==
   dependencies:
-    "@appsignal/core" "=1.1.10"
-    "@appsignal/types" "=2.1.2"
+    "@appsignal/core" "=1.1.11"
+    "@appsignal/types" "=2.1.3"
     tslib "^2.3.0"
 
-"@appsignal/types@=2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.2.tgz#7763e43c7b42dcad40938349e22839a06b44e732"
-  integrity sha512-cxBCFTJPfwxo6MkUuJnVOroAS44L/81I4ap+0OXOajEFaKYLsYsjR5wLH6UA/XYiSi4LdKRq3Tba88moq2ewSg==
+"@appsignal/types@=2.1.3":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.3.tgz#55cae78de1c79957f73090f494abf5ef59959f57"
+  integrity sha512-slMFN+nhFr8jnhTbE+vNsHKd4VrUrtv7RCuYnHn5ataGI8BD75YMWBcwqwQD/0NZlVUuvbDlS0G6M+JzZUN/AA==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
@@ -2133,10 +2133,10 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
-"@testing-library/react@^12.1.0":
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-12.1.0.tgz#3e9a4002b0b8f986a738a2f88fc458b5af319f35"
-  integrity sha512-Ge3Ht3qXE82Yv9lyPpQ7ZWgzo/HgOcHu569Y4ZGWcZME38iOFiOg87qnu6hTEa8jTJVL7zYovnvD3GE2nsNIoQ==
+"@testing-library/react@^12.1.1":
+  version "12.1.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-12.1.1.tgz#e693943aa48d0190099acdc3928a751d73bcf7d5"
+  integrity sha512-JDyWbvMuedEpP6SPL4Cvbhk59TVxQ3pwuR6ZfJHdRsHuxDd/ziSMA3nVM3fViaSbsQhuQFE/mvFrPrvQbL5kRQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.0.0"
@@ -3163,15 +3163,15 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-autoprefixer@^10.3.5:
-  version "10.3.5"
-  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.3.5.tgz#762e6c13e30c5a0e650bf81d9ffd5713f1c8f344"
-  integrity sha512-2H5kQSsyoOMdIehTzIt/sC9ZDIgWqlkG/dbevm9B9xQZ1TDPBHpNUDW5ENqqQQzuaBWEo75JkV0LJe+o5Lnr5g==
+autoprefixer@^10.3.6:
+  version "10.3.6"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-10.3.6.tgz#537c8a046e32ec46bfe528bcc9e2a5f2d87cd4c4"
+  integrity sha512-3bDjTfF0MfZntwVCSd18XAT2Zndufh3Mep+mafbzdIQEeWbncVRUVDjH8/EPANV9Hq40seJ24QcYAyhUsFz7gQ==
   dependencies:
     browserslist "^4.17.1"
-    caniuse-lite "^1.0.30001259"
+    caniuse-lite "^1.0.30001260"
     fraction.js "^4.1.1"
-    nanocolors "^0.1.5"
+    nanocolors "^0.2.8"
     normalize-range "^0.1.2"
     postcss-value-parser "^4.1.0"
 
@@ -3815,10 +3815,12 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001259:
-  version "1.0.30001259"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001259.tgz#ae21691d3da9c4be6144403ac40f71d9f6efd790"
-  integrity sha512-V7mQTFhjITxuk9zBpI6nYsiTXhcPe05l+364nZjK7MFK/E7ibvYBSAXr4YcA6oPR8j3ZLM/LN+lUqUVAQEUZFg==
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001125, caniuse-lite@^1.0.30001259, caniuse-lite@^1.0.30001260:
+  version "1.0.30001260"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001260.tgz#e3be3f34ddad735ca4a2736fa9e768ef34316270"
+  integrity sha512-Fhjc/k8725ItmrvW5QomzxLeojewxvqiYCKeFcfFEhut28IVLdpHU19dneOmltZQIE5HNbawj1HYD+1f2bM1Dg==
+  dependencies:
+    nanocolors "^0.1.0"
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -6697,10 +6699,10 @@ i18next-browser-languagedetector@^6.1.2:
   dependencies:
     "@babel/runtime" "^7.14.6"
 
-i18next@^21.0.2:
-  version "21.0.2"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.0.2.tgz#a394cbd0cc1879a9ad7a4a979a222d12033022cc"
-  integrity sha512-cSjRitffS1xm90YgPFTaqut89Y4Oc2i4aiCmAuhxHPryYdKzSIGl1YSv8PzlW+UPFOKRIUCOYZ5Rn+aUXKq/qQ==
+i18next@^21.1.1:
+  version "21.1.1"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.1.1.tgz#e7569de4d9fea2972c28ca4c334d13799b94ce76"
+  integrity sha512-oBEi+3MI/jEv0DifAmA+e47WAS55Sv6yG2CmZ0Kpz/VGu8rTQARJGRkwhMcLhcIi+JYmxmfBD/DQ/7Ho3FYryw==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
@@ -8738,10 +8740,15 @@ nan@^2.12.1:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
   integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
 
-nanocolors@^0.1.5:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.1.6.tgz#bc2350d3edfdbfadd7ac018c855ae7c13905a6ad"
-  integrity sha512-2pvTw6vYRaBLGir2xR7MxaJtyWkrn+C53EpW8yPotG+pdAwBvt0Xwk4VJ6VHLY0aLthVZPvDfm9TdZvrvAm5UQ==
+nanocolors@^0.1.0, nanocolors@^0.1.5:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.1.12.tgz#8577482c58cbd7b5bb1681db4cf48f11a87fd5f6"
+  integrity sha512-2nMHqg1x5PU+unxX7PGY7AuYxl2qDx7PSrTRjizr8sxdd3l/3hBuWWaki62qmtYm2U5i4Z5E7GbjlyDFhs9/EQ==
+
+nanocolors@^0.2.8:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.2.11.tgz#f2573e6872f1b70067423fc68bbc9d0de2f3bbee"
+  integrity sha512-83ttyvfJj66dKMadWfBkEUOEDFfRc8FpzTJvh1MySR/pzWFmFikTQZGOV6kHZRz7yR/heiQ1y/MHBBN5P/e7WQ==
 
 nanoid@^3.1.23:
   version "3.1.25"

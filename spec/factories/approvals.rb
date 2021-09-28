@@ -11,16 +11,16 @@ FactoryBot.define do
     transient do
       create_children { true }
       num_children { rand(1..3) }
-      business { create(:business) }
+      nebraska { true }
+      business { nil }
     end
 
     # unless create_children is set to false, if we create an approval,
     # this will create N number of children to belong to that approval
     after(:create) do |approval, evaluator|
       if evaluator.create_children
-        approval.children << create_list(:child,
-                                         evaluator.num_children,
-                                         business: evaluator.business)
+        business = evaluator.business || (evaluator.nebraska ? create(:business, :nebraska) : create(:business))
+        create_list(:child, evaluator.num_children, business: business, approvals: [approval])
       end
       approval.child_approvals.each do |child_approval|
         child_approval.update!(attributes_for(:child_approval))
