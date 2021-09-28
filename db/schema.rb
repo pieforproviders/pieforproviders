@@ -194,6 +194,14 @@ ActiveRecord::Schema.define(version: 2021_10_03_055231) do
     t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
   end
 
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.decimal "amount", null: false
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
     t.time "end_time", null: false
