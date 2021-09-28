@@ -119,6 +119,7 @@ module Wonderschool
         {
           business_id: @business.id,
           full_name: @row['Full Name'],
+          wonderschool_id: @row['Wonderschool ID'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)'],
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
