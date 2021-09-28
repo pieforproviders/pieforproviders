@@ -51,3 +51,5 @@ spec/cypress/screenshots
 Dockerfile
 init.sql
 .docker-env/development/database
+
+.idea/
