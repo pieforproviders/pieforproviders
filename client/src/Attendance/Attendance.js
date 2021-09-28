@@ -118,7 +118,7 @@ export function Attendance() {
                 style={{ width: '8rem ', color: '#004A6E' }}
               />
               {columnErrorIsPresent(i) ? (
-                <div className="text-red1 font-semibold">{t('dateError')}</div>
+                <div className="font-semibold text-red1">{t('dateError')}</div>
               ) : null}
             </div>
           )
@@ -139,7 +139,7 @@ export function Attendance() {
     return [
       {
         title: (
-          <div className="text-gray9 font-semibold">{t('childNameCap')}</div>
+          <div className="font-semibold text-gray9">{t('childNameCap')}</div>
         ),
         dataIndex: 'name',
         width: 250,
@@ -148,7 +148,7 @@ export function Attendance() {
         render: (_, record) => {
           return (
             <div>
-              <p className="text-lg mb-1">
+              <p className="mb-1 text-lg">
                 {record.childName || record.child.childName}
               </p>
               <p className="flex flex-wrap mt-0.5">
@@ -271,7 +271,7 @@ export function Attendance() {
 
   return (
     <div>
-      <p className="h1-large mb-4 flex justify-center">
+      <p className="flex justify-center mb-4 h1-large">
         {t('enterAttendance')}
       </p>
       <Alert

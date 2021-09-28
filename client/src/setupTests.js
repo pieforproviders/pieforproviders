@@ -13,6 +13,11 @@ import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from '_reducers/rootReducer'
 import dayjs from 'dayjs'
 
+import { configure } from 'enzyme'
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17'
+
+configure({ adapter: new Adapter() })
+
 // window.matchMedia isn't implemented by JSDOM, but the responsive parts of
 // the Antd React library make use of it, so we have to mock it:
 // https://jestjs.io/docs/en/manual-mocks#mocking-methods-which-are-not-implemented-in-jsdom
