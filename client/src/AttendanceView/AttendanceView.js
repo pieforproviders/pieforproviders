@@ -83,7 +83,9 @@ export function AttendanceView() {
           }
           return (
             <div className="flex justify-center">
-              <div className="bg-mediumGray box-border p-1">no info</div>
+              <div className="bg-mediumGray box-border p-1" data-cy="noInfo">
+                {t('noInfo')}
+              </div>
             </div>
           )
         }

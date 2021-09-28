@@ -137,13 +137,6 @@ export function Header() {
           Pie for Providers
         </div>
       )}
-      {/* <div
-        className={`text-2xl font-semibold flex-grow ${
-          screens.lg ? 'visible' : 'invisible'
-        }`}
-      >
-        Pie for Providers
-      </div> */}
       {windowWidth > 768 ? renderDesktopMenu() : renderMobileMenu()}
     </header>
   )

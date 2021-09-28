@@ -10,7 +10,9 @@ const firstName = name.firstName()
 const fullName = name.findName(firstName)
 const email = internet.email(firstName)
 const password = internet.password()
+// Date now - 6 hrs
 const checkIn = new Date(Date.now() - 21600000)
+// Date now - 2 hrs
 const checkOut = new Date(Date.now() - 7200000)
 let childFullName
 
@@ -77,9 +79,19 @@ describe('AttendanceView', () => {
 
   describe('content', () => {
     it('renders content', () => {
+      cy.viewport(500, 500)
       cy.contains(childFullName)
       cy.contains('4 hrs 0 mins')
-      cy.contains('no info')
+      cy.contains('Input Attendance')
+      cy.get('[data-cy=noInfo]').its('length').should('eq', 6)
+    })
+
+    it('renders small screen content', () => {
+      cy.viewport(300, 500)
+      cy.contains('Screen size not compatible')
+      cy.contains(
+        'Either your browser window is too small, or you’re on a mobile device. Please switch to a desktop or tablet to view this page.'
+      )
     })
   })
 
