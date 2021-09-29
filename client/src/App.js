@@ -10,6 +10,7 @@ import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
+import AttendanceView from './AttendanceView'
 import Dashboard from './Dashboard'
 import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
@@ -76,6 +77,9 @@ const Routes = () => {
           <Dashboard />
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/attendance">
+          <AttendanceView />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/attendance/edit">
           <Attendance />
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/cases/import">
