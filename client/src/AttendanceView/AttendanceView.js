@@ -11,7 +11,7 @@ import { WeekPicker } from './WeekPicker'
 const { useBreakpoint } = Grid
 
 export function AttendanceView() {
-  const { t } = useTranslation()
+  const { i18n, t } = useTranslation()
   const screens = useBreakpoint()
   const history = useHistory()
   const { makeRequest } = useApiResponse()
@@ -34,7 +34,7 @@ export function AttendanceView() {
         title: () => {
           return (
             <div className="text-gray9 grid justify-items-center ">
-              <div>{columnDate.format('ddd').toLocaleLowerCase()} </div>
+              <div>{t(`${columnDate.format('ddd').toLocaleLowerCase()}`)} </div>
               <div className="font-semibold">{columnDate.format('MMM DD')}</div>
             </div>
           )
@@ -77,7 +77,9 @@ export function AttendanceView() {
                 <div className="text-gray8 font-semiBold mb-2">
                   {totalCareTime}
                 </div>
-                <div className="text-darkGray">{checkInCheckOutTime}</div>
+                <div className="text-darkGray text-xs">
+                  {checkInCheckOutTime}
+                </div>
               </div>
             )
           }
@@ -111,6 +113,7 @@ export function AttendanceView() {
     ]
   }
   const [columns, setColumns] = useState(generateColumns())
+  i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleDateChange = newDate => setDateSelected(newDate)
 
