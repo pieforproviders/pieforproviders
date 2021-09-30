@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Button, Divider, Dropdown, Grid, Menu } from 'antd'
+import { Button, Divider, Dropdown, Menu } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch } from 'react-redux'
@@ -10,8 +10,6 @@ import { deleteUser } from '_reducers/userReducer'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
 import '_assets/styles/button-header.css'
 
-const { useBreakpoint } = Grid
-
 export function Header() {
   const isAuthenticated = useAuthentication()
   const dispatch = useDispatch()
@@ -19,7 +17,6 @@ export function Header() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const setWidth = () => setWindowWidth(window.innerWidth)
   const history = useHistory()
-  const screens = useBreakpoint()
 
   const changeLanguage = lang => i18n.changeLanguage(lang)
 
@@ -52,14 +49,14 @@ export function Header() {
         <Menu.Item>
           {isAuthenticated && (
             <Button type="link" onClick={() => history.push('/dashboard')}>
-              Dashboard
+              {t('dashboard')}
             </Button>
           )}
         </Menu.Item>
         <Menu.Item>
           {isAuthenticated && (
             <Button type="link" onClick={() => history.push('/attendance')}>
-              Attendance
+              {t('attendance')}
             </Button>
           )}
         </Menu.Item>
@@ -109,7 +106,7 @@ export function Header() {
         src={pieSliceLogo}
         className="w-8 mr-2"
       />
-      {screens.md ? (
+      {windowWidth > 768 ? (
         <div className="flex-grow ml-10">
           <div className="flex">
             <div className="header-nav-button">
@@ -118,7 +115,7 @@ export function Header() {
                 type="link"
                 onClick={() => history.push('/dashboard')}
               >
-                Dashboard
+                {t('dashboard')}
               </Button>
             </div>
             <div className="header-nav-button ml-8">
@@ -127,7 +124,7 @@ export function Header() {
                 type="link"
                 onClick={() => history.push('/attendance')}
               >
-                Attendance
+                {t('attendance')}
               </Button>
             </div>
           </div>

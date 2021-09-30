@@ -58,14 +58,14 @@ export function Dashboard() {
         {
           title: t('earnedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.earnedRevenueTotal.toFixed()
+            (totals.earnedRevenueTotal || 0).toFixed()
           )}`,
           definition: t('earnedRevenueDef')
         },
         {
           title: t('estimatedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.estimatedRevenueTotal.toFixed()
+            (totals.estimatedRevenueTotal || 0).toFixed()
           )}`,
           definition: t(`estimatedRevenueDef`)
         }
