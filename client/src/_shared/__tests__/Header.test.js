@@ -9,7 +9,8 @@ const doRender = () => {
 describe('<Header />', () => {
   it('renders the Header component', () => {
     doRender()
-    expect(screen.getByText(/Pie for Providers/)).toBeDefined()
+    expect(screen.getByText(/Dashboard/)).toBeDefined()
+    expect(screen.getByText(/Attendance/)).toBeDefined()
 
     let element = screen.getByText(/Español/)
     fireEvent.click(element)

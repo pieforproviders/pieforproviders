@@ -14,6 +14,7 @@ describe('<LoggedInLayout />', () => {
       children: <Button />,
       title: ''
     })
-    expect(container).toHaveTextContent('Pie for Providers')
+    expect(container).toHaveTextContent('Attendance')
+    expect(container).toHaveTextContent('Dashboard')
   })
 })
