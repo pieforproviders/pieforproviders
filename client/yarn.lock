@@ -36,28 +36,28 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
-"@appsignal/core@=1.1.12":
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.12.tgz#6c82c34abf86573b9d6b3b9b82fe948f102a4de4"
-  integrity sha512-pVxp72tRqL0TOGrV5fIzVBJBSuSVrrrMxWVR+RuMTdKEseq7W149JSZ4GTuIP1whC+65OR7nGw5TOJIaMUGGPg==
+"@appsignal/core@=1.1.13":
+  version "1.1.13"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.13.tgz#37e674fa2c49924ed18bd455dfccca7fab3883cc"
+  integrity sha512-8+5SoLuI0t46jgGf4mIQBvAL+ZqyWVs88oMdGoQiIi45wzVKm7UQxSZ3g2fLKQ9Un1RVoFikE0UHhHfbhpyHXw==
   dependencies:
-    "@appsignal/types" "=2.1.4"
+    "@appsignal/types" "=2.1.5"
     isomorphic-unfetch "^3.1.0"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.17":
-  version "1.3.17"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.17.tgz#b7216cd35c68a1654b9de87c468875b1d39465af"
-  integrity sha512-khnbMBFFPnpl9RoE6hqAcg8vQl0vOrq2CrsG9DWouyZEBGXVf4RRBLmNN0+9khxveRGWXFv0+Lvh00jnJ2zApQ==
+"@appsignal/javascript@^1.3.18":
+  version "1.3.18"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.18.tgz#79e6fe20675ae5a31c573bcb5e7439be361c05fc"
+  integrity sha512-EbW21+BMvwJhokkayj+G/xltIlToc+7ktuBxblzGlNHc/bqWnoWxEz5G4CuaUyInMOXhKAkpTg3+/rz0Cgg5Pw==
   dependencies:
-    "@appsignal/core" "=1.1.12"
-    "@appsignal/types" "=2.1.4"
+    "@appsignal/core" "=1.1.13"
+    "@appsignal/types" "=2.1.5"
     tslib "^2.3.0"
 
-"@appsignal/types@=2.1.4":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.4.tgz#86a79f6cf7437e9742f0201a1174a604ad7bda1d"
-  integrity sha512-kKzuYkwtJaNUaHjn6gOBRspY9zr3JR0F0wtBWO6ndEhHF1fv0D7PJsEXF8yYlRMEjxYXSDU0nhQHnGSRDDbrEg==
+"@appsignal/types@=2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.5.tgz#ec6a667da1ffa8475ee51ffdadc38e6bd72b1fb1"
+  integrity sha512-LtxfqACzS10PYxAqe2YgT9k/pPFyzAwyXvi48QddWyBj7ROleAXrEKJjjgqxOYszIGCm14cbCLSDmEDvIVnDbw==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
