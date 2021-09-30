@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select, Menu, Dropdown, Modal } from 'antd'
-import { LeftOutlined } from '@ant-design/icons'
+import { LeftOutlined, DownOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
 import PaymentModal from '../Payment'
@@ -19,6 +19,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   // const dropdownStyle = { color: '#006C9E' }
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
   const [isPaymentModalVisible, setPaymentModalVisible] = useState(false)
+  const [isActionsDropdownOpen, setActionsDropdownOpen] = useState(false)
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -59,6 +60,10 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
     setPaymentModalVisible(false)
   }
 
+  const updateIsActionsDropdownOpen = () => {
+    setActionsDropdownOpen(!isActionsDropdownOpen)
+  }
+
   const dashboardActions = (
     <Menu>
       <Menu.Item key="addAttendance">
@@ -66,7 +71,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
           {t('addAttendance')}
         </Button>
       </Menu.Item>
-      <Menu.Item key="recordPaymentButtonq">
+      <Menu.Item key="recordPaymentButton">
         <Button type="text" onClick={showPaymentModal}>
           {t('recordPaymentButton')}
         </Button>
@@ -80,8 +85,9 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       className="ml-auto flex"
       trigger="click"
     >
-      <Button type="primary">
-        {t('recordDropdown')} <LeftOutlined />
+      <Button type="primary" onClick={updateIsActionsDropdownOpen}>
+        {t('recordDropdown')}
+        {isActionsDropdownOpen ? <DownOutlined /> : <LeftOutlined />}
       </Button>
     </Dropdown>
   )
