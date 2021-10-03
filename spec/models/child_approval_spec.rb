@@ -21,6 +21,7 @@ end
 #
 #  id                        :uuid             not null, primary key
 #  authorized_weekly_hours   :integer
+#  deleted_at                :date
 #  enrolled_in_school        :boolean
 #  full_days                 :integer
 #  hours                     :decimal(, )
