@@ -64,7 +64,7 @@ RSpec.describe Child, type: :model do
 
   describe 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
-    let(:deleted_child) { create(:child, deleted: true) }
+    let(:deleted_child) { create(:child, deleted_at: Date.today) }
 
     it 'only displays active children in the active scope' do
       expect(described_class.active).to include(child)
