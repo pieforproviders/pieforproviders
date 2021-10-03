@@ -354,7 +354,7 @@ end
 #  id                 :uuid             not null, primary key
 #  active             :boolean          default(TRUE), not null
 #  date_of_birth      :date             not null
-#  deleted            :boolean          default(FALSE), not null
+#  deleted_at         :date
 #  enrolled_in_school :boolean
 #  full_name          :string           not null
 #  inactive_reason    :string
