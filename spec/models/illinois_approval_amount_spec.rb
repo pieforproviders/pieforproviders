@@ -18,6 +18,7 @@ end
 # Table name: illinois_approval_amounts
 #
 #  id                          :uuid             not null, primary key
+#  deleted_at                  :date
 #  full_days_approved_per_week :integer
 #  month                       :date             not null
 #  part_days_approved_per_week :integer
