@@ -18,6 +18,7 @@ end
 #
 #  id                   :uuid             not null, primary key
 #  allocated_family_fee :decimal(, )      not null
+#  deleted_at           :date
 #  effective_on         :date             not null
 #  expires_on           :date             not null
 #  family_fee           :decimal(, )      not null
