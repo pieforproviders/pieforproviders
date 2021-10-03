@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_03_054620) do
+ActiveRecord::Schema.define(version: 2021_10_03_054735) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2021_10_03_054620) do
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
     t.string "name", default: "Rule Name Filler", null: false
+    t.date "deleted_at"
   end
 
   create_table "nebraska_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
