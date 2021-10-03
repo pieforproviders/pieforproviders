@@ -42,6 +42,7 @@ end
 #  accredited_rate :boolean          default(FALSE), not null
 #  amount          :decimal(, )      not null
 #  county          :string
+#  deleted_at      :date
 #  effective_on    :date             not null
 #  expires_on      :date
 #  license_type    :string           not null
