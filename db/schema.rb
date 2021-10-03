@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_03_055043) do
+ActiveRecord::Schema.define(version: 2021_10_03_055134) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -212,6 +212,7 @@ ActiveRecord::Schema.define(version: 2021_10_03_055043) do
     t.string "as_of"
     t.decimal "family_fee"
     t.string "hours_attended"
+    t.date "deleted_at"
     t.index ["child_id"], name: "index_temporary_nebraska_dashboard_cases_on_child_id"
   end
 
