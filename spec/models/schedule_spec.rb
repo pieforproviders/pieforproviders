@@ -75,6 +75,7 @@ end
 # Table name: schedules
 #
 #  id           :uuid             not null, primary key
+#  deleted_at   :date
 #  effective_on :date             not null
 #  end_time     :time             not null
 #  expires_on   :date
