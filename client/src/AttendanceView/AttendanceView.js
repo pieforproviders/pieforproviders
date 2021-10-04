@@ -189,6 +189,7 @@ export function AttendanceView() {
           </div>
           <p>
             <WeekPicker
+              hasNext={dateSelected.day(6) < dayjs().day(0)}
               dateSelected={dateSelected}
               handleDateChange={handleDateChange}
             />
