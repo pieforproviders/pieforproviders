@@ -9,13 +9,20 @@ import weekday from 'dayjs/plugin/weekday'
 
 dayjs.extend(weekday)
 
-export function WeekPicker({ dateSelected, handleDateChange }) {
+export function WeekPicker({
+  dateSelected,
+  handleDateChange,
+  hasPrev = true,
+  hasNext = true
+}) {
   const { t } = useTranslation()
   const firstDay = dateSelected.weekday(0).format('MMM D')
   const lastDay = dateSelected.weekday(6).format('MMM D, YYYY')
+
   return (
     <div>
       <Button
+        disabled={!hasPrev}
         onClick={() => handleDateChange(dateSelected.weekday(-7))}
         data-cy="backWeekButton"
       >
@@ -33,6 +40,7 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
         )}${lastDay.slice(3)}`}
       </Button>
       <Button
+        disabled={!hasNext}
         onClick={() => handleDateChange(dateSelected.weekday(7))}
         data-cy="forwardWeekButton"
       >
@@ -44,5 +52,7 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
 
 WeekPicker.propTypes = {
   dateSelected: PropTypes.object,
-  handleDateChange: PropTypes.func
+  handleDateChange: PropTypes.func,
+  hasPrev: PropTypes.bool,
+  hasNext: PropTypes.bool
 }
