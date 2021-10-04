@@ -105,6 +105,7 @@ describe('AttendanceView', () => {
   describe('weekPicker', () => {
     it('renders current week by default', () => {
       cy.contains(weekPickerText())
+      cy.get('[data-cy=forwardWeekButton]').should('be.disabled')
     })
     it('allows you to view last week attendance', () => {
       cy.get('[data-cy=backWeekButton]').click()
@@ -112,8 +113,9 @@ describe('AttendanceView', () => {
     })
 
     it('allows you to view next week attendance', () => {
+      cy.get('[data-cy=backWeekButton]').click()
       cy.get('[data-cy=forwardWeekButton]').click()
-      cy.contains(weekPickerText(dayjs().weekday(7)))
+      cy.contains(weekPickerText())
     })
   })
 })
