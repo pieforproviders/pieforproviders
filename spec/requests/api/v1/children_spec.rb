@@ -289,7 +289,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers
         expect(response.status).to eq(204)
-        expect(user_children.first.reload.deleted_at).to eq(Date.today)
+        expect(user_children.first.reload.deleted_at).to eq(Time.current)
       end
     end
 
@@ -299,7 +299,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{user_children.first.id}", headers: headers
         expect(response.status).to eq(204)
-        expect(user_children.first.reload.deleted_at).to eq(Date.today)
+        expect(user_children.first.reload.deleted_at).to eq(Time.current)
       end
     end
   end
