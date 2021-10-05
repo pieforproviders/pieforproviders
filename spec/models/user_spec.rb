@@ -98,6 +98,7 @@ end
 #  confirmed_at               :datetime
 #  current_sign_in_at         :datetime
 #  current_sign_in_ip         :inet
+#  deleted_at                 :date
 #  email                      :string           not null
 #  encrypted_password         :string           default(""), not null
 #  full_name                  :string           not null

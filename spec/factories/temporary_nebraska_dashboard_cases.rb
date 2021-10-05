@@ -22,6 +22,7 @@ end
 #  absences          :text
 #  as_of             :string
 #  attendance_risk   :text
+#  deleted_at        :date
 #  earned_revenue    :text
 #  estimated_revenue :text
 #  family_fee        :decimal(, )

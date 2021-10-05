@@ -46,7 +46,7 @@ module Api
       # DELETE /businesses/:id
       def destroy
         # soft delete
-        @business.update!(active: false)
+        @business.update!(deleted_at: Time.current)
       end
 
       private

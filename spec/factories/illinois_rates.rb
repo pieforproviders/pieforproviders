@@ -37,6 +37,7 @@ end
 #  attendance_threshold :decimal(, )
 #  bronze_percentage    :decimal(, )
 #  county               :string           default(" "), not null
+#  deleted_at           :date
 #  effective_on         :date             not null
 #  expires_on           :date
 #  full_day_rate        :decimal(, )
