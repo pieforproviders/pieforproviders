@@ -43,7 +43,7 @@ module Api
       # DELETE /children/:id
       def destroy
         # soft delete
-        @child.update!(deleted_at: Time.current)
+        @child.update!(deleted_at: Time.current.to_date)
       end
 
       private
