@@ -68,19 +68,19 @@ class ChildBlueprint < Blueprinter::Base
     end
     field :full_days_remaining do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_full_days_remaining(options[:filter_date])&.to_s
+      child.nebraska_full_days_remaining(options[:filter_date])
     end
     field :hours_remaining do |child, options|
       # Uses a feature flag in the child model methods
-      child.nebraska_hours_remaining(options[:filter_date])&.to_s
+      child.nebraska_hours_remaining(options[:filter_date])&.to_f
     end
     field :full_days_authorized do |child, options|
       # Uses a feature flag in the child model methods
-      child.active_child_approval(options[:filter_date])&.full_days&.to_s
+      child.active_child_approval(options[:filter_date])&.full_days
     end
     field :hours_authorized do |child, options|
       # Uses a feature flag in the child model methods
-      child.active_child_approval(options[:filter_date])&.hours&.to_s
+      child.active_child_approval(options[:filter_date])&.hours&.to_f
     end
     field :hours_attended do |child, options|
       # Uses a feature flag in the child model methods
