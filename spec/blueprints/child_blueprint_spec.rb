@@ -57,7 +57,7 @@ RSpec.describe ChildBlueprint do
              attendance_risk: 'ahead_of_schedule',
              absences: '1 of 5')
       child.business.update!(accredited: true, qris_rating: 'step_four')
-      child_approval.update!(special_needs_rate: false)
+      child_approval.update!(attributes_for(:child_approval).merge({ special_needs_rate: false }))
       create(:nebraska_rate,
              :accredited,
              :hourly,
@@ -96,8 +96,12 @@ RSpec.describe ChildBlueprint do
         'estimated_revenue',
         'family_fee',
         'full_days',
+        'full_days_authorized',
+        'full_days_remaining',
         'full_name',
         'hours',
+        'hours_authorized',
+        'hours_remaining',
         'hours_attended',
         'last_active_date',
         'inactive_reason'
@@ -195,12 +199,16 @@ RSpec.describe ChildBlueprint do
       let(:hourly_rate) { 5.15 }
       let(:qris_bump) { 1.05**1 }
 
+      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:disable RSpec/ExampleLength
       it 'includes the child name and all live attendance data' do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 3 hours of attendance from the hourly attendance created above on the 4th
         expect(parsed_body['hours']).to eq('3.0')
         # 1 full day of attendance from the daily attendance created above on the 7th
         expect(parsed_body['full_days']).to eq('1.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 3).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 1).to_s)
         # hours this week only
         expect(parsed_body['hours_attended']).to eq("9.0 of #{child_approval.authorized_weekly_hours}")
         # no revenue because of family fee
@@ -221,6 +229,10 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['hours']).to eq('3.0')
         # no new daily attendance
         expect(parsed_body['full_days']).to eq('1.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 3.0).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 1).to_s)
+        expect(parsed_body['hours_authorized']).to eq(child_approval.hours.to_s)
+        expect(parsed_body['full_days_authorized']).to eq(child_approval.full_days.to_s)
         # hours this week only - we've traveled ahead in time
         expect(parsed_body['hours_attended']).to eq("0.0 of #{child_approval.authorized_weekly_hours}")
         # still no revenue because of family fee
@@ -245,6 +257,8 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['hours']).to eq('6.25')
         # no new daily attendance
         expect(parsed_body['full_days']).to eq('1.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 1).to_s)
         # hours this week only, the attendance created above
         expect(parsed_body['hours_attended']).to eq("3.3 of #{child_approval.authorized_weekly_hours}")
         # still no revenue because of family fee
@@ -269,6 +283,8 @@ RSpec.describe ChildBlueprint do
         expect(parsed_body['hours']).to eq('6.25')
         # one new daily attendance
         expect(parsed_body['full_days']).to eq('2.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 2).to_s)
         # full days + hours duration counts as "hours attended this week"
         expect(parsed_body['hours_attended']).to eq("9.6 of #{child_approval.authorized_weekly_hours}")
         # broke past the family fee; this formula includes the 2 daily attendances and the 6.25 hourly attendances
@@ -300,6 +316,8 @@ RSpec.describe ChildBlueprint do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 5 new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 7).to_s) # TODO: absences?
         # 3 new absences
         expect(parsed_body['absences']).to eq('3 of 5')
         # This includes the 2 prior dailies, the 5 new full days, and the 3 new full-day absences
@@ -324,6 +342,8 @@ RSpec.describe ChildBlueprint do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # no new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 7).to_s) # TODO: absences?
         # 3 new absences
         expect(parsed_body['absences']).to eq('6 of 5')
         # This includes the 7 prior dailies, the 3 prior absences,
@@ -348,6 +368,8 @@ RSpec.describe ChildBlueprint do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 1 new covid absence
         expect(parsed_body['absences']).to eq('7 of 5')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 7).to_s) # TODO: absences?
         # This includes the 7 prior dailies, the 5 prior absences,
         # and this absence because COVID absences are unlimited at this time
         expect(parsed_body['earned_revenue'])
@@ -370,6 +392,10 @@ RSpec.describe ChildBlueprint do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
         # 1 new daily attendance
         expect(parsed_body['full_days']).to eq('8.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_s)
+        expect(parsed_body['full_days_remaining']).to eq((child_approval.full_days - 8).to_s) # TODO: absences?
+        expect(parsed_body['hours_authorized']).to eq(child_approval.hours.to_s)
+        expect(parsed_body['full_days_authorized']).to eq(child_approval.full_days.to_s)
         # This includes the 7 prior dailies, the 6 prior absences, and a new full-day attendance today
         expect(parsed_body['earned_revenue'])
           .to eq((((6.25 * hourly_rate * qris_bump) + (14 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
@@ -392,6 +418,8 @@ RSpec.describe ChildBlueprint do
           schedules: [create(:schedule)],
           approvals: [approval]
         )
+
+        child_with_less_hours.active_child_approval(attendance_date).update!(full_days: 300, hours: 1500)
 
         create_list(
           :attendance,
@@ -427,6 +455,8 @@ RSpec.describe ChildBlueprint do
         # revenue because we're subtracting the family fee from that child
         expect(child_json['earned_revenue']).to eq(child_with_less_hours_json['earned_revenue'].to_f - 80.00)
       end
+      # rubocop:enable RSpec/ExampleLength
+      # rubocop:enable RSpec/MultipleExpectations
     end
   end
 end
