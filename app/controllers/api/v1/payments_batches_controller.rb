@@ -57,10 +57,6 @@ module Api
         params.require(:payment).permit(attributes)
       end
 
-      def set_payment
-        @payment = policy_scope(Payment).find(params[:id])
-      end
-
       def serialized_response
         PaymentBlueprint.render(
           @payments_batch,
