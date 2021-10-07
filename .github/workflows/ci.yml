@@ -3,8 +3,12 @@ on:
   push:
     branches:
       - "develop"
+    paths-ignore:
+      - 'docs/**'
   pull_request_target:
-    types: [opened, synchronize]
+    paths-ignore:
+    - 'docs/**'
+  workflow_dispatch:
 jobs:
   lint_backend:
     name: Backend linting
