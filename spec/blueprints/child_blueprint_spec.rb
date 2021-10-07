@@ -317,7 +317,7 @@ RSpec.describe ChildBlueprint do
         # 5 new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
-        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7) # TODO: absences?
+        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7)
         # 3 new absences
         expect(parsed_body['absences']).to eq('3 of 5')
         # This includes the 2 prior dailies, the 5 new full days, and the 3 new full-day absences
@@ -343,7 +343,7 @@ RSpec.describe ChildBlueprint do
         # no new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
-        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7) # TODO: absences?
+        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7)
         # 3 new absences
         expect(parsed_body['absences']).to eq('6 of 5')
         # This includes the 7 prior dailies, the 3 prior absences,
@@ -369,7 +369,7 @@ RSpec.describe ChildBlueprint do
         # 1 new covid absence
         expect(parsed_body['absences']).to eq('7 of 5')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
-        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7) # TODO: absences?
+        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 7)
         # This includes the 7 prior dailies, the 5 prior absences,
         # and this absence because COVID absences are unlimited at this time
         expect(parsed_body['earned_revenue'])
@@ -393,7 +393,41 @@ RSpec.describe ChildBlueprint do
         # 1 new daily attendance
         expect(parsed_body['full_days']).to eq('8.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
-        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 8) # TODO: absences?
+        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 8)
+        expect(parsed_body['hours_authorized']).to eq(child_approval.hours.to_f)
+        expect(parsed_body['full_days_authorized']).to eq(child_approval.full_days)
+        # This includes the 7 prior dailies, the 6 prior absences, and a new full-day attendance today
+        expect(parsed_body['earned_revenue'])
+          .to eq((((6.25 * hourly_rate * qris_bump) + (14 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
+        # earned revenue + remaining 6 days because there's an attendance today
+        expect(parsed_body['estimated_revenue'])
+          .to eq((((6.25 * hourly_rate * qris_bump) + (20 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
+        # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
+        # estimated: (6.25 * hourly_rate * qris_bump) + (20 * daily_rate * qris_bump) = 561.95
+        # ratio: (561.95 - 580.97) / 580.97 = -0.03
+        expect(parsed_body['attendance_risk']).to eq('on_track')
+
+        prior_month_check_in = child_approval.effective_on.at_beginning_of_day
+
+        create(
+          :attendance,
+          child_approval: child_approval,
+          check_in: prior_month_check_in,
+          check_out: prior_month_check_in + 3.hours
+        )
+
+        create(
+          :attendance,
+          child_approval: child_approval,
+          check_in: prior_month_check_in,
+          check_out: prior_month_check_in + 7.hours
+        )
+
+        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        # 1 new daily attendance
+        expect(parsed_body['full_days']).to eq('8.0')
+        expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 9.25).to_f)
+        expect(parsed_body['full_days_remaining']).to eq(child_approval.full_days - 9)
         expect(parsed_body['hours_authorized']).to eq(child_approval.hours.to_f)
         expect(parsed_body['full_days_authorized']).to eq(child_approval.full_days)
         # This includes the 7 prior dailies, the 6 prior absences, and a new full-day attendance today
