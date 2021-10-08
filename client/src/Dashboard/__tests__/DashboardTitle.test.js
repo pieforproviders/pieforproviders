@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
 import DashboardTitle from '../DashboardTitle'
-import { mount, shallow } from 'enzyme'
+import { mount } from 'enzyme'
 
 const doRender = (
   props = {
@@ -55,17 +55,16 @@ describe('<DashboardTitle />', () => {
     })
   })
 
-  it('Payment modal should render When Add Record Payment is clicked', () => {
+  it('Payment modal should render When Add Record Payment is clicked', async () => {
     const wrapper = mountRender()
     const paymentModal = wrapper.find('#paymentModal').at(0)
     expect(paymentModal.prop('visible')).toBeFalsy()
 
     const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
     recordActionButton.simulate('click')
-
     const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
-    recordPaymentButton.simulate('click')
+    await recordPaymentButton.simulate('click')
 
-    expect(paymentModal.prop('visible')).toBeTruthy()
+    expect(wrapper.find('#paymentModal').at(1).prop('visible')).toBeTruthy()
   })
 })
