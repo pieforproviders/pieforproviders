@@ -66,13 +66,13 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
 
   const dashboardActions = (
     <Menu>
-      <Menu.Item key="addAttendance">
+      <Menu.Item key="addAttendanceMenuItem">
         <Button onClick={() => history.push('/attendance')} type="text">
           {t('addAttendance')}
         </Button>
       </Menu.Item>
-      <Menu.Item key="recordPaymentButton">
-        <Button type="text" onClick={showPaymentModal}>
+      <Menu.Item key="recordPaymentMenuItem">
+        <Button id="recordPaymentButton" type="text" onClick={showPaymentModal}>
           {t('recordPaymentButton')}
         </Button>
       </Menu.Item>
@@ -85,7 +85,11 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       className="ml-auto flex"
       trigger="click"
     >
-      <Button type="primary" onClick={updateIsActionsDropdownOpen}>
+      <Button
+        type="primary"
+        id="actionsDropdownButton"
+        onClick={updateIsActionsDropdownOpen}
+      >
         {t('recordDropdown')}
         {isActionsDropdownOpen ? <DownOutlined /> : <LeftOutlined />}
       </Button>
@@ -94,6 +98,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
 
   const paymentModal = (
     <Modal
+      id="paymentModal"
       title={
         <div className="eyebrow-large text-center">{t('recordAPayment')}</div>
       }

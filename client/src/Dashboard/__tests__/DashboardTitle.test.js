@@ -1,6 +1,7 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
 import DashboardTitle from '../DashboardTitle'
+import { mount, shallow } from 'enzyme'
 
 const doRender = (
   props = {
@@ -10,6 +11,16 @@ const doRender = (
   }
 ) => {
   return render(<DashboardTitle {...props} />)
+}
+
+const mountRender = (
+  props = {
+    dates: { asOf: 'Mar 16' },
+    userState: 'IL',
+    getDashboardData: () => {}
+  }
+) => {
+  return mount(<DashboardTitle {...props} />)
 }
 
 describe('<DashboardTitle />', () => {
@@ -42,5 +53,19 @@ describe('<DashboardTitle />', () => {
     await waitFor(() => {
       expect(container).toHaveTextContent('Record new')
     })
+  })
+
+  it('Payment modal should render When Add Record Payment is clicked', () => {
+    const wrapper = mountRender()
+    const paymentModal = wrapper.find('#paymentModal').at(0)
+    expect(paymentModal.prop('visible')).toBeFalsy()
+
+    const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
+    recordActionButton.simulate('click')
+
+    const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
+    recordPaymentButton.simulate('click')
+
+    expect(paymentModal.prop('visible')).toBeTruthy()
   })
 })
