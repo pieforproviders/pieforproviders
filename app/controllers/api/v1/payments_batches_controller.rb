@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     # API for payment batch entry
@@ -17,31 +19,28 @@ module Api
         params.permit(payments_batch: %i[child_id amount month]).require(:payments_batch)
       end
 
-      def child_approval_id(child_id, date)
-        Child.find(child_id)
-          &.active_child_approval(Date.parse(date))
-          &.id || add_error_and_return_nil(
-          :child_approval_id,
-          "child #{child_id} has no active approval for payment date #{date}"
-        )
-      end
-
       def batch
         payments_batch_params.to_a.map! do |payment|
-          next add_error_and_return_nil(:child_id) unless payment[:child_id]
+          next Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
 
           authorize Child.find(payment[:child_id]), :update?
-          next add_error_and_return_nil(:month) unless payment[:month]
+          next Batchable.add_error_and_return_nil(:month, @errors) unless payment[:month]
 
-          next add_error_and_return_nil(:amount) unless payment[:amount]
+          next Batchable.add_error_and_return_nil(:amount, @errors) unless payment[:amount]
 
-          child_approval_id = child_approval_id(payment[:child_id], payment[:month])
+          child_approval_id = Batchable.child_approval_id(
+            payment[:child_id],
+            payment[:month],
+            @errors,
+            "child #{payment[:child_id]} has no active approval for payment date #{payment[:month]}"
+          )
           next unless child_approval_id
 
           payment.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next add_error_and_return_nil(
+          next Batchable.add_error_and_return_nil(
             :child_id,
+            @errors,
             "not allowed to create a payment for child #{payment[:child_id]}"
           )
         end
