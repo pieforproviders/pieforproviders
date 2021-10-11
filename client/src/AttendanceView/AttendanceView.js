@@ -36,7 +36,6 @@ export function AttendanceView() {
           return (
             <div className="text-gray9 grid justify-items-center ">
               <div>{t(`${columnDate.format('ddd').toLocaleLowerCase()}`)} </div>
-              {/* TODO ADD MONTH translation logic */}
               <div className="font-semibold">{`${t(
                 monthDate.slice(0, 3).toLowerCase()
               )} ${monthDate.slice(4, 6)}`}</div>
