@@ -32,10 +32,13 @@ export function AttendanceView() {
         width: 275,
         // eslint-disable-next-line react/display-name
         title: () => {
+          const monthDate = columnDate.format('MMM DD')
           return (
             <div className="text-gray9 grid justify-items-center ">
               <div>{t(`${columnDate.format('ddd').toLocaleLowerCase()}`)} </div>
-              <div className="font-semibold">{columnDate.format('MMM DD')}</div>
+              <div className="font-semibold">{`${t(
+                monthDate.slice(0, 3).toLowerCase()
+              )} ${monthDate.slice(4, 6)}`}</div>
             </div>
           )
         },
@@ -50,16 +53,14 @@ export function AttendanceView() {
             let totalCareTime = '',
               checkInCheckOutTime = ''
             matchingAttendances.forEach(attendance => {
-              const checkIn = dayjs(attendance.check_in)
-              const checkOut = dayjs(attendance.check_out)
+              const checkIn = dayjs(attendance.check_in).format('h:mm a')
+              const checkOut = attendance.check_out
+                ? dayjs(attendance.check_out).format('h:mm a')
+                : 'no check out time'
               checkInCheckOutTime =
                 checkInCheckOutTime.length > 0
-                  ? checkInCheckOutTime +
-                    ', ' +
-                    checkIn.format('h:mm a') +
-                    ' - ' +
-                    checkOut.format('h:mm a')
-                  : checkIn.format('h:mm a') + ' - ' + checkOut.format('h:mm a')
+                  ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
+                  : checkIn + ' - ' + checkOut
 
               const hour = Math.floor(
                 Number(attendance.total_time_in_care) / 3600
