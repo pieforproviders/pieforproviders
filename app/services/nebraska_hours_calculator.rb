@@ -2,9 +2,12 @@
 
 # Service to calculate hours used in Nebraska by specific kids
 class NebraskaHoursCalculator
-  def initialize(child, filter_date)
+  attr_reader :child, :date, :scope
+
+  def initialize(child:, date:, scope:)
     @child = child
-    @filter_date = filter_date
+    @date = date
+    @scope = scope
   end
 
   def call
@@ -18,9 +21,16 @@ class NebraskaHoursCalculator
   private
 
   def calculate_hours
-    @child.attendances.non_absences.for_month(@filter_date).reduce(0) do |sum, attendance|
+    attendances.reduce(0) do |sum, attendance|
       sum + round_hourly_to_quarters(attendance.total_time_in_care)
     end
+  end
+
+  def attendances
+    attendances = child.active_child_approval(date).attendances.non_absences
+    return attendances unless scope
+
+    attendances.send(scope, date)
   end
 
   def adjusted_duration(duration)

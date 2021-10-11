@@ -159,7 +159,9 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaFullDaysCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new).with(child: child,
+                                   date: Time.current.to_date,
+                                   scope: :for_month).and_return(calculator_instance)
           child.nebraska_full_days(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -182,7 +184,9 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaHoursCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new).with(child: child,
+                                   date: Time.current.to_date,
+                                   scope: :for_month).and_return(calculator_instance)
           child.nebraska_hours(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -205,7 +209,8 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaWeeklyHoursAttendedCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new)
+            .with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end

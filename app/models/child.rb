@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # A child in care at businesses who need subsidy assistance
+# rubocop:disable Metrics/ClassLength
 class Child < UuidApplicationRecord
   before_save :find_or_create_approvals
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
@@ -252,14 +253,22 @@ class Child < UuidApplicationRecord
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    NebraskaHoursCalculator.new(self, date).round_hourly_to_quarters(scheduled_time.seconds)
+    NebraskaHoursCalculator.new(
+      child: self,
+      date: date,
+      scope: :for_month
+    ).round_hourly_to_quarters(scheduled_time.seconds)
   end
 
   def ne_days(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
     scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    NebraskaFullDaysCalculator.new(self, date).calculate_full_days_based_on_duration(scheduled_time.seconds)
+    NebraskaFullDaysCalculator.new(
+      child: self,
+      date: date,
+      scope: :for_month
+    ).calculate_full_days_based_on_duration(scheduled_time.seconds)
   end
 
   # TODO: open question - does qris bump impact this rate?
@@ -301,9 +310,29 @@ class Child < UuidApplicationRecord
   def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaFullDaysCalculator.new(self, date).call
+      NebraskaFullDaysCalculator.new(
+        child: self,
+        date: date,
+        scope: :for_month
+      ).call
     else
       temporary_nebraska_dashboard_case&.full_days
+    end
+  end
+
+  # NE dashboard remaining full days per approval period
+  def nebraska_full_days_remaining(date)
+    # feature flag for using live algorithms rather than uploaded data
+    if Rails.application.config.ff_ne_live_algorithms
+      return 0 unless active_child_approval(date).full_days
+
+      active_child_approval(date).full_days - NebraskaFullDaysCalculator.new(
+        child: self,
+        date: date,
+        scope: nil
+      ).call
+    else
+      'N/A'
     end
   end
 
@@ -311,7 +340,27 @@ class Child < UuidApplicationRecord
   def nebraska_hours(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaHoursCalculator.new(self, date).call
+      NebraskaHoursCalculator.new(
+        child: self,
+        date: date,
+        scope: :for_month
+      ).call
+    else
+      temporary_nebraska_dashboard_case&.hours.to_f
+    end
+  end
+
+  # NE dashboard remaining hours per approval period
+  def nebraska_hours_remaining(date)
+    # feature flag for using live algorithms rather than uploaded data
+    if Rails.application.config.ff_ne_live_algorithms
+      return 0 unless active_child_approval(date).hours
+
+      active_child_approval(date).hours - NebraskaHoursCalculator.new(
+        child: self,
+        date: date,
+        scope: nil
+      ).call
     else
       temporary_nebraska_dashboard_case&.hours.to_f
     end
@@ -356,6 +405,7 @@ class Child < UuidApplicationRecord
     RateAssociatorJob.perform_later(id)
   end
 end
+# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #
