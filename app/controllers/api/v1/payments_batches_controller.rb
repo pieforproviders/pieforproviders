@@ -21,12 +21,7 @@ module Api
 
       def batch
         payments_batch_params.to_a.map! do |payment|
-          next Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
-
-          authorize Child.find(payment[:child_id]), :update?
-          next Batchable.add_error_and_return_nil(:month, @errors) unless payment[:month]
-
-          next Batchable.add_error_and_return_nil(:amount, @errors) unless payment[:amount]
+          next if validate_payment(payment)
 
           child_approval_id = Batchable.child_approval_id(
             payment[:child_id],
@@ -44,6 +39,16 @@ module Api
             "not allowed to create a payment for child #{payment[:child_id]}"
           )
         end
+      end
+
+      def validate_payment(payment)
+        Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
+
+        authorize Child.find(payment[:child_id]), :update?
+
+        Batchable.add_error_and_return_nil(:month, @errors) unless payment[:month]
+
+        Batchable.add_error_and_return_nil(:amount, @errors) unless payment[:amount]
       end
 
       def payments
