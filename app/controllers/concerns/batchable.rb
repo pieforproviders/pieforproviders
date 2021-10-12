@@ -11,9 +11,9 @@ module Batchable
     Child.find(child_id)
       &.active_child_approval(Date.parse(date))
       &.id || add_error_and_return_nil(
-      :child_approval_id,
-      errors,
-      message
-    )
+        :child_approval_id,
+        errors,
+        message
+      )
   end
 end

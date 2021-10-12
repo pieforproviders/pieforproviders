@@ -20,7 +20,6 @@ RSpec.describe 'Api::V1::PaymentsBatches', type: :request do
   end
 
   describe 'POST /api/v1/payments_batches' do
-
     let(:params) do
       {
         payments_batch: [
@@ -39,7 +38,6 @@ RSpec.describe 'Api::V1::PaymentsBatches', type: :request do
     end
 
     it 'creates a payments for children' do
-
       post '/api/v1/payments_batches', params: params, headers: headers
       parsed_response = JSON.parse(response.body)
       output_payment1, output_payment2 = parsed_response['payments']

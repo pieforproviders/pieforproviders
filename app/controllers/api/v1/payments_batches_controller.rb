@@ -23,12 +23,7 @@ module Api
         payments_batch_params.to_a.map! do |payment|
           next if validate_payment(payment)
 
-          child_approval_id = Batchable.child_approval_id(
-            payment[:child_id],
-            payment[:month],
-            @errors,
-            "child #{payment[:child_id]} has no active approval for payment date #{payment[:month]}"
-          )
+          child_approval_id = get_child_approval_id(payment)
           next unless child_approval_id
 
           payment.except(:child_id).merge(child_approval_id: child_approval_id)
@@ -39,6 +34,15 @@ module Api
             "not allowed to create a payment for child #{payment[:child_id]}"
           )
         end
+      end
+
+      def get_child_approval_id(payment)
+        Batchable.child_approval_id(
+          payment[:child_id],
+          payment[:month],
+          @errors,
+          "child #{payment[:child_id]} has no active approval for payment date #{payment[:month]}"
+        )
       end
 
       def validate_payment(payment)
