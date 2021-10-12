@@ -28,12 +28,16 @@ module Api
 
           payment.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next Batchable.add_error_and_return_nil(
-            :child_id,
-            @errors,
-            "not allowed to create a payment for child #{payment[:child_id]}"
-          )
+          next add_unauthorized_error(payment)
         end
+      end
+
+      def add_unauthorized_error(payment)
+        Batchable.add_error_and_return_nil(
+          :child_id,
+          @errors,
+          "not allowed to create a payment for child #{payment[:child_id]}"
+        )
       end
 
       def get_child_approval_id(payment)
