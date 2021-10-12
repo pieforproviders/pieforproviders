@@ -21,10 +21,9 @@ module Api
 
       def batch
         payments_batch_params.to_a.map! do |payment|
-          next if validate_payment(payment)
+          next if payment_valid?(payment)
 
-          child_approval_id = get_child_approval_id(payment)
-          next unless child_approval_id
+          next unless (child_approval_id = get_child_approval_id(payment))
 
           payment.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
@@ -49,7 +48,7 @@ module Api
         )
       end
 
-      def validate_payment(payment)
+      def payment_valid?(payment)
         Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
 
         authorize Child.find(payment[:child_id]), :update?
