@@ -21,7 +21,7 @@ module Api
 
       def batch
         payments_batch_params.to_a.map! do |payment|
-          next if payment_valid?(payment)
+          next unless payment_valid?(payment)
 
           next unless (child_approval_id = get_child_approval_id(payment))
 
@@ -49,13 +49,23 @@ module Api
       end
 
       def payment_valid?(payment)
-        Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
+        unless payment[:child_id]
+          Batchable.add_error_and_return_nil(:child_id, @errors)
+          return false
+        end
 
         authorize Child.find(payment[:child_id]), :update?
+        unless payment[:month]
+          Batchable.add_error_and_return_nil(:month, @errors)
+          return false
+        end
 
-        Batchable.add_error_and_return_nil(:month, @errors) unless payment[:month]
+        unless payment[:amount]
+          Batchable.add_error_and_return_nil(:amount, @errors)
+          return false
+        end
 
-        Batchable.add_error_and_return_nil(:amount, @errors) unless payment[:amount]
+        true
       end
 
       def payments

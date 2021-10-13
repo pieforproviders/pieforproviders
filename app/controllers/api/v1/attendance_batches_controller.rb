@@ -27,27 +27,46 @@ module Api
 
       def batch
         attendance_batch_params.to_a.map! do |attendance|
-          next Batchable.add_error_and_return_nil(:child_id, @errors) unless attendance[:child_id]
+          next unless attendance_valid?(attendance)
 
-          authorize Child.find(attendance[:child_id]), :update?
-          next Batchable.add_error_and_return_nil(:check_in, @errors) unless attendance[:check_in]
-
-          child_approval_id = Batchable.child_approval_id(
-            attendance[:child_id],
-            attendance[:check_in],
-            @errors,
-            "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}"
-          )
-          next unless child_approval_id
+          next unless (child_approval_id = get_child_approval_id(attendance))
 
           attendance.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next Batchable.add_error_and_return_nil(
-            :child_id,
-            @errors,
-            "not allowed to create an attendance for child #{attendance[:child_id]}"
-          )
+          next add_unauthorized_error(attendance)
         end
+      end
+
+      def add_unauthorized_error(attendance)
+        Batchable.add_error_and_return_nil(
+          :child_id,
+          @errors,
+          "not allowed to create an attendance for child #{attendance[:child_id]}"
+        )
+      end
+
+      def get_child_approval_id(attendance)
+        Batchable.child_approval_id(
+          attendance[:child_id],
+          attendance[:check_in],
+          @errors,
+          "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}"
+        )
+      end
+
+      def attendance_valid?(attendance)
+        unless attendance[:child_id]
+          Batchable.add_error_and_return_nil(:child_id, @errors)
+          return false
+        end
+
+        authorize Child.find(attendance[:child_id]), :update?
+        unless attendance[:check_in]
+          Batchable.add_error_and_return_nil(:check_in, @errors)
+          return false
+        end
+
+        true
       end
 
       def attendance_batch_params
