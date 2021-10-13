@@ -1,14 +1,10 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
 import { WeekPicker } from '../WeekPicker'
+import dayjs from 'dayjs'
 
 const doRender = stateOptions => {
-  return render(
-    <WeekPicker
-      dateSelected={{ weekday: (num = 0) => ({ format: () => num }) }}
-    />,
-    stateOptions
-  )
+  return render(<WeekPicker dateSelected={dayjs()} />, stateOptions)
 }
 
 describe('<WeekPicker />', () => {

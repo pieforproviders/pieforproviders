@@ -4,6 +4,11 @@ import { Button } from 'antd'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 
+import dayjs from 'dayjs'
+import weekday from 'dayjs/plugin/weekday'
+
+dayjs.extend(weekday)
+
 export function WeekPicker({ dateSelected, handleDateChange }) {
   const { t } = useTranslation()
   const firstDay = dateSelected.weekday(0).format('MMM D')
