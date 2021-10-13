@@ -79,7 +79,7 @@ describe('AttendanceView', () => {
 
   describe('content', () => {
     it('renders content', () => {
-      cy.viewport(500, 500)
+      cy.viewport(768, 500)
       cy.contains(childFullName)
       cy.contains('4 hrs 0 mins')
       cy.contains('Input Attendance')
