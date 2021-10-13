@@ -11,7 +11,7 @@ describe('<WeekPicker />', () => {
   it('renders content', async () => {
     const { container } = doRender()
     await waitFor(() => {
-      expect(container).toHaveTextContent('0 - 6')
+      expect(container).toHaveTextContent('Oct 10 - Oct 16, 2021')
     })
   })
 })
