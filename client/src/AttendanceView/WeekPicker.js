@@ -2,8 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
+import { useTranslation } from 'react-i18next'
+
+import dayjs from 'dayjs'
+import weekday from 'dayjs/plugin/weekday'
+
+dayjs.extend(weekday)
 
 export function WeekPicker({ dateSelected, handleDateChange }) {
+  const { t } = useTranslation()
+  const firstDay = dateSelected.weekday(0).format('MMM D')
+  const lastDay = dateSelected.weekday(6).format('MMM D, YYYY')
   return (
     <div>
       <Button
@@ -19,9 +28,9 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
           borderColor: '#1b82ab'
         }}
       >
-        {dateSelected.weekday(0).format('MMM D') +
-          ' - ' +
-          dateSelected.weekday(6).format('MMM D, YYYY')}
+        {`${t(firstDay.slice(0, 3).toLowerCase())} ${firstDay.slice(3)} - ${t(
+          lastDay.slice(0, 3).toLowerCase()
+        )}${lastDay.slice(3)}`}
       </Button>
       <Button
         onClick={() => handleDateChange(dateSelected.weekday(7))}

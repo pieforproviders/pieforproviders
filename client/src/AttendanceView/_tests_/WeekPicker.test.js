@@ -1,21 +1,17 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
 import { WeekPicker } from '../WeekPicker'
+import dayjs from 'dayjs'
 
 const doRender = stateOptions => {
-  return render(
-    <WeekPicker
-      dateSelected={{ weekday: (num = 0) => ({ format: () => num }) }}
-    />,
-    stateOptions
-  )
+  return render(<WeekPicker dateSelected={dayjs()} />, stateOptions)
 }
 
 describe('<WeekPicker />', () => {
   it('renders content', async () => {
     const { container } = doRender()
     await waitFor(() => {
-      expect(container).toHaveTextContent('0 - 6')
+      expect(container).toHaveTextContent('Oct 10 - Oct 16, 2021')
     })
   })
 })
