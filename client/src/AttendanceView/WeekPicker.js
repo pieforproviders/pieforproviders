@@ -13,6 +13,7 @@ export function WeekPicker({ dateSelected, handleDateChange }) {
   const { t } = useTranslation()
   const firstDay = dateSelected.weekday(0).format('MMM D')
   const lastDay = dateSelected.weekday(6).format('MMM D, YYYY')
+  console.log('firstDay:', firstDay)
   return (
     <div>
       <Button
