@@ -64,7 +64,7 @@ RSpec.describe Child, type: :model do
 
   describe 'scopes' do
     let(:inactive_child) { create(:child, active: false) }
-    let(:deleted_child) { create(:child, deleted: true) }
+    let(:deleted_child) { create(:child, deleted_at: Time.current.to_date) }
 
     it 'only displays active children in the active scope' do
       expect(described_class.active).to include(child)
@@ -159,7 +159,9 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaFullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaFullDaysCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new).with(child: child,
+                                   date: Time.current.to_date,
+                                   scope: :for_month).and_return(calculator_instance)
           child.nebraska_full_days(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -182,7 +184,9 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaHoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaHoursCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new).with(child: child,
+                                   date: Time.current.to_date,
+                                   scope: :for_month).and_return(calculator_instance)
           child.nebraska_hours(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -205,7 +209,8 @@ RSpec.describe Child, type: :model do
         it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
           allow(NebraskaWeeklyHoursAttendedCalculator)
-            .to receive(:new).with(child, Time.current.to_date).and_return(calculator_instance)
+            .to receive(:new)
+            .with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
           expect(calculator_instance).to have_received(:call)
         end
@@ -354,7 +359,7 @@ end
 #  id                 :uuid             not null, primary key
 #  active             :boolean          default(TRUE), not null
 #  date_of_birth      :date             not null
-#  deleted            :boolean          default(FALSE), not null
+#  deleted_at         :date
 #  enrolled_in_school :boolean
 #  full_name          :string           not null
 #  inactive_reason    :string

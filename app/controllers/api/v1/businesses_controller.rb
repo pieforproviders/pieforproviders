@@ -46,7 +46,12 @@ module Api
       # DELETE /businesses/:id
       def destroy
         # soft delete
-        @business.update!(active: false)
+        if @business.children.any?(&:active?)
+          @business.errors.add(:children, :not_permitted, message: 'cannot delete a business with active children')
+          render json: @business.errors, status: :unprocessable_entity
+        else
+          @business.update!(deleted_at: Time.current.to_date)
+        end
       end
 
       private

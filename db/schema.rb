@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_22_172801) do
+ActiveRecord::Schema.define(version: 2021_10_03_055231) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.date "expires_on"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "deleted_at"
   end
 
   create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -37,6 +38,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.string "wonderschool_id"
     t.string "absence"
     t.decimal "earned_revenue"
+    t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
   end
 
@@ -60,6 +62,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "qris_rating"
     t.boolean "accredited"
+    t.date "deleted_at"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -78,6 +81,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.string "rate_type"
     t.uuid "rate_id"
     t.integer "authorized_weekly_hours"
+    t.date "deleted_at"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
@@ -95,7 +99,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.boolean "enrolled_in_school"
     t.date "last_active_date"
     t.string "inactive_reason"
-    t.boolean "deleted", default: false, null: false
+    t.date "deleted_at"
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
@@ -130,6 +134,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.uuid "child_approval_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_illinois_approval_amounts_on_child_approval_id"
   end
 
@@ -148,6 +153,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
     t.string "name", default: "Rule Name Filler", null: false
+    t.date "deleted_at"
   end
 
   create_table "nebraska_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -158,6 +164,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.decimal "allocated_family_fee", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
   end
 
@@ -175,6 +182,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
+    t.date "deleted_at"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -186,6 +194,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "deleted_at"
     t.index ["child_id"], name: "index_schedules_on_child_id"
     t.index ["effective_on", "child_id", "weekday"], name: "unique_child_schedules", unique: true
   end
@@ -203,6 +212,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.string "as_of"
     t.decimal "family_fee"
     t.string "hours_attended"
+    t.date "deleted_at"
     t.index ["child_id"], name: "index_temporary_nebraska_dashboard_cases_on_child_id"
   end
 
@@ -235,6 +245,7 @@ ActiveRecord::Schema.define(version: 2021_09_22_172801) do
     t.string "unconfirmed_email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.date "deleted_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true

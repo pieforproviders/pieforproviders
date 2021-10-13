@@ -2,9 +2,12 @@
 
 # Service to calculate full days used in Nebraska by specific kids
 class NebraskaFullDaysCalculator
-  def initialize(child, filter_date)
+  attr_reader :child, :date, :scope
+
+  def initialize(child:, date:, scope:)
     @child = child
-    @filter_date = filter_date
+    @date = date
+    @scope = scope
   end
 
   def call
@@ -22,8 +25,15 @@ class NebraskaFullDaysCalculator
   private
 
   def calculate_full_days
-    @child.attendances.non_absences.for_month(@filter_date).reduce(0) do |sum, attendance|
+    attendances.reduce(0) do |sum, attendance|
       sum + calculate_full_days_based_on_duration(attendance.total_time_in_care)
     end
+  end
+
+  def attendances
+    attendances = child.active_child_approval(date).attendances.non_absences
+    return attendances unless scope
+
+    attendances.send(scope, date)
   end
 end

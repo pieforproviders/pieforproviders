@@ -92,13 +92,17 @@ class Attendance < UuidApplicationRecord
   def ne_hours
     # TODO: this is super sloppy because this shouldn't be a
     # service class but we haven't refactored these to procedures yet
-    NebraskaHoursCalculator.new(child, check_in).round_hourly_to_quarters(total_time_in_care.seconds)
+    NebraskaHoursCalculator.new(child: child,
+                                date: check_in,
+                                scope: :for_month).round_hourly_to_quarters(total_time_in_care.seconds)
   end
 
   def ne_days
     # TODO: this is super sloppy because this shouldn't be a
     # service class but we haven't refactored these to procedures yet
-    NebraskaFullDaysCalculator.new(child, check_in).calculate_full_days_based_on_duration(total_time_in_care.seconds)
+    NebraskaFullDaysCalculator.new(child: child,
+                                   date: check_in,
+                                   scope: :for_month).calculate_full_days_based_on_duration(total_time_in_care.seconds)
   end
 
   # TODO: open question - does qris bump impact this rate?
@@ -165,6 +169,7 @@ end
 #  absence                                                        :string
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
+#  deleted_at                                                     :date
 #  earned_revenue                                                 :decimal(, )
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null

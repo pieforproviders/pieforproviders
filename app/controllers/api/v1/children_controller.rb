@@ -43,7 +43,7 @@ module Api
       # DELETE /children/:id
       def destroy
         # soft delete
-        @child.update!(deleted: true)
+        @child.update!(deleted_at: Time.current.to_date)
       end
 
       private
@@ -58,7 +58,7 @@ module Api
 
       def child_params
         attributes = []
-        attributes += %i[deleted] if current_user.admin?
+        attributes += %i[deleted_at] if current_user.admin?
         attributes += %i[date_of_birth full_name business_id active last_active_date inactive_reason]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]
         params.require(:child).permit(attributes)

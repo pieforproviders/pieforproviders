@@ -43,6 +43,7 @@ end
 #  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
 #  copay_frequency :string
+#  deleted_at      :date
 #  effective_on    :date
 #  expires_on      :date
 #  created_at      :datetime         not null
