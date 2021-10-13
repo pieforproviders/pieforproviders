@@ -35,8 +35,8 @@ const Routes = () => {
   useEffect(() => {
     if (env.REACT_APP_HOTJAR_ID) {
       initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
