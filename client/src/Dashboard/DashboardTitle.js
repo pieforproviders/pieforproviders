@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select, Menu, Dropdown, Modal } from 'antd'
-import { LeftOutlined, DownOutlined } from '@ant-design/icons'
+import { LeftOutlined, DownOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
 import PaymentModal from '../Payment'
@@ -102,8 +102,14 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       title={
         <div className="eyebrow-large text-center">{t('recordAPayment')}</div>
       }
+      closeIcon={<CloseOutlined className="-btn-primary" />}
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}
+      footer={
+        <div className="flex m-auto">
+          <Button>{t('recordPaymentOf')}</Button>
+        </div>
+      }
     >
       <PaymentModal />
     </Modal>

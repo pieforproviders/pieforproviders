@@ -242,5 +242,9 @@
   "recordDropdown": "Anotar nuevo",
   "recordPaymentButton": "Pago",
   "recordAPayment": "Anota un pago",
-  "recordAChildsPayment": "Anota el pago de cada niño para chequear si haya contradicciones"
+  "recordAChildsPayment": "Anota el pago de cada niño para chequear si haya contradicciones",
+  "differentAmountFromState": "Recibí un monto distinto del estado",
+  "updatePayment": "Actualizar el pago",
+  "differentPaymentAmount": "Si recibiste un monto distinto",
+  "recordPaymentOf": "Anota un pago de"
 }

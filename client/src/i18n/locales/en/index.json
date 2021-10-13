@@ -242,5 +242,9 @@
   "recordDropdown": "Record new",
   "recordPaymentButton": "Payment",
   "recordAPayment": "Record a payment",
-  "recordAChildsPayment": "Record each child's payment to check if there are any inconsistencies"
+  "recordAChildsPayment": "Record each child's payment to check if there are any inconsistencies",
+  "differentAmountFromState": "I received a different amount from the state",
+  "updatePayment": "Update payment",
+  "differentPaymentAmount": "If you received a different amount",
+  "recordPaymentOf": "Record payment of"
 }
