@@ -5,7 +5,9 @@ import { WeekPicker } from '../WeekPicker'
 const doRender = stateOptions => {
   return render(
     <WeekPicker
-      dateSelected={{ weekday: (num = 0) => ({ format: () => num }) }}
+      dateSelected={{
+        weekday: (num = 0) => ({ format: () => `${num}` })
+      }}
     />,
     stateOptions
   )
