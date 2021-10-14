@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "deleted_at"
+    t.boolean "active", default: true, null: false
+    t.string "inactive_reason"
   end
 
   create_table "attendances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
