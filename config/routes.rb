@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
+      resources :payments_batches, only: :create
       resources :attendances, only: :index
       resources :attendance_batches, only: :create
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
@@ -76,6 +77,7 @@ end
 #                                          PATCH  /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          PUT    /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          DELETE /api/v1/children/:id(.:format)                                                                    api/v1/children#destroy {:format=>:json}
+#                         payments_batches POST   /api/v1/payments_batches(.:format)                                                                api/v1/payments_batches#create {:format=>:json}
 #                              attendances GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
 #                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}

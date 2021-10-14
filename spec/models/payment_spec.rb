@@ -16,11 +16,18 @@ end
 #
 # Table name: payments
 #
-#  id                        :uuid             not null, primary key
-#  month                     :date             not null
-#  amount                    :decimal(, )      not null
-#  child_approval_id         :uuid             not null
+#  id                :uuid             not null, primary key
+#  amount            :decimal(, )      not null
+#  month             :date             not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  child_approval_id :uuid             not null
+#
+# Indexes
+#
+#  index_payments_on_child_approval_id  (child_approval_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_approval_id => child_approvals.id)
+#
