@@ -40,6 +40,7 @@ end
 # Table name: approvals
 #
 #  id              :uuid             not null, primary key
+#  active          :boolean          default(TRUE), not null
 #  case_number     :string
 #  copay_cents     :integer
 #  copay_currency  :string           default("USD"), not null
@@ -47,6 +48,7 @@ end
 #  deleted_at      :date
 #  effective_on    :date
 #  expires_on      :date
+#  inactive_reason :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
