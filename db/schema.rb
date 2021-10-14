@@ -65,6 +65,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.string "qris_rating"
     t.boolean "accredited"
     t.date "deleted_at"
+    t.string "inactive_reason"
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
