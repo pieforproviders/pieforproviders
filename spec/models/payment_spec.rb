@@ -30,3 +30,4 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (child_approval_id => child_approvals.id)
+#
