@@ -67,6 +67,7 @@ end
 #  accredited   :boolean
 #  active       :boolean          default(TRUE), not null
 #  county       :string
+#  inactive_reason :string
 #  deleted_at   :date
 #  license_type :string           not null
 #  name         :string           not null

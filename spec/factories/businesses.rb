@@ -63,6 +63,7 @@ end
 #
 # Table name: businesses
 #
+<<<<<<< HEAD
 #  id           :uuid             not null, primary key
 #  accredited   :boolean
 #  active       :boolean          default(TRUE), not null
@@ -76,6 +77,21 @@ end
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  user_id      :uuid             not null
+=======
+#  id              :uuid             not null, primary key
+#  accredited      :boolean
+#  active          :boolean          default(TRUE), not null
+#  county          :string
+#  inactive_reason :string
+#  license_type    :string           not null
+#  name            :string           not null
+#  qris_rating     :string
+#  state           :string
+#  zipcode         :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  user_id         :uuid             not null
+>>>>>>> ce318a1d... Add `inactive_reason` to Business
 #
 # Indexes
 #

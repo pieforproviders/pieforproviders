@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_03_055231) do
+ActiveRecord::Schema.define(version: 2021_10_14_224854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -62,7 +62,11 @@ ActiveRecord::Schema.define(version: 2021_10_03_055231) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "qris_rating"
     t.boolean "accredited"
+<<<<<<< HEAD
     t.date "deleted_at"
+=======
+    t.string "inactive_reason"
+>>>>>>> ce318a1d... Add `inactive_reason` to Business
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
