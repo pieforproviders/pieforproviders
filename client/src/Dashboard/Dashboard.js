@@ -278,7 +278,7 @@ export function Dashboard() {
       if (response.ok) {
         const resp = await response.json()
         dispatch(setUser(resp))
-        identifyHotjar(resp.id ?? null)
+        identifyHotjar(resp.id ?? null, resp, console.info)
         setSummaryTotals(
           summaryDataTotalsConfig[`${resp.state === 'NE' ? 'ne' : 'default'}`]
         )
