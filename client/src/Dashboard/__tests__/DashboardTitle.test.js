@@ -2,7 +2,6 @@ import React from 'react'
 import { render, waitFor } from 'setupTests'
 import DashboardTitle from '../DashboardTitle'
 import { mount } from 'enzyme'
-import {act} from "@testing-library/react";
 
 const doRender = (
   props = {
