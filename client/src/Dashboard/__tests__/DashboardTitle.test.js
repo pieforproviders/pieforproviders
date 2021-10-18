@@ -48,7 +48,7 @@ describe('<DashboardTitle />', () => {
     })
   })
 
-  it('renders shows the Record new Button', async () => {
+  it('renders the Record new Button', async () => {
     const { container } = doRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Record new')
