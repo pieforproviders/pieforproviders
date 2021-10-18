@@ -10,6 +10,11 @@ const doRender = stateOptions => {
 describe('<WeekPicker />', () => {
   it('renders content', async () => {
     const { container } = doRender()
+    console.log(
+      `${dayjs().weekday(0).format('MMM D')} - ${dayjs()
+        .weekday(6)
+        .format('MMM D, YYYY')}`
+    )
     await waitFor(() => {
       expect(container).toHaveTextContent(
         `${dayjs().weekday(0).format('MMM D')} - ${dayjs()
