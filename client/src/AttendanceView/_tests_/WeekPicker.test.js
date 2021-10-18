@@ -4,7 +4,7 @@ import { WeekPicker } from '../WeekPicker'
 import dayjs from 'dayjs'
 
 const doRender = stateOptions => {
-  return render(<WeekPicker dateSelected={dayjs()} />, stateOptions)
+  return render(<WeekPicker dateSelected={dayjs('2021-10-13')} />, stateOptions)
 }
 
 describe('<WeekPicker />', () => {

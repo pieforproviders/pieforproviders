@@ -94,7 +94,8 @@
     ],
     "transformIgnorePatterns": [
       "/node_modules/(?!geodesy).+\\.js$"
-    ]
+    ],
+    "globalSetup": "./global-setup.js"
   },
   "browserslist": {
     "production": [
