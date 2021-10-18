@@ -1,0 +1,10 @@
+# release.yml
+
+changelog:
+  categories:
+    - title: 👒 Dependencies
+      labels:
+        - dependencies
+    - title: 🏕 What's Changed
+      labels:
+        - '*'
