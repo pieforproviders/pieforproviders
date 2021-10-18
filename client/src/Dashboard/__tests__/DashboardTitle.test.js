@@ -2,6 +2,7 @@ import React from 'react'
 import { render, waitFor } from 'setupTests'
 import DashboardTitle from '../DashboardTitle'
 import { mount } from 'enzyme'
+import {act} from "@testing-library/react";
 
 const doRender = (
   props = {
@@ -57,14 +58,20 @@ describe('<DashboardTitle />', () => {
 
   it('Payment modal should render When Add Record Payment is clicked', async () => {
     const wrapper = mountRender()
-    const paymentModal = wrapper.find('#paymentModal').at(0)
-    expect(paymentModal.prop('visible')).toBeFalsy()
+    expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
 
-    const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
-    recordActionButton.simulate('click')
-    const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
-    await recordPaymentButton.simulate('click')
+    await waitFor(() => {
+      const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
+      recordActionButton.simulate('click')
+      const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
+      recordPaymentButton.simulate('click')
 
-    expect(wrapper.find('#paymentModal').at(1).prop('visible')).toBeTruthy()
+      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeTruthy()
+
+      //Clicking on X button in modal to verify modal is closed
+      const closeModalButton = wrapper.find('.ant-modal-close')
+      closeModalButton.simulate('click')
+      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
+    })
   })
 })
