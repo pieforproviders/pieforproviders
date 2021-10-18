@@ -246,5 +246,6 @@
   "differentAmountFromState": "Recibí un monto distinto del estado",
   "updatePayment": "Actualizar el pago",
   "differentPaymentAmount": "Si recibiste un monto distinto",
-  "recordPaymentOf": "Anota un pago de"
+  "recordPaymentOf": "Anota un pago de",
+  "enterAmount": "Pone el monto"
 }
