@@ -36,28 +36,28 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
-"@appsignal/core@=1.1.13":
-  version "1.1.13"
-  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.13.tgz#37e674fa2c49924ed18bd455dfccca7fab3883cc"
-  integrity sha512-8+5SoLuI0t46jgGf4mIQBvAL+ZqyWVs88oMdGoQiIi45wzVKm7UQxSZ3g2fLKQ9Un1RVoFikE0UHhHfbhpyHXw==
+"@appsignal/core@=1.1.14":
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/@appsignal/core/-/core-1.1.14.tgz#b3245ff034e7ae71d20ff8eb7ab54b5547aa1073"
+  integrity sha512-of8KQQm9WSTjLjvjZ8bB7uY3Yfl37E7CNTdYOR+DPwyrxxCQDAg/FWD9Hfx3xmCFL8zvgAMt+jROsy2d6hmDNQ==
   dependencies:
-    "@appsignal/types" "=2.1.5"
+    "@appsignal/types" "=2.1.6"
     isomorphic-unfetch "^3.1.0"
     tslib "^2.3.0"
 
-"@appsignal/javascript@^1.3.18":
-  version "1.3.18"
-  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.18.tgz#79e6fe20675ae5a31c573bcb5e7439be361c05fc"
-  integrity sha512-EbW21+BMvwJhokkayj+G/xltIlToc+7ktuBxblzGlNHc/bqWnoWxEz5G4CuaUyInMOXhKAkpTg3+/rz0Cgg5Pw==
+"@appsignal/javascript@^1.3.19":
+  version "1.3.19"
+  resolved "https://registry.yarnpkg.com/@appsignal/javascript/-/javascript-1.3.19.tgz#8c8e4e8aad3036f54056961d076df3f2fb16c4b2"
+  integrity sha512-nQ9WH1vjBKgcLlQ+YRXxCgF6mrwL+uhmXZFOHVMRhSlK+AYsZZXlx/+B6uTnInUHpJHQtOeMp2IMRht0FolJiw==
   dependencies:
-    "@appsignal/core" "=1.1.13"
-    "@appsignal/types" "=2.1.5"
+    "@appsignal/core" "=1.1.14"
+    "@appsignal/types" "=2.1.6"
     tslib "^2.3.0"
 
-"@appsignal/types@=2.1.5":
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.5.tgz#ec6a667da1ffa8475ee51ffdadc38e6bd72b1fb1"
-  integrity sha512-LtxfqACzS10PYxAqe2YgT9k/pPFyzAwyXvi48QddWyBj7ROleAXrEKJjjgqxOYszIGCm14cbCLSDmEDvIVnDbw==
+"@appsignal/types@=2.1.6":
+  version "2.1.6"
+  resolved "https://registry.yarnpkg.com/@appsignal/types/-/types-2.1.6.tgz#5bcb6b77dc489b60ef9f2158d7ef55ebd06ac829"
+  integrity sha512-5iyjYG6wsSW8kI8uFpjsaABBB6ENEutQ3esWXQmibEwiKNxVzDRHh/IRw7F6xwSBfA8XvJkeGEu6OtwcLdRrLA==
 
 "@babel/code-frame@7.10.4":
   version "7.10.4"
@@ -2104,10 +2104,10 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
-"@testing-library/dom@^8.0.0", "@testing-library/dom@^8.9.0":
-  version "8.9.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.9.0.tgz#608ee6f235688a27f8ee180c0d81ff77a5363d59"
-  integrity sha512-fhmAYtGpFqzKdPq5aLNn/T396qfhYkttHT/5RytdDNSCzg9K/0F/WXF5iDsNBK1M3ZIQbPy7Y0qm4Kup5bqT/w==
+"@testing-library/dom@^8.0.0", "@testing-library/dom@^8.9.1":
+  version "8.9.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.9.1.tgz#d6bf8ad9e1699be0e0e0e818fc211b41e511ad08"
+  integrity sha512-jXM+FKo5BZA/2WtcsoTGuDs810J3ewQ2yq59Gxd2heux5jr8lo2DnTAl3JWVwAlg2/DcWSYqKY5pi9v0g8hvhw==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"
@@ -2141,10 +2141,10 @@
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.0.0"
 
-"@testing-library/user-event@^13.3.0":
-  version "13.3.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.3.0.tgz#2ce50953b885c452a2b2df880a1998637599dcf5"
-  integrity sha512-f8AJ8ybUna88Lmx3l5fuPMhzyyrcopQk/vgVDHVKOnOf2kkjfVSb0Px77iduHmh6uFUcXsD/z6qp4G13rObVrw==
+"@testing-library/user-event@^13.4.1":
+  version "13.4.1"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.4.1.tgz#8d9e73bcc7be09560b4c0ffbb6842ac43bc80ed2"
+  integrity sha512-WcnVwi96MmFsHLMNvBz03aPMVDU3UOgucXcn85fNXKKdtd7CHi2NAgE3hASt157yTB9krym0ikFVKbqYghKRCg==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
