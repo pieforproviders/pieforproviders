@@ -70,7 +70,8 @@ export function Login() {
       batch(() => {
         dispatch(addAuth(authToken))
         dispatch(setUser(resp))
-        identifyHotjar(resp.id ?? null)
+
+        identifyHotjar(resp.id ?? null, resp, console.info)
       })
       history.push('/dashboard')
     }
