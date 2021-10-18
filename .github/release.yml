@@ -5,6 +5,6 @@ changelog:
     - title: 👒 Dependencies
       labels:
         - dependencies
-    - title: 🏕 What's Changed
+    - title: 🏕 Features
       labels:
         - '*'
