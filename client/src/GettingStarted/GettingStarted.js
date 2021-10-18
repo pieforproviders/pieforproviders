@@ -39,7 +39,7 @@ export function GettingStarted() {
       if (response.ok) {
         const resp = await response.json()
         dispatch(setUser(resp))
-        identifyHotjar(resp.id ?? null)
+        identifyHotjar(resp.id ?? null, resp, console.info)
       }
     }
 
