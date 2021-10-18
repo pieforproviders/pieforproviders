@@ -6,7 +6,7 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
   let!(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:attendance_date) do
-    (child_approval.effective_on.at_end_of_month.in_time_zone(child.timezone) + 2.weeks).next_occurring(:monday)
+    (child_approval.effective_on.at_end_of_month.in_time_zone(child.timezone) + 4.weeks).next_occurring(:monday)
   end
 
   describe '#call' do

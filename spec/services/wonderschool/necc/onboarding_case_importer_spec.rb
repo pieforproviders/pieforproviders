@@ -65,7 +65,8 @@ module Wonderschool
               {
                 dhs_id: '14047907',
                 date_of_birth: Date.parse('2010-09-01'),
-                enrolled_in_school: false
+                enrolled_in_school: false,
+                wonderschool_id: '37821'
               }
             )
             expect(thomas.business).to have_attributes(
@@ -109,7 +110,8 @@ module Wonderschool
               {
                 dhs_id: '69370816',
                 date_of_birth: Date.parse('2013-12-26'),
-                enrolled_in_school: false
+                enrolled_in_school: false,
+                wonderschool_id: '37827'
               }
             )
             expect(becky.business).to have_attributes(

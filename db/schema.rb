@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_13_153945) do
+ActiveRecord::Schema.define(version: 2021_09_26_232549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.datetime "updated_at", precision: 6, null: false
     t.decimal "attendance_threshold"
     t.string "county", default: " ", null: false
-    t.date "effective_on", default: "2021-09-02", null: false
+    t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
     t.decimal "max_age", default: "0.0", null: false
@@ -175,6 +175,15 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.decimal "amount", null: false
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -248,6 +257,7 @@ ActiveRecord::Schema.define(version: 2021_08_13_153945) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

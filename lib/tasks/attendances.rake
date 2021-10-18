@@ -28,11 +28,7 @@ def active_child_approval
 end
 
 def current_approval_amounts
-  if @child.state == 'NE'
-    puts 'No attendance logic for Nebraska has been implemented'
-  else
-    active_child_approval.illinois_approval_amounts.find_by('month = ?', now.beginning_of_month)
-  end
+  active_child_approval.illinois_approval_amounts.find_by('month = ?', now.beginning_of_month) if @child.state == 'IL'
 end
 
 def weeks_to_populate
@@ -48,11 +44,25 @@ def full_day_attendances
   current_approval_amounts.full_days_approved_per_week * weeks_to_populate
 end
 
-def add_attendance(type)
-  check_in = Faker::Time.between(from: last_attendance_check_out, to: now)
-  hours = type == 'part' ? 6 : 11
+def add_attendance(type, weeks = nil)
+  return unless active_child_approval
+
+  end_time = weeks ? last_attendance_check_out + weeks.weeks : now
+  check_in = Faker::Time.between(from: last_attendance_check_out, to: end_time)
+  hours = case type
+          when 'part'
+            6
+          when 'full'
+            11
+          when 'full_day_ne'
+            7
+          when 'hourly_ne'
+            3
+          else
+            1
+          end
   check_out = check_in + hours.hours + rand(0..59).minutes
-  active_child_approval.attendances << Attendance.new(check_in: check_in, check_out: check_out)
+  Attendance.create!(check_in: check_in, check_out: check_out, child_approval: active_child_approval)
 end
 
 def types_array
@@ -66,14 +76,32 @@ def generate_attendances
   Child.all.each do |child|
     @child = child
 
+    if @child.state == 'NE'
+      generate_nebraska_attendance
+      next
+    end
+
     # if the child doesn't have an approval for this month or if we don't have any weeks to populate, skip this child
     next unless weeks_to_populate.positive? && current_approval_amounts
 
-    types_array.shuffle.each do |type|
-      # skip if the last attendance was today or in the future
-      next if last_attendance_check_out.today? || last_attendance_check_out.future?
+    generate_illinois_attendance
+  end
+end
 
-      add_attendance(type)
+def generate_illinois_attendance
+  types_array.shuffle.each do |type|
+    # skip if the last attendance was today or in the future
+    next if last_attendance_check_out.today? || last_attendance_check_out.future?
+
+    add_attendance(type)
+  end
+end
+
+def generate_nebraska_attendance
+  # create a random number of attendances based on their schedule
+  weeks_to_populate.to_i.times do |week|
+    @child.schedules.each do
+      rand(0..1) == 1 ? add_attendance('full_day_ne', week) : add_attendance('hourly_ne', week)
     end
   end
 end
