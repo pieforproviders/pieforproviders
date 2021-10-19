@@ -8,11 +8,11 @@ assignees: ''
 
 ## 👉🏼 Steps to Reproduce
 
-<!-- Steps to reproduce the behavior:
+<!-- Steps to reproduce the behavior: -->
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
-4. See error -->
+4. See error
 
 ## 🇺🇸 States this bug is happening in
 - [X] ALL
