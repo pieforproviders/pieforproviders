@@ -165,8 +165,6 @@ module Wonderschool
           end
 
           it "continues processing if the user doesn't exist" do
-            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
-            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             first_user.destroy!
             described_class.new.call
             expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
@@ -174,6 +172,38 @@ module Wonderschool
             expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
           end
 
+          it 'skips the child if the exact same child at the exact same business already exists' do
+            business = create(
+              :business,
+              user: first_user,
+              name: "Rebecca's Childcare",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '14635435',
+              effective_on: '2020-09-01',
+              expires_on: '2021-08-31',
+              create_children: false
+            )
+            create(:child, full_name: 'Thomas Eddleman', business: business, approvals: [approval])
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(5)
+              .and change(Approval, :count)
+              .from(1).to(3)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(0).to(5)
+          end
+        end
+
+        context 'with invalid data' do
           it 'continues processing if the record is invalid or missing a required field' do
             allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
             allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
