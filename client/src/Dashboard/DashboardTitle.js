@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Button, Grid, Typography, Select } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Button, Grid, Typography, Select, Menu, Dropdown, Modal } from 'antd'
+import { LeftOutlined, DownOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
+import PaymentModal from '../Payment'
 
 const { useBreakpoint } = Grid
 const { Option } = Select
@@ -17,6 +18,8 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   // const [isDropdownVisible, setDropdownVisible] = useState(false)
   // const dropdownStyle = { color: '#006C9E' }
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
+  const [isPaymentModalVisible, setPaymentModalVisible] = useState(false)
+  const [isActionsDropdownOpen, setActionsDropdownOpen] = useState(false)
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -47,6 +50,63 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         </Option>
       ))}
     </Select>
+  )
+
+  const showPaymentModal = () => {
+    setPaymentModalVisible(true)
+  }
+
+  const handlePaymentModalCancel = () => {
+    setPaymentModalVisible(false)
+  }
+
+  const updateIsActionsDropdownOpen = () => {
+    setActionsDropdownOpen(!isActionsDropdownOpen)
+  }
+
+  const dashboardActions = (
+    <Menu>
+      <Menu.Item key="addAttendanceMenuItem">
+        <Button onClick={() => history.push('/attendance/edit')} type="text">
+          {t('addAttendance')}
+        </Button>
+      </Menu.Item>
+      <Menu.Item key="recordPaymentMenuItem">
+        <Button id="recordPaymentButton" type="text" onClick={showPaymentModal}>
+          {t('recordPaymentButton')}
+        </Button>
+      </Menu.Item>
+    </Menu>
+  )
+
+  const dashboardActionDropdown = (
+    <Dropdown
+      overlay={dashboardActions}
+      className="ml-auto flex"
+      trigger="click"
+    >
+      <Button
+        type="primary"
+        id="actionsDropdownButton"
+        onClick={updateIsActionsDropdownOpen}
+      >
+        {t('recordDropdown')}
+        {isActionsDropdownOpen ? <DownOutlined /> : <LeftOutlined />}
+      </Button>
+    </Dropdown>
+  )
+
+  const paymentModal = (
+    <Modal
+      id="paymentModal"
+      title={
+        <div className="eyebrow-large text-center">{t('recordAPayment')}</div>
+      }
+      visible={isPaymentModalVisible}
+      onCancel={handlePaymentModalCancel}
+    >
+      <PaymentModal />
+    </Modal>
   )
 
   const renderDisabledMonth = () => (
@@ -82,13 +142,11 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             <Typography.Text className="mb-3 text-base">
               {t('revenueProjections')}
             </Typography.Text>
-            <Button
-              className="border-primaryBlue text-primaryBlue flex"
-              onClick={() => history.push('/attendance/edit')}
-            >
-              {t('addAttendance')} <PlusOutlined />
-            </Button>
+
+            {dashboardActionDropdown}
           </div>
+
+          {paymentModal}
         </div>
       ) : (
         <div>
@@ -104,16 +162,14 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             <Typography.Text className="text-gray3">
               {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
             </Typography.Text>
-            <Button
-              className="ml-auto border-primaryBlue text-primaryBlue flex"
-              onClick={() => history.push('/attendance/edit')}
-            >
-              {t('addAttendance')} <PlusOutlined />
-            </Button>
+
+            {dashboardActionDropdown}
           </div>
           <Typography.Text className="text-base">
             {t('revenueProjections')}
           </Typography.Text>
+
+          {paymentModal}
         </div>
       )}
     </div>

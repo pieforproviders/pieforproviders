@@ -238,5 +238,9 @@
 
   "screenSize": "Screen size not compatible",
   "incompatibleMsg": "Either your browser window is too small, or you’re on a mobile device. Please switch to a desktop or tablet to view this page.",
-  "noInfo": "no info"
+  "noInfo": "no info",
+  "recordDropdown": "Record new",
+  "recordPaymentButton": "Payment",
+  "recordAPayment": "Record a payment",
+  "recordAChildsPayment": "Record each child's payment to check if there are any inconsistencies"
 }
