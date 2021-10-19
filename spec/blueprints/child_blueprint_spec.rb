@@ -199,10 +199,11 @@ RSpec.describe ChildBlueprint do
       let(:hourly_rate) { 5.15 }
       let(:qris_bump) { 1.05**1 }
 
-      # rubocop:disable RSpec/MultipleExpectations
       # rubocop:disable RSpec/ExampleLength
       it 'includes the child name and all live attendance data' do
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # 3 hours of attendance from the hourly attendance created above on the 4th
         expect(parsed_body['hours']).to eq('3.0')
         # 1 full day of attendance from the daily attendance created above on the 7th
@@ -224,7 +225,9 @@ RSpec.describe ChildBlueprint do
 
         travel_to Time.current + 14.days # second dashboard view date is Jul 22nd, 2021 at 4pm
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # no new hourly attendance
         expect(parsed_body['hours']).to eq('3.0')
         # no new daily attendance
@@ -252,7 +255,9 @@ RSpec.describe ChildBlueprint do
           check_out: attendance_date.to_datetime + 16.days + 6.hours + 15.minutes
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # one new hourly attendance
         expect(parsed_body['hours']).to eq('6.25')
         # no new daily attendance
@@ -278,7 +283,9 @@ RSpec.describe ChildBlueprint do
           check_out: attendance_date.to_datetime + 15.days + 9.hours + 18.minutes
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # no new hourly attendance
         expect(parsed_body['hours']).to eq('6.25')
         # one new daily attendance
@@ -313,7 +320,9 @@ RSpec.describe ChildBlueprint do
           absence: 'absence'
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # 5 new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
@@ -339,7 +348,9 @@ RSpec.describe ChildBlueprint do
           absence: 'absence'
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # no new daily attendance
         expect(parsed_body['full_days']).to eq('7.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
@@ -365,7 +376,9 @@ RSpec.describe ChildBlueprint do
           absence: 'covid_absence'
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # 1 new covid absence
         expect(parsed_body['absences']).to eq('7 of 5')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
@@ -389,7 +402,9 @@ RSpec.describe ChildBlueprint do
           check_out: Time.current - 10.minutes
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # 1 new daily attendance
         expect(parsed_body['full_days']).to eq('8.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
@@ -423,7 +438,9 @@ RSpec.describe ChildBlueprint do
           check_out: prior_month_check_in + 7.hours
         )
 
-        parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        parsed_body = JSON.parse(described_class.render(child,
+                                                        view: :nebraska_dashboard,
+                                                        filter_date: Time.current))
         # 1 new daily attendance
         expect(parsed_body['full_days']).to eq('8.0')
         expect(parsed_body['hours_remaining']).to eq((child_approval.hours - 9.25).to_f)
@@ -473,7 +490,9 @@ RSpec.describe ChildBlueprint do
         child.reload
         child_with_less_hours.reload
 
-        child_json = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
+        child_json = JSON.parse(described_class.render(child,
+                                                       view: :nebraska_dashboard,
+                                                       filter_date: Time.current))
         child_with_less_hours_json = JSON.parse(
           described_class.render(
             child_with_less_hours,
@@ -490,7 +509,6 @@ RSpec.describe ChildBlueprint do
         expect(child_json['earned_revenue']).to eq(child_with_less_hours_json['earned_revenue'].to_f - 80.00)
       end
       # rubocop:enable RSpec/ExampleLength
-      # rubocop:enable RSpec/MultipleExpectations
     end
   end
 end
