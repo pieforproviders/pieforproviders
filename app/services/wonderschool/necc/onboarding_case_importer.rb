@@ -7,6 +7,8 @@ module Wonderschool
       include AppsignalReporting
       include CsvTypecasting
 
+      class NotEnoughInfo < StandardError; end
+
       def initialize
         @client = AwsClient.new
         @source_bucket = Rails.application.config.aws_necc_onboarding_bucket
@@ -31,29 +33,35 @@ module Wonderschool
 
       def process_row(row)
         @row = row
+        @business = Business.find_or_create_by!(required_business_params)
+        return if Child.find_by(child_match_params)
+
+        @child = create_new_child
+
+        raise NotEnoughInfo unless @child.valid?
+
+        @child.save!
+
         build_case
-        @business.update!(optional_business_params)
-        @child_approval.update!(child_approval_params)
-        approval_amount_params[:approval_periods].each do |period|
-          NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period))
-        end
       rescue StandardError => e
         send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
       end
 
-      def build_case
-        @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(child_params)
-        approval = existing_or_new_approval
-        # idempotency - add only if it's not already associated
-        @child.approvals.include?(approval) || (@child.approvals << approval)
-        @child.save!
-        @child_approval = ChildApproval.find_by(child: @child, approval: approval)
+      def create_new_child
+        child = Child.new(child_match_params.merge(child_additional_params))
+        child.approvals.include?(existing_or_new_approval) || (child.approvals << existing_or_new_approval)
+        child
       end
 
-      def create_approval_amounts
+      def build_case
+        # idempotency - add only if it's not already associated
+        child_approval = ChildApproval.find_by(child: @child, approval: existing_or_new_approval)
+        @business.update!(optional_business_params)
+        child_approval.update!(child_approval_params)
         approval_amount_params[:approval_periods].each do |period|
-          NebraskaApprovalAmount.find_or_create_by!(nebraska_approval_amount_params(period))
+          NebraskaApprovalAmount.find_or_create_by!(
+            nebraska_approval_amount_params(period).merge(child_approval: child_approval)
+          )
         end
       end
 
@@ -115,10 +123,15 @@ module Wonderschool
         }
       end
 
-      def child_params
+      def child_match_params
         {
           business_id: @business.id,
-          full_name: @row['Full Name'],
+          full_name: @row['Full Name']
+        }
+      end
+
+      def child_additional_params
+        {
           wonderschool_id: @row['Wonderschool ID'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)'],
@@ -137,7 +150,6 @@ module Wonderschool
 
       def nebraska_approval_amount_params(approval_period)
         {
-          child_approval: @child_approval,
           effective_on: approval_period[:effective_on],
           expires_on: approval_period[:expires_on],
           family_fee: approval_period[:family_fee],
