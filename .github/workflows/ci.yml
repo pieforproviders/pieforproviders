@@ -35,6 +35,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - name: Get Yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -97,6 +100,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2.3.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - name: Get Yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -149,6 +155,9 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           DEVISE_JWT_SECRET_KEY: imasecretkey
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - name: Get Yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
