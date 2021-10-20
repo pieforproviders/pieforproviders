@@ -3,7 +3,7 @@ import { Checkbox, InputNumber } from 'antd'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 
-export default function PaymentDataCell({ updateTotalPayment, columnIndex }) {
+export default function PaymentDataCell({ updateTotalPayment }) {
   const { t } = useTranslation()
   const [isDifferentPayment, setIsDifferentPayment] = useState(false)
 
@@ -34,6 +34,5 @@ export default function PaymentDataCell({ updateTotalPayment, columnIndex }) {
 }
 
 PaymentDataCell.propTypes = {
-  updateTotalPayment: PropTypes.func.isRequired,
-  columnIndex: PropTypes.number.isRequired
+  updateTotalPayment: PropTypes.func.isRequired
 }

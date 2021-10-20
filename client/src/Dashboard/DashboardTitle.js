@@ -20,6 +20,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
   const [isPaymentModalVisible, setPaymentModalVisible] = useState(false)
   const [isActionsDropdownOpen, setActionsDropdownOpen] = useState(false)
+  const [totalPayment, setTotalPayment] = useState(0)
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -107,11 +108,13 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       onCancel={handlePaymentModalCancel}
       footer={
         <div className="flex m-auto">
-          <Button>{t('recordPaymentOf')}</Button>
+          <Button>
+            {t('recordPaymentOf')} ${totalPayment.toFixed()}
+          </Button>
         </div>
       }
     >
-      <PaymentModal />
+      <PaymentModal setTotalPayment={setTotalPayment} />
     </Modal>
   )
 
