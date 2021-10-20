@@ -64,11 +64,8 @@ ActiveRecord::Schema.define(version: 2021_10_14_225206) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "qris_rating"
     t.boolean "accredited"
-<<<<<<< HEAD
     t.date "deleted_at"
-=======
     t.string "inactive_reason"
->>>>>>> ce318a1d... Add `inactive_reason` to Business
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
