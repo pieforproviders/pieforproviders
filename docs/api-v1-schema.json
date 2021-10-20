@@ -1,0 +1,701 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Pie for Providers API v1",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/businesses": {
+      "get": {
+        "summary": "lists all businesses for a user",
+        "tags": [
+          "businesses"
+        ],
+        "responses": {
+          "200": {
+            "description": "businesses found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "summary": "creates a business",
+        "tags": [
+          "businesses"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "business created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createBusiness"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/businesses/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a business",
+        "tags": [
+          "businesses"
+        ],
+        "responses": {
+          "200": {
+            "description": "business found"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "cannot update active on a business with active children",
+        "tags": [
+          "businesses"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "business updated"
+          },
+          "422": {
+            "description": "Business cannot be updated"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateBusiness"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a business",
+        "tags": [
+          "businesses"
+        ],
+        "responses": {
+          "204": {
+            "description": "business deleted"
+          },
+          "404": {
+            "description": "business not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/children": {
+      "get": {
+        "summary": "lists all children for a user",
+        "tags": [
+          "children"
+        ],
+        "responses": {
+          "200": {
+            "description": "children found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/children/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "summary": "retrieves a child",
+        "tags": [
+          "children"
+        ],
+        "responses": {
+          "200": {
+            "description": "child found"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "updates a child",
+        "tags": [
+          "children"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "child updated"
+          },
+          "422": {
+            "description": "child cannot be updated"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/updateChild"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "deletes a child",
+        "tags": [
+          "children"
+        ],
+        "responses": {
+          "204": {
+            "description": "child deleted"
+          },
+          "404": {
+            "description": "child not found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "retrieves all users",
+        "tags": [
+          "users"
+        ],
+        "responses": {
+          "200": {
+            "description": "users found"
+          },
+          "403": {
+            "description": "forbidden"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/profile": {
+      "get": {
+        "summary": "retrieves the user profile",
+        "tags": [
+          "users"
+        ],
+        "responses": {
+          "200": {
+            "description": "profile found"
+          },
+          "401": {
+            "description": "not authorized"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/case_list_for_dashboard": {
+      "get": {
+        "summary": "lists all cases with associated data for a user",
+        "tags": [
+          "children",
+          "dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "active cases found"
+          }
+        }
+      }
+    },
+    "/confirmation": {
+      "get": {
+        "summary": "Confirms the user's account.",
+        "parameters": [
+          {
+            "name": "confirmation_token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user confirmed"
+          },
+          "403": {
+            "description": "forbidden"
+          }
+        }
+      }
+    },
+    "/signup": {
+      "post": {
+        "summary": "Signs up a new user; creates the user.",
+        "tags": [
+          "users"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "user created"
+          },
+          "422": {
+            "description": "invalid request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/createUser"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@user.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "badPassword123!"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Marlee Matlin"
+          },
+          "greeting_name": {
+            "type": "string",
+            "example": "Marlee"
+          },
+          "language": {
+            "type": "string",
+            "example": "Farsi"
+          },
+          "organization": {
+            "type": "string",
+            "example": "Society for the Promotion of Elfish Welfare"
+          },
+          "phone_number": {
+            "type": "string",
+            "example": "888-888-8888"
+          },
+          "service_agreement_accepted": {
+            "type": "boolean",
+            "example": "true"
+          },
+          "timezone": {
+            "type": "string",
+            "example": "Eastern Time (US & Canada)"
+          }
+        }
+      },
+      "case_statuses": {
+        "type": "string",
+        "enum": [
+          "submitted",
+          "pending",
+          "approved",
+          "denied"
+        ],
+        "example": "submitted"
+      },
+      "copay_frequencies": {
+        "type": "string",
+        "enum": [
+          "daily",
+          "weekly",
+          "monthly"
+        ],
+        "example": "weekly"
+      },
+      "currency_or_null": {
+        "anyOf": [
+          {
+            "type": "string",
+            "example": "USD"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "date_or_null": {
+        "anyOf": [
+          {
+            "type": "string",
+            "example": "2019-06-27"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "duration_definitions": {
+        "type": "string",
+        "enum": [
+          "part_day",
+          "full_day",
+          "full_plus_part_day",
+          "full_plus_full_day"
+        ],
+        "example": "full_day"
+      },
+      "license_types": {
+        "type": "string",
+        "enum": [
+          "licensed_center",
+          "licensed_family_home",
+          "licensed_group_home",
+          "license_exempt_home",
+          "license_exempt_center"
+        ],
+        "example": "license_exempt_home"
+      },
+      "time_or_null": {
+        "anyOf": [
+          {
+            "type": "string",
+            "example": "2020-09-13 14:07:47 -0700"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "business": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Harlequin Child Care"
+          },
+          "license_type": {
+            "$ref": "#/components/schemas/license_types"
+          },
+          "active": {
+            "type": "boolean",
+            "example": "true"
+          }
+        }
+      },
+      "child": {
+        "type": "object",
+        "properties": {
+          "date_of_birth": {
+            "type": "string",
+            "example": "1992-11-01"
+          },
+          "full_name": {
+            "type": "string",
+            "example": "Sean Flannery"
+          }
+        }
+      },
+      "attendance": {
+        "type": "object",
+        "properties": {
+          "check_in": {
+            "type": "string",
+            "example": "020-09-13 14:07:47 -0700"
+          },
+          "check_out": {
+            "$ref": "#/components/schemas/time_or_null"
+          },
+          "attendance_duration": {
+            "$ref": "#/components/schemas/duration_definitions"
+          },
+          "total_time_in_care": {
+            "type": "string",
+            "example": "360 minutes"
+          },
+          "starts_on": {
+            "type": "string",
+            "example": "2020-07-12"
+          }
+        }
+      },
+      "createUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/user"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "email",
+                  "full_name",
+                  "language",
+                  "password",
+                  "password_confirmation",
+                  "service_agreement_accepted",
+                  "timezone"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateUser": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/user"
+              }
+            ]
+          }
+        }
+      },
+      "createBusiness": {
+        "type": "object",
+        "properties": {
+          "business": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/business"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "county",
+                  "name",
+                  "license_type",
+                  "user_id",
+                  "zipcode"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "updateBusiness": {
+        "type": "object",
+        "properties": {
+          "business": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/business"
+              }
+            ]
+          }
+        }
+      },
+      "createChild": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "type": "object",
+            "properties": {
+              "date_of_birth": {
+                "type": "string",
+                "example": "1991-11-01"
+              },
+              "full_name": {
+                "type": "string",
+                "example": "Seamus Finnigan"
+              },
+              "business_id": {
+                "type": "uuid",
+                "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
+              }
+            },
+            "required": [
+              "full_name",
+              "date_of_birth",
+              "business_id"
+            ]
+          }
+        }
+      },
+      "updateChild": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/child"
+              }
+            ]
+          }
+        }
+      },
+      "createAttendance": {
+        "type": "object",
+        "properties": {
+        }
+      },
+      "updateAttendance": {
+        "type": "object",
+        "properties": {
+        }
+      },
+      "monthlyApprovalAmount": {
+        "type": "object",
+        "properties": {
+          "part_days_approved_per_week": {
+            "type": "integer",
+            "example": 2
+          },
+          "full_days_approved_per_week": {
+            "type": "integer",
+            "example": 2
+          }
+        }
+      },
+      "approvalAmounts": {
+        "type": "object",
+        "properties": {
+          "month1": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month2": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month3": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month4": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month5": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month6": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month7": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month8": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month9": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month10": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month11": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          },
+          "month12": {
+            "$ref": "#/components/schemas/monthlyApprovalAmount"
+          }
+        }
+      }
+    }
+  }
+}
