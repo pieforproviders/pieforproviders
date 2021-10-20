@@ -199,7 +199,6 @@ RSpec.describe ChildBlueprint do
       let(:hourly_rate) { 5.15 }
       let(:qris_bump) { 1.05**1 }
 
-      # rubocop:disable RSpec/MultipleExpectations
       # rubocop:disable RSpec/ExampleLength
       it 'includes the child name and all live attendance data' do
         parsed_body = JSON.parse(described_class.render(child, view: :nebraska_dashboard, filter_date: Time.current))
@@ -490,7 +489,6 @@ RSpec.describe ChildBlueprint do
         expect(child_json['earned_revenue']).to eq(child_with_less_hours_json['earned_revenue'].to_f - 80.00)
       end
       # rubocop:enable RSpec/ExampleLength
-      # rubocop:enable RSpec/MultipleExpectations
     end
   end
 end
