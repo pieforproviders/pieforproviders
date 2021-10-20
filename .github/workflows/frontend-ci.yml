@@ -1,0 +1,64 @@
+name: Frontend CI
+on:
+  push:
+    branches:
+      - "develop"
+    paths-ignore:
+      - 'docs/**'
+    paths:
+      - '**.js'
+      - 'client/**'
+  pull_request_target:
+    paths-ignore:
+      - 'docs/**'
+    paths:
+      - '**.js'
+      - 'client/**'
+  workflow_dispatch:
+jobs:
+  lint_frontend:
+    name: Frontend linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Linting
+        run: |
+          cd client
+          yarn
+          yarn lint
+  test_frontend:
+    name: Frontend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.5
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Get Yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v2.1.6
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: yarn test
+        run: |
+          cd client
+          yarn
+          yarn test --watchAll=false
