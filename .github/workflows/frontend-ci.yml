@@ -3,15 +3,13 @@ on:
   push:
     branches:
       - "develop"
-    paths-ignore:
-      - 'docs/**'
     paths:
+      - '!docs/**'
       - '**.js'
       - 'client/**'
   pull_request_target:
-    paths-ignore:
-      - 'docs/**'
     paths:
+      - '!docs/**'
       - '**.js'
       - 'client/**'
   workflow_dispatch:
