@@ -19,6 +19,7 @@ class Approval < UuidApplicationRecord
   enum copay_frequency: Copays.frequencies
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
+  scope :active, -> { where(active: true) }
   scope :active_on_date,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
