@@ -6,7 +6,6 @@ on:
     paths-ignore:
       - 'docs/**'
   pull_request_target:
-  pull_request:
     paths-ignore:
       - 'docs/**'
   workflow_dispatch:
