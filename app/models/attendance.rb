@@ -125,13 +125,18 @@ class Attendance < UuidApplicationRecord
   end
 
   def ne_rates
+    active_child_rates
+      .where(region: ne_region)
+      .where(license_type: business.license_type)
+      .where(accredited_rate: business.accredited)
+      .order_max_age
+  end
+
+  def active_child_rates
     NebraskaRate
       .active_on_date(check_in)
       .where(school_age: child_approval.enrolled_in_school || false)
       .where('max_age >= ? OR max_age IS NULL', child.age_in_months(check_in))
-      .where(region: ne_region)
-      .where(accredited_rate: business.accredited)
-      .order_max_age
   end
 
   def ne_region
