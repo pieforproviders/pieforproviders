@@ -8,11 +8,9 @@ on:
       - "develop"
     paths-ignore:
       - 'docs/**'
-      - 'client/**'
   pull_request_target:
     paths-ignore:
       - 'docs/**'
-      - 'client/**'
   workflow_dispatch:
 jobs:
   lint_backend:

@@ -6,15 +6,11 @@ on:
   push:
     branches:
       - "develop"
-    paths:
-      - '!docs/**'
-      - '**.js'
-      - 'client/**'
+    paths-ignore:
+      - 'docs/**'
   pull_request_target:
-    paths:
-      - '!docs/**'
-      - '**.js'
-      - 'client/**'
+    paths-ignore:
+      - 'docs/**'
   workflow_dispatch:
 jobs:
   lint_frontend:
