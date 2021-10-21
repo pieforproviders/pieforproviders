@@ -3,11 +3,6 @@ concurrency:
   group: e2e-${{ github.head_ref }}
   cancel-in-progress: true
 on:
-  push:
-    branches:
-      - "develop"
-    paths-ignore:
-      - 'docs/**'
   pull_request_target:
     paths-ignore:
       - 'docs/**'
