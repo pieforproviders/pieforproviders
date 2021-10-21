@@ -35,7 +35,7 @@ class NebraskaRate < UuidApplicationRecord
 
   scope :hourly, -> { where(rate_type: 'hourly') }
   scope :daily, -> { where(rate_type: 'daily') }
-  scope :order_max_age, -> { reorder('max_age DESC NULLS LAST') }
+  scope :order_max_age, -> { reorder('max_age ASC NULLS LAST') }
 end
 
 # == Schema Information

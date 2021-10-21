@@ -62,6 +62,7 @@ RSpec.describe ChildBlueprint do
              :accredited,
              :hourly,
              :ldds,
+             license_type: child.business.license_type,
              amount: 5.15,
              effective_on: Time.zone.parse('April 1st, 2021'),
              expires_on: nil)
@@ -69,6 +70,7 @@ RSpec.describe ChildBlueprint do
              :accredited,
              :daily,
              :ldds,
+             license_type: child.business.license_type,
              amount: 25.15,
              effective_on: Time.zone.parse('April 1st, 2021'),
              expires_on: nil)

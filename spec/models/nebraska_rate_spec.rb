@@ -42,6 +42,16 @@ RSpec.describe NebraskaRate, type: :model do
     expect(nebraska_rate).to be_valid
   end
 
+  it 'returns rates in the correct order by max age' do
+    nebraska_rate.destroy!
+    infant = create(:nebraska_rate, max_age: 18)
+    create(:nebraska_rate, max_age: 36)
+    create(:nebraska_rate, max_age: 24)
+    expect(described_class.order_max_age[0]).to eq(infant)
+    create(:nebraska_rate, max_age: nil)
+    expect(described_class.order_max_age[0]).to eq(infant)
+  end
+
   it 'factory should be valid (default; no args)' do
     expect(build(:nebraska_rate)).to be_valid
   end
