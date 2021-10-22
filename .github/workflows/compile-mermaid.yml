@@ -8,7 +8,7 @@ on:
       - '**/*.md'
     tags-ignore:
       - '**'
-
+  workflow_dispatch:
 jobs:
   compile-mermaid:
     runs-on: ubuntu-latest
