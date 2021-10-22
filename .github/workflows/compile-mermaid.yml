@@ -10,6 +10,7 @@ on:
       - '**/*.mermaid'
       - '**/*.mmd'
       - '**/*.md'
+      - '**/compile-mermaid.yml'
     tags-ignore:
       - '**'
   workflow_dispatch:
@@ -38,7 +39,7 @@ jobs:
         env:
           HIDE_CODEBLOCKS: 1
           ABSOLUTE_IMAGE_LINKS: 1
-          OUTPUT_FILE_TYPE: "png"
+          OUTPUT_FILE_TYPE: "svg"
 
       - name: show changes
         run: |
