@@ -1,0 +1,38 @@
+sequenceDiagram
+    User->>+ServiceDay: earned_revenue(self)
+    loop attendances
+      Attendance-->>ServiceDay: time_in_care, absence
+    end
+    ServiceDay->>+ServiceDay: duration(attendances.time_in_care)
+    ServiceDay->>+StateEarnedRevenueCalculator: earned_revenue(self, attendances)
+
+    StateEarnedRevenueCalculator->>+StateDurationRule: duration_type(self)
+    StateDurationRule-->>StateEarnedRevenueCalculator: duration_type
+    StateEarnedRevenueCalculator->>+ChildCasePeriod: authorized_units(duration_type)
+    ChildCasePeriod-->>StateEarnedRevenueCalculator: authorized_units
+    StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: within_authorized_units?(duration_type, authorized_units)
+    alt No
+        StateEarnedRevenueCalculator-->>ServiceDay: 0
+    else Yes
+        StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: absences?(attendances.absence)
+        alt Yes
+            StateEarnedRevenueCalculator->>+Attendance: absences_this_month(date)
+            Attendance-->>StateEarnedRevenueCalculator: absences_this_month
+            StateEarnedRevenueCalculator->>+StateAbsenceLimit: absence_limit(absence)
+            StateAbsenceLimit-->>StateEarnedRevenueCalculator: absence_limit
+            StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: within_absence_limits?(absences, absences_this_month, absence_limit)
+            alt No
+                StateEarnedRevenueCalculator-->>ServiceDay: 0
+            end
+        end
+        StateEarnedRevenueCalculator->>+StateRateConfiguration: rate_configuration(self)
+        StateRateConfiguration->>+Business: business(StateEarnedRevenueCalculator)
+        Business-->>StateRateConfiguration: county, qris_rating
+        StateRateConfiguration->>+Child: child(StateEarnedRevenueCalculator)
+        Child-->>StateRateConfiguration: age
+        StateRateConfiguration-->>StateEarnedRevenueCalculator: StateRateConfiguration
+        StateEarnedRevenueCalculator->>+StateRate: daily_rate(StateRateConfiguration, self.date, self.duration_type)
+        StateRate-->>StateEarnedRevenueCalculator: StateRate
+        StateEarnedRevenueCalculator-->>ServiceDay: StateRate * self.duration
+    end
+    ServiceDay-->>User: earned_revenue
