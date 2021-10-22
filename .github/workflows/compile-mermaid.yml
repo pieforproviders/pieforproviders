@@ -6,6 +6,8 @@ on:
       - '**/*.mermaid'
       - '**/*.mmd'
       - '**/*.md'
+    tags-ignore:
+      - '**'
 
 jobs:
   compile-mermaid:
