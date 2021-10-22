@@ -1,0 +1,26 @@
+classDiagram
+  class Attendance
+  class Business
+  class Case
+  class Child
+  class ChildCasePeriod
+  class ServiceDay
+  class User
+  User "1" *-- "*" Business
+  Business "1" *-- "*" Case
+  Case "1" *-- "1..*" ChildCasePeriod
+  Case "1" *-- "1..*" Child
+  ChildCasePeriod "1..*" --* "1" Child
+  Child "1" o-- "*" ServiceDay
+  ServiceDay "1" o-- "1..*" Attendance
+  class State
+  class StateDurationRule
+  class StateAbsenceLimit
+  class StateEarnedRevenueCalculator
+  class StateRate
+  class StateRateConfiguration
+  State "1" *-- "*" StateDurationRule
+  State "1" *-- "*" StateAbsenceLimit
+  State "1" *-- "*" StateEarnedRevenueCalculator
+  State "1" *-- "*" StateRate
+  State "1" *-- "*" StateRateConfiguration
