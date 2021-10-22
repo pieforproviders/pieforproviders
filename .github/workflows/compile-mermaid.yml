@@ -3,11 +3,14 @@ concurrency:
   group: compile-mermaid-${{ github.head_ref }}
   cancel-in-progress: true
 on:
-  pull_request_target:
+  push:
+    branches:
+      - '**'
     paths:
       - '**/*.mermaid'
       - '**/*.mmd'
       - '**/*.md'
+      - '**/compile-mermaid.yml'
     tags-ignore:
       - '**'
   workflow_dispatch:
@@ -36,7 +39,7 @@ jobs:
         env:
           HIDE_CODEBLOCKS: 1
           ABSOLUTE_IMAGE_LINKS: 1
-          OUTPUT_FILE_TYPE: "png"
+          OUTPUT_FILE_TYPE: "svg"
 
       - name: show changes
         run: |
