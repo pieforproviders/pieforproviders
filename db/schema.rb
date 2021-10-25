@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_182426) do
+ActiveRecord::Schema.define(version: 2021_10_25_200148) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -207,6 +207,14 @@ ActiveRecord::Schema.define(version: 2021_10_25_182426) do
     t.index ["effective_on", "child_id", "weekday"], name: "unique_child_schedules", unique: true
   end
 
+  create_table "service_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "date", null: false
+    t.uuid "child_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_id"], name: "index_service_days_on_child_id"
+  end
+
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.text "attendance_risk"
@@ -269,5 +277,6 @@ ActiveRecord::Schema.define(version: 2021_10_25_182426) do
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
+  add_foreign_key "service_days", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end
