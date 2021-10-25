@@ -48,71 +48,71 @@
 These values are assigned using custom values that can be found in tailwind.config.js. */
 
 .body-1 {
-  @apply text-sixteen text-oneR font-proxima-nova-alt font-regular;
+  @apply .text-sixteen .text-oneR .font-proxima-nova-alt .font-regular;
 }
 
 .body-2 {
-  @apply text-fourteen text-pointEightSevenFiveR font-proxima-nova-alt font-regular;
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
 }
 
 .body-2-bold {
-  @apply text-fourteen text-pointEightSevenFiveR font-proxima-nova-alt font-bold;
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-bold;
 }
 
 .link-text {
-  @apply text-fourteen text-pointEightSevenFiveR font-proxima-nova-alt font-bold;
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-bold;
 }
 
 .error-text {
-  @apply text-fourteen text-pointEightSevenFiveR font-proxima-nova-alt font-regular;
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
 }
 
 .disabled-text {
-  @apply text-fourteen text-pointEightSevenFiveR font-proxima-nova-alt font-regular;
+  @apply .text-fourteen .text-pointEightSevenFiveR .font-proxima-nova-alt .font-regular;
 }
 
 .tiny-text {
-  @apply text-twelve text-pointSevenFiveR font-proxima-nova font-semiBold;
+  @apply .text-twelve .text-pointSevenFiveR .font-proxima-nova .font-semiBold;
 }
 
 .display-large {
-  @apply text-fortyEight text-threeR font-proxima-nova-alt font-bold;
+  @apply .text-fortyEight .text-threeR .font-proxima-nova-alt .font-bold;
 }
 
 .h1-large {
-  @apply text-thirtySix text-twoPointTwoFiveR font-proxima-nova font-semiBold;;
+  @apply .text-thirtySix .text-twoPointTwoFiveR .font-proxima-nova .font-semiBold;;
 }
 
 .h2-large {
-  @apply text-twentyEight text-onePointSevenFiveR font-proxima-nova font-semiBold;
+  @apply .text-twentyEight .text-onePointSevenFiveR .font-proxima-nova .font-semiBold;
 }
 
 .h3-large {
-  @apply text-twentyFour text-onePointFiveR font-proxima-nova-alt font-bold;
+  @apply .text-twentyFour .text-onePointFiveR .font-proxima-nova-alt .font-bold;
 }
 
 .eyebrow-large {
-  @apply text-eighteen text-onePointOneTwoFiveR font-proxima-nova font-semiBold;
+  @apply .text-eighteen .text-onePointOneTwoFiveR .font-proxima-nova .font-semiBold;
 } 
 
 .display-small {
-  @apply text-forty text-twoPointFiveR font-proxima-nova-alt font-bold;
+  @apply .text-forty .text-twoPointFiveR .font-proxima-nova-alt .font-bold;
 }
 
 .h1-small {
- @apply text-twentyEight text-onePointSevenFiveR font-proxima-nova font-semiBold;
+ @apply .text-twentyEight .text-onePointSevenFiveR .font-proxima-nova .font-semiBold;
 }
 
 .h2-small {
-  @apply text-twentyFour text-onePointFiveR font-proxima-nova font-semiBold;
+  @apply .text-twentyFour .text-onePointFiveR .font-proxima-nova .font-semiBold;
 }
 
 .h3-small {
-  @apply text-eighteen text-onePointOneTwoFiveR font-proxima-nova font-bold;
+  @apply .text-eighteen .text-onePointOneTwoFiveR .font-proxima-nova .font-bold;
 }
 
 .eyebrow-small {
-  @apply text-sixteen text-oneR font-proxima-nova font-bold;
+  @apply .text-sixteen .text-oneR .font-proxima-nova .font-bold;
 }
 
 @tailwind components;
