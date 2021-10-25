@@ -28,6 +28,10 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   CountAsOne: ['array', 'heredoc', 'hash']
 
+Layout/LineLength:
+  Exclude:
+    - config/routes.rb
+
 Layout/MultilineArrayLineBreaks:
   Enabled: true
 

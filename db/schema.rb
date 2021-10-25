@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_03_055231) do
+ActiveRecord::Schema.define(version: 2021_10_25_182426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -185,16 +185,24 @@ ActiveRecord::Schema.define(version: 2021_10_03_055231) do
     t.date "deleted_at"
   end
 
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.decimal "amount", null: false
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
+  end
+
   create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
-    t.time "end_time", null: false
     t.date "expires_on"
-    t.time "start_time", null: false
     t.integer "weekday", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "deleted_at"
+    t.interval "duration"
     t.index ["child_id"], name: "index_schedules_on_child_id"
     t.index ["effective_on", "child_id", "weekday"], name: "unique_child_schedules", unique: true
   end
@@ -259,6 +267,7 @@ ActiveRecord::Schema.define(version: 2021_10_03_055231) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

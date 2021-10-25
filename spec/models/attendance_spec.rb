@@ -92,8 +92,7 @@ RSpec.describe Attendance, type: :model do
         check_in: attendance_check_in,
         check_out: nil
       )
-      expect(attendance.total_time_in_care.in_seconds)
-        .to eq(Tod::Shift.new(child.schedules.first.start_time, child.schedules.first.end_time).duration)
+      expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
     end
 
     it 'uses the check_in and makes the attendance 8 hours when check_out is null and the child has no schedule' do
@@ -109,8 +108,7 @@ RSpec.describe Attendance, type: :model do
       # ensures the attendance check in falls on the calendar weekday in the schedule
       attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
       attendance = create(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
-      expect(attendance.total_time_in_care.in_seconds)
-        .to eq(Tod::Shift.new(child.schedules.first.start_time, child.schedules.first.end_time).duration)
+      expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
     end
   end
 
