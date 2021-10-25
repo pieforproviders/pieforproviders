@@ -6,7 +6,38 @@ classDiagram
   class Child
   class ChildCasePeriod
   class ServiceDay
-  class User
+  class User {
+    +Uuid id
+    +Boolean active
+    +Boolean admin
+    +DateTime confirmation_sent_at
+    +String confirmation_token
+    +DateTime confirmed_at
+    +DateTime current_sign_in_at
+    +INet current_sign_in_ip
+    +DateTime deleted_at
+    +String email
+    +String encrypted_password
+    +String full_name
+    +String greeting_name
+    +String language
+    +DateTime last_sign_in_at
+    +INet last_sign_in_ip
+    +Boolean opt_in_email
+    +Boolean opt_in_text
+    +String organization
+    +String phone_number
+    +String phone_type
+    +DateTime remember_created_at
+    +DateTime reset_password_sent_at
+    +String reset_password_token
+    +Boolean service_agreement_accepted
+    +Integer sign_in_count
+    +String timezone
+    +String unconfirmed_email
+    +DateTime created_at
+    +DateTime updated_at
+  }
   User "1" *-- "*" Business
   Business "1" *-- "*" Case
   Case "1" *-- "1..*" ChildCasePeriod
