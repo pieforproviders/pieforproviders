@@ -108,14 +108,15 @@ RSpec.describe Child, type: :model do
       it 'creates default schedules if no schedules_attributes are passed' do
         child.reload
         expect(child.schedules.length).to eq(5)
-        expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('9:00am'))
+        expect(child.schedules.first.duration).to eq(8.hours)
         expect(child.schedules.first.weekday).to eq(1)
       end
 
       it "doesn't create default schedules if schedules_attributes are passed" do
-        child = create(:necc_child, schedules_attributes: [attributes_for(:schedule)])
+        attrs = attributes_for(:schedule)
+        child = create(:necc_child, schedules_attributes: [attrs])
         expect(child.schedules.length).to eq(1)
-        expect(child.schedules.first.start_time).to eq(Tod::TimeOfDay.parse('11:00am'))
+        expect(child.schedules.first.duration).to eq(attrs[:duration])
       end
     end
 

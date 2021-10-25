@@ -17,8 +17,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         child.schedules << create(:schedule,
                                   effective_on: first_attendance_date - 3.months,
                                   weekday: first_attendance_date.wday,
-                                  start_time: first_attendance_date.to_datetime + 8.hours,
-                                  end_time: first_attendance_date.to_datetime + 15.hours)
+                                  duration: 7.hours)
         create(:attendance,
                child_approval: child_approval,
                check_in: first_attendance_date.to_datetime + 8.hours + 21.minutes,
@@ -103,8 +102,7 @@ RSpec.describe NebraskaFullDaysCalculator, type: :service do
         child.schedules << create(:schedule,
                                   effective_on: first_attendance_date - 3.months,
                                   weekday: first_attendance_date.wday,
-                                  start_time: first_attendance_date.to_datetime + 8.hours,
-                                  end_time: first_attendance_date.to_datetime + 15.hours)
+                                  duration: 7.hours)
         create(:attendance,
                child_approval: child_approval,
                check_in: first_attendance_date.to_datetime + 8.hours + 21.minutes,

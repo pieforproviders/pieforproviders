@@ -241,8 +241,7 @@ class Child < UuidApplicationRecord
     schedule_for_weekday = schedule(date, weekday)
     return 0 unless schedule_for_weekday
 
-    duration = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
-    duration * DateService.remaining_days_in_month_including_today(date, weekday)
+    schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date, weekday)
   end
 
   def schedule(date, weekday)
@@ -252,23 +251,21 @@ class Child < UuidApplicationRecord
   def ne_hours(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
-    scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaHoursCalculator.new(
       child: self,
       date: date,
       scope: :for_month
-    ).round_hourly_to_quarters(scheduled_time.seconds)
+    ).round_hourly_to_quarters(schedule_for_weekday.duration)
   end
 
   def ne_days(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
-    scheduled_time = Tod::Shift.new(schedule_for_weekday.start_time, schedule_for_weekday.end_time).duration
     NebraskaFullDaysCalculator.new(
       child: self,
       date: date,
       scope: :for_month
-    ).calculate_full_days_based_on_duration(scheduled_time.seconds)
+    ).calculate_full_days_based_on_duration(schedule_for_weekday.duration)
   end
 
   # TODO: open question - does qris bump impact this rate?
@@ -394,8 +391,7 @@ class Child < UuidApplicationRecord
       Schedule.create!(
         child: self,
         weekday: idx + 1,
-        start_time: '9:00am',
-        end_time: '5:00pm',
+        duration: 28_800, # seconds in 8 hours
         effective_on: active_child_approval(Time.current).approval.effective_on
       )
     end

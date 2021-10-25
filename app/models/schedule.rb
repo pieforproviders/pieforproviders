@@ -5,14 +5,12 @@
 class Schedule < ApplicationRecord
   belongs_to :child
 
-  validates :end_time, presence: true
-  attribute :end_time, :time_only
-  validates :start_time, presence: true
-  attribute :start_time, :time_only
+  attribute :duration, :interval
 
   validates :effective_on, date_param: true, presence: true
   validates :expires_on, date_param: true, unless: proc { |schedule| schedule.expires_on_before_type_cast.nil? }
   validates :weekday, numericality: true, presence: true
+  validates :duration, presence: true
 
   scope :active_on_date,
         lambda { |date|
@@ -27,10 +25,9 @@ end
 #
 #  id           :uuid             not null, primary key
 #  deleted_at   :date
+#  duration     :interval
 #  effective_on :date             not null
-#  end_time     :time             not null
 #  expires_on   :date
-#  start_time   :time             not null
 #  weekday      :integer          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null

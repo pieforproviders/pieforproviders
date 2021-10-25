@@ -8,8 +8,7 @@ RSpec.describe Schedule, type: :model do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:weekday) }
   it { is_expected.to validate_numericality_of(:weekday) }
-  it { is_expected.to validate_presence_of(:start_time) }
-  it { is_expected.to validate_presence_of(:end_time) }
+  it { is_expected.to validate_presence_of(:duration) }
   it { is_expected.to validate_presence_of(:effective_on) }
 
   it 'validates effective_on as a date' do
@@ -38,32 +37,6 @@ RSpec.describe Schedule, type: :model do
     expect(schedule).to be_valid
   end
 
-  it 'validates start_time as a time' do
-    schedule.update(start_time: Time.current)
-    expect(schedule).to be_valid
-    schedule.start_time = "I'm a string"
-    expect(schedule).not_to be_valid
-    schedule.start_time = nil
-    expect(schedule).not_to be_valid
-    schedule.start_time = '5:00PM'
-    expect(schedule).to be_valid
-    schedule.start_time = Time.new(2007, 11, 1, 15, 25, 0, '+09:00')
-    expect(schedule).to be_valid
-  end
-
-  it 'validates end_time as a time' do
-    schedule.update(end_time: Time.current)
-    expect(schedule).to be_valid
-    schedule.end_time = "I'm a string"
-    expect(schedule).not_to be_valid
-    schedule.end_time = nil
-    expect(schedule).not_to be_valid
-    schedule.end_time = '5:00PM'
-    expect(schedule).to be_valid
-    schedule.end_time = Time.new(2007, 11, 1, 15, 25, 0, '+09:00')
-    expect(schedule).to be_valid
-  end
-
   it 'factory should be valid (default; no args)' do
     expect(build(:schedule)).to be_valid
     expect(build(:schedule, :expires)).to be_valid
@@ -76,10 +49,9 @@ end
 #
 #  id           :uuid             not null, primary key
 #  deleted_at   :date
+#  duration     :interval
 #  effective_on :date             not null
-#  end_time     :time             not null
 #  expires_on   :date
-#  start_time   :time             not null
 #  weekday      :integer          not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
