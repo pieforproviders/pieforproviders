@@ -169,6 +169,14 @@ export function Attendance() {
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleSave = async () => {
+    // implemented per: https://help.hotjar.com/hc/en-us/articles/4405109971095-Events-API-Reference
+    window.hj =
+      window.hj ||
+      function () {
+        // eslint-disable-next-line no-undef
+        ;(hj.q = hj.q || []).push(arguments)
+      }
+    window.hj('event', 'save_attendance')
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
         .map((value, key) => {
