@@ -9,6 +9,7 @@ RSpec.describe Attendance, type: :model do
 
   it { is_expected.to validate_presence_of(:check_in) }
 
+  # this needs to get moved to the custom validator specs instead of inside models
   it 'validates check_in as a Time' do
     attendance.update(check_in: Time.current)
     expect(attendance).to be_valid
@@ -22,6 +23,7 @@ RSpec.describe Attendance, type: :model do
     expect(attendance).to be_valid
   end
 
+  # this needs to get moved to the custom validator specs instead of inside models
   it 'validates check_out as an optional Time' do
     attendance.update(check_out: Time.current)
     expect(attendance).to be_valid
@@ -109,6 +111,27 @@ RSpec.describe Attendance, type: :model do
       attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
       attendance = create(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
       expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
+    end
+  end
+
+  describe '#find_or_create_service_day' do
+    it "creates a service day if it doesn't already exist" do
+      expect { attendance.save! }.to change(ServiceDay, :count).from(0).to(1)
+    end
+
+    it 'associates to an existing service day' do
+      service_day = create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day,
+        child: attendance.child
+      )
+      expect { attendance.save! }.not_to change(ServiceDay, :count)
+      expect(attendance.service_day).to eq(service_day)
+    end
+
+    it 'does not create a service day if no check-in is present' do
+      attendance.check_in = nil
+      expect { attendance.save }.not_to change(ServiceDay, :count)
     end
   end
 
@@ -857,13 +880,16 @@ end
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  service_day_id                                                 :uuid
 #  wonderschool_id                                                :string
 #
 # Indexes
 #
 #  index_attendances_on_child_approval_id  (child_approval_id)
+#  index_attendances_on_service_day_id     (service_day_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_approval_id => child_approvals.id)
+#  fk_rails_...  (service_day_id => service_days.id)
 #

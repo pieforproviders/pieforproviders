@@ -94,13 +94,16 @@ end
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  service_day_id                                                 :uuid
 #  wonderschool_id                                                :string
 #
 # Indexes
 #
 #  index_attendances_on_child_approval_id  (child_approval_id)
+#  index_attendances_on_service_day_id     (service_day_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_approval_id => child_approvals.id)
+#  fk_rails_...  (service_day_id => service_days.id)
 #
