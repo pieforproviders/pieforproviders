@@ -5,8 +5,10 @@ class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_total_time_in_care, if: :child_approval
   before_validation :calc_earned_revenue, if: :child_approval
+  before_validation :find_or_create_service_day, if: :check_in
 
   belongs_to :child_approval
+  belongs_to :service_day
 
   # Rails 6.2 will be returning an activesupport duration object for interval type fields
   # this uses the new behavior in advance of that release
@@ -143,6 +145,15 @@ class Attendance < UuidApplicationRecord
     %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
   end
 
+  def find_or_create_service_day
+    return unless check_in
+
+    self.service_day = ServiceDay.find_or_create_by!(
+      child: child,
+      date: check_in.in_time_zone(user.timezone).at_beginning_of_day
+    )
+  end
+
   def prevent_creation_of_absence_without_schedule
     return unless absence
 
@@ -178,13 +189,16 @@ end
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
 #  child_approval_id                                              :uuid             not null
+#  service_day_id                                                 :uuid
 #  wonderschool_id                                                :string
 #
 # Indexes
 #
 #  index_attendances_on_child_approval_id  (child_approval_id)
+#  index_attendances_on_service_day_id     (service_day_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_approval_id => child_approvals.id)
+#  fk_rails_...  (service_day_id => service_days.id)
 #

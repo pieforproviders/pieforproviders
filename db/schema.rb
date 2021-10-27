@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_25_200148) do
+ActiveRecord::Schema.define(version: 2021_10_26_155506) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -39,7 +39,9 @@ ActiveRecord::Schema.define(version: 2021_10_25_200148) do
     t.string "absence"
     t.decimal "earned_revenue"
     t.date "deleted_at"
+    t.uuid "service_day_id"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
+    t.index ["service_day_id"], name: "index_attendances_on_service_day_id"
   end
 
   create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -269,6 +271,7 @@ ActiveRecord::Schema.define(version: 2021_10_25_200148) do
   end
 
   add_foreign_key "attendances", "child_approvals"
+  add_foreign_key "attendances", "service_days"
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
