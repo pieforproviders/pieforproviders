@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import { Table } from 'antd'
 import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
+import '_assets/styles/payment-table-overrides.css'
+import pieSliceLogo from '../_assets/pieSliceLogo.svg'
 
 export function PaymentModal({ setTotalPayment }) {
   const { cases } = useSelector(state => state)
@@ -42,14 +44,37 @@ export function PaymentModal({ setTotalPayment }) {
     setChildPayments({ ...childPayments, [currentChildID]: value })
   }
 
+  const earnedRevenueHeader = (
+    <div>
+      {t('earnedRevenue')}
+      <div>
+        <span className="calculated-by-text">{t('calculatedBy')} Pie</span>
+
+        <img
+          alt={t('pieforProvidersLogoAltText')}
+          src={pieSliceLogo}
+          className="w-5 pie-logo-inline"
+        />
+      </div>
+    </div>
+  )
+
   const columns = [
     {
       title: t('childName'),
-      dataIndex: 'childName'
+      render: childCase => {
+        return <div className="payment-table-text"> {childCase.childName} </div>
+      }
     },
     {
-      title: t('earnedRevenue'),
-      dataIndex: 'guaranteedRevenue'
+      title: earnedRevenueHeader,
+      render: childCase => {
+        return (
+          <div className="payment-table-text">
+            ${childCase.guaranteedRevenue}
+          </div>
+        )
+      }
     },
     {
       title: updatePaymentHeader,
@@ -69,9 +94,12 @@ export function PaymentModal({ setTotalPayment }) {
 
   const table = (
     <Table
+      id="payment-table"
       bordered={false}
       columns={columns}
       dataSource={cases}
+      rowClassName="payment-row"
+      pagination={{ hideOnSinglePage: true }}
       onRow={childCase => {
         return {
           onMouseEnter: event => {

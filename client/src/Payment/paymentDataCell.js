@@ -9,15 +9,24 @@ export default function PaymentDataCell({ updateTotalPayment }) {
 
   const currencyInput = (
     <InputNumber
+      className="w-32"
       placeholder={t('enterAmount')}
-      formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+      formatter={value => inputFormatter(value)}
       parser={value => value.replace(/\$\s?|(,*)/g, '')}
       disabled={!isDifferentPayment}
-      onChange={test}
+      onChange={updatePayment}
     />
   )
 
-  function test(value) {
+  function inputFormatter(value) {
+    if (!isDifferentPayment) {
+      return null
+    }
+
+    return `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
+
+  function updatePayment(value) {
     updateTotalPayment(value)
   }
 
@@ -26,9 +35,10 @@ export default function PaymentDataCell({ updateTotalPayment }) {
   }
 
   return (
-    <div>
-      <Checkbox onChange={handleIsDifferentPaymentIsSet} />
-      {t('differentAmountFromState')} {currencyInput}
+    <div className="flex items-center">
+      <Checkbox className="mr-1" onChange={handleIsDifferentPaymentIsSet} />
+      <span className="mr-1"> {t('differentAmountFromState')}</span>
+      {currencyInput}
     </div>
   )
 }

@@ -247,5 +247,6 @@
   "updatePayment": "Actualizar el pago",
   "differentPaymentAmount": "Si recibiste un monto distinto",
   "recordPaymentOf": "Anota un pago de",
-  "enterAmount": "Pone el monto"
+  "enterAmount": "Pone el monto",
+  "calculatedBy": "Calculado por Pie"
 }

@@ -247,5 +247,6 @@
   "updatePayment": "Update payment",
   "differentPaymentAmount": "If you received a different amount",
   "recordPaymentOf": "Record payment of",
-  "enterAmount": "Enter amount"
+  "enterAmount": "Enter amount",
+  "calculatedBy": "Calculated by"
 }

@@ -1,0 +1,38 @@
+#payment-table .ant-table-tbody > tr > td   {
+    border-bottom: 10px white solid;
+    background-color: #F1F7F9;
+    margin-bottom: 3px;
+}
+
+#payment-table .ant-table-thead > tr > th {
+    background-color: white;
+    border: none;
+    font-weight: bold;
+}
+
+#payment-table .ant-modal-content.ant-modal-header {
+    border-bottom: 0;
+}
+
+#payment-table .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before{
+    content: none;
+}
+
+.calculated-by-text {
+    font-weight: normal;
+    text-decoration: underline;
+}
+
+.pie-logo-inline {
+    display: inline;
+    margin-left: 5px ;
+}
+
+.ant-btn-round.ant-btn-lg.record-payment-button {
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+.payment-table-text {
+    font-size: medium;
+}
