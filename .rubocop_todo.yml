@@ -11,6 +11,7 @@
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Max: 573
+  Exclude: 'spec/models/attendance_spec.rb'
 
 # Offense count: 3
 # Configuration parameters: CountComments, CountAsOne, ExcludedMethods, IgnoredMethods.
