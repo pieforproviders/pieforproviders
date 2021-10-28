@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe Attendance, type: :model do
   let(:attendance) { build(:attendance, check_out: nil) }
 
@@ -930,8 +929,6 @@ RSpec.describe Attendance, type: :model do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
-
 # == Schema Information
 #
 # Table name: attendances
