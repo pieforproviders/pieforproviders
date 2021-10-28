@@ -6,7 +6,12 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
   let!(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:attendance_date) do
-    (child_approval.effective_on.at_end_of_month.in_time_zone(child.timezone) + 4.weeks).next_occurring(:monday)
+    (
+      child_approval
+        .effective_on
+        .at_end_of_month
+        .in_time_zone(child.timezone) + 2.months + 3.weeks
+    ).next_occurring(:monday)
   end
 
   describe '#call' do
@@ -40,29 +45,21 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       end
 
       it 'creates an absence even if the child already has 5 absences this month' do
-        create_list(:attendance,
-                    5,
-                    child_approval: child_approval,
-                    check_in: attendance_date - 1.week,
-                    absence: 'absence')
+        build_nebraska_absence_list(num: 5,
+                                    date: attendance_date - 13.days,
+                                    child_approval: child.child_approvals.first)
         expect { described_class.new(child).call }.to change(Attendance, :count).from(5).to(6)
       end
 
       it 'creates an absence if the child has less than 5 absences this month' do
-        create_list(:attendance,
-                    2,
-                    child_approval: child_approval,
-                    check_in: attendance_date - 1.week,
-                    absence: 'absence')
+        build_nebraska_absence_list(num: 2, date: attendance_date - 8.days, child_approval: child.child_approvals.first)
         expect { described_class.new(child).call }.to change(Attendance, :count).from(2).to(3)
       end
 
       it 'creates an absence if the child has absences in the prior month but not the current one' do
-        create_list(:attendance,
-                    5,
-                    child_approval: child_approval,
-                    check_in: (attendance_date - 1.month).next_occurring(:monday),
-                    absence: 'absence')
+        build_nebraska_absence_list(num: 5,
+                                    date: attendance_date - 1.month,
+                                    child_approval: child.child_approvals.first)
         expect { described_class.new(child).call }.to change(Attendance, :count).from(5).to(6)
       end
 

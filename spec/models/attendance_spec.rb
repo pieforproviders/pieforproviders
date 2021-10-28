@@ -136,110 +136,124 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
+  describe '#remove_absences' do
+    it 'removes an absence on the same service day if it exists' do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval,
+          service_day: absence.service_day
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+    end
+
+    it 'removes an absence associated to the same child_approval on the same check_in day if it exists' do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+    end
+
+    it "ensures there's only one absence per day" do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval,
+          service_day: absence.service_day,
+          absence: 'absence'
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.absences).not_to include(absence)
+    end
+
+    it 'does not remove a non-absence from the same day' do
+      attendance = create(:nebraska_hourly_attendance)
+      expect(described_class.absences.length).to eq(0)
+      expect(described_class.non_absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: attendance.check_in + 45.minutes,
+          child_approval: attendance.child_approval
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+      expect(described_class.non_absences.length).to eq(2)
+    end
+  end
+
   describe '#earned_revenue' do
     let!(:child) { create(:necc_child) }
     let(:attendance) { build(:attendance, child_approval: child.child_approvals.first) }
     let!(:nebraska_accredited_hourly_rate) do
-      create(
-        :nebraska_rate,
-        :accredited,
-        :hourly,
-        :ldds,
-        license_type: child.business.license_type,
-        max_age: attendance.child.age + 4.years,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:accredited_hourly_ldds_rate,
+             license_type: child.business.license_type,
+             max_age: attendance.child.age + 4.years,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_accredited_daily_rate) do
-      create(
-        :nebraska_rate,
-        :accredited,
-        :daily,
-        :ldds,
-        license_type: child.business.license_type,
-        max_age: attendance.child.age + 4.years,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:accredited_daily_ldds_rate,
+             license_type: child.business.license_type,
+             max_age: attendance.child.age + 4.years,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_unaccredited_hourly_rate) do
-      create(
-        :nebraska_rate,
-        :hourly,
-        :ldds,
-        license_type: child.business.license_type,
-        max_age: attendance.child.age + 4.years,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_hourly_ldds_rate,
+             license_type: child.business.license_type,
+             max_age: attendance.child.age + 4.years,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_unaccredited_daily_rate) do
-      create(
-        :nebraska_rate,
-        :daily,
-        :ldds,
-        license_type: child.business.license_type,
-        max_age: attendance.child.age + 4.years,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_daily_ldds_rate,
+             license_type: child.business.license_type,
+             max_age: attendance.child.age + 4.years,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_school_age_unaccredited_hourly_rate) do
-      create(
-        :nebraska_rate,
-        :hourly,
-        :ldds,
-        license_type: child.business.license_type,
-        school_age: true,
-        max_age: nil,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_hourly_ldds_school_age_rate,
+             license_type: child.business.license_type,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_school_age_unaccredited_daily_rate) do
-      create(
-        :nebraska_rate,
-        :daily,
-        :ldds,
-        license_type: child.business.license_type,
-        school_age: true,
-        max_age: nil,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_daily_ldds_school_age_rate,
+             license_type: child.business.license_type,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_school_age_unaccredited_non_urban_hourly_rate) do
-      create(
-        :nebraska_rate,
-        :hourly,
-        :other_region,
-        license_type: child.business.license_type,
-        school_age: true,
-        max_age: nil,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_hourly_other_region_school_age_rate,
+             license_type: child.business.license_type,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
     let!(:nebraska_school_age_unaccredited_non_urban_daily_rate) do
-      create(
-        :nebraska_rate,
-        :daily,
-        :other_region,
-        license_type: child.business.license_type,
-        school_age: true,
-        max_age: nil,
-        effective_on: attendance.check_in - 1.year,
-        expires_on: attendance.check_in + 1.year,
-        county: attendance.county
-      )
+      create(:unaccredited_daily_other_region_school_age_rate,
+             license_type: child.business.license_type,
+             effective_on: attendance.check_in - 1.year,
+             expires_on: attendance.check_in + 1.year,
+             county: attendance.county)
     end
 
     before { attendance.business.update!(county: 'Douglas') }
@@ -856,13 +870,21 @@ RSpec.describe Attendance, type: :model do
 
     it 'returns attendances based on length of time in care' do
       expect(described_class.illinois_part_days).to include(part_day)
-      expect(described_class.illinois_part_days).not_to include([full_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_part_days).not_to include(
+        [full_day, full_plus_part_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_days).to include(full_day)
-      expect(described_class.illinois_full_days).not_to include([part_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_full_days).not_to include(
+        [part_day, full_plus_part_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_plus_part_days).to include(full_plus_part_day)
-      expect(described_class.illinois_full_plus_part_days).not_to include([part_day, full_day, full_plus_full_day])
+      expect(described_class.illinois_full_plus_part_days).not_to include(
+        [part_day, full_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_plus_full_days).to include(full_plus_full_day)
-      expect(described_class.illinois_full_plus_full_days).not_to include([part_day, full_day, full_plus_part_day])
+      expect(described_class.illinois_full_plus_full_days).not_to include(
+        [part_day, full_day, full_plus_part_day]
+      )
     end
   end
 end
