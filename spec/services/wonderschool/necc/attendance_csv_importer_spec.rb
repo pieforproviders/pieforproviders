@@ -21,7 +21,7 @@ module Wonderschool
       let!(:approvals) do
         create_list(:approval,
                     3,
-                    effective_on: Date.parse('November 28, 2020'),
+                    effective_on: Time.zone.parse('November 28, 2020'),
                     expires_on: nil,
                     create_children: false)
       end
@@ -83,15 +83,15 @@ module Wonderschool
           it 'removes existing absences records for the correct child with the correct data' do
             create(:attendance,
                    child_approval: second_child.child_approvals.first,
-                   check_in: DateTime.parse('2021-02-24'),
+                   check_in: Time.zone.parse('2021-02-24'),
                    check_out: nil,
                    absence: 'absence')
-            expect(second_child.attendances.for_day(DateTime.parse('2021-02-24')).length).to eq(1)
-            expect(second_child.attendances.for_day(DateTime.parse('2021-02-24')).absences.length).to eq(1)
+            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
+            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
             second_child.reload
             described_class.new.call
-            expect(second_child.attendances.for_day(DateTime.parse('2021-02-24')).length).to eq(1)
-            expect(second_child.attendances.for_day(DateTime.parse('2021-02-24')).absences.length).to eq(0)
+            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
+            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
           end
         end
 

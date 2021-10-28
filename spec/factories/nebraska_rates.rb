@@ -31,6 +31,9 @@ FactoryBot.define do
     trait :daily do
       rate_type { 'daily' }
     end
+
+    factory :accredited_hourly_ldds_rate, traits: %i[accredited ldds hourly]
+    factory :accredited_daily_ldds_rate, traits: %i[accredited ldds daily]
   end
 end
 

@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe Attendance, type: :model do
   let(:attendance) { build(:attendance, check_out: nil) }
 
@@ -132,6 +133,62 @@ RSpec.describe Attendance, type: :model do
     it 'does not create a service day if no check-in is present' do
       attendance.check_in = nil
       expect { attendance.save }.not_to change(ServiceDay, :count)
+    end
+  end
+
+  describe '#remove_absences' do
+    it 'removes an absence on the same service day if it exists' do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval,
+          service_day: absence.service_day
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+    end
+
+    it 'removes an absence associated to the same child_approval on the same check_in day if it exists' do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+    end
+
+    it "ensures there's only one absence per day" do
+      absence = create(:nebraska_absence)
+      expect(described_class.absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: absence.check_in + 45.minutes,
+          child_approval: absence.child_approval,
+          service_day: absence.service_day,
+          absence: 'absence'
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.absences).not_to include(absence)
+    end
+
+    it 'does not remove a non-absence from the same day' do
+      attendance = create(:nebraska_hourly_attendance)
+      expect(described_class.absences.length).to eq(0)
+      expect(described_class.non_absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: attendance.check_in + 45.minutes,
+          child_approval: attendance.child_approval
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(0)
+      expect(described_class.non_absences.length).to eq(2)
     end
   end
 
@@ -855,16 +912,25 @@ RSpec.describe Attendance, type: :model do
 
     it 'returns attendances based on length of time in care' do
       expect(described_class.illinois_part_days).to include(part_day)
-      expect(described_class.illinois_part_days).not_to include([full_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_part_days).not_to include(
+        [full_day, full_plus_part_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_days).to include(full_day)
-      expect(described_class.illinois_full_days).not_to include([part_day, full_plus_part_day, full_plus_full_day])
+      expect(described_class.illinois_full_days).not_to include(
+        [part_day, full_plus_part_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_plus_part_days).to include(full_plus_part_day)
-      expect(described_class.illinois_full_plus_part_days).not_to include([part_day, full_day, full_plus_full_day])
+      expect(described_class.illinois_full_plus_part_days).not_to include(
+        [part_day, full_day, full_plus_full_day]
+      )
       expect(described_class.illinois_full_plus_full_days).to include(full_plus_full_day)
-      expect(described_class.illinois_full_plus_full_days).not_to include([part_day, full_day, full_plus_part_day])
+      expect(described_class.illinois_full_plus_full_days).not_to include(
+        [part_day, full_day, full_plus_part_day]
+      )
     end
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 # == Schema Information
 #
