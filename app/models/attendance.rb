@@ -6,6 +6,7 @@ class Attendance < UuidApplicationRecord
   before_validation :calc_total_time_in_care, if: :child_approval
   before_validation :calc_earned_revenue, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
+  before_save :remove_absences
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -152,6 +153,11 @@ class Attendance < UuidApplicationRecord
       child: child,
       date: check_in.in_time_zone(user.timezone).at_beginning_of_day
     )
+  end
+
+  def remove_absences
+    existing_absences = Attendance.absences.for_day(check_in).or(service_day.attendances.where.not(absence: nil))
+    existing_absences.destroy_all
   end
 
   def prevent_creation_of_absence_without_schedule

@@ -3,6 +3,7 @@
 # The businesses for which users are responsible for keeping subsidy data
 class ServiceDay < UuidApplicationRecord
   belongs_to :child
+  has_many :attendances, dependent: :restrict_with_error
 
   validates :date, date_time_param: true, presence: true
 end

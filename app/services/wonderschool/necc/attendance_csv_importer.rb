@@ -37,7 +37,6 @@ module Wonderschool
 
         attendance = child.attendances.find_or_initialize_by(wonderschool_id: row['attendance_id'])
         check_in = row['checked_in_at']
-        find_and_remove_existing_absences(child, check_in)
 
         attendance.update!(
           child_approval: child.active_child_approval(check_in),
@@ -52,10 +51,6 @@ module Wonderschool
         Rails.logger.tagged('attendance import') do
           Rails.logger.info "Child with Wonderschool ID #{id} not in Pie; skipping"
         end
-      end
-
-      def find_and_remove_existing_absences(child, check_in)
-        child.attendances.for_day(DateTime.parse(check_in)).absences.destroy_all
       end
     end
   end

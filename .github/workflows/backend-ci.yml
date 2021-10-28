@@ -19,13 +19,10 @@ jobs:
         with:
           ruby-version: 3.0.2
           bundler-cache: true
-      - name: Rubocop
-        run: |
-          sudo apt-get -yqq install libpq-dev
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-          bundle exec rubocop
+      - name: Rubocop checks
+        uses: luizfonseca/github-actions-rubocop@1.5.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   brakeman:
     name: Brakeman Static Analysis
     runs-on: ubuntu-latest

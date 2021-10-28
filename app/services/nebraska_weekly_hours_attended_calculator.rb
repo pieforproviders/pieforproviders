@@ -18,6 +18,7 @@ class NebraskaWeeklyHoursAttendedCalculator
   end
 
   def weekly_hours
+    # binding.pry
     @child.attendances.non_absences.for_week(@filter_date).reduce(0) do |sum, attendance|
       sum + attendance.total_time_in_care
     end

@@ -31,6 +31,24 @@ FactoryBot.define do
     trait :daily do
       rate_type { 'daily' }
     end
+
+    trait :school_age do
+      school_age { true }
+      max_age { nil }
+    end
+
+    factory :accredited_hourly_ldds_rate, traits: %i[accredited ldds hourly]
+    factory :unaccredited_hourly_ldds_rate, traits: %i[ldds hourly]
+    factory :unaccredited_hourly_ldds_school_age_rate, traits: %i[ldds hourly school_age]
+    factory :accredited_daily_ldds_rate, traits: %i[accredited ldds daily]
+    factory :unaccredited_daily_ldds_rate, traits: %i[ldds daily]
+    factory :unaccredited_daily_ldds_school_age_rate, traits: %i[ldds daily school_age]
+    factory :accredited_hourly_other_region_rate, traits: %i[accredited other_region hourly]
+    factory :unaccredited_hourly_other_region_rate, traits: %i[other_region hourly]
+    factory :unaccredited_hourly_other_region_school_age_rate, traits: %i[other_region hourly school_age]
+    factory :accredited_daily_other_region_rate, traits: %i[accredited other_region daily]
+    factory :unaccredited_daily_other_region_rate, traits: %i[other_region daily]
+    factory :unaccredited_daily_other_region_school_age_rate, traits: %i[other_region daily school_age]
   end
 end
 
