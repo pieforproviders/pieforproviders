@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NebraskaAbsenceGenerator, type: :service do
+RSpec.describe Nebraska::AbsenceGenerator, type: :service do
   let!(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:attendance_date) do
@@ -19,8 +19,6 @@ RSpec.describe NebraskaAbsenceGenerator, type: :service do
       travel_to attendance_date.in_time_zone(child.timezone)
       child.reload
     end
-
-    after { travel_back }
 
     context 'when the child has an attendance on the date' do
       before do
