@@ -381,7 +381,7 @@ class Child < UuidApplicationRecord
   def nebraska_weekly_hours_attended(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaWeeklyHoursAttendedCalculator.new(self, date).call
+      Nebraska::WeeklyHoursAttendedCalculator.new(self, date).call
     else
       temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s
     end
