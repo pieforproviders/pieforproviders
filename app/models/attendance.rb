@@ -103,9 +103,11 @@ class Attendance < UuidApplicationRecord
   def ne_days
     # TODO: this is super sloppy because this shouldn't be a
     # service class but we haven't refactored these to procedures yet
-    NebraskaFullDaysCalculator.new(child: child,
-                                   date: check_in,
-                                   scope: :for_month).calculate_full_days_based_on_duration(total_time_in_care.seconds)
+    Nebraska::FullDaysCalculator.new(
+      child: child,
+      date: check_in,
+      scope: :for_month
+    ).calculate_full_days_based_on_duration(total_time_in_care.seconds)
   end
 
   # TODO: open question - does qris bump impact this rate?
