@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NebraskaHoursCalculator, type: :service do
+RSpec.describe Nebraska::HoursCalculator, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:child_approval) { child.child_approvals.first }
   let(:first_attendance_date) { child_approval.effective_on.at_end_of_month + 2.days }

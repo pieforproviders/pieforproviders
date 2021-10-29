@@ -95,9 +95,9 @@ class Attendance < UuidApplicationRecord
   def ne_hours
     # TODO: this is super sloppy because this shouldn't be a
     # service class but we haven't refactored these to procedures yet
-    NebraskaHoursCalculator.new(child: child,
-                                date: check_in,
-                                scope: :for_month).round_hourly_to_quarters(total_time_in_care.seconds)
+    Nebraska::HoursCalculator.new(child: child,
+                                  date: check_in,
+                                  scope: :for_month).round_hourly_to_quarters(total_time_in_care.seconds)
   end
 
   def ne_days
