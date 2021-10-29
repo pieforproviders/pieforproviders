@@ -261,7 +261,7 @@ class Child < UuidApplicationRecord
   def ne_days(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
-    NebraskaFullDaysCalculator.new(
+    Nebraska::FullDaysCalculator.new(
       child: self,
       date: date,
       scope: :for_month
@@ -321,7 +321,7 @@ class Child < UuidApplicationRecord
   def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaFullDaysCalculator.new(
+      Nebraska::FullDaysCalculator.new(
         child: self,
         date: date,
         scope: :for_month
@@ -337,7 +337,7 @@ class Child < UuidApplicationRecord
     if Rails.application.config.ff_ne_live_algorithms
       return 0 unless active_child_approval(date).full_days
 
-      active_child_approval(date).full_days - NebraskaFullDaysCalculator.new(
+      active_child_approval(date).full_days - Nebraska::FullDaysCalculator.new(
         child: self,
         date: date,
         scope: nil
