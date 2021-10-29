@@ -1,6 +1,6 @@
 name: Auto-Update Branches
 on:
-  pull_request_target:
+  pull_request:
 jobs:
   auto-update:
     name: auto-update
