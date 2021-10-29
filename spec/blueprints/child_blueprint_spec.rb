@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe ChildBlueprint do
   let(:child) { create(:child) }
 
@@ -134,6 +135,7 @@ RSpec.describe ChildBlueprint do
         allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
         # first dashboard view date is Jul 8th, 2021 at 4pm
         travel_to attendance_date.in_time_zone(child.timezone) + 4.days + 16.hours
+        child.reload
       end
 
       after { travel_back }
@@ -419,3 +421,4 @@ RSpec.describe ChildBlueprint do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

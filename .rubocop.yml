@@ -40,3 +40,7 @@ Layout/MultilineHashKeyLineBreaks:
 
 Layout/MultilineMethodArgumentLineBreaks:
   Enabled: true
+
+# This doesn't get called in Rspec, only in minitest
+Rails/RedundantTravelBack:
+  Enabled: false
