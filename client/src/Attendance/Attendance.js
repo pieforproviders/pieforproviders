@@ -180,6 +180,11 @@ export function Attendance() {
       }
 
     window.hj('event', 'save_attendance')
+    window.hj('tagRecording', ['tag_testing_window'])
+    // eslint-disable-next-line no-undef
+    hj('tagRecording', ['tag_testing_hj'])
+    // eslint-disable-next-line no-undef
+    hj('event', 'save_attendance_hj')
     tagRecording(['save_attendance'], console.info)
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
