@@ -50,6 +50,23 @@ export function AttendanceView() {
             )
           })
           if (matchingAttendances.length > 0) {
+            if (
+              matchingAttendances.some(
+                attendance => attendance.tag === 'absent'
+              )
+            ) {
+              return (
+                <div className="flex justify-center">
+                  <div
+                    className="bg-orange2 text-orange3 box-border p-1"
+                    data-cy="absent"
+                  >
+                    {t('absent').toLowerCase()}
+                  </div>
+                </div>
+              )
+            }
+
             let totalCareTime = '',
               checkInCheckOutTime = ''
             matchingAttendances.forEach(attendance => {
@@ -73,6 +90,8 @@ export function AttendanceView() {
                   ? totalCareTime + ', ' + hour + ' hrs ' + minute + '  mins'
                   : hour + ' hrs ' + minute + '  mins'
             })
+            // eslint-disable-next-line no-debugger
+            debugger
             return (
               <div className="body-2 text-center">
                 <div className="text-gray8 font-semiBold mb-2">
@@ -80,6 +99,11 @@ export function AttendanceView() {
                 </div>
                 <div className="text-darkGray text-xs">
                   {checkInCheckOutTime}
+                </div>
+                <div className="bg-green2 text-green1 box-border p-1">
+                  {matchingAttendances[0].tags.forEach(tag =>
+                    t(`${tag.toLowerCase()}`)
+                  )}
                 </div>
               </div>
             )
@@ -133,6 +157,14 @@ export function AttendanceView() {
 
       if (response.ok) {
         const parsedResponse = await response.json()
+        // const mockParsedResponse =  [
+        //   "date": "2021-01-03",
+        //   "tags": ["full_day", "hourly"],
+        //   "attendances": [
+        //   ]
+        // ]
+        // eslint-disable-next-line no-debugger
+        debugger
         const reducedAttendanceData = parsedResponse.reduce(
           (accumulator, currentValue) => {
             // eslint-disable-next-line no-constant-condition
