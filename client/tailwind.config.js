@@ -22,6 +22,7 @@ module.exports = {
         red2: '#FFEDED',
         orange1: '#F8921F',
         orange2: '#FAE7D1',
+        orange3: '#9C4814',
         green1: '#00853D',
         green2: '#DCFAEA',
         blueOverlay: '#004A6E80'
