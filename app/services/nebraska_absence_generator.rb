@@ -16,12 +16,14 @@ class NebraskaAbsenceGenerator
   def generate_absences
     return if attendance_on_date.present? || schedule.empty? || child_approval.nil?
 
-    Attendance.find_or_create_by(
-      child_approval: child_approval,
-      check_in: @date.at_beginning_of_day,
-      check_out: nil,
-      absence: 'absence'
-    )
+    ActiveRecord::Base.transaction do
+      Attendance.find_or_create_by!(
+        child_approval: child_approval,
+        check_in: @date.at_beginning_of_day,
+        check_out: nil,
+        absence: 'absence'
+      )
+    end
   end
 
   def schedule
