@@ -14,15 +14,19 @@ module Api
       def create
         @errors = Hash.new([])
         @attendance_batch = attendances
-        @errors.update(@attendance_batch.map(&:errors).map(&:messages).compact_blank.reduce({}, :merge))
-
         render json: serialized_response, status: :accepted
       end
 
       private
 
       def attendances
-        Attendance.create(batch.compact_blank)
+        batch.compact_blank.map do |attendance|
+          ActiveRecord::Base.transaction do
+            att = Attendance.create(attendance)
+            att.errors.messages.map { |k, v| @errors[k] = v } if att.errors.present?
+            att
+          end
+        end
       end
 
       def batch

@@ -147,8 +147,6 @@ class Attendance < UuidApplicationRecord
   end
 
   def find_or_create_service_day
-    return unless check_in
-
     self.service_day = ServiceDay.find_or_create_by!(
       child: child,
       date: check_in.in_time_zone(user.timezone).at_beginning_of_day
@@ -156,7 +154,9 @@ class Attendance < UuidApplicationRecord
   end
 
   def remove_absences
-    existing_absences = Attendance.absences.for_day(check_in).or(service_day.attendances.where.not(absence: nil))
+    existing_absences = child.attendances.absences.for_day(check_in).or(service_day.attendances.where.not(absence: nil))
+    return unless existing_absences
+
     existing_absences.destroy_all
   end
 
