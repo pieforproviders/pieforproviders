@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next'
 import '_assets/styles/dashboard-overrides.css'
 import '_assets/styles/payment-table-overrides.css'
 import PaymentModal from '../Payment'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useSelector } from 'react-redux'
 
 const { useBreakpoint } = Grid
 const { Option } = Select
@@ -22,12 +24,15 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const [isPaymentModalVisible, setPaymentModalVisible] = useState(false)
   const [isActionsDropdownOpen, setActionsDropdownOpen] = useState(false)
   const [totalPayment, setTotalPayment] = useState(0)
-
+  const [childPayments, setChildPayments] = useState({})
+  const { makeRequest } = useApiResponse()
+  const { token } = useSelector(state => ({ token: state.auth.token }))
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
   }
-
+  const lastMonth = new Date()
+  lastMonth.setMonth(lastMonth.getMonth() - 1)
   const renderMonthSelector = () => (
     <Select
       // suffixIcon={
@@ -98,6 +103,33 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
     </Dropdown>
   )
 
+  const addPayment = async () => {
+    const paymentsBatch = Object.entries(childPayments).flatMap(data => {
+      return {
+        month: lastMonth.toISOString().split('T')[0],
+        amount: data[1],
+        child_id: data[0]
+      }
+    })
+
+    const response = await makeRequest({
+      type: 'post',
+      url: '/api/v1/payments_batches',
+      headers: {
+        Authorization: token
+      },
+      data: {
+        payments_batch: paymentsBatch
+      }
+    })
+
+    if (response.ok) {
+      setPaymentModalVisible(false)
+    } else {
+      // TODO: handle bad request
+      console.log(response, 'bad request')
+    }
+  }
   const paymentModal = (
     <Modal
       title={
@@ -115,13 +147,19 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             shape="round"
             size="large"
             className="record-payment-button"
+            onClick={addPayment}
           >
             {t('recordPaymentOf')} ${totalPayment.toFixed()}
           </Button>
         </div>
       }
     >
-      <PaymentModal setTotalPayment={setTotalPayment} />
+      <PaymentModal
+        setTotalPayment={setTotalPayment}
+        lastMonth={lastMonth}
+        childPayments={childPayments}
+        setChildPayments={setChildPayments}
+      />
     </Modal>
   )
 
