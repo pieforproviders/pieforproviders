@@ -2130,10 +2130,10 @@
     lz-string "^1.4.4"
     pretty-format "^27.0.2"
 
-"@testing-library/jest-dom@^5.14.1":
-  version "5.14.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.14.1.tgz#8501e16f1e55a55d675fe73eecee32cdaddb9766"
-  integrity sha512-dfB7HVIgTNCxH22M1+KU6viG5of2ldoA5ly8Ar8xkezKHKXjRvznCdbMbqjYGgO2xjRbwnR+rR8MLUIqF3kKbQ==
+"@testing-library/jest-dom@^5.15.0":
+  version "5.15.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/jest-dom/-/jest-dom-5.15.0.tgz#4f5295dbc476a14aec3b07176434b3d51aae5da7"
+  integrity sha512-lOMuQidnL1tWHLEWIhL6UvSZC1Qt3OkNe1khvi2h6xFiqpe5O8arYs46OU0qyUGq0cSTbroQyMktYNXu3a7sAA==
   dependencies:
     "@babel/runtime" "^7.9.2"
     "@types/testing-library__jest-dom" "^5.9.1"
@@ -6781,10 +6781,10 @@ i18next-browser-languagedetector@^6.1.2:
   dependencies:
     "@babel/runtime" "^7.14.6"
 
-i18next@^21.3.3:
-  version "21.3.3"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.3.3.tgz#1065d557328db29a2e1f33526ed37608cdb0242c"
-  integrity sha512-Wv5arCT9pK35nfhOzTdS64T7JpPcoqnkOEidxc4zF0DZ8KetpvmnkO+uWkXy+DFz6zWzPX7U9bIemwBqpFRprw==
+i18next@^21.4.0:
+  version "21.4.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.4.0.tgz#59d0129e9e3974313300b0f60a0e01812ba5689e"
+  integrity sha512-H8QwhJXxnPWDvRlLn3nqDvbry7PM7i3UYa0+5EHWvlVkvNNy5WJVTzZe2tZH+HnaGVAE5MaujasyOca8mbQN+w==
   dependencies:
     "@babel/runtime" "^7.12.0"
 
