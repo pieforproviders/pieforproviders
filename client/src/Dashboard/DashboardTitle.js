@@ -132,6 +132,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   }
   const paymentModal = (
     <Modal
+      id="payment-modal"
       title={
         <div className="eyebrow-large text-center">{t('recordAPayment')}</div>
       }

@@ -252,5 +252,6 @@
   "differentPaymentAmount": "If you received a different amount",
   "recordPaymentOf": "Record payment of",
   "enterAmount": "Enter amount",
-  "calculatedBy": "Calculated by"
+  "calculatedBy": "Calculated by",
+  "pieForProvidersHasCalculated": "Pie for Providers has calculated your subsidy revenue for the month, based on attendance and state-specific rules."
 }

@@ -252,5 +252,6 @@
   "differentPaymentAmount": "Si recibiste un monto distinto",
   "recordPaymentOf": "Anota un pago de",
   "enterAmount": "Pone el monto",
-  "calculatedBy": "Calculado por Pie"
+  "calculatedBy": "Calculado por Pie",
+  "pieForProvidersHasCalculated": "Pie for Providers ha calculado tus ingresos del subsidio para el mes, basado en asistencia y reglas específicas del estado."
 }

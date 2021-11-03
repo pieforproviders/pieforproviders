@@ -36,3 +36,7 @@
 .payment-table-text {
     font-size: medium;
 }
+
+#payment-modal div .ant-modal-footer {
+    border-top: 0;
+}

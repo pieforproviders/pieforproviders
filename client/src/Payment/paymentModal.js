@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Table, Dropdown, Menu } from 'antd'
+import { Table, Dropdown, Menu, Tooltip } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
@@ -53,13 +53,16 @@ export function PaymentModal({
     <div>
       {t('earnedRevenue')}
       <div>
-        <span className="calculated-by-text">{t('calculatedBy')} Pie</span>
-
-        <img
-          alt={t('pieforProvidersLogoAltText')}
-          src={pieSliceLogo}
-          className="w-5 pie-logo-inline"
-        />
+        <Tooltip title={t('pieForProvidersHasCalculated')}>
+          <span className="calculated-by-text">
+            {t('calculatedBy')} Pie
+            <img
+              alt={t('pieforProvidersLogoAltText')}
+              src={pieSliceLogo}
+              className="w-5 pie-logo-inline"
+            />
+          </span>
+        </Tooltip>
       </div>
     </div>
   )
@@ -115,7 +118,7 @@ export function PaymentModal({
     />
   )
 
-  function handleMenuClick(e) {
+  function handleMenuClick() {
     setVisible(false)
   }
 
@@ -159,12 +162,10 @@ export function PaymentModal({
         visible={visible}
         className="ml-2"
       >
-        <a
-          href={() => false}
-          className="ant-dropdown-link"
-          onClick={e => e.preventDefault()}
-        >
-          {t(previousMonth)} {previousMonthYear}
+        <a href={() => false} onClick={e => e.preventDefault()}>
+          <span className="mr-1">
+            {t(previousMonth)} {previousMonthYear}
+          </span>
           <DownOutlined />
         </a>
       </Dropdown>
