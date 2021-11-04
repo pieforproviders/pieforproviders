@@ -120,24 +120,9 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       <></>
     )
   }
+
   const getCurrentWeek = () => {
-    const current = new Date()
-    const first = current.getDate() - current.getDay()
-    const last = first + 6
-    const firstDay = new Date(current.setDate(first)).toLocaleDateString(
-      'default',
-      {
-        month: 'short',
-        day: 'numeric'
-      }
-    )
-    const lastDay = new Date(current.setDate(last)).toLocaleDateString(
-      'default',
-      {
-        month: 'short',
-        day: 'numeric'
-      }
-    )
+    const getDateByDay = day => new Date().setDate(day)
 
     const matchAndReplaceDate = (dateString = '') => {
       const match = dateString.match(/^[A-Za-z]+/)
@@ -145,6 +130,23 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
         ? dateString.replace(match[0], t(match[0].toLowerCase()))
         : ''
     }
+
+    const current = new Date()
+    const first = current.getDate() - current.getDay()
+    const last = first + 6
+
+    const firstDay = new Date(getDateByDay(first)).toLocaleDateString(
+      'default',
+      {
+        month: 'short',
+        day: 'numeric'
+      }
+    )
+
+    const lastDay = new Date(getDateByDay(last)).toLocaleDateString('default', {
+      month: 'short',
+      day: 'numeric'
+    })
 
     return `${matchAndReplaceDate(firstDay)} - ${matchAndReplaceDate(lastDay)}`
   }
