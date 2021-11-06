@@ -6,7 +6,7 @@
   "signup": "Sign Up",
   "or": "or",
   "login": "Log In",
-  "logout": "Log Out",
+  "logout": "Logout",
   "email": "Email",
   "password": "Password",
   "emailAddressRequired": "Email address is required",
@@ -193,6 +193,7 @@
   "sortAsc": "Click to sort ascending ",
   "sortDesc": "Click to sort descending",
   "sortCancel": "Click to cancel sort",
+  "myProfile": "My Profile",
 
   "actions": "Actions",
   "markInactive": "Mark inactive",
