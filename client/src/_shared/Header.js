@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Button, Divider, Dropdown, Menu } from 'antd'
+import { Avatar, Button, Divider, Dropdown, Menu, Space } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch } from 'react-redux'
@@ -28,19 +28,48 @@ export function Header() {
     history.push('/login')
   }
 
-  const renderDesktopMenu = () => (
-    <>
-      {i18n.language === 'es' ? (
-        <Button onClick={() => changeLanguage('en')}>{t('english')}</Button>
-      ) : (
-        <Button onClick={() => changeLanguage('es')}>{t('spanish')}</Button>
-      )}
-      {isAuthenticated && (
-        <Button type="link" onClick={logout}>
+  const menu = (
+    <Menu>
+      <Menu.Item key="0">
+        <Button
+          className="text-lg font-semibold"
+          type="link"
+          onClick={() => history.push('/profile')}
+        >
+          {t('myProfile')}
+        </Button>
+      </Menu.Item>
+      <Menu.Item key="1">
+        <Button className="text-lg font-semibold" type="link" onClick={logout}>
           {t('logout')}
         </Button>
+      </Menu.Item>
+    </Menu>
+  )
+
+  const renderDesktopMenu = () => (
+    <Space size="middle">
+      {i18n.language === 'es' ? (
+        <Button
+          className="border-primaryBlue text-primaryBlue flex"
+          onClick={() => changeLanguage('en')}
+        >
+          {t('english')}
+        </Button>
+      ) : (
+        <Button
+          className="border-primaryBlue text-primaryBlue flex"
+          onClick={() => changeLanguage('es')}
+        >
+          {t('spanish')}
+        </Button>
       )}
-    </>
+      {isAuthenticated && (
+        <Dropdown overlay={menu}>
+          <Avatar className="bg-primaryBlue">U</Avatar>
+        </Dropdown>
+      )}
+    </Space>
   )
 
   const renderMobileMenu = () => {
