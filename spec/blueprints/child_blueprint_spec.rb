@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ChildBlueprint do
+RSpec.describe ChildBlueprint, type: :view do
   let(:child) { create(:child) }
 
   it 'includes the ID, full name, and active info' do
@@ -135,8 +135,6 @@ RSpec.describe ChildBlueprint do
         # first dashboard view date is Jul 8th, 2021 at 4pm
         travel_to attendance_date.in_time_zone(child.timezone) + 4.days + 16.hours
       end
-
-      after { travel_back }
 
       let(:family_fee) { child.active_nebraska_approval_amount(attendance_date).family_fee }
       let(:daily_rate) { 25.15 }

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
-    RSpec.describe OnboardingCaseImporter do
+    RSpec.describe OnboardingCaseImporter, type: :model do
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
@@ -28,8 +28,6 @@ module Wonderschool
         allow(AwsClient).to receive(:new) { stubbed_client }
         allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
       end
-
-      after { travel_back }
 
       describe '#call' do
         context 'with valid data' do
