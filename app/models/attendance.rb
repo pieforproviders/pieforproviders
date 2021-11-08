@@ -142,9 +142,23 @@ class Attendance < UuidApplicationRecord
       .where('max_age >= ? OR max_age IS NULL', child.age_in_months(check_in))
   end
 
+  # rubocop:disable Metrics/MethodLength
   def ne_region
-    %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
+    if business.license_type == 'license_exempt_home'
+      if %w[Lancaster Dakota].include?(business.county)
+        'Lancaster-Dakota'
+      elsif %(Douglas Sarpy).include?(business.county)
+        'Douglas-Sarpy'
+      else
+        'Other'
+      end
+    elsif business.license_type == 'family_in_home'
+      'All'
+    else
+      %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
+    end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def find_or_create_service_day
     self.service_day = ServiceDay.find_or_create_by!(

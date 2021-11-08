@@ -12,7 +12,10 @@ class NebraskaRate < UuidApplicationRecord
   ].freeze
 
   REGIONS = %w[
+    All
     LDDS
+    Lancaster-Dakota
+    Douglas-Sarpy
     Other
   ].freeze
 

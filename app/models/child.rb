@@ -299,9 +299,23 @@ class Child < UuidApplicationRecord
       .order_max_age
   end
 
+  # rubocop:disable Metrics/MethodLength
   def ne_region
-    %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
+    if business.license_type == 'license_exempt_home'
+      if %w[Lancaster Dakota].include?(business.county)
+        'Lancaster-Dakota'
+      elsif %(Douglas Sarpy).include?(business.county)
+        'Douglas-Sarpy'
+      else
+        'Other'
+      end
+    elsif business.license_type == 'family_in_home'
+      'All'
+    else
+      %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
+    end
   end
+  # rubocop:enable Metrics/MethodLength
 
   # NE dashboard full days calculator
   def nebraska_full_days(date)
