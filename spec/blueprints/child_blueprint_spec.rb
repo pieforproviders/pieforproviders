@@ -369,7 +369,7 @@ RSpec.describe ChildBlueprint do
       end
 
       it 'subtracts the family fee from the correct child' do
-        child.attendances.destroy_all
+        child.service_days.destroy_all
         child_with_less_hours = create(
           :necc_child,
           business: child.business,

@@ -44,3 +44,7 @@ Layout/MultilineMethodArgumentLineBreaks:
 # This doesn't get called in Rspec, only in minitest
 Rails/RedundantTravelBack:
   Enabled: false
+
+# Our earned revenue test needs a lot of helpers
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false

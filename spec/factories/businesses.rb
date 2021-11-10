@@ -25,36 +25,44 @@ FactoryBot.define do
       accredited { true }
     end
 
-    trait :step_five do
-      qris_rating { 'step_five' }
+    trait :unaccredited do
+      accredited { false }
     end
 
     trait :not_rated do
       qris_rating { 'not_rated' }
     end
 
+    trait :step_one do
+      qris_rating { 'step_one' }
+    end
+
+    trait :step_two do
+      qris_rating { 'step_two' }
+    end
+
+    trait :step_three do
+      qris_rating { 'step_three' }
+    end
+
+    trait :step_four do
+      qris_rating { 'step_four' }
+    end
+
     trait :step_five do
       qris_rating { 'step_five' }
     end
 
-    trait :not_rated do
-      qris_rating { 'not_rated' }
+    trait :gold do
+      qris_rating { 'gold' }
     end
 
-    trait :step_five do
-      qris_rating { 'step_five' }
+    trait :silver do
+      qris_rating { 'silver' }
     end
 
-    trait :not_rated do
-      qris_rating { 'not_rated' }
-    end
-
-    trait :step_five do
-      qris_rating { 'step_five' }
-    end
-
-    trait :not_rated do
-      qris_rating { 'not_rated' }
+    trait :bronze do
+      qris_rating { 'bronze' }
     end
   end
 end

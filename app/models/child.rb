@@ -13,6 +13,8 @@ class Child < UuidApplicationRecord
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :schedules, dependent: :delete_all
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
+  has_many :service_days, dependent: :destroy
+  has_many :attendances, through: :service_days, dependent: :destroy
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
@@ -63,10 +65,6 @@ class Child < UuidApplicationRecord
 
   def active_child_approval(date)
     active_approval(date)&.child_approvals&.find_by(child: self)
-  end
-
-  def attendances
-    Attendance.joins(:child_approval).where(child_approvals: { child: self })
   end
 
   def absences(date)
