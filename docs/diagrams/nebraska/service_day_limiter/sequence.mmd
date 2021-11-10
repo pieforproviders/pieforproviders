@@ -1,0 +1,7 @@
+sequenceDiagram
+    %% Diagram for requesting limits
+
+    consumer->>+ServiceDayLimiter: service_days_up_to_limits(service_days, LimitTypeClass)
+    ServiceDayLimiter->>+LimitTypeClass: limit(date)
+    LimitTypeClass-->>ServiceDayLimiter: limit_frequency, limit_amount
+    ServiceDayLimiter-->>consumer: revenue_earning_service_days
