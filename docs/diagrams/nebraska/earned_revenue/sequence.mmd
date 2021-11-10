@@ -1,6 +1,4 @@
 sequenceDiagram
-    %% All "State" prefixed classes will belong to a State and will be named [State]Class in order to differentiate, because the logic and data may be different between states e.g. NebraskaDurationLimit, etc.
-
     %% User loops children to request earned revenue for each
     User->>+Child: children
     loop children
@@ -8,44 +6,40 @@ sequenceDiagram
       %% User requests earned_revenue for each child
       User->>+EarnedRevenueCalculator: earned_revenue(Child, date)
       
-      %% EarnedRevenueCalculator determines the right [State]EarnedRevenueCalculator
+      %% EarnedRevenueCalculator determines the right [Nebraska]EarnedRevenueCalculator
       %% based on the User's state, then requests earned_revenue for each child
-      EarnedRevenueCalculator->>+StateEarnedRevenueCalculator: earned_revenue(Child, date)
+      EarnedRevenueCalculator->>+NebraskaEarnedRevenueCalculator: call(Child, date)
 
-      StateEarnedRevenueCalculator->>+ServiceDay: service_days_this_month(Child, date)
+      NebraskaEarnedRevenueCalculator->>+ServiceDay: service_days_this_month(Child, date)
       loop service_days
         ServiceDay->>+Attendance: attendances(self)
         Attendance-->>ServiceDay: time_in_care, absence
         ServiceDay->>+ServiceDay: total_time_in_care
         ServiceDay->>+ServiceDay: duration_type
         ServiceDay->>+ServiceDay: absence?
-        ServiceDay->>+StateRate: rate(self)
-        %% StateRate.where(region:).where(max_age:).where(enrolled_in_school:).where(accredited:).where(qris_rating:).(license_type:).where(duration:)
-        StateRate-->>ServiceDay: rate
-        ServiceDay-->>StateEarnedRevenueCalculator: total_time_in_care, absence, rate, duration_type
+        ServiceDay->>+NebraskaRate: rate(self)
+        %% NebraskaRate.where(region:).where(max_age:).where(enrolled_in_school:).where(accredited:).where(qris_rating:).(license_type:).where(duration:)
+        NebraskaRate-->>ServiceDay: rate
+        ServiceDay-->>NebraskaEarnedRevenueCalculator: [ServiceDay(total_time_in_care, absence, rate, duration_type)]
       end
-      %% the limits might need more work - if we have limits for hours per week, hours per month, hours per service period, this might require pulling all attendances for those periods to check against
       %% Are there any absences in the service_days list?
-      StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: absences?(service_days_this_month)
-      alt Yes
-          StateEarnedRevenueCalculator->>+StateAbsenceLimit: absence_limit(date)
-          StateAbsenceLimit-->>StateEarnedRevenueCalculator: absence_limit, limit_period
-          StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: absences_up_to_limit(service_days_this_month, absence_limit, limit_period)
+      NebraskaEarnedRevenueCalculator->>+NebraskaEarnedRevenueCalculator: absences?(service_days_this_month)
+      alt Absences Present
+          NebraskaEarnedRevenueCalculator->>+Nebraska/ServiceDayLimiter: call(date, Nebraska::Absence, service_days_this_month)
+          Nebraska/ServiceDayLimiter-->>NebraskaEarnedRevenueCalculator: remaining_service_days
       end
       %% Are there any hourly durations in the service_days list?
-      StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: hourly?(service_days_this_month)
-      alt Yes
-          StateEarnedRevenueCalculator->>+StateHourlyLimit: hourly_limit(date)
-          StateHourlyLimit-->>StateEarnedRevenueCalculator: hourly_limit, limit_period
-          StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: hourly_up_to_limit(service_days_this_month, hourly_limit, limit_period)
+      NebraskaEarnedRevenueCalculator->>+NebraskaEarnedRevenueCalculator: hourly?(service_days_this_month)
+      alt Hourly DurationType
+          NebraskaEarnedRevenueCalculator->>+Nebraska/ServiceDayLimiter: call(date, Nebraska::Hourly, service_days_this_month)
+          Nebraska/ServiceDayLimiter-->>NebraskaEarnedRevenueCalculator: remaining_service_days
       end
       %% Are there any daily durations in the service_days list?
-      StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: daily?(service_days_this_month)
-      alt Yes
-          StateEarnedRevenueCalculator->>+StateDailyLimit: daily_limit(date)
-          StateDailyLimit-->>StateEarnedRevenueCalculator: daily_limit, limit_period
-          StateEarnedRevenueCalculator->>+StateEarnedRevenueCalculator: daily_up_to_limit(service_days_this_month, daily_limit, limit_period)
+      NebraskaEarnedRevenueCalculator->>+NebraskaEarnedRevenueCalculator: daily?(service_days_this_month)
+      alt Daily DurationType
+          NebraskaEarnedRevenueCalculator->>+Nebraska/ServiceDayLimiter: call(date, Nebraska::Daily, service_days_this_month)
+          Nebraska/ServiceDayLimiter-->>NebraskaEarnedRevenueCalculator: remaining_service_days
       end
-      StateEarnedRevenueCalculator-->>EarnedRevenueCalculator: earned_revenue(absences_up_to_limit, hourly_up_to_limit, daily_up_to_limit)
-      EarnedRevenueCalculator-->>User: earned_revenue(absences_up_to_limit, hourly_up_to_limit, daily_up_to_limit)
+      NebraskaEarnedRevenueCalculator-->>EarnedRevenueCalculator: earned_revenue
+      EarnedRevenueCalculator-->>User: earned_revenue
     end

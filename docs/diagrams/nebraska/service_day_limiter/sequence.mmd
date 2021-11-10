@@ -1,7 +1,11 @@
 sequenceDiagram
     %% Diagram for requesting limits
 
-    consumer->>+ServiceDayLimiter: service_days_up_to_limits(service_days, LimitTypeClass)
-    ServiceDayLimiter->>+LimitTypeClass: limit(date)
-    LimitTypeClass-->>ServiceDayLimiter: limit_frequency, limit_amount
-    ServiceDayLimiter-->>consumer: revenue_earning_service_days
+    consumer->>+Nebraska/ServiceDayLimiter: call(date, LimitTypeClass, service_days)
+    %% tosses out any service_days outside the limit's frequency (monthly, case period)
+    Nebraska/ServiceDayLimiter->>+LimitTypeClass: reject_frequency(service_days)
+    LimitTypeClass-->>Nebraska/ServiceDayLimiter: remaining_service_days
+    %% tosses out any service_days outside the limit's amount (5 per frequency, etc)
+    Nebraska/ServiceDayLimiter->>+LimitTypeClass: reject_amount(service_days)
+    LimitTypeClass-->>Nebraska/ServiceDayLimiter: remaining_service_days
+    Nebraska/ServiceDayLimiter-->>consumer: revenue_earning_service_days
