@@ -133,9 +133,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const paymentModal = (
     <Modal
       id="payment-modal"
-      title={
-        <div className="eyebrow-large text-center">{t('recordAPayment')}</div>
-      }
+      title={<div className="h2-large text-center">{t('recordAPayment')}</div>}
       closeIcon={<CloseOutlined className="-btn-primary" />}
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Table, Dropdown, Menu, Tooltip } from 'antd'
-import { DownOutlined } from '@ant-design/icons'
+import { Table, Tooltip } from 'antd'
 import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
 import '_assets/styles/payment-table-overrides.css'
@@ -17,7 +16,6 @@ export function PaymentModal({
   const { cases } = useSelector(state => state)
   const { t } = useTranslation()
   const [currentChildID, setCurrentChildID] = useState(false)
-  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     initChildPayments()
@@ -118,13 +116,6 @@ export function PaymentModal({
     />
   )
 
-  function handleMenuClick() {
-    setVisible(false)
-  }
-
-  function handleVisibleChange(flag) {
-    setVisible(flag)
-  }
   const monthNames = [
     'jan',
     'feb',
@@ -143,34 +134,18 @@ export function PaymentModal({
   const previousMonth = monthNames[lastMonth.getMonth()]
   const previousMonthYear = lastMonth.getFullYear()
 
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1">
-        {t(previousMonth)} {previousMonthYear}
-      </Menu.Item>
-    </Menu>
-  )
-
   return (
     <div>
-      <p className="mb-4">{t('recordAChildsPayment')}</p>
-      <h3 className="mb-2">{t('step1')}</h3>
-      <p className="mb-2">{t('choosePaymentMonth')}</p>
-      <Dropdown
-        overlay={menu}
-        onVisibleChange={handleVisibleChange}
-        visible={visible}
-        className="ml-2"
-      >
-        <a href={() => false} onClick={e => e.preventDefault()}>
-          <span className="mr-1">
-            {t(previousMonth)} {previousMonthYear}
-          </span>
-          <DownOutlined />
-        </a>
-      </Dropdown>
-      <h3 className="mt-4 mb-2">{t('step2')}</h3>
-      <p className="mb-4">{t('childrenPayment')}</p>
+      <p className="mb-4 body-1">{t('recordAChildsPayment')}</p>
+      <div className="mb-2 eyebrow-small">{t('step1')}</div>
+      <p className="mb-2 body-1">{t('choosePaymentMonth')}</p>
+
+      <span className="ml-4">
+        {t(previousMonth)} {previousMonthYear}
+      </span>
+
+      <div className="mt-4 mb-2 eyebrow-small">{t('step2')}</div>
+      <p className="mb-4 body-1">{t('childrenPayment')}</p>
       {table}
     </div>
   )
