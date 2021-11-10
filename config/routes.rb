@@ -105,8 +105,8 @@ end
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
 #
 # Routes for LetterOpenerWeb::Engine:
-# clear_letters DELETE /clear(.:format)                 letter_opener_web/letters#clear
-# delete_letter DELETE /:id(.:format)                   letter_opener_web/letters#destroy
-#       letters GET    /                                letter_opener_web/letters#index
-#        letter GET    /:id(/:style)(.:format)          letter_opener_web/letters#show
-#               GET    /:id/attachments/:file(.:format) letter_opener_web/letters#attachment
+#       letters GET  /                                letter_opener_web/letters#index
+# clear_letters POST /clear(.:format)                 letter_opener_web/letters#clear
+#        letter GET  /:id(/:style)(.:format)          letter_opener_web/letters#show
+# delete_letter POST /:id/delete(.:format)            letter_opener_web/letters#destroy
+#               GET  /:id/attachments/:file(.:format) letter_opener_web/letters#attachment
