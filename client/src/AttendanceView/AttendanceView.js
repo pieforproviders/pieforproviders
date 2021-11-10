@@ -101,7 +101,7 @@ export function AttendanceView() {
                   {checkInCheckOutTime}
                 </div>
                 <div className="bg-green2 text-green1 box-border p-1">
-                  {matchingAttendances[0].tags.forEach(tag =>
+                  {(matchingAttendances[0]?.tags || []).forEach(tag =>
                     t(`${tag.toLowerCase()}`)
                   )}
                 </div>
@@ -157,14 +157,55 @@ export function AttendanceView() {
 
       if (response.ok) {
         const parsedResponse = await response.json()
-        // const mockParsedResponse =  [
-        //   "date": "2021-01-03",
-        //   "tags": ["full_day", "hourly"],
-        //   "attendances": [
-        //   ]
-        // ]
-        // eslint-disable-next-line no-debugger
-        debugger
+        const mockParsedResponse = [
+          {
+            date: '2021-01-03',
+            tags: ['full_day', 'hourly'],
+            attendances: [
+              {
+                absence: 'absence',
+                check_in: '2021-11-01 00:00:00 -0600',
+                check_out: null,
+                child: {
+                  id: 'c2d629d7-49a2-422d-ac45-10e78c654666',
+                  active: true,
+                  full_name: 'Rhonan Shaw',
+                  inactive_reason: null,
+                  last_active_date: null
+                },
+                child_approval_id: 'f0cd2194-834e-4758-9a75-41925c6a0fa6',
+                id: '389db1c0-5075-42de-b7a3-06f38766aacf',
+                total_time_in_care: '3600'
+              }
+            ]
+          }
+        ]
+        // eslint-disable-next-line no-unused-vars
+        const reduceAttendances = attendances => {
+          return attendances.reduce((accumulator, currentValue) => {
+            // eslint-disable-next-line no-constant-condition
+            if (
+              accumulator.some(e => e.child === currentValue.child.full_name)
+            ) {
+              return accumulator.map(child => {
+                if (child.child === currentValue.child.full_name) {
+                  return {
+                    child: child.child,
+                    attendances: [...child.attendances, currentValue]
+                  }
+                } else {
+                  return child
+                }
+              })
+            } else {
+              return [
+                ...accumulator,
+                // eslint-disable-next-line prettier/prettier
+                { child: currentValue.child.full_name, attendances: [currentValue] }
+              ]
+            }
+          }, [])
+        }
         const reducedAttendanceData = parsedResponse.reduce(
           (accumulator, currentValue) => {
             // eslint-disable-next-line no-constant-condition
@@ -191,7 +232,11 @@ export function AttendanceView() {
           },
           []
         )
-
+        console.log(
+          mockParsedResponse.flatMap(res => reduceAttendances(res.attendances))
+        )
+        // eslint-disable-next-line no-debugger
+        debugger
         setAttendanceData(reducedAttendanceData)
         setColumns(generateColumns())
       }
