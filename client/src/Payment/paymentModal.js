@@ -140,9 +140,9 @@ export function PaymentModal({
       <div className="mb-2 eyebrow-small">{t('step1')}</div>
       <p className="mb-2 body-1">{t('choosePaymentMonth')}</p>
 
-      <span className="ml-4">
+      <div className="ml-4">
         {t(previousMonth)} {previousMonthYear}
-      </span>
+      </div>
 
       <div className="mt-4 mb-2 eyebrow-small">{t('step2')}</div>
       <p className="mb-4 body-1">{t('childrenPayment')}</p>
