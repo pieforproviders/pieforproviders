@@ -9,7 +9,7 @@ require 'faker'
 
 ActionMailer::Base.perform_deliveries = false
 
-puts 'Seeding.......'
+Rails.logger.info 'Seeding.......'
 
 THIS_YEAR = Time.current.year
 JAN_1 = Date.new(THIS_YEAR, 1, 1)
@@ -122,24 +122,27 @@ puts_records_in_db(Business)
 
 # find_or_create_by! a Child with the full_name,
 #  and birthday set randomly between the min_age and max_age.
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
+# rubocop:disable Metrics/ParameterLists
 def create_case(full_name,
                 business: @business,
                 case_number: Faker::Number.number(digits: 10),
                 effective_on: Faker::Date.between(from: 11.months.ago, to: 2.months.ago),
                 date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
                 copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
-                copay_frequency: nil,
                 add_expired_approval: false)
 
-  copay_frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
+  frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
 
   approvals = [
     Approval.find_or_create_by!(
       case_number: case_number,
       copay_cents: copay,
-      copay_frequency: copay_frequency,
+      copay_frequency: frequency,
       effective_on: effective_on,
-      expires_on: effective_on + 1.year - 1.day
+      expires_on: nil
     )
   ]
 
@@ -147,9 +150,9 @@ def create_case(full_name,
     approvals << Approval.find_or_create_by!(
       case_number: case_number,
       copay_cents: copay ? copay - 1200 : nil,
-      copay_frequency: copay_frequency,
+      copay_frequency: frequency,
       effective_on: effective_on - 1.year,
-      expires_on: effective_on - 1.day
+      expires_on: nil
     )
   end
 
@@ -160,7 +163,8 @@ def create_case(full_name,
   child.approvals << approvals
   child.save!
 
-  if child.state == 'IL'
+  case child.state
+  when 'IL'
     12.times do |idx|
       IllinoisApprovalAmount.create!(
         child_approval: child.active_child_approval(Time.current),
@@ -169,9 +173,7 @@ def create_case(full_name,
         full_days_approved_per_week: rand(0..2)
       )
     end
-  end
-
-  if child.state == 'NE'
+  when 'NE'
     total_absences = rand(0..10).round
     total_days = rand(0..25).round
     total_hours = rand(0.0..10.0).round
@@ -188,7 +190,7 @@ def create_case(full_name,
         authorized_weekly_hours: rand(0..45)
       )
     end
-    
+
     effective_on = Faker::Date.between(from: 8.months.ago, to: 4.months.ago)
 
     5.times do |idx|
@@ -211,20 +213,26 @@ def create_case(full_name,
     )
   end
 end
+# rubocop:enable Metrics/ParameterLists
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/AbcSize
 
-maria = create_case('Maria Baca')
-adedji = create_case('Adédèjì Adébísí', case_number: '1234567A')
-atinuke = create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
-kshawn = create_case("K'Shawn Henderson")
-marcus = create_case('Marcus Smith')
-sabina = create_case('Sabina Akers', add_expired_approval: true)
-mubiru = create_case('Mubiru Karstensen')
-tarquinius = create_case('Tarquinius Kelly', add_expired_approval: true)
-rhonan = create_case('Rhonan Shaw', business: @business_nebraska)
-tanim = create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true)
-jasveen = create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true)
-manuel = create_case('Manuel Céspedes', business: @business_nebraska)
+create_case('Maria Baca')
+create_case('Adédèjì Adébísí', case_number: '1234567A')
+create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
+create_case("K'Shawn Henderson")
+create_case('Marcus Smith')
+create_case('Sabina Akers', add_expired_approval: true)
+create_case('Mubiru Karstensen')
+create_case('Tarquinius Kelly', add_expired_approval: true)
+create_case('Rhonan Shaw', business: @business_nebraska)
+create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true)
+create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true)
+create_case('Manuel Céspedes', business: @business_nebraska)
 
 puts_records_in_db(Child)
 
-puts 'Seeding is done!'
+Rake::Task['nebraska:rates'].invoke
+
+Rails.logger.info 'Seeding is done!'

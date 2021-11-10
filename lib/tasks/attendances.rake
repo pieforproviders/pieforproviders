@@ -33,7 +33,8 @@ end
 
 def weeks_to_populate
   # how many weeks have passed between now and the last check_out?
-  ((now.yday - last_attendance_check_out.yday) / 7.0).floor
+  weeks = ((now.yday - last_attendance_check_out.yday) / 7.0).floor
+  weeks.zero? ? 1 : weeks
 end
 
 def part_day_attendances
