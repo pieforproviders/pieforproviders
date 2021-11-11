@@ -9,6 +9,7 @@ FactoryBot.define do
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
+    # TODO: refactor these nebraska attendances to take a trait and DRY up code
     factory :nebraska_absence do
       child_approval { create(:child_approval, child: create(:necc_child)) }
       check_in do
