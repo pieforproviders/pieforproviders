@@ -69,7 +69,7 @@ class Child < UuidApplicationRecord
 
   def absences(date)
     if Rails.application.config.ff_ne_live_algorithms
-      attendances.for_month(date).absences.length
+      service_days.for_month(date).absences.length
     else
       temporary_nebraska_dashboard_case&.absences
     end
@@ -161,18 +161,22 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_revenue(date)
-    non_absences = attendances&.non_absences&.for_month(date)
+    non_absences = service_days&.non_absences&.for_month(date)
     return 0 unless non_absences
 
-    non_absences.pluck(:earned_revenue).sum
+    non_absences.sum(&:earned_revenue)
   end
 
   def absence_revenue(date)
-    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition do |absence|
-      absence.absence == 'absence'
+    absences, covid_absences = service_days
+                               .absences
+                               .for_month(date)
+                               .order(total_time_in_care: :desc)
+                               .partition do |absence|
+      absence.attendances.select { |attendance| attendance.absence == 'absence' }.present?
     end
     # only five absences are allowed per month in Nebraska
-    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum
+    absences.take(5).sum(&:earned_revenue) + covid_absences.sum(&:earned_revenue)
   end
 
   def estimated_remaining_revenue(date)
@@ -199,7 +203,7 @@ class Child < UuidApplicationRecord
 
   def remaining_scheduled_revenue(date)
     (0..6).reduce(0) do |sum, weekday|
-      if attendances.for_day(date).present? && weekday == date.wday
+      if service_days.for_day(date).present? && weekday == date.wday
         sum + weekday_scheduled_rate_excluding_today(date, weekday)
       else
         sum + weekday_scheduled_rate_including_today(date, weekday)
