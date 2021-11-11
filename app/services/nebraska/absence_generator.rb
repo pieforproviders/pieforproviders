@@ -13,10 +13,10 @@ module Nebraska
     end
 
     private
-    
+
     def generate_absences
       return if attendance_on_date.present? || schedule.empty? || child_approval.nil?
-  
+
       ActiveRecord::Base.transaction do
         Attendance.find_or_create_by!(
           child_approval: child_approval,

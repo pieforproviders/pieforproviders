@@ -38,6 +38,11 @@ class NebraskaRate < UuidApplicationRecord
 
   scope :hourly, -> { where(rate_type: 'hourly') }
   scope :daily, -> { where(rate_type: 'daily') }
+  scope :by_region, ->(region) { where(region: region) }
+  scope :by_accredited_rate, ->(accredited_rate) { where(accredited_rate: accredited_rate) }
+  scope :by_license_type, ->(license_type) { where(license_type: license_type) }
+  scope :by_school_enrollment, ->(enrolled_in_school) { where(school_age: enrolled_in_school || false) }
+  scope :by_age, ->(date) { where('max_age >= ? OR max_age IS NULL', child.age_in_months(date)) }
   scope :order_max_age, -> { reorder('max_age ASC NULLS LAST') }
 end
 
