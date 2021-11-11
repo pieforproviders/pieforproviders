@@ -89,7 +89,6 @@ end
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  deleted_at                                                     :date
-#  earned_revenue                                                 :decimal(, )
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null
