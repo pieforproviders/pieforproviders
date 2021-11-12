@@ -134,3 +134,12 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+# Configure dox for api documentations
+require 'dox'
+
+Dox.configure do |config|
+  config.api_version = '1.0'
+end
+
+Dir[Rails.root.join('spec/docs/**/*.rb')].each { |f| require f }
