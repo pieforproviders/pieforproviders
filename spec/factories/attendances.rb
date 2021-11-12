@@ -5,7 +5,10 @@ FactoryBot.define do
     child_approval
 
     check_in do
-      Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
+      Faker::Time
+        .between(from: Time.current.at_beginning_of_month, to: Time.current)
+        .in_time_zone(child_approval.child.timezone)
+        .at_beginning_of_day
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
