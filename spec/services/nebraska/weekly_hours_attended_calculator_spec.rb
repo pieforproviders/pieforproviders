@@ -85,5 +85,19 @@ RSpec.describe Nebraska::WeeklyHoursAttendedCalculator, type: :service do
         expect(described_class.new(child, first_attendance_date).call).to eq(23.0)
       end
     end
+
+    context 'with an attendance during the filter week with multiple check-ins' do
+      it 'returns the total attended hours of authorized weekly hours as a string' do
+        create(:attendance,
+               child_approval: child_approval,
+               check_in: check_in,
+               check_out: check_in + 1.hour)
+        create(:attendance,
+               child_approval: child_approval,
+               check_in: check_in + 2.hours,
+               check_out: check_in + 12.hours + 42.minutes)
+        expect(described_class.new(child, first_attendance_date).call).to eq(11.7)
+      end
+    end
   end
 end

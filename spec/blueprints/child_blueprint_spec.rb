@@ -415,7 +415,7 @@ RSpec.describe ChildBlueprint do
 
         # even though they've both attended 10 times, the expectation is that the one with more hours will have less
         # revenue because we're subtracting the family fee from that child
-        expect(child_json['earned_revenue']).to eq(child_with_less_hours_json['earned_revenue'].to_f - 80.00)
+        expect(child_json['earned_revenue']).to eq([child_with_less_hours_json['earned_revenue'].to_f - 80.00, 0.0].max)
       end
       # rubocop:enable RSpec/ExampleLength
     end

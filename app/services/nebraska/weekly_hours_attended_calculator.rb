@@ -3,6 +3,8 @@
 module Nebraska
   # Service to calculate full days used in Nebraska by specific kids
   class WeeklyHoursAttendedCalculator
+    attr_reader :child, :filter_date
+
     def initialize(child, filter_date)
       @child = child
       @filter_date = filter_date
@@ -19,8 +21,10 @@ module Nebraska
     end
 
     def weekly_hours
-      @child.attendances.non_absences.for_week(@filter_date).reduce(0) do |sum, attendance|
-        sum + attendance.total_time_in_care
+      # since this is an actual count of attended *hours* regardless of the classification
+      # of the service day, we're summing actual time in care rather than using only hourly attendances
+      child.service_days.non_absences.for_week(filter_date).reduce(0) do |sum, service_day|
+        sum + service_day.total_time_in_care
       end
     end
   end

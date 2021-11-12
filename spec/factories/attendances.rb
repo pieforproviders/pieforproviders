@@ -53,6 +53,16 @@ FactoryBot.define do
       check_out { check_in + 14.hours + 42.minutes }
     end
 
+    factory :nebraska_max_attendance do
+      child_approval { create(:child_approval, child: create(:necc_child)) }
+      check_in do
+        child_approval.child.reload
+        date = child_approval.child.schedules.first.effective_on + 30.days
+        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      end
+      check_out { check_in + 19.hours + 11.minutes }
+    end
+
     factory :illinois_part_day_attendance do
       check_in do
         Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
