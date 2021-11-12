@@ -10,8 +10,12 @@ class ServiceDay < UuidApplicationRecord
   delegate :business, to: :child
   delegate :state, to: :child
 
-  scope :absences, -> { joins(:attendances).where.not(attendances: { absence: nil }) }
-  scope :non_absences, -> { joins(:attendances).where(attendances: { absence: nil }) }
+  scope :absences, -> { includes(:attendances).where.not(attendances: { absence: nil }) }
+  scope :non_absences, -> { includes(:attendances).where(attendances: { absence: nil }) }
+  scope :hourly, -> { where(id: all.select(&:hourly?).map(&:id)) }
+  scope :daily, -> { where(id: all.select(&:daily?).map(&:id)) }
+  scope :daily_plus_hourly, -> { where(id: all.select(&:daily_plus_hourly?).map(&:id)) }
+  scope :daily_plus_hourly_max, -> { where(id: all.select(&:daily_plus_hourly_max?).map(&:id)) }
 
   scope :for_month,
         lambda { |month = nil|
@@ -29,6 +33,30 @@ class ServiceDay < UuidApplicationRecord
           day ||= Time.current
           where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
         }
+
+  def hourly?
+    return unless state == 'NE'
+
+    total_time_in_care <= (5.hours + 45.minutes)
+  end
+
+  def daily?
+    return unless state == 'NE'
+
+    total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
+  end
+
+  def daily_plus_hourly?
+    return unless state == 'NE'
+
+    total_time_in_care > 10.hours && total_time_in_care <= 18.hours
+  end
+
+  def daily_plus_hourly_max?
+    return unless state == 'NE'
+
+    total_time_in_care > 18.hours
+  end
 
   def earned_revenue
     return unless state == 'NE'

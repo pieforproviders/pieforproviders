@@ -18,7 +18,7 @@ class User < UuidApplicationRecord
   has_many :child_approvals, through: :children, dependent: :restrict_with_error
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :restrict_with_error
   has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
-  has_many :attendances, through: :children, dependent: :restrict_with_error
+  has_many :service_days, through: :children, dependent: :restrict_with_error
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 
@@ -51,7 +51,7 @@ class User < UuidApplicationRecord
   end
 
   # return the user's latest attendance check_in in UTC
-  def latest_attendance_in_month_utc(filter_date)
+  def latest_service_day_in_month_utc(filter_date)
     filter_date ||= Time.current
     # if the filter_date we send is 03-01-2021, we are looking for checkins
     # that are between 03-01-2021 and 03-31-2021 *in the user's timezone*
@@ -59,7 +59,7 @@ class User < UuidApplicationRecord
     # also in the user's timezone so the "as_of" date on the dashboard is correct
     start_time = filter_date.at_beginning_of_month
     end_time = filter_date.at_end_of_month
-    attendances.where('check_in BETWEEN ? AND ?', start_time, end_time).max_by(&:check_in)&.check_in
+    service_days.where('date BETWEEN ? AND ?', start_time, end_time).max_by(&:date)&.date
   end
 
   def first_approval_effective_date

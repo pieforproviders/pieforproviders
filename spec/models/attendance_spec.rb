@@ -76,6 +76,113 @@ RSpec.describe Attendance, type: :model do
     expect(build(:attendance)).to be_valid
   end
 
+  context 'with date scopes' do
+    let(:child) { create(:child) }
+    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+    let(:child_approval) { child.child_approvals.first }
+    let(:current_attendance) { create(:attendance, child_approval: child_approval) }
+    let(:past_attendance) do
+      create(:attendance,
+             child_approval: child_approval,
+             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
+             check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
+    end
+
+    describe '#for_month' do
+      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date }
+
+      it 'returns attendances for given month' do
+        expect(described_class.for_month).to include(current_attendance)
+        expect(described_class.for_month).not_to include(past_attendance)
+        expect(described_class.for_month(date)).to include(past_attendance)
+        expect(described_class.for_month(date)).not_to include(current_attendance)
+        expect(described_class.for_month(date - 1.month).size).to eq(0)
+      end
+    end
+
+    describe '#for_week' do
+      let(:current_attendance) do
+        create(
+          :attendance,
+          check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current),
+          child_approval: child_approval
+        )
+      end
+      let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
+
+      it 'returns attendances for given week' do
+        expect(described_class.for_week).to include(current_attendance)
+        expect(described_class.for_week).not_to include(past_attendance)
+        expect(described_class.for_week(date)).to include(past_attendance)
+        expect(described_class.for_week(date)).not_to include(current_attendance)
+        expect(described_class.for_week(date - 1.week).size).to eq(0)
+      end
+    end
+
+    describe '#for_day' do
+      let(:date) { current_attendance.check_in.to_date }
+
+      it 'returns attendances for given day' do
+        travel_to date
+        expect(described_class.for_day).to include(current_attendance)
+        expect(described_class.for_day).not_to include(past_attendance)
+        expect(described_class.for_day(date)).not_to include(past_attendance)
+        expect(described_class.for_day(date)).to include(current_attendance)
+        expect(described_class.for_day(date - 1.week).size).to eq(0)
+        travel_back
+      end
+    end
+  end
+
+  describe '#illinois_*_days scopes' do
+    let(:child) { create(:child, business: create(:business, zipcode: '60606')) }
+    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+    let(:child_approval) { child.child_approvals.first }
+    let(:part_day) do
+      create(:attendance,
+             child_approval: child_approval,
+             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
+             check_out: Time.new(2020, 12, 1, 13, 30, 0, timezone))
+    end
+    let(:full_day) do
+      create(:attendance,
+             child_approval: child_approval,
+             check_in: Time.new(2020, 12, 2, 9, 31, 0, timezone),
+             check_out: Time.new(2020, 12, 2, 21, 31, 0, timezone))
+    end
+    let(:full_plus_part_day) do
+      create(:attendance,
+             child_approval: child_approval,
+             check_in: Time.new(2020, 12, 3, 9, 31, 0, timezone),
+             check_out: Time.new(2020, 12, 3, 21, 32, 0, timezone))
+    end
+    let(:full_plus_full_day) do
+      create(:attendance,
+             child_approval: child_approval,
+             check_in: Time.new(2020, 12, 4, 9, 31, 0, timezone),
+             check_out: Time.new(2020, 12, 5, 2, 31, 0, timezone))
+    end
+
+    it 'returns attendances based on length of time in care' do
+      expect(described_class.illinois_part_days).to include(part_day)
+      expect(described_class.illinois_part_days).not_to include(
+        [full_day, full_plus_part_day, full_plus_full_day]
+      )
+      expect(described_class.illinois_full_days).to include(full_day)
+      expect(described_class.illinois_full_days).not_to include(
+        [part_day, full_plus_part_day, full_plus_full_day]
+      )
+      expect(described_class.illinois_full_plus_part_days).to include(full_plus_part_day)
+      expect(described_class.illinois_full_plus_part_days).not_to include(
+        [part_day, full_day, full_plus_full_day]
+      )
+      expect(described_class.illinois_full_plus_full_days).to include(full_plus_full_day)
+      expect(described_class.illinois_full_plus_full_days).not_to include(
+        [part_day, full_day, full_plus_part_day]
+      )
+    end
+  end
+
   describe '#total_time_in_care' do
     it 'uses the check_in and check_out when they are both present' do
       attendance.check_out = attendance.check_in + 3.hours + 12.minutes
@@ -188,103 +295,6 @@ RSpec.describe Attendance, type: :model do
       end.not_to change(ServiceDay, :count)
       expect(described_class.absences.length).to eq(0)
       expect(described_class.non_absences.length).to eq(2)
-    end
-  end
-
-  describe '#for_month' do
-    let(:child) { create(:child) }
-    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
-    let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) { create(:attendance, child_approval: child_approval) }
-    let(:past_attendance) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
-    end
-
-    it 'returns attendances for given months' do
-      date = Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date
-      expect(described_class.for_month).to include(current_attendance)
-      expect(described_class.for_month).not_to include(past_attendance)
-      expect(described_class.for_month(date)).to include(past_attendance)
-      expect(described_class.for_month(date)).not_to include(current_attendance)
-      expect(described_class.for_month(date - 1.month).size).to eq(0)
-    end
-  end
-
-  describe '#for_week' do
-    let(:child) { create(:child) }
-    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
-    let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) do
-      create(:attendance,
-             check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current),
-             child_approval: child_approval)
-    end
-    let(:past_attendance) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
-    end
-
-    it 'returns attendances for given weeks' do
-      date = Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date
-      expect(described_class.for_week).to include(current_attendance)
-      expect(described_class.for_week).not_to include(past_attendance)
-      expect(described_class.for_week(date)).to include(past_attendance)
-      expect(described_class.for_week(date)).not_to include(current_attendance)
-      expect(described_class.for_week(date - 1.week).size).to eq(0)
-    end
-  end
-
-  describe '#illinois_*_days scopes' do
-    let(:child) { create(:child, business: create(:business, zipcode: '60606')) }
-    let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
-    let(:child_approval) { child.child_approvals.first }
-    let(:part_day) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 1, 13, 30, 0, timezone))
-    end
-    let(:full_day) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 2, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 2, 21, 31, 0, timezone))
-    end
-    let(:full_plus_part_day) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 3, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 3, 21, 32, 0, timezone))
-    end
-    let(:full_plus_full_day) do
-      create(:attendance,
-             child_approval: child_approval,
-             check_in: Time.new(2020, 12, 4, 9, 31, 0, timezone),
-             check_out: Time.new(2020, 12, 5, 2, 31, 0, timezone))
-    end
-
-    it 'returns attendances based on length of time in care' do
-      expect(described_class.illinois_part_days).to include(part_day)
-      expect(described_class.illinois_part_days).not_to include(
-        [full_day, full_plus_part_day, full_plus_full_day]
-      )
-      expect(described_class.illinois_full_days).to include(full_day)
-      expect(described_class.illinois_full_days).not_to include(
-        [part_day, full_plus_part_day, full_plus_full_day]
-      )
-      expect(described_class.illinois_full_plus_part_days).to include(full_plus_part_day)
-      expect(described_class.illinois_full_plus_part_days).not_to include(
-        [part_day, full_day, full_plus_full_day]
-      )
-      expect(described_class.illinois_full_plus_full_days).to include(full_plus_full_day)
-      expect(described_class.illinois_full_plus_full_days).not_to include(
-        [part_day, full_day, full_plus_part_day]
-      )
     end
   end
 end

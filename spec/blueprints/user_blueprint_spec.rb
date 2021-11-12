@@ -77,7 +77,7 @@ RSpec.describe UserBlueprint do
   end
 
   context 'when an attendance is present' do
-    let(:last_month) { Time.current.at_beginning_of_day - 1.month }
+    let(:last_month) { Time.current.in_time_zone(user.timezone).at_beginning_of_day - 1.month }
 
     before do
       create(:attendance,
