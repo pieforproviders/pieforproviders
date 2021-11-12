@@ -134,6 +134,71 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1.75 * nebraska_accredited_hourly_rate.amount)
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount)
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_accredited_daily_rate.amount) +
+              (1.75 * nebraska_accredited_hourly_rate.amount)
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_accredited_daily_rate.amount) +
+              (8 * nebraska_accredited_hourly_rate.amount)
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
@@ -176,6 +241,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
@@ -231,6 +361,71 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1.75 * nebraska_unaccredited_hourly_rate.amount)
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount)
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_unaccredited_daily_rate.amount) +
+              (1.75 * nebraska_unaccredited_hourly_rate.amount)
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_unaccredited_daily_rate.amount) +
+              (8 * nebraska_unaccredited_hourly_rate.amount)
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'not_rated')
@@ -273,6 +468,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
@@ -328,6 +588,71 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1.75 * nebraska_accredited_hourly_rate.amount * (1.05**2))
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1 * nebraska_accredited_daily_rate.amount * (1.05**2))
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_accredited_daily_rate.amount * (1.05**2)) +
+              (1.75 * nebraska_accredited_hourly_rate.amount * (1.05**2))
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_accredited_daily_rate.amount * (1.05**2)) +
+              (8 * nebraska_accredited_hourly_rate.amount * (1.05**2))
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -370,6 +695,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
@@ -427,6 +817,71 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1.75 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1 * nebraska_unaccredited_daily_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_unaccredited_daily_rate.amount * (1.05**3)) +
+              (1.75 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_unaccredited_daily_rate.amount * (1.05**3)) +
+              (8 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -469,6 +924,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
@@ -526,6 +1046,71 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1.75 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue).to eq(1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3)) +
+              (1.75 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3)) +
+              (8 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -568,6 +1153,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
@@ -627,6 +1277,73 @@ RSpec.describe ServiceDay, type: :model do
         )
       end
 
+      it 'gets rates for two attendances that keep the service day within an hourly duration' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          service_day: service_day,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 2.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(1.75 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day' do
+        attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 2.hours + 0.minutes,
+          check_out: attendance.check_in + 8.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
+      end
+
+      it 'gets rates for two attendances that make up a full day plus hourly' do
+        attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 12.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3)) +
+              (1.75 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
+          )
+      end
+
+      it 'gets rates for two attendances that exceed the max of 18 hours' do
+        attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+        attendance.save!
+        service_day.reload
+        create(
+          :attendance,
+          child_approval: attendance.child_approval,
+          check_in: attendance.check_in + 5.hours + 0.minutes,
+          check_out: attendance.check_in + 20.hours + 30.minutes
+        )
+        service_day.reload
+        expect(service_day.earned_revenue)
+          .to eq(
+            (1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3)) +
+              (8 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
+          )
+      end
+
       context 'with a special needs approved child' do
         before do
           attendance.business.update!(accredited: true, qris_rating: 'step_five')
@@ -671,6 +1388,71 @@ RSpec.describe ServiceDay, type: :model do
             (8 * attendance.child_approval.special_needs_hourly_rate) +
             (1 * attendance.child_approval.special_needs_daily_rate)
           )
+        end
+
+        it 'gets rates for two attendances that keep the service day within an hourly duration' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            service_day: service_day,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 2.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1.75 * attendance.child_approval.special_needs_hourly_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day' do
+          attendance.check_out = attendance.check_in + 1.hour + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 2.hours + 0.minutes,
+            check_out: attendance.check_in + 8.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue).to eq(1 * attendance.child_approval.special_needs_daily_rate)
+        end
+
+        it 'gets rates for two attendances that make up a full day plus hourly' do
+          attendance.check_out = attendance.check_in + 4.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 12.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (1.75 * attendance.child_approval.special_needs_hourly_rate)
+            )
+        end
+
+        it 'gets rates for two attendances that exceed the max of 18 hours' do
+          attendance.check_out = attendance.check_in + 3.hours + 12.minutes
+          attendance.save!
+          service_day.reload
+          create(
+            :attendance,
+            child_approval: attendance.child_approval,
+            check_in: attendance.check_in + 5.hours + 0.minutes,
+            check_out: attendance.check_in + 20.hours + 30.minutes
+          )
+          service_day.reload
+          expect(service_day.earned_revenue)
+            .to eq(
+              (1 * attendance.child_approval.special_needs_daily_rate) +
+                (8 * attendance.child_approval.special_needs_hourly_rate)
+            )
         end
       end
 
