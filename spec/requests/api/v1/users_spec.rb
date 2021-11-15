@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::Users', type: :request do
-  include Docs::V1::Users::Api
+  include ApiDocs::V1::Users::Api
  
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
@@ -16,12 +16,12 @@ RSpec.describe 'Api::V1::Users', type: :request do
     allow(user).to receive(:send_password_change_notification?).and_return(false)
   end
 
-  describe 'GET /api/v1/users' do
+  describe 'GET /api/v1/users', dox: true do
+    include ApiDocs::V1::Users::Index
+
     include_context 'with correct api version header'
 
     context 'when logged in as a non-admin user' do
-      include Docs::V1::Users::Index
-
       before { sign_in logged_in_user }
 
       it 'returns only the user' do

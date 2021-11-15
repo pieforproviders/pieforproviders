@@ -34,6 +34,7 @@ Rails.application.routes.draw do
     end
   end
 
+  get 'api_docs', to: 'static#api_docs'
   get '*path', to: 'static#fallback_index_html', constraints: is_html_request
 end
 

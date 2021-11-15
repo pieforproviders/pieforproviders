@@ -135,11 +135,18 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
-# Configure dox for api documentations
+# Configure Dox for API Documentations
 require 'dox'
 
 Dox.configure do |config|
   config.api_version = '1.0'
+  config.openapi_version = '3.0.0'
+  config.header_description = 'api.md'
+  config.title = 'PieForProvider API Documentation'
+  config.headers_whitelist = ['Accept', 'Content-Type']
+  config.descriptions_location = Rails.root.join('spec/api_docs/descriptions')
+  config.schema_request_folder_path = Rails.root.join('spec/api_docs/request_schemas')
+  config.schema_response_folder_path = Rails.root.join('spec/api_docs/response_schemas')
 end
 
-Dir[Rails.root.join('spec/docs/**/*.rb')].each { |f| require f }
+Dir[Rails.root.join('spec/api_docs/**/*.rb')].each { |f| require f }
