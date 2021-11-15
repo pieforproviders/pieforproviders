@@ -37,10 +37,10 @@
     font-size: medium;
 }
 
-#payment-modal .ant-modal-content.ant-modal-footer {
+.payment-modal div.ant-modal-footer {
     border-top: 0;
 }
 
-#payment-modal .ant-modal-content.ant-modal-header {
+.payment-modal div.ant-modal-header {
     border-bottom: 0;
 }

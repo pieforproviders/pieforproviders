@@ -49,7 +49,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         setDateFilterValue(value)
       }}
       size="large"
-      className="date-filter-select my-2 text-base mr-2"
+      className="my-2 mr-2 text-base date-filter-select"
     >
       {(dates?.dateFilterMonths ?? []).map((month, k) => (
         <Option key={k} value={month.date}>
@@ -89,7 +89,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const dashboardActionDropdown = (
     <Dropdown
       overlay={dashboardActions}
-      className="ml-auto flex"
+      className="flex ml-auto"
       trigger="click"
     >
       <Button
@@ -132,8 +132,8 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   }
   const paymentModal = (
     <Modal
-      id="payment-modal"
-      title={<div className="h2-large text-center">{t('recordAPayment')}</div>}
+      className="payment-modal"
+      title={<div className="text-center h2-large">{t('recordAPayment')}</div>}
       closeIcon={<CloseOutlined className="-btn-primary" />}
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}
@@ -163,7 +163,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   )
 
   const renderDisabledMonth = () => (
-    <Button className="date-filter-button mr-2 text-base py-2 px-4" disabled>
+    <Button className="px-4 py-2 mr-2 text-base date-filter-button" disabled>
       {matchAndReplaceDate(dates?.dateFilterValue?.displayDate ?? '')}
     </Button>
   )
@@ -175,11 +175,11 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   }, [dates, dateFilterValue])
 
   return (
-    <div className="dashboard-title m-2">
+    <div className="m-2 dashboard-title">
       {(screens.sm || screens.xs) && !screens.md ? (
         <div>
           <div className="flex flex-col items-center mb-3">
-            <Typography.Title className="dashboard-title text-center mr-4">
+            <Typography.Title className="mr-4 text-center dashboard-title">
               {t('dashboardTitle')}
             </Typography.Title>
             <div className="flex flex-row items-center my-2">
@@ -204,7 +204,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       ) : (
         <div>
           <div className="flex flex-col items-center mb-3 sm:flex-row">
-            <Typography.Title className="dashboard-title text-center mr-4">
+            <Typography.Title className="mr-4 text-center dashboard-title">
               {t('dashboardTitle')}
             </Typography.Title>
             {userState !== 'NE'
