@@ -43,7 +43,7 @@
     "react-use-hotjar": "^1.2.0",
     "tailwindcss": "^1.9.6",
     "uuid": "^8.3.2",
-    "xlsx": "^0.17.3"
+    "xlsx": "^0.17.4"
   },
   "scripts": {
     "build": "craco build",
