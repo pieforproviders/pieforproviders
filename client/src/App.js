@@ -39,7 +39,7 @@ const Routes = () => {
       initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
     }
     if (!window.gtag) return
-    window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
+    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
       page_path: location.pathname,
       user_id: user.id ?? ''
     })
