@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Redirect,
   Route,
-  Switch,
+  Routes,
   useLocation
 } from 'react-router-dom'
 import useHotjar from 'react-use-hotjar'
@@ -27,7 +26,7 @@ import { useAuthentication } from '_shared/_hooks/useAuthentication'
 
 const env = runtimeEnv()
 
-const Routes = () => {
+const AppRoutes = () => {
   const { t } = useTranslation()
   const { initHotjar } = useHotjar()
   const isAuthenticated = useAuthentication()
@@ -55,61 +54,139 @@ const Routes = () => {
           : ''
       }`}
     >
-      <Switch>
-        <Route path="/signup">
-          <AuthLayout
+      <Routes>
+        <Route
+          path="/signup"
+          element={
+            <AuthLayout
+              backgroundImageClass="auth-image"
+              contentComponent={Signup}
+            />
+          }
+        >
+          {/* <AuthLayout
             backgroundImageClass="auth-image"
             contentComponent={Signup}
-          />
+          /> */}
         </Route>
-        <Route path="/login">
-          <AuthLayout
+        <Route
+          path="/login"
+          element={
+            <AuthLayout
+              backgroundImageClass="auth-image"
+              contentComponent={Login}
+            />
+          }
+        >
+          {/* <AuthLayout
             backgroundImageClass="auth-image"
             contentComponent={Login}
-          />
+          /> */}
         </Route>
-        <Route path="/password/update">
-          <AuthLayout
+        <Route
+          path="/password/update"
+          element={
+            <AuthLayout
+              backgroundImageClass="auth-image"
+              contentComponent={NewPassword}
+            />
+          }
+        >
+          {/* <AuthLayout
             backgroundImageClass="auth-image"
             contentComponent={NewPassword}
-          />
+          /> */}
         </Route>
         <Route
           path="/confirm"
           title="Confirm your Account"
           component={Confirmation}
         />
-        <AuthenticatedRoute exact path="/getting-started" title={t('setup')}>
+        <Route
+          path="/getting-started"
+          title={t('setup')}
+          element={
+            <AuthenticatedRoute>
+              <GettingStarted />
+            </AuthenticatedRoute>
+          }
+        />
+        {/* <AuthenticatedRoute exact path="/getting-started" title={t('setup')}>
           <GettingStarted />
-        </AuthenticatedRoute>
-        <AuthenticatedRoute exact path="/dashboard">
+        </AuthenticatedRoute> */}
+        <Route
+          path="/dashboard"
+          element={
+            <AuthenticatedRoute>
+              <Dashboard />
+            </AuthenticatedRoute>
+          }
+        />
+        {/* <AuthenticatedRoute exact path="/dashboard">
           <Dashboard />
-        </AuthenticatedRoute>
-        <AuthenticatedRoute exact path="/attendance">
+        </AuthenticatedRoute> */}
+        <Route
+          path="/attendance"
+          element={
+            <AuthenticatedRoute>
+              <AttendanceView />
+            </AuthenticatedRoute>
+          }
+        />
+        {/* <AuthenticatedRoute exact path="/attendance">
           <AttendanceView />
-        </AuthenticatedRoute>
-        <AuthenticatedRoute exact path="/attendance/edit">
+        </AuthenticatedRoute> */}
+        <Route
+          path="/attendance/edit"
+          element={
+            <AuthenticatedRoute>
+              <Attendance />
+            </AuthenticatedRoute>
+          }
+        />
+        {/* <AuthenticatedRoute exact path="/attendance/edit">
           <Attendance />
-        </AuthenticatedRoute>
-        <AuthenticatedRoute exact path="/cases/import">
+        </AuthenticatedRoute> */}
+        <Route
+          path="/cases/import"
+          element={
+            <AuthenticatedRoute>
+              <CasesImport />
+            </AuthenticatedRoute>
+          }
+        />
+        {/* <AuthenticatedRoute exact path="/cases/import">
           <CasesImport />
-        </AuthenticatedRoute>
-        <Route exact path="/">
-          <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
-        </Route>
-        <Route component={NotFound} />
-      </Switch>
+        </AuthenticatedRoute> */}
+        <Route
+          exact
+          path="/"
+          element={
+            isAuthenticated ? (
+              <AuthenticatedRoute>
+                <Dashboard />
+              </AuthenticatedRoute>
+            ) : (
+              <AuthLayout
+                backgroundImageClass="auth-image"
+                contentComponent={Login}
+              />
+            )
+          }
+        />
+        <Route element={NotFound} />
+      </Routes>
     </div>
   )
 }
 
 const App = () => {
   return (
-    <ErrorBoundary>
-      <Router>
-        <Routes />
-      </Router>
-    </ErrorBoundary>
+    <Router>
+      <ErrorBoundary>
+        <AppRoutes />
+      </ErrorBoundary>
+    </Router>
   )
 }
 

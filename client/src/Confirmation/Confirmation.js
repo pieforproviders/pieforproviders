@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '_reducers/authReducer'
@@ -8,7 +8,7 @@ import { addAuth, removeAuth } from '_reducers/authReducer'
 export function Confirmation({ location }) {
   const dispatch = useDispatch()
   const { makeRequest } = useApiResponse()
-  let history = useHistory()
+  let navigate = useNavigate()
 
   useEffect(() => {
     let isSubscribed = true
@@ -26,7 +26,7 @@ export function Confirmation({ location }) {
         if (!response.ok || authToken === null) {
           const errorMessage = await response.json()
           dispatch(removeAuth())
-          history.push({
+          navigate({
             pathname: '/login',
             state: {
               error: {
@@ -39,7 +39,7 @@ export function Confirmation({ location }) {
           })
         } else {
           dispatch(addAuth(authToken))
-          history.push('/dashboard')
+          navigate('/dashboard')
         }
       }
     }

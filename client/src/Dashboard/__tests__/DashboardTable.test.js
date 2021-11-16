@@ -1,11 +1,16 @@
 import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
+import { MemoryRouter } from 'react-router-dom'
 import DashboardTable from '../DashboardTable'
 
 const doRender = (
   props = { tableData: [], userState: '', setActiveKey: () => {} }
 ) => {
-  return render(<DashboardTable {...props} />)
+  return render(
+    <MemoryRouter>
+      <DashboardTable {...props} />
+    </MemoryRouter>
+  )
 }
 
 describe('<DashboardTable />', () => {
