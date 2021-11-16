@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NebraskaAbsenceGenerator, type: :service do
+RSpec.describe Nebraska::AbsenceGenerator, type: :service do
   let!(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:attendance_date) do

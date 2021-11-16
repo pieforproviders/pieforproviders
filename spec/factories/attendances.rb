@@ -5,7 +5,10 @@ FactoryBot.define do
     child_approval
 
     check_in do
-      Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current)
+      Faker::Time
+        .between(from: Time.current.at_beginning_of_month, to: Time.current)
+        .in_time_zone(child_approval.child.timezone)
+        .at_beginning_of_day
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
@@ -89,7 +92,6 @@ end
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  deleted_at                                                     :date
-#  earned_revenue                                                 :decimal(, )
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null

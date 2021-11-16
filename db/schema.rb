@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_26_155506) do
+ActiveRecord::Schema.define(version: 2021_11_11_165641) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 2021_10_26_155506) do
     t.uuid "child_approval_id", null: false
     t.string "wonderschool_id"
     t.string "absence"
-    t.decimal "earned_revenue"
     t.date "deleted_at"
     t.uuid "service_day_id"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
@@ -169,6 +168,16 @@ ActiveRecord::Schema.define(version: 2021_10_26_155506) do
     t.datetime "updated_at", precision: 6, null: false
     t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
+  end
+
+  create_table "nebraska_limits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "amount", null: false
+    t.time "effective", null: false
+    t.time "expires"
+    t.string "frequency", null: false
+    t.string "type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

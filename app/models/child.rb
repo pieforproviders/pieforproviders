@@ -13,6 +13,8 @@ class Child < UuidApplicationRecord
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :schedules, dependent: :delete_all
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
+  has_many :service_days, dependent: :destroy
+  has_many :attendances, through: :service_days, dependent: :destroy
 
   has_one :temporary_nebraska_dashboard_case, dependent: :destroy
 
@@ -65,13 +67,9 @@ class Child < UuidApplicationRecord
     active_approval(date)&.child_approvals&.find_by(child: self)
   end
 
-  def attendances
-    Attendance.joins(:child_approval).where(child_approvals: { child: self })
-  end
-
   def absences(date)
     if Rails.application.config.ff_ne_live_algorithms
-      attendances.for_month(date).absences.length
+      service_days.for_month(date).absences.length
     else
       temporary_nebraska_dashboard_case&.absences
     end
@@ -163,18 +161,22 @@ class Child < UuidApplicationRecord
   end
 
   def attendance_revenue(date)
-    non_absences = attendances&.non_absences&.for_month(date)
+    non_absences = service_days&.non_absences&.for_month(date)
     return 0 unless non_absences
 
-    non_absences.pluck(:earned_revenue).sum
+    non_absences.sum(&:earned_revenue)
   end
 
   def absence_revenue(date)
-    absences, covid_absences = attendances.absences.for_month(date).order(earned_revenue: :desc).partition do |absence|
-      absence.absence == 'absence'
+    absences, covid_absences = service_days
+                               .absences
+                               .for_month(date)
+                               .order(total_time_in_care: :desc)
+                               .partition do |absence|
+      absence.attendances.select { |attendance| attendance.absence == 'absence' }.present?
     end
     # only five absences are allowed per month in Nebraska
-    absences.take(5).pluck(:earned_revenue).sum + covid_absences.pluck(:earned_revenue).sum
+    absences.take(5).sum(&:earned_revenue) + covid_absences.sum(&:earned_revenue)
   end
 
   def estimated_remaining_revenue(date)
@@ -201,7 +203,7 @@ class Child < UuidApplicationRecord
 
   def remaining_scheduled_revenue(date)
     (0..6).reduce(0) do |sum, weekday|
-      if attendances.for_day(date).present? && weekday == date.wday
+      if service_days.for_day(date).present? && weekday == date.wday
         sum + weekday_scheduled_rate_excluding_today(date, weekday)
       else
         sum + weekday_scheduled_rate_including_today(date, weekday)
@@ -251,7 +253,7 @@ class Child < UuidApplicationRecord
   def ne_hours(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
-    NebraskaHoursCalculator.new(
+    Nebraska::HoursCalculator.new(
       child: self,
       date: date,
       scope: :for_month
@@ -261,7 +263,7 @@ class Child < UuidApplicationRecord
   def ne_days(date, schedule_for_weekday)
     # TODO: this is super sloppy because this shouldn't be a service class
     # but we haven't refactored these to procedures yet
-    NebraskaFullDaysCalculator.new(
+    Nebraska::FullDaysCalculator.new(
       child: self,
       date: date,
       scope: :for_month
@@ -321,7 +323,7 @@ class Child < UuidApplicationRecord
   def nebraska_full_days(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaFullDaysCalculator.new(
+      Nebraska::FullDaysCalculator.new(
         child: self,
         date: date,
         scope: :for_month
@@ -337,7 +339,7 @@ class Child < UuidApplicationRecord
     if Rails.application.config.ff_ne_live_algorithms
       return 0 unless active_child_approval(date).full_days
 
-      active_child_approval(date).full_days - NebraskaFullDaysCalculator.new(
+      active_child_approval(date).full_days - Nebraska::FullDaysCalculator.new(
         child: self,
         date: date,
         scope: nil
@@ -351,7 +353,7 @@ class Child < UuidApplicationRecord
   def nebraska_hours(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaHoursCalculator.new(
+      Nebraska::HoursCalculator.new(
         child: self,
         date: date,
         scope: :for_month
@@ -367,7 +369,7 @@ class Child < UuidApplicationRecord
     if Rails.application.config.ff_ne_live_algorithms
       return 0 unless active_child_approval(date).hours
 
-      active_child_approval(date).hours - NebraskaHoursCalculator.new(
+      active_child_approval(date).hours - Nebraska::HoursCalculator.new(
         child: self,
         date: date,
         scope: nil
@@ -381,7 +383,7 @@ class Child < UuidApplicationRecord
   def nebraska_weekly_hours_attended(date)
     # feature flag for using live algorithms rather than uploaded data
     if Rails.application.config.ff_ne_live_algorithms
-      NebraskaWeeklyHoursAttendedCalculator.new(self, date).call
+      Nebraska::WeeklyHoursAttendedCalculator.new(self, date).call
     else
       temporary_nebraska_dashboard_case&.hours_attended&.to_f&.to_s
     end

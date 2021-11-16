@@ -6,6 +6,6 @@
 desc 'Create daily absences'
 task nebraska_daily_absences: :environment do
   Child.nebraska.each do |child|
-    NebraskaAbsenceGenerator.new(child).call
+    Nebraska::AbsenceGenerator.new(child).call
   end
 end

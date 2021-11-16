@@ -4,7 +4,6 @@
 class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_total_time_in_care, if: :child_approval
-  before_validation :calc_earned_revenue, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
   before_save :remove_absences
 
@@ -86,80 +85,6 @@ class Attendance < UuidApplicationRecord
                               end
   end
 
-  def calc_earned_revenue
-    return unless state == 'NE'
-
-    self.earned_revenue = child_approval.special_needs_rate ? ne_special_needs_revenue : ne_base_revenue
-  end
-
-  def ne_hours
-    # TODO: this is super sloppy because this shouldn't be a
-    # service class but we haven't refactored these to procedures yet
-    NebraskaHoursCalculator.new(child: child,
-                                date: check_in,
-                                scope: :for_month).round_hourly_to_quarters(total_time_in_care.seconds)
-  end
-
-  def ne_days
-    # TODO: this is super sloppy because this shouldn't be a
-    # service class but we haven't refactored these to procedures yet
-    NebraskaFullDaysCalculator.new(child: child,
-                                   date: check_in,
-                                   scope: :for_month).calculate_full_days_based_on_duration(total_time_in_care.seconds)
-  end
-
-  # TODO: open question - does qris bump impact this rate?
-  def ne_special_needs_revenue
-    (ne_hours * child_approval.special_needs_hourly_rate) + (ne_days * child_approval.special_needs_daily_rate)
-  end
-
-  def ne_base_revenue
-    (ne_hours * ne_hourly_rate * business.ne_qris_bump) + (ne_days * ne_daily_rate * business.ne_qris_bump)
-  end
-
-  def ne_hourly_rate
-    # TODO: License Types - possibly post-new-data-model
-    ne_rates.hourly.first&.amount || 0
-  end
-
-  def ne_daily_rate
-    # TODO: License Types - possibly post-new-data-model
-    ne_rates.daily.first&.amount || 0
-  end
-
-  def ne_rates
-    active_child_rates
-      .where(region: ne_region)
-      .where(license_type: business.license_type)
-      .where(accredited_rate: business.accredited)
-      .order_max_age
-  end
-
-  def active_child_rates
-    NebraskaRate
-      .active_on_date(check_in)
-      .where(school_age: child_approval.enrolled_in_school || false)
-      .where('max_age >= ? OR max_age IS NULL', child.age_in_months(check_in))
-  end
-
-  # rubocop:disable Metrics/MethodLength
-  def ne_region
-    if business.license_type == 'license_exempt_home'
-      if %w[Lancaster Dakota].include?(business.county)
-        'Lancaster-Dakota'
-      elsif %(Douglas Sarpy).include?(business.county)
-        'Douglas-Sarpy'
-      else
-        'Other'
-      end
-    elsif business.license_type == 'family_in_home'
-      'All'
-    else
-      %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
-
   def find_or_create_service_day
     self.service_day = ServiceDay.find_or_create_by!(
       child: child,
@@ -204,7 +129,6 @@ end
 #  check_in                                                       :datetime         not null
 #  check_out                                                      :datetime
 #  deleted_at                                                     :date
-#  earned_revenue                                                 :decimal(, )
 #  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
 #  created_at                                                     :datetime         not null
 #  updated_at                                                     :datetime         not null

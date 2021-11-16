@@ -153,13 +153,13 @@ RSpec.describe Child, type: :model do
     end
 
     describe '#nebraska_full_days' do
-      let(:calculator_class) { class_double(NebraskaFullDaysCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(NebraskaFullDaysCalculator, call: nil) }
+      let(:calculator_class) { class_double(Nebraska::FullDaysCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(Nebraska::FullDaysCalculator, call: nil) }
 
       context 'when using live algorithms' do
-        it 'calls the NebraskaFullDaysCalculator service' do
+        it 'calls the Nebraska::FullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaFullDaysCalculator)
+          allow(Nebraska::FullDaysCalculator)
             .to receive(:new).with(child: child,
                                    date: Time.current.to_date,
                                    scope: :for_month).and_return(calculator_instance)
@@ -169,7 +169,7 @@ RSpec.describe Child, type: :model do
       end
 
       context 'when using temporary dashboard values' do
-        it 'does not call the NebraskaFullDaysCalculator service' do
+        it 'does not call the Nebraska::FullDaysCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_full_days(Time.current.to_date)
           expect(calculator_class).not_to have_received(:new)
@@ -178,13 +178,13 @@ RSpec.describe Child, type: :model do
     end
 
     describe '#nebraska_hours' do
-      let(:calculator_class) { class_double(NebraskaHoursCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(NebraskaHoursCalculator, call: nil) }
+      let(:calculator_class) { class_double(Nebraska::HoursCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(Nebraska::HoursCalculator, call: nil) }
 
       context 'when using live algorithms' do
-        it 'calls the NebraskaHoursCalculator service' do
+        it 'calls the Nebraska::HoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaHoursCalculator)
+          allow(Nebraska::HoursCalculator)
             .to receive(:new).with(child: child,
                                    date: Time.current.to_date,
                                    scope: :for_month).and_return(calculator_instance)
@@ -194,7 +194,7 @@ RSpec.describe Child, type: :model do
       end
 
       context 'when using temporary dashboard values' do
-        it 'does not call the NebraskaHoursCalculator service' do
+        it 'does not call the Nebraska::HoursCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_hours(Time.current.to_date)
           expect(calculator_class).not_to have_received(:new)
@@ -203,13 +203,13 @@ RSpec.describe Child, type: :model do
     end
 
     describe '#nebraska_weekly_hours_attended' do
-      let(:calculator_class) { class_double(NebraskaWeeklyHoursAttendedCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(NebraskaWeeklyHoursAttendedCalculator, call: nil) }
+      let(:calculator_class) { class_double(Nebraska::WeeklyHoursAttendedCalculator, new: nil) }
+      let(:calculator_instance) { instance_double(Nebraska::WeeklyHoursAttendedCalculator, call: nil) }
 
       context 'when using live algorithms' do
-        it 'calls the NebraskaWeeklyHoursAttendedCalculator service' do
+        it 'calls the Nebraska::WeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(NebraskaWeeklyHoursAttendedCalculator)
+          allow(Nebraska::WeeklyHoursAttendedCalculator)
             .to receive(:new)
             .with(child, Time.current.to_date).and_return(calculator_instance)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
@@ -218,7 +218,7 @@ RSpec.describe Child, type: :model do
       end
 
       context 'when using temporary dashboard values' do
-        it 'does not call the NebraskaWeeklyHoursAttendedCalculator service' do
+        it 'does not call the Nebraska::WeeklyHoursAttendedCalculator service' do
           allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
           child.nebraska_weekly_hours_attended(Time.current.to_date)
           expect(calculator_class).not_to have_received(:new)

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NebraskaWeeklyHoursAttendedCalculator, type: :service do
+RSpec.describe Nebraska::WeeklyHoursAttendedCalculator, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:child_approval) { child.child_approvals.first }
   let(:first_attendance_date) do
