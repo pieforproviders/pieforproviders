@@ -26,16 +26,16 @@ module Nebraska
     private
 
     def calculate_full_days
-      attendances.reduce(0) do |sum, attendance|
-        sum + calculate_full_days_based_on_duration(attendance.total_time_in_care)
+      service_days.reduce(0) do |sum, service_day|
+        sum + calculate_full_days_based_on_duration(service_day.total_time_in_care)
       end
     end
 
-    def attendances
-      attendances = child.active_child_approval(date).attendances.non_absences
-      return attendances unless scope
+    def service_days
+      service_days = child.active_child_approval(date).service_days.non_absences
+      return service_days unless scope
 
-      attendances.send(scope, date)
+      service_days.send(scope, date)
     end
   end
 end
