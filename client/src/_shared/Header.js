@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Avatar, Button, Divider, Dropdown, Menu, Space } from 'antd'
+import { Avatar, Button, Dropdown, Menu, Space } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
@@ -33,7 +33,7 @@ export function Header() {
 
   const menu = (
     <Menu>
-      <Menu.Item key="0">
+      <Menu.Item key="profile">
         <Button
           className="text-lg font-semibold"
           type="link"
@@ -42,7 +42,7 @@ export function Header() {
           {t('myProfile')}
         </Button>
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item key="logout">
         <Button className="text-lg font-semibold" type="link" onClick={logout}>
           {t('logout')}
         </Button>
@@ -69,7 +69,7 @@ export function Header() {
       )}
       {isAuthenticated && (
         <Dropdown overlay={menu}>
-          <Avatar className="bg-primaryBlue">
+          <Avatar className="bg-primaryBlue" data-testid="avatar">
             {user.greeting_name && user.greeting_name[0]}
           </Avatar>
         </Dropdown>
@@ -80,36 +80,39 @@ export function Header() {
   const renderMobileMenu = () => {
     const mobileMenu = (
       <Menu>
-        <Menu.Item>
-          {isAuthenticated && (
-            <Button type="link" onClick={() => history.push('/dashboard')}>
-              {t('dashboard')}
-            </Button>
-          )}
-        </Menu.Item>
-        <Menu.Item>
-          {isAuthenticated && (
-            <Button type="link" onClick={() => history.push('/attendance')}>
-              {t('attendance')}
-            </Button>
-          )}
-        </Menu.Item>
-        <Divider />
-        <Menu.Item>
-          {isAuthenticated && (
-            <Button type="link" onClick={logout}>
-              {t('logout')}
-            </Button>
-          )}
-        </Menu.Item>
+        {isAuthenticated && (
+          <>
+            <Menu.Item key="dashboard">
+              <Button type="link" onClick={() => history.push('/dashboard')}>
+                {t('dashboard')}
+              </Button>
+            </Menu.Item>
+            <Menu.Item key="attendance">
+              <Button type="link" onClick={() => history.push('/attendance')}>
+                {t('attendance')}
+              </Button>
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="profile">
+              <Button type="link" onClick={() => history.push('/profile')}>
+                {t('myProfile')}
+              </Button>
+            </Menu.Item>
+            <Menu.Item key="logout">
+              <Button type="link" onClick={logout}>
+                {t('logout')}
+              </Button>
+            </Menu.Item>
+          </>
+        )}
         {i18n.language === 'es' ? (
-          <Menu.Item>
+          <Menu.Item key="english">
             <Button type="link" onClick={() => changeLanguage('en')}>
               {t('english')}
             </Button>
           </Menu.Item>
         ) : (
-          <Menu.Item>
+          <Menu.Item key="spanish">
             <Button type="link" onClick={() => changeLanguage('es')}>
               {t('spanish')}
             </Button>
