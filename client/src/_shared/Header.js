@@ -35,7 +35,7 @@ export function Header() {
 
   const menu = (
     <Menu>
-      <Menu.Item key="0">
+      <Menu.Item key="profile">
         <Button
           className="text-lg font-semibold"
           type="link"
@@ -44,7 +44,7 @@ export function Header() {
           {t('myProfile')}
         </Button>
       </Menu.Item>
-      <Menu.Item key="1">
+      <Menu.Item key="logout">
         <Button className="text-lg font-semibold" type="link" onClick={logout}>
           {t('logout')}
         </Button>
@@ -71,7 +71,7 @@ export function Header() {
       )}
       {isAuthenticated && (
         <Dropdown overlay={menu}>
-          <Avatar className="bg-primaryBlue">
+          <Avatar className="bg-primaryBlue" data-testid="avatar">
             {user.greeting_name && user.greeting_name[0]}
           </Avatar>
         </Dropdown>
@@ -82,54 +82,65 @@ export function Header() {
   const renderMobileMenu = () => {
     const mobileMenu = (
       <Menu>
-        <Menu.Item key="dashboard" className="leading-7">
-          {isAuthenticated && (
-            <Button
-              type="link"
-              className="text-lg"
-              onClick={() => {
-                history.push('/dashboard')
-                setMenuOpen(false)
-              }}
-            >
-              <span
-                className={
-                  location.pathname === '/dashboard' ? 'underline' : ''
-                }
+        {isAuthenticated && (
+          <>
+            <Menu.Item key="dashboard" className="leading-7">
+              <Button
+                type="link"
+                className="text-lg"
+                onClick={() => {
+                  history.push('/dashboard')
+                  setMenuOpen(false)
+                }}
               >
-                {t('dashboard')}
-              </span>
-            </Button>
-          )}
-        </Menu.Item>
-        <Menu.Item key="attendance" className="leading-7">
-          {isAuthenticated && (
-            <Button
-              type="link"
-              className="text-lg"
-              onClick={() => {
-                history.push('/attendance')
-                setMenuOpen(false)
-              }}
-            >
-              <span
-                className={
-                  location.pathname.includes('/attendance') ? 'underline' : ''
-                }
+                <span
+                  className={
+                    location.pathname.includes('/dashboard') ? 'underline' : ''
+                  }
+                >
+                  {t('dashboard')}
+                </span>
+              </Button>
+            </Menu.Item>
+            <Menu.Item key="attendance" className="leading-7">
+              <Button
+                type="link"
+                className="text-lg"
+                onClick={() => {
+                  history.push('/attendance')
+                  setMenuOpen(false)
+                }}
               >
-                {t('attendance')}
-              </span>
-            </Button>
-          )}
-        </Menu.Item>
-        <Divider />
-        <Menu.Item key="logout" className="leading-7">
-          {isAuthenticated && (
-            <Button type="link" className="text-lg" onClick={logout}>
-              {t('logout')}
-            </Button>
-          )}
-        </Menu.Item>
+                <span
+                  className={
+                    location.pathname.includes('/attendance') ? 'underline' : ''
+                  }
+                >
+                  {t('attendance')}
+                </span>
+              </Button>
+            </Menu.Item>
+            <Menu.Divider />
+            <Menu.Item key="profile" className="leading-7">
+              <Button
+                type="link"
+                className="text-lg"
+                onClick={() => {
+                  history.push('/profile')
+                  setMenuOpen(false)
+                }}
+              >
+                {t('myProfile')}
+              </Button>
+            </Menu.Item>
+            <Divider />
+            <Menu.Item key="logout" className="leading-7">
+              <Button type="link" className="text-lg" onClick={logout}>
+                {t('logout')}
+              </Button>
+            </Menu.Item>
+          </>
+        )}
         {i18n.language === 'es' ? (
           <Menu.Item key="english" className="leading-7">
             <Button
