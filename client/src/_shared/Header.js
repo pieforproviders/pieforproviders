@@ -131,7 +131,7 @@ export function Header() {
                 </span>
               </Button>
             </Menu.Item>
-            <Menu.Divider />
+            <Divider />
             <Menu.Item key="profile" className="leading-7">
               <Button
                 type="link"

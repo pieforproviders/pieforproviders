@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 import { render, fireEvent, screen, within } from 'setupTests'
-import { createMemoryHistory } from 'history'
 import { Header } from '_shared'
 import { MemoryRouter } from 'react-router-dom'
 import dayjs from 'dayjs'
-import { Router } from 'react-router-dom'
 
 const doRender = stateOptions => {
   return render(
