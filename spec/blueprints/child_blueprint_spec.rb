@@ -5,6 +5,7 @@ require 'rails_helper'
 # rubocop:disable Metrics/BlockLength
 RSpec.describe ChildBlueprint do
   let(:child) { create(:child) }
+  let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 
   it 'includes the ID, full name, and active info' do
     expect(JSON.parse(described_class.render(child)).keys).to contain_exactly(
@@ -47,7 +48,7 @@ RSpec.describe ChildBlueprint do
 
     let!(:child) { create(:necc_child, effective_date: Time.zone.parse('June 1st, 2021')) }
     let!(:child_approval) { child.child_approvals.first }
-    let!(:attendance_date) { Time.zone.parse('July 4th, 2021') }
+    let!(:attendance_date) { Time.new(2021, 7, 4, 0, 0, 0, timezone).to_date }
 
     before do
       create(
@@ -346,8 +347,8 @@ RSpec.describe ChildBlueprint do
         create(
           :attendance,
           child_approval: child_approval,
-          check_in: prior_month_check_in,
-          check_out: prior_month_check_in + 7.hours
+          check_in: prior_month_check_in + 1.day,
+          check_out: prior_month_check_in + 1.day + 7.hours
         )
 
         # 1 new daily attendance

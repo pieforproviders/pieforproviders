@@ -22,16 +22,16 @@ module Nebraska
     private
 
     def calculate_hours
-      attendances.reduce(0) do |sum, attendance|
-        sum + round_hourly_to_quarters(attendance.total_time_in_care)
+      service_days.reduce(0) do |sum, service_day|
+        sum + round_hourly_to_quarters(service_day.total_time_in_care)
       end
     end
 
-    def attendances
-      attendances = child.active_child_approval(date).attendances.non_absences
-      return attendances unless scope
+    def service_days
+      service_days = child.active_child_approval(date).service_days.non_absences
+      return service_days unless scope
 
-      attendances.send(scope, date)
+      service_days.send(scope, date)
     end
 
     def adjusted_duration(duration)
