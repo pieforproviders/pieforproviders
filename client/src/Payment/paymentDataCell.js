@@ -3,7 +3,7 @@ import { Checkbox, InputNumber } from 'antd'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 
-export default function PaymentDataCell({ updateTotalPayment }) {
+export default function PaymentDataCell({ updateTotalPayment, resetPayment }) {
   const { t } = useTranslation()
   const [isDifferentPayment, setIsDifferentPayment] = useState(false)
 
@@ -20,7 +20,7 @@ export default function PaymentDataCell({ updateTotalPayment }) {
 
   function inputFormatter(value) {
     if (!isDifferentPayment) {
-      return null
+      return undefined
     }
 
     return `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -31,7 +31,12 @@ export default function PaymentDataCell({ updateTotalPayment }) {
   }
 
   const handleIsDifferentPaymentIsSet = e => {
-    setIsDifferentPayment(e.target.checked)
+    const eventValue = e.target.checked
+    setIsDifferentPayment(eventValue)
+
+    if (!eventValue) {
+      resetPayment()
+    }
   }
 
   return (
@@ -44,5 +49,6 @@ export default function PaymentDataCell({ updateTotalPayment }) {
 }
 
 PaymentDataCell.propTypes = {
-  updateTotalPayment: PropTypes.func.isRequired
+  updateTotalPayment: PropTypes.func.isRequired,
+  resetPayment: PropTypes.func.isRequired
 }

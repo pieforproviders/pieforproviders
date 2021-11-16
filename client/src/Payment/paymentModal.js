@@ -16,6 +16,7 @@ export function PaymentModal({
   const { cases } = useSelector(state => state)
   const { t } = useTranslation()
   const [currentChildID, setCurrentChildID] = useState(false)
+  const [originalPayments, setOriginalPayments] = useState({})
 
   useEffect(() => {
     initChildPayments()
@@ -30,8 +31,11 @@ export function PaymentModal({
 
     cases.forEach(child => {
       payments[child.id] = child.guaranteedRevenue
+      originalPayments[child.id] = child.guaranteedRevenue
     })
+
     setChildPayments(payments)
+    setOriginalPayments(payments)
   }
 
   function calculateTotalPayments() {
@@ -45,6 +49,10 @@ export function PaymentModal({
 
   function updateTotalPayment(value) {
     setChildPayments({ ...childPayments, [currentChildID]: value })
+  }
+
+  function resetPayment() {
+    updateTotalPayment(originalPayments[currentChildID])
   }
 
   const earnedRevenueHeader = (
@@ -85,7 +93,12 @@ export function PaymentModal({
     {
       title: updatePaymentHeader,
       render: () => {
-        return <PaymentDataCell updateTotalPayment={updateTotalPayment} />
+        return (
+          <PaymentDataCell
+            updateTotalPayment={updateTotalPayment}
+            resetPayment={resetPayment}
+          />
+        )
       }
     }
   ]
@@ -154,6 +167,6 @@ export function PaymentModal({
 PaymentModal.propTypes = {
   setTotalPayment: PropTypes.func.isRequired,
   lastMonth: PropTypes.instanceOf(Date).isRequired,
-  childPayments: PropTypes.array.isRequired,
+  childPayments: PropTypes.object.isRequired,
   setChildPayments: PropTypes.func.isRequired
 }
