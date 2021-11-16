@@ -4,7 +4,7 @@ import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Avatar, Button, Divider, Dropdown, Menu, Space } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { batch, useDispatch } from 'react-redux'
+import { batch, useDispatch, useSelector } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
 import { deleteUser } from '_reducers/userReducer'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
@@ -19,6 +19,9 @@ export function Header() {
   const history = useHistory()
   const [menuOpen, setMenuOpen] = useState(false)
   let location = useLocation()
+  const { user } = useSelector(state => ({
+    user: state.user
+  }))
 
   const changeLanguage = lang => i18n.changeLanguage(lang)
 
@@ -68,7 +71,9 @@ export function Header() {
       )}
       {isAuthenticated && (
         <Dropdown overlay={menu}>
-          <Avatar className="bg-primaryBlue">U</Avatar>
+          <Avatar className="bg-primaryBlue">
+            {user.greeting_name && user.greeting_name[0]}
+          </Avatar>
         </Dropdown>
       )}
     </Space>
