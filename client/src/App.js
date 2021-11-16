@@ -21,6 +21,7 @@ import Signup from './Signup'
 import NotFound from './NotFound'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
+import Profile from './Profile'
 import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
@@ -93,6 +94,9 @@ const Routes = () => {
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/cases/import">
           <CasesImport />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/profile">
+          <Profile />
         </AuthenticatedRoute>
         <Route exact path="/">
           <Redirect to={isAuthenticated ? '/dashboard' : '/login'} />
