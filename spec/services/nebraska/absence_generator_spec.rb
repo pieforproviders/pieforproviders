@@ -45,21 +45,29 @@ RSpec.describe Nebraska::AbsenceGenerator, type: :service do
       end
 
       it 'creates an absence even if the child already has 5 absences this month' do
-        build_nebraska_absence_list(num: 5,
-                                    date: attendance_date - 13.days,
-                                    child_approval: child.child_approvals.first)
+        Helpers.build_nebraska_absence_list(
+          num: 5,
+          date: attendance_date - 13.days,
+          child_approval: child.child_approvals.first
+        )
         expect { described_class.new(child).call }.to change(Attendance, :count).from(5).to(6)
       end
 
       it 'creates an absence if the child has less than 5 absences this month' do
-        build_nebraska_absence_list(num: 2, date: attendance_date - 8.days, child_approval: child.child_approvals.first)
+        Helpers.build_nebraska_absence_list(
+          num: 2,
+          date: attendance_date - 8.days,
+          child_approval: child.child_approvals.first
+        )
         expect { described_class.new(child).call }.to change(Attendance, :count).from(2).to(3)
       end
 
       it 'creates an absence if the child has absences in the prior month but not the current one' do
-        build_nebraska_absence_list(num: 5,
-                                    date: attendance_date - 1.month,
-                                    child_approval: child.child_approvals.first)
+        Helpers.build_nebraska_absence_list(
+          num: 5,
+          date: attendance_date - 1.month,
+          child_approval: child.child_approvals.first
+        )
         expect { described_class.new(child).call }.to change(Attendance, :count).from(5).to(6)
       end
 

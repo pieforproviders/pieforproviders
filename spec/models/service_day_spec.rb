@@ -31,17 +31,32 @@ RSpec.describe ServiceDay, type: :model do
 
   # scopes
   context 'with absences scopes' do
-    let(:absence) { create(:nebraska_absence) }
+    let(:absence) { create(:nebraska_absence, absence: 'absence') }
+    let(:covid_absence) { create(:nebraska_absence, absence: 'covid_absence') }
     let(:attendance) { create(:nebraska_hourly_attendance) }
 
     it 'returns absences only' do
       expect(described_class.absences).to include(absence.service_day)
+      expect(described_class.absences).to include(covid_absence.service_day)
       expect(described_class.absences).not_to include(attendance.service_day)
     end
 
     it 'returns non-absences only' do
       expect(described_class.non_absences).not_to include(absence.service_day)
+      expect(described_class.non_absences).not_to include(covid_absence.service_day)
       expect(described_class.non_absences).to include(attendance.service_day)
+    end
+
+    it 'returns standard absences only' do
+      expect(described_class.standard_absences).to include(absence.service_day)
+      expect(described_class.standard_absences).not_to include(covid_absence.service_day)
+      expect(described_class.standard_absences).not_to include(attendance.service_day)
+    end
+
+    it 'returns covid absences only' do
+      expect(described_class.covid_absences).not_to include(absence.service_day)
+      expect(described_class.covid_absences).to include(covid_absence.service_day)
+      expect(described_class.covid_absences).not_to include(attendance.service_day)
     end
   end
 

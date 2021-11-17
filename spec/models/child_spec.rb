@@ -119,112 +119,6 @@ RSpec.describe Child, type: :model do
         expect(child.schedules.first.duration).to eq(attrs[:duration])
       end
     end
-
-    describe '#nebraska_family_fee' do
-      context 'when using live algorithms' do
-        before do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          child.reload
-        end
-
-        it 'returns the database value' do
-          expect(child.nebraska_family_fee(Time.current.to_date))
-            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
-        end
-
-        it 'returns the correct allocation of the family fee when there are two children' do
-          # child object should have a default schedule, which is 40 hours a week, in whatever given month
-          child_with_less_hours = create(:child,
-                                         approvals: [child.approvals.first],
-                                         schedules: [create(:schedule, weekday: 1)])
-          expect(child.nebraska_family_fee(Time.current.to_date))
-            .to eq(child.active_nebraska_approval_amount(Time.current.to_date).family_fee)
-          expect(child_with_less_hours.nebraska_family_fee(Time.current.to_date)).to eq(0)
-        end
-      end
-
-      context 'when using temporary dashboard values' do
-        it 'returns the temporary dashboard case family fee' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          expect(child.nebraska_family_fee(Time.current.to_date))
-            .to eq(child.temporary_nebraska_dashboard_case.family_fee)
-        end
-      end
-    end
-
-    describe '#nebraska_full_days' do
-      let(:calculator_class) { class_double(Nebraska::FullDaysCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(Nebraska::FullDaysCalculator, call: nil) }
-
-      context 'when using live algorithms' do
-        it 'calls the Nebraska::FullDaysCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(Nebraska::FullDaysCalculator)
-            .to receive(:new).with(child: child,
-                                   date: Time.current.to_date,
-                                   scope: :for_month).and_return(calculator_instance)
-          child.nebraska_full_days(Time.current.to_date)
-          expect(calculator_instance).to have_received(:call)
-        end
-      end
-
-      context 'when using temporary dashboard values' do
-        it 'does not call the Nebraska::FullDaysCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          child.nebraska_full_days(Time.current.to_date)
-          expect(calculator_class).not_to have_received(:new)
-        end
-      end
-    end
-
-    describe '#nebraska_hours' do
-      let(:calculator_class) { class_double(Nebraska::HoursCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(Nebraska::HoursCalculator, call: nil) }
-
-      context 'when using live algorithms' do
-        it 'calls the Nebraska::HoursCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(Nebraska::HoursCalculator)
-            .to receive(:new).with(child: child,
-                                   date: Time.current.to_date,
-                                   scope: :for_month).and_return(calculator_instance)
-          child.nebraska_hours(Time.current.to_date)
-          expect(calculator_instance).to have_received(:call)
-        end
-      end
-
-      context 'when using temporary dashboard values' do
-        it 'does not call the Nebraska::HoursCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          child.nebraska_hours(Time.current.to_date)
-          expect(calculator_class).not_to have_received(:new)
-        end
-      end
-    end
-
-    describe '#nebraska_weekly_hours_attended' do
-      let(:calculator_class) { class_double(Nebraska::WeeklyHoursAttendedCalculator, new: nil) }
-      let(:calculator_instance) { instance_double(Nebraska::WeeklyHoursAttendedCalculator, call: nil) }
-
-      context 'when using live algorithms' do
-        it 'calls the Nebraska::WeeklyHoursAttendedCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
-          allow(Nebraska::WeeklyHoursAttendedCalculator)
-            .to receive(:new)
-            .with(child, Time.current.to_date).and_return(calculator_instance)
-          child.nebraska_weekly_hours_attended(Time.current.to_date)
-          expect(calculator_instance).to have_received(:call)
-        end
-      end
-
-      context 'when using temporary dashboard values' do
-        it 'does not call the Nebraska::WeeklyHoursAttendedCalculator service' do
-          allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(false)
-          child.nebraska_weekly_hours_attended(Time.current.to_date)
-          expect(calculator_class).not_to have_received(:new)
-        end
-      end
-    end
   end
 
   describe 'approval methods' do
@@ -352,7 +246,6 @@ RSpec.describe Child, type: :model do
     end
   end
 end
-
 # == Schema Information
 #
 # Table name: children

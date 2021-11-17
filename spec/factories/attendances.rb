@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require Rails.root.join('spec/support/helpers')
+
 FactoryBot.define do
   factory :attendance do
     child_approval
@@ -12,55 +14,38 @@ FactoryBot.define do
     end
     check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
 
-    factory :nebraska_absence do
-      child_approval { create(:child_approval, child: create(:necc_child)) }
-      check_in do
-        child_approval.child.reload
-        date = child_approval.child.schedules.first.effective_on + 30.days
-        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+    factory :nebraska do
+      child_approval do
+        child = create(:necc_child)
+        child.child_approvals.first
       end
-      check_out { nil }
-      absence { Attendance::ABSENCE_TYPES.sample }
-    end
+      check_in do
+        child = child_approval.child
+        child.reload
+        date = child.schedules.first.effective_on.in_time_zone(child.timezone) + 30.days
+        Helpers.next_weekday(date, child.schedules.first.weekday)
+      end
 
-    factory :nebraska_hourly_attendance do
-      child_approval { create(:child_approval, child: create(:necc_child)) }
-      check_in do
-        child_approval.child.reload
-        date = child_approval.child.schedules.first.effective_on + 30.days
-        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      factory :nebraska_absence do
+        check_out { nil }
+        absence { Attendance::ABSENCE_TYPES.sample }
       end
-      check_out { check_in + 5.hours + 20.minutes }
-    end
 
-    factory :nebraska_full_day_attendance do
-      child_approval { create(:child_approval, child: create(:necc_child)) }
-      check_in do
-        child_approval.child.reload
-        date = child_approval.child.schedules.first.effective_on + 30.days
-        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      factory :nebraska_hourly_attendance do
+        check_out { check_in + 5.hours + 20.minutes }
       end
-      check_out { check_in + 7.hours + 19.minutes }
-    end
 
-    factory :nebraska_full_day_plus_hourly_attendance do
-      child_approval { create(:child_approval, child: create(:necc_child)) }
-      check_in do
-        child_approval.child.reload
-        date = child_approval.child.schedules.first.effective_on + 30.days
-        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      factory :nebraska_daily_attendance do
+        check_out { check_in + 7.hours + 19.minutes }
       end
-      check_out { check_in + 14.hours + 42.minutes }
-    end
 
-    factory :nebraska_max_attendance do
-      child_approval { create(:child_approval, child: create(:necc_child)) }
-      check_in do
-        child_approval.child.reload
-        date = child_approval.child.schedules.first.effective_on + 30.days
-        date - ((date.wday - child_approval.child.schedules.first.weekday) % 7)
+      factory :nebraska_daily_plus_hourly_attendance do
+        check_out { check_in + 14.hours + 42.minutes }
       end
-      check_out { check_in + 19.hours + 11.minutes }
+
+      factory :nebraska_max_attendance do
+        check_out { check_in + 19.hours + 11.minutes }
+      end
     end
 
     factory :illinois_part_day_attendance do

@@ -80,7 +80,6 @@ ActiveJob::Base.queue_adapter = :test
 RSpec.configure do |config|
   # add helper methods
   config.include Helpers
-  config.extend Helpers
   config.include FactoryBot::Syntax::Methods
   config.include ActiveJob::TestHelper
   config.include Devise::Test::IntegrationHelpers, type: :request

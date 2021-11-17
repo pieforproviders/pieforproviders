@@ -60,7 +60,7 @@ RSpec.describe UserBlueprint do
     end
 
     context "when there are approvals for this user's children" do
-      let!(:nebraska_business) { create(:business, :nebraska, user: user) }
+      let!(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
 
       before { create(:necc_child, :with_two_nebraska_attendances, business: nebraska_business) }
 
@@ -82,7 +82,7 @@ RSpec.describe UserBlueprint do
     before do
       create(:attendance,
              check_in: last_month,
-             child_approval: create(:child_approval, child: create(:child, business: create(:business, user: user))))
+             child_approval: create(:child, business: create(:business, user: user)).child_approvals.first)
     end
 
     it "returns the as_of date in the user's timezone" do

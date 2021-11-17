@@ -38,7 +38,7 @@ RSpec.describe Attendance, type: :model do
   end
 
   it 'validates that absence is a permitted value only' do
-    attendance.check_in = prior_weekday(attendance.check_in, 0)
+    attendance.check_in = Helpers.prior_weekday(attendance.check_in, 0)
     attendance.save!
 
     attendance.absence = 'covid_absence'
@@ -67,7 +67,7 @@ RSpec.describe Attendance, type: :model do
     child = create(:necc_child)
     child.reload
     # ensures the attendance check in falls on the calendar weekday in the schedule
-    attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, 0)
+    attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days, 0)
     attendance = build(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
     expect(attendance).not_to be_valid
   end
@@ -194,7 +194,8 @@ RSpec.describe Attendance, type: :model do
       child = create(:necc_child)
       child.reload
       # ensures the attendance check in falls on the calendar weekday in the schedule
-      attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
+      attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days,
+                                                  child.schedules.first.weekday)
       attendance = create(
         :attendance,
         child_approval: child.child_approvals.first,
@@ -215,7 +216,8 @@ RSpec.describe Attendance, type: :model do
       child = create(:necc_child)
       child.reload
       # ensures the attendance check in falls on the calendar weekday in the schedule
-      attendance_check_in = prior_weekday(child.schedules.first.effective_on + 30.days, child.schedules.first.weekday)
+      attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days,
+                                                  child.schedules.first.weekday)
       attendance = create(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
       expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
     end
