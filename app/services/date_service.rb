@@ -22,8 +22,8 @@ class DateService
     (date.to_date.all_month.count / 7.0).ceil
   end
 
-  def self.remaining_days_in_month_including_today(date, day_of_week)
-    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| day_of_week == day.wday }
+  def self.remaining_days_in_month_including_today(date:, weekday:)
+    num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| weekday == day.wday }
     num_remaining_this_month.positive? ? num_remaining_this_month : 0
   end
 end

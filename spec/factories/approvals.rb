@@ -19,7 +19,7 @@ FactoryBot.define do
     # this will create N number of children to belong to that approval
     after(:create) do |approval, evaluator|
       if evaluator.create_children
-        business = evaluator.business || (evaluator.nebraska ? create(:business, :nebraska) : create(:business))
+        business = evaluator.business || (evaluator.nebraska ? create(:business, :nebraska_ldds) : create(:business))
         create_list(:child, evaluator.num_children, business: business, approvals: [approval])
       end
       approval.child_approvals.each do |child_approval|

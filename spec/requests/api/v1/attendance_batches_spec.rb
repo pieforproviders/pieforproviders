@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:business) { create(:business, :nebraska, user: logged_in_user) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:approval) { create(:approval, num_children: 3, business: business) }
   let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }
@@ -27,12 +27,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             attendance_batch:
             [
               {
-                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               }
@@ -76,12 +76,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             attendance_batch:
             [
               {
-                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               }
@@ -119,12 +119,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             attendance_batch:
             [
               {
-                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               },
               {
-                check_in: prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
                 child_id: children[0].id
               }
@@ -150,13 +150,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             attendance_batch:
             [
               {
-                check_in: prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
                 # attendance on a Sunday, not a default scheduled day
-                check_in: prior_weekday(effective_date + 15.days, 0).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               }
@@ -195,13 +195,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             [
               {
                 # attendance on a Sunday, not a default scheduled day
-                check_in: prior_weekday(effective_date + 30.days, 0).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 30.days, 0).to_s,
                 absence: 'covid_absence',
                 child_id: children[0].id
               },
               {
                 # attendance on a Sunday, not a default scheduled day
-                check_in: prior_weekday(effective_date + 15.days, 0).to_s,
+                check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
                 child_id: children[0].id
               }
@@ -261,14 +261,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         parsed_response = JSON.parse(response.body)
         first_parsed_response_object, second_parsed_response_object = parsed_response['attendances']
         first_input_object, second_input_object = valid_batch[:attendance_batch]
-
-        # TODO: this seemed flaky but I can't reproduce right now?
-        # binding.pry if [
-        #   first_parsed_response_object,
-        #   second_parsed_response_object,
-        #   first_input_object,
-        #   second_input_object
-        # ].map(&:nil?).any?
 
         expect(DateTime.parse(first_parsed_response_object['check_in']))
           .to be_within(1.second)

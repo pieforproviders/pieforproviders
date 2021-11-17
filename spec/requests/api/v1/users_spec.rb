@@ -108,7 +108,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
     let!(:nebraska_user) { create(:confirmed_user) }
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
-    let!(:nebraska_business) { create(:business, :nebraska, user: nebraska_user) }
+    let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
 
     before do
       create_list(

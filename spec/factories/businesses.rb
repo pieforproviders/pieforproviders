@@ -16,9 +16,14 @@ FactoryBot.define do
       end
     end
 
-    trait :nebraska do
+    trait :nebraska_ldds do
       zipcode { '68123' }
       county { 'Douglas' }
+    end
+
+    trait :nebraska_other do
+      zipcode { '69201' }
+      county { 'Cherry' }
     end
 
     trait :accredited do
@@ -63,6 +68,30 @@ FactoryBot.define do
 
     trait :bronze do
       qris_rating { 'bronze' }
+    end
+
+    trait :nebraska_license_exempt_home_ld do
+      license_type { 'license_exempt_home' }
+      zipcode { '68516' }
+      county { 'Lancaster' }
+    end
+
+    trait :nebraska_license_exempt_home_ds do
+      license_type { 'license_exempt_home' }
+      zipcode { '68123' }
+      county { 'Douglas' }
+    end
+
+    trait :nebraska_license_exempt_home_other do
+      license_type { 'license_exempt_home' }
+      zipcode { '69201' }
+      county { 'Cherry' }
+    end
+
+    trait :nebraska_family_in_home do
+      license_type { 'family_in_home' }
+      zipcode { '68123' }
+      county { 'Douglas' }
     end
   end
 end
