@@ -1,10 +1,16 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
+import { MemoryRouter } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { AttendanceView } from '../AttendanceView'
 
 const doRender = stateOptions => {
-  return render(<AttendanceView />, stateOptions)
+  return render(
+    <MemoryRouter>
+      <AttendanceView />
+    </MemoryRouter>,
+    stateOptions
+  )
 }
 
 describe('<AttendanceView />', () => {

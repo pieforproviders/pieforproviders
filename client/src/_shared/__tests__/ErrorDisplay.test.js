@@ -1,9 +1,14 @@
 import React from 'react'
 import { render, screen } from 'setupTests'
+import { MemoryRouter } from 'react-router-dom'
 import { ErrorDisplay } from '../ErrorDisplay'
 
 const doRender = () => {
-  return render(<ErrorDisplay />)
+  return render(
+    <MemoryRouter>
+      <ErrorDisplay />
+    </MemoryRouter>
+  )
 }
 
 describe('<ErrorDisplay />', () => {

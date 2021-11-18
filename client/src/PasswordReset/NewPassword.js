@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input } from 'antd'
 import { PaddedButton } from '_shared/PaddedButton'
@@ -11,7 +11,7 @@ export const NewPassword = () => {
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const { makeRequest } = useApiResponse()
-  let history = useHistory()
+  let navigate = useNavigate()
   const location = useLocation()
   const { t } = useTranslation()
 
@@ -20,7 +20,7 @@ export const NewPassword = () => {
       const params = new URLSearchParams(location.search)
       const resetToken = params.get('reset_password_token')
       if (!resetToken) {
-        history.push({
+        navigate({
           pathname: '/login',
           state: {
             error: {
@@ -33,7 +33,7 @@ export const NewPassword = () => {
       }
     }
     verifyPasswordToken()
-  }, [history, location.search])
+  }, [navigate, location.search])
 
   const onFinish = async values => {
     const { password } = values
@@ -59,7 +59,7 @@ export const NewPassword = () => {
 
     if (!response.ok) {
       dispatch(removeAuth())
-      history.push({
+      navigate({
         pathname: '/login',
         state: {
           error: {
@@ -76,7 +76,7 @@ export const NewPassword = () => {
     if (!authToken) {
       dispatch(removeAuth())
       // Unconfirmed users
-      history.push({
+      navigate({
         pathname: '/login',
         state: {
           error: {
@@ -89,7 +89,7 @@ export const NewPassword = () => {
       })
     } else {
       dispatch(addAuth(authToken))
-      history.push('/dashboard')
+      navigate('/dashboard')
     }
   }
 
