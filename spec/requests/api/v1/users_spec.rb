@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Users', type: :request do
   include ApiDocs::V1::Users::Api
- 
+
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
   let!(:logged_in_user) { create(:confirmed_user) }

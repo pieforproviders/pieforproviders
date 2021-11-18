@@ -10,7 +10,7 @@ class StaticController < ActionController::Base
 
     api_docs_path = Rails.root.join("public/api_docs/#{version}/index.#{format}")
 
-    raise ActionController::RoutingError.new(api_docs_path) unless File.exist?(api_docs_path)
+    raise ActionController::RoutingError, api_docs_path unless File.exist?(api_docs_path)
 
     render file: api_docs_path
   end

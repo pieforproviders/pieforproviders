@@ -143,7 +143,7 @@ Dox.configure do |config|
   config.openapi_version = '3.0.0'
   config.header_description = 'api.md'
   config.title = 'Pie For Providers API Documentation'
-  config.headers_whitelist = ['Accept', 'Content-Type']
+  config.headers_whitelist = %w[Accept Content-Type]
   config.descriptions_location = Rails.root.join('spec/api_docs/descriptions')
   config.schema_request_folder_path = Rails.root.join('spec/api_docs/request_schemas')
   config.schema_response_folder_path = Rails.root.join('spec/api_docs/response_schemas')

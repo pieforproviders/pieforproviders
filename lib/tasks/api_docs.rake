@@ -2,7 +2,7 @@
 
 namespace :api_docs do
   desc 'Generate API documentations'
-  task :generate, %i[version] do |_, args|
+  task :generate, [:version] => [:environment] do |_, args|
     version = args.fetch(:version, 'v1')
     api_docs_path = "public/api_docs/#{version}"
 
