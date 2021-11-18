@@ -1,9 +1,14 @@
 import React from 'react'
 import { render, fireEvent, screen } from 'setupTests'
+import { MemoryRouter } from 'react-router-dom'
 import { Header } from '_shared'
 
 const doRender = () => {
-  return render(<Header />)
+  return render(
+    <MemoryRouter>
+      <Header />
+    </MemoryRouter>
+  )
 }
 
 describe('<Header />', () => {

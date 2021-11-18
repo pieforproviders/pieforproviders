@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ResendToken from 'ResendToken'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -28,7 +28,7 @@ const contactUs = message => <ContactUs message={message} />
 
 const ConfirmationAlert = ({ email }) => {
   const { t } = useTranslation()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { makeRequest } = useApiResponse()
 
   const resendConfirmation = async () => {
@@ -40,7 +40,7 @@ const ConfirmationAlert = ({ email }) => {
       }
     })
     if (response.ok) {
-      history.replace({
+      navigate({
         pathname: '/login',
         state: {
           success: {
@@ -50,7 +50,7 @@ const ConfirmationAlert = ({ email }) => {
       })
     } else {
       const errorMessage = await response.json()
-      history.replace({
+      navigate({
         pathname: '/login',
         state: {
           error: {
