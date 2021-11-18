@@ -16,7 +16,12 @@ import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
 
-export default function DashboardTable({ tableData, userState, setActiveKey }) {
+export default function DashboardTable({
+  tableData,
+  userState,
+  setActiveKey,
+  dateFilterValue
+}) {
   const dispatch = useDispatch()
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
@@ -107,7 +112,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
   const renderChild = (child, record) => {
     return child ? (
       <div>
-        <p className="text-lg mb-1">
+        <p className="mb-1 text-lg">
           {child.childName}
           {isInactive(record) ? `  (${t('inactive')})` : ''}
         </p>
@@ -173,11 +178,15 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
               </a>
             </div>
           ) : name === 'hoursAttended' ? (
-            <p>
-              {t(`${name}`)}
-              <br />
-              {getCurrentWeek()}
-            </p>
+            (dateFilterValue === undefined ||
+              new Date(dateFilterValue?.date).getMonth() ===
+                new Date().getMonth()) && (
+              <p>
+                {t(`${name}`)}
+                <br />
+                {getCurrentWeek()}
+              </p>
+            )
           ) : (
             t(`${name}`)
           ),
@@ -429,7 +438,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
       />
       <Modal
         title={
-          <div className="text-gray9 font-semibold text-lg">
+          <div className="text-lg font-semibold text-gray9">
             <p>
               {t('markInactive') +
                 ': ' +
@@ -454,7 +463,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           </Button>
         ]}
       >
-        <p className="text-gray8 text-base">
+        <p className="text-base text-gray8">
           {t('markInactiveInfo1')} {t('markInactiveInfo2')}
         </p>
         <Select
@@ -473,7 +482,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
           </Select.Option>
           <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
         </Select>
-        <p className="text-gray8 text-base mb-3">
+        <p className="mb-3 text-base text-gray8">
           {t('markInactiveCalendarPrompt')}
         </p>
         <DatePicker
@@ -494,6 +503,7 @@ export default function DashboardTable({ tableData, userState, setActiveKey }) {
 }
 
 DashboardTable.propTypes = {
+  dateFilterValue: PropTypes.object,
   tableData: PropTypes.array.isRequired,
   userState: PropTypes.string,
   setActiveKey: PropTypes.func.isRequired
