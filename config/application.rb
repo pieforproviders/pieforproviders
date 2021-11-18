@@ -66,7 +66,6 @@ module App
     config.aws_necc_dashboard_archive_bucket = ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
     config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
-    config.ff_ne_live_algorithms = ENV.fetch('FF_NE_LIVE_ALGORITHMS', '') == 'true'
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
   end

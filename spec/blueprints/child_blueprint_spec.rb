@@ -102,7 +102,6 @@ RSpec.describe ChildBlueprint do
     # Integration test that mimics the flow of a month of attendances and absences
     context 'when using live algorithms' do
       before do
-        allow(Rails.application.config).to receive(:ff_ne_live_algorithms).and_return(true)
         # first dashboard view date is Jul 8th, 2021 at 4pm
         travel_to attendance_date.in_time_zone(child.timezone) + 4.days + 16.hours
         child.reload
