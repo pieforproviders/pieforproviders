@@ -52,6 +52,7 @@
     "eslint-plugin-prettier": "^3.4.1",
     "faker": "^5.5.3",
     "prettier": "^2.4.1",
+    "redoc-cli": "^0.13.0",
     "start-server-and-test": "^1.14.0"
   },
   "dependencies": {}

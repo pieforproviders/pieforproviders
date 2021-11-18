@@ -14,6 +14,6 @@ namespace :api_docs do
 
     Rake::Task['api_spec'].invoke
 
-    `redoc-cli bundle -o #{api_docs_path}/index.html #{api_docs_path}/index.json`
+    `yarn redoc-cli bundle -o #{api_docs_path}/index.html #{api_docs_path}/index.json`
   end
 end
