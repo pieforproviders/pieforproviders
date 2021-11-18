@@ -63,12 +63,7 @@ const AppRoutes = () => {
               contentComponent={Signup}
             />
           }
-        >
-          {/* <AuthLayout
-            backgroundImageClass="auth-image"
-            contentComponent={Signup}
-          /> */}
-        </Route>
+        />
         <Route
           path="/login"
           element={
@@ -77,12 +72,7 @@ const AppRoutes = () => {
               contentComponent={Login}
             />
           }
-        >
-          {/* <AuthLayout
-            backgroundImageClass="auth-image"
-            contentComponent={Login}
-          /> */}
-        </Route>
+        />
         <Route
           path="/password/update"
           element={
@@ -91,16 +81,11 @@ const AppRoutes = () => {
               contentComponent={NewPassword}
             />
           }
-        >
-          {/* <AuthLayout
-            backgroundImageClass="auth-image"
-            contentComponent={NewPassword}
-          /> */}
-        </Route>
+        />
         <Route
           path="/confirm"
           title="Confirm your Account"
-          component={Confirmation}
+          element={<Confirmation />}
         />
         <Route
           path="/getting-started"
@@ -111,9 +96,6 @@ const AppRoutes = () => {
             </AuthenticatedRoute>
           }
         />
-        {/* <AuthenticatedRoute exact path="/getting-started" title={t('setup')}>
-          <GettingStarted />
-        </AuthenticatedRoute> */}
         <Route
           path="/dashboard"
           element={
@@ -122,9 +104,6 @@ const AppRoutes = () => {
             </AuthenticatedRoute>
           }
         />
-        {/* <AuthenticatedRoute exact path="/dashboard">
-          <Dashboard />
-        </AuthenticatedRoute> */}
         <Route
           path="/attendance"
           element={
@@ -133,9 +112,6 @@ const AppRoutes = () => {
             </AuthenticatedRoute>
           }
         />
-        {/* <AuthenticatedRoute exact path="/attendance">
-          <AttendanceView />
-        </AuthenticatedRoute> */}
         <Route
           path="/attendance/edit"
           element={
@@ -144,9 +120,6 @@ const AppRoutes = () => {
             </AuthenticatedRoute>
           }
         />
-        {/* <AuthenticatedRoute exact path="/attendance/edit">
-          <Attendance />
-        </AuthenticatedRoute> */}
         <Route
           path="/cases/import"
           element={
@@ -155,9 +128,6 @@ const AppRoutes = () => {
             </AuthenticatedRoute>
           }
         />
-        {/* <AuthenticatedRoute exact path="/cases/import">
-          <CasesImport />
-        </AuthenticatedRoute> */}
         <Route
           exact
           path="/"
