@@ -1,5 +1,4 @@
 import React from 'react'
-import { MemoryRouter } from 'react-router-dom'
 import { render, waitFor } from 'setupTests'
 import DashboardTitle from '../DashboardTitle'
 
@@ -10,11 +9,7 @@ const doRender = (
     getDashboardData: () => {}
   }
 ) => {
-  return render(
-    <MemoryRouter>
-      <DashboardTitle {...props} />
-    </MemoryRouter>
-  )
+  return render(<DashboardTitle {...props} />)
 }
 
 describe('<DashboardTitle />', () => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Button } from 'antd'
 import { Header } from './'
@@ -7,7 +7,7 @@ import foodDrinks from '../_assets/foodDrinks.png'
 
 export function ErrorDisplay() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const history = useHistory()
 
   return (
     <div className="bg-mediumGray h-full min-h-screen">
@@ -19,7 +19,7 @@ export function ErrorDisplay() {
           <Button
             type="primary"
             className="font-proxima-nova-alt text-eighteen px-4 py-2 h-auto"
-            onClick={() => navigate('/')}
+            onClick={() => history.push('/')}
           >
             {t('goBack')}
           </Button>

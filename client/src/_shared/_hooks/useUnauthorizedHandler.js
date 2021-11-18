@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
 import { sendSpan } from '../../_utils/appSignal'
 
 export default function useUnauthorizedHandler() {
   const dispatch = useDispatch()
-  let navigate = useNavigate()
+  let history = useHistory()
 
   const handler = response => {
     sendSpan({
@@ -14,7 +14,7 @@ export default function useUnauthorizedHandler() {
     })
 
     dispatch(removeAuth())
-    navigate('/login')
+    history.push('/login')
     return response
   }
 

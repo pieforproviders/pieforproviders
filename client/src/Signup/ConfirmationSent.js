@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Divider, Typography, Alert } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -28,7 +28,7 @@ ListItem.propTypes = {
 
 const ConfirmationSent = ({ userEmail }) => {
   const { t } = useTranslation()
-  const navigate = useNavigate()
+  const history = useHistory()
   const { makeRequest } = useApiResponse()
   const [resent, setResent] = useState(null)
 
@@ -45,7 +45,7 @@ const ConfirmationSent = ({ userEmail }) => {
       setResent(true)
     } else {
       const errorMessage = await response.json()
-      navigate({
+      history.push({
         pathname: '/login',
         state: {
           error: {

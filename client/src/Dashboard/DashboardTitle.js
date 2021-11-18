@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -12,7 +12,7 @@ const { Option } = Select
 export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const { t } = useTranslation()
   const screens = useBreakpoint()
-  const navigate = useNavigate()
+  const history = useHistory()
   // keeping this dropdown icon logic in hope it can eventually work
   // const [isDropdownVisible, setDropdownVisible] = useState(false)
   // const dropdownStyle = { color: '#006C9E' }
@@ -84,7 +84,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             </Typography.Text>
             <Button
               className="border-primaryBlue text-primaryBlue flex"
-              onClick={() => navigate('/attendance/edit')}
+              onClick={() => history.push('/attendance/edit')}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>
@@ -106,7 +106,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             </Typography.Text>
             <Button
               className="ml-auto border-primaryBlue text-primaryBlue flex"
-              onClick={() => navigate('/attendance/edit')}
+              onClick={() => history.push('/attendance/edit')}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>
