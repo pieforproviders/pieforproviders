@@ -20,7 +20,7 @@ module Nebraska
       private
 
       def calculate_earned_revenue
-        active_child_approval.special_needs_rate ? ne_special_needs_revenue : ne_base_revenue
+        active_child_approval&.special_needs_rate ? ne_special_needs_revenue : ne_base_revenue
       end
 
       def active_child_approval
@@ -64,7 +64,7 @@ module Nebraska
       def active_child_rates
         NebraskaRate
           .active_on_date(date)
-          .where(school_age: active_child_approval.enrolled_in_school || false)
+          .where(school_age: active_child_approval&.enrolled_in_school || false)
           .where('max_age >= ? OR max_age IS NULL', child.age_in_months(date))
       end
 
