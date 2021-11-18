@@ -1,9 +1,15 @@
 import React from 'react'
 import { render, waitFor } from 'setupTests'
+import { MemoryRouter } from 'react-router-dom'
 import { Attendance } from '../Attendance'
 
 const doRender = stateOptions => {
-  return render(<Attendance />, stateOptions)
+  return render(
+    <MemoryRouter>
+      <Attendance />
+    </MemoryRouter>,
+    stateOptions
+  )
 }
 
 describe('<Attendance />', () => {
