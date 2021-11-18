@@ -3,9 +3,11 @@
 module Nebraska
   # Service to generate absences, to be scheduled daily
   class AbsenceGenerator
+    attr_reader :child, :date
+
     def initialize(child, date = nil)
       @child = child
-      @date = (date || Time.current).in_time_zone(@child.timezone)
+      @date = (date || Time.current).in_time_zone(child.timezone)
     end
 
     def call
@@ -20,7 +22,7 @@ module Nebraska
       ActiveRecord::Base.transaction do
         Attendance.find_or_create_by!(
           child_approval: child_approval,
-          check_in: @date.at_beginning_of_day,
+          check_in: date.at_beginning_of_day,
           check_out: nil,
           absence: 'absence'
         )
@@ -28,15 +30,15 @@ module Nebraska
     end
 
     def schedule
-      @child.schedules.for_weekday(@date.wday)
+      child.schedules.for_weekday(date.wday)
     end
 
     def child_approval
-      @child.active_child_approval(@date)
+      child.active_child_approval(date)
     end
 
     def attendance_on_date
-      @child.attendances.where(check_in: @date.at_beginning_of_day..@date.at_end_of_day)
+      child.attendances.where(check_in: date.at_beginning_of_day..date.at_end_of_day)
     end
   end
 end

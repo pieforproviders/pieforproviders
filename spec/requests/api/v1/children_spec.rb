@@ -103,7 +103,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
 
       context 'when logged in as a nebraska user' do
-        let(:nebraska_business) { create(:business, :nebraska, user: create(:confirmed_user)) }
+        let(:nebraska_business) { create(:business, :nebraska_ldds, user: create(:confirmed_user)) }
 
         before { sign_in nebraska_business.user }
 

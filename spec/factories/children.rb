@@ -26,7 +26,7 @@ FactoryBot.define do
         create_dashboard_case { false }
       end
 
-      business { create(:business, :nebraska) }
+      business { create(:business, :nebraska_ldds) }
       wonderschool_id { SecureRandom.uuid }
       approvals { [create(:approval, effective_on: effective_date, create_children: false)] }
 
@@ -58,15 +58,15 @@ FactoryBot.define do
     trait :with_two_nebraska_attendances do
       after(:create) do |child|
         create(:nebraska_hourly_attendance, child_approval: child.active_child_approval(Time.current))
-        create(:nebraska_full_day_attendance, child_approval: child.active_child_approval(Time.current))
+        create(:nebraska_daily_attendance, child_approval: child.active_child_approval(Time.current))
       end
     end
 
     trait :with_three_nebraska_attendances do
       after(:create) do |child|
         create(:nebraska_hourly_attendance, child_approval: child.active_child_approval(Time.current))
-        create(:nebraska_full_day_attendance, child_approval: child.active_child_approval(Time.current))
-        create(:nebraska_full_day_plus_hourly_attendance, child_approval: child.active_child_approval(Time.current))
+        create(:nebraska_daily_attendance, child_approval: child.active_child_approval(Time.current))
+        create(:nebraska_daily_plus_hourly_attendance, child_approval: child.active_child_approval(Time.current))
       end
     end
   end

@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Rate #{n}" }
     max_age { 18 }
     amount { Faker::Number.within(range: 10.0..50.0) }
-    license_type { Licenses::TYPES.sample }
+    license_type { 'family_child_care_home_i' }
     effective_on { (Time.current - 11.months).to_date }
     # TODO: make this a trait and control it rather than randomizing
     expires_on do
@@ -18,9 +18,11 @@ FactoryBot.define do
     trait :accredited do
       accredited_rate { true }
     end
+
     trait :ldds do
       region { 'LDDS' }
     end
+
     trait :other_region do
       region { 'Other' }
     end
@@ -35,6 +37,26 @@ FactoryBot.define do
     trait :school_age do
       school_age { true }
       max_age { nil }
+    end
+
+    trait :license_exempt_home_ds do
+      license_type { 'license_exempt_home' }
+      region { 'Douglas-Sarpy' }
+    end
+
+    trait :license_exempt_home_ld do
+      license_type { 'license_exempt_home' }
+      region { 'Lancaster-Dakota' }
+    end
+
+    trait :license_exempt_home_other do
+      license_type { 'license_exempt_home' }
+      region { 'Other' }
+    end
+
+    trait :family_in_home do
+      license_type { 'family_in_home' }
+      region { 'All' }
     end
 
     factory :accredited_hourly_ldds_rate, traits: %i[accredited ldds hourly]

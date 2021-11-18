@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
+require 'factory_bot_rails'
+
 module Helpers
-  def next_weekday(date, weekday)
+  def self.next_weekday(date, weekday)
     date.next_occurring(Date::DAYNAMES[weekday].downcase.to_sym)
   end
 
-  def prior_weekday(date, weekday)
+  def self.prior_weekday(date, weekday)
     date.prev_occurring(Date::DAYNAMES[weekday].downcase.to_sym)
   end
 
-  def last_elapsed_date(date)
+  def self.last_elapsed_date(date)
     if Date.parse(date).month > Time.current.month
       Date.parse("#{date}, #{Time.current.year - 1}")
     else
@@ -17,7 +19,7 @@ module Helpers
     end
   end
 
-  def next_attendance_day(child_approval:, date: nil)
+  def self.next_attendance_day(child_approval:, date: nil)
     attendances = child_approval.attendances
     attendances.reload
     if attendances.present?
@@ -30,14 +32,15 @@ module Helpers
     end
   end
 
-  def build_nebraska_absence_list(num:, child_approval:, type: 'absence', date: nil)
+  def self.build_nebraska_absence_list(num:, child_approval:, type: 'absence', date: nil)
+    child = child_approval.child
     child.reload
     num.times do
       day_for_next_attendance = next_attendance_day(child_approval: child_approval, date: date)
       while child.schedules.select { |schedule| schedule.weekday == day_for_next_attendance.wday }.blank?
         day_for_next_attendance += 1.day
       end
-      create(
+      FactoryBot.create(
         :nebraska_absence,
         child_approval: child_approval,
         check_in: day_for_next_attendance + 3.hours,

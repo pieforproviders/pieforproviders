@@ -43,6 +43,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
       sign_in logged_in_user
     end
 
+    after { travel_back }
+
     context 'when sent with a filter date' do
       let(:params) { { filter_date: two_weeks_ago_week_current_date } }
 
