@@ -1,0 +1,39 @@
+{
+  "properties": {
+    "attendances": {
+      "type": "array",
+      "items": {
+        "attendance": {
+          "type": "object",
+          "$ref": "attendance.json"
+        }
+      }
+    },
+    "child_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "date": {
+      "type": "string",
+      "format": "time"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "tag": {
+          "type": "string"
+        }
+      }
+    },
+    "total_time_in_care": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}

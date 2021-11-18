@@ -79,6 +79,37 @@ class ServiceDay < UuidApplicationRecord
     attendances.any? { |attendance| attendance.absence.present? }
   end
 
+  def tags
+    [
+      hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? 'hourly' : nil,
+      daily? || daily_plus_hourly? || daily_plus_hourly_max? ? 'daily' : nil
+    ].compact
+  end
+
+  def hourly?
+    return unless state == 'NE'
+
+    total_time_in_care <= (5.hours + 45.minutes)
+  end
+
+  def daily?
+    return unless state == 'NE'
+
+    total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
+  end
+
+  def daily_plus_hourly?
+    return unless state == 'NE'
+
+    total_time_in_care > 10.hours && total_time_in_care <= 18.hours
+  end
+
+  def daily_plus_hourly_max?
+    return unless state == 'NE'
+
+    total_time_in_care > 18.hours
+  end
+
   def earned_revenue
     return unless state == 'NE'
 
