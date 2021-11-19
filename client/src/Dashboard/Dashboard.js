@@ -307,6 +307,7 @@ export function Dashboard() {
       />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
+        dateFilterValue={dates.dateFilterValue}
         tableData={tableData}
         userState={user.state ?? ''}
         setActiveKey={href => {

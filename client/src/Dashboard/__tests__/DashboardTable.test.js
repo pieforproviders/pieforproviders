@@ -4,7 +4,12 @@ import { MemoryRouter } from 'react-router-dom'
 import DashboardTable from '../DashboardTable'
 
 const doRender = (
-  props = { tableData: [], userState: '', setActiveKey: () => {} }
+  props = {
+    tableData: [],
+    userState: '',
+    setActiveKey: () => {},
+    dateFilterValue: undefined
+  }
 ) => {
   return render(
     <MemoryRouter>
@@ -31,13 +36,37 @@ describe('<DashboardTable />', () => {
     const { container } = doRender({
       tableData: [],
       userState: 'NE',
-      setActiveKey: () => {}
+      setActiveKey: () => {},
+      dateFilterValue: undefined
     })
     await waitFor(() => {
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
       expect(container).toHaveTextContent('Hours')
       expect(container).toHaveTextContent('Hours attended')
+      expect(container).toHaveTextContent('Absences')
+      expect(container).toHaveTextContent('Earned revenue')
+      expect(container).toHaveTextContent('Estimated revenue')
+      expect(container).toHaveTextContent('Family fee')
+      expect(container).toHaveTextContent('Actions')
+    })
+  })
+
+  it('renders the DashboardTable component without weekly attended hours for NE users in prior months', async () => {
+    const { container } = doRender({
+      tableData: [],
+      userState: 'NE',
+      setActiveKey: () => {},
+      dateFilterValue: {
+        date: new Date().setMonth(new Date().getMonth() - 1),
+        displayDate: 'string'
+      }
+    })
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Child')
+      expect(container).toHaveTextContent('Full days')
+      expect(container).toHaveTextContent('Hours')
+      expect(container).not.toHaveTextContent('Hours attended')
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
