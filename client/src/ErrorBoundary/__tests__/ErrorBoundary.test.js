@@ -1,6 +1,5 @@
 import React from 'react'
 import { render } from 'setupTests'
-import { MemoryRouter } from 'react-router-dom'
 import { ErrorBoundaryComponent } from '../ErrorBoundary'
 
 describe('Error Boundary', () => {
@@ -18,11 +17,9 @@ describe('Error Boundary', () => {
 
     try {
       ;({ container } = render(
-        <MemoryRouter>
-          <ErrorBoundaryComponent>
-            <Bomb />
-          </ErrorBoundaryComponent>
-        </MemoryRouter>
+        <ErrorBoundaryComponent>
+          <Bomb />
+        </ErrorBoundaryComponent>
       ))
     } finally {
       window.removeEventListener('error', handleTopLevelError)

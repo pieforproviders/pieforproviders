@@ -1,6 +1,5 @@
 import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
-import { MemoryRouter } from 'react-router-dom'
 import DashboardTable from '../DashboardTable'
 
 const doRender = (
@@ -11,11 +10,7 @@ const doRender = (
     dateFilterValue: undefined
   }
 ) => {
-  return render(
-    <MemoryRouter>
-      <DashboardTable {...props} />
-    </MemoryRouter>
-  )
+  return render(<DashboardTable {...props} />)
 }
 
 describe('<DashboardTable />', () => {

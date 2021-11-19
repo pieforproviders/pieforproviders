@@ -1,22 +1,20 @@
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '_reducers/authReducer'
 
-export function Confirmation() {
+export function Confirmation({ location }) {
   const dispatch = useDispatch()
   const { makeRequest } = useApiResponse()
-  let navigate = useNavigate()
-  let location = useLocation()
+  let history = useHistory()
 
   useEffect(() => {
     let isSubscribed = true
     const confirm = async () => {
       const params = new URLSearchParams(location.search)
       const confirmationToken = params.get('confirmation_token')
-
       const response = await makeRequest({
         type: 'get',
         url: `confirmation${
@@ -28,7 +26,7 @@ export function Confirmation() {
         if (!response.ok || authToken === null) {
           const errorMessage = await response.json()
           dispatch(removeAuth())
-          navigate({
+          history.push({
             pathname: '/login',
             state: {
               error: {
@@ -41,7 +39,7 @@ export function Confirmation() {
           })
         } else {
           dispatch(addAuth(authToken))
-          navigate('/dashboard')
+          history.push('/dashboard')
         }
       }
     }

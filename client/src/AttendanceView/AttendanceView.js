@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -13,7 +13,7 @@ const { useBreakpoint } = Grid
 export function AttendanceView() {
   const { i18n, t } = useTranslation()
   const screens = useBreakpoint()
-  const navigate = useNavigate()
+  const history = useHistory()
   const { makeRequest } = useApiResponse()
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
@@ -181,7 +181,7 @@ export function AttendanceView() {
               type="primary"
               className="absolute"
               style={{ right: '3rem' }}
-              onClick={() => navigate('/attendance/edit')}
+              onClick={() => history.push('/attendance/edit')}
               data-cy="inputAttendance"
             >
               {t('inputAttendance')}
