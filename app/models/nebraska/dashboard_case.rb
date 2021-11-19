@@ -2,6 +2,7 @@
 
 module Nebraska
   # A case for display in the Nebraska Dashboard
+  # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :child, :filter_date
 
@@ -15,15 +16,15 @@ module Nebraska
     end
 
     def absences
-      child.service_days.for_month(filter_date).absences.length
+      service_days_this_approval.for_month(filter_date).absences.length
     end
 
     def case_number
-      child.approvals.active_on_date(filter_date).first&.case_number
+      active_child_approval&.case_number
     end
 
     def family_fee
-      return 0 unless child == child.active_approval(filter_date).child_with_most_scheduled_hours(filter_date)
+      return 0 unless child == active_child_approval.approval.child_with_most_scheduled_hours(filter_date)
 
       child.active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
     end
@@ -33,7 +34,10 @@ module Nebraska
       # but it's the simplest way to make sure that the family fee is only subtracted
       # one time from each of earned_revenue and estimated_revenue - we should add a class to calculate w/ fam fee
       [
-        Nebraska::Monthly::EarnedRevenueCalculator.new(child: child, filter_date: filter_date).call - family_fee,
+        Nebraska::Monthly::EarnedRevenueCalculator.new(
+          service_days: service_days_this_approval,
+          filter_date: filter_date
+        ).call - family_fee,
         0.0
       ].max
     end
@@ -43,19 +47,22 @@ module Nebraska
       # but it's the simplest way to make sure that the family fee is only subtracted
       # one time from each of earned_revenue and estimated_revenue - we should add a class to calculate w/ fam fee
       [
-        Nebraska::Monthly::EstimatedRevenueCalculator.new(child: child, filter_date: filter_date).call - family_fee,
+        Nebraska::Monthly::EstimatedRevenueCalculator.new(
+          child: child,
+          filter_date: filter_date
+        ).call - family_fee,
         0.0
-      ].max
+      ].max.to_f.round(2)
     end
 
     def full_days
-      child.service_days.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
+      service_days_this_approval.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
     end
 
     def hours
-      child.service_days.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
+      service_days_this_approval.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
     end
@@ -74,25 +81,35 @@ module Nebraska
     end
 
     def full_days_authorized
-      child.active_child_approval(filter_date)&.full_days
+      active_child_approval&.full_days
     end
 
     def hours_authorized
-      child.active_child_approval(filter_date)&.hours
+      active_child_approval&.hours
     end
 
     # TODO: rename attended_weekly_hours
     def hours_attended
-      authorized_weekly_hours = child.active_child_approval(filter_date).authorized_weekly_hours
-      attended_weekly_hours = Nebraska::Weekly::AttendedHoursCalculator.new(child: child,
-                                                                            filter_date: filter_date).call
+      authorized_weekly_hours = active_child_approval.authorized_weekly_hours
+      attended_weekly_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
+        service_days: service_days_this_approval,
+        filter_date: filter_date
+      ).call
       "#{attended_weekly_hours&.positive? ? attended_weekly_hours : 0.0} of #{authorized_weekly_hours}"
     end
 
     private
 
+    def active_child_approval
+      child.active_child_approval(filter_date)
+    end
+
+    def service_days_this_approval
+      active_child_approval.service_days
+    end
+
     def approval_attendances
-      child.active_child_approval(filter_date).service_days.non_absences
+      service_days_this_approval.non_absences
     end
 
     def approval_hourly_service_days
@@ -119,27 +136,22 @@ module Nebraska
       end
     end
 
-    def child_approval
-      child.active_child_approval(filter_date)
-    end
-
     def approval_absences
-      return if child_approval.service_days.standard_absences.blank?
+      return if service_days_this_approval.standard_absences.blank?
 
-      ServiceDay.where(id: approval_absence_ids)
+      ServiceDay.includes(:child).where(id: approval_absence_ids)
     end
 
     def approval_absence_ids
-      (child_approval.effective_on.month..filter_date.month).map.with_index do |_month, index|
+      (active_child_approval.effective_on.month..filter_date.month).map.with_index do |_month, index|
         approval_standard_absences(index)
       end.flatten
     end
 
     def approval_standard_absences(index)
-      child_approval
-        .service_days
+      service_days_this_approval
         .standard_absences
-        .for_month(child_approval.effective_on + index.months)
+        .for_month(active_child_approval.effective_on + index.months)
         .limit(5)
         .pluck(:id)
     end
@@ -172,4 +184,5 @@ module Nebraska
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

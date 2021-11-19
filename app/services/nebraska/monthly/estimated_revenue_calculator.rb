@@ -19,9 +19,9 @@ module Nebraska
 
       def calculate_estimated_revenue
         (Nebraska::Monthly::EarnedRevenueCalculator.new(
-          child: child,
+          service_days: child.service_days,
           filter_date: filter_date
-        ).call + remaining_scheduled_revenue).to_f.round(2)
+        ).call + remaining_scheduled_revenue)
       end
 
       def remaining_scheduled_revenue

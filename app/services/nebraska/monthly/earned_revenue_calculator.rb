@@ -4,10 +4,10 @@ module Nebraska
   module Monthly
     # Calculate earned revenue for a child on a given date for the month
     class EarnedRevenueCalculator
-      attr_reader :child, :filter_date
+      attr_reader :service_days, :filter_date
 
-      def initialize(child:, filter_date:)
-        @child = child
+      def initialize(service_days:, filter_date:)
+        @service_days = service_days
         @filter_date = filter_date
       end
 
@@ -18,18 +18,23 @@ module Nebraska
       private
 
       def calculate_earned_revenue
+        # binding.pry
         absence_revenue + attendance_revenue
       end
 
       def absence_revenue
-        absences = child.service_days.standard_absences.for_month(filter_date).order(total_time_in_care: :desc)
-        covid_absences = child.service_days.covid_absences.for_month(filter_date).order(total_time_in_care: :desc)
+        absences = service_days
+                   .standard_absences
+                   .for_month(filter_date)
+        covid_absences = service_days
+                         .covid_absences
+                         .for_month(filter_date)
         # only five absences are allowed per month in Nebraska
         absences.take(5).sum(&:earned_revenue) + covid_absences.sum(&:earned_revenue)
       end
 
       def attendance_revenue
-        non_absences = child.service_days&.non_absences&.for_month(filter_date)
+        non_absences = service_days&.non_absences&.for_month(filter_date)
         return 0 unless non_absences
 
         non_absences.sum(&:earned_revenue)

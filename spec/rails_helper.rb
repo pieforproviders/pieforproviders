@@ -112,6 +112,17 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 
+  if Bullet.enable?
+    config.before do
+      Bullet.start_request
+    end
+
+    config.after do
+      Bullet.perform_out_of_channel_notifications if Bullet.notification?
+      Bullet.end_request
+    end
+  end
+
   # start by truncating all the tables, but then use the faster transaction strategy
   config.before(:suite) { DatabaseCleaner.clean_with(:truncation) }
   config.before do |example|
