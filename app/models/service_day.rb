@@ -4,16 +4,17 @@
 class ServiceDay < UuidApplicationRecord
   belongs_to :child
   has_many :attendances, dependent: :destroy
+  has_many :child_approvals, -> { order(total_time_in_care: :desc).distinct }, through: :attendances
 
   validates :date, date_time_param: true, presence: true
 
   delegate :business, to: :child
   delegate :state, to: :child
 
-  scope :absences, -> { includes(:attendances).where.not(attendances: { absence: nil }) }
-  scope :non_absences, -> { includes(:attendances).where(attendances: { absence: nil }) }
-  scope :covid_absences, -> { includes(:attendances).where(attendances: { absence: 'covid_absence' }) }
-  scope :standard_absences, -> { includes(:attendances).where(attendances: { absence: 'absence' }) }
+  scope :absences, -> { joins(:attendances).where.not(attendances: { absence: nil }) }
+  scope :non_absences, -> { joins(:attendances).where(attendances: { absence: nil }) }
+  scope :covid_absences, -> { joins(:attendances).where(attendances: { absence: 'covid_absence' }) }
+  scope :standard_absences, -> { joins(:attendances).where(attendances: { absence: 'absence' }) }
   scope :hourly, -> { where(id: all.select(&:hourly?).map(&:id)) }
   scope :daily, -> { where(id: all.select(&:daily?).map(&:id)) }
   scope :daily_plus_hourly, -> { where(id: all.select(&:daily_plus_hourly?).map(&:id)) }
