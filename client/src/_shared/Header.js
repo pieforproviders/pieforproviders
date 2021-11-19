@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Button, Divider, Dropdown, Menu } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
@@ -12,11 +12,11 @@ import '_assets/styles/button-header.css'
 
 export function Header() {
   const isAuthenticated = useAuthentication()
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { t, i18n } = useTranslation()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const setWidth = () => setWindowWidth(window.innerWidth)
+  const history = useHistory()
 
   const changeLanguage = lang => i18n.changeLanguage(lang)
 
@@ -25,7 +25,7 @@ export function Header() {
       dispatch(deleteUser())
       dispatch(removeAuth())
     })
-    navigate('/login')
+    history.push('/login')
   }
 
   const renderDesktopMenu = () => (
@@ -48,14 +48,14 @@ export function Header() {
       <Menu>
         <Menu.Item>
           {isAuthenticated && (
-            <Button type="link" onClick={() => navigate('/dashboard')}>
+            <Button type="link" onClick={() => history.push('/dashboard')}>
               {t('dashboard')}
             </Button>
           )}
         </Menu.Item>
         <Menu.Item>
           {isAuthenticated && (
-            <Button type="link" onClick={() => navigate('/attendnace')}>
+            <Button type="link" onClick={() => history.push('/attendance')}>
               {t('attendance')}
             </Button>
           )}
@@ -113,7 +113,7 @@ export function Header() {
               <Button
                 className="text-lg font-semibold"
                 type="link"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => history.push('/dashboard')}
               >
                 {t('dashboard')}
               </Button>
@@ -122,7 +122,7 @@ export function Header() {
               <Button
                 className="text-lg font-semibold"
                 type="link"
-                onClick={() => navigate('/attendance')}
+                onClick={() => history.push('/attendance')}
               >
                 {t('attendance')}
               </Button>

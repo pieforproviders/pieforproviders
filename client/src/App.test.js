@@ -1,10 +1,15 @@
 import React from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import { render } from 'setupTests'
 import App from './App'
 import './i18n'
 
 const doRender = () => {
-  return render(<App />)
+  return render(
+    <MemoryRouter initialEntries={['/']} initialIndex={0}>
+      <App />
+    </MemoryRouter>
+  )
 }
 
 describe('<App />', () => {

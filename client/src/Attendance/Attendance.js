@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { Alert, Button, DatePicker, Modal, Table } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import ellipse from '_assets/ellipse.svg'
@@ -15,8 +15,8 @@ import dayjs from 'dayjs'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
+  const history = useHistory()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const { reduceTableData } = useCaseData()
   const { makeRequest } = useApiResponse()
   const { cases, token, user } = useSelector(state => ({
@@ -319,7 +319,7 @@ export function Attendance() {
         visible={isSuccessModalVisible}
         onCancel={() => {
           setSuccessModalVisibile(false)
-          navigate('/dashboard')
+          history.push('/dashboard')
         }}
         footer={[
           <Button
@@ -327,7 +327,7 @@ export function Attendance() {
             key="ok"
             onClick={() => {
               setSuccessModalVisibile(false)
-              navigate('/dashboard')
+              history.push('/dashboard')
             }}
           >
             {t('gotToDashboard')}
