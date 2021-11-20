@@ -18,7 +18,6 @@ module Nebraska
       private
 
       def calculate_earned_revenue
-        # binding.pry
         absence_revenue + attendance_revenue
       end
 
@@ -30,7 +29,8 @@ module Nebraska
                          .covid_absences
                          .for_month(filter_date)
         # only five absences are allowed per month in Nebraska
-        absences.take(5).sum(&:earned_revenue) + covid_absences.sum(&:earned_revenue)
+        absences.take(5).sum(&:earned_revenue) +
+          covid_absences.sum(&:earned_revenue)
       end
 
       def attendance_revenue
