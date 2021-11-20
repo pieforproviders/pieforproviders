@@ -105,71 +105,71 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     it 'returns hourly only' do
-      expect(described_class.hourly).to include(hourly.service_day)
-      expect(described_class.hourly).not_to include(daily.service_day)
-      expect(described_class.hourly).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.hourly).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_hourly).to include(hourly.service_day)
+      expect(described_class.ne_hourly).not_to include(daily.service_day)
+      expect(described_class.ne_hourly).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_hourly).not_to include(daily_plus_hourly_max.service_day)
       create(
         :attendance,
         child_approval: hourly.child_approval,
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 6.hours
       )
-      expect(described_class.hourly).to include(hourly.service_day)
-      expect(described_class.hourly).not_to include(daily.service_day)
-      expect(described_class.hourly).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.hourly).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_hourly).to include(hourly.service_day)
+      expect(described_class.ne_hourly).not_to include(daily.service_day)
+      expect(described_class.ne_hourly).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_hourly).not_to include(daily_plus_hourly_max.service_day)
     end
 
     it 'returns daily only' do
-      expect(described_class.daily).not_to include(hourly.service_day)
-      expect(described_class.daily).to include(daily.service_day)
-      expect(described_class.daily).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.daily).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily).not_to include(hourly.service_day)
+      expect(described_class.ne_daily).to include(daily.service_day)
+      expect(described_class.ne_daily).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily).not_to include(daily_plus_hourly_max.service_day)
       create(
         :attendance,
         child_approval: hourly.child_approval,
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 10.hours
       )
-      expect(described_class.daily).to include(hourly.service_day)
-      expect(described_class.daily).to include(daily.service_day)
-      expect(described_class.daily).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.daily).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily).to include(hourly.service_day)
+      expect(described_class.ne_daily).to include(daily.service_day)
+      expect(described_class.ne_daily).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily).not_to include(daily_plus_hourly_max.service_day)
     end
 
     it 'returns daily_plus_hourly only' do
-      expect(described_class.daily_plus_hourly).not_to include(hourly.service_day)
-      expect(described_class.daily_plus_hourly).not_to include(daily.service_day)
-      expect(described_class.daily_plus_hourly).to include(daily_plus_hourly.service_day)
-      expect(described_class.daily_plus_hourly).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily_plus_hourly).not_to include(hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly).not_to include(daily.service_day)
+      expect(described_class.ne_daily_plus_hourly).to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly).not_to include(daily_plus_hourly_max.service_day)
       create(
         :attendance,
         child_approval: hourly.child_approval,
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 16.hours
       )
-      expect(described_class.daily_plus_hourly).to include(hourly.service_day)
-      expect(described_class.daily_plus_hourly).not_to include(daily.service_day)
-      expect(described_class.daily_plus_hourly).to include(daily_plus_hourly.service_day)
-      expect(described_class.daily_plus_hourly).not_to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily_plus_hourly).to include(hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly).not_to include(daily.service_day)
+      expect(described_class.ne_daily_plus_hourly).to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly).not_to include(daily_plus_hourly_max.service_day)
     end
 
     it 'returns daily_plus_hourly_max only' do
-      expect(described_class.daily_plus_hourly_max).not_to include(hourly.service_day)
-      expect(described_class.daily_plus_hourly_max).not_to include(daily.service_day)
-      expect(described_class.daily_plus_hourly_max).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.daily_plus_hourly_max).to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).not_to include(hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).not_to include(daily.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).to include(daily_plus_hourly_max.service_day)
       create(
         :attendance,
         child_approval: hourly.child_approval,
         check_in: hourly.check_in + 3.hours,
         check_out: hourly.check_in + 21.hours
       )
-      expect(described_class.daily_plus_hourly_max).to include(hourly.service_day)
-      expect(described_class.daily_plus_hourly_max).not_to include(daily.service_day)
-      expect(described_class.daily_plus_hourly_max).not_to include(daily_plus_hourly.service_day)
-      expect(described_class.daily_plus_hourly_max).to include(daily_plus_hourly_max.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).to include(hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).not_to include(daily.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).not_to include(daily_plus_hourly.service_day)
+      expect(described_class.ne_daily_plus_hourly_max).to include(daily_plus_hourly_max.service_day)
     end
   end
 

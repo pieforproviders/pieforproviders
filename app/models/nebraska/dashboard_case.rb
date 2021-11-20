@@ -4,11 +4,12 @@ module Nebraska
   # A case for display in the Nebraska Dashboard
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
-    attr_reader :child, :filter_date
+    attr_reader :child, :filter_date, :service_days_this_approval
 
     def initialize(child:, filter_date:)
       @child = child
       @filter_date = filter_date
+      @service_days_this_approval = active_child_approval.service_days
     end
 
     def attendance_risk
@@ -16,6 +17,8 @@ module Nebraska
     end
 
     def absences
+      return 0 unless service_days_this_approval
+
       service_days_this_approval.for_month(filter_date).absences.length
     end
 
@@ -30,6 +33,8 @@ module Nebraska
     end
 
     def earned_revenue
+      return 0 unless service_days_this_approval
+
       # TODO: I don't like that we're doing this here, in the dashboard case, rather than in the API response
       # but it's the simplest way to make sure that the family fee is only subtracted
       # one time from each of earned_revenue and estimated_revenue - we should add a class to calculate w/ fam fee
@@ -43,6 +48,8 @@ module Nebraska
     end
 
     def estimated_revenue
+      return 0 unless service_days_this_approval
+
       # TODO: I don't like that we're doing this here, in the dashboard case, rather than in the API response
       # but it's the simplest way to make sure that the family fee is only subtracted
       # one time from each of earned_revenue and estimated_revenue - we should add a class to calculate w/ fam fee
@@ -56,12 +63,16 @@ module Nebraska
     end
 
     def full_days
+      return 0 unless service_days_this_approval
+
       service_days_this_approval.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
     end
 
     def hours
+      return 0 unless service_days_this_approval
+
       service_days_this_approval.non_absences.for_month(filter_date).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
@@ -81,15 +92,17 @@ module Nebraska
     end
 
     def full_days_authorized
-      active_child_approval&.full_days
+      active_child_approval&.full_days || 0
     end
 
     def hours_authorized
-      active_child_approval&.hours
+      active_child_approval&.hours || 0
     end
 
     # TODO: rename attended_weekly_hours
     def hours_attended
+      return 0 unless service_days_this_approval
+
       authorized_weekly_hours = active_child_approval.authorized_weekly_hours
       attended_weekly_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
         service_days: service_days_this_approval,
@@ -104,18 +117,16 @@ module Nebraska
       child.active_child_approval(filter_date)
     end
 
-    def service_days_this_approval
-      active_child_approval.service_days
-    end
-
     def approval_attendances
       service_days_this_approval.non_absences
     end
 
     def approval_hourly_service_days
-      approval_attendances.hourly
-                          .or(approval_attendances.daily_plus_hourly)
-                          .or(approval_attendances.daily_plus_hourly_max)
+      approval_attendances.ne_hourly.or(
+        approval_attendances.ne_daily_plus_hourly
+      ).or(
+        approval_attendances.ne_daily_plus_hourly_max
+      )
     end
 
     def attended_approval_hours
@@ -125,9 +136,11 @@ module Nebraska
     end
 
     def approval_daily_service_days
-      approval_attendances.daily
-                          .or(approval_attendances.daily_plus_hourly)
-                          .or(approval_attendances.daily_plus_hourly_max)
+      approval_attendances.ne_daily.or(
+        approval_attendances.ne_daily_plus_hourly
+      ).or(
+        approval_attendances.ne_daily_plus_hourly_max
+      )
     end
 
     def attended_approval_days
@@ -139,7 +152,7 @@ module Nebraska
     def approval_absences
       return if service_days_this_approval.standard_absences.blank?
 
-      ServiceDay.includes(:child).where(id: approval_absence_ids)
+      ServiceDay.where(id: approval_absence_ids)
     end
 
     def approval_absence_ids
@@ -159,7 +172,9 @@ module Nebraska
     def approval_hourly_absences
       return if approval_absences.blank?
 
-      approval_absences.hourly.or(approval_absences.daily_plus_hourly).or(approval_absences.daily_plus_hourly_max)
+      approval_absences.ne_hourly
+                       .or(approval_absences.ne_daily_plus_hourly)
+                       .or(approval_absences.ne_daily_plus_hourly_max)
     end
 
     def absent_approval_hours
@@ -173,7 +188,9 @@ module Nebraska
     def approval_daily_absences
       return if approval_absences.blank?
 
-      approval_absences.daily.or(approval_absences.daily_plus_hourly).or(approval_absences.daily_plus_hourly_max)
+      approval_absences.ne_daily
+                       .or(approval_absences.ne_daily_plus_hourly)
+                       .or(approval_absences.ne_daily_plus_hourly_max)
     end
 
     def absent_approval_days
