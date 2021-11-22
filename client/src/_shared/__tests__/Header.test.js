@@ -52,16 +52,18 @@ describe('<Header />', () => {
 
   it('displays the user avatar with username initial', () => {
     doRender(authenticatedState)
-    const avatar = screen.getByTestId('avatar')
-
-    expect(avatar).toHaveTextContent('U')
+    screen.getByRole('button', {
+      name: /U/i
+    })
   })
 
-  it('displays dropdown when avatar is hovered over', async () => {
+  it('displays dropdown when avatar is clicked', async () => {
     doRender(authenticatedState)
-    const avatar = screen.getByTestId('avatar')
+    const avatar = screen.getByRole('button', {
+      name: /U/i
+    })
 
-    fireEvent.mouseOver(avatar)
+    fireEvent.click(avatar)
     await screen.findByRole('button', { name: /my profile/i })
     await screen.findByRole('button', { name: /logout/i })
   })

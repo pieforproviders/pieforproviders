@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
-import { Avatar, Button, Divider, Dropdown, Menu, Space } from 'antd'
+import { Button, Divider, Dropdown, Menu, Space } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { batch, useDispatch, useSelector } from 'react-redux'
@@ -70,10 +70,15 @@ export function Header() {
         </Button>
       )}
       {isAuthenticated && (
-        <Dropdown overlay={menu}>
-          <Avatar className="bg-primaryBlue" data-testid="avatar">
+        <Dropdown overlay={menu} trigger={'click'}>
+          <Button
+            className="bg-primaryBlue"
+            type="primary"
+            shape="circle"
+            name="avatar"
+          >
             {user.greeting_name && user.greeting_name[0]}
-          </Avatar>
+          </Button>
         </Dropdown>
       )}
     </Space>
