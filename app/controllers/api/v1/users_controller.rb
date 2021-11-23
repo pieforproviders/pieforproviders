@@ -48,10 +48,6 @@ module Api
       end
 
       def nebraska_dashboard
-        # TODO: temporarily disabling until I can figure out why this is causing an error,
-        # putting this note in the code where the error gets fired
-        Bullet.add_safelist type: :unused_eager_loading, class_name: 'User', association: :children
-        Bullet.add_safelist type: :unused_eager_loading, class_name: 'Child', association: :child_approvals
         UserBlueprint.render(
           policy_scope(User.includes(:businesses, :child_approvals, :approvals)),
           view: :nebraska_dashboard,
