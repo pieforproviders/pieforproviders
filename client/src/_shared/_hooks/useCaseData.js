@@ -7,36 +7,43 @@ export function useCaseData() {
             ? {
                 id: childCase.id ?? '',
                 key: `${index}-${childCase.full_name}`,
-                absences: childCase.absences ?? '',
+                absences: childCase.nebraska_dashboard_case.absences ?? '',
                 child: {
-                  childName: childCase.full_name ?? '',
-                  cNumber: childCase.case_number ?? '',
+                  childName: childCase.nebraska_dashboard_case.full_name ?? '',
+                  cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
                   business: business.name ?? ''
                 },
-                earnedRevenue: childCase.earned_revenue ?? '',
-                estimatedRevenue: childCase.estimated_revenue ?? '',
+                earnedRevenue:
+                  childCase.nebraska_dashboard_case.earned_revenue ?? '',
+                estimatedRevenue:
+                  childCase.nebraska_dashboard_case.estimated_revenue ?? '',
                 fullDays: {
-                  text: childCase.full_days ?? '',
-                  tag: childCase.attendance_risk ?? ''
+                  text: childCase.nebraska_dashboard_case.full_days ?? '',
+                  tag: childCase.nebraska_dashboard_case.attendance_risk ?? ''
                 },
-                hours: childCase.hours ?? '',
-                hoursAttended: childCase.hours_attended ?? '',
-                familyFee: childCase.family_fee ?? '',
+                hours: childCase.nebraska_dashboard_case.hours ?? '',
+                hoursAttended:
+                  childCase.nebraska_dashboard_case.hours_attended ?? '',
+                familyFee: childCase.nebraska_dashboard_case.family_fee ?? '',
                 active: childCase.active ?? true
               }
             : {
-                id: childCase.id ?? '',
-                key: `${index}-${childCase.full_name}`,
-                childName: childCase.full_name ?? '',
-                cNumber: childCase.case_number ?? '',
+                id: childCase.nebraska_dashboard_case.id ?? '',
+                key: `${index}-${childCase.nebraska_dashboard_case.full_name}`,
+                childName: childCase.nebraska_dashboard_case.full_name ?? '',
+                cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
                 business: business.name ?? '',
                 attendanceRate: {
-                  rate: childCase.attendance_rate ?? '',
-                  riskCategory: childCase.attendance_risk ?? ''
+                  rate: childCase.nebraska_dashboard_case.attendance_rate ?? '',
+                  riskCategory:
+                    childCase.nebraska_dashboard_case.attendance_risk ?? ''
                 },
-                guaranteedRevenue: childCase.guaranteed_revenue ?? '',
-                maxApprovedRevenue: childCase.max_approved_revenue ?? '',
-                potentialRevenue: childCase.potential_revenue ?? '',
+                guaranteedRevenue:
+                  childCase.nebraska_dashboard_case.guaranteed_revenue ?? '',
+                maxApprovedRevenue:
+                  childCase.nebraska_dashboard_case.max_approved_revenue ?? '',
+                potentialRevenue:
+                  childCase.nebraska_dashboard_case.potential_revenue ?? '',
                 active: childCase.active ?? true
               }
         })
