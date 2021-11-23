@@ -4,7 +4,7 @@
 desc 'Fix missing absences on 11/2/2021'
 namespace :nebraska do
   task fix_absences: :environment do
-    empty_service_days = ServiceDay.includes(:attendances).where(attendances: { id: nil })
+    empty_service_days = ServiceDay.where.missing(:attendances)
     Rails.logger.info(empty_service_days.length)
     empty_service_days.map(&:destroy)
 

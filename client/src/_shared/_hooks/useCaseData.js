@@ -9,7 +9,7 @@ export function useCaseData() {
                 key: `${index}-${childCase.full_name}`,
                 absences: childCase.nebraska_dashboard_case.absences ?? '',
                 child: {
-                  childName: childCase.nebraska_dashboard_case.full_name ?? '',
+                  childName: childCase.full_name ?? '',
                   cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
                   business: business.name ?? ''
                 },
