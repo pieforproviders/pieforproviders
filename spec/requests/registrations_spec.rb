@@ -27,7 +27,7 @@ RSpec.describe 'POST /signup', type: :request do
       post '/signup', params: params
     end
 
-    it 'signs up a new user; creates the user, returns 200' do
+    it 'signs up a new user; creates the user, returns 201' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('')
