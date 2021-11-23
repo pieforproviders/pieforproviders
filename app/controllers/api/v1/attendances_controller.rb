@@ -6,7 +6,7 @@ module Api
     class AttendancesController < Api::V1::ApiController
       # GET /attendances
       def index
-        @attendances = policy_scope(Attendance.includes(child_approval: :child)).for_week(filter_date)
+        @attendances = policy_scope(Attendance).for_week(filter_date)
 
         render json: AttendanceBlueprint.render(@attendances)
       end

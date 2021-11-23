@@ -17,29 +17,35 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
   let!(:hourly_fih_rate) { create(:nebraska_rate, :family_in_home, :hourly, max_age: 216) }
   let!(:business_ldds) { create(:business, :nebraska_ldds, :unaccredited, :step_four) }
   let!(:child_ldds) { create(:necc_child, business: business_ldds, effective_date: Time.current - 1.month) }
+  let!(:child_ldds_child_approval) { child_ldds.child_approvals.first }
   let!(:business_other) { create(:business, :nebraska_other, :unaccredited, :step_four) }
   let!(:child_other) { create(:necc_child, business: business_other, effective_date: Time.current - 1.month) }
+  let!(:child_other_child_approval) { child_other.child_approvals.first }
   let!(:business_license_exempt_ld) { create(:business, :nebraska_license_exempt_home_ld, :unaccredited, :not_rated) }
   let!(:child_license_exempt_ld) do
     create(:necc_child, business: business_license_exempt_ld, effective_date: Time.current - 1.month)
   end
+  let!(:child_license_exempt_ld_child_approval) { child_license_exempt_ld.child_approvals.first }
   let!(:business_license_exempt_ds) { create(:business, :nebraska_license_exempt_home_ds, :unaccredited, :not_rated) }
   let!(:child_license_exempt_ds) do
     create(:necc_child, business: business_license_exempt_ds, effective_date: Time.current - 1.month)
   end
+  let!(:child_license_exempt_ds_child_approval) { child_license_exempt_ds.child_approvals.first }
   let!(:business_license_exempt_other) do
     create(:business, :nebraska_license_exempt_home_other, :unaccredited, :not_rated)
   end
   let!(:child_license_exempt_other) do
     create(:necc_child, business: business_license_exempt_other, effective_date: Time.current - 1.month)
   end
+  let!(:child_license_exempt_other_child_approval) { child_license_exempt_other.child_approvals.first }
   let!(:business_fih) { create(:business, :nebraska_family_in_home, :unaccredited, :not_rated) }
   let!(:child_fih) { create(:necc_child, business: business_fih, effective_date: Time.current - 1.month) }
+  let!(:child_fih_child_approval) { child_fih.child_approvals.first }
 
   describe '#call' do
     context 'with a child who has a special needs rate' do
       it 'uses the special needs rate defined on their approval letter instead of the state rates' do
-        child_ldds.child_approvals.first.update!(
+        child_ldds_child_approval.update!(
           special_needs_rate: true,
           special_needs_daily_rate: 25.00,
           special_needs_hourly_rate: 3.00
@@ -49,42 +55,46 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
           described_class.new(
             business: business_ldds,
             child: child_ldds,
-            date: child_ldds.approvals.first.effective_on,
+            child_approval: child_ldds_child_approval,
+            date: child_ldds_child_approval.effective_on,
             total_time_in_care: 3.hours + 23.minutes
           ).call
-        ).to eq(child_ldds.child_approvals.first.special_needs_hourly_rate * 3.5)
+        ).to eq(child_ldds_child_approval.special_needs_hourly_rate * 3.5)
 
         expect(
           described_class.new(
             business: business_ldds,
             child: child_ldds,
-            date: child_ldds.approvals.first.effective_on,
+            child_approval: child_ldds_child_approval,
+            date: child_ldds_child_approval.effective_on,
             total_time_in_care: 8.hours + 11.minutes
           ).call
-        ).to eq(child_ldds.child_approvals.first.special_needs_daily_rate * 1)
+        ).to eq(child_ldds_child_approval.special_needs_daily_rate * 1)
 
         expect(
           described_class.new(
             business: business_ldds,
             child: child_ldds,
-            date: child_ldds.approvals.first.effective_on,
+            child_approval: child_ldds_child_approval,
+            date: child_ldds_child_approval.effective_on,
             total_time_in_care: 13.hours + 10.minutes
           ).call
         ).to eq(
-          (child_ldds.child_approvals.first.special_needs_daily_rate * 1) +
-          (child_ldds.child_approvals.first.special_needs_hourly_rate * 3.25)
+          (child_ldds_child_approval.special_needs_daily_rate * 1) +
+          (child_ldds_child_approval.special_needs_hourly_rate * 3.25)
         )
 
         expect(
           described_class.new(
             business: business_ldds,
             child: child_ldds,
-            date: child_ldds.approvals.first.effective_on,
+            child_approval: child_ldds_child_approval,
+            date: child_ldds_child_approval.effective_on,
             total_time_in_care: 19.hours + 52.minutes
           ).call
         ).to eq(
-          (child_ldds.child_approvals.first.special_needs_daily_rate * 1) +
-          (child_ldds.child_approvals.first.special_needs_hourly_rate * 8)
+          (child_ldds_child_approval.special_needs_daily_rate * 1) +
+          (child_ldds_child_approval.special_needs_hourly_rate * 8)
         )
       end
     end
@@ -94,7 +104,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_ldds,
           child: child_ldds,
-          date: child_ldds.approvals.first.effective_on,
+          child_approval: child_ldds_child_approval,
+          date: child_ldds_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_ldds_rate.amount * 3.5 * business_ldds.ne_qris_bump)
@@ -103,7 +114,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_other,
           child: child_other,
-          date: child_other.approvals.first.effective_on,
+          child_approval: child_other_child_approval,
+          date: child_other_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_other_rate.amount * 3.5 * business_other.ne_qris_bump)
@@ -112,7 +124,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ld,
           child: child_license_exempt_ld,
-          date: child_license_exempt_ld.approvals.first.effective_on,
+          child_approval: child_license_exempt_ld_child_approval,
+          date: child_license_exempt_ld_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_ld_license_exempt_rate.amount * 3.5 * business_license_exempt_ld.ne_qris_bump)
@@ -121,7 +134,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ds,
           child: child_license_exempt_ds,
-          date: child_license_exempt_ds.approvals.first.effective_on,
+          child_approval: child_license_exempt_ds_child_approval,
+          date: child_license_exempt_ds_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_ds_license_exempt_rate.amount * 3.5 * business_license_exempt_ds.ne_qris_bump)
@@ -130,7 +144,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_other,
           child: child_license_exempt_other,
-          date: child_license_exempt_other.approvals.first.effective_on,
+          child_approval: child_license_exempt_other_child_approval,
+          date: child_license_exempt_other_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_other_license_exempt_rate.amount * 3.5 * business_license_exempt_other.ne_qris_bump)
@@ -139,7 +154,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_fih,
           child: child_fih,
-          date: child_fih.approvals.first.effective_on,
+          child_approval: child_fih_child_approval,
+          date: child_fih_child_approval.effective_on,
           total_time_in_care: 3.hours + 23.minutes
         ).call
       ).to eq(hourly_fih_rate.amount * 3.5 * business_fih.ne_qris_bump)
@@ -150,7 +166,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_ldds,
           child: child_ldds,
-          date: child_ldds.approvals.first.effective_on,
+          child_approval: child_ldds_child_approval,
+          date: child_ldds_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_ldds_rate.amount * 1 * business_ldds.ne_qris_bump)
@@ -159,7 +176,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_other,
           child: child_other,
-          date: child_other.approvals.first.effective_on,
+          child_approval: child_other_child_approval,
+          date: child_other_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_other_rate.amount * 1 * business_other.ne_qris_bump)
@@ -168,7 +186,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ld,
           child: child_license_exempt_ld,
-          date: child_license_exempt_ld.approvals.first.effective_on,
+          child_approval: child_license_exempt_ld_child_approval,
+          date: child_license_exempt_ld_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_ld_license_exempt_rate.amount * 1 * business_license_exempt_ld.ne_qris_bump)
@@ -177,7 +196,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ds,
           child: child_license_exempt_ds,
-          date: child_license_exempt_ds.approvals.first.effective_on,
+          child_approval: child_license_exempt_ds_child_approval,
+          date: child_license_exempt_ds_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_ds_license_exempt_rate.amount * 1 * business_license_exempt_ds.ne_qris_bump)
@@ -186,7 +206,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_other,
           child: child_license_exempt_other,
-          date: child_license_exempt_other.approvals.first.effective_on,
+          child_approval: child_license_exempt_other_child_approval,
+          date: child_license_exempt_other_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_other_license_exempt_rate.amount * 1 * business_license_exempt_other.ne_qris_bump)
@@ -195,7 +216,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_fih,
           child: child_fih,
-          date: child_fih.approvals.first.effective_on,
+          child_approval: child_fih_child_approval,
+          date: child_fih_child_approval.effective_on,
           total_time_in_care: 8.hours + 11.minutes
         ).call
       ).to eq(full_day_fih_rate.amount * 1 * business_fih.ne_qris_bump)
@@ -206,7 +228,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_ldds,
           child: child_ldds,
-          date: child_ldds.approvals.first.effective_on,
+          child_approval: child_ldds_child_approval,
+          date: child_ldds_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -218,7 +241,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_other,
           child: child_other,
-          date: child_other.approvals.first.effective_on,
+          child_approval: child_other_child_approval,
+          date: child_other_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -230,7 +254,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ld,
           child: child_license_exempt_ld,
-          date: child_license_exempt_ld.approvals.first.effective_on,
+          child_approval: child_license_exempt_ld_child_approval,
+          date: child_license_exempt_ld_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -242,7 +267,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ds,
           child: child_license_exempt_ds,
-          date: child_license_exempt_ds.approvals.first.effective_on,
+          child_approval: child_license_exempt_ds_child_approval,
+          date: child_license_exempt_ds_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -254,7 +280,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_other,
           child: child_license_exempt_other,
-          date: child_license_exempt_other.approvals.first.effective_on,
+          child_approval: child_license_exempt_other_child_approval,
+          date: child_license_exempt_other_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -266,7 +293,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_fih,
           child: child_fih,
-          date: child_fih.approvals.first.effective_on,
+          child_approval: child_fih_child_approval,
+          date: child_fih_child_approval.effective_on,
           total_time_in_care: 13.hours + 10.minutes
         ).call
       ).to eq(
@@ -280,7 +308,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_ldds,
           child: child_ldds,
-          date: child_ldds.approvals.first.effective_on,
+          child_approval: child_ldds_child_approval,
+          date: child_ldds_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(
@@ -292,7 +321,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_other,
           child: child_other,
-          date: child_other.approvals.first.effective_on,
+          child_approval: child_other_child_approval,
+          date: child_other_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(
@@ -304,7 +334,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ld,
           child: child_license_exempt_ld,
-          date: child_license_exempt_ld.approvals.first.effective_on,
+          child_approval: child_license_exempt_ld_child_approval,
+          date: child_license_exempt_ld_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(
@@ -316,7 +347,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_ds,
           child: child_license_exempt_ds,
-          date: child_license_exempt_ds.approvals.first.effective_on,
+          child_approval: child_license_exempt_ds_child_approval,
+          date: child_license_exempt_ds_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(
@@ -328,7 +360,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_license_exempt_other,
           child: child_license_exempt_other,
-          date: child_license_exempt_other.approvals.first.effective_on,
+          child_approval: child_license_exempt_other_child_approval,
+          date: child_license_exempt_other_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(
@@ -340,7 +373,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         described_class.new(
           business: business_fih,
           child: child_fih,
-          date: child_fih.approvals.first.effective_on,
+          child_approval: child_fih_child_approval,
+          date: child_fih_child_approval.effective_on,
           total_time_in_care: 19.hours + 52.minutes
         ).call
       ).to eq(

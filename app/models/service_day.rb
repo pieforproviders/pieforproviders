@@ -85,6 +85,7 @@ class ServiceDay < UuidApplicationRecord
     Nebraska::Daily::RevenueCalculator.new(
       business: business,
       child: child,
+      child_approval: child.active_child_approval(date),
       date: date,
       total_time_in_care: total_time_in_care
     ).call

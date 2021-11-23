@@ -4,10 +4,11 @@ module Nebraska
   module Monthly
     # Calculate estimated revenue for a child on a given date for the month
     class EstimatedRevenueCalculator
-      attr_reader :child, :filter_date
+      attr_reader :child, :child_approval, :filter_date
 
-      def initialize(child:, filter_date:)
+      def initialize(child:, child_approval:, filter_date:)
         @child = child
+        @child_approval = child_approval
         @filter_date = filter_date
       end
 
@@ -43,6 +44,7 @@ module Nebraska
       def scheduled_revenue(date:)
         Nebraska::Daily::RevenueCalculator.new(business: child.business,
                                                child: child,
+                                               child_approval: child_approval,
                                                date: date,
                                                total_time_in_care: schedule(date: date).duration).call
       end
