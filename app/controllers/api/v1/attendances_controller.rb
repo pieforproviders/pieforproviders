@@ -8,7 +8,7 @@ module Api
       def index
         @attendances = policy_scope(Attendance).for_week(filter_date)
 
-        render json: AttendanceBlueprint.render(@attendances)
+        render json: AttendanceBlueprint.render(@attendances.includes({ child_approval: :child }))
       end
 
       private

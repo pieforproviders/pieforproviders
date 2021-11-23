@@ -29,15 +29,15 @@ module Nebraska
                          .covid_absences
                          .for_month(filter_date)
         # only five absences are allowed per month in Nebraska
-        absences.includes(:attendances, { child: :business }).take(5).sum(&:earned_revenue) +
-          covid_absences.includes(:attendances, { child: :business }).sum(&:earned_revenue)
+        absences.take(5).sum(&:earned_revenue) +
+          covid_absences.sum(&:earned_revenue)
       end
 
       def attendance_revenue
         non_absences = service_days&.non_absences&.for_month(filter_date)
         return 0 unless non_absences
 
-        non_absences.includes(:attendances, { child: :business }).sum(&:earned_revenue)
+        non_absences.sum(&:earned_revenue)
       end
     end
   end
