@@ -4,16 +4,22 @@ module Nebraska
   # A case for display in the Nebraska Dashboard
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
-    attr_reader :child, :filter_date, :service_days_this_approval
+    attr_reader :child_approval, :approval_attendances, :child, :filter_date, :service_days_this_approval
 
     def initialize(child:, filter_date:)
+      @child_approval = child.active_child_approval(filter_date)
       @child = child
       @filter_date = filter_date
-      @service_days_this_approval = active_child_approval.service_days
+      @service_days_this_approval = child_approval.service_days
+      @approval_attendances = service_days_this_approval.non_absences
     end
 
     def attendance_risk
-      Nebraska::Monthly::AttendanceRiskCalculator.new(child: child, filter_date: filter_date).call
+      Nebraska::Monthly::AttendanceRiskCalculator.new(
+        child: child,
+        child_approval: child_approval,
+        filter_date: filter_date
+      ).call
     end
 
     def absences
@@ -23,11 +29,11 @@ module Nebraska
     end
 
     def case_number
-      active_child_approval&.case_number
+      child_approval&.case_number
     end
 
     def family_fee
-      return 0 unless child == active_child_approval.approval.child_with_most_scheduled_hours(filter_date)
+      return 0 unless child == child_approval.approval.child_with_most_scheduled_hours(filter_date)
 
       child.active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
     end
@@ -56,6 +62,7 @@ module Nebraska
       [
         Nebraska::Monthly::EstimatedRevenueCalculator.new(
           child: child,
+          child_approval: child_approval,
           filter_date: filter_date
         ).call - family_fee,
         0.0
@@ -92,18 +99,18 @@ module Nebraska
     end
 
     def full_days_authorized
-      active_child_approval&.full_days || 0
+      child_approval&.full_days || 0
     end
 
     def hours_authorized
-      active_child_approval&.hours || 0
+      child_approval&.hours || 0
     end
 
     # TODO: rename attended_weekly_hours
     def hours_attended
       return 0 unless service_days_this_approval
 
-      authorized_weekly_hours = active_child_approval.authorized_weekly_hours
+      authorized_weekly_hours = child_approval.authorized_weekly_hours
       attended_weekly_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
         service_days: service_days_this_approval,
         filter_date: filter_date
@@ -112,14 +119,6 @@ module Nebraska
     end
 
     private
-
-    def active_child_approval
-      child.active_child_approval(filter_date)
-    end
-
-    def approval_attendances
-      service_days_this_approval.non_absences
-    end
 
     def approval_hourly_service_days
       approval_attendances.ne_hourly.or(
@@ -156,7 +155,7 @@ module Nebraska
     end
 
     def approval_absence_ids
-      (active_child_approval.effective_on.month..filter_date.month).map.with_index do |_month, index|
+      (child_approval.effective_on.month..filter_date.month).map.with_index do |_month, index|
         approval_standard_absences(index)
       end.flatten
     end
@@ -164,7 +163,7 @@ module Nebraska
     def approval_standard_absences(index)
       service_days_this_approval
         .standard_absences
-        .for_month(active_child_approval.effective_on + index.months)
+        .for_month(child_approval.effective_on + index.months)
         .limit(5)
         .pluck(:id)
     end

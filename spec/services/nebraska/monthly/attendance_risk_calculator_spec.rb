@@ -16,7 +16,9 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
   describe '#call' do
     it "returns not enough info if it's too early in the month" do
       travel_to Time.current.in_time_zone(child.timezone).at_beginning_of_month
-      expect(described_class.new(child: child, filter_date: Time.current).call).to eq('not_enough_info')
+      expect(described_class.new(child: child,
+                                 child_approval: child_approval,
+                                 filter_date: Time.current).call).to eq('not_enough_info')
       travel_back
     end
 
@@ -28,7 +30,9 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       after { travel_back }
 
       it 'returns at_risk with no attendances by the 12th' do
-        expect(described_class.new(child: child, filter_date: Time.current).call).to eq('at_risk')
+        expect(described_class.new(child: child,
+                                   child_approval: child_approval,
+                                   filter_date: Time.current).call).to eq('at_risk')
       end
 
       # rubocop:disable RSpec/NestedGroups
@@ -44,12 +48,16 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
         end
 
         it 'returns on_track with 7 attendances by the 12th' do
-          expect(described_class.new(child: child, filter_date: Time.current).call).to eq('on_track')
+          expect(described_class.new(child: child,
+                                     child_approval: child_approval,
+                                     filter_date: Time.current).call).to eq('on_track')
         end
 
         it 'returns ahead_of_schedule with 7 attendances by the 12th with a shorter schedule' do
           child.schedules.take(3).each(&:destroy)
-          expect(described_class.new(child: child, filter_date: Time.current).call).to eq('ahead_of_schedule')
+          expect(described_class.new(child: child,
+                                     child_approval: child_approval,
+                                     filter_date: Time.current).call).to eq('ahead_of_schedule')
         end
       end
       # rubocop:enable RSpec/NestedGroups

@@ -4,11 +4,12 @@ module Nebraska
   module Daily
     # Calculate earned revenue for a given service day
     class RevenueCalculator
-      attr_reader :business, :child, :date, :total_time_in_care
+      attr_reader :business, :child, :child_approval, :date, :total_time_in_care
 
-      def initialize(business:, child:, date:, total_time_in_care:)
+      def initialize(business:, child:, child_approval:, date:, total_time_in_care:)
         @business = business
         @child = child
+        @child_approval = child_approval
         @date = date
         @total_time_in_care = total_time_in_care
       end
@@ -20,11 +21,7 @@ module Nebraska
       private
 
       def calculate_earned_revenue
-        active_child_approval&.special_needs_rate ? ne_special_needs_revenue : ne_base_revenue
-      end
-
-      def active_child_approval
-        child.active_child_approval(date)
+        child_approval&.special_needs_rate ? ne_special_needs_revenue : ne_base_revenue
       end
 
       def ne_hours
@@ -36,8 +33,8 @@ module Nebraska
       end
 
       def ne_special_needs_revenue
-        (ne_hours * active_child_approval.special_needs_hourly_rate) +
-          (ne_days * active_child_approval.special_needs_daily_rate)
+        (ne_hours * child_approval.special_needs_hourly_rate) +
+          (ne_days * child_approval.special_needs_daily_rate)
       end
 
       def ne_base_revenue
@@ -64,7 +61,7 @@ module Nebraska
       def active_child_rates
         NebraskaRate
           .active_on_date(date)
-          .where(school_age: active_child_approval&.enrolled_in_school || false)
+          .where(school_age: child_approval&.enrolled_in_school || false)
           .where('max_age >= ? OR max_age IS NULL', child.age_in_months(date))
       end
 
