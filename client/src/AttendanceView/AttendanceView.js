@@ -51,8 +51,8 @@ export function AttendanceView() {
           })
           if (matchingAttendances.length > 0) {
             if (
-              matchingAttendances.some(
-                attendance => attendance.tag === 'absent'
+              matchingAttendances.some(attendance =>
+                attendance.tags.includes('absent')
               )
             ) {
               return (
@@ -90,8 +90,6 @@ export function AttendanceView() {
                   ? totalCareTime + ', ' + hour + ' hrs ' + minute + '  mins'
                   : hour + ' hrs ' + minute + '  mins'
             })
-            // eslint-disable-next-line no-debugger
-            debugger
             return (
               <div className="body-2 text-center">
                 <div className="text-gray8 font-semiBold mb-2">
@@ -100,10 +98,17 @@ export function AttendanceView() {
                 <div className="text-darkGray text-xs">
                   {checkInCheckOutTime}
                 </div>
-                <div className="bg-green2 text-green1 box-border p-1">
-                  {(matchingAttendances[0]?.tags || []).forEach(tag =>
-                    t(`${tag.toLowerCase()}`)
-                  )}
+                <div className="flex justify-center">
+                  {(matchingAttendances[0]?.tags || []).map((tag, i) => (
+                    <div
+                      key={i}
+                      className={`bg-green2 text-green1 box-border p-1 mt-1 ${
+                        i > 0 ? 'ml-1' : null
+                      }`}
+                    >
+                      {t(`${tag.toLowerCase()}`)}
+                    </div>
+                  ))}
                 </div>
               </div>
             )
@@ -147,7 +152,7 @@ export function AttendanceView() {
       const response = await makeRequest({
         type: 'get',
         url:
-          '/api/v1/attendances?filter_date=' +
+          '/api/v1/service_days?filter_date=' +
           dateSelected.format('YYYY-MM-DD'),
         headers: {
           Authorization: token
@@ -157,87 +162,31 @@ export function AttendanceView() {
 
       if (response.ok) {
         const parsedResponse = await response.json()
-        const mockParsedResponse = [
-          {
-            date: '2021-01-03',
-            tags: ['full_day', 'hourly'],
-            attendances: [
-              {
-                absence: 'absence',
-                check_in: '2021-11-01 00:00:00 -0600',
-                check_out: null,
-                child: {
-                  id: 'c2d629d7-49a2-422d-ac45-10e78c654666',
-                  active: true,
-                  full_name: 'Rhonan Shaw',
-                  inactive_reason: null,
-                  last_active_date: null
-                },
-                child_approval_id: 'f0cd2194-834e-4758-9a75-41925c6a0fa6',
-                id: '389db1c0-5075-42de-b7a3-06f38766aacf',
-                total_time_in_care: '3600'
-              }
-            ]
-          }
-        ]
-        // eslint-disable-next-line no-unused-vars
-        const reduceAttendances = attendances => {
-          return attendances.reduce((accumulator, currentValue) => {
-            // eslint-disable-next-line no-constant-condition
-            if (
-              accumulator.some(e => e.child === currentValue.child.full_name)
-            ) {
-              return accumulator.map(child => {
-                if (child.child === currentValue.child.full_name) {
-                  return {
-                    child: child.child,
-                    attendances: [...child.attendances, currentValue]
-                  }
-                } else {
-                  return child
-                }
-              })
+        const reducedData = parsedResponse
+          // creates attendance cell objects that work with ant table component
+          .map(serviceDay => {
+            return {
+              child: serviceDay.attendances[0]?.child?.full_name || '',
+              attendances: serviceDay.attendances.map(attendance => ({
+                ...attendance,
+                ...{ tags: serviceDay.tags }
+              }))
+            }
+          })
+          // merge attendances for each child
+          .reduce((acc, cv) => {
+            const child = acc.find(element => element.child === cv.child)
+            if (child) {
+              acc[acc.indexOf(child)][`attendances`] = acc[acc.indexOf(child)][
+                `attendances`
+              ].concat(cv.attendances)
+              return acc
             } else {
-              return [
-                ...accumulator,
-                // eslint-disable-next-line prettier/prettier
-                { child: currentValue.child.full_name, attendances: [currentValue] }
-              ]
+              return [...acc, cv]
             }
           }, [])
-        }
-        const reducedAttendanceData = parsedResponse.reduce(
-          (accumulator, currentValue) => {
-            // eslint-disable-next-line no-constant-condition
-            if (
-              accumulator.some(e => e.child === currentValue.child.full_name)
-            ) {
-              return accumulator.map(child => {
-                if (child.child === currentValue.child.full_name) {
-                  return {
-                    child: child.child,
-                    attendances: [...child.attendances, currentValue]
-                  }
-                } else {
-                  return child
-                }
-              })
-            } else {
-              return [
-                ...accumulator,
-                // eslint-disable-next-line prettier/prettier
-                { child: currentValue.child.full_name, attendances: [currentValue] }
-              ]
-            }
-          },
-          []
-        )
-        console.log(
-          mockParsedResponse.flatMap(res => reduceAttendances(res.attendances))
-        )
-        // eslint-disable-next-line no-debugger
-        debugger
-        setAttendanceData(reducedAttendanceData)
+
+        setAttendanceData(reducedData)
         setColumns(generateColumns())
       }
     }
