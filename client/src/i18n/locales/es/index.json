@@ -238,5 +238,8 @@
 
   "screenSize": "Tamaño de pantalla no compatible",
   "incompatibleMsg": "O tu navegador es demasiado pequeño o estás en un aparato móvil. Por favor cambia a una computadora o tableta para ver esta pagina.",
-  "noInfo": "no info"
+  "noInfo": "no info",
+
+  "daily": "día completo",
+  "hourly": "horas"
 }
