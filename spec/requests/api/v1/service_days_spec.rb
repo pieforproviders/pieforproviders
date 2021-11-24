@@ -14,7 +14,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 
   let!(:week_current_date) { Time.new(2021, 9, 15, 0, 0, 0, timezone) } # Wednesday
-  let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) } # Sunday
+  let!(:week_start_date) { week_current_date.in_time_zone(child.timezone).at_beginning_of_week(:sunday) } # Sunday
 
   let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
