@@ -41,7 +41,7 @@ module Api
 
       def filter_date
         if params[:filter_date]
-          Date.parse(params[:filter_date])&.at_end_of_day
+          Time.zone.parse(params[:filter_date])&.at_end_of_day
         else
           Time.current.at_end_of_day
         end
@@ -49,7 +49,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.includes(:businesses, :child_approvals, :approvals)),
+          policy_scope(User.joins(:businesses)),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
