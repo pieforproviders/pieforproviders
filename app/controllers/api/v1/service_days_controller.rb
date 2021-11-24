@@ -6,7 +6,7 @@ module Api
     class ServiceDaysController < Api::V1::ApiController
       # GET /service_days
       def index
-        @service_days = policy_scope(ServiceDay.includes(:attendances)).for_week(filter_date)
+        @service_days = policy_scope(ServiceDay.includes(:attendances, :child)).for_week(filter_date)
 
         render json: ServiceDayBlueprint.render(@service_days)
       end
