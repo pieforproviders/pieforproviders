@@ -15,7 +15,7 @@ namespace :nebraska do
       # generate prior absences
       child.approvals.each do |approval|
         (approval.effective_on..([approval.expires_on, today].min)).each do |date|
-          NebraskaAbsenceGenerator.new(child, date).call
+          Nebraska::AbsenceGenerator.new(child, date).call
         end
       end
     end
