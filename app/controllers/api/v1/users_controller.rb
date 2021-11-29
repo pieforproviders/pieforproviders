@@ -49,7 +49,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.joins(:businesses)),
+          policy_scope(User.includes(:businesses, :child_approvals, :approvals)),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )

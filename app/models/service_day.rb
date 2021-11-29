@@ -80,38 +80,53 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def tags
-    [
-      hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? 'hourly' : nil,
-      daily? || daily_plus_hourly? || daily_plus_hourly_max? ? 'daily' : nil
-    ].compact
+    [tag_hourly, tag_daily, tag_absence].compact
+  end
+
+  def tag_hourly
+    return unless state == 'NE'
+
+    hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? 'hourly' : nil
+  end
+
+  def tag_daily
+    return unless state == 'NE'
+
+    daily? || daily_plus_hourly? || daily_plus_hourly_max? ? 'daily' : nil
+  end
+
+  def tag_absence
+    return unless state == 'NE'
+
+    absence? ? 'absence' : nil
   end
 
   def hourly?
-    return unless state == 'NE'
+    return false unless state == 'NE'
 
     total_time_in_care <= (5.hours + 45.minutes)
   end
 
   def daily?
-    return unless state == 'NE'
+    return false unless state == 'NE'
 
     total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
   end
 
   def daily_plus_hourly?
-    return unless state == 'NE'
+    return false unless state == 'NE'
 
     total_time_in_care > 10.hours && total_time_in_care <= 18.hours
   end
 
   def daily_plus_hourly_max?
-    return unless state == 'NE'
+    return false unless state == 'NE'
 
     total_time_in_care > 18.hours
   end
 
   def earned_revenue
-    return unless state == 'NE'
+    return 0 unless state == 'NE'
 
     Nebraska::Daily::RevenueCalculator.new(
       business: business,
