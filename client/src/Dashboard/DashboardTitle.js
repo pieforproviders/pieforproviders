@@ -26,6 +26,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   const [totalPayment, setTotalPayment] = useState(0)
   const [childPayments, setChildPayments] = useState({})
   const { makeRequest } = useApiResponse()
+  const [isFailedPaymentRequest, setIsFailedPaymentRequest] = useState(false)
   const { token } = useSelector(state => ({ token: state.auth.token }))
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -125,10 +126,11 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
 
     if (response.ok) {
       setPaymentModalVisible(false)
-    } else {
-      // TODO: handle bad request
-      console.log(response, 'bad request')
+      setIsFailedPaymentRequest(false)
+      return
     }
+
+    setIsFailedPaymentRequest(true)
   }
   const paymentModal = (
     <Modal
@@ -137,6 +139,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       closeIcon={<CloseOutlined className="-btn-primary" />}
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}
+      destroyOnClose={true}
       //todo determine width. Maybe 50% of screen size
       width={1000}
       footer={
@@ -158,6 +161,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         lastMonth={lastMonth}
         childPayments={childPayments}
         setChildPayments={setChildPayments}
+        isFailedPaymentRequest={isFailedPaymentRequest}
       />
     </Modal>
   )

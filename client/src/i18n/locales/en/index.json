@@ -253,5 +253,6 @@
   "recordPaymentOf": "Record payment of",
   "enterAmount": "Enter amount",
   "calculatedBy": "Calculated by",
-  "pieForProvidersHasCalculated": "Pie for Providers has calculated your subsidy revenue for the month, based on attendance and state-specific rules."
+  "pieForProvidersHasCalculated": "Pie for Providers has calculated your subsidy revenue for the month, based on attendance and state-specific rules.",
+  "paymentFailed": "We're sorry, but something went wrong recording the payment. Please enter the information and try again."
 }

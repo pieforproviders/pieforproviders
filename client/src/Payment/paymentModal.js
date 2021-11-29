@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Table, Tooltip } from 'antd'
+import { Alert, Table, Tooltip } from 'antd'
 import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
 import '_assets/styles/payment-table-overrides.css'
@@ -11,7 +11,8 @@ export function PaymentModal({
   setTotalPayment,
   lastMonth,
   childPayments,
-  setChildPayments
+  setChildPayments,
+  isFailedPaymentRequest
 }) {
   const { cases } = useSelector(state => state)
   const { t } = useTranslation()
@@ -30,8 +31,8 @@ export function PaymentModal({
     let payments = {}
 
     cases.forEach(child => {
-      payments[child.id] = child.guaranteedRevenue
-      originalPayments[child.id] = child.guaranteedRevenue
+      payments[child.id] = child.earnedRevenue
+      originalPayments[child.id] = child.earnedRevenue
     })
 
     setChildPayments(payments)
@@ -77,29 +78,27 @@ export function PaymentModal({
     {
       title: t('childName'),
       render: childCase => {
-        return <div className="payment-table-text"> {childCase.childName} </div>
+        return (
+          <div className="payment-table-text">{childCase.child.childName}</div>
+        )
       }
     },
     {
       title: earnedRevenueHeader,
       render: childCase => {
         return (
-          <div className="payment-table-text">
-            ${childCase.guaranteedRevenue}
-          </div>
+          <div className="payment-table-text">${childCase.earnedRevenue}</div>
         )
       }
     },
     {
       title: updatePaymentHeader,
-      render: () => {
-        return (
-          <PaymentDataCell
-            updateTotalPayment={updateTotalPayment}
-            resetPayment={resetPayment}
-          />
-        )
-      }
+      render: () => (
+        <PaymentDataCell
+          updateTotalPayment={updateTotalPayment}
+          resetPayment={resetPayment}
+        />
+      )
     }
   ]
 
@@ -150,6 +149,20 @@ export function PaymentModal({
   return (
     <div>
       <p className="mb-4 body-1">{t('recordAChildsPayment')}</p>
+
+      {isFailedPaymentRequest ? (
+        <Alert
+          className="mb-3"
+          message={
+            <span className="text-base text-gray1">{t('paymentFailed')}</span>
+          }
+          type="error"
+          closable={true}
+        />
+      ) : (
+        <></>
+      )}
+
       <div className="mb-2 eyebrow-small">{t('step1')}</div>
       <p className="mb-2 body-1">{t('choosePaymentMonth')}</p>
 
@@ -168,5 +181,6 @@ PaymentModal.propTypes = {
   setTotalPayment: PropTypes.func.isRequired,
   lastMonth: PropTypes.instanceOf(Date).isRequired,
   childPayments: PropTypes.object.isRequired,
-  setChildPayments: PropTypes.func.isRequired
+  setChildPayments: PropTypes.func.isRequired,
+  isFailedPaymentRequest: PropTypes.bool.isRequired
 }
