@@ -35,7 +35,7 @@ module Nebraska
 
       def attendance_revenue
         non_absences = service_days&.non_absences&.for_month(filter_date)
-        return 0 unless non_absences
+        return 0 if non_absences.blank?
 
         non_absences.sum(&:earned_revenue)
       end

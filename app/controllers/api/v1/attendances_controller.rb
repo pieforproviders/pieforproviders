@@ -14,7 +14,11 @@ module Api
       private
 
       def filter_date
-        params[:filter_date] ? Time.zone.parse(params[:filter_date]) : nil
+        if params[:filter_date]
+          Time.zone.parse(params[:filter_date])&.at_end_of_day
+        else
+          Time.current.at_end_of_day
+        end
       end
     end
   end
