@@ -59,6 +59,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     ).to contain_exactly(
       'absences',
       'attendance_risk',
+      'approval_effective_on',
+      'approval_expires_on',
       'case_number',
       'earned_revenue',
       'estimated_revenue',
