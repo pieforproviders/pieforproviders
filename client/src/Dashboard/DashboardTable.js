@@ -160,7 +160,11 @@ export default function DashboardTable({
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
-      const hasDefinition = ['attendance', 'revenue']
+      const hasDefinition = [
+        'attendance',
+        'revenue',
+        'totalAuthorizationPeriod'
+      ]
       return {
         // eslint-disable-next-line react/display-name
         title: () =>
