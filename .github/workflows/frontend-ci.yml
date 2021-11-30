@@ -19,14 +19,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache Yarn dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: Linting
         run: |
           cd client
@@ -40,14 +32,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: Cache Yarn dependencies
-        uses: actions/cache@v2.1.7
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
       - name: yarn test
         run: |
           cd client
