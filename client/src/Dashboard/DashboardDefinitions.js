@@ -12,7 +12,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
   return (
     <Collapse
       ghost
-      className="lg:w-3/5 md:w-1/2 sm:w-full mt-8 bg-gray2"
+      className="mt-8 lg:w-3/5 md:w-1/2 sm:w-full bg-gray2"
       style={{ border: '0px' }}
       activeKey={activeKey}
       onChange={setActiveKey}
@@ -25,7 +25,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
         {
           <div className="text-gray8 body-1">
             <div>
-              <p className="h3-small text-black">{t('attendance')}</p>
+              <p className="text-black h3-small">{t('attendance')}</p>
             </div>
             {[
               { name: 'exceededLimit', color: 'red' },
@@ -57,7 +57,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
               </div>
             ))}
             <div>
-              <p className="h3-small text-black">{t('revenue')}</p>
+              <p className="text-black h3-small">{t('revenue')}</p>
             </div>
             {['earnedRevenue', 'estimatedRevenue', 'familyFee'].map((c, i) => (
               <div key={i} className="my-4">
@@ -67,11 +67,26 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
                 </span>
               </div>
             ))}
+            <div>
+              <p className="text-black h3-small">
+                {t('totalAuthorizationPeriod')}
+              </p>
+            </div>
+            {['authorizedPeriod', 'hoursRemaining', 'fullDaysRemaining'].map(
+              (c, i) => (
+                <div key={i} className="my-4">
+                  <span>
+                    <span className="font-bold">{t(c)}</span>:{' '}
+                    {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                  </span>
+                </div>
+              )
+            )}
             <footer className="flex justify-end" id="definitions">
               <a href="#top">
                 <Button
                   onClick={setActiveKey}
-                  className="eyebrow-large bg-primaryBlue text-white flex items-center no-underline toTop"
+                  className="flex items-center text-white no-underline eyebrow-large bg-primaryBlue toTop"
                   size="large"
                 >
                   {t('backToTop')}
