@@ -36,7 +36,15 @@ class Child < UuidApplicationRecord
   accepts_nested_attributes_for :approvals, :child_approvals, :schedules
 
   scope :active, -> { where(active: true) }
-  scope :approved_for_date, ->(date) { joins(:approvals).merge(Approval.active_on_date(date)) }
+  scope :approved_for_date,
+        lambda { |date|
+          joins(:approvals)
+            .where(
+              'approvals.effective_on <= ? and (approvals.expires_on is null or approvals.expires_on > ?)',
+              date,
+              date
+            )
+        }
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
 
