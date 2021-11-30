@@ -49,10 +49,11 @@ export function AttendanceView() {
               attendance.check_in
             )
           })
+
           if (matchingAttendances.length > 0) {
             if (
               matchingAttendances.some(attendance =>
-                attendance.tags.includes('absent')
+                attendance.tags.includes('absence')
               )
             ) {
               return (
