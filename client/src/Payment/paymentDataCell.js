@@ -16,13 +16,13 @@ export default function PaymentDataCell({ updateTotalPayment, resetPayment }) {
       parser={value => value.replace(/\$\s?|(,*)/g, '')}
       disabled={!isDifferentPayment}
       min={0}
-      value={paymentValue || undefined}
+      value={paymentValue}
       onChange={updatePayment}
     />
   )
 
   function inputFormatter(value) {
-    if (!isDifferentPayment) {
+    if (!isDifferentPayment || !value) {
       return t('enterAmount')
     }
 
