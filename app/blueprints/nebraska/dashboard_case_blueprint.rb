@@ -32,5 +32,7 @@ module Nebraska
       dashboard_case.hours_authorized&.to_f
     end
     field :hours_attended
+    field :approval_effective_on
+    field :approval_expires_on
   end
 end

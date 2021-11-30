@@ -50,20 +50,25 @@ def add_attendance(type, weeks = nil)
 
   end_time = weeks ? last_attendance_check_out + weeks.weeks : now
   check_in = Faker::Time.between(from: last_attendance_check_out, to: end_time)
-  hours = case type
-          when 'part'
-            6
-          when 'full'
-            11
-          when 'full_day_ne'
-            7
-          when 'hourly_ne'
-            3
-          else
-            1
-          end
-  check_out = check_in + hours.hours + rand(0..59).minutes
+  return if check_in > Time.current
+
+  check_out = check_in + num_hours(type).hours + rand(0..59).minutes
   Attendance.create!(check_in: check_in, check_out: check_out, child_approval: active_child_approval)
+end
+
+def num_hours(type)
+  case type
+  when 'part'
+    6
+  when 'full'
+    11
+  when 'full_day_ne'
+    7
+  when 'hourly_ne'
+    3
+  else
+    1
+  end
 end
 
 def types_array

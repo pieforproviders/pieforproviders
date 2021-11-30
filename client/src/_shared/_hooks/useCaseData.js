@@ -25,7 +25,19 @@ export function useCaseData() {
                 hoursAttended:
                   childCase.nebraska_dashboard_case.hours_attended ?? '',
                 familyFee: childCase.nebraska_dashboard_case.family_fee ?? '',
-                active: childCase.active ?? true
+                active: childCase.active ?? true,
+                hoursAuthorized:
+                  childCase.nebraska_dashboard_case.hours_authorized ?? '',
+                hoursRemaining:
+                  childCase.nebraska_dashboard_case.hours_remaining ?? '',
+                fullDaysAuthorized:
+                  childCase.nebraska_dashboard_case.full_days_authorized ?? '',
+                fullDaysRemaining:
+                  childCase.nebraska_dashboard_case.full_days_remaining ?? '',
+                approvalEffectiveOn:
+                  childCase.nebraska_dashboard_case.approval_effective_on ?? '',
+                approvalExpiresOn:
+                  childCase.nebraska_dashboard_case.approval_expires_on ?? ''
               }
             : {
                 id: childCase.nebraska_dashboard_case.id ?? '',
