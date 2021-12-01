@@ -285,7 +285,7 @@ export function Dashboard() {
     }
 
     if (Object.keys(user).length !== 0) {
-      getDashboardData(dates.dateFilterValue.date)
+      getDashboardData(dates?.dateFilterValue?.date)
     }
 
     if (Object.keys(user).length === 0) {
@@ -299,10 +299,10 @@ export function Dashboard() {
 
   return (
     <div className="dashboard sm:mx-8">
-      <DashboardTitle dates={dates} setDates={setDates} />
+      <DashboardTitle dates={dates} setDates={setDates} makeMonth={makeMonth} />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
-        dateFilterValue={dates.dateFilterValue}
+        dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
         userState={user.state ?? ''}
         setActiveKey={href => {
