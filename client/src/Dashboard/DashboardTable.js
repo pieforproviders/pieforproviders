@@ -159,52 +159,56 @@ export default function DashboardTable({
   }
 
   const generateColumns = columns => {
-    return columns.map(({ name = '', children = [], ...options }) => {
-      const hasDefinition = [
-        'attendance',
-        'revenue',
-        'totalAuthorizationPeriod'
-      ]
-      return {
-        // eslint-disable-next-line react/display-name
-        title: () =>
-          hasDefinition.includes(name) ? (
-            <div className="flex">
-              {t(`${name}`)}
-              <a
-                href={'#definitions'}
-                onClick={() => setActiveKey(name)}
-                id={name}
-              >
-                <img
-                  className={`ml-1`}
-                  src={questionMark}
-                  alt="question mark"
-                />
-              </a>
-            </div>
-          ) : name === 'hoursAttended' ? (
-            (dateFilterValue === undefined ||
-              new Date(dateFilterValue?.date).getMonth() ===
-                new Date().getMonth()) && (
+    return columns
+      .filter(
+        column =>
+          column.name !== 'hoursAttended' ||
+          dateFilterValue === undefined ||
+          (dayjs(dateFilterValue?.date).month() === dayjs().month() &&
+            dayjs(dateFilterValue?.date).year() === dayjs().year())
+      )
+      .map(({ name = '', children = [], ...options }) => {
+        const hasDefinition = [
+          'attendance',
+          'revenue',
+          'totalAuthorizationPeriod'
+        ]
+        return {
+          // eslint-disable-next-line react/display-name
+          title: () =>
+            hasDefinition.includes(name) ? (
+              <div className="flex">
+                {t(`${name}`)}
+                <a
+                  href={'#definitions'}
+                  onClick={() => setActiveKey(name)}
+                  id={name}
+                >
+                  <img
+                    className={`ml-1`}
+                    src={questionMark}
+                    alt="question mark"
+                  />
+                </a>
+              </div>
+            ) : name === 'hoursAttended' ? (
               <p>
                 {t(`${name}`)}
                 <br />
                 {getCurrentWeek()}
               </p>
-            )
-          ) : (
-            t(`${name}`)
-          ),
-        dataIndex: name,
-        key: name,
-        width: 200,
-        onHeaderCell,
-        children: generateColumns(children),
-        sortDirections: ['descend', 'ascend'],
-        ...options
-      }
-    })
+            ) : (
+              t(`${name}`)
+            ),
+          dataIndex: name,
+          key: name,
+          width: 200,
+          onHeaderCell,
+          children: generateColumns(children),
+          sortDirections: ['descend', 'ascend'],
+          ...options
+        }
+      })
   }
 
   const renderDollarAmount = (num, record) =>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select } from 'antd'
@@ -9,14 +9,10 @@ import '_assets/styles/dashboard-overrides.css'
 const { useBreakpoint } = Grid
 const { Option } = Select
 
-export default function DashboardTitle({ dates, getDashboardData }) {
+export default function DashboardTitle({ dates, setDates }) {
   const { t } = useTranslation()
   const screens = useBreakpoint()
   const history = useHistory()
-  // keeping this dropdown icon logic in hope it can eventually work
-  // const [isDropdownVisible, setDropdownVisible] = useState(false)
-  // const dropdownStyle = { color: '#006C9E' }
-  const [dateFilterValue, setDateFilterValue] = useState(dates.dateFilterValue)
 
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
@@ -25,35 +21,26 @@ export default function DashboardTitle({ dates, getDashboardData }) {
 
   const renderMonthSelector = () => (
     <Select
-      // suffixIcon={
-      //   isDropdownVisible ? (
-      //     <UpOutlined style={dropdownStyle} />
-      //   ) : (
-      //     <DownOutlined style={dropdownStyle} />
-      //   )
-      // }
-      // onDropdownVisibleChange={open => setDropdownVisible(open)}
-      value={dateFilterValue}
+      value={dates.dateFilterValue.date}
       onChange={value => {
-        getDashboardData(value)
-        setDateFilterValue(value)
+        console.log('value', value)
+        setDates({
+          ...dates,
+          dateFilterValue: { displayDate: value, date: value }
+        })
       }}
       size="large"
       className="my-2 mr-2 text-base date-filter-select"
     >
-      {(dates?.dateFilterMonths ?? []).map((month, k) => (
-        <Option key={k} value={month.date}>
-          {matchAndReplaceDate(month.displayDate)}
-        </Option>
-      ))}
+      {(dates?.dateFilterMonths ?? []).map((month, k) => {
+        return (
+          <Option key={k} value={month.date}>
+            {matchAndReplaceDate(month.displayDate)}
+          </Option>
+        )
+      })}
     </Select>
   )
-
-  useEffect(() => {
-    if (!dateFilterValue) {
-      setDateFilterValue(dates.dateFilterValue?.date)
-    }
-  }, [dates, dateFilterValue])
 
   return (
     <div className="m-2 dashboard-title">
@@ -108,5 +95,5 @@ export default function DashboardTitle({ dates, getDashboardData }) {
 
 DashboardTitle.propTypes = {
   dates: PropTypes.object,
-  getDashboardData: PropTypes.func
+  setDates: PropTypes.func
 }
