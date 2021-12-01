@@ -9,7 +9,7 @@ import '_assets/styles/dashboard-overrides.css'
 const { useBreakpoint } = Grid
 const { Option } = Select
 
-export default function DashboardTitle({ dates, userState, getDashboardData }) {
+export default function DashboardTitle({ dates, getDashboardData }) {
   const { t } = useTranslation()
   const screens = useBreakpoint()
   const history = useHistory()
@@ -39,7 +39,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
         setDateFilterValue(value)
       }}
       size="large"
-      className="date-filter-select my-2 text-base mr-2"
+      className="my-2 mr-2 text-base date-filter-select"
     >
       {(dates?.dateFilterMonths ?? []).map((month, k) => (
         <Option key={k} value={month.date}>
@@ -49,12 +49,6 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
     </Select>
   )
 
-  const renderDisabledMonth = () => (
-    <Button className="date-filter-button mr-2 text-base py-2 px-4" disabled>
-      {matchAndReplaceDate(dates?.dateFilterValue?.displayDate ?? '')}
-    </Button>
-  )
-
   useEffect(() => {
     if (!dateFilterValue) {
       setDateFilterValue(dates.dateFilterValue?.date)
@@ -62,19 +56,15 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
   }, [dates, dateFilterValue])
 
   return (
-    <div className="dashboard-title m-2">
+    <div className="m-2 dashboard-title">
       {(screens.sm || screens.xs) && !screens.md ? (
         <div>
           <div className="flex flex-col items-center mb-3">
-            <Typography.Title className="dashboard-title text-center mr-4">
+            <Typography.Title className="mr-4 text-center dashboard-title">
               {t('dashboardTitle')}
             </Typography.Title>
             <div className="flex flex-row items-center my-2">
-              {userState !== 'NE'
-                ? renderMonthSelector()
-                : dateFilterValue
-                ? renderDisabledMonth()
-                : null}
+              {renderMonthSelector()}
               <Typography.Text className="text-gray3">
                 {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
               </Typography.Text>
@@ -83,7 +73,7 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
               {t('revenueProjections')}
             </Typography.Text>
             <Button
-              className="border-primaryBlue text-primaryBlue flex"
+              className="flex border-primaryBlue text-primaryBlue"
               onClick={() => history.push('/attendance/edit')}
             >
               {t('addAttendance')} <PlusOutlined />
@@ -93,19 +83,15 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
       ) : (
         <div>
           <div className="flex flex-col items-center mb-3 sm:flex-row">
-            <Typography.Title className="dashboard-title text-center mr-4">
+            <Typography.Title className="mr-4 text-center dashboard-title">
               {t('dashboardTitle')}
             </Typography.Title>
-            {userState !== 'NE'
-              ? renderMonthSelector()
-              : dateFilterValue
-              ? renderDisabledMonth()
-              : null}
+            {renderMonthSelector()}
             <Typography.Text className="text-gray3">
               {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
             </Typography.Text>
             <Button
-              className="ml-auto border-primaryBlue text-primaryBlue flex"
+              className="flex ml-auto border-primaryBlue text-primaryBlue"
               onClick={() => history.push('/attendance/edit')}
             >
               {t('addAttendance')} <PlusOutlined />
@@ -122,6 +108,5 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
 
 DashboardTitle.propTypes = {
   dates: PropTypes.object,
-  getDashboardData: PropTypes.func,
-  userState: PropTypes.string
+  getDashboardData: PropTypes.func
 }

@@ -5,7 +5,6 @@ import DashboardTitle from '../DashboardTitle'
 const doRender = (
   props = {
     dates: { asOf: 'Mar 16' },
-    userState: 'IL',
     getDashboardData: () => {}
   }
 ) => {
@@ -26,11 +25,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('renders the Dashboard page when a user is in state', async () => {
-    const { container } = doRender({
-      dates: { asOf: 'Mar 16' },
-      userState: 'NE',
-      getDashboardData: () => {}
-    })
+    const { container } = doRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
       expect(container).toHaveTextContent('Mar 16')
