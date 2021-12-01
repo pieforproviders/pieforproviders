@@ -10,7 +10,7 @@ import '_assets/styles/dashboard-overrides.css'
 const { useBreakpoint } = Grid
 const { Option } = Select
 
-export default function DashboardTitle({ dates, setDates }) {
+export default function DashboardTitle({ dates, setDates, makeMonth }) {
   const { t } = useTranslation()
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
@@ -23,7 +23,7 @@ export default function DashboardTitle({ dates, setDates }) {
 
   const renderMonthSelector = () => (
     <Select
-      value={dates.dateFilterValue.date}
+      value={dates?.dateFilterValue?.date}
       onChange={value => {
         sendGAEvent('dates_filtered', {
           page_title: 'dashboard',
@@ -31,7 +31,7 @@ export default function DashboardTitle({ dates, setDates }) {
         })
         setDates({
           ...dates,
-          dateFilterValue: { displayDate: value, date: value }
+          dateFilterValue: makeMonth(new Date(value))
         })
       }}
       size="large"
@@ -112,5 +112,6 @@ export default function DashboardTitle({ dates, setDates }) {
 
 DashboardTitle.propTypes = {
   dates: PropTypes.object,
-  setDates: PropTypes.func
+  setDates: PropTypes.func,
+  makeMonth: PropTypes.func
 }
