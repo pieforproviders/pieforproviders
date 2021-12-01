@@ -45,7 +45,14 @@ export function Dashboard() {
   )
   const [summaryData, setSummaryData] = useState([])
   const [tableData, setTableData] = useState([])
-  const [dates, setDates] = useState({ asOf: '', dateFilter: '' })
+  const [dates, setDates] = useState({
+    asOf: '',
+    dateFilterValue: {
+      displayDate: '',
+      date: ''
+    },
+    dateFilterMonths: []
+  })
   const [activeKey, setActiveKey] = useState()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
@@ -227,16 +234,7 @@ export function Dashboard() {
         month: 'short',
         day: 'numeric'
       }),
-      dateFilterValue: fd
-        ? dateFilterMonths.find(
-            m =>
-              m.date.match(/\d{4}-\d{2}/)[0] ===
-              firstMonth
-                .toISOString()
-                .split('T')[0]
-                .match(/\d{4}-\d{2}/)[0]
-          )
-        : makeMonth(),
+      dateFilterValue: fd ? makeMonth(new Date(fd)) : makeMonth(),
       dateFilterMonths
     }
   }
@@ -256,9 +254,10 @@ export function Dashboard() {
         tableData,
         parsedResponse
       )
+      const updatedDates = reduceDates(parsedResponse, filterDate)
 
       dispatch(setCaseData(tableData))
-      setDates(reduceDates(parsedResponse, filterDate))
+      setDates(updatedDates)
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
       setTableData(tableData)
@@ -286,7 +285,7 @@ export function Dashboard() {
     }
 
     if (Object.keys(user).length !== 0) {
-      getDashboardData()
+      getDashboardData(dates.dateFilterValue.date)
     }
 
     if (Object.keys(user).length === 0) {
@@ -296,11 +295,11 @@ export function Dashboard() {
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [user, dates.dateFilterValue.date])
 
   return (
     <div className="dashboard sm:mx-8">
-      <DashboardTitle dates={dates} getDashboardData={getDashboardData} />
+      <DashboardTitle dates={dates} setDates={setDates} />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
         dateFilterValue={dates.dateFilterValue}
