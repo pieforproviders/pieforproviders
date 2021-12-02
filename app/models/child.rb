@@ -160,6 +160,7 @@ end
 # Indexes
 #
 #  index_children_on_business_id  (business_id)
+#  index_children_on_deleted_at   (deleted_at)
 #  unique_children                (full_name,date_of_birth,business_id) UNIQUE
 #
 # Foreign Keys

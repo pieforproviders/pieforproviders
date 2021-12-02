@@ -53,3 +53,8 @@ end
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
+# Indexes
+#
+#  index_approvals_on_effective_on  (effective_on)
+#  index_approvals_on_expires_on    (expires_on)
+#
