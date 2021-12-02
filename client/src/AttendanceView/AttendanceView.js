@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -10,8 +9,6 @@ import smallPie from '../_assets/smallPie.png'
 import { WeekPicker } from './WeekPicker'
 
 const { useBreakpoint } = Grid
-// eslint-disable-next-line no-unused-vars
-const env = runtimeEnv()
 
 export function AttendanceView() {
   const { i18n, t } = useTranslation()
