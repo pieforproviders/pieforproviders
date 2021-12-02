@@ -14,6 +14,7 @@ export default function AttendanceDataCell({
   const [absence, setAbsence] = useState(null)
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
+  const [secondCheckIn, setSecondCheckIn] = useState(false)
   const handleChange = (update = {}, callback = () => {}) => {
     updateAttendanceData(update, record, columnIndex)
     callback()
@@ -105,12 +106,21 @@ export default function AttendanceDataCell({
           </p>
         </div>
       </div>
-      <div className="mt-4">
-        <div className="flex font-semibold font-proxima-nova">
-          <PlusOutlined className="font-semibold text-primaryBlue" />
-          <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
+      {secondCheckIn ? (
+        <div className="mt-4">
+          <div className="flex font-semibold font-proxima-nova">
+            <PlusOutlined className="font-semibold red1" />
+            <p className="red1">{t('removeCheckInTime')}</p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="mt-4">
+          <div className="flex font-semibold font-proxima-nova">
+            <PlusOutlined className="font-semibold text-primaryBlue" />
+            <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -245,5 +245,6 @@
   "noInfo": "no info",
   "daily": "full day",
   "hourly": "hours",
-  "addCheckInTime": "Add check-in time"
+  "addCheckInTime": "Add check-in time",
+  "removeCheckInTime": "Remove check-in time"
 }
