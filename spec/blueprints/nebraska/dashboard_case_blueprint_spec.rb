@@ -97,11 +97,11 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # no revenue because of family fee
     expect(parsed_response['earned_revenue']).to eq(0.0)
     # this includes 3.0 of hourly attendance, 1 full day attendance + 17
+    # static over the course of the month
+    expect(parsed_response['family_fee']).to eq(family_fee.to_f.to_s)
     # remaining scheduled days of the month including today
     expect(parsed_response['estimated_revenue'])
       .to eq(((3.0 * hourly_rate * qris_bump) + (18 * daily_rate * qris_bump) - family_fee).to_f.round(2))
-    # static over the course of the month
-    expect(parsed_response['family_fee']).to eq(family_fee.to_f.to_s)
     # too early in the month to show risk
     expect(parsed_response['attendance_risk']).to eq('not_enough_info')
 

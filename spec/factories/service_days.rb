@@ -20,6 +20,7 @@ end
 # Indexes
 #
 #  index_service_days_on_child_id  (child_id)
+#  index_service_days_on_date      (date)
 #
 # Foreign Keys
 #

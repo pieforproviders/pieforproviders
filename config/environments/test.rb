@@ -10,10 +10,9 @@ Rails.application.configure do
     Bullet.enable        = true
     Bullet.bullet_logger = true
     Bullet.raise         = true # raise an error if n+1 query occurs
-    # TODO: temporarily disabling until I can figure out why this is causing an error,
-    # this happens on the admin test for the Nebraska Dashboard
-    Bullet.add_safelist type: :unused_eager_loading, class_name: 'User', association: :children
-    Bullet.add_safelist type: :unused_eager_loading, class_name: 'Child', association: :child_approvals
+    Bullet.add_safelist type: :unused_eager_loading,
+                        class_name: 'ChildApproval',
+                        association: :nebraska_approval_amounts
   end
 
   # Settings specified here will take precedence over those in config/application.rb.

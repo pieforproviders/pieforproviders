@@ -32,7 +32,7 @@ module Api
       private
 
       def set_user
-        @user = params[:id] ? policy_scope(User.includes(:businesses)).find(params[:id]) : current_user
+        @user = params[:id] ? policy_scope(User).find(params[:id]) : current_user
       end
 
       def authorize_user
@@ -49,7 +49,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.includes(:businesses, :child_approvals, :approvals)),
+          policy_scope(User.with_dashboard_case),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )

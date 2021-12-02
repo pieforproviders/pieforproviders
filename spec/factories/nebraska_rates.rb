@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :nebraska_rate do
     sequence(:name) { |n| "Rate #{n}" }
-    max_age { 18 }
+    max_age { 120 }
     amount { Faker::Number.within(range: 10.0..50.0) }
     license_type { 'family_child_care_home_i' }
     effective_on { (Time.current - 11.months).to_date }
@@ -14,6 +14,8 @@ FactoryBot.define do
     county { 'Douglas' }
     rate_type { NebraskaRate::TYPES.sample }
     region { NebraskaRate::REGIONS.sample }
+    school_age { false }
+    accredited_rate { false }
 
     trait :accredited do
       accredited_rate { true }
@@ -93,4 +95,9 @@ end
 #  school_age      :boolean          default(FALSE)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_nebraska_rates_on_effective_on  (effective_on)
+#  index_nebraska_rates_on_expires_on    (expires_on)
 #

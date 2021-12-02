@@ -21,7 +21,7 @@ class IllinoisRate < UuidApplicationRecord
   validates :part_day_rate, numericality: true, allow_nil: true
   validates :silver_percentage, numericality: true, allow_nil: true
 
-  scope :active_on_date,
+  scope :active_on,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
@@ -47,4 +47,9 @@ end
 #  silver_percentage    :decimal(, )
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_illinois_rates_on_effective_on  (effective_on)
+#  index_illinois_rates_on_expires_on    (expires_on)
 #
