@@ -63,7 +63,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def wont_meet_threshold
-    active_approval = @child.approvals.active_on_date(@filter_date).first
+    active_approval = @child.approvals.active_on(@filter_date).first
     (
       (threshold * family_days_approved) - family_days_attended
     ) > active_approval.child_approvals.count * days_left_in_month
@@ -99,7 +99,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def latest_user_attendance
-    @child.business.user.latest_service_day_in_month_utc(@filter_date)
+    @child.business.user.latest_service_day_in_month(@filter_date)
   end
 
   def halfway

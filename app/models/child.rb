@@ -48,6 +48,16 @@ class Child < UuidApplicationRecord
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
 
+  scope :with_dashboard_case,
+        lambda { |date = nil|
+          date ||= Time.current
+          # joins(:service_days)
+          not_deleted
+            .distinct
+            .approved_for_date(date)
+            .includes(:schedules, :child_approvals, :nebraska_approval_amounts)
+        }
+
   delegate :county, to: :business
   delegate :user, to: :business
   delegate :state, to: :user
@@ -67,7 +77,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_approval(date)
-    approvals.active_on_date(date).first
+    approvals.active_on(date).first
   end
 
   def active_child_approval(date)
@@ -88,7 +98,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_nebraska_approval_amount(date)
-    nebraska_approval_amounts.active_on_date(date).first
+    nebraska_approval_amounts.active_on(date).first
   end
 
   def illinois_approval_amounts
@@ -98,14 +108,18 @@ class Child < UuidApplicationRecord
   # TODO: these methods are duplicative and need to be moved to a
   # concern so child and attendance can both use them [PIE-1529]
 
-  def total_time_scheduled_this_month(date)
+  def total_time_scheduled_this_month(date:)
     (0..6).reduce(0) do |sum, weekday|
       sum + weekday_scheduled_duration(date.at_beginning_of_month, weekday)
     end
   end
 
   def weekday_scheduled_duration(date, weekday)
-    schedule_for_weekday = schedules.active_on_date(date).for_weekday(weekday).first
+    schedule_for_weekday = schedules.select do |schedule|
+      schedule.weekday == weekday &&
+        schedule.effective_on <= date &&
+        (schedule.expires_on.nil? || schedule.expires_on > date)
+    end.first
     return 0 unless schedule_for_weekday
 
     schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)
@@ -160,6 +174,7 @@ end
 # Indexes
 #
 #  index_children_on_business_id  (business_id)
+#  index_children_on_deleted_at   (deleted_at)
 #  unique_children                (full_name,date_of_birth,business_id) UNIQUE
 #
 # Foreign Keys
