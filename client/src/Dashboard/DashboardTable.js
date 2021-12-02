@@ -244,6 +244,23 @@ export default function DashboardTable({
     setIsMIModalVisible(false)
   }
 
+  const sendMarkInactiveEvent = async () => {
+    if (!window.gtag) return
+
+    try {
+      window.gtag('event', 'mark inactive', {
+        category: 'Dashboard',
+        action: 'Mark Inactive',
+        labels: {
+          Date: inactiveDate,
+          'Reason Selected': inactiveReason
+        }
+      })
+    } catch {
+      console.log('Unable to send the `mark inactive` google analytics event')
+    }
+  }
+
   const handleMIModalOk = async () => {
     const response = await makeRequest({
       type: 'put',
@@ -265,6 +282,7 @@ export default function DashboardTable({
       dispatch(
         updateCase({ childId: selectedChild?.id, updates: { active: false } })
       )
+      sendMarkInactiveEvent()
     }
     handleModalClose()
   }
