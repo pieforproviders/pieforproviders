@@ -84,7 +84,13 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             </Typography.Text>
             <Button
               className="border-primaryBlue text-primaryBlue flex"
-              onClick={() => history.push('/attendance/edit')}
+              onClick={() => {
+                window.gtag('event', 'attendance_input_clicked', {
+                  page_title: 'dashboard'
+                })
+
+                history.push('/attendance/edit')
+              }}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>
@@ -106,7 +112,13 @@ export default function DashboardTitle({ dates, userState, getDashboardData }) {
             </Typography.Text>
             <Button
               className="ml-auto border-primaryBlue text-primaryBlue flex"
-              onClick={() => history.push('/attendance/edit')}
+              onClick={() => {
+                window.gtag('event', 'attendance_input_clicked', {
+                  page_title: 'dashboard'
+                })
+
+                history.push('/attendance/edit')
+              }}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>

@@ -13,7 +13,7 @@ export default function AuthenticatedRoute({
   ...routeProps
 }) {
   const isAuthenticated = useAuthentication()
-  // debugger
+
   exact = !!exact
   if (!isAuthenticated) {
     return <Redirect to="/login" />

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -9,6 +10,8 @@ import smallPie from '../_assets/smallPie.png'
 import { WeekPicker } from './WeekPicker'
 
 const { useBreakpoint } = Grid
+// eslint-disable-next-line no-unused-vars
+const env = runtimeEnv()
 
 export function AttendanceView() {
   const { i18n, t } = useTranslation()
@@ -145,7 +148,16 @@ export function AttendanceView() {
   const [columns, setColumns] = useState(generateColumns())
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
-  const handleDateChange = newDate => setDateSelected(newDate)
+  const handleDateChange = newDate => {
+    // send google analytics event data about changing the current week selected
+    window.gtag('event', 'dates_filtered', {
+      date_selected: `${newDate.weekday(0).format('MMM D')} -
+      ${newDate.weekday(6).format('MMM D, YYYY')}`,
+      page_title: 'attendance'
+    })
+
+    setDateSelected(newDate)
+  }
 
   useEffect(() => {
     const getResponse = async () => {
@@ -207,7 +219,12 @@ export function AttendanceView() {
               type="primary"
               className="absolute"
               style={{ right: '3rem' }}
-              onClick={() => history.push('/attendance/edit')}
+              onClick={() => {
+                window.gtag('event', 'attendance_input_clicked', {
+                  page_title: 'attendance'
+                })
+                history.push('/attendance/edit')
+              }}
               data-cy="inputAttendance"
             >
               {t('inputAttendance')}
