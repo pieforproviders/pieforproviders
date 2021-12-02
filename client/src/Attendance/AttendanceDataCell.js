@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox, TimePicker } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/checkbox-overrides.css'
 
@@ -19,86 +20,96 @@ export default function AttendanceDataCell({
   }
 
   return (
-    <div className="flex m-">
-      <div className="mr-4">
-        <p className="font-proxima-nova-alt font-semibold mb-1">
-          {t('checkIn').toUpperCase()}
-        </p>
-        <TimePicker
-          className="w-20 h-8"
-          style={{
-            border: '1px solid #D9D9D9'
-          }}
-          use12Hours={true}
-          format="h:mm a"
-          disabled={absence}
-          onChange={(m, ds) =>
-            m
-              ? handleChange({ check_in: ds }, setCheckInSelected(true))
-              : handleChange({ check_in: '' }, setCheckInSelected(false))
-          }
-          suffixIcon={null}
-        />
-      </div>
-      <div className="mr-4">
-        <p className="font-proxima-nova-alt font-semibold mb-1">
-          {t('checkOut').toUpperCase()}
-        </p>
-        <TimePicker
-          className="w-20 h-8"
-          style={{
-            border: '1px solid #D9D9D9'
-          }}
-          use12Hours={true}
-          format="h:mm a"
-          disabled={absence}
-          onChange={(dateObject, dateString) =>
-            dateObject
-              ? handleChange(
-                  { check_out: dateString },
-                  setCheckOutSelected(true)
-                )
-              : handleChange({ check_out: '' }, setCheckOutSelected(false))
-          }
-          suffixIcon={null}
-        />
-      </div>
-      <div>
-        <p>
-          <Checkbox
-            className="absence"
-            checked={absence === 'absence'}
-            disabled={
-              absence === 'covid-related' || checkInSelected || checkOutSelected
+    <div className="flex flex-col m-">
+      <div className="flex flex-row">
+        <div className="mr-4">
+          <p className="mb-1 font-semibold font-proxima-nova-alt">
+            {t('checkIn').toUpperCase()}
+          </p>
+          <TimePicker
+            className="w-20 h-8"
+            style={{
+              border: '1px solid #D9D9D9'
+            }}
+            use12Hours={true}
+            format="h:mm a"
+            disabled={absence}
+            onChange={(m, ds) =>
+              m
+                ? handleChange({ check_in: ds }, setCheckInSelected(true))
+                : handleChange({ check_in: '' }, setCheckInSelected(false))
             }
-            onChange={e =>
-              e.target.checked
-                ? handleChange({ absence: 'absence' }, setAbsence('absence'))
-                : handleChange({}, setAbsence(null))
-            }
+            suffixIcon={null}
           />
-          <span className="ml-3">{t('absent')}</span>
-        </p>
-        <p className="mt-2">
-          <Checkbox
-            className="absence"
-            checked={absence === 'covid-related'}
-            disabled={
-              absence === 'absence' || checkInSelected || checkOutSelected
-            }
-            onChange={e =>
-              e.target.checked
+        </div>
+        <div className="mr-4">
+          <p className="mb-1 font-semibold font-proxima-nova-alt">
+            {t('checkOut').toUpperCase()}
+          </p>
+          <TimePicker
+            className="w-20 h-8"
+            style={{
+              border: '1px solid #D9D9D9'
+            }}
+            use12Hours={true}
+            format="h:mm a"
+            disabled={absence}
+            onChange={(dateObject, dateString) =>
+              dateObject
                 ? handleChange(
-                    { absence: 'covid-related' },
-                    setAbsence('covid-related')
+                    { check_out: dateString },
+                    setCheckOutSelected(true)
                   )
-                : handleChange({}, setAbsence(null))
+                : handleChange({ check_out: '' }, setCheckOutSelected(false))
             }
+            suffixIcon={null}
           />
-          <span className="ml-3">
-            {t('absent') + ' - ' + t('covidRelated')}
-          </span>
-        </p>
+        </div>
+        <div>
+          <p>
+            <Checkbox
+              className="absence"
+              checked={absence === 'absence'}
+              disabled={
+                absence === 'covid-related' ||
+                checkInSelected ||
+                checkOutSelected
+              }
+              onChange={e =>
+                e.target.checked
+                  ? handleChange({ absence: 'absence' }, setAbsence('absence'))
+                  : handleChange({}, setAbsence(null))
+              }
+            />
+            <span className="ml-3">{t('absent')}</span>
+          </p>
+          <p className="mt-2">
+            <Checkbox
+              className="absence"
+              checked={absence === 'covid-related'}
+              disabled={
+                absence === 'absence' || checkInSelected || checkOutSelected
+              }
+              onChange={e =>
+                e.target.checked
+                  ? handleChange(
+                      { absence: 'covid-related' },
+                      setAbsence('covid-related')
+                    )
+                  : handleChange({}, setAbsence(null))
+              }
+            />
+            <span className="ml-3">
+              {t('absent') + ' - ' + t('covidRelated')}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div className="mt-4">
+        <div className="flex font-semibold font-proxima-nova">
+          <PlusOutlined className="font-semibold text-primaryBlue" />
+          <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
+        </div>
       </div>
     </div>
   )
