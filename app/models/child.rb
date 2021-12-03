@@ -67,7 +67,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_approval(date)
-    approvals.active_on_date(date).first
+    approvals.active_on(date).first
   end
 
   def active_child_approval(date)
@@ -88,7 +88,7 @@ class Child < UuidApplicationRecord
   end
 
   def active_nebraska_approval_amount(date)
-    nebraska_approval_amounts.active_on_date(date).first
+    nebraska_approval_amounts.active_on(date).first
   end
 
   def illinois_approval_amounts
@@ -105,7 +105,7 @@ class Child < UuidApplicationRecord
   end
 
   def weekday_scheduled_duration(date, weekday)
-    schedule_for_weekday = schedules.active_on_date(date).for_weekday(weekday).first
+    schedule_for_weekday = schedules.active_on(date).for_weekday(weekday).first
     return 0 unless schedule_for_weekday
 
     schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)

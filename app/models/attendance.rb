@@ -110,7 +110,7 @@ class Attendance < UuidApplicationRecord
   end
 
   def schedule_for_weekday
-    child_approval.child.schedules.active_on_date(check_in.to_date).for_weekday(check_in.wday).first
+    child_approval.child.schedules.active_on(check_in.to_date).for_weekday(check_in.wday).first
   end
 
   def check_out_after_check_in

@@ -60,7 +60,7 @@ module Nebraska
 
       def active_child_rates
         NebraskaRate
-          .active_on_date(date)
+          .active_on(date)
           .where(school_age: child_approval&.enrolled_in_school || false)
           .where('max_age >= ? OR max_age IS NULL', child.age_in_months(date))
       end

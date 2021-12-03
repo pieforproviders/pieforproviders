@@ -52,7 +52,7 @@ module Nebraska
       end
 
       def schedule(date:)
-        schedules.active_on_date(date).select { |schedule| schedule.weekday == date.wday }.first
+        schedules.active_on(date).select { |schedule| schedule.weekday == date.wday }.first
       end
     end
   end

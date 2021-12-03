@@ -31,7 +31,7 @@ class NebraskaRate < UuidApplicationRecord
                       nebraska_rate.expires_on_before_type_cast.nil?
                     }
 
-  scope :active_on_date,
+  scope :active_on,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
