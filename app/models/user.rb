@@ -19,6 +19,7 @@ class User < UuidApplicationRecord
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :restrict_with_error
   has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
   has_many :service_days, through: :children, dependent: :restrict_with_error
+  has_many :schedules, through: :children, dependent: :restrict_with_error
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 

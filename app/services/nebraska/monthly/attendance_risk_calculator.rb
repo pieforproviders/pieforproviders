@@ -4,17 +4,14 @@ module Nebraska
   module Monthly
     # Calculate attendance risk for a child on a given date
     class AttendanceRiskCalculator
-      attr_reader :child, :child_approval, :filter_date, :scheduled_revenue
+      attr_reader :child, :child_approval, :filter_date, :scheduled_revenue, :estimated_revenue
 
-      def initialize(child:, child_approval:, filter_date:)
+      def initialize(child:, child_approval:, filter_date:, scheduled_revenue:, estimated_revenue:)
         @child = child
         @child_approval = child_approval
         @filter_date = filter_date
-        @scheduled_revenue = Nebraska::Monthly::ScheduledRevenueCalculator.new(
-          child: child,
-          child_approval: child_approval,
-          filter_date: filter_date
-        ).call
+        @scheduled_revenue = scheduled_revenue
+        @estimated_revenue = estimated_revenue
       end
 
       def call
@@ -28,14 +25,6 @@ module Nebraska
 
         ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
         risk_ratio_label(ratio)
-      end
-
-      def estimated_revenue
-        Nebraska::Monthly::EstimatedRevenueCalculator.new(
-          child: child,
-          child_approval: child_approval,
-          filter_date: filter_date
-        ).call
       end
 
       def risk_ratio_label(ratio)

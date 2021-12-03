@@ -32,7 +32,7 @@ module Api
       private
 
       def set_user
-        @user = params[:id] ? policy_scope(User.includes(:businesses)).find(params[:id]) : current_user
+        @user = params[:id] ? policy_scope(User.includes(:businesses, :children)).find(params[:id]) : current_user
       end
 
       def authorize_user
@@ -53,7 +53,7 @@ module Api
             User
               .joins(:businesses)
               .where(businesses: { children: Child.approved_for_date(filter_date).not_deleted })
-              .includes(:businesses, :children, :child_approvals, :approvals)
+              .includes(:businesses, :children, :child_approvals, :approvals, :service_days)
           ),
           view: :nebraska_dashboard,
           filter_date: filter_date
