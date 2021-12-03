@@ -15,8 +15,6 @@ class BusinessBlueprint < Blueprinter::Base
   view :nebraska_dashboard do
     field :name
     exclude :id
-    association :children, name: :cases, blueprint: ChildBlueprint, view: :nebraska_dashboard do |business, options|
-      business.children.not_deleted.distinct.approved_for_date(options[:filter_date])
-    end
+    association :children, name: :cases, blueprint: ChildBlueprint, view: :nebraska_dashboard
   end
 end

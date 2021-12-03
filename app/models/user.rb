@@ -55,17 +55,13 @@ class User < UuidApplicationRecord
   # return the user's latest attendance check_in in UTC
   def latest_service_day_in_month_utc(filter_date)
     filter_date ||= Time.current
-    # if the filter_date we send is 03-01-2021, we are looking for checkins
-    # that are between 03-01-2021 and 03-31-2021 *in the user's timezone*
-    # then we want to return the check_in time of that latest attendance
-    # also in the user's timezone so the "as_of" date on the dashboard is correct
-    start_time = filter_date.at_beginning_of_month
-    end_time = filter_date.at_end_of_month
-    service_days.where('date BETWEEN ? AND ?', start_time, end_time).max_by(&:date)&.date
+    service_days.for_month(filter_date).order(date: :desc).first&.date
   end
 
   def first_approval_effective_date
-    approvals.max_by(&:effective_on)&.effective_on
+    return Time.current.to_date unless approvals.present?
+
+    approvals.order(effective_on: :desc).first.effective_on
   end
 end
 
