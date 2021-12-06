@@ -14,7 +14,8 @@ module Nebraska
                 :scheduled_days,
                 :attended_days,
                 :reimbursable_absence_days,
-                :estimated_days
+                :estimated_days,
+                :schedules
 
     def initialize(child:, filter_date:)
       @approval = @child_approval&.approval
@@ -26,22 +27,22 @@ module Nebraska
       @filter_date = filter_date
       @reimbursable_absence_days = reimbursable_absence_service_days
       @scheduled_days = scheduled_service_days
+      @schedules = child&.schedules
       @service_days_this_approval = child_approval&.service_days
       @service_days_this_month = child&.service_days&.for_month(filter_date)
     end
 
     def scheduled_service_days
-      nil
-      # TODO: this is the query killer
-      # start_date = filter_date.in_time_zone(child.timezone).at_beginning_of_month.to_date
-      # end_date = filter_date.in_time_zone(child.timezone).at_end_of_month.to_date
-      # days = []
-      # (start_date..end_date).map do |date|
-      #   next unless child.schedules.active_on(date).collect(&:weekday).include?(date.wday)
+      start_date = filter_date.in_time_zone(child.timezone).at_beginning_of_month.to_date
+      end_date = filter_date.in_time_zone(child.timezone).at_end_of_month.to_date
+      days = []
 
-      #   days << Nebraska::CalculatedServiceDay.new(service_day: ServiceDay.new(date: date, child: child))
-      # end
-      # days
+      (start_date..end_date).map do |date|
+        next unless schedules&.active_on(date)&.collect(&:weekday)&.include?(date.wday)
+
+        days << Nebraska::CalculatedServiceDay.new(service_day: ServiceDay.new(date: date, child: child))
+      end
+      days
     end
 
     def attended_service_days
@@ -129,15 +130,22 @@ module Nebraska
     end
 
     def full_days
+      0
       # TODO: this adds to the query
       # return 0 unless service_days_this_month
 
-      # service_days_this_month.non_absences.reduce(0) do |sum, service_day|
+      # days = service_days_this_month.non_absences.map do |service_day|
+      #   Nebraska::CalculatedServiceDay.new(service_day: service_day)
+      # end
+      # binding.pry
+      # .reduce(0) do |sum, service_day|
+      #   binding.pry
       #   sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       # end
     end
 
     def hours
+      0
       # TODO: this adds to the query
       # return 0 unless service_days_this_month
 

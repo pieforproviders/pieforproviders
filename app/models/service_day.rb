@@ -5,6 +5,7 @@ class ServiceDay < UuidApplicationRecord
   belongs_to :child
   has_many :attendances, dependent: :destroy
   has_many :child_approvals, -> { order(total_time_in_care: :desc).distinct }, through: :attendances
+  # has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
 
   validates :date, date_time_param: true, presence: true
 

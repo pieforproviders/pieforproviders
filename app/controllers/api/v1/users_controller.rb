@@ -53,7 +53,7 @@ module Api
             User
               .joins(:businesses)
               .where(businesses: { children: Child.approved_for_date(filter_date).not_deleted })
-              .includes(:businesses, :children, :child_approvals, :approvals, :service_days)
+              .includes(:businesses, :children, :child_approvals, :approvals, :service_days, :schedules)
           ),
           view: :nebraska_dashboard,
           filter_date: filter_date
