@@ -46,30 +46,30 @@ describe('Signup', () => {
       ])
     })
 
-    describe('duplicate phone', () => {
-      it('returns an error', () => {
-        cy.get(createSelector('phoneType')).click()
-        cy.get(createSelector('homePhone')).click()
-        cy.get(createSelector('phoneNumber')).type(phoneNumber)
-        cy.get(createSelector('email')).type('random@email.com')
-        cy.get(createSelector('signupBtn')).click()
-        cy.location('pathname').should('eq', '/signup')
-        cy.get('[role="alert"]')
-          .contains('Phone number has already been taken')
-          .should('exist')
-      })
-    })
+    // describe('duplicate phone', () => {
+    //   it('returns an error', () => {
+    //     cy.get(createSelector('phoneType')).click()
+    //     cy.get(createSelector('homePhone')).click()
+    //     cy.get(createSelector('phoneNumber')).type(phoneNumber)
+    //     cy.get(createSelector('email')).type('random@email.com')
+    //     cy.get(createSelector('signupBtn')).click()
+    //     cy.location('pathname').should('eq', '/signup')
+    //     cy.get('[role="alert"]')
+    //       .contains('Phone number has already been taken')
+    //       .should('exist')
+    //   })
+    // })
 
-    describe('duplicate email', () => {
-      it('returns an error', () => {
-        cy.get(createSelector('email')).type(email)
-        cy.get(createSelector('signupBtn')).click()
-        cy.location('pathname').should('eq', '/signup')
-        cy.get('[role="alert"]')
-          .contains('Email has already been taken')
-          .should('exist')
-      })
-    })
+    // describe('duplicate email', () => {
+    //   it('returns an error', () => {
+    //     cy.get(createSelector('email')).type(email)
+    //     cy.get(createSelector('signupBtn')).click()
+    //     cy.location('pathname').should('eq', '/signup')
+    //     cy.get('[role="alert"]')
+    //       .contains('Email has already been taken')
+    //       .should('exist')
+    //   })
+    // })
   })
 
   describe('new user signs up', () => {
