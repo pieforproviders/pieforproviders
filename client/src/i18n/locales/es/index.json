@@ -144,6 +144,10 @@
   "totalApproved": "Total aprobado",
   "totalApprovedDef": "Lo que el estado ha aprobado para todos los niños del subsidio",
   "totalApprovedWithFamilyFee": "Total aprobado con cuota familiar",
+  "totalAuthorizationPeriod": "Período total de autorización",
+  "authorizedPeriod": "Período autorizado",
+  "hoursRemaining": "Total de horas restantes",
+  "fullDaysRemaining": "Total de días restantes",
   "comingSoon": "¡Promixamente!",
   "attendance": "Asistencia",
   "revenue": "Ingresos",
@@ -187,13 +191,15 @@
   "neEstimatedRevenueDef": "Los ingresos del subsidio que predecimos que recibirás, si tienes asistencia perfecta por el resto del mes. Esto no incluye la cuota familiar.",
   "neHoursAttendedDef": "Horas que el niño ha asistido esta semana. Si excedes tus hora máximas para la semana, no estarás pagado por el estado para esas horas adicionales.",
   "neFamilyFeeDef": "La cantidad que los padres te deben para este niño este mes.",
+  "neAuthorizedPeriodDef": "Se trata de la fecha de inicio y de finalización para la que se autoriza al niño a recibir subvenciones para el cuidado de la infancia. Puede encontrar esta información en la carta de autorización.",
+  "neHoursRemainingDef": "El número de horas que el niño aún tiene disponibles para asistir. Puede encontrar el número total de horas autorizadas en la carta de autorización.",
+  "neFullDaysRemainingDef": "Cuántas unidades diarias tiene todavía el niño para asistir. Puede encontrar el número total de unidades diarias autorizadas en la carta de autorización.",
   "backToTop": "Volver",
   "of": "de",
   "trips": "viajes",
   "sortAsc": "Ordenar ascendente",
   "sortDesc": "Ordenar descendiente",
   "sortCancel": "Cancelar orden",
-
   "actions": "Acciones",
   "markInactive": "Desactivar",
   "markInactiveInfo1": "Una vez que marques este niño inactivo, no podrás ver ninguna información futura sobre la asistienca y los ingresos en tu tablero de Pie for Providers.",
@@ -225,7 +231,6 @@
   "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
   "gotToDashboard": "Ir al panel principal",
   "dateError": "Por favor selecciona una fecha",
-
   "inputAttendance": "Ingresar asistencia",
   "name": "Nombre",
   "mon": "lun",
@@ -235,11 +240,9 @@
   "fri": "vie",
   "sat": "sab",
   "sun": "dom",
-
   "screenSize": "Tamaño de pantalla no compatible",
   "incompatibleMsg": "O tu navegador es demasiado pequeño o estás en un aparato móvil. Por favor cambia a una computadora o tableta para ver esta pagina.",
   "noInfo": "no info",
-
   "daily": "día completo",
   "hourly": "horas"
 }

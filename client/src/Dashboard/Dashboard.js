@@ -300,11 +300,7 @@ export function Dashboard() {
 
   return (
     <div className="dashboard sm:mx-8">
-      <DashboardTitle
-        dates={dates}
-        userState={user.state ?? ''}
-        getDashboardData={getDashboardData}
-      />
+      <DashboardTitle dates={dates} getDashboardData={getDashboardData} />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
         dateFilterValue={dates.dateFilterValue}

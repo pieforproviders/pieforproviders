@@ -8,7 +8,7 @@ class BusinessBlueprint < Blueprinter::Base
     field :name
     exclude :id
     association :children, name: :cases, blueprint: ChildBlueprint, view: :illinois_dashboard do |business, options|
-      business.children.not_deleted.approved_for_date(options[:filter_date])
+      business.children.not_deleted.distinct.approved_for_date(options[:filter_date])
     end
   end
 
@@ -16,7 +16,7 @@ class BusinessBlueprint < Blueprinter::Base
     field :name
     exclude :id
     association :children, name: :cases, blueprint: ChildBlueprint, view: :nebraska_dashboard do |business, options|
-      business.children.not_deleted.approved_for_date(options[:filter_date])
+      business.children.not_deleted.distinct.approved_for_date(options[:filter_date])
     end
   end
 end

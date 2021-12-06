@@ -118,6 +118,14 @@ module Nebraska
       "#{attended_weekly_hours&.positive? ? attended_weekly_hours : 0.0} of #{authorized_weekly_hours}"
     end
 
+    def approval_effective_on
+      child_approval&.approval&.effective_on
+    end
+
+    def approval_expires_on
+      child_approval&.approval&.expires_on
+    end
+
     private
 
     def approval_hourly_service_days

@@ -142,7 +142,7 @@ def create_case(full_name,
       copay_cents: copay,
       copay_frequency: frequency,
       effective_on: effective_on,
-      expires_on: nil
+      expires_on: effective_on + 1.year - 1.day
     )
   ]
 
@@ -152,7 +152,7 @@ def create_case(full_name,
       copay_cents: copay ? copay - 1200 : nil,
       copay_frequency: frequency,
       effective_on: effective_on - 1.year,
-      expires_on: nil
+      expires_on: effective_on - 1.day
     )
   end
 
@@ -174,10 +174,6 @@ def create_case(full_name,
       )
     end
   when 'NE'
-    total_absences = rand(0..10).round
-    total_days = rand(0..25).round
-    total_hours = rand(0.0..10.0).round
-
     child.approvals.each do |approval|
       special_needs_rate = Faker::Boolean.boolean
       ChildApproval.find_by(child: child, approval: approval).update!(
@@ -200,17 +196,6 @@ def create_case(full_name,
         weekday: idx + 1
       )
     end
-
-    TemporaryNebraskaDashboardCase.find_or_initialize_by(child: child).update!(
-      attendance_risk: %w[on_track exceeded_limit at_risk].sample,
-      absences: "#{rand(0..total_absences)} of #{total_absences}",
-      earned_revenue: rand(0.00..1000.00).round(2),
-      estimated_revenue: rand(1000.00..2000.00).round(2),
-      family_fee: rand(1000.00..2000.00).round(2),
-      full_days: rand(0..total_days),
-      hours: rand(0.0..total_hours).round(2),
-      hours_attended: "#{rand(0.0..total_hours).round(2)} of #{total_hours}"
-    )
   end
 end
 # rubocop:enable Metrics/ParameterLists

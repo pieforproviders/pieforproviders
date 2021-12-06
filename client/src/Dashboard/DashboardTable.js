@@ -54,6 +54,8 @@ export default function DashboardTable({
   const isInactive = record =>
     !record.active || inactiveCases.includes(record.key)
 
+  const isNotApproved = record => record.approvalEffectiveOn === null
+
   const renderAttendanceRate = (attendanceRate, record) => {
     if (isInactive(record)) {
       return '-'
@@ -158,7 +160,11 @@ export default function DashboardTable({
 
   const generateColumns = columns => {
     return columns.map(({ name = '', children = [], ...options }) => {
-      const hasDefinition = ['attendance', 'revenue']
+      const hasDefinition = [
+        'attendance',
+        'revenue',
+        'totalAuthorizationPeriod'
+      ]
       return {
         // eslint-disable-next-line react/display-name
         title: () =>
@@ -329,6 +335,36 @@ export default function DashboardTable({
             name: 'familyFee',
             sorter: (a, b) => a.familyFee - b.familyFee,
             render: renderDollarAmount
+          }
+        ]
+      },
+      {
+        name: 'totalAuthorizationPeriod',
+        children: [
+          {
+            name: 'authorizedPeriod',
+            sorter: (a, b) =>
+              dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
+            render: (text, record) =>
+              isNotApproved(record)
+                ? 'unknown'
+                : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
+                    record.approvalExpiresOn
+                      ? ` - ${dayjs(record.approvalExpiresOn).format('M/D/YY')}`
+                      : ''
+                  }`
+          },
+          {
+            name: 'hoursRemaining',
+            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+            render: (text, record) =>
+              `${record.hoursRemaining} (of ${record.hoursAuthorized})`
+          },
+          {
+            name: 'fullDaysRemaining',
+            sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
+            render: (text, record) =>
+              `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
           }
         ]
       },

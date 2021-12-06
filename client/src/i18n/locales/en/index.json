@@ -144,6 +144,10 @@
   "totalApproved": "Total approved",
   "totalApprovedDef": "What the state has approved for all subsidy children",
   "totalApprovedWithFamilyFee": "Total approved with family fee",
+  "totalAuthorizationPeriod": "Total authorization period",
+  "authorizedPeriod": "Authorized period",
+  "hoursRemaining": "Total hours remaining",
+  "fullDaysRemaining": "Total days remaining",
   "comingSoon": "Coming soon!",
   "attendance": "Attendance",
   "revenue": "Revenue",
@@ -187,13 +191,15 @@
   "neEstimatedRevenueDef": "The subsidy revenue we predict you will receive, if you have perfect attendance for the rest of the month. This does not include the family fee.",
   "neHoursAttendedDef": "Hours the child has attended this week. If you exceed your maximum hours for the week, you will not be paid by the state for those additional hours.",
   "neFamilyFeeDef": "The amount the parent owes you for this child for the month.",
+  "neAuthorizedPeriodDef": "This is the start and end date that the child is approved to receive childcare subsidies for. You can find this information in the authorization letter.",
+  "neHoursRemainingDef": "How many hours the child still has available to attend. You can find the total number of authorized hours in the authorization letter.",
+  "neFullDaysRemainingDef": "How many daily units the child still has available to attend. You can find the total number of authorized daily units in the authorization letter.",
   "backToTop": "Back to top",
   "of": "of",
   "trips": "trips",
   "sortAsc": "Click to sort ascending ",
   "sortDesc": "Click to sort descending",
   "sortCancel": "Click to cancel sort",
-
   "actions": "Actions",
   "markInactive": "Mark inactive",
   "markInactiveInfo1": "Once you mark this child inactive, you will not see any future attendance or revenue information on your Pie for Providers dashboard.",
@@ -225,7 +231,6 @@
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
   "dateError": "Please select a date",
-
   "inputAttendance": "Input Attendance",
   "name": "Name",
   "mon": "mon",
@@ -235,11 +240,9 @@
   "fri": "fri",
   "sat": "sat",
   "sun": "sun",
-
   "screenSize": "Screen size not compatible",
   "incompatibleMsg": "Either your browser window is too small, or you’re on a mobile device. Please switch to a desktop or tablet to view this page.",
   "noInfo": "no info",
-
   "daily": "full day",
   "hourly": "hours"
 }

@@ -4,12 +4,14 @@ module Nebraska
   module Monthly
     # Calculate estimated revenue for a child on a given date for the month
     class EstimatedRevenueCalculator
-      attr_reader :child, :child_approval, :filter_date
+      attr_reader :child, :child_approval, :filter_date, :schedules, :service_days
 
       def initialize(child:, child_approval:, filter_date:)
         @child = child
         @child_approval = child_approval
         @filter_date = filter_date
+        @schedules = child.schedules
+        @service_days = child.service_days
       end
 
       def call
@@ -20,7 +22,7 @@ module Nebraska
 
       def calculate_estimated_revenue
         (Nebraska::Monthly::EarnedRevenueCalculator.new(
-          service_days: child.service_days,
+          service_days: service_days,
           filter_date: filter_date
         ).call + remaining_scheduled_revenue)
       end
@@ -38,7 +40,7 @@ module Nebraska
         # if there's already an attendance on the filter date,
         # and the date we're passing is the filter date,
         # then skip today
-        child.service_days.for_day(filter_date).present? && date.to_date == filter_date.to_date
+        service_days.for_day(filter_date).present? && date.to_date == filter_date.to_date
       end
 
       def scheduled_revenue(date:)
@@ -50,7 +52,7 @@ module Nebraska
       end
 
       def schedule(date:)
-        child.schedules.active_on_date(date).select { |schedule| schedule.weekday == date.wday }.first
+        schedules.active_on_date(date).select { |schedule| schedule.weekday == date.wday }.first
       end
     end
   end
