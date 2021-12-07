@@ -31,7 +31,10 @@ module Nebraska
     field :hours_authorized do |dashboard_case, _options|
       dashboard_case.hours_authorized&.to_f
     end
-    field :hours_attended
+    # TODO: rename this field and document, update front-end
+    field :hours_attended do |dashboard_case, _options|
+      dashboard_case.weekly_hours_attended
+    end
     field :approval_effective_on
     field :approval_expires_on
   end

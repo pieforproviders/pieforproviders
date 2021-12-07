@@ -4,8 +4,9 @@
 class ServiceDay < UuidApplicationRecord
   belongs_to :child
   has_many :attendances, dependent: :destroy
-  has_many :child_approvals, -> { order(total_time_in_care: :desc).distinct }, through: :attendances
-  # has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
+  has_many :child_approvals, -> { order(:created_at).distinct }, through: :attendances
+  has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
+  has_many :schedules, through: :child
 
   validates :date, date_time_param: true, presence: true
 
@@ -105,25 +106,33 @@ class ServiceDay < UuidApplicationRecord
   def hourly?
     return false unless state == 'NE'
 
-    total_time_in_care <= (5.hours + 45.minutes)
+    Nebraska::Daily::DurationCalculator.new(total_time_in_care: total_time_in_care).hourly?
   end
 
   def daily?
     return false unless state == 'NE'
 
-    total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
+    Nebraska::Daily::DurationCalculator.new(total_time_in_care: total_time_in_care).daily?
   end
 
   def daily_plus_hourly?
     return false unless state == 'NE'
 
-    total_time_in_care > 10.hours && total_time_in_care <= 18.hours
+    Nebraska::Daily::DurationCalculator.new(total_time_in_care: total_time_in_care).daily_plus_hourly?
   end
 
   def daily_plus_hourly_max?
     return false unless state == 'NE'
 
-    total_time_in_care > 18.hours
+    Nebraska::Daily::DurationCalculator.new(total_time_in_care: total_time_in_care).daily_plus_hourly_max?
+  end
+
+  def days
+    Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call
+  end
+
+  def hours
+    Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
   end
 
   def earned_revenue
@@ -134,7 +143,8 @@ class ServiceDay < UuidApplicationRecord
       child: child,
       child_approval: child.active_child_approval(date),
       date: date,
-      total_time_in_care: total_time_in_care
+      hours: hours,
+      days: days
     ).call
   end
 

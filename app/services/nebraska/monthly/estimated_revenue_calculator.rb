@@ -43,12 +43,23 @@ module Nebraska
         service_days.for_day(filter_date).present? && date.to_date == filter_date.to_date
       end
 
+      def hours(date:)
+        Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: schedule(date: date).duration).call
+      end
+
+      def days(date:)
+        Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: schedule(date: date).duration).call
+      end
+
       def scheduled_revenue(date:)
-        Nebraska::Daily::RevenueCalculator.new(business: child.business,
-                                               child: child,
-                                               child_approval: child_approval,
-                                               date: date,
-                                               total_time_in_care: schedule(date: date).duration).call
+        Nebraska::Daily::RevenueCalculator.new(
+          business: child.business,
+          child: child,
+          child_approval: child_approval,
+          date: date,
+          hours: hours(date: date),
+          days: days(date: date)
+        ).call
       end
 
       def schedule(date:)

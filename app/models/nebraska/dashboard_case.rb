@@ -5,31 +5,37 @@ module Nebraska
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :approval,
-                :child_approval,
                 :approval_attendances,
-                :child,
-                :filter_date,
-                :service_days_this_approval,
-                :service_days_this_month,
-                :scheduled_days,
                 :attended_days,
-                :reimbursable_absence_days,
+                :child,
+                :child_approval,
                 :estimated_days,
-                :schedules
+                :filter_date,
+                :month_absences,
+                :month_attendances,
+                :reimbursable_absence_days,
+                :scheduled_days,
+                :schedules,
+                :service_days_this_approval,
+                :service_days_this_month
 
     def initialize(child:, filter_date:)
-      @approval = @child_approval&.approval
-      @approval_attendances = service_days_this_approval&.non_absences
-      @attended_days = attended_service_days
       @child = child
       @child_approval = child&.active_child_approval(filter_date)
+      @service_days_this_approval = child_approval&.service_days
+      @service_days_this_month = child&.service_days&.for_month(filter_date).includes(
+        :attendances, :child_approvals, :approvals, :schedules
+      )
+      @schedules = child&.schedules
+      @approval = child_approval&.approval
       @estimated_days = estimated_service_days
       @filter_date = filter_date
+      @month_absences = service_days_this_month&.absences
+      @month_attendances = service_days_this_month&.non_absences
       @reimbursable_absence_days = reimbursable_absence_service_days
       @scheduled_days = scheduled_service_days
-      @schedules = child&.schedules
-      @service_days_this_approval = child_approval&.service_days
-      @service_days_this_month = child&.service_days&.for_month(filter_date)
+      @approval_attendances = service_days_this_approval&.non_absences
+      @attended_days = attended_service_days
     end
 
     def scheduled_service_days
@@ -46,13 +52,7 @@ module Nebraska
     end
 
     def attended_service_days
-      return unless service_days_this_month
-
-      days = []
-      service_days_this_month.includes(:attendances).non_absences.map do |service_day|
-        days << Nebraska::CalculatedServiceDay.new(service_day: service_day)
-      end
-      days
+      month_attendances&.map { |service_day| Nebraska::CalculatedServiceDay.new(service_day: service_day) }
     end
 
     def estimated_service_days
@@ -64,13 +64,14 @@ module Nebraska
     end
 
     def reimbursable_absence_service_days
-      return unless service_days_this_month
+      return unless month_absences
 
       days = []
-      service_days_this_month.includes(:attendances).covid_absences.map do |service_day|
+      month_absences.covid_absences.map do |service_day|
         days << Nebraska::CalculatedServiceDay.new(service_day: service_day)
       end
-      service_days_this_month.includes(:attendances).standard_absences.order(total_time_in_care: :desc).take(5).map do |service_day|
+      # TODO: monthly limit should be stored in the db at some point
+      month_absences.standard_absences&.sort_by(&:total_time_in_care)&.reverse!&.take(5)&.map do |service_day|
         days << Nebraska::CalculatedServiceDay.new(service_day: service_day)
       end
       days
@@ -87,9 +88,7 @@ module Nebraska
     end
 
     def absences
-      return 0 unless service_days_this_month
-
-      service_days_this_month.absences.length
+      month_absences&.length || 0
     end
 
     def case_number
@@ -130,28 +129,11 @@ module Nebraska
     end
 
     def full_days
-      0
-      # TODO: this adds to the query
-      # return 0 unless service_days_this_month
-
-      # days = service_days_this_month.non_absences.map do |service_day|
-      #   Nebraska::CalculatedServiceDay.new(service_day: service_day)
-      # end
-      # binding.pry
-      # .reduce(0) do |sum, service_day|
-      #   binding.pry
-      #   sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
-      # end
+      attended_days&.sum(&:days) || 0
     end
 
     def hours
-      0
-      # TODO: this adds to the query
-      # return 0 unless service_days_this_month
-
-      # service_days_this_month.non_absences.reduce(0) do |sum, service_day|
-      #   sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
-      # end
+      attended_days&.sum(&:hours) || 0
     end
 
     # TODO: anything called 'full days' should be made consistent - daily/days
@@ -177,18 +159,26 @@ module Nebraska
       child_approval&.hours || 0
     end
 
-    # TODO: rename attended_weekly_hours
-    def hours_attended
-      0
-      # TODO: this adds to the query
-      # return 0 unless service_days_this_month
+    def weekly_hours_attended
+      days = [
+        service_days_this_month&.non_absences&.for_week(filter_date),
+        service_days_this_month.absences
+          &.sort_by(&:total_time_in_care)
+          &.reverse!
+          &.take(5)
+          &.select do |service_day|
+            service_day
+              .date
+              .to_date
+              .between?(
+                filter_date.at_beginning_of_week(:sunday),
+                filter_date.at_end_of_week(:saturday)
+              )
+          end
+      ]
+      hours = days&.compact&.reduce([], :|)&.sum(&:total_time_in_care)&.seconds&.in_hours&.round(2) || 0
 
-      # authorized_weekly_hours = child_approval&.authorized_weekly_hours
-      # attended_weekly_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
-      #   service_days: service_days_this_month,
-      #   filter_date: filter_date
-      # ).call
-      # "#{attended_weekly_hours&.positive? ? attended_weekly_hours : 0.0} of #{authorized_weekly_hours}"
+      "#{hours&.positive? ? hours : 0.0} of #{child_approval&.authorized_weekly_hours}"
     end
 
     def approval_effective_on

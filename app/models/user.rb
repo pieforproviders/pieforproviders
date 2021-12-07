@@ -60,7 +60,7 @@ class User < UuidApplicationRecord
   end
 
   def first_approval_effective_date
-    return Time.current.to_date unless approvals.present?
+    return unless approvals.present?
 
     approvals.order(effective_on: :desc).first.effective_on
   end

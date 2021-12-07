@@ -4,30 +4,52 @@ module Nebraska
   # A service day with its earned revenue and duration calculated
   # for use in the dashboard endpoint
   class CalculatedServiceDay
-    attr_reader :service_day, :total_time_in_care, :earned_revenue, :date
+    attr_reader :attendances,
+                :child,
+                :child_approval,
+                :business,
+                :date,
+                :service_day,
+                :schedule,
+                :total_time_in_care,
+                :weekday
 
     def initialize(service_day:)
       @service_day = service_day
-      @total_time_in_care = total_time_in_care
-      @earned_revenue = earned_revenue
+      @attendances = service_day.attendances
+      @child = service_day.child
       @date = service_day.date.to_date
+      @weekday = date.wday
+      @schedule = service_day.schedules.active_on(date).where(weekday: weekday).first
+      @child_approval = child.active_child_approval(date)
+      @business = child.business
+      @total_time_in_care = total_time_in_care
     end
 
     def total_time_in_care
-      if service_day.attendances.present?
-        service_day.attendances&.sum(&:total_time_in_care)
-      else
-        service_day.child.schedules.active_on(service_day.date).where(weekday: service_day.date.wday).first.duration
-      end
+      attendances.presence&.sum(&:total_time_in_care) || schedule.duration || 0.minutes
+    end
+
+    def absence?
+      attendances.absences.any?
+    end
+
+    def days
+      Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call
+    end
+
+    def hours
+      Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
     end
 
     def earned_revenue
       Nebraska::Daily::RevenueCalculator.new(
-        business: service_day.child.business,
-        child: service_day.child,
-        child_approval: service_day.child.active_child_approval(service_day.date),
-        date: service_day.date,
-        total_time_in_care: total_time_in_care
+        business: business,
+        child: child,
+        child_approval: child_approval,
+        date: date,
+        hours: hours,
+        days: days
       ).call
     end
   end
