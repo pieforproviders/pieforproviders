@@ -54,7 +54,7 @@ module Nebraska
         active_child_rates
           .where(region: ne_region)
           .where(license_type: business.license_type)
-          .where(accredited_rate: business.accredited)
+          .where(accredited_rate: business.accredited || false)
           .order_max_age
       end
 

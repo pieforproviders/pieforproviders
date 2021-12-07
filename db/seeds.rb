@@ -109,8 +109,8 @@ puts_records_in_db(User)
 )
 
 @business_nebraska = Business.where(name: 'Nebraska Home Child Care', user: @user_nebraska).first_or_create!(
-  license_type: Licenses::TYPES.sample,
-  county: 'Cook',
+  license_type: 'family_child_care_home_i',
+  county: 'Douglas',
   zipcode: '68123'
 )
 
@@ -184,16 +184,6 @@ def create_case(full_name,
         special_needs_hourly_rate: special_needs_rate ? rand(0.0..10).round(2) : nil,
         enrolled_in_school: Faker::Boolean.boolean,
         authorized_weekly_hours: rand(0..45)
-      )
-    end
-
-    effective_on = Faker::Date.between(from: 8.months.ago, to: 4.months.ago)
-
-    5.times do |idx|
-      Schedule.find_or_initialize_by(child: child).update!(
-        effective_on: effective_on,
-        duration: rand(0..23).hours.in_seconds,
-        weekday: idx + 1
       )
     end
   end
