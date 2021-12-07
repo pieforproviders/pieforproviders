@@ -53,6 +53,6 @@ Dockerfile
 init.sql
 .docker-env/development/database
 
-.idea/*
+.idea/
 /vendor/bundle/ruby/3.0.0/
 /pieforproviders.iml
