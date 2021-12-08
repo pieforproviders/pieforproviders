@@ -12,9 +12,13 @@ task attendances: :environment do
   end
 end
 
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Metrics/CyclomaticComplexity
+# rubocop:disable Metrics/PerceivedComplexity
 def generate_attendances
   Child.all.each do |child|
-    last_attendance_check_out ||= child.attendances.presence&.order(check_in: :desc)&.last&.check_out || (Time.current - rand(1..60).days)
+    last_attendance_check_out ||= child.attendances.presence&.order(check_in: :desc)
+      &.last&.check_out || (Time.current - rand(1..60).days)
     weeks_to_populate = ((Time.current - last_attendance_check_out).seconds.in_days / 7).round
     active_child_approval = child.active_child_approval(Time.current)
 
@@ -27,8 +31,12 @@ def generate_attendances
 
         check_out = check_in + rand(0..23).hours + rand(0..59).minutes
         Attendance.create!(check_in: check_in, check_out: check_out, child_approval: active_child_approval)
-        last_attendance_check_out = child.attendances.presence&.order(check_in: :desc)&.last&.check_out || (Time.current - rand(1..60).days)
+        last_attendance_check_out = child.attendances.presence&.order(check_in: :desc)
+          &.last&.check_out || (Time.current - rand(1..60).days)
       end
     end
   end
 end
+# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/CyclomaticComplexity
+# rubocop:enable Metrics/AbcSize
