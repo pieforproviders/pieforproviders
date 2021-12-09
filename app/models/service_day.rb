@@ -138,7 +138,24 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def total_time_in_care
-    attendances.sum(&:total_time_in_care)
+      return calculate_nebraska_total_time if state == 'NE'
+      attendances.sum(&:total_time_in_care)
+  end
+
+  def calculate_nebraska_total_time
+    total_time = attendances.sum(&:total_time_in_care)
+    duration = schedule_for_weekday&.duration || 8.hours
+    return duration if total_time < duration && missing_clock_out?
+    total_time
+  end
+
+  def missing_clock_out?
+    attendances.each { |a| return true if a.check_in && !a.check_out }
+    false
+  end
+
+  def schedule_for_weekday
+    child.schedules.active_on_date(date).for_weekday(date.wday).first
   end
 end
 
