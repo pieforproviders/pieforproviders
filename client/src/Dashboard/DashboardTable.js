@@ -248,16 +248,13 @@ export default function DashboardTable({
     if (!window.gtag) return
 
     try {
-      window.gtag('event', 'mark inactive', {
-        category: 'Dashboard',
-        action: 'Mark Inactive',
-        labels: {
-          Date: inactiveDate,
-          'Reason Selected': inactiveReason
-        }
+      window.gtag('event', 'mark_inactive', {
+        date: inactiveDate,
+        page_title: 'dashboard',
+        reason_selected: inactiveReason
       })
     } catch {
-      console.log('Unable to send the `mark inactive` google analytics event')
+      console.log('Unable to send the `mark_inactive` google analytics event')
     }
   }
 
