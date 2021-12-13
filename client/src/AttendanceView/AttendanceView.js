@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
 import { WeekPicker } from './WeekPicker'
 
@@ -12,6 +13,7 @@ const { useBreakpoint } = Grid
 
 export function AttendanceView() {
   const { i18n, t } = useTranslation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
   const { makeRequest } = useApiResponse()
@@ -148,7 +150,7 @@ export function AttendanceView() {
 
   const handleDateChange = newDate => {
     // send google analytics event data about changing the current week selected
-    window.gtag('event', 'dates_filtered', {
+    sendGAEvent('dates_filtered', {
       date_selected: `${newDate.weekday(0).format('MMM D')} -
       ${newDate.weekday(6).format('MMM D, YYYY')}`,
       page_title: 'attendance'
@@ -218,7 +220,7 @@ export function AttendanceView() {
               className="absolute"
               style={{ right: '3rem' }}
               onClick={() => {
-                window.gtag('event', 'attendance_input_clicked', {
+                sendGAEvent('attendance_input_clicked', {
                   page_title: 'attendance'
                 })
                 history.push('/attendance/edit')
