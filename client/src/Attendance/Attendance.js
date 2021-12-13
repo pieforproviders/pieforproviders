@@ -11,10 +11,12 @@ import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const history = useHistory()
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseData()
@@ -237,7 +239,7 @@ export function Attendance() {
           ;(hj.q = hj.q || []).push(arguments)
         }
       window.hj('event', 'save_attendance')
-      window.gtag('event', 'save_attendance', {
+      sendGAEvent('save_attendance', {
         number: `${attendanceBatch.length}`,
         page_title: 'edit_attendance'
       })
