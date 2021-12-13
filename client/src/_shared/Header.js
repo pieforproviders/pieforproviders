@@ -46,14 +46,14 @@ export function Header() {
   const renderMobileMenu = () => {
     const mobileMenu = (
       <Menu>
-        <Menu.Item>
+        <Menu.Item key="dashboard">
           {isAuthenticated && (
             <Button type="link" onClick={() => history.push('/dashboard')}>
               {t('dashboard')}
             </Button>
           )}
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="attendance">
           {isAuthenticated && (
             <Button type="link" onClick={() => history.push('/attendance')}>
               {t('attendance')}
@@ -61,7 +61,7 @@ export function Header() {
           )}
         </Menu.Item>
         <Divider />
-        <Menu.Item>
+        <Menu.Item key="logout">
           {isAuthenticated && (
             <Button type="link" onClick={logout}>
               {t('logout')}
@@ -69,13 +69,13 @@ export function Header() {
           )}
         </Menu.Item>
         {i18n.language === 'es' ? (
-          <Menu.Item>
+          <Menu.Item key="english">
             <Button type="link" onClick={() => changeLanguage('en')}>
               {t('english')}
             </Button>
           </Menu.Item>
         ) : (
-          <Menu.Item>
+          <Menu.Item key="spanish">
             <Button type="link" onClick={() => changeLanguage('es')}>
               {t('spanish')}
             </Button>
