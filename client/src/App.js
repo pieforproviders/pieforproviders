@@ -7,7 +7,6 @@ import {
   useLocation
 } from 'react-router-dom'
 import useHotjar from 'react-use-hotjar'
-import { useSelector } from 'react-redux'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
@@ -24,6 +23,7 @@ import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
 import { useTranslation } from 'react-i18next'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 
 const env = runtimeEnv()
 
@@ -31,20 +31,16 @@ const Routes = () => {
   const { t } = useTranslation()
   const { initHotjar } = useHotjar()
   const isAuthenticated = useAuthentication()
-  const user = useSelector(state => state.user)
+  const { initGoogleAnalytics } = useGoogleAnalytics()
   let location = useLocation()
 
   useEffect(() => {
     if (env.REACT_APP_HOTJAR_ID) {
       initHotjar(env.REACT_APP_HOTJAR_ID, env.REACT_APP_HOTJAR_SV)
     }
-    if (!window.gtag) return
-    window.gtag('config', env.REACT_APP_GA_MEASUREMENT_ID, {
-      page_path: location.pathname,
-      user_id: user.id ?? ''
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, user])
+
+    initGoogleAnalytics()
+  }, [initGoogleAnalytics, initHotjar])
 
   return (
     <div

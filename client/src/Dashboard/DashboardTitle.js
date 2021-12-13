@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import '_assets/styles/dashboard-overrides.css'
 
 const { useBreakpoint } = Grid
@@ -11,6 +12,7 @@ const { Option } = Select
 
 export default function DashboardTitle({ dates, getDashboardData }) {
   const { t } = useTranslation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
   // keeping this dropdown icon logic in hope it can eventually work
@@ -35,6 +37,10 @@ export default function DashboardTitle({ dates, getDashboardData }) {
       // onDropdownVisibleChange={open => setDropdownVisible(open)}
       value={dateFilterValue}
       onChange={value => {
+        sendGAEvent('dates_filtered', {
+          page_title: 'dashboard',
+          date_selected: value
+        })
         getDashboardData(value)
         setDateFilterValue(value)
       }}
@@ -75,7 +81,7 @@ export default function DashboardTitle({ dates, getDashboardData }) {
             <Button
               className="flex border-primaryBlue text-primaryBlue"
               onClick={() => {
-                window.gtag('event', 'attendance_input_clicked', {
+                sendGAEvent('attendance_input_clicked', {
                   page_title: 'dashboard'
                 })
 
@@ -99,7 +105,7 @@ export default function DashboardTitle({ dates, getDashboardData }) {
             <Button
               className="flex ml-auto border-primaryBlue text-primaryBlue"
               onClick={() => {
-                window.gtag('event', 'attendance_input_clicked', {
+                sendGAEvent('attendance_input_clicked', {
                   page_title: 'dashboard'
                 })
 
