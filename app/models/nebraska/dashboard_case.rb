@@ -128,30 +128,22 @@ module Nebraska
 
     private
 
-    def approval_hourly_service_days
-      approval_attendances.ne_hourly.or(
-        approval_attendances.ne_daily_plus_hourly
-      ).or(
-        approval_attendances.ne_daily_plus_hourly_max
-      )
+    def approval_hourly_service_days(approval)
+      approval.select { |a|  a.hourly? || a.daily_plus_hourly? || a.daily_plus_hourly_max?}
     end
 
     def attended_approval_hours
-      approval_hourly_service_days.reduce(0) do |sum, service_day|
+      approval_hourly_service_days(approval_attendances).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
     end
 
-    def approval_daily_service_days
-      approval_attendances.ne_daily.or(
-        approval_attendances.ne_daily_plus_hourly
-      ).or(
-        approval_attendances.ne_daily_plus_hourly_max
-      )
+    def approval_daily_service_days(approval)
+      approval.select { |a|  a.daily? || a.daily_plus_hourly? || a.daily_plus_hourly_max?}
     end
 
     def attended_approval_days
-      approval_daily_service_days.reduce(0) do |sum, service_day|
+      approval_daily_service_days(approval_attendances).reduce(0) do |sum, service_day|
         sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
     end
@@ -179,9 +171,7 @@ module Nebraska
     def approval_hourly_absences
       return if approval_absences.blank?
 
-      approval_absences.ne_hourly
-                       .or(approval_absences.ne_daily_plus_hourly)
-                       .or(approval_absences.ne_daily_plus_hourly_max)
+      approval_hourly_service_days(approval_absences)
     end
 
     def absent_approval_hours
@@ -195,9 +185,7 @@ module Nebraska
     def approval_daily_absences
       return if approval_absences.blank?
 
-      approval_absences.ne_daily
-                       .or(approval_absences.ne_daily_plus_hourly)
-                       .or(approval_absences.ne_daily_plus_hourly_max)
+      approval_daily_service_days(approval_absences)
     end
 
     def absent_approval_days
