@@ -437,6 +437,15 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       absence: 'absence'
     )
 
+    parsed_response = JSON.parse(
+      described_class
+        .render(
+          Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+        )
+    )
+    #3 attendances would have a 3 hour duration
+    expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 9).to_f)
+
     # put this schedule back to where it was to maintain calculations
     child.schedules.where(weekday: 2).first.update!(duration: 8.hours)
 
@@ -450,10 +459,10 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # no change because this is an old attendance
     expect(parsed_response['full_days']).to eq('8.0')
     # subtract hourly attendances, subtract hourly attendances up to the monthly limit
-    expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
+    expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25).to_f)
     # subtract full day attendances, subtract full day absences up to the monthly limit
     # the original 5 limit applies to the attendance_date month; this absence occurs in the prior month
-    expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 6)
+    expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 7)
     expect(parsed_response['hours_authorized']).to eq(child_approval.hours.to_f)
     expect(parsed_response['full_days_authorized']).to eq(child_approval.full_days)
     # no change because this is an old attendance
