@@ -254,10 +254,13 @@ export function Dashboard() {
         tableData,
         parsedResponse
       )
-      const updatedDates = reduceDates(parsedResponse, filterDate)
+
+      if (dates.asOf === '') {
+        const updatedDates = reduceDates(parsedResponse, filterDate)
+        setDates(updatedDates)
+      }
 
       dispatch(setCaseData(tableData))
-      setDates(updatedDates)
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
       setTableData(tableData)
