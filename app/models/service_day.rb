@@ -127,8 +127,7 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def total_time_in_care
-    case
-    when state == 'NE'
+    if state == 'NE'
       calculate_nebraska_total_time
     else
       attendances.sum(&:time_in_care)
@@ -138,7 +137,7 @@ class ServiceDay < UuidApplicationRecord
   def calculate_nebraska_total_time
     total_time = attendances.sum(&:time_in_care)
     duration = schedule_for_weekday&.duration || 8.hours
-    (total_time < duration && missing_clock_out?) ? duration : total_time
+    total_time < duration && missing_clock_out? ? duration : total_time
   end
 
   def missing_clock_out?

@@ -444,14 +444,14 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
 
     parsed_response = JSON.parse(
       described_class
-      .render(
-        Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
-      )
+        .render(
+          Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+        )
     )
 
     # no change because this is an old attendance
     expect(parsed_response['full_days']).to eq('8.0')
-    # Subtract an additional 3-hour absence to the priorr hours_remaining
+    # Subtract an additional 3-hour absence from the prior hours_remaining
     expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
     # subtract full day attendances, subtract full day absences up to the monthly limit
     # the original 5 limit applies to the attendance_date month; this absence occurs in the prior month
