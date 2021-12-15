@@ -42,7 +42,7 @@ class NebraskaRate < UuidApplicationRecord
 
   scope :for_case,
         lambda { |date, school_age, age, business|
-          where(effective_on: ...date.at_end_of_month)
+          where('effective_on <= ?', date.at_end_of_month)
             .where('expires_on is null or expires_on > ?', date.at_beginning_of_month)
             .where(school_age: school_age)
             .where('max_age >= ? OR max_age IS NULL', age)
