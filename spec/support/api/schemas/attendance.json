@@ -35,7 +35,7 @@
       ],
       "format": "uuid"
     },
-    "total_time_in_care": {
+    "time_in_care": {
       "type": [
         "string",
         "null"
