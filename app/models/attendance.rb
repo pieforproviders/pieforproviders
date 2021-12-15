@@ -78,8 +78,8 @@ class Attendance < UuidApplicationRecord
   def calc_time_in_care
     self.time_in_care = if check_in && check_out
                           check_out - check_in
-                        elsif state == 'NE'
-                          calculate_from_schedule
+                        elsif state == 'NE' && absence.present? && schedule_for_weekday.present?
+                          schedule_for_weekday.duration
                         else
                           0.seconds
                         end
@@ -103,10 +103,6 @@ class Attendance < UuidApplicationRecord
     return unless absence
 
     errors.add(:absence, "can't create for a day without a schedule") unless schedule_for_weekday
-  end
-
-  def calculate_from_schedule
-    schedule_for_weekday&.duration || 8.hours
   end
 
   def schedule_for_weekday

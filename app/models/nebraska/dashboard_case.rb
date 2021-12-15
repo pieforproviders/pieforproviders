@@ -102,7 +102,6 @@ module Nebraska
         sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
       end
 
-      # binding.pry if full_days_authorized - days == 187
       [full_days_authorized - days, 0].max
     end
 
