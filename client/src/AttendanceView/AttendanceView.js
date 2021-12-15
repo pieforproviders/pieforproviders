@@ -36,7 +36,7 @@ export function AttendanceView() {
         title: () => {
           const monthDate = columnDate.format('MMM DD')
           return (
-            <div className="text-gray9 grid justify-items-center ">
+            <div className="grid text-gray9 justify-items-center ">
               <div>{t(`${columnDate.format('ddd').toLocaleLowerCase()}`)} </div>
               <div className="font-semibold">{`${t(
                 monthDate.slice(0, 3).toLowerCase()
@@ -61,7 +61,7 @@ export function AttendanceView() {
               return (
                 <div className="flex justify-center">
                   <div
-                    className="bg-orange2 text-orange3 box-border p-1"
+                    className="box-border p-1 bg-orange2 text-orange3"
                     data-cy="absent"
                   >
                     {t('absent').toLowerCase()}
@@ -82,11 +82,9 @@ export function AttendanceView() {
                   ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
                   : checkIn + ' - ' + checkOut
 
-              const hour = Math.floor(
-                Number(attendance.total_time_in_care) / 3600
-              )
+              const hour = Math.floor(Number(attendance.time_in_care) / 3600)
               const minute = Math.floor(
-                Number(attendance.total_time_in_care % 3600) / 60
+                Number(attendance.time_in_care % 3600) / 60
               )
               totalCareTime =
                 totalCareTime.length > 0
@@ -94,11 +92,11 @@ export function AttendanceView() {
                   : hour + ' hrs ' + minute + '  mins'
             })
             return (
-              <div className="body-2 text-center">
-                <div className="text-gray8 font-semiBold mb-2">
+              <div className="text-center body-2">
+                <div className="mb-2 text-gray8 font-semiBold">
                   {totalCareTime}
                 </div>
-                <div className="text-darkGray text-xs">
+                <div className="text-xs text-darkGray">
                   {checkInCheckOutTime}
                 </div>
                 <div className="flex justify-center">
@@ -118,7 +116,7 @@ export function AttendanceView() {
           }
           return (
             <div className="flex justify-center">
-              <div className="bg-mediumGray box-border p-1" data-cy="noInfo">
+              <div className="box-border p-1 bg-mediumGray" data-cy="noInfo">
                 {t('noInfo')}
               </div>
             </div>
@@ -133,7 +131,7 @@ export function AttendanceView() {
         key: 'name',
         width: 150,
         title: (
-          <div className="text-gray9 font-semibold grid justify-items-center ">
+          <div className="grid font-semibold text-gray9 justify-items-center ">
             {t('name')}
           </div>
         ),
@@ -211,7 +209,7 @@ export function AttendanceView() {
     <div>
       {screens.sm ? (
         <div>
-          <div className="h1-large mb-4 flex justify-center">
+          <div className="flex justify-center mb-4 h1-large">
             <div>
               <div>{t('attendance')}</div>
             </div>
@@ -249,11 +247,11 @@ export function AttendanceView() {
         </div>
       ) : (
         <div className="flex flex-col">
-          <div className="h3-large text-center mb-8 font-semibold">
+          <div className="mb-8 font-semibold text-center h3-large">
             {t('screenSize')}
           </div>
           <img src={smallPie} alt={'a small lemon pie'} />
-          <div className="text-center body-1 text-black mt-8">
+          <div className="mt-8 text-center text-black body-1">
             {t('incompatibleMsg')}
           </div>
         </div>
