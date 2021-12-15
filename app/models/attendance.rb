@@ -76,11 +76,13 @@ class Attendance < UuidApplicationRecord
   end
 
   def calc_time_in_care
-    self.total_time_in_care = if check_in && check_out
-                                check_out - check_in
-                              else
-                                0.seconds
-                              end
+    self.time_in_care = if check_in && check_out
+                          check_out - check_in
+                        elsif state == 'NE' && absence.present? && schedule_for_weekday.present?
+                          schedule_for_weekday.duration
+                        else
+                          0.seconds
+                        end
   end
 
   def find_or_create_service_day
