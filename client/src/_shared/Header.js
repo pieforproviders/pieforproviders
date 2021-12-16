@@ -74,7 +74,7 @@ export function Header() {
             >
               <span
                 className={
-                  location.pathname === '/attendance' ? 'underline' : ''
+                  location.pathname.includes('/attendance') ? 'underline' : ''
                 }
               >
                 {t('attendance')}
@@ -167,7 +167,7 @@ export function Header() {
             </div>
             <div
               className={`ml-8 header-nav-button -mb-4 pb-4 ${
-                location.pathname === '/attendance'
+                location.pathname.includes('/attendance')
                   ? 'border-b-4 border-primaryBlue'
                   : ''
               }`}
