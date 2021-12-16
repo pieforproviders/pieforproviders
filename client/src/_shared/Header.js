@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Button, Divider, Dropdown, Menu } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
@@ -18,6 +18,7 @@ export function Header() {
   const setWidth = () => setWindowWidth(window.innerWidth)
   const history = useHistory()
   const [menuOpen, setMenuOpen] = useState(false)
+  let location = useLocation()
 
   const changeLanguage = lang => i18n.changeLanguage(lang)
 
@@ -54,7 +55,13 @@ export function Header() {
               className="text-lg"
               onClick={() => history.push('/dashboard')}
             >
-              {t('dashboard')}
+              <span
+                className={
+                  location.pathname === '/dashboard' ? 'underline' : ''
+                }
+              >
+                {t('dashboard')}
+              </span>
             </Button>
           )}
         </Menu.Item>
@@ -65,7 +72,13 @@ export function Header() {
               className="text-lg"
               onClick={() => history.push('/attendance')}
             >
-              {t('attendance')}
+              <span
+                className={
+                  location.pathname === '/attendance' ? 'underline' : ''
+                }
+              >
+                {t('attendance')}
+              </span>
             </Button>
           )}
         </Menu.Item>
@@ -137,7 +150,13 @@ export function Header() {
       {windowWidth > 768 ? (
         <div className="flex-grow ml-10">
           <div className="flex">
-            <div className="header-nav-button">
+            <div
+              className={`header-nav-button -mb-4 pb-4 ${
+                location.pathname === '/dashboard'
+                  ? 'border-b-4 border-primaryBlue'
+                  : ''
+              }`}
+            >
               <Button
                 className="text-lg font-semibold"
                 type="link"
@@ -146,7 +165,13 @@ export function Header() {
                 {t('dashboard')}
               </Button>
             </div>
-            <div className="ml-8 header-nav-button">
+            <div
+              className={`ml-8 header-nav-button -mb-4 pb-4 ${
+                location.pathname === '/attendance'
+                  ? 'border-b-4 border-primaryBlue'
+                  : ''
+              }`}
+            >
               <Button
                 className="text-lg font-semibold"
                 type="link"
