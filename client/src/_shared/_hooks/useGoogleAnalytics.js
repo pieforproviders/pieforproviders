@@ -14,6 +14,7 @@ export function useGoogleAnalytics() {
       page_path: location.pathname,
       user_id: user.id ?? ''
     })
+    window.gtag('set', 'page_title', location.pathname)
   }
 
   const sendGAEvent = (eventName, payload) => {
