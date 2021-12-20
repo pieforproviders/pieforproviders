@@ -43,7 +43,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe '#latest_service_day_in_month_utc' do
+  describe '#latest_service_day_in_month' do
     let!(:six_months_ago) { Time.current.in_time_zone(user.timezone).at_beginning_of_month - 6.months }
     let!(:child) do
       create(
@@ -75,12 +75,12 @@ RSpec.describe User, type: :model do
     end
 
     it 'works without a date passed' do
-      expect(user.latest_service_day_in_month_utc(nil)).to eq(third_attendance.service_day.date)
+      expect(user.latest_service_day_in_month(nil)).to eq(third_attendance.service_day.date)
     end
 
     it 'returns nil for a month without an attendance' do
       expect(
-        user.latest_service_day_in_month_utc(
+        user.latest_service_day_in_month(
           Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months
         )
       ).to eq(nil)
@@ -88,7 +88,7 @@ RSpec.describe User, type: :model do
 
     it 'returns the latest attendance for a month with multiple attendances' do
       expect(
-        user.latest_service_day_in_month_utc(
+        user.latest_service_day_in_month(
           Time.current.in_time_zone(user.timezone).at_beginning_of_day - 6.months
         )
       ).to eq(second_attendance.service_day.date)

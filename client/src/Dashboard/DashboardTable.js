@@ -8,6 +8,7 @@ import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { updateCase } from '_reducers/casesReducer'
 import DatePicker from './DatePicker'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
@@ -23,6 +24,7 @@ export default function DashboardTable({
   dateFilterValue
 }) {
   const dispatch = useDispatch()
+  const { sendGAEvent } = useGoogleAnalytics()
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(null)
@@ -269,6 +271,11 @@ export default function DashboardTable({
       dispatch(
         updateCase({ childId: selectedChild?.id, updates: { active: false } })
       )
+      sendGAEvent('mark_inactive', {
+        date: inactiveDate,
+        page_title: 'dashboard',
+        reason_selected: inactiveReason
+      })
     }
     handleModalClose()
   }

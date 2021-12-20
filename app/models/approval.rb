@@ -20,7 +20,7 @@ class Approval < UuidApplicationRecord
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
   scope :active, -> { where(active: true) }
-  scope :active_on_date,
+  scope :active_on,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
@@ -31,8 +31,10 @@ class Approval < UuidApplicationRecord
     children.first.timezone
   end
 
-  def child_with_most_scheduled_hours(filter_date)
-    children.max_by { |child| child.total_time_scheduled_this_month(filter_date) }
+  def child_with_most_scheduled_hours(date:)
+    children.max_by do |child|
+      child.total_time_scheduled_this_month(date: date)
+    end
   end
 end
 
@@ -52,4 +54,9 @@ end
 #  inactive_reason :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_approvals_on_effective_on  (effective_on)
+#  index_approvals_on_expires_on    (expires_on)
 #

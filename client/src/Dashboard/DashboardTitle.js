@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import '_assets/styles/dashboard-overrides.css'
 
 const { useBreakpoint } = Grid
@@ -11,6 +12,7 @@ const { Option } = Select
 
 export default function DashboardTitle({ dates, setDates, makeMonth }) {
   const { t } = useTranslation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
 
@@ -23,6 +25,10 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
     <Select
       value={dates?.dateFilterValue?.date}
       onChange={value => {
+        sendGAEvent('dates_filtered', {
+          page_title: 'dashboard',
+          date_selected: value
+        })
         setDates({
           ...dates,
           dateFilterValue: makeMonth(new Date(value))
@@ -60,7 +66,13 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
             </Typography.Text>
             <Button
               className="flex border-primaryBlue text-primaryBlue"
-              onClick={() => history.push('/attendance/edit')}
+              onClick={() => {
+                sendGAEvent('attendance_input_clicked', {
+                  page_title: 'dashboard'
+                })
+
+                history.push('/attendance/edit')
+              }}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>
@@ -78,7 +90,13 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
             </Typography.Text>
             <Button
               className="flex ml-auto border-primaryBlue text-primaryBlue"
-              onClick={() => history.push('/attendance/edit')}
+              onClick={() => {
+                sendGAEvent('attendance_input_clicked', {
+                  page_title: 'dashboard'
+                })
+
+                history.push('/attendance/edit')
+              }}
             >
               {t('addAttendance')} <PlusOutlined />
             </Button>

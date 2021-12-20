@@ -185,6 +185,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
         expect(response.status).to eq(200)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
+
+      it 'returns the correct cases when a filter_date is sent' do
+        get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
+        expect(response.status).to eq(200)
+        expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
+      end
     end
   end
 end

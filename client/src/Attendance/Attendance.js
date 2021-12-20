@@ -11,10 +11,12 @@ import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import AttendanceDataCell from './AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const history = useHistory()
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseData()
@@ -169,14 +171,6 @@ export function Attendance() {
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleSave = async () => {
-    // implemented per: https://help.hotjar.com/hc/en-us/articles/4405109971095-Events-API-Reference
-    window.hj =
-      window.hj ||
-      function () {
-        // eslint-disable-next-line no-undef
-        ;(hj.q = hj.q || []).push(arguments)
-      }
-    window.hj('event', 'save_attendance')
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
         .map((value, key) => {
@@ -237,6 +231,18 @@ export function Attendance() {
 
     if (response.ok) {
       setSuccessModalVisibile(true)
+      // implemented per: https://help.hotjar.com/hc/en-us/articles/4405109971095-Events-API-Reference
+      window.hj =
+        window.hj ||
+        function () {
+          // eslint-disable-next-line no-undef
+          ;(hj.q = hj.q || []).push(arguments)
+        }
+      window.hj('event', 'save_attendance')
+      sendGAEvent('save_attendance', {
+        number: `${attendanceBatch.length}`,
+        page_title: 'edit_attendance'
+      })
     } else {
       // TODO: handle bad request
       console.log('bad request')
