@@ -33,6 +33,11 @@
     padding-right: 60px;
 }
 
+.ant-btn-round.ant-btn-lg.payment-success-button {
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
 .payment-table-text {
     font-size: medium;
 }
@@ -42,5 +47,13 @@
 }
 
 .payment-modal div.ant-modal-header {
+    border-bottom: 0;
+}
+
+.payment-success-modal div.ant-modal-footer {
+    border-top: 0;
+}
+
+.payment-success-modal div.ant-modal-header {
     border-bottom: 0;
 }
