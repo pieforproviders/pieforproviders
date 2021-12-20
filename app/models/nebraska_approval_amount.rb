@@ -6,7 +6,7 @@ class NebraskaApprovalAmount < UuidApplicationRecord
   validates :effective_on, presence: true
   validates :expires_on, presence: true
 
-  scope :active_on_date,
+  scope :active_on,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
@@ -29,6 +29,8 @@ end
 # Indexes
 #
 #  index_nebraska_approval_amounts_on_child_approval_id  (child_approval_id)
+#  index_nebraska_approval_amounts_on_effective_on       (effective_on)
+#  index_nebraska_approval_amounts_on_expires_on         (expires_on)
 #
 # Foreign Keys
 #

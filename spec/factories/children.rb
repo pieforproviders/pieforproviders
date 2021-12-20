@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :child do
-    date_of_birth { Time.current.strftime('%Y-%m-%d') }
+    date_of_birth { (Time.current - 2.years).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
@@ -93,6 +93,7 @@ end
 # Indexes
 #
 #  index_children_on_business_id  (business_id)
+#  index_children_on_deleted_at   (deleted_at)
 #  unique_children                (full_name,date_of_birth,business_id) UNIQUE
 #
 # Foreign Keys

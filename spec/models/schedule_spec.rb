@@ -59,8 +59,12 @@ end
 #
 # Indexes
 #
-#  index_schedules_on_child_id  (child_id)
-#  unique_child_schedules       (effective_on,child_id,weekday) UNIQUE
+#  index_schedules_on_child_id      (child_id)
+#  index_schedules_on_effective_on  (effective_on)
+#  index_schedules_on_expires_on    (expires_on)
+#  index_schedules_on_updated_at    (updated_at)
+#  index_schedules_on_weekday       (weekday)
+#  unique_child_schedules           (effective_on,child_id,weekday) UNIQUE
 #
 # Foreign Keys
 #

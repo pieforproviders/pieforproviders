@@ -97,11 +97,11 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # no revenue because of family fee
     expect(parsed_response['earned_revenue']).to eq(0.0)
     # this includes 3.0 of hourly attendance, 1 full day attendance + 17
+    # static over the course of the month
+    expect(parsed_response['family_fee']).to eq(family_fee.to_f.to_s)
     # remaining scheduled days of the month including today
     expect(parsed_response['estimated_revenue'])
       .to eq(((3.0 * hourly_rate * qris_bump) + (18 * daily_rate * qris_bump) - family_fee).to_f.round(2))
-    # static over the course of the month
-    expect(parsed_response['family_fee']).to eq(family_fee.to_f.to_s)
     # too early in the month to show risk
     expect(parsed_response['attendance_risk']).to eq('not_enough_info')
 
@@ -202,6 +202,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     expect(parsed_response['attendance_risk']).to eq('at_risk')
 
     # July 8th - 12th
+    # 5 full day attendances
     build_list(:attendance, 5) do |attendance|
       attendance.child_approval = child_approval
       attendance.check_in = Helpers.next_attendance_day(child_approval: child_approval) + 3.hours
@@ -210,6 +211,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     end
 
     # July 13th - 15th
+    # 3 full day absences
     Helpers.build_nebraska_absence_list(num: 3, child_approval: child_approval)
 
     parsed_response = JSON.parse(
@@ -449,7 +451,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
 
     # no change because this is an old attendance
     expect(parsed_response['full_days']).to eq('8.0')
-    # subtract hourly attendances, subtract hourly attendances up to the monthly limit
+    # Subtract an additional 3-hour absence from the prior hours_remaining
     expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
     # subtract full day attendances, subtract full day absences up to the monthly limit
     # the original 5 limit applies to the attendance_date month; this absence occurs in the prior month

@@ -31,7 +31,7 @@ class NebraskaRate < UuidApplicationRecord
                       nebraska_rate.expires_on_before_type_cast.nil?
                     }
 
-  scope :active_on_date,
+  scope :active_on,
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
@@ -39,6 +39,18 @@ class NebraskaRate < UuidApplicationRecord
   scope :hourly, -> { where(rate_type: 'hourly') }
   scope :daily, -> { where(rate_type: 'daily') }
   scope :order_max_age, -> { reorder('max_age ASC NULLS LAST') }
+
+  scope :for_case,
+        lambda { |date, school_age, age, business|
+          where('effective_on <= ?', date.at_end_of_month)
+            .where('expires_on is null or expires_on > ?', date.at_beginning_of_month)
+            .where(school_age: school_age)
+            .where('max_age >= ? OR max_age IS NULL', age)
+            .where(region: Nebraska::RegionFinder.new(business: business).call)
+            .where(license_type: business.license_type)
+            .where(accredited_rate: business.accredited || false)
+            .order_max_age
+        }
 end
 
 # == Schema Information
@@ -60,4 +72,9 @@ end
 #  school_age      :boolean          default(FALSE)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_nebraska_rates_on_effective_on  (effective_on)
+#  index_nebraska_rates_on_expires_on    (expires_on)
 #

@@ -48,3 +48,7 @@ Rails/RedundantTravelBack:
 # Our earned revenue test needs a lot of helpers
 RSpec/MultipleMemoizedHelpers:
   Enabled: false
+
+# Turn off autocorrect on focused specs
+RSpec/Focus:
+  AutoCorrect: false

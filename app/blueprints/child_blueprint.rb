@@ -11,7 +11,7 @@ class ChildBlueprint < Blueprinter::Base
 
   view :illinois_dashboard do
     field :case_number do |child, options|
-      child.approvals.active_on_date(options[:filter_date]).first&.case_number
+      child.approvals.active_on(options[:filter_date]).first&.case_number
     end
     field :attendance_risk do |child, options|
       child.attendance_risk(options[:filter_date])

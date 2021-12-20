@@ -5,6 +5,7 @@ class ServiceDay < UuidApplicationRecord
   belongs_to :child
   has_many :attendances, dependent: :destroy
   has_many :child_approvals, -> { order(total_time_in_care: :desc).distinct }, through: :attendances
+  # has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
 
   validates :date, date_time_param: true, presence: true
 
@@ -20,7 +21,7 @@ class ServiceDay < UuidApplicationRecord
           joins(:attendances, { child: :business })
             .where(children: { businesses: { state: 'NE' } })
             .having(
-              'sum("attendances"."total_time_in_care") <= ?',
+              'sum("attendances"."time_in_care") <= ?',
               (5.hours + 45.minutes).to_s
             )
             .group(:id)
@@ -30,7 +31,7 @@ class ServiceDay < UuidApplicationRecord
           joins(:attendances, { child: :business })
             .where(children: { businesses: { state: 'NE' } })
             .having(
-              'sum("attendances"."total_time_in_care") between ? and ?',
+              'sum("attendances"."time_in_care") between ? and ?',
               (5.hours + 46.minutes).to_s,
               10.hours.to_s
             )
@@ -41,7 +42,7 @@ class ServiceDay < UuidApplicationRecord
           joins(:attendances, { child: :business })
             .where(children: { businesses: { state: 'NE' } })
             .having(
-              'sum("attendances"."total_time_in_care") between ? and ?',
+              'sum("attendances"."time_in_care") between ? and ?',
               (10.hours + 1.minute).to_s,
               18.hours.to_s
             )
@@ -52,7 +53,7 @@ class ServiceDay < UuidApplicationRecord
           joins(:attendances, { child: :business })
             .where(children: { businesses: { state: 'NE' } })
             .having(
-              'sum("attendances"."total_time_in_care") > ?',
+              'sum("attendances"."time_in_care") > ?',
               18.hours.to_s
             )
             .group(:id)
@@ -125,20 +126,27 @@ class ServiceDay < UuidApplicationRecord
     total_time_in_care > 18.hours
   end
 
-  def earned_revenue
-    return 0 unless state == 'NE'
-
-    Nebraska::Daily::RevenueCalculator.new(
-      business: business,
-      child: child,
-      child_approval: child.active_child_approval(date),
-      date: date,
-      total_time_in_care: total_time_in_care
-    ).call
+  def total_time_in_care
+    if state == 'NE'
+      calculate_nebraska_total_time
+    else
+      attendances.sum(&:time_in_care)
+    end
   end
 
-  def total_time_in_care
-    attendances.sum(&:total_time_in_care)
+  def calculate_nebraska_total_time
+    total_time = attendances.sum(&:time_in_care)
+    duration = schedule_for_weekday&.duration || 8.hours
+    total_time < duration && missing_clock_out? ? duration : total_time
+  end
+
+  def missing_clock_out?
+    attendances.each { |a| return true if a.check_in && !a.check_out }
+    false
+  end
+
+  def schedule_for_weekday
+    child.schedules.active_on(date).for_weekday(date.wday).first
   end
 end
 
@@ -155,6 +163,7 @@ end
 # Indexes
 #
 #  index_service_days_on_child_id  (child_id)
+#  index_service_days_on_date      (date)
 #
 # Foreign Keys
 #

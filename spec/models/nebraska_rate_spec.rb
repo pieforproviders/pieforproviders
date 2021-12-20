@@ -77,3 +77,8 @@ end
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
+# Indexes
+#
+#  index_nebraska_rates_on_effective_on  (effective_on)
+#  index_nebraska_rates_on_expires_on    (expires_on)
+#
