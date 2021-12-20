@@ -27,6 +27,8 @@ end
 # Indexes
 #
 #  index_nebraska_approval_amounts_on_child_approval_id  (child_approval_id)
+#  index_nebraska_approval_amounts_on_effective_on       (effective_on)
+#  index_nebraska_approval_amounts_on_expires_on         (expires_on)
 #
 # Foreign Keys
 #

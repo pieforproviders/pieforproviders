@@ -28,9 +28,7 @@
         "tags": [
           "businesses"
         ],
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": "business created"
@@ -92,9 +90,7 @@
         "tags": [
           "businesses"
         ],
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "business updated"
@@ -198,9 +194,7 @@
         "tags": [
           "children"
         ],
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "child updated"
@@ -332,9 +326,7 @@
         "tags": [
           "users"
         ],
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": "user created"
@@ -513,7 +505,7 @@
           "attendance_duration": {
             "$ref": "#/components/schemas/duration_definitions"
           },
-          "total_time_in_care": {
+          "time_in_care": {
             "type": "string",
             "example": "360 minutes"
           },
@@ -634,13 +626,11 @@
       },
       "createAttendance": {
         "type": "object",
-        "properties": {
-        }
+        "properties": {}
       },
       "updateAttendance": {
         "type": "object",
-        "properties": {
-        }
+        "properties": {}
       },
       "monthlyApprovalAmount": {
         "type": "object",

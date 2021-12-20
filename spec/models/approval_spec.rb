@@ -86,7 +86,7 @@ RSpec.describe Approval, type: :model do
     it 'returns the child with the most scheduled hours' do
       child_with_more_hours = create(:child, approvals: [approval])
       create(:child, approvals: [approval], schedules: [create(:schedule)])
-      expect(approval.child_with_most_scheduled_hours(Time.current.in_time_zone(child_with_more_hours.timezone)))
+      expect(approval.child_with_most_scheduled_hours(date: Time.current.in_time_zone(child_with_more_hours.timezone)))
         .to eq(child_with_more_hours)
     end
   end
@@ -108,4 +108,9 @@ end
 #  inactive_reason :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#
+# Indexes
+#
+#  index_approvals_on_effective_on  (effective_on)
+#  index_approvals_on_expires_on    (expires_on)
 #

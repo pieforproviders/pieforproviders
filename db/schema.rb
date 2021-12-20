@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_11_165641) do
+ActiveRecord::Schema.define(version: 2021_12_13_211754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -29,12 +29,14 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.date "deleted_at"
     t.boolean "active", default: true, null: false
     t.string "inactive_reason"
+    t.index ["effective_on"], name: "index_approvals_on_effective_on"
+    t.index ["expires_on"], name: "index_approvals_on_expires_on"
   end
 
   create_table "attendances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
     t.datetime "check_out"
-    t.interval "total_time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
+    t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
@@ -42,6 +44,8 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.string "absence"
     t.date "deleted_at"
     t.uuid "service_day_id"
+    t.index ["absence"], name: "index_attendances_on_absence"
+    t.index ["check_in"], name: "index_attendances_on_check_in"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
     t.index ["service_day_id"], name: "index_attendances_on_service_day_id"
   end
@@ -106,6 +110,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.string "inactive_reason"
     t.date "deleted_at"
     t.index ["business_id"], name: "index_children_on_business_id"
+    t.index ["deleted_at"], name: "index_children_on_deleted_at"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
@@ -159,6 +164,8 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.decimal "max_age", default: "0.0", null: false
     t.string "name", default: "Rule Name Filler", null: false
     t.date "deleted_at"
+    t.index ["effective_on"], name: "index_illinois_rates_on_effective_on"
+    t.index ["expires_on"], name: "index_illinois_rates_on_expires_on"
   end
 
   create_table "nebraska_approval_amounts", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -171,6 +178,8 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.datetime "updated_at", precision: 6, null: false
     t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
+    t.index ["effective_on"], name: "index_nebraska_approval_amounts_on_effective_on"
+    t.index ["expires_on"], name: "index_nebraska_approval_amounts_on_expires_on"
   end
 
   create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -188,6 +197,17 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
     t.date "deleted_at"
+    t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
+    t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.decimal "amount", null: false
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -201,6 +221,10 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.interval "duration"
     t.index ["child_id"], name: "index_schedules_on_child_id"
     t.index ["effective_on", "child_id", "weekday"], name: "unique_child_schedules", unique: true
+    t.index ["effective_on"], name: "index_schedules_on_effective_on"
+    t.index ["expires_on"], name: "index_schedules_on_expires_on"
+    t.index ["updated_at"], name: "index_schedules_on_updated_at"
+    t.index ["weekday"], name: "index_schedules_on_weekday"
   end
 
   create_table "service_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -209,6 +233,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["child_id"], name: "index_service_days_on_child_id"
+    t.index ["date"], name: "index_service_days_on_date"
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -272,6 +297,7 @@ ActiveRecord::Schema.define(version: 2021_11_11_165641) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"

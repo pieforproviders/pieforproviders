@@ -55,8 +55,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
                  x['child_approval_id']
                end).to match_array(past_attendances.collect(&:child_approval_id))
         expect(parsed_response.collect do |x|
-          x['total_time_in_care']
-        end).to match_array(past_attendances.collect { |x| x.total_time_in_care.to_s })
+          x['time_in_care']
+        end).to match_array(past_attendances.collect { |x| x.time_in_care.to_s })
         expect(parsed_response.length).to eq(2)
         expect(response).to match_response_schema('attendances')
       end
@@ -70,8 +70,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
                  x['child_approval_id']
                end).to match_array(this_week_attendances.collect(&:child_approval_id))
         expect(parsed_response.collect do |x|
-                 x['total_time_in_care']
-               end).to match_array(this_week_attendances.collect { |x| x.total_time_in_care.to_s })
+                 x['time_in_care']
+               end).to match_array(this_week_attendances.collect { |x| x.time_in_care.to_s })
         expect(parsed_response.length).to eq(3)
         expect(response).to match_response_schema('attendances')
       end
@@ -91,8 +91,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
                  x['child_approval_id']
                end).to match_array(all_current_attendances.collect(&:child_approval_id))
         expect(parsed_response.collect do |x|
-                 x['total_time_in_care']
-               end).to match_array(all_current_attendances.collect { |x| x.total_time_in_care.to_s })
+                 x['time_in_care']
+               end).to match_array(all_current_attendances.collect { |x| x.time_in_care.to_s })
         expect(parsed_response.length).to eq(6)
         expect(response).to match_response_schema('attendances')
       end

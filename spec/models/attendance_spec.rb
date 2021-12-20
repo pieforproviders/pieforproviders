@@ -183,43 +183,16 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  describe '#total_time_in_care' do
+  describe '#time_in_care' do
     it 'uses the check_in and check_out when they are both present' do
       attendance.check_out = attendance.check_in + 3.hours + 12.minutes
       attendance.save!
-      expect(attendance.total_time_in_care.in_seconds).to eq(attendance.check_out - attendance.check_in)
+      expect(attendance.time_in_care.in_seconds).to eq(attendance.check_out - attendance.check_in)
     end
 
-    it 'uses the check_in and schedule when check_out is null and the child has a schedule' do
-      child = create(:necc_child)
-      child.reload
-      # ensures the attendance check in falls on the calendar weekday in the schedule
-      attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days,
-                                                  child.schedules.first.weekday)
-      attendance = create(
-        :attendance,
-        child_approval: child.child_approvals.first,
-        check_in: attendance_check_in,
-        check_out: nil
-      )
-      expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
-    end
-
-    it 'uses the check_in and makes the attendance 8 hours when check_out is null and the child has no schedule' do
-      child = create(:necc_child)
-      child.schedules.destroy_all
-      attendance = create(:attendance, child_approval: child.child_approvals.first, check_out: nil)
-      expect(attendance.total_time_in_care.in_seconds).to eq(8.hours.in_seconds)
-    end
-
-    it 'uses the check_in and schedule when creating an absence' do
-      child = create(:necc_child)
-      child.reload
-      # ensures the attendance check in falls on the calendar weekday in the schedule
-      attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days,
-                                                  child.schedules.first.weekday)
-      attendance = create(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
-      expect(attendance.total_time_in_care.in_seconds).to eq(child.schedules.first.duration)
+    it 'returns 0 when missing a check_out' do
+      attendance = create(:attendance, check_out: nil)
+      expect(attendance.time_in_care.seconds).to eq(0.seconds)
     end
   end
 
@@ -304,20 +277,22 @@ end
 #
 # Table name: attendances
 #
-#  id                                                             :uuid             not null, primary key
-#  absence                                                        :string
-#  check_in                                                       :datetime         not null
-#  check_out                                                      :datetime
-#  deleted_at                                                     :date
-#  total_time_in_care(Calculated: check_out time - check_in time) :interval         not null
-#  created_at                                                     :datetime         not null
-#  updated_at                                                     :datetime         not null
-#  child_approval_id                                              :uuid             not null
-#  service_day_id                                                 :uuid
-#  wonderschool_id                                                :string
+#  id                                                       :uuid             not null, primary key
+#  absence                                                  :string
+#  check_in                                                 :datetime         not null
+#  check_out                                                :datetime
+#  deleted_at                                               :date
+#  time_in_care(Calculated: check_out time - check_in time) :interval         not null
+#  created_at                                               :datetime         not null
+#  updated_at                                               :datetime         not null
+#  child_approval_id                                        :uuid             not null
+#  service_day_id                                           :uuid
+#  wonderschool_id                                          :string
 #
 # Indexes
 #
+#  index_attendances_on_absence            (absence)
+#  index_attendances_on_check_in           (check_in)
 #  index_attendances_on_child_approval_id  (child_approval_id)
 #  index_attendances_on_service_day_id     (service_day_id)
 #
