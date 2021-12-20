@@ -27,7 +27,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
       onChange={value => {
         sendGAEvent('dates_filtered', {
           page_title: 'dashboard',
-          date_selected: value
+          date_selected: value.slice(0, 7)
         })
         setDates({
           ...dates,
