@@ -18,7 +18,7 @@ export function Header() {
   const setWidth = () => setWindowWidth(window.innerWidth)
   const history = useHistory()
   const [menuOpen, setMenuOpen] = useState(false)
-  let location = useLocation()
+  const location = useLocation()
   const { user } = useSelector(state => ({
     user: state.user
   }))
@@ -41,7 +41,13 @@ export function Header() {
           type="link"
           onClick={() => history.push('/profile')}
         >
-          {t('myProfile')}
+          <span
+            className={
+              location.pathname.includes('/profile') ? 'underline' : ''
+            }
+          >
+            {t('myProfile')}
+          </span>
         </Button>
       </Menu.Item>
       <Menu.Item key="logout">
