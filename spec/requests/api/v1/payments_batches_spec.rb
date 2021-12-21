@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::PaymentsBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:business) { create(:business, :nebraska, user: logged_in_user) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:approval_sept) do
     create(:approval, effective_on: Date.parse('2021-09-01'), business: business, create_children: false)
   end

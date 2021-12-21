@@ -21,10 +21,12 @@ export function PaymentModal({
 
   useEffect(() => {
     initChildPayments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     calculateTotalPayments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [childPayments])
 
   function initChildPayments() {
