@@ -107,6 +107,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
       <Button
         type="primary"
         id="actionsDropdownButton"
+        name="recordNew"
         onClick={updateIsActionsDropdownOpen}
       >
         {t('recordDropdown')}
