@@ -272,7 +272,7 @@
   "paymentSuccess": "Success!",
   "paymentSuccessText": "You just recorded a payment for",
   "paymentSuccessText2": "for",
-  "okButton": "Ok",
+  "okButton": "OK",
   "enterAmount": "Enter amount",
   "calculatedBy": "Calculated by",
   "pieForProvidersHasCalculated": "Pie for Providers has calculated your subsidy revenue for the month, based on attendance and state-specific rules.",
