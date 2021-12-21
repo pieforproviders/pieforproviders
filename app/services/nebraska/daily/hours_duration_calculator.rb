@@ -33,7 +33,7 @@ module Nebraska
       end
 
       def hourly?
-        total_time_in_care.between?(0.hours, 5.hours + 59.minutes)
+        total_time_in_care.between?(0.hours, 5.hours + 45.minutes)
       end
 
       def daily_plus_hourly?
