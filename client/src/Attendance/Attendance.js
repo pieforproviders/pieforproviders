@@ -96,12 +96,12 @@ export function Attendance() {
     if (errorIsPresent !== latestError.current) {
       latestError.current = errorIsPresent
       setErrors(errorIsPresent)
-      setColumns(generateColumns())
     }
+    setColumns(generateColumns(updatedDates))
     setColumnDates(updatedDates)
   }
 
-  const generateColumns = () => {
+  const generateColumns = (updatedDates = null) => {
     let cols = []
     for (let i = 0; i < 7; i++) {
       cols.push({
@@ -126,11 +126,12 @@ export function Attendance() {
           )
         },
         // eslint-disable-next-line react/display-name
-        render: (_, record) => {
+        render: (text, record, index) => {
           return (
             <AttendanceDataCell
               record={record}
               columnIndex={i}
+              columnDate={updatedDates === null ? '' : updatedDates[i]}
               updateAttendanceData={updateAttendanceData}
             />
           )
