@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Button, Dropdown, Menu, Space } from 'antd'
 import { MenuOutlined } from '@ant-design/icons'
@@ -17,6 +17,7 @@ export function Header() {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const setWidth = () => setWindowWidth(window.innerWidth)
   const history = useHistory()
+  const location = useLocation()
   const { user } = useSelector(state => ({
     user: state.user
   }))
@@ -39,7 +40,13 @@ export function Header() {
           type="link"
           onClick={() => history.push('/profile')}
         >
-          {t('myProfile')}
+          <span
+            className={
+              location.pathname.includes('/profile') ? 'underline' : ''
+            }
+          >
+            {t('myProfile')}
+          </span>
         </Button>
       </Menu.Item>
       <Menu.Item key="logout">
