@@ -27,6 +27,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
   const [isActionsDropdownOpen, setActionsDropdownOpen] = useState(false)
   const [totalPayment, setTotalPayment] = useState(0)
   const [childPayments, setChildPayments] = useState({})
+  const [isPaymentSuccessOpen, setPaymentSuccessOpen] = useState(false)
   const { makeRequest } = useApiResponse()
   const [isFailedPaymentRequest, setIsFailedPaymentRequest] = useState(false)
   const { token } = useSelector(state => ({ token: state.auth.token }))
@@ -139,6 +140,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
     if (response.ok) {
       setPaymentModalVisible(false)
       setIsFailedPaymentRequest(false)
+      setPaymentSuccessOpen(true)
       return
     }
 
@@ -184,6 +186,56 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
     }
   }, [dates, dateFilterValue])
 
+  const monthNames = [
+    'january',
+    'february',
+    'march',
+    'april',
+    'may',
+    'june',
+    'july',
+    'august',
+    'september',
+    'october',
+    'november',
+    'december'
+  ]
+
+  const previousMonth = monthNames[lastMonth.getMonth()]
+  const previousMonthYear = lastMonth.getFullYear()
+
+  const handleOk = () => {
+    setPaymentSuccessOpen(false)
+  }
+
+  const paymentSuccessModal = (
+    <Modal
+      className="payment-success-modal"
+      title={<div className="text-center h2-large">{t('paymentSuccess')}</div>}
+      closeIcon={<CloseOutlined className="-btn-primary" />}
+      visible={isPaymentSuccessOpen}
+      onOk={handleOk}
+      onCancel={handleOk}
+      footer={
+        <div className="flex justify-end">
+          <Button
+            type="primary"
+            shape="round"
+            size="large"
+            className="payment-success-button"
+            onClick={handleOk}
+          >
+            {t('okButton')}
+          </Button>
+        </div>
+      }
+    >
+      <p>
+        {t('paymentSuccessText')} {t(previousMonth)} {previousMonthYear}{' '}
+        {t('paymentSuccessText2')} <b>${totalPayment.toFixed()}.</b>
+      </p>
+    </Modal>
+  )
   return (
     <div className="m-2 dashboard-title">
       {(screens.sm || screens.xs) && !screens.md ? (
@@ -206,6 +258,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
           </div>
 
           {paymentModal}
+          {paymentSuccessModal}
         </div>
       ) : (
         <div>
@@ -225,6 +278,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
           </Typography.Text>
 
           {paymentModal}
+          {paymentSuccessModal}
         </div>
       )}
     </div>
