@@ -49,23 +49,13 @@ module Api
       end
 
       def payment_valid?(payment)
-        unless payment[:child_id]
-          Batchable.add_error_and_return_nil(:child_id, @errors)
-          return false
-        end
+        return true if payment[:child_id] && payment[:month] && payment[:amount]
 
         authorize Child.find(payment[:child_id]), :update?
-        unless payment[:month]
-          Batchable.add_error_and_return_nil(:month, @errors)
-          return false
-        end
-
-        unless payment[:amount]
-          Batchable.add_error_and_return_nil(:amount, @errors)
-          return false
-        end
-
-        true
+        Batchable.add_error_and_return_nil(:child_id, @errors) unless payment[:child_id]
+        Batchable.add_error_and_return_nil(:month, @errors) unless payment[:month]
+        Batchable.add_error_and_return_nil(:amount, @errors) unless payment[:amount]
+        false
       end
 
       def payments
