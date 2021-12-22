@@ -1,10 +1,20 @@
+/* eslint-disable no-unused-vars */
 import React from 'react'
-import { render, fireEvent, screen } from 'setupTests'
+import { render, fireEvent, screen, within } from 'setupTests'
+import { createMemoryHistory } from 'history'
 import { Header } from '_shared'
 import dayjs from 'dayjs'
+import { Router } from 'react-router-dom'
 
-const doRender = stateOptions => {
-  return render(<Header />, stateOptions)
+const doRender = (stateOptions, route = '/') => {
+  const history = createMemoryHistory()
+  history.push(route)
+  render(
+    <Router history={history}>
+      <Header />
+    </Router>,
+    stateOptions
+  )
 }
 
 const authenticatedState = {
@@ -47,6 +57,35 @@ describe('<Header />', () => {
     fireEvent.click(avatar)
     await screen.findByRole('button', { name: /my profile/i })
     await screen.findByRole('button', { name: /logout/i })
-    screen.debug()
+  })
+
+  it('does not display underline when My Profile is not selected', async () => {
+    doRender(authenticatedState)
+
+    const avatar = screen.getByRole('button', {
+      name: /U/i
+    })
+
+    fireEvent.click(avatar)
+    const profileButton = await screen.findByRole('button', {
+      name: /my profile/i
+    })
+    const profileText = within(profileButton).getByText(/my profile/i)
+    expect(profileText).not.toHaveClass('underline')
+  })
+
+  it('displays underline when My Profile is selected', async () => {
+    doRender(authenticatedState, '/profile')
+
+    const avatar = screen.getByRole('button', {
+      name: /U/i
+    })
+
+    fireEvent.click(avatar)
+    const profileButton = await screen.findByRole('button', {
+      name: /my profile/i
+    })
+    const profileText = within(profileButton).getByText(/my profile/i)
+    expect(profileText).toHaveClass('underline')
   })
 })
