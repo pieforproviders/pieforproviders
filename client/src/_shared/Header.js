@@ -141,7 +141,13 @@ export function Header() {
                   setMenuOpen(false)
                 }}
               >
-                {t('myProfile')}
+                <span
+                  className={
+                    location.pathname.includes('/profile') ? 'underline' : ''
+                  }
+                >
+                  {t('myProfile')}
+                </span>
               </Button>
             </Menu.Item>
             <Divider />
