@@ -250,14 +250,26 @@ module Nebraska
       @attended_month_days ||= attendances.map { |service_day| make_calculated_service_day(service_day: service_day) }
     end
 
+    def absent_month_days
+      absences = absences_this_month
+
+      return unless absences
+
+      @absent_month_days ||= absences.map { |service_day| make_calculated_service_day(service_day: service_day) }
+    end
+
     def estimated_month_days
       return unless scheduled_month_days
 
-      attended_dates = attended_month_days.collect { |attended_day| attended_day.service_day.date.to_date }
-
       @estimated_month_days ||= scheduled_month_days.select do |scheduled_day|
         date = scheduled_day.service_day.date.to_date
-        date >= filter_date.to_date && attended_dates.exclude?(date)
+        date >= filter_date.to_date && attended_and_absent_dates.exclude?(date)
+      end
+    end
+
+    def attended_and_absent_dates
+      [attended_month_days, absent_month_days].compact.reduce([], :|).collect do |attended_day|
+        attended_day.service_day.date.to_date
       end
     end
 
