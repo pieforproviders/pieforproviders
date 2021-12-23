@@ -4,11 +4,11 @@ module Nebraska
   # A service day with its earned revenue and duration calculated
   # for use in the dashboard endpoint
   class CalculatedServiceDay
-    attr_reader :service_day, :schedule, :child_approval, :rates
+    attr_reader :service_day, :child_approval, :rates, :schedule
 
-    def initialize(service_day:, schedules:, child_approvals:, rates:)
+    def initialize(service_day:, child_approvals:, rates:, schedule: nil)
       @service_day = service_day
-      @schedule = schedule_for_day(schedules)
+      @schedule = schedule
       @child_approval = child_approval_for_day(child_approvals)
       @rates = rates
     end
@@ -29,14 +29,6 @@ module Nebraska
     end
 
     private
-
-    def schedule_for_day(schedules)
-      schedules.select do |schedule|
-        schedule.weekday == service_day.date.wday &&
-          schedule.effective_on <= service_day.date &&
-          (schedule.expires_on.nil? || schedule.expires_on > service_day.date)
-      end.first
-    end
 
     def child_approval_for_day(child_approvals)
       child_approvals.select do |child_approval|

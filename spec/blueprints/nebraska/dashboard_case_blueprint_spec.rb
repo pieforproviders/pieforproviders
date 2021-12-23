@@ -429,8 +429,14 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # no change because this is an old attendance
     expect(parsed_response['attendance_risk']).to eq('on_track')
 
-    # this is to test an hourly absence, which would be reliant on an hourly-duration schedule
-    child.schedules.where(weekday: 2).first.update!(duration: 3.hours)
+    # this is to test an hourly absence in a prior-month, that is reliant on an hourly-duration schedule
+    child.schedules.where(weekday: 2).first.update!(effective_on: Date.parse('July 1, 2021'), expires_on: nil)
+    child.schedules << Schedule.create(
+      weekday: 2,
+      effective_on: child_approval.effective_on,
+      expires_on: Date.parse('June 30, 2021'),
+      duration: 3.hours
+    )
     child.reload
     create(
       :attendance,
@@ -446,12 +452,12 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
       )
     )
+    # Subtract an additional 3-hour absence from the prior hours_remaining
     expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
 
     # no change because this is an old attendance
     expect(parsed_response['full_days']).to eq('8.0')
-    # Subtract an additional 3-hour absence from the prior hours_remaining
-    # put this schedule back to where it was to maintain calculations
+
     # subtract full day attendances, subtract full day absences up to the monthly limit
     # the original 5 limit applies to the attendance_date month; this absence occurs in the prior month
     expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 6)
@@ -460,11 +466,42 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # no change because this is an old attendance
     expect(parsed_response['earned_revenue'])
       .to eq((((6.25 * hourly_rate * qris_bump) + (14 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
-    # changes because the schedule changed, take one full day out because there's a Tuesday left in the month
-    # and replace it with 3 hours, the new schedule
-    expect(parsed_response['estimated_revenue'])
-      .to eq((((9.25 * hourly_rate * qris_bump) + (19 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
     # no change because this is an old attendance
+    expect(parsed_response['estimated_revenue'])
+      .to eq((((6.25 * hourly_rate * qris_bump) + (20 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
+    # no change because this is an old attendance
+    expect(parsed_response['attendance_risk']).to eq('on_track')
+
+    # change the current schedule to impact estimated revenue going forward for this month
+    child.schedules.where(weekday: 2, effective_on: Date.parse('July 1, 2021')).first.update!(duration: 3.hours)
+    child.reload
+
+    parsed_response = JSON.parse(
+      described_class
+      .render(
+        Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+      )
+    )
+
+    # changes two old Tuesday absences to 3-hour durations, 7/13, 7/20 and 6/8 are all 3 hour absences now,
+    # but we're over our 5 attendance limit so only 7/20
+    # has switched from counting towards hourly to counting towards daily
+    expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 6).to_f)
+    expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
+    # this doesn't change because absences don't count towards calculated days/hours
+    expect(parsed_response['full_days']).to eq('8.0')
+    expect(parsed_response['hours']).to eq('6.25')
+    expect(parsed_response['hours_authorized']).to eq(child_approval.hours.to_f)
+    expect(parsed_response['full_days_authorized']).to eq(child_approval.full_days)
+    # changes because of the new schedule - one more 3-hour attendance, one less daily attendance
+    expect(parsed_response['earned_revenue'])
+      .to eq((((9.25 * hourly_rate * qris_bump) + (13 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
+    # changes because of the new schedule - we expect an additional
+    # 3 hour scheduled day this month, and 1 less daily attendance
+    # plus 7/20 moved from a daily to an hourly
+    expect(parsed_response['estimated_revenue'])
+      .to eq((((12.25 * hourly_rate * qris_bump) + (18 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
+    # no change because this schedule change didn't impact risk
     expect(parsed_response['attendance_risk']).to eq('on_track')
 
     travel_back

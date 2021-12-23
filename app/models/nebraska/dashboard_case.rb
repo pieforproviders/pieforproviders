@@ -130,7 +130,6 @@ module Nebraska
       attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
         service_days: service_days_this_month,
         filter_date: filter_date,
-        schedules: schedules,
         child_approvals: child_approvals,
         rates: rates
       ).call
@@ -219,9 +218,10 @@ module Nebraska
     def scheduled_month_days
       days = []
       (month_schedule_start..month_schedule_end).map do |date|
-        next unless schedule_for_day(date)
+        schedule = schedule_for_day(date)
+        next unless schedule
 
-        days << make_calculated_service_day(service_day: ServiceDay.new(date: date, child: child))
+        days << make_calculated_service_day(service_day: ServiceDay.new(date: date, child: child), schedule: schedule)
       end
       @scheduled_month_days ||= days
     end
@@ -247,7 +247,9 @@ module Nebraska
 
       return unless attendances
 
-      @attended_month_days ||= attendances.map { |service_day| make_calculated_service_day(service_day: service_day) }
+      @attended_month_days ||= attendances.map do |service_day|
+        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+      end
     end
 
     def absent_month_days
@@ -255,7 +257,9 @@ module Nebraska
 
       return unless absences
 
-      @absent_month_days ||= absences.map { |service_day| make_calculated_service_day(service_day: service_day) }
+      @absent_month_days ||= absences.map do |service_day|
+        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+      end
     end
 
     def estimated_month_days
@@ -284,7 +288,9 @@ module Nebraska
         standard_absences.sort_by(&:total_time_in_care).reverse!.take(5)
       ].compact.reduce([], :|)
 
-      absences_to_reimburse.map! { |service_day| make_calculated_service_day(service_day: service_day) }
+      absences_to_reimburse.map! do |service_day|
+        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+      end
     end
 
     def non_covid_approval_absences
@@ -322,7 +328,9 @@ module Nebraska
           attendance.absence.nil?
         end
       end
-      @attended_approval_days ||= days.map! { |service_day| make_calculated_service_day(service_day: service_day) }
+      @attended_approval_days ||= days.map! do |service_day|
+        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+      end
     end
 
     def reimbursable_approval_absent_days
@@ -340,10 +348,10 @@ module Nebraska
       @reimbursable_approval_absent_days ||= days
     end
 
-    def make_calculated_service_day(service_day:)
+    def make_calculated_service_day(service_day:, schedule:)
       Nebraska::CalculatedServiceDay.new(
         service_day: service_day,
-        schedules: schedules,
+        schedule: schedule,
         child_approvals: child_approvals,
         rates: rates
       )
