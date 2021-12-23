@@ -28,7 +28,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -44,7 +43,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -60,7 +58,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -76,7 +73,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -96,7 +92,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -120,7 +115,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
@@ -140,7 +134,6 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
         described_class.new(
           service_days: service_days,
           filter_date: first_attendance_date,
-          schedules: child.schedules,
           child_approvals: child.child_approvals,
           rates: NebraskaRate.all
         ).call
