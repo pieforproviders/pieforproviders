@@ -14,7 +14,7 @@ module Nebraska
     end
 
     def total_time_in_care
-      service_day.attendances.presence&.sum(&:time_in_care) || schedule&.duration || 0.minutes
+      service_day.total_time_in_care(schedule_duration: schedule&.duration)
     end
 
     def earned_revenue
