@@ -57,8 +57,8 @@ FactoryBot.define do
 
     trait :with_two_nebraska_attendances do
       after(:create) do |child|
-        create(:nebraska_hourly_attendance, child_approval: child.active_child_approval(Time.current))
-        create(:nebraska_daily_attendance, child_approval: child.active_child_approval(Time.current))
+        create(:nebraska_hourly_attendance, :recent, child_approval: child.active_child_approval(Time.current))
+        create(:nebraska_daily_attendance, :recent, child_approval: child.active_child_approval(Time.current))
       end
     end
 

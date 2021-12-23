@@ -26,26 +26,41 @@ FactoryBot.define do
         Helpers.next_weekday(date, child.schedules.first.weekday)
       end
 
-      factory :nebraska_absence do
+      trait :recent do
+        check_in do
+          Faker::Time
+            .between(from: Time.current.at_beginning_of_month, to: Time.current)
+            .in_time_zone(child_approval.child.timezone)
+            .at_beginning_of_day
+        end
+      end
+
+      trait :absence do
         check_out { nil }
         absence { Attendance::ABSENCE_TYPES.sample }
       end
 
-      factory :nebraska_hourly_attendance do
+      trait :hourly do
         check_out { check_in + 5.hours + 20.minutes }
       end
 
-      factory :nebraska_daily_attendance do
+      trait :daily do
         check_out { check_in + 7.hours + 19.minutes }
       end
 
-      factory :nebraska_daily_plus_hourly_attendance do
+      trait :daily_plus_hourly do
         check_out { check_in + 14.hours + 42.minutes }
       end
 
-      factory :nebraska_max_attendance do
+      trait :daily_plus_hourly_max do
         check_out { check_in + 19.hours + 11.minutes }
       end
+
+      factory :nebraska_absence, traits: [:absence]
+      factory :nebraska_hourly_attendance, traits: [:hourly]
+      factory :nebraska_daily_attendance, traits: [:daily]
+      factory :nebraska_daily_plus_hourly_attendance, traits: [:daily_plus_hourly]
+      factory :nebraska_max_attendance, traits: [:daily_plus_hourly_max]
     end
 
     factory :illinois_part_day_attendance do

@@ -126,23 +126,34 @@ class ServiceDay < UuidApplicationRecord
     total_time_in_care > 18.hours
   end
 
-  def total_time_in_care
+  def total_time_in_care(schedule_duration: nil)
     if state == 'NE'
-      calculate_nebraska_total_time
+      calculate_nebraska_total_time(schedule_duration: schedule_duration)
     else
-      attendances.sum(&:time_in_care)
+      total_attended_time
     end
   end
 
-  def calculate_nebraska_total_time
-    total_time = attendances.sum(&:time_in_care)
-    duration = schedule_for_weekday&.duration || 8.hours
-    total_time < duration && missing_clock_out? ? duration : total_time
+  private
+
+  def calculate_nebraska_total_time(schedule_duration: nil)
+    scheduled_duration = calculate_scheduled_duration(schedule_duration: schedule_duration)
+
+    total_attended_time <= scheduled_duration && missing_clock_out? ? scheduled_duration : total_attended_time
+  end
+
+  def total_attended_time
+    attendances.present? ? attendances.sum(&:time_in_care) : 0.minutes
+  end
+
+  def calculate_scheduled_duration(schedule_duration:)
+    schedule_duration || schedule_for_weekday&.duration || 8.hours
   end
 
   def missing_clock_out?
-    attendances.each { |a| return true if a.check_in && !a.check_out }
-    false
+    attendances.non_absences.empty? || attendances.non_absences.any? do |attendance|
+      attendance.check_in && !attendance.check_out
+    end
   end
 
   def schedule_for_weekday
