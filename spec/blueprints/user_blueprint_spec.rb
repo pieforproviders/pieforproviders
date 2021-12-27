@@ -120,4 +120,33 @@ RSpec.describe UserBlueprint do
       expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
     end
   end
+
+  context 'when profile view is requested' do
+    let(:blueprint) { described_class.render(user, view: :profile) }
+
+    it 'includes user profile fields' do
+      expect(parsed_response.keys).to contain_exactly(
+        'full_name',
+        'greeting_name',
+        'phone_number',
+        'email',
+        'language',
+        'businesses'
+      )
+    end
+
+    context "when there are businesses for this user" do
+      before { create(:business, user: user) }
+      
+      it 'includes a list of associated businesses' do
+        expect(parsed_response['businesses'].length).to eq(1)
+      end
+    end
+
+    context "when there are no businesses for this user" do
+      it 'includes an empty array of businesses' do
+        expect(parsed_response['businesses'].length).to eq(0)
+      end
+    end
+  end
 end
