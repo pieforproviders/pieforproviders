@@ -8,6 +8,17 @@ class UserBlueprint < Blueprinter::Base
   field :state do |user|
     user.admin? ? 'NE' : user.state
   end
+ 
+
+  view :profile do
+    field :full_name
+    field :email
+    field :language
+    field :phone_number
+    association :businesses, blueprint: BusinessBlueprint, view: :profile
+    excludes :id
+  end
+
 
   view :illinois_dashboard do
     field(:as_of) do |user, options|
