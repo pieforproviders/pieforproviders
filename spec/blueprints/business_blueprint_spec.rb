@@ -31,4 +31,19 @@ RSpec.describe BusinessBlueprint do
       )
     end
   end
+
+  context 'when profile view is requested' do
+    let(:blueprint) { described_class.render(business, view: :profile) }
+
+    it 'includes the required fields' do
+      expect(JSON.parse(blueprint).keys).to contain_exactly(
+        'name',
+        'license_type',
+        'zipcode',
+        'county',
+        'qris_rating',
+        'accredited'
+      )
+    end
+  end
 end

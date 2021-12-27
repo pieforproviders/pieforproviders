@@ -16,7 +16,7 @@ class UserBlueprint < Blueprinter::Base
     field :language
     field :phone_number
     association :businesses, blueprint: BusinessBlueprint, view: :profile
-    excludes :id
+    excludes :id, :state
   end
 
 
