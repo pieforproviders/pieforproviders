@@ -19,4 +19,14 @@ class BusinessBlueprint < Blueprinter::Base
       business.children.with_dashboard_case(options[:filter_date])
     end
   end
+
+  view :profile do
+    field :name
+    field :license_type
+    field :zipcode
+    field :county
+    field :qris_rating
+    field :accredited
+    exclude :id
+  end
 end

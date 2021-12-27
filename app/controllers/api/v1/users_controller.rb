@@ -17,7 +17,10 @@ module Api
 
       # GET /profile or GET /users/:id
       def show
-        render json: UserBlueprint.render(@user)
+        render json: UserBlueprint.render(
+          @user,
+          view: :profile,
+        )
       end
 
       # GET /case_list_for_dashboard
@@ -32,7 +35,7 @@ module Api
       private
 
       def set_user
-        @user = params[:id] ? policy_scope(User).find(params[:id]) : current_user
+        @user = params[:id] ? policy_scope(User).includes(:businesses).find(params[:id]) : current_user
       end
 
       def authorize_user
