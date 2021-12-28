@@ -524,7 +524,7 @@ export default function DashboardTable({
           <Select.Option value="no_longer_in_my_care">
             {t('inactiveReason1')}
           </Select.Option>
-          <Select.Option value="no_longer_recieving_subsidies">
+          <Select.Option value="no_longer_receiving_subsidies">
             {t('inactiveReason2')}
           </Select.Option>
           <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
