@@ -8,6 +8,10 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:approval) { create(:approval, num_children: 3, business: business) }
   let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }
+  let!(:first_check_in) { (approval.effective_on + 3.days + 12.hours + 33.minutes).strftime('%Y-%m-%d %I:%M%P') }
+  let!(:first_check_out) { (approval.effective_on + 3.days + 17.hours + 18.minutes).strftime('%Y-%m-%d %I:%M%P') }
+  let!(:second_check_in) { (approval.effective_on + 4.days + 8.hours + 11.minutes).strftime('%Y-%m-%d %I:%M%P') }
+  let!(:second_check_out) { (approval.effective_on + 4.days + 14.hours + 29.minutes).strftime('%Y-%m-%d %I:%M%P') }
 
   include_context 'with correct api version header'
 
@@ -228,13 +232,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           attendance_batch:
           [
             {
-              check_in: '2021/03/25 12:33pm',
-              check_out: '2021/03/25 5:16pm',
+              check_in: first_check_in,
+              check_out: first_check_out,
               child_id: children[0].id
             },
             {
-              check_in: '2021/03/28 8:12am',
-              check_out: '2021/03/28 11:48am',
+              check_in: second_check_in,
+              check_out: second_check_out,
               child_id: children[0].id
             }
           ]
@@ -296,13 +300,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           attendance_batch:
           [
             {
-              check_in: '2021/03/25 12:33pm',
-              check_out: '2021/03/25 5:16pm',
+              check_in: first_check_in,
+              check_out: first_check_out,
               child_id: children[0].id
             },
             {
-              check_in: '2021/03/28 8:12am',
-              check_out: '2021/03/28 11:48am'
+              check_in: second_check_in,
+              check_out: second_check_out
             }
           ]
         }
@@ -340,12 +344,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           attendance_batch:
           [
             {
-              check_in: '2021/03/25 12:33pm',
-              check_out: '2021/03/25 5:16pm'
+              check_in: first_check_in,
+              check_out: first_check_out
             },
             {
-              check_in: '2021/03/28 8:12am',
-              check_out: '2021/03/28 11:48am'
+              check_in: second_check_in,
+              check_out: second_check_out
             }
           ]
         }
@@ -369,13 +373,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           attendance_batch:
           [
             {
-              check_in: '2021/03/25 12:33pm',
-              check_out: '2021/03/25 5:16pm',
+              check_in: first_check_in,
+              check_out: first_check_out,
               child_id: children[0].id
             },
             {
-              check_in: '2021/03/28 8:12am',
-              check_out: '2021/03/28 11:48am',
+              check_in: second_check_in,
+              check_out: second_check_out,
               child_id: non_owner_child.id
             }
           ]
