@@ -105,7 +105,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     # too early in the month to show risk
     expect(parsed_response['attendance_risk']).to eq('not_enough_info')
 
-    travel_to Time.current + 14.days # second dashboard view date is Jul 22nd, 2021 at 4pm
+    travel_to 14.days.from_now # second dashboard view date is Jul 22nd, 2021 at 4pm
 
     parsed_response = JSON.parse(
       described_class
@@ -299,8 +299,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     create(
       :attendance,
       child_approval: child_approval,
-      check_in: Time.current - 7.hours,
-      check_out: Time.current - 10.minutes
+      check_in: 7.hours.ago,
+      check_out: 10.minutes.ago
     )
 
     parsed_response = JSON.parse(
