@@ -2,7 +2,6 @@ import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import DashboardTable from '../DashboardTable'
-import { prettyDOM } from '@testing-library/dom'
 
 const doRender = (
   props = {
