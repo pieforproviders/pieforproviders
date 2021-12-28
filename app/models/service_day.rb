@@ -148,9 +148,10 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def total_recorded_attended_time
-    attendances.presence&.select do |attendance|
+    attendances_with_check_out = attendances.presence&.select do |attendance|
       attendance.check_out.present?
-    end&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
+    end
+    attendances_with_check_out.presence&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
   end
 
   def calculate_scheduled_duration(schedule_duration:)
