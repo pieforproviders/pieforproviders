@@ -144,11 +144,6 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
     context 'when logged in as an admin user' do
       let!(:admin_user) { create(:confirmed_user, admin: true) }
-
-      before do
-        sign_in admin_user
-      end
-
       let(:params) do
         {
           attendance: {
@@ -157,6 +152,10 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
             absence: 'absence'
           }
         }
+      end
+
+      before do
+        sign_in admin_user
       end
 
       it 'can update check_in check_out absence for a non-admin attendance' do

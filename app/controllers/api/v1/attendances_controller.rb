@@ -20,7 +20,7 @@ module Api
           render json: @attendance.errors, status: :unprocessable_entity
         end
       end
-      
+
       private
 
       def filter_date
