@@ -2,6 +2,7 @@ import React from 'react'
 import { render, screen, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import DashboardTable from '../DashboardTable'
+import { prettyDOM } from '@testing-library/dom'
 
 const doRender = (
   props = {
@@ -78,6 +79,28 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Total hours remaining')
       expect(container).toHaveTextContent('Total days remaining')
       expect(container).toHaveTextContent('Actions')
+    })
+  })
+
+  it('does not render values for inactive children', async () => {
+    const { getAllByText } = doRender({
+      tableData: [
+        {
+          active: false,
+          child: {
+            childName: 'Inactive Child',
+            cNumber: 'wewewewe',
+            business: 'Fake Business'
+          },
+          key: 'inactive-child'
+        }
+      ],
+      userState: 'NE',
+      setActiveKey: () => {},
+      dateFilterValue: undefined
+    })
+    await waitFor(() => {
+      expect(getAllByText('-').length).toEqual(10)
     })
   })
 })
