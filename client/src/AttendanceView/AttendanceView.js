@@ -82,9 +82,9 @@ export function AttendanceView() {
                   ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
                   : checkIn + ' - ' + checkOut
 
-              const hour = Math.floor(Number(attendance.time_in_care) / 3600)
+              const hour = Math.floor(Number(record.total_time_in_care) / 3600)
               const minute = Math.floor(
-                Number(attendance.time_in_care % 3600) / 60
+                Number(record.total_time_in_care % 3600) / 60
               )
               totalCareTime =
                 totalCareTime.length > 0
@@ -180,7 +180,8 @@ export function AttendanceView() {
               attendances: serviceDay.attendances.map(attendance => ({
                 ...attendance,
                 ...{ tags: serviceDay.tags }
-              }))
+              })),
+              total_time_in_care: serviceDay.total_time_in_care
             }
           })
           // merge attendances for each child
