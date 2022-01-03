@@ -157,7 +157,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (2.7.4)
+    good_job (2.8.1)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -374,7 +374,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.5.2)
+    zeitwerk (2.5.3)
 
 PLATFORMS
   ruby
@@ -396,7 +396,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
-  good_job (~> 2.7)
+  good_job (~> 2.8)
   guard-rspec
   hash_dig_and_collect
   holidays
