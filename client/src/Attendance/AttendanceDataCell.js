@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox, TimePicker } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Button, Checkbox, TimePicker } from 'antd'
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/checkbox-overrides.css'
 
@@ -14,9 +14,10 @@ export default function AttendanceDataCell({
   const [absence, setAbsence] = useState(null)
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
-  const [secondCheckIn, setSecondCheckIn] = useState(false)
-  const handleChange = (update = {}, callback = () => {}) => {
-    updateAttendanceData(update, record, columnIndex)
+  const [showSecondCheckIn, setShowSecondCheckIn] = useState(false)
+  const handleChange = options => {
+    const { update = {}, callback = () => {}, secondCheckIn = false } = options
+    updateAttendanceData({ update, record, columnIndex, secondCheckIn })
     callback()
   }
 
@@ -37,8 +38,14 @@ export default function AttendanceDataCell({
             disabled={absence}
             onChange={(m, ds) =>
               m
-                ? handleChange({ check_in: ds }, setCheckInSelected(true))
-                : handleChange({ check_in: '' }, setCheckInSelected(false))
+                ? handleChange({
+                    update: { check_in: ds },
+                    callback: setCheckInSelected(true)
+                  })
+                : handleChange({
+                    update: { check_in: '' },
+                    callback: setCheckInSelected(false)
+                  })
             }
             suffixIcon={null}
           />
@@ -57,11 +64,14 @@ export default function AttendanceDataCell({
             disabled={absence}
             onChange={(dateObject, dateString) =>
               dateObject
-                ? handleChange(
-                    { check_out: dateString },
-                    setCheckOutSelected(true)
-                  )
-                : handleChange({ check_out: '' }, setCheckOutSelected(false))
+                ? handleChange({
+                    update: { check_out: dateString },
+                    callback: setCheckOutSelected(true)
+                  })
+                : handleChange({
+                    updates: { check_out: '' },
+                    callback: setCheckOutSelected(false)
+                  })
             }
             suffixIcon={null}
           />
@@ -78,8 +88,14 @@ export default function AttendanceDataCell({
               }
               onChange={e =>
                 e.target.checked
-                  ? handleChange({ absence: 'absence' }, setAbsence('absence'))
-                  : handleChange({}, setAbsence(null))
+                  ? handleChange({
+                      update: { absence: 'absence' },
+                      callback: () => {
+                        setShowSecondCheckIn(false)
+                        setAbsence('absence')
+                      }
+                    })
+                  : handleChange({ callback: setAbsence(null) })
               }
             />
             <span className="ml-3">{t('absent')}</span>
@@ -93,11 +109,14 @@ export default function AttendanceDataCell({
               }
               onChange={e =>
                 e.target.checked
-                  ? handleChange(
-                      { absence: 'covid-related' },
-                      setAbsence('covid-related')
-                    )
-                  : handleChange({}, setAbsence(null))
+                  ? handleChange({
+                      update: { absence: 'covid-related' },
+                      callback: () => {
+                        setShowSecondCheckIn(false)
+                        setAbsence('covid-related')
+                      }
+                    })
+                  : handleChange({ callback: setAbsence(null) })
               }
             />
             <span className="ml-3">
@@ -106,19 +125,83 @@ export default function AttendanceDataCell({
           </p>
         </div>
       </div>
-      {secondCheckIn ? (
-        <div className="mt-4">
-          <div className="flex font-semibold font-proxima-nova">
-            <PlusOutlined className="font-semibold red1" />
-            <p className="red1">{t('removeCheckInTime')}</p>
+      {showSecondCheckIn ? (
+        <div className="flex flex-row mt-4">
+          <div className="mr-4">
+            <p className="mb-1 font-semibold font-proxima-nova-alt">
+              {t('checkIn').toUpperCase()}
+            </p>
+            <TimePicker
+              className="w-20 h-8"
+              style={{
+                border: '1px solid #D9D9D9'
+              }}
+              use12Hours={true}
+              format="h:mm a"
+              onChange={(m, ds) =>
+                m
+                  ? handleChange({
+                      update: { check_in: ds },
+                      secondCheckIn: true
+                    })
+                  : handleChange({
+                      update: { check_in: '' },
+                      secondCheckIn: true
+                    })
+              }
+              suffixIcon={null}
+            />
+          </div>
+          <div className="mr-4">
+            <p className="mb-1 font-semibold font-proxima-nova-alt">
+              {t('checkOut').toUpperCase()}
+            </p>
+            <TimePicker
+              className="w-20 h-8"
+              style={{
+                border: '1px solid #D9D9D9'
+              }}
+              use12Hours={true}
+              format="h:mm a"
+              onChange={(dateObject, dateString) =>
+                dateObject
+                  ? handleChange({
+                      update: { check_out: dateString },
+                      secondCheckIn: true
+                    })
+                  : handleChange({
+                      update: { check_out: '' },
+                      secondCheckIn: true
+                    })
+              }
+              suffixIcon={null}
+            />
+          </div>
+          <div className="flex items-center">
+            <Button
+              type="text"
+              className="flex font-semibold font-proxima-nova -ml-4"
+              onClick={() => {
+                handleChange({ secondCheckIn: true })
+                setShowSecondCheckIn(false)
+              }}
+            >
+              <CloseOutlined className="font-semibold text-red1" />
+              <p className="text-red1 ml-1">{t('removeCheckInTime')}</p>
+            </Button>
           </div>
         </div>
       ) : (
         <div className="mt-4">
-          <div className="flex font-semibold font-proxima-nova">
+          <Button
+            disabled={absence}
+            type="text"
+            className="flex font-semibold font-proxima-nova -ml-4"
+            onClick={() => setShowSecondCheckIn(true)}
+          >
             <PlusOutlined className="font-semibold text-primaryBlue" />
             <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
-          </div>
+          </Button>
         </div>
       )}
     </div>
