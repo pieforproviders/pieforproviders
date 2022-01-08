@@ -53,7 +53,10 @@ export function Header() {
             <Button
               type="link"
               className="text-lg"
-              onClick={() => history.push('/dashboard')}
+              onClick={() => {
+                history.push('/dashboard')
+                setMenuOpen(false)
+              }}
             >
               <span
                 className={
@@ -70,7 +73,10 @@ export function Header() {
             <Button
               type="link"
               className="text-lg"
-              onClick={() => history.push('/attendance')}
+              onClick={() => {
+                history.push('/attendance')
+                setMenuOpen(false)
+              }}
             >
               <span
                 className={
@@ -95,7 +101,10 @@ export function Header() {
             <Button
               type="link"
               className="text-lg"
-              onClick={() => changeLanguage('en')}
+              onClick={() => {
+                changeLanguage('en')
+                setMenuOpen(false)
+              }}
             >
               {t('english')}
             </Button>
@@ -105,7 +114,10 @@ export function Header() {
             <Button
               type="link"
               className="text-lg"
-              onClick={() => changeLanguage('es')}
+              onClick={() => {
+                changeLanguage('es')
+                setMenuOpen(false)
+              }}
             >
               {t('spanish')}
             </Button>

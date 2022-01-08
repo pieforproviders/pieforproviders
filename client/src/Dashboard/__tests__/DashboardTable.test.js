@@ -80,4 +80,26 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Actions')
     })
   })
+
+  it('does not render values for inactive children', async () => {
+    const { getAllByText } = doRender({
+      tableData: [
+        {
+          active: false,
+          child: {
+            childName: 'Inactive Child',
+            cNumber: 'wewewewe',
+            business: 'Fake Business'
+          },
+          key: 'inactive-child'
+        }
+      ],
+      userState: 'NE',
+      setActiveKey: () => {},
+      dateFilterValue: undefined
+    })
+    await waitFor(() => {
+      expect(getAllByText('-').length).toEqual(10)
+    })
+  })
 })

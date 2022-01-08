@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 # The businesses for which users are responsible for keeping subsidy data
+# rubocop:disable Metrics/ClassLength
 class ServiceDay < UuidApplicationRecord
   belongs_to :child
   has_many :attendances, dependent: :destroy
-  has_many :child_approvals, -> { order(total_time_in_care: :desc).distinct }, through: :attendances
+  has_many :child_approvals, -> { distinct }, through: :attendances
   # has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
 
   validates :date, date_time_param: true, presence: true
@@ -126,29 +127,49 @@ class ServiceDay < UuidApplicationRecord
     total_time_in_care > 18.hours
   end
 
-  def total_time_in_care
+  def total_time_in_care(schedule_duration: nil)
     if state == 'NE'
-      calculate_nebraska_total_time
+      calculate_nebraska_total_time(schedule_duration: schedule_duration)
     else
-      attendances.sum(&:time_in_care)
+      total_recorded_attended_time
     end
   end
 
-  def calculate_nebraska_total_time
-    total_time = attendances.sum(&:time_in_care)
-    duration = schedule_for_weekday&.duration || 8.hours
-    total_time < duration && missing_clock_out? ? duration : total_time
+  private
+
+  def calculate_nebraska_total_time(schedule_duration: nil)
+    scheduled_duration = calculate_scheduled_duration(schedule_duration: schedule_duration)
+
+    if total_recorded_attended_time <= scheduled_duration && missing_clock_out?
+      scheduled_duration
+    else
+      total_recorded_attended_time
+    end
+  end
+
+  def total_recorded_attended_time
+    attendances_with_check_out = attendances.presence&.select do |attendance|
+      attendance.check_out.present?
+    end
+    attendances_with_check_out.presence&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
+  end
+
+  def calculate_scheduled_duration(schedule_duration:)
+    schedule_duration || schedule_for_weekday&.duration || 8.hours
   end
 
   def missing_clock_out?
-    attendances.each { |a| return true if a.check_in && !a.check_out }
-    false
+    attended_days = attendances.select { |attendance| attendance.absence.nil? }
+    attended_days.empty? || attended_days.any? do |attendance|
+      attendance.check_in && !attendance.check_out
+    end
   end
 
   def schedule_for_weekday
     child.schedules.active_on(date).for_weekday(date.wday).first
   end
 end
+# rubocop:enable Metrics/ClassLength
 
 # == Schema Information
 #

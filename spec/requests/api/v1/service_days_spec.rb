@@ -8,7 +8,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:business) { create(:business, user: logged_in_user) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:child) { create(:child, business: business) }
   let!(:child_approval) { child.child_approvals.first }
   let!(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
@@ -39,8 +39,10 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     ]
   end
 
-  let!(:extra_service_days) do
+  let!(:another_user_service_days) do
     build_list(:attendance, 3) do |attendance|
+      attendance.child_approval = create(:child_approval,
+                                         child: create(:child, business: create(:business, :nebraska_ldds)))
       attendance.check_in = Helpers
                             .next_attendance_day(child_approval: child_approval, date: week_start_date) +
                             3.hours
@@ -120,7 +122,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       it 'displays the service_days' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        all_current_service_days = this_week_service_days + extra_service_days
+        all_current_service_days = this_week_service_days + another_user_service_days
 
         expect(parsed_response.collect do |x|
                  x['child_id']

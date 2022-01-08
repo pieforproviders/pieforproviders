@@ -5,7 +5,7 @@ class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
-  before_save :remove_absences
+  before_create :remove_absences
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -78,8 +78,6 @@ class Attendance < UuidApplicationRecord
   def calc_time_in_care
     self.time_in_care = if check_in && check_out
                           check_out - check_in
-                        elsif state == 'NE' && absence.present? && schedule_for_weekday.present?
-                          schedule_for_weekday.duration
                         else
                           0.seconds
                         end

@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe UserBlueprint do
   let(:user) { create(:user) }
+  let(:last_month) { Time.current.in_time_zone(user.timezone).at_beginning_of_day - 1.month }
   let(:blueprint) { described_class.render(user) }
   let(:parsed_response) { JSON.parse(blueprint) }
 
@@ -28,12 +29,38 @@ RSpec.describe UserBlueprint do
     end
 
     context "when there are approvals for this user's children" do
-      let!(:illinois_business) { create(:business, user: user) }
+      let(:illinois_business) { create(:business, user: user) }
 
-      before { create(:child, :with_two_illinois_attendances, business: illinois_business) }
+      before do
+        create(:attendance,
+               check_in: last_month,
+               child_approval: create(:child, business: illinois_business).child_approvals.first)
+        create(:child, :with_two_illinois_attendances, business: illinois_business)
+      end
 
       it 'returns the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)
+      end
+
+      it "returns the as_of date in the user's timezone" do
+        blueprint = described_class.render(user, view: :illinois_dashboard)
+        expect(JSON.parse(blueprint)['as_of'])
+          .to eq(user.latest_service_day_in_month(Time.current).strftime('%m/%d/%Y'))
+      end
+
+      it 'returns the as_of date for the last attendance in the prior month in Illinois' do
+        attendance = create(:attendance, check_in: last_month)
+        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
+        expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
+      end
+
+      it 'returns the as_of date as today for a month with no attendances in Illinois' do
+        blueprint = described_class.render(
+          user,
+          view: :illinois_dashboard,
+          filter_date: last_month.at_end_of_month - 6.months
+        )
+        expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
       end
     end
 
@@ -41,10 +68,15 @@ RSpec.describe UserBlueprint do
       it 'returns nil for the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to be_nil
       end
+
+      it "returns the as_of date in the user's timezone" do
+        expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
+      end
     end
   end
 
   context 'when NE view is requested' do
+    let(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
     let(:blueprint) { described_class.render(user, view: :nebraska_dashboard) }
 
     it 'includes the user name and all cases' do
@@ -60,12 +92,37 @@ RSpec.describe UserBlueprint do
     end
 
     context "when there are approvals for this user's children" do
-      let!(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
-
-      before { create(:necc_child, :with_two_nebraska_attendances, business: nebraska_business) }
+      before do
+        create(:attendance,
+               check_in: last_month,
+               child_approval: create(:child, business: nebraska_business).child_approvals.first)
+        child = create(:child, business: nebraska_business)
+        create_list(:attendance, 2, child_approval: child.child_approvals.first, check_in: Time.current)
+      end
 
       it 'returns the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to eq(user.first_approval_effective_date.to_s)
+      end
+
+      it "returns the as_of date in the user's timezone" do
+        blueprint = described_class.render(user, view: :nebraska_dashboard)
+        expect(JSON.parse(blueprint)['as_of'])
+          .to eq(user.latest_service_day_in_month(Time.current).strftime('%m/%d/%Y'))
+      end
+
+      it 'returns the as_of date for the last attendance in the prior month' do
+        attendance = create(:attendance, check_in: last_month)
+        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
+        expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
+      end
+
+      it 'returns the as_of date as today for a month with no attendances' do
+        blueprint = described_class.render(
+          user,
+          view: :nebraska_dashboard,
+          filter_date: last_month.at_end_of_month - 6.months
+        )
+        expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
       end
     end
 
@@ -73,51 +130,10 @@ RSpec.describe UserBlueprint do
       it 'returns nil for the first approval effective date' do
         expect(parsed_response['first_approval_effective_date']).to be_nil
       end
-    end
-  end
 
-  context 'when an attendance is present' do
-    let(:last_month) { Time.current.in_time_zone(user.timezone).at_beginning_of_day - 1.month }
-
-    before do
-      create(:attendance,
-             check_in: last_month,
-             child_approval: create(:child, business: create(:business, user: user)).child_approvals.first)
-    end
-
-    it "returns the as_of date in the user's timezone" do
-      travel_to Time.current.at_end_of_day
-      blueprint = described_class.render(user, view: :illinois_dashboard)
-      expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
-
-      blueprint = described_class.render(user, view: :nebraska_dashboard)
-      expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
-      travel_back
-    end
-
-    it 'returns the as_of date for the last attendance in the prior month in Illinois' do
-      attendance = create(:attendance, check_in: last_month)
-      blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
-      expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
-
-      blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
-      expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
-    end
-
-    it 'returns the as_of date as today for a month with no attendances in Illinois' do
-      blueprint = described_class.render(
-        user,
-        view: :nebraska_dashboard,
-        filter_date: last_month.at_end_of_month - 6.months
-      )
-      expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
-
-      blueprint = described_class.render(
-        user,
-        view: :nebraska_dashboard,
-        filter_date: last_month.at_end_of_month - 6.months
-      )
-      expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
+      it "returns the as_of date in the user's timezone" do
+        expect(JSON.parse(blueprint)['as_of']).to eq(Time.current.strftime('%m/%d/%Y'))
+      end
     end
   end
 end

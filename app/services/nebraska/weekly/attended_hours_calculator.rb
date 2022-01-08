@@ -4,12 +4,11 @@ module Nebraska
   module Weekly
     # Service to calculate full days used in Nebraska by specific kids
     class AttendedHoursCalculator
-      attr_reader :service_days, :absences, :service_days_this_week, :filter_date, :schedules, :child_approvals, :rates
+      attr_reader :service_days, :absences, :service_days_this_week, :filter_date, :child_approvals, :rates
 
-      def initialize(service_days:, filter_date:, schedules:, child_approvals:, rates:)
+      def initialize(service_days:, filter_date:, child_approvals:, rates:)
         @service_days = service_days
         @filter_date = filter_date
-        @schedules = schedules
         @child_approvals = child_approvals
         @rates = rates
         @absences = service_day_absences
@@ -53,7 +52,6 @@ module Nebraska
           end
 
           Nebraska::CalculatedServiceDay.new(service_day: service_day,
-                                             schedules: schedules,
                                              child_approvals: child_approvals,
                                              rates: rates)
         end

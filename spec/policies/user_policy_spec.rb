@@ -4,8 +4,10 @@ require 'rails_helper'
 
 RSpec.describe UserPolicy do
   let(:user) { create(:confirmed_user) }
-  let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
+  let(:non_owner) { create(:confirmed_user) }
+
+  before { create(:business, :nebraska_ldds, user: user) }
 
   permissions :index? do
     it 'grants access to the index for admins' do
@@ -42,9 +44,9 @@ RSpec.describe UserPolicy do
 
   describe UserPolicy::Scope do
     context 'when authenticated as an admin' do
-      it 'returns all users' do
+      it 'returns only Nebraska users' do
         users = described_class.new(admin, User).resolve
-        expect(users).to match_array([user, non_owner, admin])
+        expect(users).to match_array([user])
       end
     end
 

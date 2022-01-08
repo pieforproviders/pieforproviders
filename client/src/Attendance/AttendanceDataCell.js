@@ -8,6 +8,7 @@ import '_assets/styles/checkbox-overrides.css'
 export default function AttendanceDataCell({
   record,
   columnIndex,
+  columnDate,
   updateAttendanceData
 }) {
   const { t } = useTranslation()
@@ -100,115 +101,120 @@ export default function AttendanceDataCell({
             />
             <span className="ml-3">{t('absent')}</span>
           </p>
-          <p className="mt-2">
-            <Checkbox
-              className="absence"
-              checked={absence === 'covid-related'}
-              disabled={
-                absence === 'absence' || checkInSelected || checkOutSelected
-              }
-              onChange={e =>
-                e.target.checked
-                  ? handleChange({
-                      update: { absence: 'covid-related' },
-                      callback: () => {
-                        setShowSecondCheckIn(false)
-                        setAbsence('covid-related')
-                      }
-                    })
-                  : handleChange({ callback: setAbsence(null) })
-              }
-            />
-            <span className="ml-3">
-              {t('absent') + ' - ' + t('covidRelated')}
-            </span>
-          </p>
+          {columnDate && new Date(columnDate) <= new Date('2021-07-31') && (
+            <p className="mt-2">
+              <Checkbox
+                className="absence"
+                checked={absence === 'covid-related'}
+                disabled={
+                  absence === 'absence' || checkInSelected || checkOutSelected
+                }
+                onChange={e =>
+                  e.target.checked
+                    ? handleChange({
+                        update: { absence: 'covid-related' },
+                        callback: () => {
+                          setShowSecondCheckIn(false)
+                          setAbsence('covid-related')
+                        }
+                      })
+                    : handleChange({ callback: setAbsence(null) })
+                }
+              />
+              <span className="ml-3">
+                {t('absent') + ' - ' + t('covidRelated')}
+              </span>
+            </p>
+          )}
         </div>
       </div>
-      {showSecondCheckIn ? (
-        <div className="flex flex-row mt-4">
-          <div className="mr-4">
-            <p className="mb-1 font-semibold font-proxima-nova-alt">
-              {t('checkIn').toUpperCase()}
-            </p>
-            <TimePicker
-              className="w-20 h-8"
-              style={{
-                border: '1px solid #D9D9D9'
-              }}
-              use12Hours={true}
-              format="h:mm a"
-              onChange={(m, ds) =>
-                m
-                  ? handleChange({
-                      update: { check_in: ds },
-                      secondCheckIn: true
-                    })
-                  : handleChange({
-                      update: { check_in: '' },
-                      secondCheckIn: true
-                    })
-              }
-              suffixIcon={null}
-            />
+      <div className="flex flex-row mt-4">
+        {showSecondCheckIn ? (
+          <div className="flex">
+            <div className="mr-4">
+              <p className="mb-1 font-semibold font-proxima-nova-alt">
+                {t('checkIn').toUpperCase()}
+              </p>
+              <TimePicker
+                className="w-20 h-8"
+                style={{
+                  border: '1px solid #D9D9D9'
+                }}
+                use12Hours={true}
+                format="h:mm a"
+                onChange={(m, ds) =>
+                  m
+                    ? handleChange({
+                        update: { check_in: ds },
+                        secondCheckIn: true
+                      })
+                    : handleChange({
+                        update: { check_in: '' },
+                        secondCheckIn: true
+                      })
+                }
+                suffixIcon={null}
+              />
+            </div>
+            <div className="mr-4">
+              <p className="mb-1 font-semibold font-proxima-nova-alt">
+                {t('checkOut').toUpperCase()}
+              </p>
+              <TimePicker
+                className="w-20 h-8"
+                style={{
+                  border: '1px solid #D9D9D9'
+                }}
+                use12Hours={true}
+                format="h:mm a"
+                onChange={(dateObject, dateString) =>
+                  dateObject
+                    ? handleChange({
+                        update: { check_out: dateString },
+                        secondCheckIn: true
+                      })
+                    : handleChange({
+                        update: { check_out: '' },
+                        secondCheckIn: true
+                      })
+                }
+                suffixIcon={null}
+              />
+            </div>
+            <div className="flex items-center">
+              <Button
+                type="text"
+                className="flex font-semibold font-proxima-nova -ml-4"
+                onClick={() => {
+                  handleChange({ secondCheckIn: true })
+                  setShowSecondCheckIn(false)
+                }}
+              >
+                <CloseOutlined className="font-semibold text-red1" />
+                <p className="text-red1 ml-1">{t('removeCheckInTime')}</p>
+              </Button>
+            </div>
           </div>
-          <div className="mr-4">
-            <p className="mb-1 font-semibold font-proxima-nova-alt">
-              {t('checkOut').toUpperCase()}
-            </p>
-            <TimePicker
-              className="w-20 h-8"
-              style={{
-                border: '1px solid #D9D9D9'
-              }}
-              use12Hours={true}
-              format="h:mm a"
-              onChange={(dateObject, dateString) =>
-                dateObject
-                  ? handleChange({
-                      update: { check_out: dateString },
-                      secondCheckIn: true
-                    })
-                  : handleChange({
-                      update: { check_out: '' },
-                      secondCheckIn: true
-                    })
-              }
-              suffixIcon={null}
-            />
-          </div>
-          <div className="flex items-center">
+        ) : (
+          <div className="mt-4">
             <Button
+              disabled={absence}
               type="text"
               className="flex font-semibold font-proxima-nova -ml-4"
-              onClick={() => {
-                handleChange({ secondCheckIn: true })
-                setShowSecondCheckIn(false)
-              }}
+              onClick={() => setShowSecondCheckIn(true)}
             >
-              <CloseOutlined className="font-semibold text-red1" />
-              <p className="text-red1 ml-1">{t('removeCheckInTime')}</p>
+              <PlusOutlined className="font-semibold text-primaryBlue" />
+              <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
             </Button>
           </div>
-        </div>
-      ) : (
-        <div className="mt-4">
-          <Button
-            disabled={absence}
-            type="text"
-            className="flex font-semibold font-proxima-nova -ml-4"
-            onClick={() => setShowSecondCheckIn(true)}
-          >
-            <PlusOutlined className="font-semibold text-primaryBlue" />
-            <p className="ml-2 text-primaryBlue">{t('addCheckInTime')}</p>
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
 
 AttendanceDataCell.propTypes = {
+  columnDate: PropTypes.string,
   columnIndex: PropTypes.number.isRequired,
   record: PropTypes.object.isRequired,
   updateAttendanceData: PropTypes.func.isRequired
