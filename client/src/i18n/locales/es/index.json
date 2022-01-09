@@ -255,5 +255,7 @@
   "location": "Ubicación",
   "qrisRating": "Clasificación de QRIS",
   "accreditedQuestion": "¿Acreditado?",
-  "organizationName": "Nombre de la Organización"
+  "organizationName": "Nombre de la Organización",
+  "multiBusinessProfile": "Varios negocios de cuidado infantil",
+  "singleBusinessProfile": "1 negocio de cuidado infantil"
 }

@@ -255,5 +255,7 @@
   "location": "Location",
   "qrisRating": "QRIS Rating",
   "accreditedQuestion": "Accredited?",
-  "organizationName": "Organization Name"
+  "organizationName": "Organization Name",
+  "multiBusinessProfile": "Multiple child care businesses",
+  "singleBusinessProfile": "1 child care business"
 }
