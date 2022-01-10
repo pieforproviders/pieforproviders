@@ -203,7 +203,7 @@ RSpec.describe ServiceDay, type: :model do
       let(:current_attendance) do
         create(
           :attendance,
-          check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current),
+          check_in: Time.current.at_beginning_of_week(:sunday) - 2.days + 11.hours,
           child_approval: child_approval
         )
       end
