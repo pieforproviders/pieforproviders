@@ -203,18 +203,20 @@ RSpec.describe ServiceDay, type: :model do
       let(:current_attendance) do
         create(
           :attendance,
-          check_in: Time.current.at_beginning_of_week(:sunday) - 2.days + 11.hours,
+          check_in: Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours,
           child_approval: child_approval
         )
       end
       let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
 
       it 'returns service days for given week' do
+        travel_to Time.current.at_end_of_week(:saturday)
         expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week).not_to include(past_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)
         expect(described_class.for_week(date)).not_to include(current_service_day)
         expect(described_class.for_week(date - 1.week).size).to eq(0)
+        travel_back
       end
     end
 
