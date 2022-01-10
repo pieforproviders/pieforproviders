@@ -24,7 +24,7 @@
     "test-once": "yarn --cwd client test --watchAll=false",
     "ad": "yarn --cwd client add",
     "rm": "yarn --cwd client remove",
-    "install-all": "yarn install && yarn --cwd client install",
+    "install-all": "yarn cache clean && yarn --cwd client cache clean && yarn install && yarn --cwd client install",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\""
   },
   "prettier": {
@@ -50,7 +50,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^3.4.1",
-    "faker": "^6.6.6",
+    "faker": "^5.5.3",
     "prettier": "^2.5.1",
     "start-server-and-test": "^1.14.0"
   },
