@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Grid, Typography, Space } from 'antd'
+import { Avatar, Row, Col, Grid, Typography, Space, Divider } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
@@ -23,76 +23,117 @@ export function Profile() {
     return 12
   }
 
-  return (
-    <Row gutter={[16, 32]}>
-      <Col span={getColSpan()}>
-        <Space direction="vertical" width="100%" size="middle">
-          <Title level={5} size="" className="text-primaryBlue">
-            {t('personalDetails')}
+  const mobileHeader = (
+    <div className="mb-10">
+      <div className="flex justify-center">
+        <Title>{t('myProfile')}</Title>
+      </div>
+      <div className="flex justify-center">
+        <Avatar className="bg-primaryBlue" size={64} style={{ fontSize: 28 }}>
+          {user.greeting_name[0]}
+        </Avatar>
+      </div>
+    </div>
+  )
+
+  const desktopHeader = (
+    <div className="mb-10">
+      <Title style={{ marginBottom: 0 }}>{t('myProfile')}</Title>
+      <Divider style={{ marginTop: 0 }} />
+      <Space size="middle">
+        <Avatar className="bg-primaryBlue" size={54} style={{ fontSize: 28 }}>
+          {user.greeting_name[0]}
+        </Avatar>
+        <div>
+          <Title level={2} style={{ margin: 0 }}>
+            {user.greeting_name}
           </Title>
-          {screens.xs && (
-            <Space direction="vertical">
-              <Text strong>{t('fullName')}</Text>
-              <Text>{user.full_name}</Text>
-            </Space>
+          {business && (
+            <span className="text-lg font-semibold text-black">
+              {business.name}
+            </span>
           )}
-          <Space direction="vertical">
-            <Text strong>{t('preferredName')}</Text>
-            <Text>{user.greeting_name}</Text>
-          </Space>
-          <Space direction="vertical">
-            <Text strong>{t('phone')}</Text>
-            <Text>{user.phone_number}</Text>
-          </Space>
-          <Space direction="vertical">
-            <Text strong>{t('emailAddress')}</Text>
-            <Text>{user.email}</Text>
-          </Space>
-          <Space direction="vertical">
-            <Text strong>{t('preferredLanguage')}</Text>
-            <Text>{user.language === 'es' ? t('spanish') : t('english')}</Text>
-          </Space>
-        </Space>
-      </Col>
-      {business && (
+        </div>
+      </Space>
+    </div>
+  )
+
+  return (
+    <div className={screens.sm ? 'pt-0 p-5' : 'pt-0 p-2'}>
+      {screens.xs && mobileHeader}
+      {screens.sm && desktopHeader}
+      <Row gutter={[16, 32]}>
         <Col span={getColSpan()}>
-          <Space direction="vertical" size="middle">
-            <Title level={5} size="" className="text-primaryBlue">
-              {t('businessDetails')}
+          <Space direction="vertical" width="100%" size="middle">
+            <Title level={5} style={{ marginBottom: 0 }}>
+              {t('personalDetails')}
             </Title>
             {screens.xs && (
               <Space direction="vertical">
-                <Text strong>{t('organizationName')}</Text>
-                <Text>{business.name}</Text>
+                <Text strong>{t('fullName')}</Text>
+                <Text>{user.full_name}</Text>
               </Space>
             )}
             <Space direction="vertical">
-              <Text strong>{t('accountType')}</Text>
+              <Text strong>{t('preferredName')}</Text>
+              <Text>{user.greeting_name}</Text>
+            </Space>
+            <Space direction="vertical">
+              <Text strong>{t('phone')}</Text>
+              <Text>{user.phone_number}</Text>
+            </Space>
+            <Space direction="vertical">
+              <Text strong>{t('emailAddress')}</Text>
+              <Text>{user.email}</Text>
+            </Space>
+            <Space direction="vertical">
+              <Text strong>{t('preferredLanguage')}</Text>
               <Text>
-                {isMultiBusiness
-                  ? t('multiBusinessProfile')
-                  : t('singleBusinessProfile')}
+                {user.language === 'es' ? t('spanish') : t('english')}
               </Text>
-            </Space>
-            <Space direction="vertical">
-              <Text strong>{t('licenseType')}</Text>
-              <Text>{business.license_type}</Text>
-            </Space>
-            <Space direction="vertical">
-              <Text strong>{t('location')}</Text>
-              <Text>{`${business.county}, ${business.zipcode}`}</Text>
-            </Space>
-            <Space direction="vertical">
-              <Text strong>{t('qrisRating')}</Text>
-              <Text>{business.qris_rating}</Text>
-            </Space>
-            <Space direction="vertical">
-              <Text strong>{t('accreditedQuestion')}</Text>
-              <Text>{business.accredited}</Text>
             </Space>
           </Space>
         </Col>
-      )}
-    </Row>
+        {business && (
+          <Col span={getColSpan()} style={{}}>
+            <Space direction="vertical" size="middle">
+              <Title level={5} style={{ marginBottom: 0 }}>
+                {t('businessDetails')}
+              </Title>
+              {screens.xs && (
+                <Space direction="vertical">
+                  <Text strong>{t('organizationName')}</Text>
+                  <Text>{business.name}</Text>
+                </Space>
+              )}
+              <Space direction="vertical">
+                <Text strong>{t('accountType')}</Text>
+                <Text>
+                  {isMultiBusiness
+                    ? t('multiBusinessProfile')
+                    : t('singleBusinessProfile')}
+                </Text>
+              </Space>
+              <Space direction="vertical">
+                <Text strong>{t('licenseType')}</Text>
+                <Text>{business.license_type}</Text>
+              </Space>
+              <Space direction="vertical">
+                <Text strong>{t('location')}</Text>
+                <Text>{`${business.county}, ${business.zipcode}`}</Text>
+              </Space>
+              <Space direction="vertical">
+                <Text strong>{t('qrisRating')}</Text>
+                <Text>{business.qris_rating}</Text>
+              </Space>
+              <Space direction="vertical">
+                <Text strong>{t('accreditedQuestion')}</Text>
+                <Text>{business.accredited}</Text>
+              </Space>
+            </Space>
+          </Col>
+        )}
+      </Row>
+    </div>
   )
 }
