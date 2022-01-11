@@ -84,11 +84,12 @@ export function Attendance() {
         )
       }
     )
-
-    latestAttendanceData.current = {
-      ...attendanceData,
+    const updatedReference = {
+      ...latestAttendanceData.current,
       [record.id]: newArr
     }
+    latestAttendanceData.current = updatedReference
+
     const errorIsPresent = columnErrorIsPresent(columnIndex)
 
     if (errorIsPresent !== latestError.current) {
@@ -96,7 +97,9 @@ export function Attendance() {
       setErrors(errorIsPresent)
       setColumns(generateColumns())
     }
-    setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
+    setAttendanceData(prevData => {
+      return { ...prevData, [record.id]: newArr }
+    })
   }
 
   const handleDateChange = (index, dateString) => {
@@ -187,14 +190,18 @@ export function Attendance() {
   const handleSave = async () => {
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
-        .flatMap(values => {
-          return values.map((value, key) => {
+        .flatMap((values, columnIndex) => {
+          return values.map(value => {
             if (Object.keys(value).length === 0) {
               return value
             }
 
             if (Object.keys(value).includes('absence')) {
-              return { ...value, check_in: columnDates[key], child_id: data[0] }
+              return {
+                ...value,
+                check_in: columnDates[columnIndex],
+                child_id: data[0]
+              }
             }
 
             if (
@@ -202,7 +209,7 @@ export function Attendance() {
               !Object.keys(value).includes('check_out')
             ) {
               return {
-                check_in: `${columnDates[key]} ${value.check_in}`,
+                check_in: `${columnDates[columnIndex]} ${value.check_in}`,
                 child_id: data[0]
               }
             }
@@ -210,7 +217,7 @@ export function Attendance() {
             const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
             const parsedCheckIn = value.check_in.match(timeRegex)
             const parsedCheckOut = value.check_out.match(timeRegex)
-            const currentDate = dayjs(columnDates[key])
+            const currentDate = dayjs(columnDates[columnIndex])
             let checkoutDate
 
             if (
@@ -225,7 +232,7 @@ export function Attendance() {
             }
 
             return {
-              check_in: `${columnDates[key]} ${value.check_in}`,
+              check_in: `${columnDates[columnIndex]} ${value.check_in}`,
               check_out: `${checkoutDate} ${value.check_out}`,
               child_id: data[0]
             }
