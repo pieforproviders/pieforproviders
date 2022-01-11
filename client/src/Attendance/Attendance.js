@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { useEffect, useState, useRef } from 'react'
 import { Alert, Button, DatePicker, Modal, Table } from 'antd'
 import { useHistory } from 'react-router-dom'
