@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Fixes missing absences on 11/2/2021
-desc 'Fix missing absences on 11/2/2021'
+# Fixes missing absences
+desc 'Fix missing absences for newly onboarded kids'
 namespace :nebraska do
   task fix_absences: :environment do
     empty_service_days = ServiceDay.where.missing(:attendances)
