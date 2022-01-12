@@ -69,20 +69,23 @@ export function AttendanceView() {
                 </div>
               )
             }
-
             let totalCareTime = '',
               checkInCheckOutTime = ''
             matchingAttendances.forEach(attendance => {
-              const checkIn = dayjs(attendance.check_in).format('h:mm a')
+              const checkIn = dayjs(
+                attendance.check_in,
+                'YYYY-MM-DD hh:mm'
+              ).format('h:mm a')
               const checkOut = attendance.check_out
-                ? dayjs(attendance.check_out).format('h:mm a')
+                ? dayjs(attendance.check_out, 'YYYY-MM-DD hh:mm').format(
+                    'h:mm a'
+                  )
                 : 'no check out time'
               checkInCheckOutTime =
                 checkInCheckOutTime.length > 0
                   ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
                   : checkIn + ' - ' + checkOut
-
-              const hour = Math.floor(Number(record.total_time_in_care) / 3600)
+              const hour = Math.floor(Number(record.total_time_in_care) / 36000)
               const minute = Math.floor(
                 Number(record.total_time_in_care % 3600) / 60
               )
