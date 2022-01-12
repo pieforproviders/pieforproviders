@@ -244,5 +244,7 @@
   "incompatibleMsg": "Either your browser window is too small, or you’re on a mobile device. Please switch to a desktop or tablet to view this page.",
   "noInfo": "no info",
   "daily": "full day",
-  "hourly": "hours"
+  "hourly": "hours",
+  "addCheckInTime": "Add check-in time",
+  "removeCheckInTime": "Remove check-in time"
 }

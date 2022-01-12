@@ -1,5 +1,5 @@
 import React from 'react'
-import { render } from 'setupTests'
+import { render, fireEvent, screen } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import AttendanceDataCell from '../AttendanceDataCell'
 
@@ -23,6 +23,21 @@ describe('<AttendanceDataCell />', () => {
     expect(container).toHaveTextContent('CHECK OUT')
     expect(container).toHaveTextContent('Absent')
     expect(container).not.toHaveTextContent('Absent - COVID-related')
+    expect(container).toHaveTextContent('Add check-in time')
+  })
+
+  it('adds a second set of attendance inputs', () => {
+    doRender()
+    let addCheckInButton = screen.getByText(/Add check-in time/)
+
+    expect(addCheckInButton).toBeDefined()
+    fireEvent.click(addCheckInButton)
+    expect(screen.getByText(/Remove check-in time/)).toBeDefined()
+
+    let checkIns = screen.getAllByText('CHECK IN')
+    let checkOuts = screen.getAllByText('CHECK OUT')
+    expect(checkIns.length).toBe(2)
+    expect(checkOuts.length).toBe(2)
   })
 
   it('displays the covid-related absence if the date is before July 31', () => {
