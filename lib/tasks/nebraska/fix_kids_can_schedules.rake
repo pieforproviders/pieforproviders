@@ -56,7 +56,7 @@ namespace :nebraska do
                                                                                                 :check_out,
                                                                                                 :absence)}"
         else
-          child.schedules.update_all(duration: 16_200)
+          child.schedules.map { |schedule| schedule.update(duration: 16_200) }
           child.attendances.absences.destroy_all
         end
       end
@@ -123,7 +123,7 @@ namespace :nebraska do
                                                                                                 :check_out,
                                                                                                 :absence)}"
         else
-          child.schedules.update_all(duration: 7_200)
+          child.schedules.map { |schedule| schedule.update(duration: 7_200) }
           child.attendances.absences.destroy_all
         end
       end
