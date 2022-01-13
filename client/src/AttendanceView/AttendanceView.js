@@ -89,11 +89,9 @@ export function AttendanceView() {
               const minute = Math.floor(
                 Number(record.total_time_in_care % 3600) / 60
               )
-              totalCareTime =
-                totalCareTime.length > 0
-                  ? totalCareTime + ', ' + hour + ' hrs ' + minute + '  mins'
-                  : hour + ' hrs ' + minute + '  mins'
+              totalCareTime = hour + ' hrs ' + minute + '  mins'
             })
+            console.log('totalCareTime:', totalCareTime)
             return (
               <div className="text-center body-2">
                 <div className="mb-2 text-gray8 font-semiBold">
