@@ -85,7 +85,7 @@ export function AttendanceView() {
                 checkInCheckOutTime.length > 0
                   ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
                   : checkIn + ' - ' + checkOut
-              const hour = Math.floor(Number(record.total_time_in_care) / 36000)
+              const hour = Math.floor(Number(record.total_time_in_care) / 3600)
               const minute = Math.floor(
                 Number(record.total_time_in_care % 3600) / 60
               )
