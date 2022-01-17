@@ -32,8 +32,12 @@ class Approval < UuidApplicationRecord
   end
 
   def child_with_most_scheduled_hours(date:)
-    children.max_by do |child|
-      child.total_time_scheduled_this_month(date: date)
+    children.min do |a, b|
+      if (b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)).zero?
+        a.full_name <=> b.full_name
+      else
+        b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)
+      end
     end
   end
 end

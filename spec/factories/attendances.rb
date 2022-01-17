@@ -12,7 +12,7 @@ FactoryBot.define do
         .in_time_zone(child_approval.child.timezone)
         .at_beginning_of_day
     end
-    check_out { check_in + rand(0..23).hours + rand(0..59).minutes }
+    check_out { check_in + rand(3..23).hours + rand(0..59).minutes }
 
     factory :nebraska do
       child_approval do

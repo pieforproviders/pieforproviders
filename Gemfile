@@ -13,7 +13,7 @@ gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 2.7'
+gem 'good_job', '~> 2.9'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
@@ -38,7 +38,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'bullet'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'cypress-on-rails', '~> 1.11'
+  gem 'cypress-on-rails', '~> 1.12'
   gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
