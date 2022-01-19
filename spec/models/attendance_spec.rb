@@ -55,7 +55,7 @@ RSpec.describe Attendance, type: :model do
   end
 
   it 'validates that the check_out is after the check_in if it is present' do
-    attendance.update(check_out: Time.current - 90.years)
+    attendance.update(check_out: 90.years.ago)
     expect(attendance.errors.messages[:check_out]).to be_present
     attendance.update(check_out: 3.days.from_now)
     expect(attendance.errors.messages[:check_out]).not_to be_present

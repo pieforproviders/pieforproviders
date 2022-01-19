@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :schedule do
     child
-    effective_on { (Time.current - 6.months).to_date }
+    effective_on { 6.months.ago.to_date }
     weekday { rand(0..6) }
     duration { Faker::Number.between(from: 3600, to: 86_400).seconds }
 

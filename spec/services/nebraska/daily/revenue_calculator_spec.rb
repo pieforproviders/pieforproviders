@@ -4,23 +4,23 @@ require 'rails_helper'
 
 RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
   let!(:full_day_ldds_rate) do
-    create(:unaccredited_daily_ldds_rate, max_age: 216, effective_on: Time.current - 3.months, expires_on: nil)
+    create(:unaccredited_daily_ldds_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
   let!(:hourly_ldds_rate) do
-    create(:unaccredited_hourly_ldds_rate, max_age: 216, effective_on: Time.current - 3.months, expires_on: nil)
+    create(:unaccredited_hourly_ldds_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
   let!(:full_day_other_rate) do
-    create(:unaccredited_daily_other_region_rate, max_age: 216, effective_on: Time.current - 3.months, expires_on: nil)
+    create(:unaccredited_daily_other_region_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
   let!(:hourly_other_rate) do
-    create(:unaccredited_hourly_other_region_rate, max_age: 216, effective_on: Time.current - 3.months, expires_on: nil)
+    create(:unaccredited_hourly_other_region_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
   let!(:full_day_ld_license_exempt_rate) do
     create(:nebraska_rate,
            :license_exempt_home_ld,
            :daily,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:hourly_ld_license_exempt_rate) do
@@ -28,7 +28,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :license_exempt_home_ld,
            :hourly,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:full_day_ds_license_exempt_rate) do
@@ -36,7 +36,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :license_exempt_home_ds,
            :daily,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:hourly_ds_license_exempt_rate) do
@@ -44,7 +44,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :license_exempt_home_ds,
            :hourly,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:full_day_other_license_exempt_rate) do
@@ -52,7 +52,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :license_exempt_home_other,
            :daily,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:hourly_other_license_exempt_rate) do
@@ -60,7 +60,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :license_exempt_home_other,
            :hourly,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:full_day_fih_rate) do
@@ -68,7 +68,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :family_in_home,
            :daily,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:hourly_fih_rate) do
@@ -76,34 +76,34 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            :family_in_home,
            :hourly,
            max_age: 216,
-           effective_on: Time.current - 3.months,
+           effective_on: 3.months.ago,
            expires_on: nil)
   end
   let!(:business_ldds) { create(:business, :nebraska_ldds, :unaccredited, :step_four) }
-  let!(:child_ldds) { create(:necc_child, business: business_ldds, effective_date: Time.current - 1.month) }
+  let!(:child_ldds) { create(:necc_child, business: business_ldds, effective_date: 1.month.ago) }
   let!(:child_ldds_child_approval) { child_ldds.child_approvals.first }
   let!(:business_other) { create(:business, :nebraska_other, :unaccredited, :step_four) }
-  let!(:child_other) { create(:necc_child, business: business_other, effective_date: Time.current - 1.month) }
+  let!(:child_other) { create(:necc_child, business: business_other, effective_date: 1.month.ago) }
   let!(:child_other_child_approval) { child_other.child_approvals.first }
   let!(:business_license_exempt_ld) { create(:business, :nebraska_license_exempt_home_ld, :unaccredited, :not_rated) }
   let!(:child_license_exempt_ld) do
-    create(:necc_child, business: business_license_exempt_ld, effective_date: Time.current - 1.month)
+    create(:necc_child, business: business_license_exempt_ld, effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_ld_child_approval) { child_license_exempt_ld.child_approvals.first }
   let!(:business_license_exempt_ds) { create(:business, :nebraska_license_exempt_home_ds, :unaccredited, :not_rated) }
   let!(:child_license_exempt_ds) do
-    create(:necc_child, business: business_license_exempt_ds, effective_date: Time.current - 1.month)
+    create(:necc_child, business: business_license_exempt_ds, effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_ds_child_approval) { child_license_exempt_ds.child_approvals.first }
   let!(:business_license_exempt_other) do
     create(:business, :nebraska_license_exempt_home_other, :unaccredited, :not_rated)
   end
   let!(:child_license_exempt_other) do
-    create(:necc_child, business: business_license_exempt_other, effective_date: Time.current - 1.month)
+    create(:necc_child, business: business_license_exempt_other, effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_other_child_approval) { child_license_exempt_other.child_approvals.first }
   let!(:business_fih) { create(:business, :nebraska_family_in_home, :unaccredited, :not_rated) }
-  let!(:child_fih) { create(:necc_child, business: business_fih, effective_date: Time.current - 1.month) }
+  let!(:child_fih) { create(:necc_child, business: business_fih, effective_date: 1.month.ago) }
   let!(:child_fih_child_approval) { child_fih.child_approvals.first }
 
   describe '#call' do

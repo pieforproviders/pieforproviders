@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :child do
-    date_of_birth { (Time.current - 2.years).strftime('%Y-%m-%d') }
+    date_of_birth { (2.years.ago).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
@@ -22,7 +22,7 @@ FactoryBot.define do
 
     factory :necc_child do
       transient do
-        effective_date { Time.current - 6.months }
+        effective_date { 6.months.ago }
         create_dashboard_case { false }
       end
 
