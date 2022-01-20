@@ -55,9 +55,11 @@ class User < UuidApplicationRecord
   end
 
   def state
+    return @state if @state
+
     return '' unless businesses
 
-    businesses&.first&.state || ''
+    @state = businesses&.first&.state || ''
   end
 
   # return the user's latest attendance check_in in UTC

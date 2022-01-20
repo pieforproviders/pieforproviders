@@ -125,6 +125,14 @@ class Child < UuidApplicationRecord
     schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)
   end
 
+  def schedules_for_weekday(date, weekday)
+    schedules.select do |schedule|
+      schedule.weekday == weekday &&
+        schedule.effective_on <= date &&
+        (schedule.expires_on.nil? || schedule.expires_on > date)
+    end
+  end
+
   private
 
   def find_or_create_approvals
