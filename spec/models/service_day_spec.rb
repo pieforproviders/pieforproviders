@@ -246,6 +246,7 @@ RSpec.describe ServiceDay, type: :model do
 
       it 'for a single check-in with no check-out, returns 8 hours if day has no schedule' do
         attendance.child.schedules.destroy_all
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(8.hours)
       end
 
@@ -256,6 +257,7 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 1.hour + 30.minutes,
           check_out: attendance.check_in + 3.hours + 30.minutes
         )
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
       end
 
@@ -266,6 +268,7 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 1.hour + 30.minutes,
           check_out: attendance.check_in + 10.hours + 30.minutes
         )
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(9.hours)
       end
 
@@ -276,6 +279,7 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 3.hours + 30.minutes,
           check_out: nil
         )
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
       end
     end
@@ -285,16 +289,19 @@ end
 #
 # Table name: service_days
 #
-#  id         :uuid             not null, primary key
-#  date       :datetime         not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  child_id   :uuid             not null
+#  id                 :uuid             not null, primary key
+#  date               :datetime         not null
+#  total_time_in_care :interval
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  child_id           :uuid             not null
+#  schedule_id        :bigint
 #
 # Indexes
 #
-#  index_service_days_on_child_id  (child_id)
-#  index_service_days_on_date      (date)
+#  index_service_days_on_child_id     (child_id)
+#  index_service_days_on_date         (date)
+#  index_service_days_on_schedule_id  (schedule_id)
 #
 # Foreign Keys
 #

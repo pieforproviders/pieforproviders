@@ -221,7 +221,7 @@ module Nebraska
         schedule = schedule_for_day(date)
         next unless schedule
 
-        days << make_calculated_service_day(service_day: ServiceDay.new(date: date, child: child), schedule: schedule)
+        days << make_calculated_service_day(service_day: ServiceDay.new(date: date, child: child, schedule: schedule))
       end
       @scheduled_month_days ||= days
     end
@@ -248,7 +248,7 @@ module Nebraska
       return unless attendances
 
       @attended_month_days ||= attendances.map do |service_day|
-        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+        make_calculated_service_day(service_day: service_day)
       end
     end
 
@@ -258,7 +258,7 @@ module Nebraska
       return unless absences
 
       @absent_month_days ||= absences.map do |service_day|
-        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+        make_calculated_service_day(service_day: service_day)
       end
     end
 
@@ -289,7 +289,7 @@ module Nebraska
       ].compact.reduce([], :|)
 
       absences_to_reimburse.map! do |service_day|
-        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+        make_calculated_service_day(service_day: service_day)
       end
     end
 
@@ -329,7 +329,7 @@ module Nebraska
         end
       end
       @attended_approval_days ||= days.map! do |service_day|
-        make_calculated_service_day(service_day: service_day, schedule: schedule_for_day(service_day.date))
+        make_calculated_service_day(service_day: service_day)
       end
     end
 
@@ -348,10 +348,9 @@ module Nebraska
       @reimbursable_approval_absent_days ||= days
     end
 
-    def make_calculated_service_day(service_day:, schedule:)
+    def make_calculated_service_day(service_day:)
       Nebraska::CalculatedServiceDay.new(
         service_day: service_day,
-        schedule: schedule,
         child_approvals: child_approvals,
         rates: rates
       )
