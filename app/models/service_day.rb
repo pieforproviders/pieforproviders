@@ -166,7 +166,10 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def schedule_for_weekday
-    child.schedules.active_on(date).for_weekday(date.wday).first
+    return @schedule_for_weekday.first if @schedule_for_weekday
+
+    @schedule_for_weekday = child.schedules_for_weekday(date, date.wday)
+    @schedule_for_weekday.first
   end
 end
 # rubocop:enable Metrics/ClassLength
