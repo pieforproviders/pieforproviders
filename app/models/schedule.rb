@@ -3,7 +3,10 @@
 # Expected attendance schedules for children
 # used to calculate hours attended compared to hours scheduled
 class Schedule < ApplicationRecord
+  after_save_commit :recalculate_total_time_in_care_for_absences
+
   belongs_to :child
+  has_many :service_days, dependent: :restrict_with_error
 
   attribute :duration, :interval
 
@@ -23,6 +26,12 @@ class Schedule < ApplicationRecord
                 date.at_end_of_month).order(updated_at: :desc)
         }
   scope :for_weekday, ->(weekday) { where(weekday: weekday).order(updated_at: :desc) }
+
+  private
+
+  def recalculate_total_time_in_care_for_absences
+    service_days.each { |service_day| TotalTimeInCareCalculator.new(service_day: service_day).call }
+  end
 end
 
 # == Schema Information
