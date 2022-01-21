@@ -301,11 +301,16 @@ export function Dashboard() {
     // still haven't found a better way around this - sometimes we really do
     // only want the useEffect to fire on the first component load
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, dates.dateFilterValue.date])
+  }, [user])
 
   return (
     <div className="dashboard sm:mx-8">
-      <DashboardTitle dates={dates} setDates={setDates} makeMonth={makeMonth} />
+      <DashboardTitle
+        dates={dates}
+        setDates={setDates}
+        makeMonth={makeMonth}
+        getDashboardData={getDashboardData}
+      />
       <DashboardStats summaryData={summaryData} />
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
