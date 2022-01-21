@@ -221,7 +221,10 @@ module Nebraska
         schedule = schedule_for_day(date)
         next unless schedule
 
-        days << make_calculated_service_day(service_day: ServiceDay.new(date: date, child: child, schedule: schedule))
+        days << make_calculated_service_day(service_day: ServiceDay.new(date: date,
+                                                                        child: child,
+                                                                        schedule: schedule,
+                                                                        total_time_in_care: schedule&.duration || 8.hours))
       end
       @scheduled_month_days ||= days
     end
