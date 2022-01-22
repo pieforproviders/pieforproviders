@@ -17,7 +17,7 @@ end
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  child_id           :uuid             not null
-#  schedule_id        :bigint
+#  schedule_id        :uuid
 #
 # Indexes
 #
@@ -28,4 +28,5 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (schedule_id => schedules.id)
 #

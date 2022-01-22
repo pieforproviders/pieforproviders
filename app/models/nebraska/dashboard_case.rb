@@ -22,7 +22,7 @@ module Nebraska
       @child_approvals = child&.child_approvals
       @child_approval = child_approval_for_case
       @approval = child_approval&.approval
-      @service_days = child&.service_days&.includes(attendances: :child_approval)
+      @service_days = child&.service_days&.with_attendances
       @reimbursable_month_absent_days = reimbursable_absent_service_days
     end
 
@@ -48,7 +48,7 @@ module Nebraska
     def family_fee
       return 0 if approval.children.length != 1 && approval.child_with_most_scheduled_hours(date: filter_date) != child
 
-      active_nebraska_approval_amount&.family_fee || 0.00
+      child.active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
     end
 
     def earned_revenue

@@ -2,6 +2,14 @@
 
 # The businesses for which users are responsible for keeping subsidy data
 class ServiceDay < UuidApplicationRecord
+  # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
+  # to recalculate all service days total_time_in_care; this handles that use case
+  after_save_commit :recalculate_total_time_in_care_for_absences,
+                    on: :update,
+                    if: proc { |service_day|
+                      service_day.saved_change_to_schedule_id?(to: nil)
+                    }
+
   belongs_to :child
   belongs_to :schedule, optional: true
   has_many :attendances, dependent: :destroy
@@ -78,6 +86,13 @@ class ServiceDay < UuidApplicationRecord
           where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
         }
 
+  scope :for_weekday,
+        lambda { |weekday|
+          where("select date_part('dow', DATE(date)) = ?", weekday)
+        }
+
+  scope :with_attendances, -> { includes(attendances: :child_approval) }
+
   def absence?
     attendances.any? { |attendance| attendance.absence.present? }
   end
@@ -127,6 +142,10 @@ class ServiceDay < UuidApplicationRecord
 
     total_time_in_care > 18.hours
   end
+
+  def recalculate_total_time_in_care_for_absences
+    TotalTimeInCareCalculator.new(service_day: self).call
+  end
 end
 # == Schema Information
 #
@@ -138,7 +157,7 @@ end
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  child_id           :uuid             not null
-#  schedule_id        :bigint
+#  schedule_id        :uuid
 #
 # Indexes
 #
@@ -149,4 +168,5 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (schedule_id => schedules.id)
 #

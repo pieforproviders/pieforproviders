@@ -16,7 +16,6 @@ require 'action_view/railtie'
 require 'action_cable/engine'
 # require "sprockets/railtie"
 # require 'rails/test_unit/railtie'
-require './lib/log/console_logger'
 require './lib/log/console_formatter'
 require './lib/log/file_logger'
 require './lib/log/file_formatter'
@@ -46,9 +45,7 @@ module App
     config.api_only = true
 
     logger_file = ActiveSupport::TaggedLogging.new(Log::FileLogger.new("log/#{Rails.env}.log"))
-    logger_console = ActiveSupport::TaggedLogging.new(Log::ConsoleLogger.new($stdout))
     config.logger = logger_file
-    config.logger.extend(ActiveSupport::Logger.broadcast(logger_console)) unless Rails.env.test?
 
     config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en

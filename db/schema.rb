@@ -224,7 +224,7 @@ ActiveRecord::Schema.define(version: 2022_01_20_025655) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.interval "total_time_in_care"
-    t.bigint "schedule_id"
+    t.uuid "schedule_id"
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
@@ -293,5 +293,6 @@ ActiveRecord::Schema.define(version: 2022_01_20_025655) do
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
+  add_foreign_key "service_days", "schedules"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

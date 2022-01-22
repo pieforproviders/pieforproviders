@@ -58,6 +58,8 @@ class Child < UuidApplicationRecord
             .includes(:schedules, :child_approvals, :nebraska_approval_amounts)
         }
 
+  scope :with_schedules, -> { includes(:schedules) }
+
   delegate :county, to: :business
   delegate :user, to: :business
   delegate :state, to: :user
@@ -82,6 +84,10 @@ class Child < UuidApplicationRecord
 
   def active_child_approval(date)
     active_approval(date)&.child_approvals&.find_by(child: self)
+  end
+
+  def active_nebraska_approval_amount(date)
+    nebraska_approval_amounts.active_on(date).first
   end
 
   def attendance_rate(date)

@@ -40,6 +40,7 @@ end
 
 # == Route Map
 #
+# [15852] 2022-01-22 14:59:27.686 INFO | [SKYLIGHT] [5.1.1] Skylight agent enabled
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                    login GET    /login(.:format)                                                                                  static#fallback_index_html
 #                         new_user_session GET    /login(.:format)                                                                                  sessions#new
