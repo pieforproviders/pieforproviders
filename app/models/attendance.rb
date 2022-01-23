@@ -6,7 +6,7 @@ class Attendance < UuidApplicationRecord
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
   before_create :remove_absences
-  after_save_commit :recalculate_total_time_in_care
+  after_save_commit :calculate_service_day
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -120,8 +120,8 @@ class Attendance < UuidApplicationRecord
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
   end
 
-  def recalculate_total_time_in_care
-    TotalTimeInCareCalculator.new(service_day: service_day).call
+  def calculate_service_day
+    ServiceDayCalculator.new(service_day: service_day).call
   end
 end
 

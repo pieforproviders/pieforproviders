@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Service to recalculate a service day's total time in care
+# Service to calculate a service day's total time in care
 # based on its attendances' accumulated time in care
 class TotalTimeInCareCalculator
   attr_reader :attendances, :service_day
@@ -11,12 +11,12 @@ class TotalTimeInCareCalculator
   end
 
   def call
-    recalculate_total_time_in_care
+    calculate_total_time
   end
 
   private
 
-  def recalculate_total_time_in_care
+  def calculate_total_time
     Nebraska::TotalTimeInCareCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
   end
 
