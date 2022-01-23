@@ -35,10 +35,12 @@ class Approval < UuidApplicationRecord
     return children if children.length == 1
 
     children.with_schedules.min do |a, b|
-      if (b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)).zero?
+      comp = b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)
+
+      if comp.zero?
         a.full_name <=> b.full_name
       else
-        b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)
+        comp
       end
     end
   end
