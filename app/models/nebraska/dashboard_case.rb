@@ -147,17 +147,17 @@ module Nebraska
     private
 
     def active_nebraska_approval_amount
-      child.nebraska_approval_amounts.select do |nebraska_approval_amount|
+      child.nebraska_approval_amounts.find do |nebraska_approval_amount|
         nebraska_approval_amount.effective_on <= filter_date &&
           (nebraska_approval_amount.expires_on.nil? || nebraska_approval_amount.expires_on > filter_date)
-      end&.first
+      end
     end
 
     def child_approval_for_case
-      child_approvals.includes(:approval).select do |child_approval|
+      child_approvals.includes(:approval).find do |child_approval|
         child_approval.effective_on <= filter_date &&
           (child_approval.expires_on.nil? || child_approval.expires_on > filter_date)
-      end.first
+      end
     end
 
     def service_days_this_child_approval
@@ -216,6 +216,8 @@ module Nebraska
     end
 
     def scheduled_month_days
+      return @scheduled_month_days if @scheduled_month_days
+
       days = []
       (month_schedule_start..month_schedule_end).map do |date|
         schedule = schedule_for_day(date)
@@ -234,11 +236,11 @@ module Nebraska
     end
 
     def schedule_for_day(date)
-      schedules.select do |schedule|
+      schedules.find do |schedule|
         schedule.weekday == date.wday &&
           schedule.effective_on <= date &&
           (schedule.expires_on.nil? || schedule.expires_on > date)
-      end.first
+      end
     end
 
     def month_schedule_start
