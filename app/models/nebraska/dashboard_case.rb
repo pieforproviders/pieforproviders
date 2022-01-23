@@ -5,6 +5,7 @@ module Nebraska
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :approval,
+                :active_nebraska_approval_amount,
                 :business,
                 :child,
                 :child_approvals,
@@ -12,18 +13,23 @@ module Nebraska
                 :filter_date,
                 :reimbursable_month_absent_days,
                 :schedules,
-                :service_days
+                :service_days,
+                :service_days_this_month
 
-    def initialize(child:, filter_date:)
+    def initialize(child:, filter_date:, service_days:)
       @child = child
       @filter_date = filter_date
       @business = child.business
       @schedules = child&.schedules
       @child_approvals = child&.child_approvals
-      @child_approval = child_approval_for_case
-      @approval = child_approval&.approval
-      @service_days = child&.service_days&.with_attendances
+      @approval = child&.approvals&.active_on(filter_date)&.first
+      @child_approval = approval.child_approvals.where(child: child).first
+      @service_days = service_days
+      @service_days_this_month = service_days&.select do |sd|
+        sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
+      end
       @reimbursable_month_absent_days = reimbursable_absent_service_days
+      @active_nebraska_approval_amount = child&.active_nebraska_approval_amount(filter_date)
     end
 
     def attendance_risk
@@ -146,46 +152,18 @@ module Nebraska
 
     private
 
-    def active_nebraska_approval_amount
-      child.nebraska_approval_amounts.select do |nebraska_approval_amount|
-        nebraska_approval_amount.effective_on <= filter_date &&
-          (nebraska_approval_amount.expires_on.nil? || nebraska_approval_amount.expires_on > filter_date)
-      end&.first
-    end
-
-    def child_approval_for_case
-      child_approvals.includes(:approval).select do |child_approval|
-        child_approval.effective_on <= filter_date &&
-          (child_approval.expires_on.nil? || child_approval.expires_on > filter_date)
-      end.first
-    end
-
-    def service_days_this_child_approval
-      @service_days_this_child_approval ||= service_days.select do |service_day|
-        service_day.attendances.any? do |attendance|
-          attendance.child_approval == child_approval
-        end
-      end
-    end
-
-    def service_days_this_month
-      @service_days_this_month ||= service_days.select do |service_day|
-        service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-      end
-    end
-
     def absences_this_month
-      @absences_this_month ||= service_days_this_month.select do |service_day|
-        service_day.attendances.any? do |attendance|
-          attendance.absence.present?
+        @absences_this_month ||= service_days_this_month&.select do |service_day|
+          service_day.attendances.any? do |attendance|
+            attendance.absence.present?
         end
       end
     end
 
     def attendances_this_month
-      @attendances_this_month ||= service_days_this_month.select do |service_day|
-        service_day.attendances.all? do |attendance|
-          attendance.absence.nil?
+        @attendances_this_month ||= service_days_this_month&.select do |service_day|
+          service_day.attendances.all? do |attendance|
+            attendance.absence.nil?
         end
       end
     end

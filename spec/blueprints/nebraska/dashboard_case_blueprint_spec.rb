@@ -16,7 +16,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
 
   it 'includes the child name and all cases' do
     expect(
-      JSON.parse(described_class.render(Nebraska::DashboardCase.new(child: child, filter_date: Time.current))).keys
+      JSON.parse(described_class.render(Nebraska::DashboardCase.new(child: child,
+                                                                    filter_date: Time.current,
+                                                                    service_days: child.child_approvals.first.service_days))).keys
     ).to contain_exactly(
       'absences',
       'attendance_risk',
@@ -51,7 +53,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         parsed_response = JSON.parse(
           described_class
             .render(
-              Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+              Nebraska::DashboardCase.new(child: child,
+                                          filter_date: Time.current,
+                                          service_days: child.child_approvals.first.service_days)
             )
         )
 
@@ -88,7 +92,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         parsed_response = JSON.parse(
           described_class
             .render(
-              Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+              Nebraska::DashboardCase.new(child: child,
+                                          filter_date: Time.current,
+                                          service_days: child.child_approvals.first.service_days)
             )
         )
 
@@ -120,7 +126,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -151,7 +159,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -192,7 +202,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -235,7 +247,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -280,7 +294,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -324,7 +340,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -375,7 +393,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -419,7 +439,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -464,7 +486,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
               .render(
-                Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+                Nebraska::DashboardCase.new(child: child,
+                                            filter_date: Time.current,
+                                            service_days: child.child_approvals.first.service_days)
               )
           )
 
@@ -494,7 +518,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
             .render(
-              Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+              Nebraska::DashboardCase.new(child: child,
+                                          filter_date: Time.current,
+                                          service_days: child.child_approvals.first.service_days)
             )
           )
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
@@ -515,7 +541,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # parsed_response = JSON.parse(
           #   described_class
           #   .render(
-          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current, service_days: child.child_approvals.first.service_days)
           #   )
           # )
           # # The prior-month absence we just added in the shared_contexts
@@ -543,7 +569,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # parsed_response = JSON.parse(
           #   described_class
           #   .render(
-          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current, service_days: child.child_approvals.first.service_days)
           #   )
           # )
 
@@ -609,11 +635,19 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     child_json = JSON.parse(
       described_class
         .render(
-          Nebraska::DashboardCase.new(child: child, filter_date: Time.current)
+          Nebraska::DashboardCase.new(
+            child: child,
+            filter_date: Time.current,
+            service_days: child.child_approvals.first.service_days
+          )
         )
     )
 
-    cwlh_dashboard_case = Nebraska::DashboardCase.new(child: child_with_less_hours, filter_date: Time.current)
+    cwlh_dashboard_case = Nebraska::DashboardCase.new(
+      child: child_with_less_hours,
+      filter_date: Time.current,
+      service_days: child_with_less_hours.child_approvals.first.service_days
+    )
     child_with_less_hours_json = JSON.parse(
       described_class.render(cwlh_dashboard_case)
     )
