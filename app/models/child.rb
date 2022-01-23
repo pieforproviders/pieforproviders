@@ -120,11 +120,11 @@ class Child < UuidApplicationRecord
   end
 
   def weekday_scheduled_duration(date, weekday)
-    schedule_for_weekday = schedules.select do |schedule|
+    schedule_for_weekday = schedules.find do |schedule|
       schedule.weekday == weekday &&
         schedule.effective_on <= date &&
         (schedule.expires_on.nil? || schedule.expires_on > date)
-    end.first
+    end
     return 0 unless schedule_for_weekday
 
     schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)

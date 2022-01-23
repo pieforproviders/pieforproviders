@@ -153,17 +153,17 @@ module Nebraska
     private
 
     def absences_this_month
-        @absences_this_month ||= service_days_this_month&.select do |service_day|
-          service_day.attendances.any? do |attendance|
-            attendance.absence.present?
+      @absences_this_month ||= service_days_this_month&.select do |service_day|
+        service_day.attendances.any? do |attendance|
+          attendance.absence.present?
         end
       end
     end
 
     def attendances_this_month
-        @attendances_this_month ||= service_days_this_month&.select do |service_day|
-          service_day.attendances.all? do |attendance|
-            attendance.absence.nil?
+      @attendances_this_month ||= service_days_this_month&.select do |service_day|
+        service_day.attendances.all? do |attendance|
+          attendance.absence.nil?
         end
       end
     end
@@ -194,6 +194,8 @@ module Nebraska
     end
 
     def scheduled_month_days
+      return @scheduled_month_days if @scheduled_month_days
+
       days = []
       (month_schedule_start..month_schedule_end).map do |date|
         schedule = schedule_for_day(date)
@@ -212,11 +214,11 @@ module Nebraska
     end
 
     def schedule_for_day(date)
-      schedules.select do |schedule|
+      schedules.find do |schedule|
         schedule.weekday == date.wday &&
           schedule.effective_on <= date &&
           (schedule.expires_on.nil? || schedule.expires_on > date)
-      end.first
+      end
     end
 
     def month_schedule_start
