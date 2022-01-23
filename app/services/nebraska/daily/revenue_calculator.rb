@@ -44,15 +44,15 @@ module Nebraska
       end
 
       def hourly_rate
-        rates.select do |rate|
+        rates.find do |rate|
           rate.rate_type == 'hourly' && rate.effective_on <= date && (rate.expires_on.nil? || rate.expires_on > date)
-        end.first&.amount || 0
+        end&.amount || 0
       end
 
       def daily_rate
-        rates.select do |rate|
+        rates.find do |rate|
           rate.rate_type == 'daily' && rate.effective_on <= date && (rate.expires_on.nil? || rate.expires_on > date)
-        end.first&.amount || 0
+        end&.amount || 0
       end
     end
   end

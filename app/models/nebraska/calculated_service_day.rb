@@ -28,10 +28,10 @@ module Nebraska
     private
 
     def child_approval_for_day(child_approvals)
-      child_approvals.select do |child_approval|
+      child_approvals.find do |child_approval|
         child_approval.effective_on <= service_day.date &&
           (child_approval.expires_on.nil? || child_approval.expires_on > service_day.date)
-      end.first
+      end
     end
   end
 end
