@@ -65,5 +65,9 @@ module App
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
+
+    if Rails.env.profile?
+      config.middleware.use Rack::RubyProf, :path => './tmp/profile'
+    end
   end
 end
