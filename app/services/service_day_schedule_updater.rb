@@ -14,7 +14,7 @@ class ServiceDayScheduleUpdater
   def call
     reassign_service_days
     service_days.each(&:reload)
-    recalculate_total_time_in_care
+    calculate_service_day
   end
 
   private
@@ -28,7 +28,7 @@ class ServiceDayScheduleUpdater
     service_days.each { |sd| sd.update!(schedule: schedule) }
   end
 
-  def recalculate_total_time_in_care
-    service_days.each { |service_day| TotalTimeInCareCalculator.new(service_day: service_day).call }
+  def calculate_service_day
+    service_days.each { |service_day| ServiceDayCalculator.new(service_day: service_day).call }
   end
 end

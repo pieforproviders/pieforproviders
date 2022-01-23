@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Nebraska
-  # Service to recalculate a service day's total time in care
+  # Service to calculate a service day's total time in care
   # based on its attendances' accumulated time in care and Nebraska Rules
   class TotalTimeInCareCalculator < TotalTimeInCareCalculator
     attr_reader :attendances, :schedule, :service_day
@@ -12,16 +12,16 @@ module Nebraska
     end
 
     def call
-      recalculate_total_time_in_care
+      calculate_total_time
     end
 
     private
 
-    def recalculate_total_time_in_care
-      service_day.update!(total_time_in_care: calculate_nebraska_total_time)
+    def calculate_total_time
+      service_day.update!(total_time_in_care: schedule_or_duration)
     end
 
-    def calculate_nebraska_total_time
+    def schedule_or_duration
       scheduled_duration = schedule&.duration || 8.hours
 
       if total_recorded_attended_time <= scheduled_duration && missing_clock_out?

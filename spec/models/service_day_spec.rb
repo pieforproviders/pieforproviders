@@ -289,13 +289,15 @@ end
 #
 # Table name: service_days
 #
-#  id                 :uuid             not null, primary key
-#  date               :datetime         not null
-#  total_time_in_care :interval
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  child_id           :uuid             not null
-#  schedule_id        :uuid
+#  id                      :uuid             not null, primary key
+#  date                    :datetime         not null
+#  earned_revenue_cents    :integer
+#  earned_revenue_currency :string           default("USD"), not null
+#  total_time_in_care      :interval
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  child_id                :uuid             not null
+#  schedule_id             :uuid
 #
 # Indexes
 #

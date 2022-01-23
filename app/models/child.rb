@@ -87,7 +87,10 @@ class Child < UuidApplicationRecord
   end
 
   def active_nebraska_approval_amount(date)
-    nebraska_approval_amounts.active_on(date).first
+    @active_nebraska_approval_amount ||= Hash.new do |h, key|
+      h[key] = nebraska_approval_amounts.active_on(key).first
+    end
+    @active_nebraska_approval_amount[date]
   end
 
   def attendance_rate(date)
@@ -101,10 +104,6 @@ class Child < UuidApplicationRecord
 
   def active_rate(date)
     active_child_approval(date).rate
-  end
-
-  def active_nebraska_approval_amount(date)
-    nebraska_approval_amounts.active_on(date).first
   end
 
   def illinois_approval_amounts

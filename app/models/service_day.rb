@@ -4,11 +4,11 @@
 class ServiceDay < UuidApplicationRecord
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
-  after_save_commit :recalculate_total_time_in_care_for_absences,
+  after_save_commit :calculate_service_day,
                     on: :update,
                     if: proc { |service_day|
-                      service_day.saved_change_to_schedule_id?(to: nil)
-                    }
+                          service_day.saved_change_to_schedule_id?(to: nil)
+                        }
 
   belongs_to :child
   belongs_to :schedule, optional: true
@@ -16,6 +16,8 @@ class ServiceDay < UuidApplicationRecord
   has_many :child_approvals, -> { distinct }, through: :attendances
 
   attribute :total_time_in_care, :interval
+
+  monetize :earned_revenue_cents, allow_nil: true
 
   validates :date, date_time_param: true, presence: true
 
@@ -143,21 +145,23 @@ class ServiceDay < UuidApplicationRecord
     total_time_in_care > 18.hours
   end
 
-  def recalculate_total_time_in_care_for_absences
-    TotalTimeInCareCalculator.new(service_day: self).call
+  def calculate_service_day
+    ServiceDayCalculator.new(service_day: self).call
   end
 end
 # == Schema Information
 #
 # Table name: service_days
 #
-#  id                 :uuid             not null, primary key
-#  date               :datetime         not null
-#  total_time_in_care :interval
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  child_id           :uuid             not null
-#  schedule_id        :uuid
+#  id                      :uuid             not null, primary key
+#  date                    :datetime         not null
+#  earned_revenue_cents    :integer
+#  earned_revenue_currency :string           default("USD"), not null
+#  total_time_in_care      :interval
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  child_id                :uuid             not null
+#  schedule_id             :uuid
 #
 # Indexes
 #

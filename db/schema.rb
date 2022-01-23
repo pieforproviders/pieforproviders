@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_20_025655) do
+ActiveRecord::Schema.define(version: 2022_01_23_182544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -225,6 +225,8 @@ ActiveRecord::Schema.define(version: 2022_01_20_025655) do
     t.datetime "updated_at", precision: 6, null: false
     t.interval "total_time_in_care"
     t.uuid "schedule_id"
+    t.integer "earned_revenue_cents"
+    t.string "earned_revenue_currency", default: "USD", null: false
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
