@@ -16,9 +16,13 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
 
   it 'includes the child name and all cases' do
     expect(
-      JSON.parse(described_class.render(Nebraska::DashboardCase.new(child: child,
-                                                                    filter_date: Time.current,
-                                                                    service_days: child.child_approvals.first.service_days))).keys
+      JSON.parse(described_class.render(
+                   Nebraska::DashboardCase.new(
+                     child: child,
+                     filter_date: Time.current,
+                     service_days: child.child_approvals.first.service_days
+                   )
+                 )).keys
     ).to contain_exactly(
       'absences',
       'attendance_risk',
@@ -518,83 +522,15 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           parsed_response = JSON.parse(
             described_class
             .render(
-              Nebraska::DashboardCase.new(child: child,
-                                          filter_date: Time.current,
-                                          service_days: child.child_approvals.first.service_days)
+              Nebraska::DashboardCase.new(
+                child: child,
+                filter_date: Time.current,
+                service_days: child.child_approvals.first.service_days
+              )
             )
           )
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 3).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
-          # child.schedules.each(&:reload)
-
-          # child.schedules.each(&:reload)
-          # child.service_days.each(&:reload)
-          # create(
-          #   :attendance,
-          #   child_approval: child_approval,
-          #   check_in: Helpers.next_weekday(prior_month_check_in + 4.days, 2),
-          #   check_out: nil,
-          #   absence: 'absence'
-          # )
-
-          # child.service_days.each(&:reload)
-          # parsed_response = JSON.parse(
-          #   described_class
-          #   .render(
-          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current, service_days: child.child_approvals.first.service_days)
-          #   )
-          # )
-          # # The prior-month absence we just added in the shared_contexts
-          # # should change to a 3-hour absence based on our change to the June Schedule
-          # # The prior-month absence we added above in this test adds another 3 hour absence
-          # # The outcome of this is that we should be using up 6 additional hours and 1 less full day
-          # expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 6).to_f)
-          # expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
-
-          # # no change
-          # expect(parsed_response['full_days']).to eq('8.0')
-          # expect(parsed_response['hours_authorized']).to eq(child_approval.hours.to_f)
-          # expect(parsed_response['full_days_authorized']).to eq(child_approval.full_days)
-          # expect(parsed_response['earned_revenue'])
-          #   .to eq((((6.25 * hourly_rate * qris_bump) + (14 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
-          # expect(parsed_response['estimated_revenue'])
-          #   .to eq((((6.25 * hourly_rate * qris_bump) + (20 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
-          # expect(parsed_response['attendance_risk']).to eq('on_track')
-
-          # # change the current schedule to impact estimated revenue going forward for this month
-          # child.schedules.where(weekday: 2, effective_on: Date.parse('July 1, 2021')).first.update!(duration: 3.hours)
-          # child.schedules.each(&:reload)
-
-          # child.service_days.each(&:reload)
-          # parsed_response = JSON.parse(
-          #   described_class
-          #   .render(
-          #     Nebraska::DashboardCase.new(child: child, filter_date: Time.current, service_days: child.child_approvals.first.service_days)
-          #   )
-          # )
-
-          # # 7/14 - 7/19 are our longest-duration absences at 8 hours
-          # # 7/13 & 7/20 tie for our next-longest-duration absences at 3 hours w/ the new schedule
-          # # This should give us 4 full days and 3 hours removed because of absences - one of our
-          # # full-day absences now becomes an hourly, so we subtract the hours and add back in the full day
-          # # from calculations of remaining
-          # expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 9.25 - 6).to_f)
-          # expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
-          # # this doesn't change because absences don't count towards calculated days/hours
-          # expect(parsed_response['full_days']).to eq('8.0')
-          # expect(parsed_response['hours']).to eq('6.25')
-          # expect(parsed_response['hours_authorized']).to eq(child_approval.hours.to_f)
-          # expect(parsed_response['full_days_authorized']).to eq(child_approval.full_days)
-          # # changes because of the new schedule - one more 3-hour attendance, one less daily attendance
-          # expect(parsed_response['earned_revenue'])
-          #   .to eq((((9.25 * hourly_rate * qris_bump) + (13 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
-          # # changes because of the new schedule - we expect an additional
-          # # 3 hour scheduled day this month, and 1 less daily attendance
-          # # plus 7/13 moved from a daily to an hourly
-          # expect(parsed_response['estimated_revenue'])
-          #   .to eq((((12.25 * hourly_rate * qris_bump) + (18 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
-          # # no change because this schedule change didn't impact risk
-          # expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
       # rubocop:enable RSpec/NestedGroups

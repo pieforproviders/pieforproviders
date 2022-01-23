@@ -13,8 +13,7 @@ module Nebraska
                 :filter_date,
                 :reimbursable_month_absent_days,
                 :schedules,
-                :service_days,
-                :service_days_this_month
+                :service_days
 
     def initialize(child:, filter_date:, service_days:)
       @child = child
@@ -23,11 +22,8 @@ module Nebraska
       @schedules = child&.schedules
       @child_approvals = child&.child_approvals
       @approval = child&.approvals&.active_on(filter_date)&.first
-      @child_approval = approval.child_approvals.where(child: child).first
+      @child_approval = approval.child_approvals.find_by(child: child)
       @service_days = service_days
-      @service_days_this_month = service_days&.select do |sd|
-        sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-      end
       @reimbursable_month_absent_days = reimbursable_absent_service_days
       @active_nebraska_approval_amount = child&.active_nebraska_approval_amount(filter_date)
     end
@@ -217,6 +213,17 @@ module Nebraska
     end
 
     private
+
+    def service_days_this_month
+      Appsignal.instrument_sql(
+        'dashboard_case.service_days_this_month',
+        'selects only the service_days for this month and memoizes them'
+      ) do
+        @service_days_this_month ||= service_days&.select do |sd|
+          sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
+        end
+      end
+    end
 
     def absences_this_month
       Appsignal.instrument_sql(
