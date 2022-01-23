@@ -71,7 +71,7 @@ module Nebraska
           return 0
         end
 
-        child.active_nebraska_approval_amount(filter_date)&.family_fee || 0.00
+        active_nebraska_approval_amount&.family_fee || 0.00
       end
     end
 
@@ -330,7 +330,7 @@ module Nebraska
           schedule.weekday == date.wday &&
             schedule.effective_on <= date &&
             (schedule.expires_on.nil? || schedule.expires_on > date)
-        end.first
+        end
       end
     end
 
