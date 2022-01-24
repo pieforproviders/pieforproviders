@@ -8,8 +8,7 @@ class AddTotalTimeInCareToServiceDays < ActiveRecord::Migration[6.1]
       sd_batch.map do |sd|
         schedule = sd.child.schedules.active_on(sd.date).find_by(weekday: sd.date.wday)
         sd.update!(updated_at: Time.now, schedule: schedule)
-        TotalTimeInCareCalculator.new(service_day: sd).call
-        EarnedRevenueCalculator.new(service_day: sd).call
+        ServiceDayCalculatorJob.perform_later(sd.id)
       end
     end
   end
