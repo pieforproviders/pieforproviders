@@ -29,6 +29,6 @@ class ServiceDayScheduleUpdater
   end
 
   def calculate_service_day
-    service_days.each { |service_day| ServiceDayCalculator.new(service_day: service_day).call }
+    service_days.each { |service_day| ServiceDayCalculatorJob.perform_later(service_day.id) }
   end
 end

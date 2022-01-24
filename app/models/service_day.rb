@@ -146,7 +146,7 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def calculate_service_day
-    ServiceDayCalculator.new(service_day: self).call
+    ServiceDayCalculatorJob.perform_later(id)
   end
 end
 # == Schema Information
