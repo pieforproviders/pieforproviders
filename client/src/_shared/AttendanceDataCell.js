@@ -215,7 +215,7 @@ export default function AttendanceDataCell({
 
 AttendanceDataCell.propTypes = {
   columnDate: PropTypes.string,
-  columnIndex: PropTypes.number.isRequired,
+  columnIndex: PropTypes.number,
   record: PropTypes.object.isRequired,
   updateAttendanceData: PropTypes.func.isRequired
 }
