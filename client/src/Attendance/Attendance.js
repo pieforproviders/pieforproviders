@@ -9,7 +9,7 @@ import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
-import AttendanceDataCell from './AttendanceDataCell'
+import AttendanceDataCell from '_shared/AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
@@ -245,7 +245,8 @@ export function Attendance() {
           )
         })
     )
-
+    // eslint-disable-next-line no-debugger
+    debugger
     const response = await makeRequest({
       type: 'post',
       url: '/api/v1/attendance_batches',

@@ -1,5 +1,6 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
-import { Button, Grid, Table } from 'antd'
+import { Button, Grid, Modal, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -7,7 +8,9 @@ import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
+import editIcon from '../_assets/editIcon.svg'
 import { WeekPicker } from './WeekPicker'
+import AttendanceDataCell from '_shared/AttendanceDataCell'
 
 const { useBreakpoint } = Grid
 
@@ -21,6 +24,14 @@ export function AttendanceView() {
   // columns will be current dates
   const { token } = useSelector(state => ({ token: state.auth.token }))
   const [dateSelected, setDateSelected] = useState(dayjs())
+  const [editAttendanceModalData, setEditAttendanceModalData] = useState(null)
+  const [updatedAttendanceData, setUpdatedAttendanceData] = useState([{}, {}])
+
+  const updateAttendanceData = data => {
+    // eslint-disable-next-line no-debugger
+    debugger
+    setUpdatedAttendanceData(data)
+  }
 
   // create seven columns for each day of the week
   const generateColumns = () => {
@@ -51,6 +62,16 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
+
+          const handleEditAttendance = () => {
+            console.log(record)
+            setEditAttendanceModalData({
+              record,
+              columnDate: columnDate.format('YYYY-MM-DD'),
+              updateAttendanceData
+            })
+          }
+
           if (matchingServiceDay !== undefined) {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
@@ -85,8 +106,12 @@ export function AttendanceView() {
               Number(matchingServiceDay.total_time_in_care % 3600) / 60
             )
             const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
+
             return (
               <div className="text-center body-2">
+                <button className="float-right" onClick={handleEditAttendance}>
+                  <img alt="edit" src={editIcon} />
+                </button>
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
                 </div>
@@ -151,42 +176,47 @@ export function AttendanceView() {
     setDateSelected(newDate)
   }
 
-  useEffect(() => {
-    const getResponse = async () => {
-      const response = await makeRequest({
-        type: 'get',
-        url:
-          '/api/v1/service_days?filter_date=' +
-          dateSelected.format('YYYY-MM-DD'),
-        headers: {
-          Authorization: token
-        },
-        data: {}
-      })
+  const getResponse = async () => {
+    const response = await makeRequest({
+      type: 'get',
+      url:
+        '/api/v1/service_days?filter_date=' + dateSelected.format('YYYY-MM-DD'),
+      headers: {
+        Authorization: token
+      },
+      data: {}
+    })
 
-      if (response.ok) {
-        const parsedResponse = await response.json()
-        const addServiceDay = (previousValue, currentValue) => {
-          const childName = currentValue.attendances[0].child.full_name
-          const index = previousValue.findIndex(
-            item => item.child === childName
-          )
-          index >= 0
-            ? previousValue[index].serviceDays.push(currentValue)
-            : previousValue.push({
-                child: childName,
-                serviceDays: [currentValue]
-              })
-          return previousValue
-        }
-
-        const reducedData = parsedResponse.reduce(addServiceDay, [])
-
-        setAttendanceData(reducedData)
-        setColumns(generateColumns())
+    if (response.ok) {
+      const parsedResponse = await response.json()
+      const addServiceDay = (previousValue, currentValue) => {
+        const childName = currentValue.attendances[0].child.full_name
+        const index = previousValue.findIndex(item => item.child === childName)
+        index >= 0
+          ? previousValue[index].serviceDays.push(currentValue)
+          : previousValue.push({
+              child: childName,
+              serviceDays: [currentValue]
+            })
+        return previousValue
       }
-    }
 
+      const reducedData = parsedResponse.reduce(addServiceDay, [])
+
+      setAttendanceData(reducedData)
+      setColumns(generateColumns())
+    }
+  }
+
+  const handleModalClose = () => {
+    // todo: prepare and send modal data to attendance_batches and then update
+    console.log(updatedAttendanceData)
+    // eslint-disable-next-line no-debugger
+    debugger
+    setEditAttendanceModalData(null)
+  }
+
+  useEffect(() => {
     getResponse()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
@@ -242,6 +272,21 @@ export function AttendanceView() {
           </div>
         </div>
       )}
+      <Modal
+        visible={editAttendanceModalData}
+        onCancel={() => {
+          setUpdatedAttendanceData([{}, {}])
+          setEditAttendanceModalData(null)
+        }}
+        onOk={handleModalClose}
+        title={() => {
+          debugger
+          return editAttendanceModalData?.record?.childName || 'boop'
+        }}
+        // afterClose={}
+      >
+        <AttendanceDataCell {...editAttendanceModalData} />
+      </Modal>
     </div>
   )
 }
