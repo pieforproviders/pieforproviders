@@ -185,9 +185,9 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.attended_weekly_hours'
       ) do
-        return 0 unless service_days_this_month
-
         authorized_weekly_hours = child_approval&.authorized_weekly_hours
+        return "0.0 of #{authorized_weekly_hours}" unless service_days_this_month
+
         attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
           service_days: service_days_this_month,
           filter_date: filter_date,

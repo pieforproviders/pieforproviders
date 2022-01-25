@@ -78,12 +78,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         # remaining scheduled days of the month including today
         expect(parsed_response['estimated_revenue'])
           .to eq(
-            format(
-              '%.2f',
-              ((3 * hourly_rate) * qris_bump) +
-                ((daily_rate * qris_bump) * 18) -
-                family_fee
-            )
+            (((3 * hourly_rate) * qris_bump) +
+              ((daily_rate * qris_bump) * 18) -
+              family_fee).to_f
           )
         # too early in the month to show risk
         expect(parsed_response['attendance_risk']).to eq('not_enough_info')
@@ -120,12 +117,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         # no new attendances, stays the same even though we've traveled
         expect(parsed_response['estimated_revenue'])
           .to eq(
-            format(
-              '%.2f',
-              ((3 * hourly_rate) * qris_bump) +
-                ((daily_rate * qris_bump) * 8) -
-                family_fee
-            )
+            (((3 * hourly_rate) * qris_bump) +
+              ((daily_rate * qris_bump) * 8) -
+              family_fee).to_f
           )
         # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
         # estimated: (3.0 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump) = 227.4825
@@ -158,12 +152,9 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # this includes prior 3.0 hourly, 1 full day, and new 3.25 hours of attendance + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) + (3.25 * hourly_rate * qris_bump) +
-                  ((daily_rate * qris_bump) * 8) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) + (3.25 * hourly_rate * qris_bump) +
+                ((daily_rate * qris_bump) * 8) -
+                family_fee).to_f
             )
           # (((6.25 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
@@ -197,24 +188,18 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # broke past the family fee; this formula includes the 2 daily attendances and the 6.25 hourly attendances
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((daily_rate * qris_bump) * 2) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((daily_rate * qris_bump) * 2) -
+                family_fee).to_f
             )
           # this includes prior 6.25 hourly, 1 full day, and new 1 full day of attendance + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((daily_rate * qris_bump) * 9) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((daily_rate * qris_bump) * 9) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
           # estimated: (6.25 * hourly_rate * qris_bump) + (9 * daily_rate * qris_bump) = 271.46
@@ -254,29 +239,23 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # This includes the 2 prior dailies, plus the 3 new full & 2 new daily + hours attendances
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 5) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 5) -
+                family_fee).to_f
             )
           # this includes prior 6.25 hourly, prior 2 full days,
           # 2 new daily + hours, and 3 new full days of attendance + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 12) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 12) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 377.60
@@ -318,28 +297,22 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # This includes the 5 prior dailies, plus the 3 new full day absences
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 8) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 8) -
+                family_fee).to_f
             )
           # this includes prior 5 dailies, 3 new full days of attendance + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 15) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 15) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 456.83
@@ -383,28 +356,22 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # This includes the 8 prior dailies, plus 2 of the 3 new full day absences
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 10) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 10) -
+                family_fee).to_f
             )
           # this includes prior 8 dailies, 2 of the 3 new full days of attendance + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 17) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 17) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 509.65
@@ -447,28 +414,22 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # COVID absences count so we add one more daily attendance to the revenue calculation
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 11) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 11) -
+                family_fee).to_f
             )
           # this includes prior 10 dailies, 1 new absence + remaining 7 days
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 18) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 18) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 536.06
@@ -513,29 +474,23 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # add one more daily attendance to the revenue calculation
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 12) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 12) -
+                family_fee).to_f
             )
           # this includes prior 11 dailies, 1 new attendance + remaining 6 days
           # (now that we have an attendance for today)
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 18) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 18) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 562.47
@@ -583,27 +538,21 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['absences']).to eq('6 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 12) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 12) -
+                family_fee).to_f
             )
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 18) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 18) -
+                family_fee).to_f
             )
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
@@ -648,27 +597,21 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['absences']).to eq('6 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 12) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 12) -
+                family_fee).to_f
             )
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 18) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 18) -
+                family_fee).to_f
             )
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
@@ -714,27 +657,21 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['absences']).to eq('6 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 12) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 12) -
+                family_fee).to_f
             )
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 18) -
-                  family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 18) -
+                family_fee).to_f
             )
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
@@ -769,30 +706,24 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # change one of the Tuesday absences in July from a daily revenue generation to 3 hours
           expect(parsed_response['earned_revenue'])
             .to eq(
-              format(
-                '%.2f',
-                (3 * hourly_rate * qris_bump) +
-                (3 * hourly_rate * qris_bump) +
-                (3.25 * hourly_rate * qris_bump) +
-                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                ((daily_rate * qris_bump) * 11) -
-                family_fee
-              )
+              ((3 * hourly_rate * qris_bump) +
+              (3 * hourly_rate * qris_bump) +
+              (3.25 * hourly_rate * qris_bump) +
+              ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+              ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+              ((daily_rate * qris_bump) * 11) -
+              family_fee).to_f
             )
           # change one of the Tuesday absences in July from a daily revenue generation to 3 hours
           expect(parsed_response['estimated_revenue'])
             .to eq(
-              format(
-                '%.2f',
+              ((3 * hourly_rate * qris_bump) +
                 (3 * hourly_rate * qris_bump) +
-                  (3 * hourly_rate * qris_bump) +
-                  (3.25 * hourly_rate * qris_bump) +
-                  ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
-                  ((daily_rate * qris_bump) * 17) -
-                  family_fee
-              )
+                (3.25 * hourly_rate * qris_bump) +
+                ((2 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((8 * hourly_rate * qris_bump) + (daily_rate * qris_bump)) +
+                ((daily_rate * qris_bump) * 17) -
+                family_fee).to_f
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 552.28
