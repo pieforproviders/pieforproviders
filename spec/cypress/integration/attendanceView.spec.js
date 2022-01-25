@@ -88,7 +88,23 @@ describe('AttendanceView', () => {
     it('renders content', () => {
       cy.viewport(768, 500)
       cy.contains(childFullName)
-      cy.contains('4 hrs 0 mins')
+      // TODO: This happens in a background job so we can't expect it
+      // without running enqueued jobs and reloading before we hit the
+      // endpoint
+      // cy.contains('4 hrs 0 mins')
+      const checkInTimestamp = checkIn.toLocaleTimeString().split(' ')
+      const checkInTime =
+        checkInTimestamp[0].split(':').slice(0, -1).join(':') +
+        ' ' +
+        checkInTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
+      cy.contains(checkInTime)
+      const checkOutTimestamp = checkOut.toLocaleTimeString().split(' ')
+      const checkOutTime =
+        checkOutTimestamp[0].split(':').slice(0, -1).join(':') +
+        ' ' +
+        checkOutTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
+      cy.contains(checkOutTime)
+      // cy.contains(checkOut)
       cy.contains('Input Attendance')
       cy.get('[data-cy=noInfo]').its('length').should('eq', 6)
     })
