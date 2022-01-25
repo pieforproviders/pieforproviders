@@ -207,6 +207,7 @@ RSpec.describe Attendance, type: :model do
         date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day,
         child: attendance.child
       )
+      service_day.reload
       expect { attendance.save! }.not_to change(ServiceDay, :count)
       expect(attendance.service_day).to eq(service_day)
     end

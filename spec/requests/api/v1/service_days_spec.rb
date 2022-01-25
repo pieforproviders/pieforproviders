@@ -20,7 +20,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
 
   let!(:this_week_service_days) do
-    build_list(:attendance, 3) do |attendance|
+    service_days = build_list(:attendance, 3) do |attendance|
       attendance.child_approval = child_approval
       attendance.check_in = Helpers
                             .next_attendance_day(child_approval: child_approval, date: week_start_date) +
@@ -30,17 +30,21 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
                              9.hours + 18.minutes
       attendance.save!
     end.map(&:service_day)
+    perform_enqueued_jobs
+    service_days.each(&:reload)
   end
 
   let!(:past_service_days) do
-    [
+    service_days = [
       create(:attendance, check_in: two_weeks_ago_week_start_date, child_approval: child_approval).service_day,
       create(:attendance, check_in: two_weeks_ago_week_start_date + 2.days, child_approval: child_approval).service_day
     ]
+    perform_enqueued_jobs
+    service_days.each(&:reload)
   end
 
   let!(:another_user_service_days) do
-    build_list(:attendance, 3) do |attendance|
+    service_days = build_list(:attendance, 3) do |attendance|
       attendance.child_approval = create(:child_approval,
                                          child: create(:child, business: create(:business, :nebraska_ldds)))
       attendance.check_in = Helpers
@@ -51,6 +55,8 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
                              9.hours + 18.minutes
       attendance.save!
     end.map(&:service_day)
+    perform_enqueued_jobs
+    service_days.each(&:reload)
   end
 
   describe 'GET /api/v1/service_days' do

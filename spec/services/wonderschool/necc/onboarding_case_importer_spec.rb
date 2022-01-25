@@ -136,8 +136,8 @@ module Wonderschool
                 full_days: 330,
                 hours: 1760,
                 special_needs_rate: true,
-                special_needs_daily_rate: 90.77,
-                special_needs_hourly_rate: 9.43,
+                special_needs_daily_rate: Money.from_amount(90.77),
+                special_needs_hourly_rate: Money.from_amount(9.43),
                 authorized_weekly_hours: 45
               }
             )
@@ -148,7 +148,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2020-11-24'),
                        expires_on: Date.parse('2021-05-23'),
-                       family_fee: 60.00,
+                       family_fee: Money.from_amount(60.00),
                        allocated_family_fee: 60.00
                      }
                    )
@@ -158,7 +158,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2021-05-24'),
                        expires_on: Date.parse('2021-11-23'),
-                       family_fee: 85.00,
+                       family_fee: Money.from_amount(85.00),
                        allocated_family_fee: 85.00
                      }
                    )

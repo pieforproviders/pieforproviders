@@ -1,12 +1,23 @@
 # frozen_string_literal: true
 
 # The businesses for which users are responsible for keeping subsidy data
-# rubocop:disable Metrics/ClassLength
 class ServiceDay < UuidApplicationRecord
+  # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
+  # to recalculate all service days total_time_in_care; this handles that use case
+  after_save_commit :calculate_service_day,
+                    on: :update,
+                    if: proc { |service_day|
+                          service_day.saved_change_to_schedule_id?(to: nil)
+                        }
+
   belongs_to :child
+  belongs_to :schedule, optional: true
   has_many :attendances, dependent: :destroy
   has_many :child_approvals, -> { distinct }, through: :attendances
-  # has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
+
+  attribute :total_time_in_care, :interval
+
+  monetize :earned_revenue_cents, allow_nil: true
 
   validates :date, date_time_param: true, presence: true
 
@@ -77,6 +88,13 @@ class ServiceDay < UuidApplicationRecord
           where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
         }
 
+  scope :for_weekday,
+        lambda { |weekday|
+          where("select date_part('dow', DATE(date)) = ?", weekday)
+        }
+
+  scope :with_attendances, -> { includes(attendances: :child_approval) }
+
   def absence?
     attendances.any? { |attendance| attendance.absence.present? }
   end
@@ -127,69 +145,32 @@ class ServiceDay < UuidApplicationRecord
     total_time_in_care > 18.hours
   end
 
-  def total_time_in_care(schedule_duration: nil)
-    if state == 'NE'
-      calculate_nebraska_total_time(schedule_duration: schedule_duration)
-    else
-      total_recorded_attended_time
-    end
-  end
-
-  private
-
-  def calculate_nebraska_total_time(schedule_duration: nil)
-    scheduled_duration = calculate_scheduled_duration(schedule_duration: schedule_duration)
-
-    if total_recorded_attended_time <= scheduled_duration && missing_clock_out?
-      scheduled_duration
-    else
-      total_recorded_attended_time
-    end
-  end
-
-  def total_recorded_attended_time
-    attendances_with_check_out = attendances.presence&.select do |attendance|
-      attendance.check_out.present?
-    end
-    attendances_with_check_out.presence&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
-  end
-
-  def calculate_scheduled_duration(schedule_duration:)
-    schedule_duration || schedule_for_weekday&.duration || 8.hours
-  end
-
-  def missing_clock_out?
-    attended_days = attendances.select { |attendance| attendance.absence.nil? }
-    attended_days.empty? || attended_days.any? do |attendance|
-      attendance.check_in && !attendance.check_out
-    end
-  end
-
-  def schedule_for_weekday
-    return @schedule_for_weekday.first if @schedule_for_weekday
-
-    @schedule_for_weekday = child.schedules_for_weekday(date, date.wday)
-    @schedule_for_weekday.first
+  def calculate_service_day
+    ServiceDayCalculatorJob.perform_later(id)
   end
 end
-# rubocop:enable Metrics/ClassLength
-
 # == Schema Information
 #
 # Table name: service_days
 #
-#  id         :uuid             not null, primary key
-#  date       :datetime         not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  child_id   :uuid             not null
+#  id                      :uuid             not null, primary key
+#  date                    :datetime         not null
+#  earned_revenue_cents    :integer
+#  earned_revenue_currency :string           default("USD"), not null
+#  total_time_in_care      :interval
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  child_id                :uuid             not null
+#  schedule_id             :uuid
 #
 # Indexes
 #
-#  index_service_days_on_child_id  (child_id)
-#  index_service_days_on_date      (date)
+#  index_service_days_on_child_id     (child_id)
+#  index_service_days_on_date         (date)
+#  index_service_days_on_schedule_id  (schedule_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (schedule_id => schedules.id)
 #
