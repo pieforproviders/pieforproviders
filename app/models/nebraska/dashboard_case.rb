@@ -47,7 +47,9 @@ module Nebraska
       ) do
         return 0 unless absences_this_month
 
-        absences_this_month.length
+        absences_this_month.select do |service_day|
+          service_day.attendances.none? { |attendance| attendance.absence == 'covid_absence' }
+        end.length
       end
     end
 
@@ -67,7 +69,7 @@ module Nebraska
           return 0
         end
 
-        active_nebraska_approval_amount&.family_fee || 0.00
+        active_nebraska_approval_amount&.family_fee || 0
       end
     end
 
@@ -94,7 +96,7 @@ module Nebraska
             reimbursable_month_absent_days_revenue -
             family_fee,
           0.0
-        ].max.to_f.round(2)
+        ].max
       end
     end
 
@@ -114,9 +116,9 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.full_days'
       ) do
-        return 0 unless attended_month_days
+        return 0 unless attendances_this_month
 
-        attended_month_days.reduce(0) do |sum, service_day|
+        attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
         end
       end
@@ -126,9 +128,9 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.hours'
       ) do
-        return 0 unless attended_month_days
+        return 0 unless attendances_this_month
 
-        attended_month_days.reduce(0) do |sum, service_day|
+        attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
         end
       end
@@ -230,11 +232,7 @@ module Nebraska
         'dashboard_case.absences_this_month',
         'selects service_days_this_month where any attendances are absences'
       ) do
-        @absences_this_month ||= service_days_this_month&.select do |service_day|
-          service_day.attendances.any? do |attendance|
-            attendance.absence.present?
-          end
-        end
+        @absences_this_month ||= service_days_this_month&.select { |service_day| service_day.absence? }
       end
     end
 
@@ -285,7 +283,7 @@ module Nebraska
         'dashboard_case.attended_month_days_revenue',
         'map & sum earned revenue of attended month days'
       ) do
-        attended_month_days&.map(&:earned_revenue)&.sum || 0
+        attendances_this_month&.map(&:earned_revenue)&.sum || 0
       end
     end
 
@@ -298,6 +296,7 @@ module Nebraska
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def scheduled_month_days
       Appsignal.instrument_sql(
         'dashboard_case.scheduled_month_days',
@@ -327,6 +326,7 @@ module Nebraska
         @scheduled_month_days ||= days
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def schedule_for_day(date)
       Appsignal.instrument_sql(
@@ -359,36 +359,6 @@ module Nebraska
       end
     end
 
-    def attended_month_days
-      Appsignal.instrument_sql(
-        'dashboard_case.attended_month_days',
-        'makes calculated service days for attended month days and memoizes them'
-      ) do
-        attendances = attendances_this_month
-
-        return unless attendances
-
-        @attended_month_days ||= attendances.map do |service_day|
-          make_calculated_service_day(service_day: service_day)
-        end
-      end
-    end
-
-    def absent_month_days
-      Appsignal.instrument_sql(
-        'dashboard_case.absent_month_days',
-        'makes calculated service days for absent month days and memoizes them'
-      ) do
-        absences = absences_this_month
-
-        return unless absences
-
-        @absent_month_days ||= absences.map do |service_day|
-          make_calculated_service_day(service_day: service_day)
-        end
-      end
-    end
-
     def estimated_month_days
       Appsignal.instrument_sql(
         'dashboard_case.estimated_month_days',
@@ -412,8 +382,8 @@ module Nebraska
         'dashboard_case.attended_and_absent_dates',
         'gets attended and absent days to remove them from estimated days above'
       ) do
-        [attended_month_days, absent_month_days].compact.reduce([], :|).collect do |attended_day|
-          attended_day.service_day.date.to_date
+        [attendances_this_month, absences_this_month].compact.reduce([], :|).collect do |attended_day|
+          attended_day.date.to_date
         end
       end
     end
@@ -428,14 +398,10 @@ module Nebraska
         return if absences.blank?
 
         covid_absences, standard_absences = split_absences_by_type(absences: absences)
-        absences_to_reimburse = [
+        [
           covid_absences,
           standard_absences.sort_by(&:total_time_in_care).reverse!.take(5)
         ].compact.reduce([], :|)
-
-        absences_to_reimburse.map! do |service_day|
-          make_calculated_service_day(service_day: service_day)
-        end
       end
     end
 
@@ -445,7 +411,7 @@ module Nebraska
         'finds reimbursable absent days that are COVID absence'
       ) do
         reimbursable_approval_absent_days.reject do |absence|
-          absence.service_day.attendances.any? do |attendance|
+          absence.attendances.any? do |attendance|
             attendance.absence == 'covid_absence'
           end
         end
@@ -493,17 +459,13 @@ module Nebraska
       ) do
         return unless service_days
 
-        days = service_days.select do |service_day|
-          service_day.attendances.all? do |attendance|
-            attendance.absence.nil?
-          end
-        end
-        @attended_approval_days ||= days.map! do |service_day|
-          make_calculated_service_day(service_day: service_day)
+        @attended_approval_days ||= service_days.select do |service_day|
+          service_day.attendances.all? { |attendance| attendance.absence.nil? }
         end
       end
     end
 
+    # rubocop:disable Metrics/MethodLength
     def reimbursable_approval_absent_days
       Appsignal.instrument_sql(
         'dashboard_case.reimbursable_approval_absent_days',
@@ -512,17 +474,16 @@ module Nebraska
         return unless service_days
 
         days = []
-        start_date = approval.effective_on.to_date
-        end_date = filter_date
-        date = start_date
+        date = approval.effective_on.to_date
 
-        while date <= end_date.at_end_of_month
+        while date <= filter_date.at_end_of_month
           days = [days, reimbursable_absent_service_days(month: date)].compact.reduce([], :|)
           date += 1.month
         end
         @reimbursable_approval_absent_days ||= days
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def make_calculated_service_day(service_day:)
       Appsignal.instrument_sql(
