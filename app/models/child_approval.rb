@@ -17,6 +17,14 @@ class ChildApproval < UuidApplicationRecord
   delegate :case_number, to: :approval
 
   accepts_nested_attributes_for :nebraska_approval_amounts, :approval
+
+  def special_needs_daily_rate
+    Money.from_amount(super) if super
+  end
+
+  def special_needs_hourly_rate
+    Money.from_amount(super) if super
+  end
 end
 
 # == Schema Information
