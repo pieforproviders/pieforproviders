@@ -55,7 +55,7 @@ class Child < UuidApplicationRecord
           not_deleted
             .distinct
             .approved_for_date(date)
-          # .includes(:approvals, :attendances, :schedules, :child_approvals, :nebraska_approval_amounts)
+            .includes(:schedules)
         }
 
   scope :with_schedules, -> { includes(:schedules) }

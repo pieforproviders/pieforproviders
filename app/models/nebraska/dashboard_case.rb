@@ -20,7 +20,7 @@ module Nebraska
       @filter_date = filter_date
       @business = child.business
       @schedules = child&.schedules
-      @child_approvals = child&.child_approvals
+      @child_approvals = child&.child_approvals&.with_approval
       @approval = child&.approvals&.active_on(filter_date)&.first
       @child_approval = approval.child_approvals.find_by(child: child)
       @service_days = service_days

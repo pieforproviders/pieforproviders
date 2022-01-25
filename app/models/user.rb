@@ -41,7 +41,7 @@ class User < UuidApplicationRecord
         lambda {
           distinct
             .joins(:businesses)
-          # .includes(:businesses, :child_approvals, :approvals, :service_days)
+            .includes(:child_approvals, :approvals)
         }
 
   # format phone numbers - remove any non-digit characters

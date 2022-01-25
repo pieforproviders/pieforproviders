@@ -18,6 +18,8 @@ class ChildApproval < UuidApplicationRecord
 
   accepts_nested_attributes_for :nebraska_approval_amounts, :approval
 
+  scope :with_approval, -> { includes(:approval) }
+
   def special_needs_daily_rate
     Money.from_amount(super) if super
   end

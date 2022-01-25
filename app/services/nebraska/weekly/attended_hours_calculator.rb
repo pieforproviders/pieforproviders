@@ -50,14 +50,9 @@ module Nebraska
             # up to 5 absences a *MONTH* should count towards hours attended this week
             next if absences_for_this_week > 5
           end
-
-          Nebraska::CalculatedServiceDay.new(service_day: service_day,
-                                             child_approvals: child_approvals,
-                                             rates: rates)
+          service_day
         end
-        days.reduce(0) do |sum, service_day|
-          sum + (service_day&.total_time_in_care.presence || 0)
-        end
+        days.reduce(0) { |sum, service_day| sum + (service_day&.total_time_in_care.presence || 0) }
       end
 
       def absences_before_this_week

@@ -341,7 +341,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                   family_fee
               )
             )
-          # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97 - family_fee = 500.97
+          # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 456.83
           # ratio: (456.83 - 500.97) / 500.97 = -0.08
           expect(parsed_response['attendance_risk']).to eq('on_track')
