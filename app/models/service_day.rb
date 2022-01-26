@@ -94,6 +94,7 @@ class ServiceDay < UuidApplicationRecord
         }
 
   scope :with_attendances, -> { includes(attendances: :child_approval) }
+  scope :absences, -> { joins(:attendances).where.not(attendances: { absence: nil }) }
 
   def absence?
     attendances.any? { |attendance| attendance.absence.present? }

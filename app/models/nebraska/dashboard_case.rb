@@ -5,6 +5,7 @@ module Nebraska
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :approval,
+                :approval_absences,
                 :active_nebraska_approval_amount,
                 :business,
                 :child,
@@ -15,7 +16,7 @@ module Nebraska
                 :schedules,
                 :service_days
 
-    def initialize(child:, filter_date:, service_days:)
+    def initialize(child:, filter_date:, service_days:, approval_absences:)
       @child = child
       @filter_date = filter_date
       @business = child.business
@@ -24,6 +25,7 @@ module Nebraska
       @approval = child&.approvals&.active_on(filter_date)&.first
       @child_approval = approval.child_approvals.find_by(child: child)
       @service_days = service_days
+      @approval_absences = approval_absences
       @reimbursable_month_absent_days = reimbursable_absent_service_days
       @active_nebraska_approval_amount = child&.active_nebraska_approval_amount(filter_date)
     end
@@ -229,10 +231,12 @@ module Nebraska
 
     def absences_this_month
       Appsignal.instrument_sql(
-        'dashboard_case.absences_this_month',
-        'selects service_days_this_month where any attendances are absences'
+        'dashboard_case.service_days_this_month',
+        'selects only the service_days for this month and memoizes them'
       ) do
-        @absences_this_month ||= service_days_this_month&.select { |service_day| service_day.absence? }
+        @absences_this_month ||= approval_absences&.select do |sd|
+          sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
+        end
       end
     end
 
@@ -283,6 +287,7 @@ module Nebraska
         'dashboard_case.attended_month_days_revenue',
         'map & sum earned revenue of attended month days'
       ) do
+        # binding.pry if child.full_name == 'Jasveen Khirwar'
         attendances_this_month&.map(&:earned_revenue)&.sum || 0
       end
     end
@@ -432,9 +437,8 @@ module Nebraska
         'dashboard_case.absences_for_month',
         'reduce out nils from attendances for the approval'
       ) do
-        service_days.select do |service_day|
-          service_day.date.between?(month.at_beginning_of_month, month.at_end_of_month) &&
-            service_day.attendances.any? { |attendance| attendance.absence.present? }
+        approval_absences.select do |service_day|
+          service_day.date.between?(month.at_beginning_of_month, month.at_end_of_month)
         end
       end
     end
