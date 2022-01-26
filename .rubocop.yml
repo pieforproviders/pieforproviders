@@ -52,3 +52,10 @@ RSpec/MultipleMemoizedHelpers:
 # Turn off autocorrect on focused specs
 RSpec/Focus:
   AutoCorrect: false
+
+Rails/UnknownEnv:
+  Environments:
+    - production
+    - development
+    - test
+    - profile

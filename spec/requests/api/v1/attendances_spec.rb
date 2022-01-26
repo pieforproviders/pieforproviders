@@ -12,8 +12,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:child) { create(:child, business: business) }
 
   let!(:week_current_date) { Time.zone.local(2021, 9, 15) } # Wednesday
-  let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) } # Sunday
-  let!(:week_end_date) { week_current_date.at_end_of_week(:saturday) } # Friday
+  let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday
+  let!(:week_end_date) { week_current_date.at_end_of_week(:saturday) - 1.day - 11.hours } # Friday
 
   let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
@@ -95,6 +95,75 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
                end).to match_array(all_current_attendances.collect { |x| x.time_in_care.to_s })
         expect(parsed_response.length).to eq(6)
         expect(response).to match_response_schema('attendances')
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/attendance/:id' do
+    include_context 'with correct api version header'
+
+    let(:attendance) { past_attendances.first }
+    let(:new_check_in) { attendance.check_in + 1.hour }
+    let(:new_check_out) { attendance.check_in + 6.hours }
+
+    context 'when logged in as a non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it 'can submit a new check_in for an attendance' do
+        check_in_params = { attendance: { check_in: new_check_in.to_s } }
+        put "/api/v1/attendances/#{attendance.id}", params: check_in_params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
+      end
+
+      it 'can submit a new check_out for an attendance' do
+        check_out_params = { attendance: { check_out: new_check_out.to_s } }
+        put "/api/v1/attendances/#{attendance.id}", params: check_out_params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
+      end
+
+      it 'can change an attendance to an absence' do
+        absence_params = { attendance: { absence: 'absence' } }
+        create(:schedule, child: child, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
+        put "/api/v1/attendances/#{attendance.id}", params: absence_params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['absence']).to eq('absence')
+      end
+
+      it 'cannot update a different users attendance' do
+        different_user = create(:confirmed_user)
+        sign_in different_user
+        check_in_params = { attendance: { check_in: new_check_in.to_s } }
+        put "/api/v1/attendances/#{attendance.id}", params: check_in_params, headers: headers
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when logged in as an admin user' do
+      let!(:admin_user) { create(:confirmed_user, admin: true) }
+      let(:params) do
+        {
+          attendance: {
+            check_in: new_check_in.to_s,
+            check_out: new_check_out.to_s,
+            absence: 'absence'
+          }
+        }
+      end
+
+      before do
+        sign_in admin_user
+      end
+
+      it 'can update check_in check_out absence for a non-admin attendance' do
+        put "/api/v1/attendances/#{attendance.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
+        expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
+        expect(parsed_response['absence']).to eq('absence')
       end
     end
   end

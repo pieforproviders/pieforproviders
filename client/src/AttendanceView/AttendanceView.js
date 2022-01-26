@@ -46,18 +46,13 @@ export function AttendanceView() {
         },
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
-          const matchingAttendances = record.attendances.filter(attendance => {
+          const matchingServiceDay = record.serviceDays.find(serviceDay => {
             return new RegExp(columnDate.format('YYYY-MM-DD')).test(
-              attendance.check_in
+              serviceDay.date
             )
           })
-
-          if (matchingAttendances.length > 0) {
-            if (
-              matchingAttendances.some(attendance =>
-                attendance.tags.includes('absence')
-              )
-            ) {
+          if (matchingServiceDay !== undefined) {
+            if (matchingServiceDay.tags.includes('absence')) {
               return (
                 <div className="flex justify-center">
                   <div
@@ -69,38 +64,37 @@ export function AttendanceView() {
                 </div>
               )
             }
-
-            let totalCareTime = '',
-              checkInCheckOutTime = ''
-            matchingAttendances.forEach(attendance => {
-              const checkIn = dayjs(attendance.check_in).format('h:mm a')
-              const checkOut = attendance.check_out
-                ? dayjs(attendance.check_out).format('h:mm a')
-                : 'no check out time'
-              checkInCheckOutTime =
-                checkInCheckOutTime.length > 0
-                  ? checkInCheckOutTime + ', ' + checkIn + ' - ' + checkOut
-                  : checkIn + ' - ' + checkOut
-
-              const hour = Math.floor(Number(attendance.time_in_care) / 3600)
-              const minute = Math.floor(
-                Number(attendance.time_in_care % 3600) / 60
-              )
-              totalCareTime =
-                totalCareTime.length > 0
-                  ? totalCareTime + ', ' + hour + ' hrs ' + minute + '  mins'
-                  : hour + ' hrs ' + minute + '  mins'
-            })
+            const checkInCheckOutTime = matchingServiceDay.attendances
+              .map(attendance => {
+                const check_in = dayjs(
+                  attendance.check_in,
+                  'YYYY-MM-DD hh:mm'
+                ).format('h:mm a')
+                const check_out = attendance.check_out
+                  ? dayjs(attendance.check_out, 'YYYY-MM-DD hh:mm').format(
+                      'h:mm a'
+                    )
+                  : 'no check out time'
+                return `${check_in} - ${check_out}`
+              })
+              .join(', ')
+            const hour = Math.floor(
+              Number(matchingServiceDay.total_time_in_care) / 3600
+            )
+            const minute = Math.floor(
+              Number(matchingServiceDay.total_time_in_care % 3600) / 60
+            )
+            const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
             return (
               <div className="text-center body-2">
                 <div className="mb-2 text-gray8 font-semiBold">
-                  {totalCareTime}
+                  {totalTimeInCare}
                 </div>
                 <div className="text-xs text-darkGray">
                   {checkInCheckOutTime}
                 </div>
                 <div className="flex justify-center">
-                  {(matchingAttendances[0]?.tags || []).map((tag, i) => (
+                  {(matchingServiceDay.tags || []).map((tag, i) => (
                     <div
                       key={i}
                       className={`bg-green2 text-green1 box-border p-1 mt-1 ${
@@ -172,29 +166,21 @@ export function AttendanceView() {
 
       if (response.ok) {
         const parsedResponse = await response.json()
-        const reducedData = parsedResponse
-          // creates attendance cell objects that work with ant table component
-          .map(serviceDay => {
-            return {
-              child: serviceDay.attendances[0]?.child?.full_name || '',
-              attendances: serviceDay.attendances.map(attendance => ({
-                ...attendance,
-                ...{ tags: serviceDay.tags }
-              }))
-            }
-          })
-          // merge attendances for each child
-          .reduce((acc, cv) => {
-            const child = acc.find(element => element.child === cv.child)
-            if (child) {
-              acc[acc.indexOf(child)][`attendances`] = acc[acc.indexOf(child)][
-                `attendances`
-              ].concat(cv.attendances)
-              return acc
-            } else {
-              return [...acc, cv]
-            }
-          }, [])
+        const addServiceDay = (previousValue, currentValue) => {
+          const childName = currentValue.attendances[0].child.full_name
+          const index = previousValue.findIndex(
+            item => item.child === childName
+          )
+          index >= 0
+            ? previousValue[index].serviceDays.push(currentValue)
+            : previousValue.push({
+                child: childName,
+                serviceDays: [currentValue]
+              })
+          return previousValue
+        }
+
+        const reducedData = parsedResponse.reduce(addServiceDay, [])
 
         setAttendanceData(reducedData)
         setColumns(generateColumns())

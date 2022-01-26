@@ -147,9 +147,12 @@ export function Dashboard() {
         ...data.reduce((acc, cv) => {
           return {
             ...acc,
-            earnedRevenueTotal: acc.earnedRevenueTotal + cv.earnedRevenue,
-            estimatedRevenueTotal:
-              acc.estimatedRevenueTotal + cv.estimatedRevenue,
+            earnedRevenueTotal: cv.active
+              ? acc.earnedRevenueTotal + cv.earnedRevenue
+              : acc.earnedRevenueTotal,
+            estimatedRevenueTotal: cv.active
+              ? acc.estimatedRevenueTotal + cv.estimatedRevenue
+              : acc.estimatedRevenueTotal,
             totalApprovedRevenueWithFamilyFeeTotal:
               acc.totalApprovedWithFamilyFeeTotal
           }

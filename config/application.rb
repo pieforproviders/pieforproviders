@@ -48,7 +48,9 @@ module App
     logger_file = ActiveSupport::TaggedLogging.new(Log::FileLogger.new("log/#{Rails.env}.log"))
     logger_console = ActiveSupport::TaggedLogging.new(Log::ConsoleLogger.new($stdout))
     config.logger = logger_file
-    config.logger.extend(ActiveSupport::Logger.broadcast(logger_console)) unless Rails.env.test?
+    unless Rails.env.test? || Rails.env.development?
+      config.logger.extend(ActiveSupport::Logger.broadcast(logger_console))
+    end
 
     config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en
@@ -68,5 +70,7 @@ module App
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
+
+    config.middleware.use Rack::RubyProf, path: './tmp/profile' if Rails.env.profile?
   end
 end

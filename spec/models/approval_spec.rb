@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Approval, type: :model do
-  let(:effective_date) { (Time.current - 6.months).to_date }
+  let(:effective_date) { 6.months.ago.to_date }
   let(:approval) { build(:approval) }
 
   it { is_expected.to have_many(:child_approvals).dependent(:destroy) }
@@ -88,6 +88,13 @@ RSpec.describe Approval, type: :model do
       create(:child, approvals: [approval], schedules: [create(:schedule)])
       expect(approval.child_with_most_scheduled_hours(date: Time.current.in_time_zone(child_with_more_hours.timezone)))
         .to eq(child_with_more_hours)
+    end
+
+    it 'returns the child with alphabetically if the children have the same schedules' do
+      create(:child, approvals: [approval], full_name: 'Zed Ying')
+      child_with_first_alpha = create(:child, approvals: [approval], full_name: 'Alpha Bet')
+      expect(approval.child_with_most_scheduled_hours(date: Time.current.in_time_zone(child_with_first_alpha.timezone)))
+        .to eq(child_with_first_alpha)
     end
   end
 end

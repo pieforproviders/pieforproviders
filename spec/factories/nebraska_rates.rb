@@ -6,7 +6,7 @@ FactoryBot.define do
     max_age { 120 }
     amount { Faker::Number.within(range: 10.0..50.0) }
     license_type { 'family_child_care_home_i' }
-    effective_on { (Time.current - 11.months).to_date }
+    effective_on { 11.months.ago.to_date }
     # TODO: make this a trait and control it rather than randomizing
     expires_on do
       Random.rand(10) > 7 ? nil : effective_on + 1.year

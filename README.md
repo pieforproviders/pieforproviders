@@ -1,6 +1,6 @@
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=develop)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Adevelop)
 
-[![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge) 
+[![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge)
 
 [![Pie for Providers](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/sweo6d/develop&style=for-the-badge&logo=cypress)](https://dashboard.cypress.io/projects/sweo6d/runs)
 
@@ -29,7 +29,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
 ## Important URLs
 
-- Staging: [https://staging.pieforproviders.com/](https://staging.pieforproviders.com/)  
+- Staging: [https://staging.pieforproviders.com/](https://staging.pieforproviders.com/)
 
 <br />
 
@@ -57,7 +57,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - Frontend: React
   - ESLint/Prettier
   - Jest/React Testing Library
-  
+
 </details>
 
 ---
@@ -66,7 +66,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   <summary>Local Setup (Option One: Direct Install)</summary>
 
 ---
-**for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript** 
+**for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript**
 
 ### Prerequisites
 
@@ -116,7 +116,7 @@ Visit `localhost:3000` to see the React frontend. 🥳
 
 <details>
   <summary>Local Setup (Option Two: Docker)</summary>
-  
+
 We also have a dockerized setup if you prefer to develop that way.
 
 ### Prerequisites
@@ -157,7 +157,7 @@ Docker should be installed on your local machine.
 You can create a new user account by visiting `/signup` (or clicking "Sign Up" on the login page at the root).
 
 When you create a new account, you should see a demo email pop up in a new tab; **the link in this URL can't be clicked in local development**.  Instead, copy the path (starting with `localhost`) and paste it into a browser window.  This will confirm your user and automatically log you in.
-</details>  
+</details>
 
 ---
 
@@ -183,7 +183,7 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 - `yarn start-server` in one terminal (make sure rails is not currently running)
 - `yarn run cy:open` in another terminal
 
-</details>  
+</details>
 
 ---
 
@@ -193,7 +193,7 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 ---
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
-</details>  
+</details>
 
 ---
 
@@ -204,19 +204,22 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### Login Issues
 
-**Q: I keep getting redirected to the login screen when after I've created and confirmed my account**  
+**Q: I keep getting redirected to the login screen when after I've created and confirmed my account**
 **A:** Make sure you've created a secret for `DEVISE_JWT_SECRET_KEY` in `.env` using `rails secret`
 
 ### Postgres
 
-**Q: I get postgres errors when I try to set up the database**  
-**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.  
+**Q: I get postgres errors when I try to set up the database**
+**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.
+
+**Q: I'm on an m1 and `gem install pg` fails**
+**A:** Make sure that your version of Postgres/Postgres.app was built on your m1. Versions of Postgres.app built on a previous machine and migrated to your m1 may still run, but lack the `libpq` that you need to `gem install pg`. Don't forget to backup/restore your existing databases if you have to upgrade versions of Postgres!
 
 ### XCode
 
-**Q: I see the following error in my terminal: `gyp: No Xcode or CLT version detected!`**  
+**Q: I see the following error in my terminal: `gyp: No Xcode or CLT version detected!`**
 **A:** try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
-</details>  
+</details>
 
 ---
 

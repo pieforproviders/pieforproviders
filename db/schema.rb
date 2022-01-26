@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_13_211754) do
+ActiveRecord::Schema.define(version: 2022_01_20_025655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -201,15 +201,6 @@ ActiveRecord::Schema.define(version: 2021_12_13_211754) do
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
 
-  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.date "month", null: false
-    t.decimal "amount", null: false
-    t.uuid "child_approval_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
-  end
-
   create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
     t.date "expires_on"
@@ -232,8 +223,13 @@ ActiveRecord::Schema.define(version: 2021_12_13_211754) do
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.interval "total_time_in_care"
+    t.integer "earned_revenue_cents"
+    t.string "earned_revenue_currency", default: "USD", null: false
+    t.uuid "schedule_id"
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
+    t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
   end
 
   create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -297,8 +293,8 @@ ActiveRecord::Schema.define(version: 2021_12_13_211754) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
-  add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
+  add_foreign_key "service_days", "schedules"
   add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end

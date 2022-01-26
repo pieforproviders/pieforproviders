@@ -96,6 +96,7 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     before do
+      perform_enqueued_jobs
       hourly.service_day.reload
       daily.service_day.reload
       daily_plus_hourly.service_day.reload
@@ -113,6 +114,7 @@ RSpec.describe ServiceDay, type: :model do
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 6.hours
       )
+      perform_enqueued_jobs
       expect(described_class.ne_hourly).to include(hourly.service_day)
       expect(described_class.ne_hourly).not_to include(daily.service_day)
       expect(described_class.ne_hourly).not_to include(daily_plus_hourly.service_day)
@@ -130,6 +132,7 @@ RSpec.describe ServiceDay, type: :model do
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 10.hours
       )
+      perform_enqueued_jobs
       expect(described_class.ne_daily).to include(hourly.service_day)
       expect(described_class.ne_daily).to include(daily.service_day)
       expect(described_class.ne_daily).not_to include(daily_plus_hourly.service_day)
@@ -147,6 +150,7 @@ RSpec.describe ServiceDay, type: :model do
         check_in: hourly.check_in + 5.hours,
         check_out: hourly.check_in + 16.hours
       )
+      perform_enqueued_jobs
       expect(described_class.ne_daily_plus_hourly).to include(hourly.service_day)
       expect(described_class.ne_daily_plus_hourly).not_to include(daily.service_day)
       expect(described_class.ne_daily_plus_hourly).to include(daily_plus_hourly.service_day)
@@ -164,6 +168,7 @@ RSpec.describe ServiceDay, type: :model do
         check_in: hourly.check_in + 3.hours,
         check_out: hourly.check_in + 21.hours
       )
+      perform_enqueued_jobs
       expect(described_class.ne_daily_plus_hourly_max).to include(hourly.service_day)
       expect(described_class.ne_daily_plus_hourly_max).not_to include(daily.service_day)
       expect(described_class.ne_daily_plus_hourly_max).not_to include(daily_plus_hourly.service_day)
@@ -203,18 +208,20 @@ RSpec.describe ServiceDay, type: :model do
       let(:current_attendance) do
         create(
           :attendance,
-          check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current),
+          check_in: Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours,
           child_approval: child_approval
         )
       end
       let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
 
       it 'returns service days for given week' do
+        travel_to Time.current.at_end_of_week(:saturday)
         expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week).not_to include(past_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)
         expect(described_class.for_week(date)).not_to include(current_service_day)
         expect(described_class.for_week(date - 1.week).size).to eq(0)
+        travel_back
       end
     end
 
@@ -239,11 +246,16 @@ RSpec.describe ServiceDay, type: :model do
       let(:service_day) { attendance.service_day }
 
       it 'for a single check-in with no check-out, returns the scheduled duration if the day has a schedule' do
+        attendance.child.reload
+        perform_enqueued_jobs
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
       end
 
       it 'for a single check-in with no check-out, returns 8 hours if day has no schedule' do
         attendance.child.schedules.destroy_all
+        perform_enqueued_jobs
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(8.hours)
       end
 
@@ -254,6 +266,8 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 1.hour + 30.minutes,
           check_out: attendance.check_in + 3.hours + 30.minutes
         )
+        perform_enqueued_jobs
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
       end
 
@@ -264,6 +278,8 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 1.hour + 30.minutes,
           check_out: attendance.check_in + 10.hours + 30.minutes
         )
+        perform_enqueued_jobs
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(9.hours)
       end
 
@@ -274,6 +290,8 @@ RSpec.describe ServiceDay, type: :model do
           check_in: attendance.check_in + 3.hours + 30.minutes,
           check_out: nil
         )
+        perform_enqueued_jobs
+        service_day.reload
         expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
       end
     end
@@ -283,18 +301,24 @@ end
 #
 # Table name: service_days
 #
-#  id         :uuid             not null, primary key
-#  date       :datetime         not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  child_id   :uuid             not null
+#  id                      :uuid             not null, primary key
+#  date                    :datetime         not null
+#  earned_revenue_cents    :integer
+#  earned_revenue_currency :string           default("USD"), not null
+#  total_time_in_care      :interval
+#  created_at              :datetime         not null
+#  updated_at              :datetime         not null
+#  child_id                :uuid             not null
+#  schedule_id             :uuid
 #
 # Indexes
 #
-#  index_service_days_on_child_id  (child_id)
-#  index_service_days_on_date      (date)
+#  index_service_days_on_child_id     (child_id)
+#  index_service_days_on_date         (date)
+#  index_service_days_on_schedule_id  (schedule_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (schedule_id => schedules.id)
 #

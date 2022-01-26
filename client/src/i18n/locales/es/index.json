@@ -222,7 +222,7 @@
   "checkIn": "Entrada",
   "checkOut": "Salida",
   "absent": "Ausente",
-  "covidRelated": "Relacionado con covid",
+  "covidRelated": "Relacionado con COVID",
   "save": "Guardar",
   "validTime": "Por favor ingresa una fecha válida",
   "today": "Hoy",
@@ -244,5 +244,7 @@
   "incompatibleMsg": "O tu navegador es demasiado pequeño o estás en un aparato móvil. Por favor cambia a una computadora o tableta para ver esta pagina.",
   "noInfo": "no info",
   "daily": "día completo",
-  "hourly": "horas"
+  "hourly": "horas",
+  "addCheckInTime": "Añadir timpo de entrada",
+  "removeCheckInTime": "Eliminar timpo de entrada"
 }

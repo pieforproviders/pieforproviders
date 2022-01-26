@@ -6,10 +6,6 @@ class ServiceDayBlueprint < Blueprinter::Base
   field :child_id
   field :date
   field :tags
-  # rubocop:disable Style/SymbolProc
-  field :total_time_in_care do |service_day|
-    service_day.total_time_in_care
-  end
-  # rubocop:enable Style/SymbolProc
+  field :total_time_in_care
   association :attendances, blueprint: AttendanceBlueprint
 end

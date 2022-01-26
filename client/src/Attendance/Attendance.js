@@ -34,7 +34,7 @@ export function Attendance() {
       return {
         ...acc,
         ...{
-          [cv.id]: [...Array(7).keys()].map(() => ({}))
+          [cv.id]: [...Array(7).keys()].map(() => [{}, {}])
         }
       }
     }, {})
@@ -51,39 +51,54 @@ export function Attendance() {
     Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
 
   const columnErrorIsPresent = columnIndex =>
-    !!Object.values(latestAttendanceData.current).find(
-      row => Object.keys(row[columnIndex]).length > 0
+    !!Object.values(latestAttendanceData.current).find(row =>
+      row[columnIndex].some(attendance => Object.keys(attendance).length > 0)
     ) && latestColumnDates.current[columnIndex] === ''
 
-  const updateAttendanceData = (updates, record, i) => {
+  const updateAttendanceData = ({
+    update,
+    record,
+    columnIndex,
+    secondCheckIn
+  }) => {
     const newArr = latestAttendanceData.current[record?.id].map(
       (value, index) => {
+        const valueIndex = secondCheckIn ? 1 : 0
         // this logic adds and removes fields as needed depending on whether checkin/out or an absence is selected
-        return index === i
-          ? Object.keys(updates).length === 0 ||
-            (Object.keys(value).includes('absence') &&
-              (Object.keys(updates).includes('check_in') ||
-                Object.keys(updates).includes('check_out'))) ||
-            (Object.keys(updates).includes('absence') &&
-              (Object.keys(value).includes('check_in') ||
-                Object.keys(value).includes('check_out')))
-            ? removeEmptyString(updates)
-            : removeEmptyString({ ...value, ...updates })
-          : value
+        const updatedAttendanceValue =
+          index === columnIndex
+            ? Object.keys(update).length === 0 ||
+              (Object.keys(value[valueIndex]).includes('absence') &&
+                (Object.keys(update).includes('check_in') ||
+                  Object.keys(update).includes('check_out'))) ||
+              (Object.keys(update).includes('absence') &&
+                (Object.keys(value[valueIndex]).includes('check_in') ||
+                  Object.keys(value[valueIndex]).includes('check_out')))
+              ? removeEmptyString(update)
+              : removeEmptyString({ ...value[valueIndex], ...update })
+            : value[valueIndex]
+
+        return value.map((v, i) =>
+          valueIndex === i ? updatedAttendanceValue : v
+        )
       }
     )
-    latestAttendanceData.current = {
-      ...attendanceData,
+    const updatedReference = {
+      ...latestAttendanceData.current,
       [record.id]: newArr
     }
-    const errorIsPresent = columnErrorIsPresent(i)
+    latestAttendanceData.current = updatedReference
+
+    const errorIsPresent = columnErrorIsPresent(columnIndex)
 
     if (errorIsPresent !== latestError.current) {
       latestError.current = errorIsPresent
       setErrors(errorIsPresent)
       setColumns(generateColumns())
     }
-    setAttendanceData(prevData => ({ ...prevData, [record.id]: newArr }))
+    setAttendanceData(prevData => {
+      return { ...prevData, [record.id]: newArr }
+    })
   }
 
   const handleDateChange = (index, dateString) => {
@@ -96,12 +111,12 @@ export function Attendance() {
     if (errorIsPresent !== latestError.current) {
       latestError.current = errorIsPresent
       setErrors(errorIsPresent)
-      setColumns(generateColumns())
     }
+    setColumns(generateColumns(updatedDates))
     setColumnDates(updatedDates)
   }
 
-  const generateColumns = () => {
+  const generateColumns = (updatedDates = null) => {
     let cols = []
     for (let i = 0; i < 7; i++) {
       cols.push({
@@ -126,11 +141,12 @@ export function Attendance() {
           )
         },
         // eslint-disable-next-line react/display-name
-        render: (_, record) => {
+        render: (text, record, index) => {
           return (
             <AttendanceDataCell
               record={record}
               columnIndex={i}
+              columnDate={updatedDates === null ? '' : updatedDates[i]}
               updateAttendanceData={updateAttendanceData}
             />
           )
@@ -173,49 +189,61 @@ export function Attendance() {
   const handleSave = async () => {
     const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
       data[1]
-        .map((value, key) => {
-          if (Object.keys(value).length === 0) {
-            return value
-          }
+        .flatMap((values, columnIndex) => {
+          return values.map(value => {
+            if (Object.keys(value).length === 0) {
+              return value
+            }
 
-          if (Object.keys(value).includes('absence')) {
-            return { ...value, check_in: columnDates[key], child_id: data[0] }
-          }
+            if (Object.keys(value).includes('absence')) {
+              return {
+                ...value,
+                check_in: columnDates[columnIndex],
+                child_id: data[0]
+              }
+            }
 
-          if (
-            Object.keys(value).includes('check_in') &&
-            !Object.keys(value).includes('check_out')
-          ) {
+            if (
+              Object.keys(value).includes('check_in') &&
+              !Object.keys(value).includes('check_out')
+            ) {
+              return {
+                check_in: `${columnDates[columnIndex]} ${value.check_in}`,
+                child_id: data[0]
+              }
+            }
+
+            const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
+            const parsedCheckIn = value.check_in.match(timeRegex)
+            const parsedCheckOut = value.check_out.match(timeRegex)
+            const currentDate = dayjs(columnDates[columnIndex])
+            let checkoutDate
+
+            if (
+              (parsedCheckIn[3] === 'am' &&
+                parsedCheckOut[3] === 'am' &&
+                Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
+              (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
+            ) {
+              checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
+            } else {
+              checkoutDate = currentDate.format('YYYY-MM-DD')
+            }
+
             return {
-              check_in: `${columnDates[key]} ${value.check_in}`,
+              check_in: `${columnDates[columnIndex]} ${value.check_in}`,
+              check_out: `${checkoutDate} ${value.check_out}`,
               child_id: data[0]
             }
-          }
-
-          const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
-          const parsedCheckIn = value.check_in.match(timeRegex)
-          const parsedCheckOut = value.check_out.match(timeRegex)
-          const currentDate = dayjs(columnDates[key])
-          let checkoutDate
-
-          if (
-            (parsedCheckIn[3] === 'am' &&
-              parsedCheckOut[3] === 'am' &&
-              Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
-            (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
-          ) {
-            checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
-          } else {
-            checkoutDate = currentDate.format('YYYY-MM-DD')
-          }
-
-          return {
-            check_in: `${columnDates[key]} ${value.check_in}`,
-            check_out: `${checkoutDate} ${value.check_out}`,
-            child_id: data[0]
-          }
+          })
         })
-        .filter(value => Object.keys(value).length > 0)
+        .filter(value => {
+          return (
+            Object.keys(value).length > 0 &&
+            // removes any junk date conversions
+            !Object.values(value).some(v => v.match(/^Invalid Date/))
+          )
+        })
     )
 
     const response = await makeRequest({

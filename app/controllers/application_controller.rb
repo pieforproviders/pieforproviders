@@ -44,7 +44,7 @@ class ApplicationController < ActionController::API
     start = Time.current
     yield
     duration = Time.current - start
-    Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
+    Rails.logger.info "DURATION | #{controller_name}##{action_name}: #{duration}s"
   end
 
   def set_locale

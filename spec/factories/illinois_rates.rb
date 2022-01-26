@@ -5,7 +5,7 @@ FactoryBot.define do
     sequence(:name) { |n| "Rate #{n}" }
     max_age { 18 }
     license_type { Licenses::TYPES.sample }
-    effective_on { (Time.current - 11.months).to_date }
+    effective_on { 11.months.ago.to_date }
     # TODO: make this a trait and control it rather than randomizing
     expires_on do
       Random.rand(10) > 7 ? nil : effective_on + 1.year

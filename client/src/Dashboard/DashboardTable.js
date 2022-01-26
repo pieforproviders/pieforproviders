@@ -357,7 +357,9 @@ export default function DashboardTable({
             sorter: (a, b) =>
               dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
             render: (text, record) =>
-              isNotApproved(record)
+              isInactive(record)
+                ? '-'
+                : isNotApproved(record)
                 ? 'unknown'
                 : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
                     record.approvalExpiresOn
@@ -369,13 +371,17 @@ export default function DashboardTable({
             name: 'hoursRemaining',
             sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
             render: (text, record) =>
-              `${record.hoursRemaining} (of ${record.hoursAuthorized})`
+              isInactive(record)
+                ? '-'
+                : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
           },
           {
             name: 'fullDaysRemaining',
             sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
             render: (text, record) =>
-              `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+              isInactive(record)
+                ? '-'
+                : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
           }
         ]
       },
@@ -524,7 +530,7 @@ export default function DashboardTable({
           <Select.Option value="no_longer_in_my_care">
             {t('inactiveReason1')}
           </Select.Option>
-          <Select.Option value="no_longer_recieving_subsidies">
+          <Select.Option value="no_longer_receiving_subsidies">
             {t('inactiveReason2')}
           </Select.Option>
           <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
