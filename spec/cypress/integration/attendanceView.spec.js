@@ -102,9 +102,9 @@ describe('AttendanceView', () => {
       // without running enqueued jobs and reloading before we hit the
       // endpoint
       // cy.contains('4 hrs 0 mins')
+      // TODO: these are also failing on CI but not on local
       cy.contains(checkInTime)
       cy.contains(checkOutTime)
-      // cy.contains(checkOut)
       cy.contains('Input Attendance')
       cy.get('[data-cy=noInfo]').its('length').should('eq', 6)
     })
