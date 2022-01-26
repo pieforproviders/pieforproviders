@@ -4,9 +4,11 @@ module Nebraska
   # A case for display in the Nebraska Dashboard
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
-    attr_reader :absent_days,
+    attr_reader :absences_this_month,
+                :absent_days,
                 :active_nebraska_approval_amount,
                 :approval,
+                :attendances_this_month,
                 :attended_days,
                 :business,
                 :child,
@@ -16,11 +18,13 @@ module Nebraska
                 :reimbursable_month_absent_days,
                 :schedules
 
-    def initialize(child:, filter_date:, attended_days:, absent_days:)
+    def initialize(child:, filter_date:, attended_days:, absent_days:, absences_this_month:, attendances_this_month:)
       @child = child
       @filter_date = filter_date
-      @attended_days = attended_days
+      @absences_this_month = absences_this_month
       @absent_days = absent_days
+      @attendances_this_month = attendances_this_month
+      @attended_days = attended_days
       @business = child.business
       @schedules = child&.schedules
       @child_approvals = child&.child_approvals&.with_approval
@@ -216,39 +220,6 @@ module Nebraska
     end
 
     private
-
-    def service_days_this_month
-      Appsignal.instrument_sql(
-        'dashboard_case.service_days_this_month',
-        'selects only the service_days for this month and memoizes them'
-      ) do
-        @service_days_this_month ||= attended_days&.select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-        end
-      end
-    end
-
-    def absences_this_month
-      Appsignal.instrument_sql(
-        'dashboard_case.service_days_this_month',
-        'selects only the service_days for this month and memoizes them'
-      ) do
-        @absences_this_month ||= absent_days&.select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-        end
-      end
-    end
-
-    def attendances_this_month
-      Appsignal.instrument_sql(
-        'dashboard_case.attendances_this_month',
-        'selects attendances_this_month'
-      ) do
-        @attendances_this_month ||= attended_days&.select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-        end
-      end
-    end
 
     def rates
       Appsignal.instrument_sql('dashboard_case.rates', 'queries rates for the case and memoizes them') do
