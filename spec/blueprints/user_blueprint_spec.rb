@@ -98,6 +98,8 @@ RSpec.describe UserBlueprint do
                child_approval: create(:child, business: nebraska_business).child_approvals.first)
         child = create(:child, business: nebraska_business)
         create_list(:attendance, 2, child_approval: child.child_approvals.first, check_in: Time.current)
+        perform_enqueued_jobs
+        ServiceDay.all.each(&:reload)
       end
 
       it 'returns the first approval effective date' do
@@ -112,6 +114,8 @@ RSpec.describe UserBlueprint do
 
       it 'returns the as_of date for the last attendance in the prior month' do
         attendance = create(:attendance, check_in: last_month)
+        perform_enqueued_jobs
+        ServiceDay.all.each(&:reload)
         blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
