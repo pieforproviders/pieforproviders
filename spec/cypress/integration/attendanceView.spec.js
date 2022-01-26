@@ -12,8 +12,18 @@ const email = internet.email(firstName)
 const password = internet.password()
 // Date now - 6 hrs
 const checkIn = new Date(Date.now() - 21600000)
+const checkInTimestamp = checkIn.toLocaleTimeString().split(' ')
+const checkInTime =
+  checkInTimestamp[0].split(':').slice(0, -1).join(':') +
+  ' ' +
+  checkInTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
 // Date now - 2 hrs
 const checkOut = new Date(Date.now() - 7200000)
+const checkOutTimestamp = checkOut.toLocaleTimeString().split(' ')
+const checkOutTime =
+  checkOutTimestamp[0].split(':').slice(0, -1).join(':') +
+  ' ' +
+  checkOutTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
 let childFullName
 
 const weekPickerText = (date = dayjs()) =>
@@ -92,17 +102,7 @@ describe('AttendanceView', () => {
       // without running enqueued jobs and reloading before we hit the
       // endpoint
       // cy.contains('4 hrs 0 mins')
-      const checkInTimestamp = checkIn.toLocaleTimeString().split(' ')
-      const checkInTime =
-        checkInTimestamp[0].split(':').slice(0, -1).join(':') +
-        ' ' +
-        checkInTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
       cy.contains(checkInTime)
-      const checkOutTimestamp = checkOut.toLocaleTimeString().split(' ')
-      const checkOutTime =
-        checkOutTimestamp[0].split(':').slice(0, -1).join(':') +
-        ' ' +
-        checkOutTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
       cy.contains(checkOutTime)
       // cy.contains(checkOut)
       cy.contains('Input Attendance')
