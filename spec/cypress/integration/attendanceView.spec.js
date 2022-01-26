@@ -77,21 +77,23 @@ describe('AttendanceView', () => {
         }
       )
     })
-    cy.intercept({
-      method: 'POST',
-      url: '/login'
-    }).as('login')
+    cy.app('perform_enqueued_jobs').then(() => {
+      cy.intercept({
+        method: 'POST',
+        url: '/login'
+      }).as('login')
 
-    cy.visit('/login')
-    cy.get(createSelector('email')).type(email)
-    cy.get(createSelector('password')).type(password)
-    cy.get(createSelector('loginBtn')).click()
+      cy.visit('/login')
+      cy.get(createSelector('email')).type(email)
+      cy.get(createSelector('password')).type(password)
+      cy.get(createSelector('loginBtn')).click()
 
-    cy.intercept({
-      method: 'GET',
-      url: '/attendances'
-    }).as('attendances')
-    cy.visit('/attendance')
+      cy.intercept({
+        method: 'GET',
+        url: '/attendances'
+      }).as('attendances')
+      cy.visit('/attendance')
+    })
   })
 
   describe('content', () => {
@@ -101,7 +103,7 @@ describe('AttendanceView', () => {
       // TODO: This happens in a background job so we can't expect it
       // without running enqueued jobs and reloading before we hit the
       // endpoint
-      // cy.contains('4 hrs 0 mins')
+      cy.contains('4 hrs 0 mins')
       // TODO: these are also failing on CI but not on local
       // cy.contains(checkInTime)
       // cy.contains(checkOutTime)
