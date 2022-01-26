@@ -93,8 +93,7 @@ class ServiceDay < UuidApplicationRecord
           where("select date_part('dow', DATE(date)) = ?", weekday)
         }
 
-  scope :with_attendances, -> { includes(attendances: :child_approval) }
-  scope :absences, -> { joins(:attendances).where.not(attendances: { absence: nil }) }
+  scope :with_attendances, -> { includes(:attendances) }
 
   def absence?
     attendances.any? { |attendance| attendance.absence.present? }
