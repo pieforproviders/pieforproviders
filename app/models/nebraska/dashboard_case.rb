@@ -419,9 +419,7 @@ module Nebraska
         'dashboard_case.absences_for_month',
         'reduce out nils from attendances for the approval'
       ) do
-        absent_days.select do |service_day|
-          service_day.date.between?(month.at_beginning_of_month, month.at_end_of_month)
-        end
+        absent_days.where(date: month.at_beginning_of_month..month.at_end_of_month)
       end
     end
 
