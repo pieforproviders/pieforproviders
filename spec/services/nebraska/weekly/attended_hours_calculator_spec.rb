@@ -24,6 +24,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 4.hours + 5.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -39,6 +41,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 6.hours + 15.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -54,6 +58,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 12.hours + 42.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -69,6 +75,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 19.hours + 11.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -88,6 +96,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in.at_beginning_of_week(:sunday) - 1.day + 8.hours,
              check_out: nil)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -111,6 +121,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in + 2.days,
              check_out: check_in + 2.days + 4.hours + 5.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,
@@ -130,6 +142,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
              child_approval: child_approval,
              check_in: check_in + 2.hours,
              check_out: check_in + 12.hours + 42.minutes)
+      perform_enqueued_jobs
+      service_days.each(&:reload)
       expect(
         described_class.new(
           service_days: service_days,

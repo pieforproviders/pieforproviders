@@ -3,7 +3,10 @@
 # Expected attendance schedules for children
 # used to calculate hours attended compared to hours scheduled
 class Schedule < ApplicationRecord
+  after_save_commit :update_service_day_schedules
+
   belongs_to :child
+  has_many :service_days, dependent: :nullify
 
   attribute :duration, :interval
 
@@ -23,6 +26,12 @@ class Schedule < ApplicationRecord
                 date.at_end_of_month).order(updated_at: :desc)
         }
   scope :for_weekday, ->(weekday) { where(weekday: weekday).order(updated_at: :desc) }
+
+  private
+
+  def update_service_day_schedules
+    ServiceDayScheduleUpdater.new(schedule: self).call
+  end
 end
 
 # == Schema Information

@@ -40,7 +40,6 @@ group :development, :test do
   gem 'bullet'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'cypress-on-rails', '~> 1.12'
-  gem 'dotenv-rails'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
   gem 'pry-remote'
@@ -66,6 +65,14 @@ group :test do
   gem 'json-schema'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+end
+
+group :profile do
+  gem 'ruby-prof'
+end
+
+group :development, :test, :profile do
+  gem 'dotenv-rails'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

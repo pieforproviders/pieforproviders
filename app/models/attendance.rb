@@ -6,6 +6,7 @@ class Attendance < UuidApplicationRecord
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
   before_create :remove_absences
+  after_save_commit :calculate_service_day
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -88,6 +89,11 @@ class Attendance < UuidApplicationRecord
       child: child,
       date: check_in.in_time_zone(user.timezone).at_beginning_of_day
     )
+
+    return unless schedule_for_weekday
+
+    service_day.schedule = schedule_for_weekday
+    service_day.save!
   end
 
   def remove_absences
@@ -111,6 +117,10 @@ class Attendance < UuidApplicationRecord
     return if check_out.blank? || check_in.blank?
 
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
+  end
+
+  def calculate_service_day
+    ServiceDayCalculatorJob.perform_later(service_day.id)
   end
 end
 

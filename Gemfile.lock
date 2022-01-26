@@ -335,6 +335,7 @@ GEM
       rubocop (~> 1.19)
     ruby-graphviz (1.2.5)
       rexml
+    ruby-prof (1.4.3)
     ruby-progressbar (1.11.0)
     shellany (0.0.1)
     shoulda-matchers (5.1.0)
@@ -418,6 +419,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
+  ruby-prof
   shoulda-matchers
   simplecov
   skylight

@@ -97,11 +97,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -111,11 +111,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -125,11 +125,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -141,11 +141,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -157,7 +157,8 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -165,11 +166,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -179,18 +180,19 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -200,18 +202,19 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -224,18 +227,19 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -258,11 +262,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -272,11 +276,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -286,11 +290,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -303,11 +307,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -320,6 +324,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           create(
             :attendance,
@@ -328,11 +333,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -342,6 +347,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           create(
             :attendance,
@@ -349,11 +355,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -363,18 +369,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -387,18 +392,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -412,22 +416,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_accredited_hourly_rate.amount)
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -444,11 +448,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -458,11 +462,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -472,11 +476,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -489,11 +493,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -506,7 +510,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -514,11 +517,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -528,18 +531,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -549,18 +551,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -573,18 +574,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -607,11 +607,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -621,11 +621,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -635,11 +635,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -652,11 +652,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -669,7 +669,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             service_day: service_day,
@@ -677,11 +676,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -691,18 +690,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -712,18 +710,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -736,18 +733,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -761,22 +757,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount)
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -793,11 +789,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -807,11 +803,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -821,11 +817,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -838,11 +834,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -855,7 +851,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -863,11 +858,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -877,18 +872,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -898,18 +892,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -922,18 +915,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -956,11 +948,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -970,11 +962,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -984,11 +976,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1001,11 +993,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1018,7 +1010,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             service_day: service_day,
@@ -1026,11 +1017,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1040,18 +1031,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1061,18 +1051,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1085,18 +1074,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1110,22 +1098,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_accredited_hourly_rate.amount * (1.05**2))
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1142,11 +1130,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1156,11 +1144,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1170,11 +1158,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1187,11 +1175,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1204,7 +1192,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -1212,11 +1199,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1226,18 +1213,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1247,18 +1233,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1271,18 +1256,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1305,11 +1289,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1319,11 +1303,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1333,11 +1317,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1350,11 +1334,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1367,7 +1351,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             service_day: service_day,
@@ -1375,11 +1358,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1389,18 +1372,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1410,18 +1392,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1434,18 +1415,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1459,22 +1439,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1491,11 +1471,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1505,11 +1485,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1519,11 +1499,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1536,11 +1516,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1553,7 +1533,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -1561,11 +1540,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1575,18 +1554,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1596,18 +1574,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1620,18 +1597,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1654,11 +1630,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1668,11 +1644,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1682,11 +1658,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1699,11 +1675,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1716,7 +1692,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             service_day: service_day,
@@ -1724,11 +1699,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1738,18 +1713,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1759,18 +1733,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1783,18 +1756,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -1808,22 +1780,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1840,11 +1812,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an hourly-only attendance' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1854,11 +1826,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-only attendance' do
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1868,11 +1840,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for a daily-plus-hourly attendance' do
         attendance.check_out = attendance.check_in + 12.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1885,11 +1857,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for an attendance at the max of 18 hours' do
         attendance.check_out = attendance.check_in + 21.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1902,7 +1874,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that keep the service day within an hourly duration' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           service_day: service_day,
@@ -1910,11 +1881,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 2.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1924,18 +1895,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day' do
         attendance.check_out = attendance.check_in + 1.hour + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1945,18 +1915,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that make up a full day plus hourly' do
         attendance.check_out = attendance.check_in + 4.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -1969,18 +1938,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'gets rates for two attendances that exceed the max of 18 hours' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
         create(
           :attendance,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
         )
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
@@ -2003,11 +1971,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an hourly-only attendance' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2017,11 +1985,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-only attendance' do
           attendance.check_out = attendance.check_in + 6.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2031,11 +1999,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for a daily-plus-hourly attendance' do
           attendance.check_out = attendance.check_in + 12.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2048,11 +2016,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for an attendance at the max of 18 hours' do
           attendance.check_out = attendance.check_in + 21.hours + 12.minutes
           attendance.save!
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2065,7 +2033,6 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that keep the service day within an hourly duration' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             service_day: service_day,
@@ -2073,11 +2040,11 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 2.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2087,18 +2054,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day' do
           attendance.check_out = attendance.check_in + 1.hour + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2108,18 +2074,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that make up a full day plus hourly' do
           attendance.check_out = attendance.check_in + 4.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2132,18 +2097,17 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         it 'gets rates for two attendances that exceed the max of 18 hours' do
           attendance.check_out = attendance.check_in + 3.hours + 12.minutes
           attendance.save!
-          service_day.reload
           create(
             :attendance,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
           )
+          perform_enqueued_jobs
           service_day.reload
           expect(
             described_class.new(
               service_day: attendance.service_day,
-              schedule: schedule,
               child_approvals: attendance.child.child_approvals,
               rates: rates
             ).earned_revenue
@@ -2157,22 +2121,22 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       it 'changes rates when the attendance is edited' do
         attendance.check_out = attendance.check_in + 3.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
         ).to eq(3.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
         attendance.check_out = attendance.check_in + 6.hours + 12.minutes
         attendance.save!
-        service_day.reload
+        perform_enqueued_jobs
+        attendance.service_day.reload
         expect(
           described_class.new(
             service_day: attendance.service_day,
-            schedule: schedule,
             child_approvals: attendance.child.child_approvals,
             rates: rates
           ).earned_revenue
