@@ -166,7 +166,7 @@ end
 RSpec.shared_context 'with a prior month covid absence' do |extra_days|
   before do
     extra_days ||= 0
-    FactoryBot.create(
+    create(
       :nebraska_absence,
       child_approval: child_approval,
       check_in: prior_month_check_in + extra_days.days + 3.hours,
@@ -181,7 +181,7 @@ end
 RSpec.shared_context 'with a prior month absence' do |extra_days|
   before do
     extra_days ||= 0
-    FactoryBot.create(
+    create(
       :nebraska_absence,
       child_approval: child_approval,
       check_in: prior_month_check_in + extra_days.days + 3.hours,
