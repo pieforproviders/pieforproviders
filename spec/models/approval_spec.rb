@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Approval, type: :model do
-  let(:effective_date) { (Time.current - 6.months).to_date }
+  let(:effective_date) { 6.months.ago.to_date }
   let(:approval) { build(:approval) }
 
   it { is_expected.to have_many(:child_approvals).dependent(:destroy) }

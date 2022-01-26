@@ -10,6 +10,10 @@ class NebraskaApprovalAmount < UuidApplicationRecord
         lambda { |date|
           where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
         }
+
+  def family_fee
+    Money.from_amount(super)
+  end
 end
 
 # == Schema Information

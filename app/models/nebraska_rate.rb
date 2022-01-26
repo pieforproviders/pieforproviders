@@ -51,6 +51,10 @@ class NebraskaRate < UuidApplicationRecord
             .where(accredited_rate: business.accredited || false)
             .order_max_age
         }
+
+  def amount
+    Money.from_amount(super) if super
+  end
 end
 
 # == Schema Information

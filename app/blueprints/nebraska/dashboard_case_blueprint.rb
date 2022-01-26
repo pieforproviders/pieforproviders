@@ -10,7 +10,7 @@ module Nebraska
     field :case_number
     field :family_fee
     field :earned_revenue do |dashboard_case, _options|
-      dashboard_case.earned_revenue&.to_f&.round(2)
+      dashboard_case.earned_revenue&.to_f
     end
     field :estimated_revenue do |dashboard_case, _options|
       dashboard_case.estimated_revenue&.to_f
