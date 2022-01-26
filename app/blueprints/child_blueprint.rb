@@ -36,11 +36,15 @@ class ChildBlueprint < Blueprinter::Base
       service_days = child.active_child_approval(options[:filter_date])&.service_days&.with_attendances
       attended_days = service_days.non_absences
       absent_days = service_days.absences
+      attendances_this_month = attended_days.where(date: options[:filter_date].at_beginning_of_month..options[:filter_date].at_end_of_month)
+      absences_this_month = absent_days.where(date: options[:filter_date].at_beginning_of_month..options[:filter_date].at_end_of_month)
       Nebraska::DashboardCase.new(
         child: child,
         filter_date: options[:filter_date],
         attended_days: attended_days,
-        absent_days: absent_days
+        absent_days: absent_days,
+        attendances_this_month: attendances_this_month,
+        absences_this_month: absences_this_month
       )
     end
   end
