@@ -57,10 +57,12 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         parsed_response = JSON.parse(
           described_class
             .render(
-              Nebraska::DashboardCase.new(child: child,
-                                          filter_date: Time.current,
-                                          attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
-                                          absent_days: child.child_approvals.first.service_days.with_attendances.absences)
+              Nebraska::DashboardCase.new(
+                child: child,
+                filter_date: Time.current,
+                attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                absent_days: child.child_approvals.first.service_days.with_attendances.absences
+              )
             )
         )
 
