@@ -151,6 +151,7 @@ GEM
     faker (2.19.0)
       i18n (>= 1.6, < 2)
     ffi (1.15.5)
+    flamegraph (0.9.5)
     formatador (0.3.0)
     fugit (1.5.2)
       et-orbi (~> 1.1, >= 1.1.8)
@@ -207,6 +208,7 @@ GEM
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
+    memory_profiler (1.0.0)
     method_source (1.0.0)
     mini_mime (1.1.2)
     mini_portile2 (2.7.1)
@@ -249,6 +251,8 @@ GEM
     raabro (1.4.0)
     racc (1.6.0)
     rack (2.2.3)
+    rack-mini-profiler (2.3.3)
+      rack (>= 1.2.0)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (6.1.4.4)
@@ -287,6 +291,7 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis (4.5.1)
     regexp_parser (2.2.0)
     responders (3.0.1)
       actionpack (>= 5.0)
@@ -360,6 +365,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    stackprof (0.2.17)
     thor (1.2.1)
     tod (3.1.0)
     tzinfo (2.0.4)
@@ -399,6 +405,7 @@ DEPENDENCIES
   dotenv-rails
   factory_bot_rails
   faker
+  flamegraph
   good_job (~> 2.9)
   guard-rspec
   hash_dig_and_collect
@@ -406,6 +413,7 @@ DEPENDENCIES
   json-schema
   letter_opener_web (~> 2.0)
   listen (>= 3.0.5, < 3.8)
+  memory_profiler
   money-rails
   pg (>= 0.18, < 2.0)
   pgreset (~> 0.3)
@@ -413,8 +421,10 @@ DEPENDENCIES
   pry-remote
   puma (~> 5.5)
   pundit (~> 2.1)
+  rack-mini-profiler
   rails (~> 6.1.4)
   rails-erd
+  redis
   rspec-rails
   rubocop-performance
   rubocop-rails
@@ -425,6 +435,7 @@ DEPENDENCIES
   skylight
   spring
   spring-watcher-listen (~> 2.0.0)
+  stackprof
   tod
   tzinfo-data
 

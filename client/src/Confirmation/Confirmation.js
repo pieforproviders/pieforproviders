@@ -11,6 +11,10 @@ export function Confirmation({ location }) {
   let history = useHistory()
 
   useEffect(() => {
+    window.MiniProfiler?.pageTransition()
+  }, [])
+
+  useEffect(() => {
     let isSubscribed = true
     const confirm = async () => {
       const params = new URLSearchParams(location.search)

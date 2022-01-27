@@ -21,8 +21,14 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.5'
 gem 'pundit', '~> 2.1'
 gem 'rails', '~> 6.1.4'
+gem 'redis'
 gem 'skylight'
 gem 'tod'
+
+gem 'flamegraph'
+gem 'memory_profiler'
+gem 'rack-mini-profiler'
+gem 'stackprof'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
