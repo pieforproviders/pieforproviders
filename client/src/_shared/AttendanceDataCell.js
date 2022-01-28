@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { Button, Checkbox, TimePicker } from 'antd'
+import PropTypes, { object } from 'prop-types'
+import { Button, Checkbox } from 'antd'
+import dayjs from 'dayjs'
+import { TimePicker } from '../_shared'
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/checkbox-overrides.css'
 
 export default function AttendanceDataCell({
-  record,
+  record = {},
   columnIndex,
   columnDate,
-  updateAttendanceData
+  defaultValues = [],
+  updateAttendanceData = () => {}
 }) {
   const { t } = useTranslation()
-  const [absence, setAbsence] = useState(null)
+  const [absence, setAbsence] = useState(
+    defaultValues.find(v => v.absence)?.absence || null
+  )
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
   const [showSecondCheckIn, setShowSecondCheckIn] = useState(false)
@@ -40,7 +45,10 @@ export default function AttendanceDataCell({
             onChange={(m, ds) =>
               m
                 ? handleChange({
-                    update: { check_in: ds },
+                    update: {
+                      check_in:
+                        (defaultValues[0]?.check_in?.slice(0, 11) || '') + ds
+                    },
                     callback: setCheckInSelected(true)
                   })
                 : handleChange({
@@ -49,6 +57,11 @@ export default function AttendanceDataCell({
                   })
             }
             suffixIcon={null}
+            defaultValue={
+              defaultValues[0]?.check_in
+                ? dayjs(defaultValues[0].check_in, 'YYYY-MM-DD hh:mm')
+                : null
+            }
           />
         </div>
         <div className="mr-4">
@@ -66,15 +79,24 @@ export default function AttendanceDataCell({
             onChange={(dateObject, dateString) =>
               dateObject
                 ? handleChange({
-                    update: { check_out: dateString },
+                    update: {
+                      check_out:
+                        (defaultValues[0]?.check_out?.slice(0, 11) || '') +
+                        dateString
+                    },
                     callback: setCheckOutSelected(true)
                   })
                 : handleChange({
-                    updates: { check_out: '' },
+                    update: { check_out: '' },
                     callback: setCheckOutSelected(false)
                   })
             }
             suffixIcon={null}
+            defaultValue={
+              defaultValues[0]?.check_out
+                ? dayjs(defaultValues[0].check_out, 'YYYY-MM-DD hh:mm')
+                : null
+            }
           />
         </div>
         <div>
@@ -145,7 +167,12 @@ export default function AttendanceDataCell({
                 onChange={(m, ds) =>
                   m
                     ? handleChange({
-                        update: { check_in: ds },
+                        update: {
+                          check_in:
+                            (defaultValues[1]?.check_in?.slice(0, 11) ||
+                              defaultValues[0]?.check_in?.slice(0, 11) ||
+                              '') + ds
+                        },
                         secondCheckIn: true
                       })
                     : handleChange({
@@ -154,6 +181,11 @@ export default function AttendanceDataCell({
                       })
                 }
                 suffixIcon={null}
+                defaultValue={
+                  defaultValues[1]?.check_in
+                    ? dayjs(defaultValues[1].check_in, 'YYYY-MM-DD hh:mm')
+                    : null
+                }
               />
             </div>
             <div className="mr-4">
@@ -170,7 +202,12 @@ export default function AttendanceDataCell({
                 onChange={(dateObject, dateString) =>
                   dateObject
                     ? handleChange({
-                        update: { check_out: dateString },
+                        update: {
+                          check_out:
+                            (defaultValues[1]?.check_out?.slice(0, 11) ||
+                              defaultValues[0]?.check_out?.slice(0, 11) ||
+                              '') + dateString
+                        },
                         secondCheckIn: true
                       })
                     : handleChange({
@@ -179,6 +216,11 @@ export default function AttendanceDataCell({
                       })
                 }
                 suffixIcon={null}
+                defaultValue={
+                  defaultValues[1]?.check_out
+                    ? dayjs(defaultValues[1].check_out, 'YYYY-MM-DD hh:mm')
+                    : null
+                }
               />
             </div>
             <div className="flex items-center">
@@ -216,6 +258,7 @@ export default function AttendanceDataCell({
 AttendanceDataCell.propTypes = {
   columnDate: PropTypes.string,
   columnIndex: PropTypes.number,
+  defaultValues: PropTypes.arrayOf(object),
   record: PropTypes.object.isRequired,
   updateAttendanceData: PropTypes.func.isRequired
 }

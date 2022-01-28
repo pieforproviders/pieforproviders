@@ -9,6 +9,7 @@ import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
+import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -47,8 +48,8 @@ export function Attendance() {
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
   const latestError = useRef(errors)
-  const removeEmptyString = obj =>
-    Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
+  // const removeEmptyString = obj =>
+  //   Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
 
   const columnErrorIsPresent = columnIndex =>
     !!Object.values(latestAttendanceData.current).find(row =>
@@ -74,10 +75,9 @@ export function Attendance() {
               (Object.keys(update).includes('absence') &&
                 (Object.keys(value[valueIndex]).includes('check_in') ||
                   Object.keys(value[valueIndex]).includes('check_out')))
-              ? removeEmptyString(update)
-              : removeEmptyString({ ...value[valueIndex], ...update })
+              ? removeEmptyStringValue(update)
+              : removeEmptyStringValue({ ...value[valueIndex], ...update })
             : value[valueIndex]
-
         return value.map((v, i) =>
           valueIndex === i ? updatedAttendanceValue : v
         )
@@ -245,8 +245,7 @@ export function Attendance() {
           )
         })
     )
-    // eslint-disable-next-line no-debugger
-    debugger
+
     const response = await makeRequest({
       type: 'post',
       url: '/api/v1/attendance_batches',
