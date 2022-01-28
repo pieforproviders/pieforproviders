@@ -37,6 +37,7 @@ module Nebraska
         Nebraska::Monthly::AttendanceRiskCalculator.new(
           child: child,
           filter_date: filter_date,
+          family_fee: family_fee,
           scheduled_revenue: scheduled_revenue,
           estimated_revenue: estimated_revenue
         ).call
@@ -68,10 +69,10 @@ module Nebraska
         'dashboard_case.family_fee'
       ) do
         if approval.children.length != 1 && approval.child_with_most_scheduled_hours(date: filter_date) != child
-          return 0
+          return Money.from_amount(0)
         end
 
-        active_nebraska_approval_amount&.family_fee || 0
+        @family_fee ||= active_nebraska_approval_amount&.family_fee || Money.from_amount(0)
       end
     end
 
@@ -83,7 +84,7 @@ module Nebraska
           attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
             family_fee,
-          0.0
+          Money.from_amount(0)
         ].max
       end
     end
@@ -97,7 +98,7 @@ module Nebraska
             attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
             family_fee,
-          0.0
+          Money.from_amount(0)
         ].max
       end
     end
@@ -109,8 +110,8 @@ module Nebraska
         [
           scheduled_month_days_revenue -
             family_fee,
-          0.0
-        ].max.to_f.round(2)
+          Money.from_amount(0)
+        ].max
       end
     end
 
@@ -284,7 +285,6 @@ module Nebraska
         'dashboard_case.attended_month_days_revenue',
         'map & sum earned revenue of attended month days'
       ) do
-        # binding.pry if child.full_name == 'Jasveen Khirwar'
         attendances_this_month&.map(&:earned_revenue)&.sum || 0
       end
     end
