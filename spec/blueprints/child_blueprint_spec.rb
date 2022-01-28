@@ -35,6 +35,8 @@ RSpec.describe ChildBlueprint do
   end
 
   context 'when NE view is requested' do
+    let(:child) { create(:necc_child) }
+
     it 'includes NE dashboard fields' do
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard)).keys).to contain_exactly(
         'id',

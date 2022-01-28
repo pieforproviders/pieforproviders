@@ -4,13 +4,14 @@ module Nebraska
   module Monthly
     # Calculate attendance risk for a child on a given date
     class AttendanceRiskCalculator
-      attr_reader :child, :filter_date, :scheduled_revenue, :estimated_revenue
+      attr_reader :child, :family_fee, :filter_date, :scheduled_revenue, :estimated_revenue
 
-      def initialize(child:, filter_date:, scheduled_revenue:, estimated_revenue:)
+      def initialize(child:, family_fee:, filter_date:, scheduled_revenue:, estimated_revenue:)
         @child = child
+        @family_fee = family_fee
         @filter_date = filter_date
-        @scheduled_revenue = scheduled_revenue
-        @estimated_revenue = estimated_revenue
+        @scheduled_revenue = scheduled_revenue + family_fee
+        @estimated_revenue = estimated_revenue + family_fee
       end
 
       def call
@@ -22,7 +23,7 @@ module Nebraska
       def calculate_risk
         return 'not_enough_info' if filter_date <= minimum_days_to_calculate
 
-        ratio = (estimated_revenue.to_f - scheduled_revenue.to_f) / scheduled_revenue.to_f
+        ratio = (estimated_revenue - scheduled_revenue) / scheduled_revenue
         risk_ratio_label(ratio)
       end
 

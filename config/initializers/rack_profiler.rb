@@ -15,4 +15,5 @@ if Rails.env.production?
   Rack::MiniProfiler.config.storage = Rack::MiniProfiler::RedisStore
 end
 
-Rack::MiniProfiler.config.user_provider = proc { |env| CurrentUser.get(env) }
+# Can't get this working
+# Rack::MiniProfiler.config.user_provider = proc { |env| env.current_user && env.current_user.id }
