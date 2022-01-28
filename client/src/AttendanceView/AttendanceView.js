@@ -1,5 +1,4 @@
-/* eslint-disable no-debugger */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Grid, Modal, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -7,6 +6,7 @@ import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
+import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import smallPie from '../_assets/smallPie.png'
 import editIcon from '../_assets/editIcon.svg'
 import { WeekPicker } from './WeekPicker'
@@ -26,11 +26,39 @@ export function AttendanceView() {
   const [dateSelected, setDateSelected] = useState(dayjs())
   const [editAttendanceModalData, setEditAttendanceModalData] = useState(null)
   const [updatedAttendanceData, setUpdatedAttendanceData] = useState([{}, {}])
+  const latestAttendanceData = useRef(updatedAttendanceData)
+  const titleData = useRef({ childName: null, columnDate: null })
 
   const updateAttendanceData = data => {
-    // eslint-disable-next-line no-debugger
-    debugger
-    setUpdatedAttendanceData(data)
+    const index = data.secondCheckIn ? 1 : 0
+    const updatedData = latestAttendanceData.current.map((value, i) => {
+      if (index === i) {
+        const updatedValue =
+          Object.keys(data.update).length === 0 ||
+          (Object.keys(value).includes('absence') &&
+            (Object.keys(data.update).includes('check_in') ||
+              Object.keys(data.update).includes('check_out'))) ||
+          (Object.keys(data.update).includes('absence') &&
+            (Object.keys(value).includes('check_in') ||
+              Object.keys(value).includes('check_out')))
+            ? removeEmptyStringValue(data.update)
+            : removeEmptyStringValue({ ...value, ...data.update })
+        return Object.keys(value).length === 0
+          ? {
+              child_id: data.record?.serviceDays[0]?.child_id || '',
+              ...updatedValue
+            }
+          : {
+              ...value,
+              ...updatedValue
+            }
+      }
+
+      return value
+    })
+
+    latestAttendanceData.current = updatedData
+    setUpdatedAttendanceData(updatedData)
   }
 
   // create seven columns for each day of the week
@@ -64,23 +92,46 @@ export function AttendanceView() {
           })
 
           const handleEditAttendance = () => {
-            console.log(record)
+            const currentAttendances =
+              record.serviceDays.find(
+                day => day.date.slice(0, 10) === columnDate.format('YYYY-MM-DD')
+              ).attendances || []
+            const attendances =
+              currentAttendances.length === 1
+                ? [...currentAttendances, {}]
+                : currentAttendances
             setEditAttendanceModalData({
               record,
               columnDate: columnDate.format('YYYY-MM-DD'),
+              defaultValues: attendances,
               updateAttendanceData
             })
+
+            titleData.current = {
+              childName: record.child,
+              columnDate
+            }
+            latestAttendanceData.current = attendances
+            setUpdatedAttendanceData(attendances)
           }
 
           if (matchingServiceDay !== undefined) {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
-                <div className="flex justify-center">
-                  <div
-                    className="box-border p-1 bg-orange2 text-orange3"
-                    data-cy="absent"
+                <div>
+                  <button
+                    className="float-right"
+                    onClick={handleEditAttendance}
                   >
-                    {t('absent').toLowerCase()}
+                    <img alt="edit" src={editIcon} />
+                  </button>
+                  <div className="flex justify-center">
+                    <div
+                      className="box-border p-1 bg-orange2 text-orange3"
+                      data-cy="absent"
+                    >
+                      {t('absent').toLowerCase()}
+                    </div>
                   </div>
                 </div>
               )
@@ -176,7 +227,7 @@ export function AttendanceView() {
     setDateSelected(newDate)
   }
 
-  const getResponse = async () => {
+  const getServiceDays = async () => {
     const response = await makeRequest({
       type: 'get',
       url:
@@ -209,15 +260,58 @@ export function AttendanceView() {
   }
 
   const handleModalClose = () => {
-    // todo: prepare and send modal data to attendance_batches and then update
-    console.log(updatedAttendanceData)
-    // eslint-disable-next-line no-debugger
-    debugger
-    setEditAttendanceModalData(null)
+    let responses = []
+
+    updatedAttendanceData.forEach(async attendance => {
+      // if it's an old attendance we call the attendances PUT endpoint,
+      // if the user creates a new, second attendance for that day we need to call the attendance_batches endpoint
+      if (Object.keys(attendance).includes('child_id')) {
+        const response = await makeRequest({
+          type: 'post',
+          url: '/api/v1/attendance_batches',
+          headers: {
+            Authorization: token
+          },
+          data: {
+            attendance_batch: [attendance]
+          }
+        })
+        responses.push(response)
+      } else {
+        const response = await makeRequest({
+          type: 'put',
+          url: '/api/v1/attendances/' + attendance.id,
+          headers: {
+            Authorization: token
+          },
+          data: {
+            attendance: {
+              check_in: attendance.check_in,
+              check_out: attendance.check_out,
+              absence: attendance.absence
+            }
+          }
+        })
+        responses.push(response)
+      }
+    })
+
+    if (responses.length > 0 && responses.every(r => r.ok)) {
+      titleData.current = {
+        childName: '',
+        columnDate: ''
+      }
+      latestAttendanceData.current = [{}, {}]
+      setEditAttendanceModalData(null)
+      setUpdatedAttendanceData([{}, {}])
+      getServiceDays()
+    } else {
+      console.log('error sending attendance data to API')
+    }
   }
 
   useEffect(() => {
-    getResponse()
+    getServiceDays()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
 
@@ -279,11 +373,23 @@ export function AttendanceView() {
           setEditAttendanceModalData(null)
         }}
         onOk={handleModalClose}
-        title={() => {
-          debugger
-          return editAttendanceModalData?.record?.childName || 'boop'
-        }}
-        // afterClose={}
+        title={
+          <div className="text-gray1">
+            <span className="font-semibold">
+              {titleData.current.childName + ' - '}
+            </span>
+            {t(
+              `${titleData.current.columnDate
+                ?.format('ddd')
+                .toLocaleLowerCase()}`
+            ) +
+              ' ' +
+              t(`${titleData.current.columnDate?.format('MMM')}`) +
+              ' ' +
+              titleData.current.columnDate?.format('DD')}
+          </div>
+        }
+        maskClosable={false}
       >
         <AttendanceDataCell {...editAttendanceModalData} />
       </Modal>
