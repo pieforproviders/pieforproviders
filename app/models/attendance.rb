@@ -5,7 +5,8 @@ class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
-  before_create :remove_absences
+  before_create :remove_absences, unless: :absence
+  after_save :remove_other_attendances, if: :saved_change_to_absence?
   after_save_commit :calculate_service_day
 
   belongs_to :child_approval
@@ -101,6 +102,13 @@ class Attendance < UuidApplicationRecord
     return unless existing_absences
 
     existing_absences.destroy_all
+  end
+
+  def remove_other_attendances
+    return unless absence
+
+    other_attendances = service_day.attendances.where.not(id: self.id)
+    other_attendances.destroy_all if other_attendances
   end
 
   def prevent_creation_of_absence_without_schedule
