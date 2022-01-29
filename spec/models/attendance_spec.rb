@@ -273,6 +273,36 @@ RSpec.describe Attendance, type: :model do
       expect(described_class.non_absences.length).to eq(2)
     end
   end
+
+  describe '#remove_other_attendances' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'removes other attendances on the same service day if absence is created' do
+      expect(described_class.non_absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: attendance.check_in + 45.minutes,
+          child_approval: attendance.child_approval,
+          service_day: attendance.service_day,
+          absence: 'absence'
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.non_absences.length).to eq(0)
+    end
+
+    it 'removes other attendance on the same service day if attendance is updated to absence' do
+      described_class.create!(
+        check_in: attendance.check_in + 45.minutes,
+        child_approval: attendance.child_approval,
+        service_day: attendance.service_day
+      )
+      expect(described_class.non_absences.length).to eq(2)
+      attendance.update(absence: 'absence')
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.non_absences.length).to eq(0)
+    end
+  end
 end
 # == Schema Information
 #
