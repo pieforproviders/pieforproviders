@@ -270,6 +270,32 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
+  describe '#assign_new_service_day' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'creates a new service day when check_in time is changed to different day' do
+      service_day_id = attendance.service_day.id
+      attendance.update!(check_in: attendance.check_in + 1.day, check_out: attendance.check_out + 1.day)
+      expect(attendance.service_day.id).not_to eq(service_day_id)
+    end
+
+    it 'keeps the same service day when check_in time update is still the same day' do
+      service_day_id = attendance.service_day.id
+      attendance.update!(check_in: attendance.check_in + 5.hours, check_out: attendance.check_out + 5.hours)
+      expect(attendance.service_day.id).to eq(service_day_id)
+    end
+
+    it 'assigned to an existing service day when check_in time is changed to different day' do
+      service_day = create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      expect { attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day) }.not_to change(ServiceDay, :count)
+      expect(attendance.service_day).to eq(service_day)
+    end
+  end
+
   describe '#remove_other_attendances' do
     let!(:attendance) { create(:nebraska_hourly_attendance) }
 
