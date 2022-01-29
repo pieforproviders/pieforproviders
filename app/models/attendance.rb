@@ -6,6 +6,7 @@ class Attendance < UuidApplicationRecord
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, if: :check_in
   before_create :remove_absences, unless: :absence
+  before_save :assign_new_service_day, if: :saved_change_to_check_in?
   after_save :remove_other_attendances, if: :saved_change_to_absence?
   after_save_commit :calculate_service_day
 
@@ -103,6 +104,12 @@ class Attendance < UuidApplicationRecord
     return unless existing_absences
 
     existing_absences.destroy_all
+  end
+
+  def assign_new_service_day
+    return if service_day.date == check_in.in_time_zone(user.timezone).at_beginning_of_day
+
+    find_or_create_service_day
   end
 
   def remove_other_attendances
