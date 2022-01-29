@@ -54,3 +54,6 @@ init.sql
 
 # db dumps from heroku for local testing
 latest.dump
+
+# snaplet config
+.snaplet
