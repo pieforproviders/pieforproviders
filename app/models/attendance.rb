@@ -20,6 +20,7 @@ class Attendance < UuidApplicationRecord
   validates :check_out, time_param: true, unless: proc { |attendance| attendance.check_out_before_type_cast.nil? }
   validate :check_out_after_check_in
   validate :prevent_creation_of_absence_without_schedule
+  validate :prevent_multiple_absences, if: :absence
 
   ABSENCE_TYPES = %w[
     absence
@@ -125,6 +126,10 @@ class Attendance < UuidApplicationRecord
     return if check_out.blank? || check_in.blank?
 
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
+  end
+
+  def prevent_multiple_absences
+    errors.add(:absence, 'there is already an absence for this date') if child.attendances.absences.for_day(check_in).where.not(id: self.id).any?
   end
 
   def calculate_service_day
