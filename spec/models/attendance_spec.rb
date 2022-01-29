@@ -72,6 +72,17 @@ RSpec.describe Attendance, type: :model do
     expect(attendance).not_to be_valid
   end
 
+  it 'validates that there is only one absence per service day' do
+    absence = create(:nebraska_absence)
+    second_absence = build(:nebraska_absence,
+      check_in: absence.check_in + 45.minutes,
+      child_approval: absence.child_approval,
+      service_day: absence.service_day
+    )
+    expect(second_absence).not_to be_valid
+    expect(second_absence.errors.messages[:absence]).to include('there is already an absence for this date')
+  end
+
   it 'factory should be valid (default; no args)' do
     expect(build(:attendance)).to be_valid
   end
@@ -242,21 +253,6 @@ RSpec.describe Attendance, type: :model do
         )
       end.not_to change(ServiceDay, :count)
       expect(described_class.absences.length).to eq(0)
-    end
-
-    it "ensures there's only one absence per day" do
-      absence = create(:nebraska_absence)
-      expect(described_class.absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: absence.check_in + 45.minutes,
-          child_approval: absence.child_approval,
-          service_day: absence.service_day,
-          absence: 'absence'
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(1)
-      expect(described_class.absences).not_to include(absence)
     end
 
     it 'does not remove a non-absence from the same day' do
