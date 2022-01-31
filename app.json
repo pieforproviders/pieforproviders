@@ -50,11 +50,6 @@
     "DEVISE_JWT_SECRET_KEY": {
       "description": "Secret key generated individually for each environment to sign Devise JWTs"
     },
-    "FF_NE_LIVE_ALGORITHMS": {
-      "description": "Feature Flag - Use Live Algorithms for Nebraska",
-      "value": "true",
-      "required": "false"
-    },
     "HOST": {
       "description": "URL for this env (https)",
       "required": "false"

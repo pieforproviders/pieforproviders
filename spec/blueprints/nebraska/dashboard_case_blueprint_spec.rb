@@ -20,8 +20,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                    Nebraska::DashboardCase.new(
                      child: child,
                      filter_date: Time.current,
-                     service_days: child.child_approvals.first.service_days,
-                     approval_absences: child.child_approvals.first.service_days.absences
+                     attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                     absent_days: child.child_approvals.first.service_days.with_attendances.absences
                    )
                  )).keys
     ).to contain_exactly(
@@ -57,10 +57,12 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         parsed_response = JSON.parse(
           described_class
             .render(
-              Nebraska::DashboardCase.new(child: child,
-                                          filter_date: Time.current,
-                                          service_days: child.child_approvals.first.service_days,
-                                          approval_absences: child.child_approvals.first.service_days.absences)
+              Nebraska::DashboardCase.new(
+                child: child,
+                filter_date: Time.current,
+                attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                absent_days: child.child_approvals.first.service_days.with_attendances.absences
+              )
             )
         )
 
@@ -103,8 +105,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
               Nebraska::DashboardCase.new(
                 child: child,
                 filter_date: Time.current,
-                service_days: child.child_approvals.first.service_days,
-                approval_absences: child.child_approvals.first.service_days.absences
+                attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                absent_days: child.child_approvals.first.service_days.with_attendances.absences
               )
             )
         )
@@ -128,7 +130,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           )
         # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
         # estimated: (3.0 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump) = 227.4825
-        # ratio: (227.48 - 500.97) / 500.97 = -0.55
+        # add family fee back in for calcs to match spreadsheet
+        # ratio: ((227.48 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.47
         expect(parsed_response['attendance_risk']).to eq('at_risk')
       end
 
@@ -143,8 +146,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -167,7 +170,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # (((6.25 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump)) - family_fee).to_f.round(2))
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
           # estimated: (6.25 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump) = 245.06
-          # ratio: (245.06 - 500.97) / 500.97 = -0.51
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((245.06 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.44
           expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
@@ -183,8 +187,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -214,7 +218,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.965
           # estimated: (6.25 * hourly_rate * qris_bump) + (9 * daily_rate * qris_bump) = 271.46
-          # ratio: (271.46 - 500.97) / 500.97 = -0.46
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((271.46 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.40
           expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
@@ -235,8 +240,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -273,7 +278,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 377.60
-          # ratio: (377.60 - 500.97) / 500.97 = -0.25
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((377.60 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.21
           expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
@@ -297,8 +303,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -333,7 +339,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 456.83
-          # ratio: (456.83 - 500.97) / 500.97 = -0.08
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((456.83 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.08
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
@@ -359,8 +366,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -395,7 +402,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 509.65
-          # ratio: (509.65 - 500.97) / 500.97 = 0.02
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((509.65 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.01
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
@@ -422,8 +430,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -456,7 +464,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 536.06
-          # ratio: (536.06 - 500.97) / 500.97 = 0.07
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((536.06 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.06
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
@@ -484,8 +493,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -520,7 +529,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 562.47
-          # ratio: (562.47 - 500.97) / 500.97 = 0.12
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((562.47 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.11
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
@@ -551,8 +561,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -614,8 +624,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -677,8 +687,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 Nebraska::DashboardCase.new(
                   child: child,
                   filter_date: Time.current,
-                  service_days: child.child_approvals.first.service_days,
-                  approval_absences: child.child_approvals.first.service_days.absences
+                  attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                  absent_days: child.child_approvals.first.service_days.with_attendances.absences
                 )
               )
           )
@@ -726,8 +736,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
               Nebraska::DashboardCase.new(
                 child: child,
                 filter_date: Time.current,
-                service_days: child.child_approvals.first.service_days,
-                approval_absences: child.child_approvals.first.service_days.absences
+                attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+                absent_days: child.child_approvals.first.service_days.with_attendances.absences
               )
             )
           )
@@ -763,7 +773,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             )
           # scheduled: 22 total scheduled days * daily_rate * qris_bump = 580.97 - family_fee = 500.97
           # estimated: 552.28
-          # ratio: (552.28 - 500.97) / 500.97 = -0.05
+          # add family fee back in for calcs to match spreadsheet
+          # ratio: ((552.28 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.09
           expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
@@ -809,8 +820,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           Nebraska::DashboardCase.new(
             child: child,
             filter_date: Time.current,
-            service_days: child.child_approvals.first.service_days,
-            approval_absences: child.child_approvals.first.service_days.absences
+            attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+            absent_days: child.child_approvals.first.service_days.with_attendances.absences
           )
         )
     )
@@ -818,15 +829,15 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     cwlh_dashboard_case = Nebraska::DashboardCase.new(
       child: child_with_less_hours,
       filter_date: Time.current,
-      service_days: child_with_less_hours.child_approvals.first.service_days,
-      approval_absences: child.child_approvals.first.service_days.absences
+      attended_days: child.child_approvals.first.service_days.with_attendances.non_absences,
+      absent_days: child.child_approvals.first.service_days.with_attendances.absences
     )
     child_with_less_hours_json = JSON.parse(
       described_class.render(cwlh_dashboard_case)
     )
 
     expect(child_json['family_fee']).to eq(format('%.2f', family_fee))
-    expect(child_with_less_hours_json['family_fee']).to eq(0)
+    expect(child_with_less_hours_json['family_fee']).to eq(format('%.2f', 0))
 
     # even though they've both attended 10 times, the expectation is that the one with more hours will have less
     # revenue because we're subtracting the family fee from that child

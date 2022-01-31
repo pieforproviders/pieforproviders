@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:attendance_date) { Time.current.in_time_zone(child.timezone).at_beginning_of_month }
+  let!(:family_fee) { child.reload.active_nebraska_approval_amount(Time.current).family_fee }
 
   before do
     child.reload
@@ -16,9 +17,10 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       travel_to attendance_date
       expect(described_class.new(
         child: child,
+        family_fee: family_fee,
         filter_date: Time.current,
-        estimated_revenue: 300,
-        scheduled_revenue: 1000
+        estimated_revenue: Money.from_amount(300),
+        scheduled_revenue: Money.from_amount(1000)
       ).call).to eq('not_enough_info')
       travel_back
     end
@@ -33,27 +35,30 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       it 'returns at_risk when the ratio is less than -0.2' do
         expect(described_class.new(
           child: child,
+          family_fee: family_fee,
           filter_date: Time.current,
-          estimated_revenue: 300,
-          scheduled_revenue: 1000
+          estimated_revenue: Money.from_amount(300),
+          scheduled_revenue: Money.from_amount(1000)
         ).call).to eq('at_risk')
       end
 
       it 'returns on_track when the ratio is between -0.2 and 0.2' do
         expect(described_class.new(
           child: child,
+          family_fee: family_fee,
           filter_date: Time.current,
-          estimated_revenue: 998,
-          scheduled_revenue: 1000
+          estimated_revenue: Money.from_amount(998),
+          scheduled_revenue: Money.from_amount(1000)
         ).call).to eq('on_track')
       end
 
       it 'returns ahead_of_schedule when the ratio is above 0.2' do
         expect(described_class.new(
           child: child,
+          family_fee: family_fee,
           filter_date: Time.current,
-          estimated_revenue: 2200,
-          scheduled_revenue: 1000
+          estimated_revenue: Money.from_amount(2200),
+          scheduled_revenue: Money.from_amount(1000)
         ).call).to eq('ahead_of_schedule')
       end
     end

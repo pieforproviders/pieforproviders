@@ -42,6 +42,36 @@ const Routes = () => {
     initGoogleAnalytics()
   }, [initGoogleAnalytics, initHotjar])
 
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.async = true
+    script.src =
+      '/mini-profiler-resources/includes.js?v=12b4b45a3c42e6e15503d7a03810ff33'
+    script.type = 'text/javascript'
+    script.id = 'mini-profiler'
+    script.setAttribute(
+      'data-css-url',
+      '/mini-profiler-resources/includes.css?v=12b4b45a3c42e6e15503d7a03810ff33'
+    )
+    script.setAttribute('data-version', '12b4b45a3c42e6e15503d7a03810ff33')
+    script.setAttribute('data-path', '/mini-profiler-resources/')
+    script.setAttribute('data-horizontal-position', 'left')
+    script.setAttribute('data-vertical-position', 'top')
+    script.setAttribute('data-ids', '')
+    script.setAttribute('data-trivial', 'false')
+    script.setAttribute('data-children', 'false')
+    script.setAttribute('data-max-traces', '20')
+    script.setAttribute('data-controls', 'false')
+    script.setAttribute('data-total-sql-count', 'false')
+    script.setAttribute('data-authorized', 'true')
+    script.setAttribute('data-toggle-shortcut', 'Alt+P')
+    script.setAttribute('data-start-hidden', 'false')
+    script.setAttribute('data-collapse-results', 'true')
+    script.setAttribute('data-hidden-custom-fields', '')
+    script.setAttribute('data-html-container', 'body')
+    document.head.appendChild(script)
+  })
+
   return (
     <div
       id="top"

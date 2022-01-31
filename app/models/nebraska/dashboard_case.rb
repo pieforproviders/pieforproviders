@@ -4,28 +4,28 @@ module Nebraska
   # A case for display in the Nebraska Dashboard
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
-    attr_reader :approval,
-                :approval_absences,
+    attr_reader :absent_days,
                 :active_nebraska_approval_amount,
+                :approval,
+                :attended_days,
                 :business,
                 :child,
                 :child_approvals,
                 :child_approval,
                 :filter_date,
                 :reimbursable_month_absent_days,
-                :schedules,
-                :service_days
+                :schedules
 
-    def initialize(child:, filter_date:, service_days:, approval_absences:)
+    def initialize(child:, filter_date:, attended_days:, absent_days:)
       @child = child
       @filter_date = filter_date
+      @attended_days = attended_days
+      @absent_days = absent_days
       @business = child.business
       @schedules = child&.schedules
       @child_approvals = child&.child_approvals&.with_approval
       @approval = child&.approvals&.active_on(filter_date)&.first
       @child_approval = approval.child_approvals.find_by(child: child)
-      @service_days = service_days
-      @approval_absences = approval_absences
       @reimbursable_month_absent_days = reimbursable_absent_service_days
       @active_nebraska_approval_amount = child&.active_nebraska_approval_amount(filter_date)
     end
@@ -37,6 +37,7 @@ module Nebraska
         Nebraska::Monthly::AttendanceRiskCalculator.new(
           child: child,
           filter_date: filter_date,
+          family_fee: family_fee,
           scheduled_revenue: scheduled_revenue,
           estimated_revenue: estimated_revenue
         ).call
@@ -68,10 +69,10 @@ module Nebraska
         'dashboard_case.family_fee'
       ) do
         if approval.children.length != 1 && approval.child_with_most_scheduled_hours(date: filter_date) != child
-          return 0
+          return Money.from_amount(0)
         end
 
-        active_nebraska_approval_amount&.family_fee || 0
+        @family_fee ||= active_nebraska_approval_amount&.family_fee || Money.from_amount(0)
       end
     end
 
@@ -83,7 +84,7 @@ module Nebraska
           attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
             family_fee,
-          0.0
+          Money.from_amount(0)
         ].max
       end
     end
@@ -97,7 +98,7 @@ module Nebraska
             attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
             family_fee,
-          0.0
+          Money.from_amount(0)
         ].max
       end
     end
@@ -109,8 +110,8 @@ module Nebraska
         [
           scheduled_month_days_revenue -
             family_fee,
-          0.0
-        ].max.to_f.round(2)
+          Money.from_amount(0)
+        ].max
       end
     end
 
@@ -143,7 +144,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.full_days_remaining'
       ) do
-        return 0 unless attended_approval_days || reimbursable_approval_absent_days
+        return 0 unless attended_days || reimbursable_approval_absent_days
 
         days = approval_days_to_count_for_duration_limits.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
@@ -157,7 +158,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.hours_remaining'
       ) do
-        return 0 unless attended_approval_days || reimbursable_approval_absent_days
+        return 0 unless attended_days || reimbursable_approval_absent_days
 
         hours = approval_days_to_count_for_duration_limits.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
@@ -188,13 +189,12 @@ module Nebraska
         'dashboard_case.attended_weekly_hours'
       ) do
         authorized_weekly_hours = child_approval&.authorized_weekly_hours
-        return "0.0 of #{authorized_weekly_hours}" unless service_days_this_month
+        return "0.0 of #{authorized_weekly_hours}" unless attendances_this_month || reimbursable_month_absent_days
 
         attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
-          service_days: service_days_this_month,
-          filter_date: filter_date,
-          child_approvals: child_approvals,
-          rates: rates
+          attendances: attendances_this_month,
+          absences: reimbursable_month_absent_days,
+          filter_date: filter_date
         ).call
         "#{attended_hours&.positive? ? attended_hours : 0.0} of #{authorized_weekly_hours}"
       end
@@ -223,8 +223,8 @@ module Nebraska
         'dashboard_case.service_days_this_month',
         'selects only the service_days for this month and memoizes them'
       ) do
-        @service_days_this_month ||= service_days&.select do |sd|
-          sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
+        @service_days_this_month ||= attended_days&.select do |service_day|
+          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
         end
       end
     end
@@ -234,8 +234,8 @@ module Nebraska
         'dashboard_case.service_days_this_month',
         'selects only the service_days for this month and memoizes them'
       ) do
-        @absences_this_month ||= approval_absences&.select do |sd|
-          sd.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
+        @absences_this_month ||= absent_days&.select do |service_day|
+          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
         end
       end
     end
@@ -245,10 +245,8 @@ module Nebraska
         'dashboard_case.attendances_this_month',
         'selects attendances_this_month'
       ) do
-        @attendances_this_month ||= service_days_this_month&.select do |service_day|
-          service_day.attendances.all? do |attendance|
-            attendance.absence.nil?
-          end
+        @attendances_this_month ||= attended_days&.select do |service_day|
+          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
         end
       end
     end
@@ -287,7 +285,6 @@ module Nebraska
         'dashboard_case.attended_month_days_revenue',
         'map & sum earned revenue of attended month days'
       ) do
-        # binding.pry if child.full_name == 'Jasveen Khirwar'
         attendances_this_month&.map(&:earned_revenue)&.sum || 0
       end
     end
@@ -428,7 +425,7 @@ module Nebraska
         'dashboard_case.approval_days_to_count_for_duration_limits',
         'reduce out nils from attendances for the approval'
       ) do
-        [attended_approval_days, non_covid_approval_absences].compact.reduce([], :|)
+        [attended_days, non_covid_approval_absences].compact.reduce([], :|)
       end
     end
 
@@ -437,7 +434,7 @@ module Nebraska
         'dashboard_case.absences_for_month',
         'reduce out nils from attendances for the approval'
       ) do
-        approval_absences.select do |service_day|
+        absent_days.select do |service_day|
           service_day.date.between?(month.at_beginning_of_month, month.at_end_of_month)
         end
       end
@@ -456,26 +453,13 @@ module Nebraska
       end
     end
 
-    def attended_approval_days
-      Appsignal.instrument_sql(
-        'dashboard_case.attended_approval_days',
-        'creates calculated service days for attended approval days and memoizes them'
-      ) do
-        return unless service_days
-
-        @attended_approval_days ||= service_days.select do |service_day|
-          service_day.attendances.all? { |attendance| attendance.absence.nil? }
-        end
-      end
-    end
-
     # rubocop:disable Metrics/MethodLength
     def reimbursable_approval_absent_days
       Appsignal.instrument_sql(
         'dashboard_case.reimbursable_approval_absent_days',
         'gets reimbursable absent days for the approval and memoizes them'
       ) do
-        return unless service_days
+        return unless absent_days
 
         days = []
         date = approval.effective_on.to_date

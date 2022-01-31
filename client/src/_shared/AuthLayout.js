@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
 import pieFullTanLogo from '_assets/pieFullTanLogo.svg'
@@ -10,6 +10,9 @@ export function AuthLayout({
   backgroundImageClass,
   contentComponent: ContentComponent
 }) {
+  useEffect(() => {
+    window.MiniProfiler?.pageTransition()
+  }, [])
   const { t, i18n } = useTranslation()
 
   return (
@@ -21,7 +24,7 @@ export function AuthLayout({
       <Col
         xs={24}
         md={12}
-        className="h-screen overflow-y-scroll mt-4 xs:mt-8 px-4 md:px-8"
+        className="h-screen px-4 mt-4 overflow-y-scroll xs:mt-8 md:px-8"
       >
         <Row gutter={{ xs: 16, md: 32 }}>
           <Col
@@ -40,7 +43,7 @@ export function AuthLayout({
               <img
                 alt={t('pieforProvidersLogoAltText')}
                 src={pieFullTanLogo}
-                className="w-24 xs:w-48 mt-0 mb-10 xs:mb-16 md:mb-12 mx-auto"
+                className="w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12"
               />
             </header>
             <div className="text-center md:text-left">

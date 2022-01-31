@@ -28,10 +28,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(4.1)
     end
@@ -45,10 +44,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(6.3)
     end
@@ -62,10 +60,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(12.7)
     end
@@ -79,10 +76,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(19.2)
     end
@@ -100,10 +96,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(12.7)
     end
@@ -125,10 +120,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(23.0)
     end
@@ -146,10 +140,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       service_days.each(&:reload)
       expect(
         described_class.new(
-          service_days: service_days,
           filter_date: first_attendance_date,
-          child_approvals: child.child_approvals,
-          rates: NebraskaRate.all
+          attendances: service_days.with_attendances.non_absences,
+          absences: service_days.with_attendances.absences
         ).call
       ).to eq(11.7)
     end
