@@ -3,6 +3,7 @@ import { render, waitFor, screen } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import DashboardTitle from '../DashboardTitle'
 import { fireEvent } from '@testing-library/dom'
+import { mount } from 'enzyme'
 
 const neRender = (
   props = {
@@ -29,6 +30,16 @@ const ilRender = (
       <DashboardTitle {...props} />
     </MemoryRouter>
   )
+}
+
+const mountRender = (
+  props = {
+    dates: { asOf: 'Mar 16' },
+    userState: 'IL',
+    getDashboardData: () => {}
+  }
+) => {
+  return mount(<DashboardTitle {...props} />)
 }
 
 describe('<DashboardTitle />', () => {
@@ -90,6 +101,22 @@ describe('<DashboardTitle />', () => {
     await waitFor(() => {
       paymentModal = screen.queryByText(/Record a payment/)
       expect(paymentModal).not.toBeInTheDocument()
+  it('Payment modal should render When Add Record Payment is clicked', async () => {
+    const wrapper = mountRender()
+    expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
+
+    await waitFor(() => {
+      const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
+      recordActionButton.simulate('click')
+      const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
+      recordPaymentButton.simulate('click')
+
+      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeTruthy()
+
+      //Clicking on X button in modal to verify modal is closed
+      const closeModalButton = wrapper.find('.ant-modal-close')
+      closeModalButton.simulate('click')
+      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
     })
   })
 })
