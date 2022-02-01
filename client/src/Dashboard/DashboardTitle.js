@@ -154,7 +154,6 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}
       destroyOnClose={true}
-      //todo determine width. Maybe 50% of screen size
       width={1000}
       footer={
         <div className="flex justify-center">

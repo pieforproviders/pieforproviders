@@ -57,3 +57,7 @@
 .payment-success-modal div.ant-modal-header {
     border-bottom: 0;
 }
+
+.header-text {
+    color: #004A6E;
+}

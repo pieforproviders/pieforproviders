@@ -3,14 +3,18 @@ import { Checkbox, InputNumber } from 'antd'
 import { useTranslation } from 'react-i18next'
 import PropTypes from 'prop-types'
 
-export default function PaymentDataCell({ updateTotalPayment, resetPayment }) {
+export default function PaymentDataCell({
+  updateTotalPayment,
+  resetPayment,
+  isSmallTableSize = false
+}) {
   const { t } = useTranslation()
   const [isDifferentPayment, setIsDifferentPayment] = useState(false)
   const [paymentValue, setPaymentValue] = useState(undefined)
 
   const currencyInput = (
     <InputNumber
-      className="w-32"
+      className={'w-32 ' + (isSmallTableSize ? 'mt-1 ml-4' : 'mr-1')}
       placeholder={t('enterAmount')}
       formatter={value => inputFormatter(value)}
       parser={value => value.replace(/\$\s?|(,*)/g, '')}
@@ -49,9 +53,9 @@ export default function PaymentDataCell({ updateTotalPayment, resetPayment }) {
   }
 
   return (
-    <div className="flex items-center">
+    <div className={isSmallTableSize ? 'flex-col' : 'flex items-center'}>
       <Checkbox className="mr-1" onChange={handleIsDifferentPaymentIsSet} />
-      <span className="mr-1"> {t('differentAmountFromState')}</span>
+      <span> {t('differentAmountFromState')}</span>
       {currencyInput}
     </div>
   )
@@ -59,5 +63,6 @@ export default function PaymentDataCell({ updateTotalPayment, resetPayment }) {
 
 PaymentDataCell.propTypes = {
   updateTotalPayment: PropTypes.func.isRequired,
-  resetPayment: PropTypes.func.isRequired
+  resetPayment: PropTypes.func.isRequired,
+  isSmallTableSize: PropTypes.bool
 }
