@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Alert, Table, Tooltip } from 'antd'
+import { Alert, Table, Tooltip, Grid } from 'antd'
 import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
 import '_assets/styles/payment-table-overrides.css'
 import pieSliceLogo from '../_assets/pieSliceLogo.svg'
 
+const { useBreakpoint } = Grid
 export function PaymentModal({
   setTotalPayment,
   lastMonth,
@@ -18,6 +19,8 @@ export function PaymentModal({
   const { t } = useTranslation()
   const [currentChildID, setCurrentChildID] = useState(false)
   const [originalPayments, setOriginalPayments] = useState({})
+  const screens = useBreakpoint()
+  const isSmallScreen = (screens.sm || screens.xs) && !screens.md
 
   useEffect(() => {
     initChildPayments()
@@ -59,11 +62,15 @@ export function PaymentModal({
   }
 
   const earnedRevenueHeader = (
-    <div>
-      {t('earnedRevenue')}
+    <div className={isSmallScreen ? 'flex' : ''}>
+      <div
+        className={'eyebrow-small header-text ' + (isSmallScreen ? 'mr-3' : '')}
+      >
+        {t('earnedRevenue')}
+      </div>
       <div>
         <Tooltip title={t('pieForProvidersHasCalculated')}>
-          <span className="calculated-by-text">
+          <span className="calculated-by-text header-text">
             {t('calculatedBy')} Pie
             <img
               alt={t('pieforProvidersLogoAltText')}
@@ -76,9 +83,48 @@ export function PaymentModal({
     </div>
   )
 
+  function earnedRevenueBody(childCase) {
+    return (
+      <div className="payment-table-text">&#36; {childCase.earnedRevenue}</div>
+    )
+  }
+
+  const childNameHeader = (
+    <div className="mb-2 eyebrow-small header-text">{t('childName')}</div>
+  )
+
+  const updatePaymentHeader = (
+    <div className="eyebrow-small header-text">
+      {t('updatePayment')} ({t('differentPaymentAmount')})
+    </div>
+  )
+
   const columns = [
     {
+      render: childCase => (
+        <div>
+          <div className="mb-2">
+            {childNameHeader}
+            {childCase.child.childName}
+          </div>
+          <div className="mb-2">
+            <div className="mb-2 ">{earnedRevenueHeader}</div>
+            {earnedRevenueBody(childCase)}
+          </div>
+          <div>
+            <PaymentDataCell
+              updateTotalPayment={updateTotalPayment}
+              resetPayment={resetPayment}
+              isSmallTableSize={true}
+            />
+          </div>
+        </div>
+      ),
+      responsive: ['xs']
+    },
+    {
       title: t('childName'),
+      responsive: ['sm'],
       render: childCase => {
         return (
           <div className="payment-table-text">{childCase.child.childName}</div>
@@ -87,14 +133,14 @@ export function PaymentModal({
     },
     {
       title: earnedRevenueHeader,
+      responsive: ['sm'],
       render: childCase => {
-        return (
-          <div className="payment-table-text">${childCase.earnedRevenue}</div>
-        )
+        return earnedRevenueBody(childCase)
       }
     },
     {
       title: updatePaymentHeader,
+      responsive: ['sm'],
       render: () => (
         <PaymentDataCell
           updateTotalPayment={updateTotalPayment}
@@ -103,14 +149,6 @@ export function PaymentModal({
       )
     }
   ]
-
-  function updatePaymentHeader() {
-    return (
-      <div>
-        {t('updatePayment')} ({t('differentPaymentAmount')})
-      </div>
-    )
-  }
 
   const table = (
     <Table
