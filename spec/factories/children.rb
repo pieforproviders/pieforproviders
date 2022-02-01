@@ -33,8 +33,8 @@ FactoryBot.define do
       after(:create) do |child, evaluator|
         create(:temporary_nebraska_dashboard_case, child: child) if evaluator.create_dashboard_case
         create(:nebraska_approval_amount,
-               child_approval: child.active_child_approval(evaluator.effective_date),
-               effective_on: evaluator.effective_date - 2.months,
+               child_approval: child.child_approvals.first,
+               effective_on: evaluator.effective_date,
                family_fee: 80.00)
         child.child_approvals.first.update!(authorized_weekly_hours: 20)
         child.schedules.reload
