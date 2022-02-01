@@ -34,42 +34,52 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        return if Child.find_by(child_match_params)
-
-        @child = create_new_child
+        @child = Child.find_or_initialize_by(child_params)
+        unless @child.approvals.find_by(approval_params)
+          @child.approvals << Approval.find_or_create_by!(approval_params)
+        end
 
         raise NotEnoughInfo unless @child.valid?
-
-        @child.save!
 
         build_case
       rescue StandardError => e
         send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
       end
 
-      def create_new_child
-        child = Child.new(child_match_params.merge(child_additional_params))
-        child.approvals.include?(existing_or_new_approval) || (child.approvals << existing_or_new_approval)
-        child
+      def update_overlapping_approvals
+        return unless @child.approvals&.length&.> 1
+
+        overlapping_approvals.presence&.map { |oa| oa.update!(expires_on: approval_params[:effective_on] - 1.day) }
+      end
+
+      def approvals_to_update
+        @child.approvals.reject { |app| app == @child.approvals.find_by(approval_params) }
+      end
+
+      def overlapping_approvals
+        date = approval_params[:effective_on]
+        approvals_to_update.select { |approval| date.between?(approval.effective_on, approval.expires_on) }
       end
 
       def build_case
-        # idempotency - add only if it's not already associated
-        child_approval = ChildApproval.find_by(child: @child, approval: existing_or_new_approval)
+        @child.update!(child_update_params)
         @business.update!(optional_business_params)
-        child_approval.update!(child_approval_params)
+        update_overlapping_approvals
+        @child_approval = @child.reload.child_approvals.find_by(approval: @child.approvals.find_by(approval_params))
+        update_child_approval
+        update_nebraska_approval_amounts
+      end
+
+      def update_nebraska_approval_amounts
         approval_amount_params[:approval_periods].each do |period|
           NebraskaApprovalAmount.find_or_create_by!(
-            nebraska_approval_amount_params(period).merge(child_approval: child_approval)
+            nebraska_approval_amount_params(period).merge(child_approval: @child_approval)
           )
         end
       end
 
-      def existing_or_new_approval
-        Approval
-          .includes(children: :business)
-          .where(children: { business: @business })
-          .find_by(approval_params) || Approval.find_or_create_by!(approval_params)
+      def update_child_approval
+        @child_approval&.update!(child_approval_params)
       end
 
       def approval_params
@@ -123,18 +133,18 @@ module Wonderschool
         }
       end
 
-      def child_match_params
+      def child_params
         {
           business_id: @business.id,
-          full_name: @row['Full Name']
+          full_name: @row['Full Name'],
+          wonderschool_id: @row['Wonderschool ID'],
+          dhs_id: @row['Client ID'],
+          date_of_birth: @row['Date of birth (required)']
         }
       end
 
-      def child_additional_params
+      def child_update_params
         {
-          wonderschool_id: @row['Wonderschool ID'],
-          dhs_id: @row['Client ID'],
-          date_of_birth: @row['Date of birth (required)'],
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
