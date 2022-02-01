@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :payment do
     child_approval
-    month { (Time.current - 7.months).to_date }
+    month { 7.months.ago.to_date }
     amount { Faker::Number.within(range: 10.0..200.0) }
   end
 end

@@ -26,11 +26,12 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users, only: %i[index show]
       get 'profile', to: 'users#show'
+      resources :attendance_batches, only: :create
+      resources :attendances, only: %i[index update]
       resources :businesses
       resources :children
-      resources :attendances, only: %i[index update]
+      resources :payments_batches, only: :create
       resources :service_days, only: :index
-      resources :attendance_batches, only: :create
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
     end
   end
