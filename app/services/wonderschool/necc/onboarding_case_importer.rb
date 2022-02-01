@@ -72,6 +72,13 @@ module Wonderschool
 
       def update_nebraska_approval_amounts
         approval_amount_params[:approval_periods].each do |period|
+          existing_approval_amount = NebraskaApprovalAmount.find_by(
+            nebraska_approval_amount_params(period).slice(
+              :effective_on, :expires_on
+            ).merge(child_approval: @child_approval)
+          )
+          existing_approval_amount.update!(nebraska_approval_amount_params(period)) && next if existing_approval_amount
+
           NebraskaApprovalAmount.find_or_create_by!(
             nebraska_approval_amount_params(period).merge(child_approval: @child_approval)
           )
