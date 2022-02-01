@@ -229,7 +229,70 @@ module Wonderschool
               .and not_raise_error
           end
 
-          it 'processes the child with new approval details if they already exist' do
+          it 'updates the existing details if the approval dates are the same but other details are different' do
+            business = create(
+              :business,
+              user: first_user,
+              name: "Rebecca's Childcare",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '14635435',
+              effective_on: '2020-09-01',
+              expires_on: '2021-08-31',
+              create_children: false
+            )
+            child = create(:necc_child,
+                           full_name: 'Thomas Eddleman',
+                           business: business,
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           enrolled_in_school: false,
+                           approvals: [approval])
+            child.reload.child_approvals.first.update!(
+              enrolled_in_school: false,
+              authorized_weekly_hours: 30,
+              full_days: 13,
+              hours: 12,
+              special_needs_rate: true,
+              special_needs_hourly_rate: 12,
+              special_needs_daily_rate: 15,
+              rate_type: nil,
+              rate_id: nil
+            )
+            child.reload.nebraska_approval_amounts.first.update!(
+              effective_on: Date.parse('2020-09-01'),
+              expires_on: Date.parse('2021-08-31'),
+              family_fee: 120,
+              allocated_family_fee: 120
+            )
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(5)
+              .and change(Approval, :count)
+              .from(1).to(3)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(1).to(6)
+              .and not_raise_error
+            child.reload
+            expect(child.child_approvals.first.full_days).to eq(276)
+            expect(child.child_approvals.first.hours).to eq(1656)
+            expect(child.child_approvals.first.special_needs_rate).to eq(false)
+            expect(child.child_approvals.first.special_needs_daily_rate).to eq(nil)
+            expect(child.child_approvals.first.special_needs_hourly_rate).to eq(nil)
+            expect(child.nebraska_approval_amounts.first.family_fee).to eq(0)
+            expect(child.nebraska_approval_amounts.first.allocated_family_fee).to eq(0)
+          end
+
+          it 'processes existing child with new approval details if new approval dates are different' do
             business = create(
               :business,
               user: first_user,
