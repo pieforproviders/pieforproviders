@@ -1,10 +1,10 @@
 import React from 'react'
-import { render, waitFor } from 'setupTests'
+import { render, waitFor, screen } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import DashboardTitle from '../DashboardTitle'
-import { mount } from 'enzyme'
+import { fireEvent } from '@testing-library/dom'
 
-const doRender = (
+const neRender = (
   props = {
     dates: { asOf: 'Mar 16' },
     getDashboardData: () => {}
@@ -17,23 +17,23 @@ const doRender = (
   )
 }
 
-const mountRender = (
+const ilRender = (
   props = {
     dates: { asOf: 'Mar 16' },
     userState: 'IL',
     getDashboardData: () => {}
   }
 ) => {
-  return mount(<DashboardTitle {...props} />)
+  return render(
+    <MemoryRouter>
+      <DashboardTitle {...props} />
+    </MemoryRouter>
+  )
 }
 
 describe('<DashboardTitle />', () => {
-  // beforeEach(() => jest.spyOn(window, 'fetch'))
-
-  // afterEach(() => window.fetch.mockRestore())
-
   it('renders DashboardTitle', async () => {
-    const { container } = doRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
       expect(container).toHaveTextContent('Mar 16')
@@ -41,7 +41,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('renders the Dashboard page when a user is in state', async () => {
-    const { container } = doRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
       expect(container).toHaveTextContent('Mar 16')
@@ -49,28 +49,47 @@ describe('<DashboardTitle />', () => {
   })
 
   it('renders the Record new Button', async () => {
-    const { container } = doRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Record new')
     })
   })
 
-  it('Payment modal should render When Add Record Payment is clicked', async () => {
-    const wrapper = mountRender()
-    expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
+  it('renders Payment modal when add record payment is clicked', async () => {
+    const { container } = ilRender()
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Your dashboard')
+    })
+    const recordNewButton = screen.getByRole('button', { name: /Record new/ })
+    let paymentButton = screen.queryByRole('button', {
+      name: /Payment/
+    })
+    expect(paymentButton).not.toBeInTheDocument()
+    fireEvent.click(recordNewButton)
 
     await waitFor(() => {
-      const recordActionButton = wrapper.find('#actionsDropdownButton').at(0)
-      recordActionButton.simulate('click')
-      const recordPaymentButton = wrapper.find('#recordPaymentButton').at(0)
-      recordPaymentButton.simulate('click')
+      paymentButton = screen.getByRole('button', {
+        name: /Payment/
+      })
+      expect(paymentButton).toBeInTheDocument()
+    })
 
-      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeTruthy()
+    let paymentModal = screen.queryByText(/Record a payment/)
+    expect(paymentModal).not.toBeInTheDocument()
+    fireEvent.click(paymentButton)
 
-      //Clicking on X button in modal to verify modal is closed
-      const closeModalButton = wrapper.find('.ant-modal-close')
-      closeModalButton.simulate('click')
-      expect(wrapper.find('#paymentModal').at(0).prop('visible')).toBeFalsy()
+    await waitFor(() => {
+      paymentModal = screen.getByText(/Record a payment/)
+      expect(paymentModal).toBeInTheDocument()
+    })
+
+    let closePaymentModal = screen.getByRole('button', { name: 'Close' })
+    expect(closePaymentModal).toBeInTheDocument()
+    fireEvent.click(closePaymentModal)
+
+    await waitFor(() => {
+      paymentModal = screen.queryByText(/Record a payment/)
+      expect(paymentModal).not.toBeInTheDocument()
     })
   })
 })
