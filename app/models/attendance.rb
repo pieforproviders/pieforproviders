@@ -8,6 +8,7 @@ class Attendance < UuidApplicationRecord
   before_create :remove_absences, unless: :absence
   before_update :assign_new_service_day, if: :will_save_change_to_check_in?
   before_save :remove_other_attendances, if: :will_save_change_to_absence?
+  after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_save_commit :calculate_service_day
 
   belongs_to :child_approval
@@ -117,6 +118,12 @@ class Attendance < UuidApplicationRecord
 
     other_attendances = service_day.attendances.where.not(id: self.id)
     other_attendances.destroy_all if other_attendances
+  end
+
+  def remove_old_service_day
+    previous_service_day = ServiceDay.find_by_id(service_day_id_previously_was)
+
+    previous_service_day.destroy unless previous_service_day.attendances.present?
   end
 
   def prevent_creation_of_absence_without_schedule
