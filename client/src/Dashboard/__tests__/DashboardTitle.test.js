@@ -3,10 +3,11 @@ import { render, waitFor, screen } from 'setupTests'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import DashboardTitle from '../DashboardTitle'
+import { fireEvent } from '@testing-library/dom'
 
 const mockedGetDashboardData = jest.fn()
 
-const doRender = (
+const neRender = (
   props = {
     dates: {
       asOf: 'Mar 16',
@@ -37,13 +38,30 @@ const doRender = (
   )
 }
 
-describe('<DashboardTitle />', () => {
-  // beforeEach(() => jest.spyOn(window, 'fetch'))
+// const ilRender = (
+//   props = {
+//     dates: { asOf: 'Mar 16' },
+//     userState: 'IL',
+//     getDashboardData: () => {}
+//   }
+// ) => {
+//   return render(
+//     <MemoryRouter>
+//       <DashboardTitle {...props} />
+//     </MemoryRouter>
+//   )
+// }
 
-  // afterEach(() => window.fetch.mockRestore())
+describe('<DashboardTitle />', () => {
+  beforeEach(() => {
+    jest.spyOn(window, 'fetch').mockImplementation(jest.fn())
+    window.fetch.mockResolvedValueOnce({})
+  })
+
+  afterEach(() => window.fetch.mockRestore())
 
   it('renders DashboardTitle', async () => {
-    const { container } = doRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
       expect(container).toHaveTextContent('Mar 16')
@@ -51,7 +69,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('renders the Dashboard page when a user is in state', async () => {
-    const { container } = doRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
       expect(container).toHaveTextContent('Mar 16')
@@ -59,7 +77,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('calls getDashboardData only once when filtering by month', async () => {
-    const { container, rerender } = doRender()
+    const { container, rerender } = neRender()
 
     // Check value of dropdown default option
     expect(container).toHaveTextContent('Mar 2020')
@@ -112,5 +130,51 @@ describe('<DashboardTitle />', () => {
 
     // Check value of the updated dropdown option
     expect(container).toHaveTextContent('Feb 2020')
+  })
+
+  it('renders the Record new Button', async () => {
+    const { container } = neRender()
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Record new')
+    })
+  })
+
+  it('renders Payment modal when add record payment is clicked', async () => {
+    const { container } = neRender()
+    await waitFor(() => {
+      expect(container).toHaveTextContent('Your dashboard')
+    })
+    const recordNewButton = screen.getByRole('button', { name: /Record new/ })
+    let paymentButton = screen.queryByRole('button', {
+      name: /Payment/
+    })
+
+    expect(paymentButton).not.toBeInTheDocument()
+    fireEvent.click(recordNewButton)
+
+    await waitFor(() => {
+      paymentButton = screen.getByRole('button', {
+        name: /Payment/
+      })
+      expect(paymentButton).toBeInTheDocument()
+    })
+
+    let paymentModal = screen.queryByText(/Record a payment/)
+    expect(paymentModal).not.toBeInTheDocument()
+    fireEvent.click(paymentButton)
+
+    await waitFor(() => {
+      paymentModal = screen.getByText(/Record a payment/)
+      expect(paymentModal).toBeInTheDocument()
+    })
+
+    let closePaymentModal = screen.getByRole('button', { name: 'Close' })
+    expect(closePaymentModal).toBeInTheDocument()
+    fireEvent.click(closePaymentModal)
+
+    await waitFor(() => {
+      paymentModal = screen.queryByText(/Record a payment/)
+      expect(paymentModal).not.toBeInTheDocument()
+    })
   })
 })

@@ -3,6 +3,7 @@
 module Api
   module V1
     # API for attendance batch entry
+    # rubocop:disable Metrics/ClassLength
     class AttendanceBatchesController < Api::V1::ApiController
       # POST /api/v1/attendance_batches
 
@@ -46,27 +47,22 @@ module Api
       def batch
         attendance_batch_params.to_a.map! do |initial_attendance_params|
           @initial_attendance_params = initial_attendance_params
-          next unless check_params
-
-          authorize Child.find(initial_attendance_params[:child_id]), :update?
+          next unless attendance_valid?
 
           next unless child_approval_id
 
           initial_attendance_params.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next add_error_and_return_nil(
-            :child_id,
-            "not allowed to create an attendance for child #{initial_attendance_params[:child_id]}"
-          )
+          next add_unauthorized_error
         end
       end
 
       def check_params
         case initial_attendance_params
         when ->(params) { !params.key?(:check_in) }
-          add_error_and_return_nil(:check_in)
+          Batchable.add_error_and_return_nil(:check_in, @errors)
         when ->(params) { !params.key?(:child_id) }
-          add_error_and_return_nil(:child_id)
+          Batchable.add_error_and_return_nil(:child_id, @errors)
         else
           true
         end
@@ -89,13 +85,6 @@ module Api
         @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
       end
 
-      def child_approval_id
-        id = Child
-             .find(initial_attendance_params[:child_id])
-             &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-        @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
-      end
-
       def child
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
       end
@@ -104,7 +93,7 @@ module Api
         ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
           ServiceDay.create!(child: child, date: date, absence_type: absence_type)
       rescue StandardError => e
-        add_error_and_return_nil(:service_day, e.message)
+        Batchable.add_error_and_return_nil(:service_day, @errors, e.message)
       end
 
       def date
@@ -112,9 +101,37 @@ module Api
                 attendance_params[:check_in]&.in_time_zone(child&.timezone)&.at_beginning_of_day
       end
 
-      def add_error_and_return_nil(key, message = "can't be blank")
-        errors[key] += [message]
-        nil
+      def add_unauthorized_error
+        Batchable.add_error_and_return_nil(
+          :child_id,
+          @errors,
+          "not allowed to create an attendance for child #{initial_attendance_params[:child_id]}"
+        )
+      end
+
+      def child_approval_id
+        @child_approval_id = Batchable.child_approval_id(
+          initial_attendance_params[:child_id],
+          initial_attendance_params[:check_in],
+          @errors,
+          "child #{initial_attendance_params[:child_id]} has " \
+          "no active approval for attendance date #{initial_attendance_params[:check_in]}"
+        )
+      end
+
+      def attendance_valid?
+        unless initial_attendance_params[:child_id]
+          Batchable.add_error_and_return_nil(:child_id, @errors)
+          return false
+        end
+
+        authorize Child.find(initial_attendance_params[:child_id]), :update?
+        unless initial_attendance_params[:check_in]
+          Batchable.add_error_and_return_nil(:check_in, @errors)
+          return false
+        end
+
+        true
       end
 
       def attendance_batch_params
@@ -139,5 +156,6 @@ module Api
         )
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
