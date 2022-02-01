@@ -194,7 +194,7 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-13 21:00:29", null: false
+    t.datetime "month", default: "2022-05-20 03:29:31", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -232,6 +232,15 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
     t.date "deleted_at"
     t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
+  end
+
+  create_table "payments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "month", null: false
+    t.decimal "amount", null: false
+    t.uuid "child_approval_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_approval_id"], name: "index_payments_on_child_approval_id"
   end
 
   create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -317,6 +326,7 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"
+  add_foreign_key "payments", "child_approvals"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
   add_foreign_key "service_days", "schedules"
