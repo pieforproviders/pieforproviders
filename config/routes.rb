@@ -65,6 +65,10 @@ end
 #                                    users GET    /api/v1/users(.:format)                                                                           api/v1/users#index {:format=>:json}
 #                                     user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show {:format=>:json}
 #                                  profile GET    /api/v1/profile(.:format)                                                                         api/v1/users#show {:format=>:json}
+#                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
+#                              attendances GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
+#                               attendance PATCH  /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
+#                                          PUT    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
 #                               businesses GET    /api/v1/businesses(.:format)                                                                      api/v1/businesses#index {:format=>:json}
 #                                          POST   /api/v1/businesses(.:format)                                                                      api/v1/businesses#create {:format=>:json}
 #                                 business GET    /api/v1/businesses/:id(.:format)                                                                  api/v1/businesses#show {:format=>:json}
@@ -77,11 +81,8 @@ end
 #                                          PATCH  /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          PUT    /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          DELETE /api/v1/children/:id(.:format)                                                                    api/v1/children#destroy {:format=>:json}
-#                              attendances GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
-#                               attendance PATCH  /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
-#                                          PUT    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
+#                         payments_batches POST   /api/v1/payments_batches(.:format)                                                                api/v1/payments_batches#create {:format=>:json}
 #                             service_days GET    /api/v1/service_days(.:format)                                                                    api/v1/service_days#index {:format=>:json}
-#                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}
 #                                          GET    /*path(.:format)                                                                                  static#fallback_index_html
 #            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
