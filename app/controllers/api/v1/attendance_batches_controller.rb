@@ -85,13 +85,6 @@ module Api
         @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
       end
 
-      # def child_approval_id
-      #   id = Child
-      #        .find(initial_attendance_params[:child_id])
-      #        &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-      #   @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
-      # end
-
       def child
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
       end
