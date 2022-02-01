@@ -47,6 +47,7 @@ spec/cypress/screenshots
 
 # yarn releases
 .yarn
+.yarnrc
 
 Dockerfile
 init.sql
@@ -60,3 +61,7 @@ latest.dump
 
 # prod-like seeds
 /spec/fixtures/files/prod_like_seeds/*
+
+.idea/*
+/vendor/bundle/ruby/3.0.0/
+/pieforproviders.iml

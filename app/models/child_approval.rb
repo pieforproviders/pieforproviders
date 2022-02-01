@@ -9,6 +9,7 @@ class ChildApproval < UuidApplicationRecord
   has_many :nebraska_approval_amounts, dependent: :destroy
   has_many :attendances, dependent: :destroy
   has_many :service_days, -> { distinct }, through: :attendances
+  has_many :payments, dependent: :destroy
 
   delegate :user, to: :child
   delegate :business, to: :child
