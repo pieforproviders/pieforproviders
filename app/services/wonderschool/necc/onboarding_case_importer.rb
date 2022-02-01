@@ -2,6 +2,7 @@
 
 module Wonderschool
   module Necc
+    # rubocop:disable Metrics/ClassLength
     # Wonderschool NECC Onboarding CSV Importer
     class OnboardingCaseImporter
       include AppsignalReporting
@@ -72,17 +73,29 @@ module Wonderschool
 
       def update_nebraska_approval_amounts
         approval_amount_params[:approval_periods].each do |period|
-          existing_approval_amount = NebraskaApprovalAmount.find_by(
-            nebraska_approval_amount_params(period).slice(
-              :effective_on, :expires_on
-            ).merge(child_approval: @child_approval)
-          )
-          existing_approval_amount.update!(nebraska_approval_amount_params(period)) && next if existing_approval_amount
+          existing_aa = existing_approval_amount(period)
+          approval_amounts_to_update = @child.nebraska_approval_amounts.reject { |naa| naa == existing_aa }
+          date = nebraska_approval_amount_params(period)[:effective_on]
+          update_overlapping_approval_amounts(approval_amounts_to_update, date)
+          existing_aa.update!(nebraska_approval_amount_params(period)) && next if existing_aa
 
           NebraskaApprovalAmount.find_or_create_by!(
             nebraska_approval_amount_params(period).merge(child_approval: @child_approval)
           )
         end
+      end
+
+      def existing_approval_amount(period)
+        params = nebraska_approval_amount_params(period)
+                 .slice(:effective_on, :expires_on).merge(child_approval: @child_approval)
+        @child.nebraska_approval_amounts.find_by(params)
+      end
+
+      def update_overlapping_approval_amounts(approval_amounts_to_update, date)
+        overlapping_approval_amounts = approval_amounts_to_update.select do |naa|
+          date.between?(naa.effective_on, naa.expires_on)
+        end
+        overlapping_approval_amounts.presence&.map { |oaa| oaa.update!(expires_on: date - 1.day) }
       end
 
       def update_child_approval
@@ -194,5 +207,6 @@ module Wonderschool
         end ]
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

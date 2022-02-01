@@ -356,6 +356,7 @@ module Wonderschool
                            enrolled_in_school: false,
                            approvals: [approval],
                            effective_date: Time.zone.parse('2020-06-01'))
+            nebraska_approval_amount = child.nebraska_approval_amounts.first
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
@@ -371,6 +372,10 @@ module Wonderschool
             child.reload
             expect((child.approvals.reject { |app| app == approval }).first.expires_on).to eq(Date.parse('2021-08-31'))
             expect(approval.reload.expires_on).to eq(Date.parse('2020-08-31'))
+            expect(child.nebraska_approval_amounts.reject do |naa|
+              naa == nebraska_approval_amount
+            end.first.expires_on).to eq(Date.parse('2021-08-31'))
+            expect(nebraska_approval_amount.reload.expires_on).to eq(Date.parse('2020-08-31'))
           end
         end
 
