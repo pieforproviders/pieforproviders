@@ -291,7 +291,7 @@ RSpec.describe Attendance, type: :model do
         date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
         child: attendance.child
       )
-      expect { attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day) }.not_to change(ServiceDay, :count)
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
       expect(attendance.service_day).to eq(service_day)
     end
   end
@@ -323,6 +323,38 @@ RSpec.describe Attendance, type: :model do
       attendance.update(absence: 'absence')
       expect(described_class.absences.length).to eq(1)
       expect(described_class.non_absences.length).to eq(0)
+    end
+  end
+
+  describe '#remove_old_service_day' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'deletes old service day when updating to new date' do
+      old_service_day_id = attendance.service_day.id
+      create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
+      expect(ServiceDay.find_by_id(old_service_day_id)).to be_nil
+      expect(Attendance.find_by_id(attendance.id)).to be_present
+    end
+
+    it 'does not delete old service day if it still has attendance' do
+      old_service_day_id = attendance.service_day.id
+      described_class.create!(
+        check_in: attendance.check_in + 45.minutes,
+        child_approval: attendance.child_approval,
+        service_day: attendance.service_day
+      )
+      create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
+      expect(ServiceDay.find_by_id(old_service_day_id)).to be_present
     end
   end
 end
