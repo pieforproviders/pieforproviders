@@ -76,6 +76,7 @@ end
 #                                          PATCH  /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          PUT    /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          DELETE /api/v1/children/:id(.:format)                                                                    api/v1/children#destroy {:format=>:json}
+#                         payments_batches POST   /api/v1/payments_batches(.:format)                                                                api/v1/payments_batches#create {:format=>:json}
 #                              attendances GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
 #                               attendance PATCH  /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
 #                                          PUT    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
