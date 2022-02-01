@@ -108,7 +108,10 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
       <Button
         type="primary"
         id="actionsDropdownButton"
+<<<<<<< HEAD
         name="recordNew"
+=======
+>>>>>>> 7881c60f (Payment Modal frontend/backend - Atlassian)
         onClick={updateIsActionsDropdownOpen}
       >
         {t('recordDropdown')}
