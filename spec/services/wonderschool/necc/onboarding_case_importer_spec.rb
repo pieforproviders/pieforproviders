@@ -4,6 +4,7 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
+    # rubocop:disable Metrics/BlockLength
     RSpec.describe OnboardingCaseImporter do
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
@@ -12,6 +13,9 @@ module Wonderschool
       let!(:stubbed_aws_s3_client) { instance_double(Aws::S3::Client, delete_object: nil) }
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
+      let!(:renewal_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv'))
+      end
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
       let!(:missing_field_csv) do
         File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
@@ -379,6 +383,57 @@ module Wonderschool
           end
         end
 
+        context 'when renewing' do
+          before do
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { renewal_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+          end
+
+          it 'creates case records for the correct child with the correct data' do
+            described_class.new.call
+            thomas = Child.find_by(full_name: 'Thomas Eddleman')
+            expect(thomas.approvals.length).to eq(2)
+            expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
+              [
+                [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
+                [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
+              ]
+            )
+            first_approval = thomas.approvals.find_by(effective_on: '2020-09-01')
+            second_approval = thomas.approvals.find_by(effective_on: '2021-09-01')
+            expect(first_approval.child_approvals.length).to eq(1)
+            expect(first_approval.child_approvals.first).to have_attributes(
+              {
+                full_days: 276,
+                hours: 1656,
+                special_needs_rate: false,
+                special_needs_daily_rate: nil,
+                special_needs_hourly_rate: nil,
+                authorized_weekly_hours: 30
+              }
+            )
+            expect(second_approval.child_approvals.length).to eq(1)
+            expect(second_approval.child_approvals.first).to have_attributes(
+              {
+                full_days: 276,
+                hours: 1656,
+                special_needs_rate: false,
+                special_needs_daily_rate: nil,
+                special_needs_hourly_rate: nil,
+                authorized_weekly_hours: 30
+              }
+            )
+            expect(first_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
+            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on).to eq(Date.parse('2020-09-01'))
+            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on).to eq(Date.parse('2021-08-31'))
+            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee).to eq(Money.from_amount(0))
+            expect(second_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
+            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on).to eq(Date.parse('2021-09-01'))
+            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on).to eq(Date.parse('2022-08-31'))
+            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee).to eq(Money.from_amount(120))
+          end
+        end
+
         context 'with invalid data' do
           it 'continues processing if the record is invalid or missing a required field' do
             allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
@@ -395,5 +450,6 @@ module Wonderschool
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end
