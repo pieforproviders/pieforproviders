@@ -157,7 +157,7 @@ class Child < UuidApplicationRecord
         child: self,
         weekday: idx + 1,
         duration: 28_800, # seconds in 8 hours
-        effective_on: active_child_approval(Time.current).approval.effective_on
+        effective_on: approvals.first.effective_on
       )
     end
   end
