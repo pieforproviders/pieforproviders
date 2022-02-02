@@ -424,13 +424,25 @@ module Wonderschool
               }
             )
             expect(first_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
-            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on).to eq(Date.parse('2020-09-01'))
-            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on).to eq(Date.parse('2021-08-31'))
-            expect(first_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee).to eq(Money.from_amount(0))
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on
+            ).to eq(Date.parse('2020-09-01'))
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on
+            ).to eq(Date.parse('2021-08-31'))
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee
+            ).to eq(Money.from_amount(0))
             expect(second_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
-            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on).to eq(Date.parse('2021-09-01'))
-            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on).to eq(Date.parse('2022-08-31'))
-            expect(second_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee).to eq(Money.from_amount(120))
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on
+            ).to eq(Date.parse('2021-09-01'))
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on
+            ).to eq(Date.parse('2022-08-31'))
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee
+            ).to eq(Money.from_amount(120))
           end
         end
 
