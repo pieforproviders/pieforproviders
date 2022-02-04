@@ -5,9 +5,9 @@ class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, on: :create, if: :check_in
+  before_save :remove_other_attendances, if: :will_save_change_to_absence?
   before_create :remove_absences, unless: :absence
   before_update :assign_new_service_day, if: :will_save_change_to_check_in?
-  before_save :remove_other_attendances, if: :will_save_change_to_absence?
   after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_save_commit :calculate_service_day
 
@@ -116,14 +116,14 @@ class Attendance < UuidApplicationRecord
   def remove_other_attendances
     return unless absence
 
-    other_attendances = service_day.attendances.where.not(id: self.id)
-    other_attendances.destroy_all if other_attendances
+    other_attendances = service_day.attendances.where.not(id: id)
+    other_attendances&.destroy_all
   end
 
   def remove_old_service_day
-    previous_service_day = ServiceDay.find_by_id(service_day_id_previously_was)
+    previous_service_day = ServiceDay.find_by(id: service_day_id_previously_was)
 
-    previous_service_day.destroy unless previous_service_day.attendances.present?
+    previous_service_day.destroy if previous_service_day.attendances.blank?
   end
 
   def prevent_creation_of_absence_without_schedule
@@ -143,7 +143,9 @@ class Attendance < UuidApplicationRecord
   end
 
   def prevent_multiple_absences
-    errors.add(:absence, 'there is already an absence for this date') if child.attendances.absences.for_day(check_in).where.not(id: self.id).any?
+    return unless child.attendances.absences.for_day(check_in).where.not(id: id).any?
+
+    errors.add(:absence, 'there is already an absence for this date')
   end
 
   def calculate_service_day

@@ -75,10 +75,9 @@ RSpec.describe Attendance, type: :model do
   it 'validates that there is only one absence per service day' do
     absence = create(:nebraska_absence)
     second_absence = build(:nebraska_absence,
-      check_in: absence.check_in + 45.minutes,
-      child_approval: absence.child_approval,
-      service_day: absence.service_day
-    )
+                           check_in: absence.check_in + 45.minutes,
+                           child_approval: absence.child_approval,
+                           service_day: absence.service_day)
     expect(second_absence).not_to be_valid
     expect(second_absence.errors.messages[:absence]).to include('there is already an absence for this date')
   end
@@ -337,8 +336,8 @@ RSpec.describe Attendance, type: :model do
         child: attendance.child
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
-      expect(ServiceDay.find_by_id(old_service_day_id)).to be_nil
-      expect(Attendance.find_by_id(attendance.id)).to be_present
+      expect(ServiceDay.find_by(id: old_service_day_id)).to be_nil
+      expect(described_class.find_by(id: attendance.id)).to be_present
     end
 
     it 'does not delete old service day if it still has attendance' do
@@ -354,7 +353,7 @@ RSpec.describe Attendance, type: :model do
         child: attendance.child
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
-      expect(ServiceDay.find_by_id(old_service_day_id)).to be_present
+      expect(ServiceDay.find_by(id: old_service_day_id)).to be_present
     end
   end
 end
