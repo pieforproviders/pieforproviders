@@ -110,21 +110,21 @@ export function Dashboard() {
         {
           title: t('earnedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.guaranteedRevenueTotal.toFixed()
+            Number.parseFloat(totals.guaranteedRevenueTotal).toFixed()
           )}`,
           definition: t('guaranteedRevenueDef')
         },
         {
           title: t('potentialRevenue'),
           stat: `${currencyFormatter.format(
-            totals.potentialRevenueTotal.toFixed()
+            Number.parseFloat(totals.potentialRevenueTotal).toFixed()
           )}`,
           definition: t('potentialRevenueDef')
         },
         {
           title: t('maxApprovedRevenue'),
           stat: `${currencyFormatter.format(
-            totals.maxApprovedRevenueTotal.toFixed()
+            Number.parseFloat(totals.maxApprovedRevenueTotal).toFixed()
           )}`,
           definition: t('maxApprovedRevenueDef')
         },
