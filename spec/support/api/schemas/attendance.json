@@ -24,6 +24,13 @@
       ],
       "format": "uuid"
     },
+    "wonderschool_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
     "child": {
       "type": "object",
       "$ref": "child.json"
