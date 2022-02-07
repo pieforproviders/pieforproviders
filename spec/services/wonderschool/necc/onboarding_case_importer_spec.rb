@@ -71,7 +71,7 @@ module Wonderschool
               {
                 dhs_id: '14047907',
                 date_of_birth: Date.parse('2010-09-01'),
-                enrolled_in_school: false,
+                enrolled_in_school: true,
                 wonderschool_id: '37821'
               }
             )
@@ -99,7 +99,8 @@ module Wonderschool
                 special_needs_rate: false,
                 special_needs_daily_rate: nil,
                 special_needs_hourly_rate: nil,
-                authorized_weekly_hours: 30
+                authorized_weekly_hours: 30,
+                enrolled_in_school: true
               }
             )
             expect(thomas.child_approvals.first.nebraska_approval_amounts.count).to eq(1)
