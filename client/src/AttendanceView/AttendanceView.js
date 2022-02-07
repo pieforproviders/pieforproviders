@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
-import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import smallPie from '../_assets/smallPie.png'
 import editIcon from '../_assets/editIcon.svg'
 import { WeekPicker } from './WeekPicker'
@@ -26,6 +25,7 @@ export function AttendanceView() {
   const [dateSelected, setDateSelected] = useState(dayjs())
   const [editAttendanceModalData, setEditAttendanceModalData] = useState(null)
   const [updatedAttendanceData, setUpdatedAttendanceData] = useState([{}, {}])
+  const [modalButtonDisabled, setModalButtonDisabled] = useState(false)
   const latestAttendanceData = useRef(updatedAttendanceData)
   const titleData = useRef({ childName: null, columnDate: null })
 
@@ -41,17 +41,27 @@ export function AttendanceView() {
           (Object.keys(data.update).includes('absence') &&
             (Object.keys(value).includes('check_in') ||
               Object.keys(value).includes('check_out')))
-            ? removeEmptyStringValue(data.update)
-            : removeEmptyStringValue({ ...value, ...data.update })
-        return Object.keys(value).length === 0
-          ? {
-              child_id: data.record?.serviceDays[0]?.child_id || '',
-              ...updatedValue
-            }
-          : {
-              ...value,
-              ...updatedValue
-            }
+            ? data.update
+            : { ...value, ...data.update }
+        const mergedValue =
+          Object.keys(value).length === 0
+            ? {
+                child_id: data.record?.serviceDays[0]?.child_id || '',
+                ...updatedValue
+              }
+            : {
+                ...value,
+                ...updatedValue
+              }
+
+        // disabled saving on modal if only checkout time exists
+        if (index === 0) {
+          setModalButtonDisabled(
+            !(mergedValue.check_in || mergedValue.absence) &&
+              mergedValue.check_out
+          )
+        }
+        return mergedValue
       }
 
       return value
@@ -100,6 +110,7 @@ export function AttendanceView() {
               currentAttendances.length === 1
                 ? [...currentAttendances, {}]
                 : currentAttendances
+
             setEditAttendanceModalData({
               record,
               columnDate: columnDate.format('YYYY-MM-DD'),
@@ -259,13 +270,28 @@ export function AttendanceView() {
     }
   }
 
-  const handleModalClose = () => {
+  const handleModalClose = async () => {
     let responses = []
 
     updatedAttendanceData.forEach(async attendance => {
       // if it's an old attendance we call the attendances PUT endpoint,
       // if the user creates a new, second attendance for that day we need to call the attendance_batches endpoint
-      if (Object.keys(attendance).includes('child_id')) {
+      // if the attendance values needed are all null the attendance needs to be deleted
+      if (
+        !attendance.absence &&
+        !attendance.check_in &&
+        !attendance.check_out &&
+        attendance.id
+      ) {
+        const response = await makeRequest({
+          type: 'delete',
+          url: '/api/v1/attendances/' + attendance.id,
+          headers: {
+            Authorization: token
+          }
+        })
+        responses.push(response)
+      } else if (Object.keys(attendance).includes('child_id')) {
         const response = await makeRequest({
           type: 'post',
           url: '/api/v1/attendance_batches',
@@ -277,7 +303,17 @@ export function AttendanceView() {
           }
         })
         responses.push(response)
-      } else {
+      } else if (Object.keys(attendance).length > 0) {
+        // if new checkout add column date
+        // if deleting checkout send null
+        const checkOut =
+          attendance.check_out === ''
+            ? null
+            : attendance.check_out?.slice(0, 10) !==
+              editAttendanceModalData.columnDate
+            ? `${editAttendanceModalData.columnDate} ${attendance.check_out}`
+            : attendance.check_out
+
         const response = await makeRequest({
           type: 'put',
           url: '/api/v1/attendances/' + attendance.id,
@@ -287,7 +323,7 @@ export function AttendanceView() {
           data: {
             attendance: {
               check_in: attendance.check_in,
-              check_out: attendance.check_out,
+              check_out: checkOut,
               absence: attendance.absence
             }
           }
@@ -296,24 +332,32 @@ export function AttendanceView() {
       }
     })
 
-    if (responses.length > 0 && responses.every(r => r.ok)) {
-      titleData.current = {
-        childName: '',
-        columnDate: ''
-      }
-      latestAttendanceData.current = [{}, {}]
-      setEditAttendanceModalData(null)
-      setUpdatedAttendanceData([{}, {}])
-      getServiceDays()
-    } else {
+    const responsesOk = responses.every(r => r.ok)
+
+    if (!responsesOk) {
       console.log('error sending attendance data to API')
     }
+
+    titleData.current = {
+      childName: null,
+      columnDate: null
+    }
+    latestAttendanceData.current = [{}, {}]
+    setEditAttendanceModalData(null)
+    setUpdatedAttendanceData([{}, {}])
   }
 
   useEffect(() => {
     getServiceDays()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
+
+  // useEffect(() => {
+  //   console.log(editAttendanceModalData)
+  //   console.log(updatedAttendanceData)
+  //   // eslint-disable-next-line no-debugger
+  //   debugger
+  // }, [editAttendanceModalData, updatedAttendanceData])
 
   return (
     <div>
@@ -346,7 +390,7 @@ export function AttendanceView() {
             />
           </div>
           <Table
-            dataSource={attendanceData}
+            dataSource={[...attendanceData]}
             columns={columns}
             bordered={true}
             pagination={false}
@@ -372,7 +416,14 @@ export function AttendanceView() {
           setUpdatedAttendanceData([{}, {}])
           setEditAttendanceModalData(null)
         }}
-        onOk={handleModalClose}
+        okButtonProps={{
+          disabled: modalButtonDisabled
+        }}
+        onOk={async () => {
+          await handleModalClose()
+          getServiceDays()
+        }}
+        okText={'Save'}
         title={
           <div className="text-gray1">
             <span className="font-semibold">
