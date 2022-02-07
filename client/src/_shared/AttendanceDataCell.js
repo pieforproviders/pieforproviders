@@ -20,7 +20,9 @@ export default function AttendanceDataCell({
   )
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
-  const [showSecondCheckIn, setShowSecondCheckIn] = useState(false)
+  const [showSecondCheckIn, setShowSecondCheckIn] = useState(
+    Object.keys(defaultValues[1] || {}).length > 0
+  )
   const handleChange = options => {
     const { update = {}, callback = () => {}, secondCheckIn = false } = options
     updateAttendanceData({ update, record, columnIndex, secondCheckIn })
@@ -118,7 +120,10 @@ export default function AttendanceDataCell({
                         setAbsence('absence')
                       }
                     })
-                  : handleChange({ callback: setAbsence(null) })
+                  : handleChange({
+                      update: { absence: null },
+                      callback: setAbsence(null)
+                    })
               }
             />
             <span className="ml-3">{t('absent')}</span>
@@ -140,7 +145,10 @@ export default function AttendanceDataCell({
                           setAbsence('covid-related')
                         }
                       })
-                    : handleChange({ callback: setAbsence(null) })
+                    : handleChange({
+                        update: { absence: null },
+                        callback: setAbsence(null)
+                      })
                 }
               />
               <span className="ml-3">
@@ -228,7 +236,14 @@ export default function AttendanceDataCell({
                 type="text"
                 className="flex font-semibold font-proxima-nova -ml-4"
                 onClick={() => {
-                  handleChange({ secondCheckIn: true })
+                  handleChange({
+                    update: {
+                      absence: null,
+                      check_in: null,
+                      check_out: null
+                    },
+                    secondCheckIn: true
+                  })
                   setShowSecondCheckIn(false)
                 }}
               >
