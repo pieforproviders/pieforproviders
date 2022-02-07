@@ -2,6 +2,7 @@
 
 module Wonderschool
   module Necc
+    # rubocop:disable Metrics/ClassLength
     # Wonderschool NECC Onboarding CSV Importer
     class OnboardingCaseImporter
       include AppsignalReporting
@@ -34,42 +35,75 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        return if Child.find_by(child_match_params)
-
-        @child = create_new_child
+        @child = Child.find_or_initialize_by(child_params)
+        unless @child.approvals.find_by(approval_params)
+          @child.approvals << Approval.find_or_create_by!(approval_params)
+        end
 
         raise NotEnoughInfo unless @child.valid?
-
-        @child.save!
 
         build_case
       rescue StandardError => e
         send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
       end
 
-      def create_new_child
-        child = Child.new(child_match_params.merge(child_additional_params))
-        child.approvals.include?(existing_or_new_approval) || (child.approvals << existing_or_new_approval)
-        child
+      def update_overlapping_approvals
+        return unless @child.approvals&.length&.> 1
+
+        overlapping_approvals.presence&.map { |oa| oa.update!(expires_on: approval_params[:effective_on] - 1.day) }
+      end
+
+      def approvals_to_update
+        @child.approvals.reject { |app| app == @child.approvals.find_by(approval_params) }
+      end
+
+      def overlapping_approvals
+        date = approval_params[:effective_on]
+        approvals_to_update.select { |approval| date.between?(approval.effective_on, approval.expires_on) }
       end
 
       def build_case
-        # idempotency - add only if it's not already associated
-        child_approval = ChildApproval.find_by(child: @child, approval: existing_or_new_approval)
+        @child.update!(child_update_params)
         @business.update!(optional_business_params)
-        child_approval.update!(child_approval_params)
+        update_overlapping_approvals
+        @child_approval = @child.reload.child_approvals.find_by(approval: @child.approvals.find_by(approval_params))
+        update_child_approval
+        update_nebraska_approval_amounts
+      end
+
+      def update_nebraska_approval_amounts
         approval_amount_params[:approval_periods].each do |period|
+          approval = @child.approvals.find_by(approval_params)
+          next unless period[:effective_on].between?(approval.effective_on, approval.expires_on)
+
+          existing_aa = existing_approval_amount(period)
+          update_overlapping_approval_amounts(period, existing_aa)
+          next if existing_aa
+
           NebraskaApprovalAmount.find_or_create_by!(
-            nebraska_approval_amount_params(period).merge(child_approval: child_approval)
+            nebraska_approval_amount_params(period).merge(child_approval: @child_approval)
           )
         end
       end
 
-      def existing_or_new_approval
-        Approval
-          .includes(children: :business)
-          .where(children: { business: @business })
-          .find_by(approval_params) || Approval.find_or_create_by!(approval_params)
+      def existing_approval_amount(period)
+        params = nebraska_approval_amount_params(period)
+                 .slice(:effective_on, :expires_on).merge(child_approval: @child_approval)
+        @child.nebraska_approval_amounts.find_by(params)
+      end
+
+      def update_overlapping_approval_amounts(period, existing_aa)
+        date = nebraska_approval_amount_params(period)[:effective_on]
+        overlapping_approval_amounts = @child.nebraska_approval_amounts.reject do |naa|
+          naa == existing_aa
+        end
+        overlapping_approval_amounts.select! { |naa| date.between?(naa.effective_on, naa.expires_on) }
+        overlapping_approval_amounts.presence&.map { |oaa| oaa.update!(expires_on: date - 1.day) }
+        existing_aa&.update!(nebraska_approval_amount_params(period))
+      end
+
+      def update_child_approval
+        @child_approval&.update!(child_approval_params)
       end
 
       def approval_params
@@ -123,28 +157,23 @@ module Wonderschool
         }
       end
 
-      def child_match_params
+      def child_params
         {
           business_id: @business.id,
-          full_name: @row['Full Name']
+          full_name: @row['Full Name'],
+          wonderschool_id: @row['Wonderschool ID'],
+          dhs_id: @row['Client ID'],
+          date_of_birth: @row['Date of birth (required)']
         }
       end
 
-      def child_additional_params
+      def child_update_params
         {
-          wonderschool_id: @row['Wonderschool ID'],
-          dhs_id: @row['Client ID'],
-          date_of_birth: @row['Date of birth (required)'],
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
 
       def approval_amount_params
-        # NOTE: approvals attributes or anything else we decide to pass has to be added
-        # *BEFORE* we run group_approval_periods because delete_if is destructive
-        # but it's also the cleanest way to deal with removing unnecessary params
-        # because once you start acting on a CSV::Row as a hash or array, the nesting
-        # becomes challenging to work with
         { approvals_attributes: [approval_params] }.merge({ approval_periods: group_approval_periods })
       end
 
@@ -159,9 +188,13 @@ module Wonderschool
 
       # groups the approval period fields by headers, i.e. "Approval #1 - Family Fee", "Approval #1 - Begin Date", etc.
       def group_approval_periods
-        approval_fields = @row.delete_if { |header, field| !header.to_s.start_with?('Approval') || field.nil? }
+        @approval_fields = CSV::Row.new(@row.headers, @row.fields)
+        @approval_fields.delete_if { |header, field| !header.to_s.start_with?('Approval') || field.nil? }
+        map_approval_fields
+      end
 
-        approval_fields.headers.map { |header| header.split(' - ')[0] }.uniq.map! do |approval_number|
+      def map_approval_fields
+        @approval_fields.headers.map { |header| header.split(' - ')[0] }.uniq.map! do |approval_number|
           {
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
@@ -172,10 +205,11 @@ module Wonderschool
       end
 
       def find_field(approval_number, include_key, exclude_key = nil)
-        @row[@row.to_h.keys.find do |key|
+        @approval_fields[@approval_fields.to_h.keys.find do |key|
           key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key))
         end ]
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

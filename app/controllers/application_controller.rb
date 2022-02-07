@@ -7,6 +7,12 @@ class ApplicationController < ActionController::API
   before_action :set_user_time_zone
   around_action :collect_metrics
 
+  before_action do
+    if Rails.env.development? || (Rails.env.production? && current_user && current_user.admin? && params[:rmp])
+      Rack::MiniProfiler.authorize_request
+    end
+  end
+
   def render_resource(resource)
     if resource.errors.empty?
       render json: UserBlueprint.render(resource), status: :created, location: resource
@@ -44,7 +50,7 @@ class ApplicationController < ActionController::API
     start = Time.current
     yield
     duration = Time.current - start
-    Rails.logger.info "#{controller_name}##{action_name}: #{duration}s"
+    Rails.logger.info "DURATION | #{controller_name}##{action_name}: #{duration}s"
   end
 
   def set_locale

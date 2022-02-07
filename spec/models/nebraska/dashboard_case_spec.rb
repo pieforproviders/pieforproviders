@@ -10,7 +10,13 @@ RSpec.describe Nebraska::DashboardCase, type: :model do
     before { child.reload }
 
     it 'returns the database value' do
-      expect(described_class.new(child: child, filter_date: date).family_fee)
+      service_days = child.child_approvals.first.service_days.with_attendances
+      expect(described_class.new(
+        child: child,
+        filter_date: date,
+        attended_days: service_days.non_absences,
+        absent_days: service_days.absences
+      ).family_fee)
         .to eq(child.active_nebraska_approval_amount(date).family_fee)
     end
 
@@ -21,9 +27,20 @@ RSpec.describe Nebraska::DashboardCase, type: :model do
         approvals: [child.approvals.first],
         schedules: [create(:schedule, weekday: 1)]
       )
-      expect(described_class.new(child: child, filter_date: date).family_fee)
+      service_days = child.child_approvals.first.service_days.with_attendances
+      expect(described_class.new(
+        child: child,
+        filter_date: date,
+        attended_days: service_days.non_absences,
+        absent_days: service_days.absences
+      ).family_fee)
         .to eq(child.active_nebraska_approval_amount(date).family_fee)
-      expect(described_class.new(child: child_with_less_hours, filter_date: date).family_fee).to eq(0)
+      expect(described_class.new(
+        child: child_with_less_hours,
+        filter_date: date,
+        attended_days: service_days.non_absences,
+        absent_days: service_days.absences
+      ).family_fee).to eq(0)
     end
   end
 end

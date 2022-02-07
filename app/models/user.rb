@@ -41,7 +41,7 @@ class User < UuidApplicationRecord
         lambda {
           distinct
             .joins(:businesses)
-            .includes(:businesses, :child_approvals, :approvals, :service_days)
+            .includes(:child_approvals, :approvals)
         }
 
   # format phone numbers - remove any non-digit characters
@@ -55,9 +55,11 @@ class User < UuidApplicationRecord
   end
 
   def state
+    return @state if @state
+
     return '' unless businesses
 
-    businesses&.first&.state || ''
+    @state = businesses&.first&.state || ''
   end
 
   # return the user's latest attendance check_in in UTC

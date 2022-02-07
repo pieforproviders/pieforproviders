@@ -84,6 +84,10 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+profile:
+  <<: *default
+  database: pie_development
+
 production:
   <<: *default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + ENV.fetch("GOOD_JOB_MAX_THREADS", 4).to_i %>

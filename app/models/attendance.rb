@@ -4,8 +4,12 @@
 class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
-  before_validation :find_or_create_service_day, if: :check_in
-  before_create :remove_absences
+  before_validation :find_or_create_service_day, on: :create, if: :check_in
+  before_save :remove_other_attendances, if: :will_save_change_to_absence?
+  before_create :remove_absences, unless: :absence
+  before_update :assign_new_service_day, if: :will_save_change_to_check_in?
+  after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
+  after_save_commit :calculate_service_day
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -18,6 +22,7 @@ class Attendance < UuidApplicationRecord
   validates :check_out, time_param: true, unless: proc { |attendance| attendance.check_out_before_type_cast.nil? }
   validate :check_out_after_check_in
   validate :prevent_creation_of_absence_without_schedule
+  validate :prevent_multiple_absences, if: :absence
 
   ABSENCE_TYPES = %w[
     absence
@@ -88,6 +93,11 @@ class Attendance < UuidApplicationRecord
       child: child,
       date: check_in.in_time_zone(user.timezone).at_beginning_of_day
     )
+
+    return unless schedule_for_weekday
+
+    service_day.schedule = schedule_for_weekday
+    service_day.save!
   end
 
   def remove_absences
@@ -95,6 +105,25 @@ class Attendance < UuidApplicationRecord
     return unless existing_absences
 
     existing_absences.destroy_all
+  end
+
+  def assign_new_service_day
+    return if service_day.date == check_in.in_time_zone(user.timezone).at_beginning_of_day
+
+    find_or_create_service_day
+  end
+
+  def remove_other_attendances
+    return unless absence
+
+    other_attendances = service_day.attendances.where.not(id: id)
+    other_attendances&.destroy_all
+  end
+
+  def remove_old_service_day
+    previous_service_day = ServiceDay.find_by(id: service_day_id_previously_was)
+
+    previous_service_day.destroy if previous_service_day.attendances.blank?
   end
 
   def prevent_creation_of_absence_without_schedule
@@ -111,6 +140,16 @@ class Attendance < UuidApplicationRecord
     return if check_out.blank? || check_in.blank?
 
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
+  end
+
+  def prevent_multiple_absences
+    return unless child.attendances.absences.for_day(check_in).where.not(id: id).any?
+
+    errors.add(:absence, 'there is already an absence for this date')
+  end
+
+  def calculate_service_day
+    ServiceDayCalculatorJob.perform_later(service_day.id)
   end
 end
 

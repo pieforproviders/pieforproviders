@@ -4,6 +4,7 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
+    # rubocop:disable Metrics/BlockLength
     RSpec.describe OnboardingCaseImporter do
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
@@ -12,6 +13,9 @@ module Wonderschool
       let!(:stubbed_aws_s3_client) { instance_double(Aws::S3::Client, delete_object: nil) }
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
+      let!(:renewal_csv) do
+        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv'))
+      end
       let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
       let!(:missing_field_csv) do
         File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
@@ -50,12 +54,14 @@ module Wonderschool
               .from(0).to(3)
               .and change(NebraskaApprovalAmount, :count)
               .from(0).to(6)
+              .and not_raise_error
             expect { described_class.new.call }
               .to not_change(Child, :count)
               .and not_change(Business, :count)
               .and not_change(ChildApproval, :count)
               .and not_change(Approval, :count)
               .and not_change(NebraskaApprovalAmount, :count)
+              .and not_raise_error
           end
 
           it 'creates case records for the correct child with the correct data' do
@@ -136,8 +142,8 @@ module Wonderschool
                 full_days: 330,
                 hours: 1760,
                 special_needs_rate: true,
-                special_needs_daily_rate: 90.77,
-                special_needs_hourly_rate: 9.43,
+                special_needs_daily_rate: Money.from_amount(90.77),
+                special_needs_hourly_rate: Money.from_amount(9.43),
                 authorized_weekly_hours: 45
               }
             )
@@ -148,7 +154,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2020-11-24'),
                        expires_on: Date.parse('2021-05-23'),
-                       family_fee: 60.00,
+                       family_fee: Money.from_amount(60.00),
                        allocated_family_fee: 60.00
                      }
                    )
@@ -158,7 +164,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2021-05-24'),
                        expires_on: Date.parse('2021-11-23'),
-                       family_fee: 85.00,
+                       family_fee: Money.from_amount(85.00),
                        allocated_family_fee: 85.00
                      }
                    )
@@ -172,7 +178,7 @@ module Wonderschool
             expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
           end
 
-          it 'skips the child if the exact same child at the exact same business already exists' do
+          it 'skips the child if all their existing details are the same' do
             business = create(
               :business,
               user: first_user,
@@ -188,7 +194,31 @@ module Wonderschool
               expires_on: '2021-08-31',
               create_children: false
             )
-            create(:child, full_name: 'Thomas Eddleman', business: business, approvals: [approval])
+            child = create(:necc_child,
+                           full_name: 'Thomas Eddleman',
+                           business: business,
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           enrolled_in_school: false,
+                           approvals: [approval])
+            child.reload.child_approvals.first.update!(
+              enrolled_in_school: false,
+              authorized_weekly_hours: 30,
+              full_days: 276,
+              hours: 1656,
+              special_needs_rate: false,
+              special_needs_hourly_rate: nil,
+              special_needs_daily_rate: nil,
+              rate_type: nil,
+              rate_id: nil
+            )
+            child.reload.nebraska_approval_amounts.first.update!(
+              effective_on: Date.parse('2020-09-01'),
+              expires_on: Date.parse('2021-08-31'),
+              family_fee: 0,
+              allocated_family_fee: 0
+            )
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
@@ -199,7 +229,220 @@ module Wonderschool
               .and change(Approval, :count)
               .from(1).to(3)
               .and change(NebraskaApprovalAmount, :count)
-              .from(0).to(5)
+              .from(1).to(6)
+              .and not_raise_error
+          end
+
+          it 'updates the existing details if the approval dates are the same but other details are different' do
+            business = create(
+              :business,
+              user: first_user,
+              name: "Rebecca's Childcare",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '14635435',
+              effective_on: '2020-09-01',
+              expires_on: '2021-08-31',
+              create_children: false
+            )
+            child = create(:necc_child,
+                           full_name: 'Thomas Eddleman',
+                           business: business,
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           enrolled_in_school: false,
+                           approvals: [approval])
+            child.reload.child_approvals.first.update!(
+              enrolled_in_school: false,
+              authorized_weekly_hours: 30,
+              full_days: 13,
+              hours: 12,
+              special_needs_rate: true,
+              special_needs_hourly_rate: 12,
+              special_needs_daily_rate: 15,
+              rate_type: nil,
+              rate_id: nil
+            )
+            child.reload.nebraska_approval_amounts.first.update!(
+              effective_on: Date.parse('2020-09-01'),
+              expires_on: Date.parse('2021-08-31'),
+              family_fee: 120,
+              allocated_family_fee: 120
+            )
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(5)
+              .and change(Approval, :count)
+              .from(1).to(3)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(1).to(6)
+              .and not_raise_error
+            child.reload
+            expect(child.child_approvals.first.full_days).to eq(276)
+            expect(child.child_approvals.first.hours).to eq(1656)
+            expect(child.child_approvals.first.special_needs_rate).to eq(false)
+            expect(child.child_approvals.first.special_needs_daily_rate).to eq(nil)
+            expect(child.child_approvals.first.special_needs_hourly_rate).to eq(nil)
+            expect(child.nebraska_approval_amounts.first.family_fee).to eq(0)
+            expect(child.nebraska_approval_amounts.first.allocated_family_fee).to eq(0)
+          end
+
+          it 'processes existing child with new approval details if new approval dates are different' do
+            business = create(
+              :business,
+              user: first_user,
+              name: "Rebecca's Childcare",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '14635435',
+              effective_on: '2019-09-01',
+              expires_on: '2020-08-31',
+              create_children: false
+            )
+            create(:necc_child,
+                   full_name: 'Thomas Eddleman',
+                   business: business,
+                   date_of_birth: '2010-09-01',
+                   wonderschool_id: '37821',
+                   dhs_id: '14047907',
+                   enrolled_in_school: false,
+                   approvals: [approval],
+                   effective_date: Time.zone.parse('2019-09-01'))
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(6)
+              .and change(Approval, :count)
+              .from(1).to(4)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(1).to(7)
+              .and not_raise_error
+          end
+
+          it 'updates the child with new approval details if the new approval overlaps' do
+            business = create(
+              :business,
+              user: first_user,
+              name: "Rebecca's Childcare",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '14635435',
+              effective_on: '2020-06-01',
+              expires_on: '2021-05-31',
+              create_children: false
+            )
+            child = create(:necc_child,
+                           full_name: 'Thomas Eddleman',
+                           business: business,
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           enrolled_in_school: false,
+                           approvals: [approval],
+                           effective_date: Time.zone.parse('2020-06-01'))
+            nebraska_approval_amount = child.nebraska_approval_amounts.first
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(6)
+              .and change(Approval, :count)
+              .from(1).to(4)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(1).to(7)
+              .and not_raise_error
+            child.reload
+            expect((child.approvals.reject { |app| app == approval }).first.expires_on).to eq(Date.parse('2021-08-31'))
+            expect(approval.reload.expires_on).to eq(Date.parse('2020-08-31'))
+            expect(child.nebraska_approval_amounts.reject do |naa|
+              naa == nebraska_approval_amount
+            end.first.expires_on).to eq(Date.parse('2021-08-31'))
+            expect(nebraska_approval_amount.reload.expires_on).to eq(Date.parse('2020-08-31'))
+          end
+        end
+
+        context 'when renewing' do
+          before do
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { renewal_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+          end
+
+          it 'creates case records for the correct child with the correct data' do
+            described_class.new.call
+            thomas = Child.find_by(full_name: 'Thomas Eddleman')
+            expect(thomas.approvals.length).to eq(2)
+            expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
+              [
+                [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
+                [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
+              ]
+            )
+            first_approval = thomas.approvals.find_by(effective_on: '2020-09-01')
+            second_approval = thomas.approvals.find_by(effective_on: '2021-09-01')
+            expect(first_approval.child_approvals.length).to eq(1)
+            expect(first_approval.child_approvals.first).to have_attributes(
+              {
+                full_days: 276,
+                hours: 1656,
+                special_needs_rate: false,
+                special_needs_daily_rate: nil,
+                special_needs_hourly_rate: nil,
+                authorized_weekly_hours: 30
+              }
+            )
+            expect(second_approval.child_approvals.length).to eq(1)
+            expect(second_approval.child_approvals.first).to have_attributes(
+              {
+                full_days: 276,
+                hours: 1656,
+                special_needs_rate: false,
+                special_needs_daily_rate: nil,
+                special_needs_hourly_rate: nil,
+                authorized_weekly_hours: 30
+              }
+            )
+            expect(first_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on
+            ).to eq(Date.parse('2020-09-01'))
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on
+            ).to eq(Date.parse('2021-08-31'))
+            expect(
+              first_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee
+            ).to eq(Money.from_amount(0))
+            expect(second_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.effective_on
+            ).to eq(Date.parse('2021-09-01'))
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.expires_on
+            ).to eq(Date.parse('2022-08-31'))
+            expect(
+              second_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee
+            ).to eq(Money.from_amount(120))
           end
         end
 
@@ -219,5 +462,6 @@ module Wonderschool
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end

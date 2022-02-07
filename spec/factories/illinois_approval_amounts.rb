@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :illinois_approval_amount do
-    month { (Time.current - 7.months).to_date }
+    month { 7.months.ago.to_date }
     part_days_approved_per_week { Faker::Number.within(range: 0..5) }
     full_days_approved_per_week { Faker::Number.within(range: 0..5) }
     child_approval

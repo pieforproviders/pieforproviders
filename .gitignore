@@ -51,3 +51,9 @@ spec/cypress/screenshots
 Dockerfile
 init.sql
 .docker-env/development/database
+
+# db dumps from heroku for local testing
+latest.dump
+
+# snaplet config
+.snaplet

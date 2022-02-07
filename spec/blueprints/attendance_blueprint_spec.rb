@@ -14,7 +14,8 @@ RSpec.describe AttendanceBlueprint do
       'check_out',
       'child',
       'time_in_care',
-      'child_approval_id'
+      'child_approval_id',
+      'wonderschool_id'
     )
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :child do
-    date_of_birth { (Time.current - 2.years).strftime('%Y-%m-%d') }
+    date_of_birth { (2.years.ago).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
@@ -22,7 +22,7 @@ FactoryBot.define do
 
     factory :necc_child do
       transient do
-        effective_date { Time.current - 6.months }
+        effective_date { 6.months.ago }
         create_dashboard_case { false }
       end
 
@@ -33,10 +33,11 @@ FactoryBot.define do
       after(:create) do |child, evaluator|
         create(:temporary_nebraska_dashboard_case, child: child) if evaluator.create_dashboard_case
         create(:nebraska_approval_amount,
-               child_approval: child.active_child_approval(evaluator.effective_date),
-               effective_on: evaluator.effective_date - 2.months,
+               child_approval: child.child_approvals.first,
+               effective_on: evaluator.effective_date,
                family_fee: 80.00)
         child.child_approvals.first.update!(authorized_weekly_hours: 20)
+        child.schedules.reload
       end
     end
 

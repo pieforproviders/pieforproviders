@@ -55,8 +55,10 @@ class Child < UuidApplicationRecord
           not_deleted
             .distinct
             .approved_for_date(date)
-            .includes(:schedules, :child_approvals, :nebraska_approval_amounts)
+            .includes(:schedules)
         }
+
+  scope :with_schedules, -> { includes(:schedules) }
 
   delegate :county, to: :business
   delegate :user, to: :business
@@ -84,6 +86,13 @@ class Child < UuidApplicationRecord
     active_approval(date)&.child_approvals&.find_by(child: self)
   end
 
+  def active_nebraska_approval_amount(date)
+    @active_nebraska_approval_amount ||= Hash.new do |h, key|
+      h[key] = nebraska_approval_amounts.active_on(key).first
+    end
+    @active_nebraska_approval_amount[date]
+  end
+
   def attendance_rate(date)
     AttendanceRateCalculator.new(self, date).call
   end
@@ -95,10 +104,6 @@ class Child < UuidApplicationRecord
 
   def active_rate(date)
     active_child_approval(date).rate
-  end
-
-  def active_nebraska_approval_amount(date)
-    nebraska_approval_amounts.active_on(date).first
   end
 
   def illinois_approval_amounts
@@ -115,14 +120,22 @@ class Child < UuidApplicationRecord
   end
 
   def weekday_scheduled_duration(date, weekday)
-    schedule_for_weekday = schedules.select do |schedule|
+    schedule_for_weekday = schedules.find do |schedule|
       schedule.weekday == weekday &&
         schedule.effective_on <= date &&
         (schedule.expires_on.nil? || schedule.expires_on > date)
-    end.first
+    end
     return 0 unless schedule_for_weekday
 
     schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)
+  end
+
+  def schedules_for_weekday(date, weekday)
+    schedules.select do |schedule|
+      schedule.weekday == weekday &&
+        schedule.effective_on <= date &&
+        (schedule.expires_on.nil? || schedule.expires_on > date)
+    end
   end
 
   private
@@ -144,7 +157,7 @@ class Child < UuidApplicationRecord
         child: self,
         weekday: idx + 1,
         duration: 28_800, # seconds in 8 hours
-        effective_on: active_child_approval(Time.current).approval.effective_on
+        effective_on: approvals.first.effective_on
       )
     end
   end

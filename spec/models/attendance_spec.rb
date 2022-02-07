@@ -55,7 +55,7 @@ RSpec.describe Attendance, type: :model do
   end
 
   it 'validates that the check_out is after the check_in if it is present' do
-    attendance.update(check_out: Time.current - 90.years)
+    attendance.update(check_out: 90.years.ago)
     expect(attendance.errors.messages[:check_out]).to be_present
     attendance.update(check_out: 3.days.from_now)
     expect(attendance.errors.messages[:check_out]).not_to be_present
@@ -70,6 +70,16 @@ RSpec.describe Attendance, type: :model do
     attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days, 0)
     attendance = build(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
     expect(attendance).not_to be_valid
+  end
+
+  it 'validates that there is only one absence per service day' do
+    absence = create(:nebraska_absence)
+    second_absence = build(:nebraska_absence,
+                           check_in: absence.check_in + 45.minutes,
+                           child_approval: absence.child_approval,
+                           service_day: absence.service_day)
+    expect(second_absence).not_to be_valid
+    expect(second_absence.errors.messages[:absence]).to include('there is already an absence for this date')
   end
 
   it 'factory should be valid (default; no args)' do
@@ -207,6 +217,7 @@ RSpec.describe Attendance, type: :model do
         date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day,
         child: attendance.child
       )
+      service_day.reload
       expect { attendance.save! }.not_to change(ServiceDay, :count)
       expect(attendance.service_day).to eq(service_day)
     end
@@ -243,21 +254,6 @@ RSpec.describe Attendance, type: :model do
       expect(described_class.absences.length).to eq(0)
     end
 
-    it "ensures there's only one absence per day" do
-      absence = create(:nebraska_absence)
-      expect(described_class.absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: absence.check_in + 45.minutes,
-          child_approval: absence.child_approval,
-          service_day: absence.service_day,
-          absence: 'absence'
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(1)
-      expect(described_class.absences).not_to include(absence)
-    end
-
     it 'does not remove a non-absence from the same day' do
       attendance = create(:nebraska_hourly_attendance)
       expect(described_class.absences.length).to eq(0)
@@ -270,6 +266,94 @@ RSpec.describe Attendance, type: :model do
       end.not_to change(ServiceDay, :count)
       expect(described_class.absences.length).to eq(0)
       expect(described_class.non_absences.length).to eq(2)
+    end
+  end
+
+  describe '#assign_new_service_day' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'creates a new service day when check_in time is changed to different day' do
+      service_day_id = attendance.service_day.id
+      attendance.update!(check_in: attendance.check_in + 1.day, check_out: attendance.check_out + 1.day)
+      expect(attendance.service_day.id).not_to eq(service_day_id)
+    end
+
+    it 'keeps the same service day when check_in time update is still the same day' do
+      service_day_id = attendance.service_day.id
+      attendance.update!(check_in: attendance.check_in + 5.hours, check_out: attendance.check_out + 5.hours)
+      expect(attendance.service_day.id).to eq(service_day_id)
+    end
+
+    it 'assigned to an existing service day when check_in time is changed to different day' do
+      service_day = create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
+      expect(attendance.service_day).to eq(service_day)
+    end
+  end
+
+  describe '#remove_other_attendances' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'removes other attendances on the same service day if absence is created' do
+      expect(described_class.non_absences.length).to eq(1)
+      expect do
+        described_class.create!(
+          check_in: attendance.check_in + 45.minutes,
+          child_approval: attendance.child_approval,
+          service_day: attendance.service_day,
+          absence: 'absence'
+        )
+      end.not_to change(ServiceDay, :count)
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.non_absences.length).to eq(0)
+    end
+
+    it 'removes other attendance on the same service day if attendance is updated to absence' do
+      described_class.create!(
+        check_in: attendance.check_in + 45.minutes,
+        child_approval: attendance.child_approval,
+        service_day: attendance.service_day
+      )
+      expect(described_class.non_absences.length).to eq(2)
+      attendance.update(absence: 'absence')
+      expect(described_class.absences.length).to eq(1)
+      expect(described_class.non_absences.length).to eq(0)
+    end
+  end
+
+  describe '#remove_old_service_day' do
+    let!(:attendance) { create(:nebraska_hourly_attendance) }
+
+    it 'deletes old service day when updating to new date' do
+      old_service_day_id = attendance.service_day.id
+      create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
+      expect(ServiceDay.find_by(id: old_service_day_id)).to be_nil
+      expect(described_class.find_by(id: attendance.id)).to be_present
+    end
+
+    it 'does not delete old service day if it still has attendance' do
+      old_service_day_id = attendance.service_day.id
+      described_class.create!(
+        check_in: attendance.check_in + 45.minutes,
+        child_approval: attendance.child_approval,
+        service_day: attendance.service_day
+      )
+      create(
+        :service_day,
+        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        child: attendance.child
+      )
+      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
+      expect(ServiceDay.find_by(id: old_service_day_id)).to be_present
     end
   end
 end

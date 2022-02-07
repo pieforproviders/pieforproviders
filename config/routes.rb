@@ -28,7 +28,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
-      resources :attendances, only: %i[index update]
+      resources :attendances, only: %i[index update destroy]
       resources :service_days, only: :index
       resources :attendance_batches, only: :create
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
