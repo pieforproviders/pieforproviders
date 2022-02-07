@@ -153,7 +153,8 @@ module Wonderschool
           authorized_weekly_hours: to_float(@row['Authorized weekly hours']),
           special_needs_rate: to_boolean(@row['Special Needs Rate?']),
           special_needs_daily_rate: to_float(@row['Special Needs Daily Rate']),
-          special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate'])
+          special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate']),
+          enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
 
