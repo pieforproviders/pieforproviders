@@ -19,7 +19,7 @@ module Api
       def show
         render json: UserBlueprint.render(
           @user,
-          view: :profile,
+          view: :profile
         )
       end
 

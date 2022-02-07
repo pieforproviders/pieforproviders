@@ -8,7 +8,6 @@ class UserBlueprint < Blueprinter::Base
   field :state do |user|
     user.admin? ? 'NE' : user.state
   end
- 
 
   view :profile do
     field :full_name
@@ -18,7 +17,6 @@ class UserBlueprint < Blueprinter::Base
     association :businesses, blueprint: BusinessBlueprint, view: :profile
     excludes :id, :state
   end
-
 
   view :illinois_dashboard do
     field(:as_of) do |user, options|

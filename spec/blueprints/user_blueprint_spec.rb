@@ -151,15 +151,15 @@ RSpec.describe UserBlueprint do
       )
     end
 
-    context "when there are businesses for this user" do
+    context 'when there are businesses for this user' do
       before { create(:business, user: user) }
-      
+
       it 'includes a list of associated businesses' do
         expect(parsed_response['businesses'].length).to eq(1)
       end
     end
 
-    context "when there are no businesses for this user" do
+    context 'when there are no businesses for this user' do
       it 'includes an empty array of businesses' do
         expect(parsed_response['businesses'].length).to eq(0)
       end
