@@ -361,17 +361,17 @@ end
 #
 # Table name: attendances
 #
-#  id                                                       :uuid             not null, primary key
-#  absence                                                  :string
-#  check_in                                                 :datetime         not null
-#  check_out                                                :datetime
-#  deleted_at                                               :date
-#  time_in_care(Calculated: check_out time - check_in time) :interval         not null
-#  created_at                                               :datetime         not null
-#  updated_at                                               :datetime         not null
-#  child_approval_id                                        :uuid             not null
-#  service_day_id                                           :uuid
-#  wonderschool_id                                          :string
+#  id                :uuid             not null, primary key
+#  absence           :string
+#  check_in          :datetime         not null
+#  check_out         :datetime
+#  deleted_at        :date
+#  time_in_care      :interval         not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  child_approval_id :uuid             not null
+#  service_day_id    :uuid
+#  wonderschool_id   :string
 #
 # Indexes
 #
