@@ -6,7 +6,6 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
-    enrolled_in_school { false }
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -77,19 +76,18 @@ end
 #
 # Table name: children
 #
-#  id                 :uuid             not null, primary key
-#  active             :boolean          default(TRUE), not null
-#  date_of_birth      :date             not null
-#  deleted_at         :date
-#  enrolled_in_school :boolean
-#  full_name          :string           not null
-#  inactive_reason    :string
-#  last_active_date   :date
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  business_id        :uuid             not null
-#  dhs_id             :string
-#  wonderschool_id    :string
+#  id               :uuid             not null, primary key
+#  active           :boolean          default(TRUE), not null
+#  date_of_birth    :date             not null
+#  deleted_at       :date
+#  full_name        :string           not null
+#  inactive_reason  :string
+#  last_active_date :date
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  business_id      :uuid             not null
+#  dhs_id           :string
+#  wonderschool_id  :string
 #
 # Indexes
 #
