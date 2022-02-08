@@ -100,6 +100,10 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
+          const editButtonDisabled =
+            matchingServiceDay?.attendances.some(
+              attendance => attendance.wonderschool_id
+            ) || false
 
           const handleEditAttendance = () => {
             const currentAttendances =
@@ -133,6 +137,7 @@ export function AttendanceView() {
                   <button
                     className="float-right"
                     onClick={handleEditAttendance}
+                    disabled={editButtonDisabled}
                   >
                     <img alt="edit" src={editIcon} />
                   </button>
@@ -171,7 +176,11 @@ export function AttendanceView() {
 
             return (
               <div className="text-center body-2">
-                <button className="float-right" onClick={handleEditAttendance}>
+                <button
+                  className="float-right"
+                  onClick={handleEditAttendance}
+                  disabled={editButtonDisabled}
+                >
                   <img alt="edit" src={editIcon} />
                 </button>
                 <div className="mb-2 text-gray8 font-semiBold">
@@ -284,7 +293,7 @@ export function AttendanceView() {
         attendance.id
       ) {
         const response = await makeRequest({
-          type: 'delete',
+          type: 'del',
           url: '/api/v1/attendances/' + attendance.id,
           headers: {
             Authorization: token
@@ -306,13 +315,12 @@ export function AttendanceView() {
       } else if (Object.keys(attendance).length > 0) {
         // if new checkout add column date
         // if deleting checkout send null
-        const checkOut =
-          attendance.check_out === ''
+        const formatDate = dateValue =>
+          dateValue === ''
             ? null
-            : attendance.check_out?.slice(0, 10) !==
-              editAttendanceModalData.columnDate
-            ? `${editAttendanceModalData.columnDate} ${attendance.check_out}`
-            : attendance.check_out
+            : dateValue?.slice(0, 10) !== editAttendanceModalData.columnDate
+            ? `${editAttendanceModalData.columnDate} ${dateValue}`
+            : dateValue
 
         const response = await makeRequest({
           type: 'put',
@@ -322,8 +330,8 @@ export function AttendanceView() {
           },
           data: {
             attendance: {
-              check_in: attendance.check_in,
-              check_out: checkOut,
+              check_in: formatDate(attendance.check_in),
+              check_out: formatDate(attendance.check_out),
               absence: attendance.absence
             }
           }

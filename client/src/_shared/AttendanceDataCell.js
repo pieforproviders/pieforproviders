@@ -274,6 +274,6 @@ AttendanceDataCell.propTypes = {
   columnDate: PropTypes.string,
   columnIndex: PropTypes.number,
   defaultValues: PropTypes.arrayOf(object),
-  record: PropTypes.object.isRequired,
-  updateAttendanceData: PropTypes.func.isRequired
+  record: PropTypes.object,
+  updateAttendanceData: PropTypes.func
 }
