@@ -63,7 +63,7 @@ module Wonderschool
       end
 
       def build_case
-        @child.update!(child_update_params)
+        @child.save
         @business.update!(optional_business_params)
         update_overlapping_approvals
         @child_approval = @child.reload.child_approvals.find_by(approval: @child.approvals.find_by(approval_params))
@@ -165,12 +165,6 @@ module Wonderschool
           wonderschool_id: @row['Wonderschool ID'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
-        }
-      end
-
-      def child_update_params
-        {
-          enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
 
