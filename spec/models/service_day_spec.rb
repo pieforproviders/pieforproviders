@@ -215,7 +215,7 @@ RSpec.describe ServiceDay, type: :model do
       let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
 
       it 'returns service days for given week' do
-        travel_to Time.current.at_end_of_week(:saturday)
+        travel_to Time.current.at_end_of_week(:sunday)
         expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week).not_to include(past_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)

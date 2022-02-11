@@ -21,7 +21,7 @@ module Nebraska
 
       def service_days_for_week
         [attendances, absences].compact.reduce([], :|).select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_week(:sunday), filter_date.at_end_of_week(:saturday))
+          service_day.date.between?(filter_date.at_beginning_of_week(:sunday), filter_date.at_end_of_week(:sunday))
         end
       end
 
@@ -49,7 +49,7 @@ module Nebraska
         return 0 unless absences
 
         absences.length - absences.select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_week(:sunday), filter_date.at_end_of_week(:saturday))
+          service_day.date.between?(filter_date.at_beginning_of_week(:sunday), filter_date.at_end_of_week(:sunday))
         end.length
       end
     end
