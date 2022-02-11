@@ -79,7 +79,6 @@ class ServiceDay < UuidApplicationRecord
   scope :for_week,
         lambda { |week = nil|
           week ||= Time.current
-          binding.pry
           where('date BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:sunday))
         }
 
