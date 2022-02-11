@@ -8,6 +8,7 @@ class ChildBlueprint < Blueprinter::Base
   field :last_active_date
   field :inactive_reason
   field :full_name
+  field :wonderschool_id
 
   view :illinois_dashboard do
     field :case_number do |child, options|
