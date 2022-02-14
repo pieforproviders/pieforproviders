@@ -147,6 +147,7 @@ RSpec.describe UserBlueprint do
         'phone_number',
         'email',
         'language',
+        'state',
         'businesses'
       )
     end

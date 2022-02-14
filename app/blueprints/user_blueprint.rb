@@ -15,7 +15,7 @@ class UserBlueprint < Blueprinter::Base
     field :language
     field :phone_number
     association :businesses, blueprint: BusinessBlueprint, view: :profile
-    excludes :id, :state
+    excludes :id
   end
 
   view :illinois_dashboard do
