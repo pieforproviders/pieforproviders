@@ -1,8 +1,11 @@
 import React from 'react'
 import { Avatar, Row, Col, Grid, Typography, Space, Divider } from 'antd'
+import EditIcon from '@material-ui/icons/Edit'
+import LockIcon from '@material-ui/icons/Lock'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
+import IconButton from './IconButton'
 
 const { Title, Text } = Typography
 const { useBreakpoint } = Grid
@@ -38,7 +41,19 @@ export function Profile() {
 
   const desktopHeader = (
     <div className="mb-10">
-      <Title style={{ marginBottom: 0 }}>{t('myProfile')}</Title>
+      <div className={`flex ${screens.md ? '' : 'justify-between'}`}>
+        <div>
+          <Title style={{ marginBottom: 0 }}>{t('myProfile')}</Title>
+        </div>
+        <div className="flex items-center">
+          <IconButton
+            className="ml-5 text-base"
+            icon={<EditIcon />}
+            text={screens.md ? 'Edit' : 'Edit Profile'}
+            onClick={() => null}
+          />
+        </div>
+      </div>
       <Divider style={{ marginTop: 0 }} />
       <Space size="middle">
         <Avatar className="bg-primaryBlue" size={54} style={{ fontSize: 28 }}>
@@ -46,7 +61,7 @@ export function Profile() {
         </Avatar>
         <div>
           <Title level={2} style={{ margin: 0 }}>
-            {user.greeting_name}
+            {user.full_name}
           </Title>
           {business && (
             <span className="text-lg font-semibold text-black">
@@ -92,6 +107,13 @@ export function Profile() {
                 {user.language === 'es' ? t('spanish') : t('english')}
               </Text>
             </Space>
+            {!screens.xs && (
+              <IconButton
+                icon={<LockIcon />}
+                text="Change Password"
+                onClick={() => null}
+              />
+            )}
           </Space>
         </Col>
         {business && (
@@ -128,8 +150,24 @@ export function Profile() {
               </Space>
               <Space direction="vertical">
                 <Text strong>{t('accreditedQuestion')}</Text>
-                <Text>{business.accredited}</Text>
+                <Text>{business.accredited ? 'Yes' : 'No'}</Text>
               </Space>
+            </Space>
+          </Col>
+        )}
+        {screens.xs && (
+          <Col>
+            <Space direction="vertical" align="start">
+              <IconButton
+                icon={<EditIcon />}
+                text="Edit Profile"
+                onClick={() => null}
+              />
+              <IconButton
+                icon={<LockIcon />}
+                text="Change Password"
+                onClick={() => null}
+              />
             </Space>
           </Col>
         )}
