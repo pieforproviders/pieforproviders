@@ -40,7 +40,7 @@ class Child < UuidApplicationRecord
         lambda { |date|
           joins(:approvals)
             .where(
-              'approvals.effective_on <= ? and (approvals.expires_on is null or approvals.expires_on > ?)',
+              'approvals.effective_on <= ? and (approvals.expires_on is null or approvals.expires_on >= ?)',
               date,
               date
             )
