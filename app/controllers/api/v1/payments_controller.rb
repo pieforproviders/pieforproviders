@@ -12,11 +12,7 @@ module Api
       end
 
       def filter_date
-        if params[:filter_date]
-          Time.zone.parse(params[:filter_date])
-        else
-          Date.today
-        end
+        return Time.zone.parse(params[:filter_date]) if params[:filter_date] else Date.today
       end
     end
   end
