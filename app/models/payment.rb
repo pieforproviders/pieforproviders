@@ -6,6 +6,9 @@ class Payment < UuidApplicationRecord
 
   validates :amount, numericality: { greater_than_or_equal_to: 0.00 }, presence: true
   validates :month, presence: true
+
+  scope :for_month,
+        -> (month) { where("EXTRACT(MONTH FROM month) = ?", month.month) }
 end
 
 # == Schema Information

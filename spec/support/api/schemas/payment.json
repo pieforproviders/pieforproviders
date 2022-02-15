@@ -1,0 +1,29 @@
+{
+  "properties": {
+    "month": {
+      "type": "string",
+      "format": "time"
+    },
+    "child_approval_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uuid"
+    },
+    "amount": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "type": "object"
+}
