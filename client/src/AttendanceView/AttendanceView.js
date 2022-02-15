@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Grid, Modal, Table } from 'antd'
+import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -9,7 +9,7 @@ import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
 import editIcon from '../_assets/editIcon.svg'
 import { WeekPicker } from './WeekPicker'
-import AttendanceDataCell from '_shared/AttendanceDataCell'
+import { EditAttendanceModal } from './EditAttendanceModal'
 
 const { useBreakpoint } = Grid
 
@@ -33,14 +33,16 @@ export function AttendanceView() {
     const index = data.secondCheckIn ? 1 : 0
     const updatedData = latestAttendanceData.current.map((value, i) => {
       if (index === i) {
+        const updatedValueKeys = Object.keys(data.update)
+        const currentValueKeys = Object.keys(value)
         const updatedValue =
-          Object.keys(data.update).length === 0 ||
-          (Object.keys(value).includes('absence') &&
-            (Object.keys(data.update).includes('check_in') ||
-              Object.keys(data.update).includes('check_out'))) ||
-          (Object.keys(data.update).includes('absence') &&
-            (Object.keys(value).includes('check_in') ||
-              Object.keys(value).includes('check_out')))
+          updatedValueKeys.length === 0 ||
+          (currentValueKeys.includes('absence') &&
+            (updatedValueKeys.includes('check_in') ||
+              updatedValueKeys.includes('check_out'))) ||
+          (updatedValueKeys.includes('absence') &&
+            (currentValueKeys.includes('check_in') ||
+              currentValueKeys.includes('check_out')))
             ? data.update
             : { ...value, ...data.update }
         const mergedValue =
@@ -100,7 +102,7 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
-          const editButtonDisabled =
+          const hideEditButton =
             matchingServiceDay?.attendances.some(
               attendance => attendance.wonderschool_id
             ) || false
@@ -134,13 +136,14 @@ export function AttendanceView() {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
                 <div>
-                  <button
-                    className="float-right"
-                    onClick={handleEditAttendance}
-                    disabled={editButtonDisabled}
-                  >
-                    <img alt="edit" src={editIcon} />
-                  </button>
+                  {hideEditButton ? null : (
+                    <button
+                      className="float-right"
+                      onClick={handleEditAttendance}
+                    >
+                      <img alt="editButton" src={editIcon} />
+                    </button>
+                  )}
                   <div className="flex justify-center">
                     <div
                       className="box-border p-1 bg-orange2 text-orange3"
@@ -176,13 +179,14 @@ export function AttendanceView() {
 
             return (
               <div className="text-center body-2">
-                <button
-                  className="float-right"
-                  onClick={handleEditAttendance}
-                  disabled={editButtonDisabled}
-                >
-                  <img alt="edit" src={editIcon} />
-                </button>
+                {hideEditButton ? null : (
+                  <button
+                    className="float-right"
+                    onClick={handleEditAttendance}
+                  >
+                    <img alt="edit" src={editIcon} />
+                  </button>
+                )}
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
                 </div>
@@ -360,13 +364,6 @@ export function AttendanceView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
 
-  // useEffect(() => {
-  //   console.log(editAttendanceModalData)
-  //   console.log(updatedAttendanceData)
-  //   // eslint-disable-next-line no-debugger
-  //   debugger
-  // }, [editAttendanceModalData, updatedAttendanceData])
-
   return (
     <div>
       {screens.sm ? (
@@ -418,40 +415,17 @@ export function AttendanceView() {
           </div>
         </div>
       )}
-      <Modal
-        visible={editAttendanceModalData}
-        onCancel={() => {
-          setUpdatedAttendanceData([{}, {}])
-          setEditAttendanceModalData(null)
-        }}
-        okButtonProps={{
-          disabled: modalButtonDisabled
-        }}
-        onOk={async () => {
+      <EditAttendanceModal
+        editAttendanceModalData={editAttendanceModalData}
+        handleModalClose={async () => {
           await handleModalClose()
           getServiceDays()
         }}
-        okText={'Save'}
-        title={
-          <div className="text-gray1">
-            <span className="font-semibold">
-              {titleData.current.childName + ' - '}
-            </span>
-            {t(
-              `${titleData.current.columnDate
-                ?.format('ddd')
-                .toLocaleLowerCase()}`
-            ) +
-              ' ' +
-              t(`${titleData.current.columnDate?.format('MMM')}`) +
-              ' ' +
-              titleData.current.columnDate?.format('DD')}
-          </div>
-        }
-        maskClosable={false}
-      >
-        <AttendanceDataCell {...editAttendanceModalData} />
-      </Modal>
+        modalButtonDisabled={modalButtonDisabled}
+        setEditAttendanceModalData={setEditAttendanceModalData}
+        setUpdatedAttendanceData={setUpdatedAttendanceData}
+        titleData={titleData.current}
+      />
     </div>
   )
 }

@@ -48,8 +48,6 @@ export function Attendance() {
   const latestAttendanceData = useRef(attendanceData)
   const latestColumnDates = useRef(columnDates)
   const latestError = useRef(errors)
-  // const removeEmptyString = obj =>
-  //   Object.fromEntries(Object.entries(obj).filter(([_, v]) => v !== ''))
 
   const columnErrorIsPresent = columnIndex =>
     !!Object.values(latestAttendanceData.current).find(row =>

@@ -20,7 +20,6 @@ export default function DashboardTitle({
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
-
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
