@@ -7,11 +7,11 @@ RSpec.describe 'Api::V1::Payments', type: :request do
   let!(:business) { create(:business, user: logged_in_user) }
 
   let!(:approval_sept) do
-      create(:approval, effective_on: Date.parse('2021-09-01'), business: business, create_children: false)
-    end
-    let!(:approval_oct) do
-      create(:approval, effective_on: Date.parse('2021-10-01'), business: business, create_children: false)
-    end
+    create(:approval, effective_on: Date.parse('2021-09-01'), business: business, create_children: false)
+  end
+  let!(:approval_oct) do
+    create(:approval, effective_on: Date.parse('2021-10-01'), business: business, create_children: false)
+  end
   let!(:child) { create(:child, approvals: [approval_sept, approval_oct], business: business) }
 
   let!(:current_month) { Time.zone.local(2021, 9, 15) } # September
@@ -19,8 +19,8 @@ RSpec.describe 'Api::V1::Payments', type: :request do
   let!(:end_of_month) { current_month.at_end_of_month } # End of September
   let!(:past_month) { Faker::Time.between(from: three_months_before_current_month, to: one_months_before_current_month) } # September
 
-  let!(:three_months_before_current_month) { current_month - 3.months } # June
-  let!(:one_months_before_current_month) { current_month - 1.months } # August
+  let!(:three_months_before_current_month) { current_month - 3.month } # June
+  let!(:one_months_before_current_month) { current_month - 1.month } # August
 
   let!(:this_month_payments) do
     month = Faker::Time.between(from: start_of_month, to: end_of_month)
