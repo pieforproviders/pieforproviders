@@ -8,7 +8,7 @@ class Payment < UuidApplicationRecord
   validates :month, presence: true
 
   scope :for_month,
-        -> (month) { where("EXTRACT(MONTH FROM month) = ?", month.month) }
+        -> (date) { where("EXTRACT(MONTH FROM month) = ?", date.month) }
 end
 
 # == Schema Information

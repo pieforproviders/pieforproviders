@@ -6,17 +6,17 @@ module Api
     class PaymentsController < Api::V1::ApiController
       # GET /payments
       def index
-        if params[:filter_date]
-            @payments = policy_scope(Payment).for_month(filter_date)
-        else
-            @payments = policy_scope(Payment)
-        end
+        @payments = policy_scope(Payment).for_month(filter_date)
 
         render json: PaymentBlueprint.render(@payments)
       end
 
       def filter_date
-        Time.zone.parse(params[:filter_date])&.at_end_of_day
+        if params[:filter_date]
+            Time.zone.parse(params[:filter_date])
+        else
+            Date.today
+        end
       end
     end
   end
