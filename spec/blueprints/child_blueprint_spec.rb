@@ -12,7 +12,8 @@ RSpec.describe ChildBlueprint do
       'active',
       'full_name',
       'last_active_date',
-      'inactive_reason'
+      'inactive_reason',
+      'wonderschool_id'
     )
   end
 
@@ -29,7 +30,8 @@ RSpec.describe ChildBlueprint do
         'max_approved_revenue',
         'potential_revenue',
         'last_active_date',
-        'inactive_reason'
+        'inactive_reason',
+        'wonderschool_id'
       )
     end
   end
@@ -44,7 +46,8 @@ RSpec.describe ChildBlueprint do
         'full_name',
         'last_active_date',
         'inactive_reason',
-        'nebraska_dashboard_case'
+        'nebraska_dashboard_case',
+        'wonderschool_id'
       )
     end
   end
