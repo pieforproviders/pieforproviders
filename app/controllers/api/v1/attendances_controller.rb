@@ -4,7 +4,7 @@ module Api
   module V1
     # API for user attendances
     class AttendancesController < Api::V1::ApiController
-      before_action :set_attendance, only: %i[update]
+      before_action :set_attendance, only: %i[update destroy]
 
       # GET /attendances
       def index
@@ -18,6 +18,16 @@ module Api
           render json: AttendanceBlueprint.render(@attendance)
         else
           render json: @attendance.errors, status: :unprocessable_entity
+        end
+      end
+
+      def destroy
+        # hard delete
+        if @attendance
+          @attendance.destroy
+          render status: :no_content
+        else
+          render status: :not_found
         end
       end
 

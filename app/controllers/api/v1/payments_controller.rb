@@ -13,6 +13,7 @@ module Api
 
       def filter_date
         return Time.zone.parse(params[:filter_date]) if params[:filter_date]
+
         Time.zone.today
       end
     end

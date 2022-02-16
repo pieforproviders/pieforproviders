@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_20_025655) do
+ActiveRecord::Schema.define(version: 2022_02_08_055902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(version: 2022_01_20_025655) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "wonderschool_id"
     t.string "dhs_id"
-    t.boolean "enrolled_in_school"
     t.date "last_active_date"
     t.string "inactive_reason"
     t.date "deleted_at"

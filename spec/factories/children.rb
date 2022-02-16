@@ -6,7 +6,6 @@ FactoryBot.define do
     full_name { Faker::Name.name }
     business
     approvals { [create(:approval, create_children: false)] }
-    enrolled_in_school { false }
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -33,8 +32,8 @@ FactoryBot.define do
       after(:create) do |child, evaluator|
         create(:temporary_nebraska_dashboard_case, child: child) if evaluator.create_dashboard_case
         create(:nebraska_approval_amount,
-               child_approval: child.active_child_approval(evaluator.effective_date),
-               effective_on: evaluator.effective_date - 2.months,
+               child_approval: child.child_approvals.first,
+               effective_on: evaluator.effective_date,
                family_fee: 80.00)
         child.child_approvals.first.update!(authorized_weekly_hours: 20)
         child.schedules.reload
@@ -77,19 +76,18 @@ end
 #
 # Table name: children
 #
-#  id                 :uuid             not null, primary key
-#  active             :boolean          default(TRUE), not null
-#  date_of_birth      :date             not null
-#  deleted_at         :date
-#  enrolled_in_school :boolean
-#  full_name          :string           not null
-#  inactive_reason    :string
-#  last_active_date   :date
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  business_id        :uuid             not null
-#  dhs_id             :string
-#  wonderschool_id    :string
+#  id               :uuid             not null, primary key
+#  active           :boolean          default(TRUE), not null
+#  date_of_birth    :date             not null
+#  deleted_at       :date
+#  full_name        :string           not null
+#  inactive_reason  :string
+#  last_active_date :date
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  business_id      :uuid             not null
+#  dhs_id           :string
+#  wonderschool_id  :string
 #
 # Indexes
 #

@@ -27,7 +27,7 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show]
       get 'profile', to: 'users#show'
       resources :attendance_batches, only: :create
-      resources :attendances, only: %i[index update]
+      resources :attendances, only: %i[index update destroy]
       resources :businesses
       resources :children
       resources :payments, only: :index
@@ -82,6 +82,10 @@ end
 #                                          PATCH  /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          PUT    /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          DELETE /api/v1/children/:id(.:format)                                                                    api/v1/children#destroy {:format=>:json}
+#                                          GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
+#                                          PATCH  /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
+#                                          PUT    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
+#                                          DELETE /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#destroy {:format=>:json}
 #                         payments_batches POST   /api/v1/payments_batches(.:format)                                                                api/v1/payments_batches#create {:format=>:json}
 #                                 payments GET    /api/v1/payments(.:format)                                                                        api/v1/payments#index {:format=>:json}
 #                             service_days GET    /api/v1/service_days(.:format)                                                                    api/v1/service_days#index {:format=>:json}

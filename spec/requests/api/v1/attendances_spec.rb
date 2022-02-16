@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
   let!(:week_current_date) { Time.zone.local(2021, 9, 15) } # Wednesday
   let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday
-  let!(:week_end_date) { week_current_date.at_end_of_week(:saturday) - 1.day - 11.hours } # Friday
+  let!(:week_end_date) { week_current_date.at_end_of_week(:sunday) - 1.day - 11.hours } # Friday
 
   let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
@@ -133,7 +133,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
         expect(parsed_response['absence']).to eq('absence')
       end
 
-      it 'cannot update a different users attendance' do
+      it "cannot update a different user's attendance" do
         different_user = create(:confirmed_user)
         sign_in different_user
         check_in_params = { attendance: { check_in: new_check_in.to_s } }
@@ -164,6 +164,43 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
         expect(parsed_response['absence']).to eq('absence')
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/attendance/:id' do
+    include_context 'with correct api version header'
+
+    let(:attendance) { past_attendances.first }
+
+    context 'when logged in as a non-admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it 'can delete an attendance in its own user account' do
+        delete "/api/v1/attendances/#{attendance.id}", headers: headers
+        expect(response.status).to eq(204)
+      end
+
+      it "cannot update a different user's attendance" do
+        different_user = create(:confirmed_user)
+        sign_in different_user
+        delete "/api/v1/attendances/#{attendance.id}", headers: headers
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when logged in as an admin user' do
+      let!(:admin_user) { create(:confirmed_user, admin: true) }
+
+      before do
+        sign_in admin_user
+      end
+
+      it 'can delete a non-admin attendance' do
+        delete "/api/v1/attendances/#{attendance.id}", headers: headers
+        expect(response.status).to eq(204)
       end
     end
   end

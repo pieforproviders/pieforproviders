@@ -14,7 +14,12 @@ import { useSelector } from 'react-redux'
 const { useBreakpoint } = Grid
 const { Option } = Select
 
-export default function DashboardTitle({ dates, setDates, makeMonth }) {
+export default function DashboardTitle({
+  dates,
+  setDates,
+  makeMonth,
+  getDashboardData
+}) {
   const { t } = useTranslation()
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
@@ -49,6 +54,7 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
           ...dates,
           dateFilterValue: makeMonth(new Date(value))
         })
+        getDashboardData(value)
       }}
       size="large"
       className="my-2 mr-2 text-base date-filter-select"
@@ -287,5 +293,6 @@ export default function DashboardTitle({ dates, setDates, makeMonth }) {
 DashboardTitle.propTypes = {
   dates: PropTypes.object,
   setDates: PropTypes.func,
-  makeMonth: PropTypes.func
+  makeMonth: PropTypes.func,
+  getDashboardData: PropTypes.func
 }

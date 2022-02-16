@@ -40,7 +40,7 @@ class Child < UuidApplicationRecord
         lambda { |date|
           joins(:approvals)
             .where(
-              'approvals.effective_on <= ? and (approvals.expires_on is null or approvals.expires_on > ?)',
+              'approvals.effective_on <= ? and (approvals.expires_on is null or approvals.expires_on >= ?)',
               date,
               date
             )
@@ -157,7 +157,7 @@ class Child < UuidApplicationRecord
         child: self,
         weekday: idx + 1,
         duration: 28_800, # seconds in 8 hours
-        effective_on: active_child_approval(Time.current).approval.effective_on
+        effective_on: approvals.first.effective_on
       )
     end
   end
@@ -170,19 +170,18 @@ end
 #
 # Table name: children
 #
-#  id                 :uuid             not null, primary key
-#  active             :boolean          default(TRUE), not null
-#  date_of_birth      :date             not null
-#  deleted_at         :date
-#  enrolled_in_school :boolean
-#  full_name          :string           not null
-#  inactive_reason    :string
-#  last_active_date   :date
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  business_id        :uuid             not null
-#  dhs_id             :string
-#  wonderschool_id    :string
+#  id               :uuid             not null, primary key
+#  active           :boolean          default(TRUE), not null
+#  date_of_birth    :date             not null
+#  deleted_at       :date
+#  full_name        :string           not null
+#  inactive_reason  :string
+#  last_active_date :date
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  business_id      :uuid             not null
+#  dhs_id           :string
+#  wonderschool_id  :string
 #
 # Indexes
 #

@@ -22,8 +22,8 @@ RSpec.describe 'Api::V1::Payments', type: :request do
   let!(:one_months_before_current_month) { current_month - 1.month } # August
 
   let!(:past_month) do
-      Faker::Time.between(from: three_months_before_current_month, to: one_months_before_current_month)
-    end
+    Faker::Time.between(from: three_months_before_current_month, to: one_months_before_current_month)
+  end
 
   let!(:this_month_payments) do
     month = Faker::Time.between(from: start_of_month, to: end_of_month)
