@@ -20,6 +20,7 @@ export default function PaymentDataCell({
       parser={value => value.replace(/\$\s?|(,*)/g, '')}
       disabled={!isDifferentPayment}
       min={0}
+      max={1000000000000}
       value={paymentValue}
       onChange={updatePayment}
     />
@@ -55,7 +56,7 @@ export default function PaymentDataCell({
   return (
     <div className={isSmallTableSize ? 'flex-col' : 'flex items-center'}>
       <Checkbox className="mr-1" onChange={handleIsDifferentPaymentIsSet} />
-      <span> {t('differentAmountFromState')}</span>
+      <span className="mr-1"> {t('differentAmountFromState')}</span>
       {currencyInput}
     </div>
   )
