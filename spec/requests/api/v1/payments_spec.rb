@@ -17,10 +17,13 @@ RSpec.describe 'Api::V1::Payments', type: :request do
   let!(:current_month) { Time.zone.local(2021, 9, 15) } # September
   let!(:start_of_month) { current_month.at_beginning_of_month } # Start of September
   let!(:end_of_month) { current_month.at_end_of_month } # End of September
-  let!(:past_month) { Faker::Time.between(from: three_months_before_current_month, to: one_months_before_current_month) } # September
 
-  let!(:three_months_before_current_month) { current_month - 3.month } # June
+  let!(:three_months_before_current_month) { current_month - 3.months } # June
   let!(:one_months_before_current_month) { current_month - 1.month } # August
+
+  let!(:past_month) do
+      Faker::Time.between(from: three_months_before_current_month, to: one_months_before_current_month)
+    end
 
   let!(:this_month_payments) do
     month = Faker::Time.between(from: start_of_month, to: end_of_month)
@@ -29,8 +32,8 @@ RSpec.describe 'Api::V1::Payments', type: :request do
   end
 
   let!(:past_payments) do
-      create_list(:payment, 2, child_approval: child.child_approvals.first, month: past_month)
-    end
+    create_list(:payment, 2, child_approval: child.child_approvals.first, month: past_month)
+  end
 
   let!(:extra_payments) do
     create_list(:payment, 3, month: Faker::Time.between(from: start_of_month, to: end_of_month))
