@@ -361,7 +361,7 @@ namespace :nebraska do
       max_age: nil,
       region: 'Other',
       amount: '42.90',
-      accredited_rate: false
+      accredited_rate: true
     )
 
     NebraskaRate.find_or_create_by!(
