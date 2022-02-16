@@ -74,7 +74,7 @@ module Wonderschool
       def update_nebraska_approval_amounts
         approval_amount_params[:approval_periods].each do |period|
           approval = @child.approvals.find_by(approval_params)
-          next unless period[:effective_on].between?(approval.effective_on, approval.expires_on)
+          next unless period[:effective_on]&.between?(approval.effective_on, approval.expires_on)
 
           existing_aa = existing_approval_amount(period)
           update_overlapping_approval_amounts(period, existing_aa)

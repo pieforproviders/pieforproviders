@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor } from 'setupTests'
+import { render, waitFor } from 'setupTests'
 import dayjs from 'dayjs'
 import { MemoryRouter } from 'react-router-dom'
 import { AttendanceView } from '../AttendanceView'

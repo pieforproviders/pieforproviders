@@ -77,6 +77,7 @@ RSpec.describe Child, type: :model do
       expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(inactive_child)
       expect(described_class.approved_for_date(child.approvals.first.effective_on)).to include(deleted_child)
       expect(described_class.approved_for_date(child.approvals.first.effective_on - 1.day)).to eq([])
+      expect(described_class.approved_for_date(child.approvals.first.expires_on)).to include(child)
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do

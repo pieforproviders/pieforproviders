@@ -13,7 +13,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
   let!(:week_current_date) { Time.zone.local(2021, 9, 15) } # Wednesday
   let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday
-  let!(:week_end_date) { week_current_date.at_end_of_week(:saturday) - 1.day - 11.hours } # Friday
+  let!(:week_end_date) { week_current_date.at_end_of_week(:sunday) - 1.day - 11.hours } # Friday
 
   let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }

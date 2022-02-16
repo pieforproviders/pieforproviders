@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_055902) do
   create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
     t.datetime "check_out"
-    t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
+    t.interval "time_in_care", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false

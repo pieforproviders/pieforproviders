@@ -26,7 +26,7 @@ def generate_attendances
       puts "\n\nPopulating week #{week} for #{child.full_name}"
       rand(4..6).times do
         start_date = last_attendance_check_out + week.weeks
-        check_in = Faker::Time.between(from: last_attendance_check_out, to: start_date.at_end_of_week(:saturday))
+        check_in = Faker::Time.between(from: last_attendance_check_out, to: start_date.at_end_of_week(:sunday))
         break if check_in > Time.current
 
         check_out = check_in + rand(0..23).hours + rand(0..59).minutes
