@@ -5,7 +5,7 @@
 [![Pie for Providers](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/sweo6d/develop&style=for-the-badge&logo=cypress)](https://dashboard.cypress.io/projects/sweo6d/runs)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-24-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
@@ -273,7 +273,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/JTBassett"><img src="https://avatars.githubusercontent.com/u/44791973?v=4?s=100" width="100px;" alt=""/><br /><sub><b>J.T. Bassett</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Documentation">📖</a> <a href="#data-JTBassett" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AJTBassett" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=JTBassett" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/jacqzwy"><img src="https://avatars.githubusercontent.com/u/25641018?v=4?s=100" width="100px;" alt=""/><br /><sub><b>jacqzwy</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Documentation">📖</a> <a href="#data-jacqzwy" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3Ajacqzwy" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=jacqzwy" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/abbie"><img src="https://avatars.githubusercontent.com/u/7609014?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Abbie</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Documentation">📖</a> <a href="#data-Abbie" title="Data">🔣</a> <a href="https://github.com/pieforproviders/pieforproviders/pulls?q=is%3Apr+reviewed-by%3AAbbie" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Tests">⚠️</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=Abbie" title="Code">💻</a> <a href="#design-Abbie" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/abbie"><img src="https://avatars.githubusercontent.com/u/7609014?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Abbie</b></sub></a><br /><a href="#design-Abbie" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/dragonbone81"><img src="https://avatars.githubusercontent.com/u/23389970?v=4?s=100" width="100px;" alt=""/><br /><sub><b>dragonbone81</b></sub></a><br /><a href="https://github.com/pieforproviders/pieforproviders/commits?author=dragonbone81" title="Code">💻</a> <a href="https://github.com/pieforproviders/pieforproviders/commits?author=dragonbone81" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
