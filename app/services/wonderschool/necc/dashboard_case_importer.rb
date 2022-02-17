@@ -5,6 +5,7 @@ module Wonderschool
     # Wonderschool NECC Dashboard Case Importer
     class DashboardCaseImporter
       include AppsignalReporting
+
       def initialize
         @client = AwsClient.new
         @source_bucket = Rails.application.config.aws_necc_dashboard_bucket
