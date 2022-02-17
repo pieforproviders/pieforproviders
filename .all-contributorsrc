@@ -265,6 +265,16 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "dragonbone81",
+      "name": "dragonbone81",
+      "avatar_url": "https://avatars.githubusercontent.com/u/23389970?v=4",
+      "profile": "https://github.com/dragonbone81",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
