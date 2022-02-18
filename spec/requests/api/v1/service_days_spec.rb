@@ -7,7 +7,7 @@ require 'rails_helper'
 # the week_current_date value to a day that falls within the expected week range
 
 RSpec.describe 'Api::V1::ServiceDays', type: :request do
-  let!(:logged_in_user) { create(:confirmed_user) }
+  let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:child) { create(:child, business: business) }
   let!(:child_approval) { child.child_approvals.first }

@@ -9,7 +9,7 @@ module Api
 
       # GET /users
       def index
-        @users = policy_scope(User.includes(:businesses))
+        @users = policy_scope(User)
         authorize User
 
         render json: UserBlueprint.render(@users)
@@ -49,7 +49,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(current_user.admin? ? User.with_dashboard_case : User),
+          policy_scope(User.with_dashboard_case),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )

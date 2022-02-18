@@ -6,7 +6,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
   let!(:illinois_user) { create(:confirmed_user) }
-  let!(:nebraska_user) { create(:confirmed_user) }
+  let!(:nebraska_user) { create(:confirmed_user, :nebraska) }
   let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
@@ -104,7 +104,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
   describe 'GET /api/v1/case_list_for_dashboard' do
     include_context 'with correct api version header'
-    let!(:nebraska_user) { create(:confirmed_user) }
+    let!(:nebraska_user) { create(:confirmed_user, :nebraska) }
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
     let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }

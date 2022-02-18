@@ -28,6 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
       :phone_number,
       :phone_type,
       :service_agreement_accepted,
+      :state,
       :timezone
     )
   end

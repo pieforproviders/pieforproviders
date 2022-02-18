@@ -3,11 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe UserPolicy do
-  let(:user) { create(:confirmed_user) }
+  let(:user) { create(:confirmed_user, :nebraska) }
   let(:admin) { create(:admin) }
   let(:non_owner) { create(:confirmed_user) }
-
-  before { create(:business, :nebraska_ldds, user: user) }
 
   permissions :index? do
     it 'grants access to the index for admins' do
