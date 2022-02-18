@@ -76,6 +76,7 @@ RSpec.describe UserBlueprint do
   end
 
   context 'when NE view is requested' do
+    let(:user) { create(:confirmed_user, :nebraska) }
     let(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
     let(:blueprint) { described_class.render(user, view: :nebraska_dashboard) }
 

@@ -10,6 +10,8 @@ class Business < UuidApplicationRecord
   belongs_to :user
 
   has_many :children, dependent: :restrict_with_error
+  has_many :child_approvals, through: :children, dependent: :restrict_with_error
+  has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
 
   accepts_nested_attributes_for :children
 
