@@ -48,7 +48,8 @@ describe('AttendanceView', () => {
           full_name: fullName,
           greeting_name: firstName,
           password,
-          password_confirmation: password
+          password_confirmation: password,
+          state: 'NE'
         }
       ]
     ]).then(users => {

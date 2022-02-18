@@ -260,6 +260,12 @@ ActiveRecord::Schema.define(version: 2022_03_01_193456) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.date "deleted_at"
+    t.string "state", limit: 2
+    t.text "stressed_about_billing"
+    t.text "not_as_much_money"
+    t.text "too_much_time"
+    t.text "accept_more_subsidy_families"
+    t.text "get_from_pie"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true

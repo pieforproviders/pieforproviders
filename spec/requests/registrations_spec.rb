@@ -17,7 +17,8 @@ RSpec.describe 'POST /signup', type: :request do
         phone_number: '888-888-8888',
         phone_type: 'cell',
         timezone: 'Eastern Time (US & Canada)',
-        service_agreement_accepted: true
+        service_agreement_accepted: true,
+        state: 'NE'
       }
     }
   end
@@ -30,7 +31,7 @@ RSpec.describe 'POST /signup', type: :request do
     it 'signs up a new user; creates the user, returns 201' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
-      expect(JSON.parse(response.body)['state']).to eq('')
+      expect(JSON.parse(response.body)['state']).to eq('NE')
       expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
     end
   end
