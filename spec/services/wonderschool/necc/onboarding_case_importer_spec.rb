@@ -98,7 +98,7 @@ module Wonderschool
                 special_needs_rate: false,
                 special_needs_daily_rate: nil,
                 special_needs_hourly_rate: nil,
-                authorized_weekly_hours: 30,
+                authorized_weekly_hours: 30.0,
                 enrolled_in_school: true
               }
             )
@@ -143,7 +143,7 @@ module Wonderschool
                 special_needs_rate: true,
                 special_needs_daily_rate: Money.from_amount(90.77),
                 special_needs_hourly_rate: Money.from_amount(9.43),
-                authorized_weekly_hours: 45
+                authorized_weekly_hours: 45.0
               }
             )
             expect(becky.child_approvals.first.nebraska_approval_amounts.count).to eq(2)
@@ -201,7 +201,7 @@ module Wonderschool
                            dhs_id: '14047907',
                            approvals: [approval])
             child.reload.child_approvals.first.update!(
-              authorized_weekly_hours: 30,
+              authorized_weekly_hours: 30.0,
               full_days: 276,
               hours: 1656,
               special_needs_rate: false,
@@ -255,7 +255,7 @@ module Wonderschool
                            approvals: [approval])
             child.reload.child_approvals.first.update!(
               enrolled_in_school: false,
-              authorized_weekly_hours: 30,
+              authorized_weekly_hours: 30.0,
               full_days: 13,
               hours: 12,
               special_needs_rate: true,
@@ -403,7 +403,7 @@ module Wonderschool
                 special_needs_rate: false,
                 special_needs_daily_rate: nil,
                 special_needs_hourly_rate: nil,
-                authorized_weekly_hours: 30
+                authorized_weekly_hours: 30.0
               }
             )
             expect(second_approval.child_approvals.length).to eq(1)
@@ -414,7 +414,7 @@ module Wonderschool
                 special_needs_rate: false,
                 special_needs_daily_rate: nil,
                 special_needs_hourly_rate: nil,
-                authorized_weekly_hours: 30
+                authorized_weekly_hours: 30.0
               }
             )
             expect(first_approval.child_approvals.first.nebraska_approval_amounts.length).to eq(1)
