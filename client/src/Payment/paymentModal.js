@@ -45,7 +45,8 @@ export function PaymentModal({
   }
 
   function calculateTotalPayments() {
-    const updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
+    let updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
+    updatedTotal = Math.round(updatedTotal * 100) / 100
     setTotalPayment(updatedTotal)
   }
 
