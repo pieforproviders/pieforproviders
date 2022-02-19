@@ -419,7 +419,7 @@ export function AttendanceView() {
         editAttendanceModalData={editAttendanceModalData}
         handleModalClose={async () => {
           await handleModalClose()
-          getServiceDays()
+          setTimeout(getServiceDays, 2000)
         }}
         modalButtonDisabled={modalButtonDisabled}
         setEditAttendanceModalData={setEditAttendanceModalData}
