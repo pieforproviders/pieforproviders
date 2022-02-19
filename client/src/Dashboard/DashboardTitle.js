@@ -237,7 +237,7 @@ export default function DashboardTitle({
     >
       <p>
         {t('paymentSuccessText')} {t(previousMonth)} {previousMonthYear}{' '}
-        {t('paymentSuccessText2')} <b>${totalPayment.toFixed()}.</b>
+        {t('paymentSuccessText2')} <b>${totalPayment}.</b>
       </p>
     </Modal>
   )
