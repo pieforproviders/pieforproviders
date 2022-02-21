@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-debugger */
+import React, { useEffect, useState } from 'react'
 import PropTypes, { object } from 'prop-types'
 import { Button, Checkbox } from 'antd'
 import dayjs from 'dayjs'
@@ -20,14 +22,54 @@ export default function AttendanceDataCell({
   )
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
-  const [showSecondCheckIn, setShowSecondCheckIn] = useState(
+  const secondCheckInExists = () =>
     Object.keys(defaultValues[1] || {}).length > 0
+  const [showSecondCheckIn, setShowSecondCheckIn] = useState(
+    secondCheckInExists()
   )
+  const [timePickerValues, setTimePickerValues] = useState({
+    firstCheckIn: defaultValues[0]?.check_in
+      ? dayjs(defaultValues[0].check_in, 'YYYY-MM-DD hh:mm')
+      : null,
+    firstCheckOut: defaultValues[0]?.check_out
+      ? dayjs(defaultValues[0].check_out, 'YYYY-MM-DD hh:mm')
+      : null,
+    secondCheckIn: defaultValues[1]?.check_in
+      ? dayjs(defaultValues[1].check_in, 'YYYY-MM-DD hh:mm')
+      : null,
+    secondCheckOut: defaultValues[1]?.check_out
+      ? dayjs(defaultValues[1].check_out, 'YYYY-MM-DD hh:mm')
+      : null
+  })
   const handleChange = options => {
     const { update = {}, callback = () => {}, secondCheckIn = false } = options
     updateAttendanceData({ update, record, columnIndex, secondCheckIn })
     callback()
   }
+  console.log(defaultValues[0].check_in)
+  console.log(timePickerValues.firstCheckIn)
+  console.log(timePickerValues)
+  debugger
+  useEffect(() => {
+    debugger
+    setTimePickerValues({
+      firstCheckIn: defaultValues[0]?.check_in
+        ? dayjs(defaultValues[0].check_in, 'YYYY-MM-DD hh:mm')
+        : null,
+      firstCheckOut: defaultValues[0]?.check_out
+        ? dayjs(defaultValues[0].check_out, 'YYYY-MM-DD hh:mm')
+        : null,
+      secondCheckIn: defaultValues[1]?.check_in
+        ? dayjs(defaultValues[1].check_in, 'YYYY-MM-DD hh:mm')
+        : null,
+      secondCheckOut: defaultValues[1]?.check_out
+        ? dayjs(defaultValues[1].check_out, 'YYYY-MM-DD hh:mm')
+        : null
+    })
+
+    setShowSecondCheckIn(secondCheckInExists())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultValues])
 
   return (
     <div className="flex flex-col m-">
@@ -41,29 +83,43 @@ export default function AttendanceDataCell({
             style={{
               border: '1px solid #D9D9D9'
             }}
+            value={timePickerValues.firstCheckIn}
             use12Hours={true}
             format="h:mm a"
             disabled={absence}
-            onChange={(m, ds) =>
-              m
+            onChange={(dateObject, dateString) =>
+              dateObject
                 ? handleChange({
                     update: {
                       check_in:
-                        (defaultValues[0]?.check_in?.slice(0, 11) || '') + ds
+                        (defaultValues[0]?.check_in?.slice(0, 11) || '') +
+                        dateString
                     },
-                    callback: setCheckInSelected(true)
+                    callback: () => {
+                      setTimePickerValues(prevValues => ({
+                        ...prevValues,
+                        firstCheckIn: dateObject
+                      }))
+                      setCheckInSelected(true)
+                    }
                   })
                 : handleChange({
                     update: { check_in: '' },
-                    callback: setCheckInSelected(false)
+                    callback: () => {
+                      setTimePickerValues(prevValues => ({
+                        ...prevValues,
+                        firstCheckIn: null
+                      }))
+                      setCheckInSelected(false)
+                    }
                   })
             }
             suffixIcon={null}
-            defaultValue={
-              defaultValues[0]?.check_in
-                ? dayjs(defaultValues[0].check_in, 'YYYY-MM-DD hh:mm')
-                : null
-            }
+            // defaultValue={
+            //   defaultValues[0]?.check_in
+            //     ? dayjs(defaultValues[0].check_in, 'YYYY-MM-DD hh:mm')
+            //     : null
+            // }
           />
         </div>
         <div className="mr-4">
@@ -75,6 +131,7 @@ export default function AttendanceDataCell({
             style={{
               border: '1px solid #D9D9D9'
             }}
+            value={timePickerValues.firstCheckOut}
             use12Hours={true}
             format="h:mm a"
             disabled={absence}
@@ -86,19 +143,31 @@ export default function AttendanceDataCell({
                         (defaultValues[0]?.check_out?.slice(0, 11) || '') +
                         dateString
                     },
-                    callback: setCheckOutSelected(true)
+                    callback: () => {
+                      setTimePickerValues(prevValues => ({
+                        ...prevValues,
+                        firstCheckOut: dateObject
+                      }))
+                      setCheckOutSelected(true)
+                    }
                   })
                 : handleChange({
                     update: { check_out: '' },
-                    callback: setCheckOutSelected(false)
+                    callback: () => {
+                      setTimePickerValues(prevValues => ({
+                        ...prevValues,
+                        firstCheckOut: null
+                      }))
+                      setCheckOutSelected(false)
+                    }
                   })
             }
             suffixIcon={null}
-            defaultValue={
-              defaultValues[0]?.check_out
-                ? dayjs(defaultValues[0].check_out, 'YYYY-MM-DD hh:mm')
-                : null
-            }
+            // defaultValue={
+            //   defaultValues[0]?.check_out
+            //     ? dayjs(defaultValues[0].check_out, 'YYYY-MM-DD hh:mm')
+            //     : null
+            // }
           />
         </div>
         <div>
@@ -170,30 +239,41 @@ export default function AttendanceDataCell({
                 style={{
                   border: '1px solid #D9D9D9'
                 }}
+                value={timePickerValues.secondCheckIn}
                 use12Hours={true}
                 format="h:mm a"
-                onChange={(m, ds) =>
-                  m
+                onChange={(dateObject, dateString) =>
+                  dateObject
                     ? handleChange({
                         update: {
                           check_in:
                             (defaultValues[1]?.check_in?.slice(0, 11) ||
                               defaultValues[0]?.check_in?.slice(0, 11) ||
-                              '') + ds
+                              '') + dateString
                         },
+                        callback: () =>
+                          setTimePickerValues(prevValues => ({
+                            ...prevValues,
+                            secondCheckIn: dateObject
+                          })),
                         secondCheckIn: true
                       })
                     : handleChange({
                         update: { check_in: '' },
+                        callback: () =>
+                          setTimePickerValues(prevValues => ({
+                            ...prevValues,
+                            secondCheckIn: null
+                          })),
                         secondCheckIn: true
                       })
                 }
                 suffixIcon={null}
-                defaultValue={
-                  defaultValues[1]?.check_in
-                    ? dayjs(defaultValues[1].check_in, 'YYYY-MM-DD hh:mm')
-                    : null
-                }
+                // defaultValue={
+                //   defaultValues[1]?.check_in
+                //     ? dayjs(defaultValues[1].check_in, 'YYYY-MM-DD hh:mm')
+                //     : null
+                // }
               />
             </div>
             <div className="mr-4">
@@ -205,6 +285,7 @@ export default function AttendanceDataCell({
                 style={{
                   border: '1px solid #D9D9D9'
                 }}
+                value={timePickerValues.secondCheckOut}
                 use12Hours={true}
                 format="h:mm a"
                 onChange={(dateObject, dateString) =>
@@ -216,19 +297,29 @@ export default function AttendanceDataCell({
                               defaultValues[0]?.check_out?.slice(0, 11) ||
                               '') + dateString
                         },
+                        callback: () =>
+                          setTimePickerValues(prevValues => ({
+                            ...prevValues,
+                            secondCheckOut: dateObject
+                          })),
                         secondCheckIn: true
                       })
                     : handleChange({
                         update: { check_out: '' },
+                        callback: () =>
+                          setTimePickerValues(prevValues => ({
+                            ...prevValues,
+                            secondCheckOut: null
+                          })),
                         secondCheckIn: true
                       })
                 }
                 suffixIcon={null}
-                defaultValue={
-                  defaultValues[1]?.check_out
-                    ? dayjs(defaultValues[1].check_out, 'YYYY-MM-DD hh:mm')
-                    : null
-                }
+                // defaultValue={
+                //   defaultValues[1]?.check_out
+                //     ? dayjs(defaultValues[1].check_out, 'YYYY-MM-DD hh:mm')
+                //     : null
+                // }
               />
             </div>
             <div className="flex items-center">
@@ -242,6 +333,14 @@ export default function AttendanceDataCell({
                       check_in: null,
                       check_out: null
                     },
+                    callback: () =>
+                      setTimePickerValues(prevValues => ({
+                        ...prevValues,
+                        ...{
+                          secondCheckIn: null,
+                          secondCheckOut: null
+                        }
+                      })),
                     secondCheckIn: true
                   })
                   setShowSecondCheckIn(false)
