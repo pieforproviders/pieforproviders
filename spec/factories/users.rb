@@ -6,6 +6,7 @@ FactoryBot.define do
     active { true }
     email { Faker::Internet.email }
     full_name { Faker::Games::WorldOfWarcraft.hero }
+    get_from_pie { Faker::Lorem.paragraphs.join("\n") }
     greeting_name { Faker::Name.first_name }
     language { %w[English Spanish Russian].sample }
     opt_in_email { Faker::Boolean.boolean }
@@ -20,6 +21,10 @@ FactoryBot.define do
     confirmation_token { Faker::Alphanumeric.alphanumeric(number: 10) }
     admin { false }
     state { 'IL' }
+    stressed_about_billing { 'False' }
+    accept_more_subsidy_families { 'Mostly False' }
+    not_as_much_money { 'True' }
+    too_much_time { 'Mostly True' }
 
     trait :nebraska do
       state { 'NE' }
