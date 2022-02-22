@@ -7,7 +7,7 @@ module Api
       # GET /service_days
       def index
         @service_days = policy_scope(
-          ServiceDay.includes(child: { business: :user })
+          ServiceDay.joins(:attendances).includes(child: { business: :user })
           .includes(attendances: { child_approval: :child })
         ).for_week(filter_date)
 
