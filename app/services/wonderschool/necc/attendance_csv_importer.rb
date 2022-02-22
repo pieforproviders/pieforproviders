@@ -7,6 +7,7 @@ module Wonderschool
     # Wonderschool NECC Attendance CSV Importer
     class AttendanceCsvImporter
       include AppsignalReporting
+
       def initialize
         @client = AwsClient.new
         @uri = Rails.application.config.wonderschool_attendance_url

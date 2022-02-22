@@ -35,7 +35,7 @@ FactoryBot.define do
                child_approval: child.child_approvals.first,
                effective_on: evaluator.effective_date,
                family_fee: 80.00)
-        child.child_approvals.first.update!(authorized_weekly_hours: 20)
+        child.child_approvals.first.update!(authorized_weekly_hours: 20.0)
         child.schedules.reload
       end
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_08_055902) do
+ActiveRecord::Schema.define(version: 2022_02_18_014430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_055902) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.integer "authorized_weekly_hours"
+    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.string "rate_type"
     t.uuid "rate_id"
     t.date "deleted_at"

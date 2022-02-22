@@ -71,7 +71,7 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    appsignal (3.0.21)
+    appsignal (3.0.22)
       rack
     ast (2.4.2)
     aws-eventstream (1.2.0)
@@ -158,7 +158,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (2.9.6)
+    good_job (2.10.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -365,7 +365,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    stackprof (0.2.17)
+    stackprof (0.2.18)
     thor (1.2.1)
     tod (3.1.0)
     tzinfo (2.0.4)
@@ -406,7 +406,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   flamegraph
-  good_job (~> 2.9)
+  good_job (~> 2.10)
   guard-rspec
   hash_dig_and_collect
   holidays
