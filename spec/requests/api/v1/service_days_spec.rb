@@ -95,6 +95,16 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       end
     end
 
+    context 'when a service day has no attendances' do
+      before { Attendance.all.destroy_all }
+
+      it 'does not display that attendance in the response' do
+        get '/api/v1/service_days', params: {}, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to be_empty
+      end
+    end
+
     context 'when sent without a filter date' do
       it 'displays the service_days' do
         get '/api/v1/service_days', params: {}, headers: headers
