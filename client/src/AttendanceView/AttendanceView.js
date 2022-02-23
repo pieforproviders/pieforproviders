@@ -285,6 +285,33 @@ export function AttendanceView() {
 
   const handleModalClose = async () => {
     let responses = []
+    const formatAttendanceData = attendance => {
+      const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
+      const parsedCheckIn = dayjs(attendance.check_in.slice(0, 19))
+        .format('hh:mm a')
+        .match(timeRegex)
+      const parsedCheckOut = dayjs(attendance.check_out.slice(0, 19))
+        .format('hh:mm a')
+        .match(timeRegex)
+      const currentDate = dayjs(editAttendanceModalData.columnDate)
+      let checkoutDate
+
+      if (
+        (parsedCheckIn[3] === 'am' &&
+          parsedCheckOut[3] === 'am' &&
+          Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
+        (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
+      ) {
+        checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
+      } else {
+        checkoutDate = currentDate.format('YYYY-MM-DD')
+      }
+
+      return {
+        check_in: `${currentDate.format('YYYY-MM-DD')} ${parsedCheckIn[0]}`,
+        check_out: `${checkoutDate} ${parsedCheckOut[0]}`
+      }
+    }
 
     updatedAttendanceData.forEach(async attendance => {
       // if it's an old attendance we call the attendances PUT endpoint,
@@ -312,20 +339,16 @@ export function AttendanceView() {
             Authorization: token
           },
           data: {
-            attendance_batch: [attendance]
+            attendance_batch: [
+              {
+                ...formatAttendanceData(attendance),
+                child_id: attendance.child_id
+              }
+            ]
           }
         })
         responses.push(response)
       } else if (Object.keys(attendance).length > 0) {
-        // if new checkout add column date
-        // if deleting checkout send null
-        const formatDate = dateValue =>
-          dateValue === ''
-            ? null
-            : dateValue?.slice(0, 10) !== editAttendanceModalData.columnDate
-            ? `${editAttendanceModalData.columnDate} ${dateValue}`
-            : dateValue
-
         const response = await makeRequest({
           type: 'put',
           url: '/api/v1/attendances/' + attendance.id,
@@ -334,8 +357,7 @@ export function AttendanceView() {
           },
           data: {
             attendance: {
-              check_in: formatDate(attendance.check_in),
-              check_out: formatDate(attendance.check_out),
+              ...formatAttendanceData(attendance),
               absence: attendance.absence
             }
           }
