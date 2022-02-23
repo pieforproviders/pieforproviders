@@ -142,11 +142,13 @@ RSpec.describe UserBlueprint do
 
     it 'includes user profile fields' do
       expect(parsed_response.keys).to contain_exactly(
+        'id',
         'full_name',
         'greeting_name',
         'phone_number',
         'email',
         'language',
+        'state',
         'businesses'
       )
     end
