@@ -121,8 +121,10 @@ export default function AttendanceDataCell({
                 ? handleChange({
                     update: {
                       check_out:
-                        (defaultValues[0]?.check_out?.slice(0, 11) || '') +
-                        dateString
+                        ((
+                          defaultValues[0]?.check_out ||
+                          defaultValues[0]?.check_in
+                        )?.slice(0, 11) || '') + dateString
                     },
                     callback: () => {
                       setTimePickerValues(prevValues => ({

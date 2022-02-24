@@ -58,10 +58,7 @@ export function AttendanceView() {
 
         // disabled saving on modal if only checkout time exists
         if (index === 0) {
-          setModalButtonDisabled(
-            !(mergedValue.check_in || mergedValue.absence) &&
-              mergedValue.check_out
-          )
+          setModalButtonDisabled(!(mergedValue.check_in || mergedValue.absence))
         }
         return mergedValue
       }
@@ -286,6 +283,16 @@ export function AttendanceView() {
   const handleModalClose = async () => {
     let responses = []
     const formatAttendanceData = attendance => {
+      if (
+        attendance.absence ||
+        (attendance.check_in && !attendance.check_out)
+      ) {
+        return {
+          check_in: attendance.check_in,
+          check_out: null
+        }
+      }
+
       const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
       const parsedCheckIn = dayjs(attendance.check_in.slice(0, 19))
         .format('hh:mm a')
