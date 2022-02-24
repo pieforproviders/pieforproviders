@@ -19,6 +19,9 @@ export const useApiResponse = () => {
       'Accept-Language': i18n.language
     }
 
+    console.log('url:', url)
+    console.log('data:', data)
+
     const result = (async () => {
       switch (type) {
         case 'post':

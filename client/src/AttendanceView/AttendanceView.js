@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -7,7 +7,9 @@ import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
+import editIcon from '../_assets/editIcon.svg'
 import { WeekPicker } from './WeekPicker'
+import { EditAttendanceModal } from './EditAttendanceModal'
 
 const { useBreakpoint } = Grid
 
@@ -21,6 +23,55 @@ export function AttendanceView() {
   // columns will be current dates
   const { token } = useSelector(state => ({ token: state.auth.token }))
   const [dateSelected, setDateSelected] = useState(dayjs())
+  const [editAttendanceModalData, setEditAttendanceModalData] = useState(null)
+  const [updatedAttendanceData, setUpdatedAttendanceData] = useState([{}, {}])
+  const [modalButtonDisabled, setModalButtonDisabled] = useState(false)
+  const latestAttendanceData = useRef(updatedAttendanceData)
+  const titleData = useRef({ childName: null, columnDate: null })
+
+  const updateAttendanceData = data => {
+    const index = data.secondCheckIn ? 1 : 0
+    const updatedData = latestAttendanceData.current.map((value, i) => {
+      if (index === i) {
+        const updatedValueKeys = Object.keys(data.update)
+        const currentValueKeys = Object.keys(value)
+        const updatedValue =
+          updatedValueKeys.length === 0 ||
+          (currentValueKeys.includes('absence') &&
+            (updatedValueKeys.includes('check_in') ||
+              updatedValueKeys.includes('check_out'))) ||
+          (updatedValueKeys.includes('absence') &&
+            (currentValueKeys.includes('check_in') ||
+              currentValueKeys.includes('check_out')))
+            ? data.update
+            : { ...value, ...data.update }
+        const mergedValue =
+          Object.keys(value).length === 0
+            ? {
+                child_id: data.record?.serviceDays[0]?.child_id || '',
+                ...updatedValue
+              }
+            : {
+                ...value,
+                ...updatedValue
+              }
+
+        // disabled saving on modal if only checkout time exists
+        if (index === 0) {
+          setModalButtonDisabled(
+            !(mergedValue.check_in || mergedValue.absence) &&
+              mergedValue.check_out
+          )
+        }
+        return mergedValue
+      }
+
+      return value
+    })
+
+    latestAttendanceData.current = updatedData
+    setUpdatedAttendanceData(updatedData)
+  }
 
   // create seven columns for each day of the week
   const generateColumns = () => {
@@ -51,15 +102,55 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
+          const hideEditButton = false
+          // matchingServiceDay?.attendances.some(
+          //   attendance => attendance.child?.wonderschool_id
+          // ) || false
+
+          const handleEditAttendance = () => {
+            const currentAttendances =
+              record.serviceDays.find(
+                day => day.date.slice(0, 10) === columnDate.format('YYYY-MM-DD')
+              ).attendances || []
+            const attendances =
+              currentAttendances.length === 1
+                ? [...currentAttendances, {}]
+                : currentAttendances
+
+            setEditAttendanceModalData({
+              record,
+              columnDate: columnDate.format('YYYY-MM-DD'),
+              defaultValues: attendances,
+              updateAttendanceData
+            })
+
+            titleData.current = {
+              childName: record.child,
+              columnDate
+            }
+            latestAttendanceData.current = attendances
+            setUpdatedAttendanceData(attendances)
+          }
+
           if (matchingServiceDay !== undefined) {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
-                <div className="flex justify-center">
-                  <div
-                    className="box-border p-1 bg-orange2 text-orange3"
-                    data-cy="absent"
-                  >
-                    {t('absent').toLowerCase()}
+                <div>
+                  {hideEditButton ? null : (
+                    <button
+                      className="float-right"
+                      onClick={handleEditAttendance}
+                    >
+                      <img alt="editButton" src={editIcon} />
+                    </button>
+                  )}
+                  <div className="flex justify-center">
+                    <div
+                      className="box-border p-1 bg-orange2 text-orange3"
+                      data-cy="absent"
+                    >
+                      {t('absent').toLowerCase()}
+                    </div>
                   </div>
                 </div>
               )
@@ -85,8 +176,17 @@ export function AttendanceView() {
               Number(matchingServiceDay.total_time_in_care % 3600) / 60
             )
             const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
+
             return (
               <div className="text-center body-2">
+                {hideEditButton ? null : (
+                  <button
+                    className="float-right"
+                    onClick={handleEditAttendance}
+                  >
+                    <img alt="edit" src={editIcon} />
+                  </button>
+                )}
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
                 </div>
@@ -151,43 +251,138 @@ export function AttendanceView() {
     setDateSelected(newDate)
   }
 
-  useEffect(() => {
-    const getResponse = async () => {
-      const response = await makeRequest({
-        type: 'get',
-        url:
-          '/api/v1/service_days?filter_date=' +
-          dateSelected.format('YYYY-MM-DD'),
-        headers: {
-          Authorization: token
-        },
-        data: {}
-      })
+  const getServiceDays = async () => {
+    const response = await makeRequest({
+      type: 'get',
+      url:
+        '/api/v1/service_days?filter_date=' + dateSelected.format('YYYY-MM-DD'),
+      headers: {
+        Authorization: token
+      },
+      data: {}
+    })
 
-      if (response.ok) {
-        const parsedResponse = await response.json()
-        const addServiceDay = (previousValue, currentValue) => {
-          const childName = currentValue.attendances[0].child.full_name
-          const index = previousValue.findIndex(
-            item => item.child === childName
-          )
-          index >= 0
-            ? previousValue[index].serviceDays.push(currentValue)
-            : previousValue.push({
-                child: childName,
-                serviceDays: [currentValue]
-              })
-          return previousValue
-        }
+    if (response.ok) {
+      const parsedResponse = await response.json()
+      const addServiceDay = (previousValue, currentValue) => {
+        const childName = currentValue.attendances[0]?.child.full_name || ''
+        const index = previousValue.findIndex(item => item?.child === childName)
+        index >= 0
+          ? previousValue[index].serviceDays.push(currentValue)
+          : previousValue.push({
+              child: childName,
+              serviceDays: [currentValue]
+            })
+        return previousValue
+      }
 
-        const reducedData = parsedResponse.reduce(addServiceDay, [])
+      const reducedData = parsedResponse.reduce(addServiceDay, [])
 
-        setAttendanceData(reducedData)
-        setColumns(generateColumns())
+      setAttendanceData(reducedData)
+      setColumns(generateColumns())
+    }
+  }
+
+  const handleModalClose = async () => {
+    let responses = []
+    const formatAttendanceData = attendance => {
+      const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
+      const parsedCheckIn = dayjs(attendance.check_in.slice(0, 19))
+        .format('hh:mm a')
+        .match(timeRegex)
+      const parsedCheckOut = dayjs(attendance.check_out.slice(0, 19))
+        .format('hh:mm a')
+        .match(timeRegex)
+      const currentDate = dayjs(editAttendanceModalData.columnDate)
+      let checkoutDate
+
+      if (
+        (parsedCheckIn[3] === 'am' &&
+          parsedCheckOut[3] === 'am' &&
+          Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
+        (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
+      ) {
+        checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
+      } else {
+        checkoutDate = currentDate.format('YYYY-MM-DD')
+      }
+
+      return {
+        check_in: `${currentDate.format('YYYY-MM-DD')} ${parsedCheckIn[0]}`,
+        check_out: `${checkoutDate} ${parsedCheckOut[0]}`
       }
     }
 
-    getResponse()
+    updatedAttendanceData.forEach(async attendance => {
+      // if it's an old attendance we call the attendances PUT endpoint,
+      // if the user creates a new, second attendance for that day we need to call the attendance_batches endpoint
+      // if the attendance values needed are all null the attendance needs to be deleted
+      if (
+        !attendance.absence &&
+        !attendance.check_in &&
+        !attendance.check_out &&
+        attendance.id
+      ) {
+        const response = await makeRequest({
+          type: 'del',
+          url: '/api/v1/attendances/' + attendance.id,
+          headers: {
+            Authorization: token
+          }
+        })
+        responses.push(response)
+      } else if (Object.keys(attendance).includes('child_id')) {
+        const response = await makeRequest({
+          type: 'post',
+          url: '/api/v1/attendance_batches',
+          headers: {
+            Authorization: token
+          },
+          data: {
+            attendance_batch: [
+              {
+                ...formatAttendanceData(attendance),
+                child_id: attendance.child_id
+              }
+            ]
+          }
+        })
+        responses.push(response)
+      } else if (Object.keys(attendance).length > 0) {
+        const response = await makeRequest({
+          type: 'put',
+          url: '/api/v1/attendances/' + attendance.id,
+          headers: {
+            Authorization: token
+          },
+          data: {
+            attendance: {
+              ...formatAttendanceData(attendance),
+              absence: attendance.absence
+            }
+          }
+        })
+        responses.push(response)
+      }
+    })
+
+    const responsesOk = responses.every(r => r.ok)
+
+    if (!responsesOk) {
+      console.log('error sending attendance data to API')
+    }
+
+    titleData.current = {
+      childName: null,
+      columnDate: null
+    }
+    latestAttendanceData.current = [{}, {}]
+    setEditAttendanceModalData(null)
+    setUpdatedAttendanceData([{}, {}])
+  }
+
+  useEffect(() => {
+    getServiceDays()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
 
@@ -222,7 +417,7 @@ export function AttendanceView() {
             />
           </div>
           <Table
-            dataSource={attendanceData}
+            dataSource={[...attendanceData]}
             columns={columns}
             bordered={true}
             pagination={false}
@@ -242,6 +437,17 @@ export function AttendanceView() {
           </div>
         </div>
       )}
+      <EditAttendanceModal
+        editAttendanceModalData={editAttendanceModalData}
+        handleModalClose={async () => {
+          await handleModalClose()
+          setTimeout(getServiceDays, 2000)
+        }}
+        modalButtonDisabled={modalButtonDisabled}
+        setEditAttendanceModalData={setEditAttendanceModalData}
+        setUpdatedAttendanceData={setUpdatedAttendanceData}
+        titleData={titleData.current}
+      />
     </div>
   )
 }
