@@ -13,7 +13,6 @@ export function EditAttendanceModal({
   titleData = {}
 }) {
   const { t } = useTranslation()
-
   return (
     <Modal
       visible={editAttendanceModalData}

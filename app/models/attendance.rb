@@ -5,9 +5,9 @@ class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
   before_validation :find_or_create_service_day, on: :create, if: :check_in
-  # after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_create :remove_absences, unless: :absence
   before_update :assign_new_service_day, if: :will_save_change_to_check_in?
+  after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_save_commit :remove_other_attendances, if: :saved_change_to_absence?
   after_save_commit :calculate_service_day
   after_destroy :destroy_empty_service_day, if: :service_day_has_no_attendances
@@ -119,6 +119,12 @@ class Attendance < UuidApplicationRecord
 
     other_attendances = service_day.attendances.where.not(id: id)
     other_attendances&.destroy_all
+  end
+
+  def remove_old_service_day
+    previous_service_day = ServiceDay.find_by(id: service_day_id_previously_was)
+
+    previous_service_day.destroy if previous_service_day.attendances.blank?
   end
 
   def prevent_creation_of_absence_without_schedule
