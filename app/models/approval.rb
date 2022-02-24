@@ -20,10 +20,8 @@ class Approval < UuidApplicationRecord
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
   scope :active, -> { where(active: true) }
-  scope :active_on,
-        lambda { |date|
-          where('effective_on <= ? and (expires_on is null or expires_on > ?)', date, date).order(updated_at: :desc)
-        }
+  scope :active_on, ->(date) { where(effective_on: ..date).where(expires_on: [date.., nil]).order(updated_at: :desc) }
+  # TODO: needs to change to timestamp and get sent from front-end with timestamps
 
   monetize :copay_cents, allow_nil: true
 

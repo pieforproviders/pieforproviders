@@ -5,13 +5,9 @@ module Nebraska
   # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :absent_days,
-                :active_nebraska_approval_amount,
-                :approval,
                 :attended_days,
                 :business,
                 :child,
-                :child_approvals,
-                :child_approval,
                 :filter_date,
                 :reimbursable_month_absent_days,
                 :schedules
@@ -23,11 +19,7 @@ module Nebraska
       @absent_days = absent_days
       @business = child.business
       @schedules = child&.schedules
-      @child_approvals = child&.child_approvals&.with_approval
-      @approval = child&.approvals&.active_on(filter_date)&.first
-      @child_approval = approval.child_approvals.find_by(child: child)
       @reimbursable_month_absent_days = reimbursable_absent_service_days
-      @active_nebraska_approval_amount = child&.active_nebraska_approval_amount(filter_date)
     end
 
     def attendance_risk
@@ -217,6 +209,38 @@ module Nebraska
     end
 
     private
+
+    def child_approvals
+      Appsignal.instrument_sql(
+        'dashboard_case.child_approvals'
+      ) do
+        @child_approvals ||= child&.child_approvals&.with_approval
+      end
+    end
+
+    def approval
+      Appsignal.instrument_sql(
+        'dashboard_case.approval'
+      ) do
+        @approval ||= child&.approvals&.active_on(filter_date)&.first
+      end
+    end
+
+    def child_approval
+      Appsignal.instrument_sql(
+        'dashboard_case.child_approval'
+      ) do
+        @child_approval ||= approval&.child_approvals&.find_by(child: child)
+      end
+    end
+
+    def active_nebraska_approval_amount
+      Appsignal.instrument_sql(
+        'dashboard_case.active_nebraska_approval_amount'
+      ) do
+        @active_nebraska_approval_amount ||= child&.active_nebraska_approval_amount(filter_date)
+      end
+    end
 
     def service_days_this_month
       Appsignal.instrument_sql(
