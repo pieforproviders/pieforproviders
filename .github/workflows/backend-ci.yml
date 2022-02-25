@@ -27,13 +27,19 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
-  brakeman:
-    name: Brakeman Static Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2.4.0
-      - name: Analyze code statically using Brakeman
-        uses: artplan1/brakeman-action@v1.2.1
+  # TODO: Parse error was fixed in Brakeman 5.1.2 but 
+  # the Github Action is using the docker image
+  # which is stuck at 5.1.1 so we need to disable
+  # this for now
+  # brakeman:
+  #   name: Brakeman Static Analysis
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2.4.0
+  #     - name: Analyze code statically using Brakeman
+  #       uses: artplan1/brakeman-action@v1.2.1
+  #       with: 
+  #         flags: "--color"
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest

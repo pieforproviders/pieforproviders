@@ -34,6 +34,7 @@ class DemoAttendanceSeeder
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def create_attendances(child:, weeks_to_populate:, starting_date:)
     catch(:stop_making_attendances) do
       weeks_to_populate.times do |week|
@@ -65,6 +66,7 @@ class DemoAttendanceSeeder
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def last_attendance_check_out(child:)
     child.reload
