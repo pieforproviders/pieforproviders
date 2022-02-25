@@ -61,7 +61,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -114,4 +114,18 @@ Rails.application.configure do
   # config.active_record.database_selector = { delay: 2.seconds }
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
+
+  # Demo Environment Attendance Seeding
+
+  config.good_job.enable_cron = true
+
+  if ENV.fetch('HEROKU_APP_NAME', nil) == 'pie-app-demo'
+    config.good_job.cron = {
+      seed_demo_attendances: {
+        cron: '0 0 * * wed',
+        class: 'SeedDemoAttendancesJob',
+        description: 'Seed attendances weekly on Demo env'
+      }
+    }
+  end
 end
