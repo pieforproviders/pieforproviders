@@ -48,7 +48,7 @@ module App
     logger_file = ActiveSupport::TaggedLogging.new(Log::FileLogger.new("log/#{Rails.env}.log"))
     logger_console = ActiveSupport::TaggedLogging.new(Log::ConsoleLogger.new($stdout))
     config.logger = logger_file
-    unless Rails.env.test? || Rails.env.development?
+    if ENV['RAILS_LOG_TO_STDOUT'] == 'true' && defined?(Rake) && !Rails.env.test?
       config.logger.extend(ActiveSupport::Logger.broadcast(logger_console))
     end
 
