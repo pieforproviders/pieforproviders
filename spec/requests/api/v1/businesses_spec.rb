@@ -153,7 +153,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
             },
             headers: headers
         expect(response.status).to eq(200)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
       end
     end
 
@@ -183,7 +183,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
             },
             headers: headers
         expect(response.status).to eq(422)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
       end
 
       it 'can update a business to inactive if it has no children' do
@@ -194,7 +194,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
             },
             headers: headers
         expect(response.status).to eq(200)
-        expect(user_business.reload.active).to eq(false)
+        expect(user_business.reload.active).to be(false)
       end
 
       it 'can update a business to inactive if it has no active children' do
@@ -205,7 +205,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
             },
             headers: headers
         expect(response.status).to eq(200)
-        expect(user_business.reload.active).to eq(false)
+        expect(user_business.reload.active).to be(false)
       end
     end
   end
@@ -220,7 +220,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
         user_business.children.destroy_all
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
         expect(response.status).to eq(204)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to eq(Time.current.to_date)
         expect(response.body).to be_empty
       end
@@ -228,7 +228,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       it "does not soft-delete the user's business if there are active children" do
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
         expect(response.status).to eq(422)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to be_nil
         expect(JSON.parse(response.body).keys).to include('children')
       end
@@ -241,14 +241,14 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
         user_business.children.destroy_all
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
         expect(response.status).to eq(204)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to eq(Time.current.to_date)
       end
 
       it "does not soft-delete the user's business if there are active children" do
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
         expect(response.status).to eq(422)
-        expect(user_business.reload.active).to eq(true)
+        expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to be_nil
       end
     end

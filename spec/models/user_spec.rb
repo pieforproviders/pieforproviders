@@ -83,7 +83,7 @@ RSpec.describe User, type: :model do
         user.latest_service_day_in_month(
           Time.current.in_time_zone(user.timezone).at_beginning_of_day - 2.months
         )
-      ).to eq(nil)
+      ).to be_nil
     end
 
     it 'returns the latest attendance for a month with multiple attendances' do

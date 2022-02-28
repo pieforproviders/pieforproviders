@@ -285,9 +285,9 @@ module Wonderschool
             child.reload
             expect(child.child_approvals.first.full_days).to eq(276)
             expect(child.child_approvals.first.hours).to eq(1656)
-            expect(child.child_approvals.first.special_needs_rate).to eq(false)
-            expect(child.child_approvals.first.special_needs_daily_rate).to eq(nil)
-            expect(child.child_approvals.first.special_needs_hourly_rate).to eq(nil)
+            expect(child.child_approvals.first.special_needs_rate).to be(false)
+            expect(child.child_approvals.first.special_needs_daily_rate).to be_nil
+            expect(child.child_approvals.first.special_needs_hourly_rate).to be_nil
             expect(child.nebraska_approval_amounts.first.family_fee).to eq(0)
             expect(child.nebraska_approval_amounts.first.allocated_family_fee).to eq(0)
           end
