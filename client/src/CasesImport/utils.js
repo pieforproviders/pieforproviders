@@ -1,4 +1,4 @@
-import XLSX from 'xlsx'
+import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
 import { sha1 } from 'hash-anything'
 
