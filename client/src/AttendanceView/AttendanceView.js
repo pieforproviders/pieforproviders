@@ -99,10 +99,10 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
-          const hideEditButton = false
-          // matchingServiceDay?.attendances.some(
-          //   attendance => attendance.child?.wonderschool_id
-          // ) || false
+          const hideEditButton =
+            matchingServiceDay?.attendances.some(
+              attendance => attendance.child?.wonderschool_id
+            ) || false
 
           const handleEditAttendance = () => {
             const currentAttendances =
