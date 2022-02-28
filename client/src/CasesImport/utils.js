@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx'
+import { read, utils, SSF } from 'xlsx'
 import Papa from 'papaparse'
 import { sha1 } from 'hash-anything'
 
@@ -11,12 +11,12 @@ const parsers = {
   },
   xlsx: {
     parse: (fileContent, options = {}) => {
-      const workbook = XLSX.read(fileContent, {
+      const workbook = read(fileContent, {
         type: options.readAsBinaryString ? 'binary' : 'array'
       })
       const [sheetName] = workbook.SheetNames
       const worksheet = workbook.Sheets[sheetName]
-      const data = XLSX.utils.sheet_to_json(worksheet, {
+      const data = utils.sheet_to_json(worksheet, {
         header: 1,
         blankrows: false
       })
@@ -47,7 +47,7 @@ export const getColumns = t => [
     dataIndex: 'dateOfBirth',
     key: 'dateOfBirth',
     title: t('dateOfBirth'),
-    render: text => XLSX.SSF.format('yyyy-mm-dd', text)
+    render: text => SSF.format('yyyy-mm-dd', text)
   },
   {
     dataIndex: 'caseStatus',
