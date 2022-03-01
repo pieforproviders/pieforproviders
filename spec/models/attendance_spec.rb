@@ -91,7 +91,7 @@ RSpec.describe Attendance, type: :model do
     let(:child) { create(:child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) { create(:attendance, child_approval: child_approval) }
+    let(:current_attendance) { create(:attendance, check_in: Time.current, child_approval: child_approval) }
     let(:past_attendance) do
       create(:attendance,
              child_approval: child_approval,
