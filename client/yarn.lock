@@ -11187,10 +11187,10 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react-use-hotjar@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/react-use-hotjar/-/react-use-hotjar-1.2.0.tgz#0ed52be087385548d83f0e79cbde167dbb95b1f1"
-  integrity sha512-Sr41fGpj159M+jh/RbwlSRVopcvd/Z3m/XD4PJWiPHcT846RO20PoEdmh/cLdnGCJQyqfCpxZqjeayWdIxeJDw==
+react-use-hotjar@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-use-hotjar/-/react-use-hotjar-1.2.1.tgz#cea883f8540937dcf4c834cc363d57ed277f29d9"
+  integrity sha512-uwfyc1/fTE/S03wnZn5dJvuIweMgHMY2NlNWKhekBvO05UdyC6vqO191Urig0L5jjg9WkTlf20EZvQakzH9wkg==
 
 react@^17.0.2:
   version "17.0.2"
