@@ -5,6 +5,7 @@ class NebraskaApprovalAmount < UuidApplicationRecord
   belongs_to :child_approval
   validates :effective_on, presence: true
   validates :expires_on, presence: true
+  validate :expires_on_after_effective_on
 
   scope :active_on,
         lambda { |date|
@@ -13,6 +14,12 @@ class NebraskaApprovalAmount < UuidApplicationRecord
 
   def family_fee
     Money.from_amount(super)
+  end
+
+  def expires_on_after_effective_on
+    return if expires_on.blank? || effective_on.blank?
+
+    errors.add(:expires_on, 'must be after the effective on date') if expires_on < effective_on
   end
 end
 
