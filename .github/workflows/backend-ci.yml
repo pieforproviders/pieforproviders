@@ -26,6 +26,7 @@ jobs:
           ruby-version: 3.0.2
       - name: Rubocop
         run: |
+          echo "TESTING pls work"
           sudo apt-get -yqq install libpq-dev
           gem install bundler
           bundle config path vendor/bundle
