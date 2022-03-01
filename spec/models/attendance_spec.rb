@@ -34,6 +34,7 @@ RSpec.describe Attendance, type: :model do
     expect(attendance).to be_valid
     attendance.check_out = Time.current.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance).to be_valid
+    attendance.check_in = Time.current.to_date - 2.hours
     attendance.check_out = Time.current.to_date
     expect(attendance).to be_valid
   end
