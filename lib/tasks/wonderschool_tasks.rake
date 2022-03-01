@@ -9,15 +9,6 @@ task read_wonderschool_necc_attendances: :environment do
   sleep 5
 end
 
-task read_wonderschool_necc_dashboard_cases: :environment do
-  # pull multiple files from S3
-  # Process each file through Dashboard Processor
-  # Archive each file to S3
-  Wonderschool::Necc::DashboardCaseImporter.new.call
-  Appsignal.stop 'read_wonderschool_necc_dashboard_cases'
-  sleep 5
-end
-
 task read_wonderschool_necc_onboarding_cases: :environment do
   # pull multiple files from S3
   # Process each file through Onboarding Processor
