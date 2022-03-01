@@ -15,7 +15,11 @@ jobs:
     name: Backend linting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD^
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -35,7 +39,11 @@ jobs:
   #   name: Brakeman Static Analysis
   #   runs-on: ubuntu-latest
   #   steps:
-  #     - uses: actions/checkout@v2.4.0
+  #     - name: Checkout
+  #       uses: actions/checkout@v2.4.0
+  #       with:
+  #         fetch-depth: 2
+  #     - run: git checkout HEAD^
   #     - name: Analyze code statically using Brakeman
   #       uses: artplan1/brakeman-action@v1.2.1
   #       with: 
@@ -53,7 +61,11 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD^
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
