@@ -19,9 +19,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.4.0
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
         with:
           fetch-depth: 2
+      - run: git checkout HEAD^
       - name: get changed files
         id: getfile
         run: |
