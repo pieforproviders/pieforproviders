@@ -1,3 +1,4 @@
+```mermaid
 sequenceDiagram
     %% All "State" prefixed classes will belong to a State
     %% and will be named [State]Class in order to differentiate,
@@ -34,3 +35,4 @@ sequenceDiagram
             StateAbsenceValidator-->>StateEarnedRevenueCalculator: true
         end
     end
+```
