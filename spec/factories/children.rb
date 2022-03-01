@@ -22,7 +22,6 @@ FactoryBot.define do
     factory :necc_child do
       transient do
         effective_date { 6.months.ago }
-        create_dashboard_case { false }
       end
 
       business { create(:business, :nebraska_ldds) }
@@ -30,7 +29,6 @@ FactoryBot.define do
       approvals { [create(:approval, effective_on: effective_date, create_children: false)] }
 
       after(:create) do |child, evaluator|
-        create(:temporary_nebraska_dashboard_case, child: child) if evaluator.create_dashboard_case
         create(:nebraska_approval_amount,
                child_approval: child.child_approvals.first,
                effective_on: evaluator.effective_date,

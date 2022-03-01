@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_18_014430) do
+ActiveRecord::Schema.define(version: 2022_03_01_193456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -231,23 +231,6 @@ ActiveRecord::Schema.define(version: 2022_02_18_014430) do
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
   end
 
-  create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "child_id", null: false
-    t.text "attendance_risk"
-    t.text "absences"
-    t.text "earned_revenue"
-    t.text "estimated_revenue"
-    t.text "full_days"
-    t.text "hours"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "as_of"
-    t.decimal "family_fee"
-    t.string "hours_attended"
-    t.date "deleted_at"
-    t.index ["child_id"], name: "index_temporary_nebraska_dashboard_cases_on_child_id"
-  end
-
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "full_name", null: false
@@ -295,5 +278,4 @@ ActiveRecord::Schema.define(version: 2022_02_18_014430) do
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
   add_foreign_key "service_days", "schedules"
-  add_foreign_key "temporary_nebraska_dashboard_cases", "children"
 end
