@@ -17,7 +17,7 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in
 
 ## Why You Should Contribute
 
-We have a vision for equity and justice in the early childhood field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities in this field. We’re building the market for early childhood technology that educators, families and children deserve.
+We have a vision for equity and justice in the child care field. We know that technology is part of the solution - and that today’s products do not meet the needs of most communities in this field. We’re building the market for early childhood technology that educators, families and children deserve.
 
 We need your help!
 
