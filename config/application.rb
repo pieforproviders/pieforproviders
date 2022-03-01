@@ -64,8 +64,6 @@ module App
     config.aws_region = ENV.fetch('AWS_REGION', '')
     config.aws_necc_attendance_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_BUCKET', '')
     config.aws_necc_attendance_archive_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_ARCHIVE_BUCKET', '')
-    config.aws_necc_dashboard_bucket = ENV.fetch('AWS_NECC_DASHBOARD_BUCKET', '')
-    config.aws_necc_dashboard_archive_bucket = ENV.fetch('AWS_NECC_DASHBOARD_ARCHIVE_BUCKET', '')
     config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
