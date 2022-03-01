@@ -61,6 +61,27 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
+    # Install local deps if this action is being run locally
+      - name: Install local dependencies
+        if: ${{ env.ACT }}
+        run: |
+          echo $TZ
+          npm i -g yarn
+          sudo apt-get update
+          sudo apt-get -yqq install libgconf-2-4 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2 libxshmfence-dev postgresql postgresql-contrib redis-server
+
+      - name: Boot local dependencies
+        if: ${{ env.ACT }}
+        run: |
+          sudo service postgresql start
+          sudo service redis-server start
+
+      - name: Configure local dependencies
+        if: ${{ env.ACT }}
+        run: |
+          export POSTGRES_USER=postgres
+          export POSTGRES_PASSWORD=postgres
+          sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'postgres';"
       - name: Checkout
         uses: actions/checkout@v2.4.0
         with:

@@ -65,7 +65,7 @@ class User < UuidApplicationRecord
   # return the user's latest attendance check_in in UTC
   def latest_service_day_in_month(filter_date)
     filter_date ||= Time.current
-    service_days.for_month(filter_date).order(date: :desc).first&.date
+    service_days.for_month(filter_date.in_time_zone(timezone)).order(date: :desc).first&.date
   end
 
   def first_approval_effective_date
