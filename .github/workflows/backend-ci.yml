@@ -12,26 +12,24 @@ on:
   workflow_dispatch:
 jobs:
   lint_backend:
-    name: Backend linting
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2.4.0
+    - uses: actions/checkout@v2.4.0
+    - name: Rubocop checks
+      uses: luizfonseca/github-actions-rubocop@1.5.6
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  test_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: bundle exec rspec -f j -o tmp/rspec_results.json -f p
+      - name: RSpec Report
+        uses: SonicGarden/rspec-report-action@v1
         with:
-          fetch-depth: 2
-      - run: git checkout HEAD^
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.0.2
-      - name: Rubocop
-        run: |
-          echo "TESTING pls work"
-          sudo apt-get -yqq install libpq-dev
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-          bundle exec rubocop
+          token: ${{ secrets.GITHUB_TOKEN }}
+          json-path: tmp/rspec_results.json
+        if: always()
   # TODO: Parse error was fixed in Brakeman 5.1.2 but 
   # the Github Action is using the docker image
   # which is stuck at 5.1.1 so we need to disable
@@ -49,48 +47,3 @@ jobs:
   #       uses: artplan1/brakeman-action@v1.2.1
   #       with: 
   #         flags: "--color"
-  test_backend:
-    name: Backend tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:12
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.4.0
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD^
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.0.2
-      - name: Install libraries
-        run: sudo apt-get install libpq-dev
-      - name: Bundle install
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Setup Database
-        run: |
-          cp config/database.yml.github-actions config/database.yml
-          bundle exec rake db:create
-          bundle exec rake db:schema:load
-        env:
-          RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-      - name: Run RSpec
-        run: bundle exec rspec --require rails_helper
-        env:
-          RAILS_ENV: test
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          DEVISE_JWT_SECRET_KEY: imasecretkey
