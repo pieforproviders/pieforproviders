@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import PropTypes, { object } from 'prop-types'
 import { Button, Checkbox } from 'antd'
@@ -156,7 +157,7 @@ export default function AttendanceDataCell({
                 checkInSelected ||
                 checkOutSelected
               }
-              onChange={e =>
+              onChange={e => {
                 e.target.checked
                   ? handleChange({
                       update: { absence: 'absence' },
@@ -169,7 +170,7 @@ export default function AttendanceDataCell({
                       update: { absence: null },
                       callback: setAbsence(null)
                     })
-              }
+              }}
             />
             <span className="ml-3">{t('absent')}</span>
           </p>
