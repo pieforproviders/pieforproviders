@@ -3,8 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useDispatch, useSelector } from 'react-redux'
-import useHotjar from 'react-use-hotjar'
-import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
@@ -13,7 +11,6 @@ import { setCaseData } from '_reducers/casesReducer'
 
 export function Dashboard() {
   const dispatch = useDispatch()
-  const { identifyHotjar } = useHotjar()
   const { reduceTableData } = useCaseData()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -271,31 +268,8 @@ export function Dashboard() {
   }
 
   useEffect(() => {
-    const getUserData = async () => {
-      const response = await makeRequest({
-        type: 'get',
-        url: '/api/v1/profile',
-        headers: {
-          Authorization: token
-        }
-      })
-
-      if (response.ok) {
-        const resp = await response.json()
-        dispatch(setUser(resp))
-        identifyHotjar(resp.id ?? null, resp, console.info)
-        setSummaryTotals(
-          summaryDataTotalsConfig[`${resp.state === 'NE' ? 'ne' : 'default'}`]
-        )
-      }
-    }
-
     if (Object.keys(user).length !== 0) {
       getDashboardData(dates?.dateFilterValue?.date)
-    }
-
-    if (Object.keys(user).length === 0) {
-      getUserData()
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     // still haven't found a better way around this - sometimes we really do
