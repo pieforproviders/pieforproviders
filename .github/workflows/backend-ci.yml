@@ -35,19 +35,19 @@ jobs:
   # the Github Action is using the docker image
   # which is stuck at 5.1.1 so we need to disable
   # this for now
-  # brakeman:
-  #   name: Brakeman Static Analysis
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2.4.0
-  #       with:
-  #         fetch-depth: 2
-  #     - run: git checkout HEAD^
-  #     - name: Analyze code statically using Brakeman
-  #       uses: artplan1/brakeman-action@v1.2.1
-  #       with: 
-  #         flags: "--color"
+  brakeman:
+    name: Brakeman Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+        with:
+          fetch-depth: 2
+      - run: git checkout HEAD^
+      - name: Analyze code statically using Brakeman
+        uses: artplan1/brakeman-action@v1.2.1
+        with: 
+          flags: "--color"
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest
