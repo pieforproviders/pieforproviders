@@ -226,7 +226,7 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in.to_date }
+      let(:date) { current_attendance.check_in.in_time_zone(child.timezone).to_date }
 
       it 'returns service days for given day' do
         travel_to date
