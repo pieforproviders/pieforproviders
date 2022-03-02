@@ -45,6 +45,7 @@ export function AttendanceView() {
               currentValueKeys.includes('check_out')))
             ? data.update
             : { ...value, ...data.update }
+
         const mergedValue =
           Object.keys(value).length === 0
             ? {
@@ -60,6 +61,7 @@ export function AttendanceView() {
         if (index === 0) {
           setModalButtonDisabled(!(mergedValue.check_in || mergedValue.absence))
         }
+
         return mergedValue
       }
 
@@ -283,10 +285,16 @@ export function AttendanceView() {
   const handleModalClose = async () => {
     let responses = []
     const formatAttendanceData = attendance => {
-      if (
-        attendance.absence ||
-        (attendance.check_in && !attendance.check_out)
-      ) {
+      if (attendance.absence) {
+        return {
+          absence: attendance.absence,
+          check_in: dayjs(attendance.check_in.slice(0, 19)).format(
+            'YYYY-MM-DD hh:mm a'
+          )
+        }
+      }
+
+      if (attendance.check_in && !attendance.check_out) {
         return {
           check_in: attendance.check_in,
           check_out: null
