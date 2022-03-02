@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import PropTypes, { object } from 'prop-types'
 import { Button, Checkbox } from 'antd'
