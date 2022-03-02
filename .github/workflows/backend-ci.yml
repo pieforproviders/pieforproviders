@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
       - run: git checkout HEAD^
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
       - run: git checkout HEAD^
@@ -83,7 +83,7 @@ jobs:
           export POSTGRES_PASSWORD=postgres
           sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'postgres';"
       - name: Checkout
-        uses: actions/checkout@v2.4.0
+        uses: actions/checkout@v3
         with:
           fetch-depth: 2
       - run: git checkout HEAD^
