@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Blocked Tokens for forcing token revokation
-class BlockedToken < ApplicationRecord
+class BlockedToken < UuidApplicationRecord
   include Devise::JWT::RevocationStrategies::Denylist
 end
 

@@ -2,7 +2,7 @@
 
 # Expected attendance schedules for children
 # used to calculate hours attended compared to hours scheduled
-class Schedule < ApplicationRecord
+class Schedule < UuidApplicationRecord
   after_save_commit :update_service_day_schedules
 
   belongs_to :child
