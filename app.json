@@ -19,14 +19,6 @@
       "description": "AWS Access Key ID's user",
       "required": "false"
     },
-    "AWS_NECC_DASHBOARD_ARCHIVE_BUCKET": {
-      "description": "S3 Bucket where NECC Dashboard CSVs should be archived",
-      "required": "false"
-    },
-    "AWS_NECC_DASHBOARD_BUCKET": {
-      "description": "S3 Bucket where NECC Dashboard CSVs will be picked up by the application",
-      "required": "false"
-    },
     "AWS_NECC_ONBOARDING_ARCHIVE_BUCKET": {
       "description": "S3 Bucket where NECC Onboarding CSVs should be archived",
       "required": "false"

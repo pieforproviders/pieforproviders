@@ -9,7 +9,6 @@ RSpec.describe Child, type: :model do
   it { is_expected.to belong_to(:business) }
   it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
   it { is_expected.to have_many(:approvals).through(:child_approvals) }
-  it { is_expected.to have_one(:temporary_nebraska_dashboard_case) }
 
   it { is_expected.to validate_presence_of(:approvals) }
   it { is_expected.to validate_presence_of(:date_of_birth) }
@@ -108,7 +107,7 @@ RSpec.describe Child, type: :model do
 
   # TODO: this is sloppy and these need to be named better and moved eventually
   describe 'nebraska methods' do
-    let(:child) { create(:necc_child, create_dashboard_case: true) }
+    let(:child) { create(:necc_child) }
 
     describe '#create_default_schedule' do
       it 'creates default schedules if no schedules_attributes are passed' do
