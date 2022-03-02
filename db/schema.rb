@@ -13,7 +13,6 @@
 ActiveRecord::Schema.define(version: 2022_03_01_193456) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -36,7 +35,7 @@ ActiveRecord::Schema.define(version: 2022_03_01_193456) do
   create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
     t.datetime "check_out"
-    t.interval "time_in_care", null: false
+    t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
@@ -87,9 +86,9 @@ ActiveRecord::Schema.define(version: 2022_03_01_193456) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.string "rate_type"
     t.uuid "rate_id"
+    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.date "deleted_at"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
