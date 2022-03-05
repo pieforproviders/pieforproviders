@@ -50,6 +50,6 @@ EditAttendanceModal.propTypes = {
   setUpdatedAttendanceData: PropTypes.func,
   titleData: PropTypes.shape({
     childName: PropTypes.string,
-    columnDate: PropTypes.string
+    columnDate: PropTypes.object
   })
 }

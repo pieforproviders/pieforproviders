@@ -40,6 +40,7 @@ export default function AttendanceDataCell({
   const [timePickerValues, setTimePickerValues] = useState(
     createTimePickerValues()
   )
+
   const handleChange = options => {
     const { update = {}, callback = () => {}, secondCheckIn = false } = options
     updateAttendanceData({ update, record, columnIndex, secondCheckIn })
@@ -50,6 +51,7 @@ export default function AttendanceDataCell({
     if (defaultValues.length > 0) {
       setTimePickerValues(createTimePickerValues())
       setShowSecondCheckIn(secondCheckInExists())
+      setAbsence(defaultValues.find(v => v.absence)?.absence || null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues])
