@@ -106,7 +106,7 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.12.1)
       rack
-    data_migrate (7.0.2)
+    data_migrate (8.0.0)
       activerecord (>= 5.0)
       railties (>= 5.0)
     database_cleaner (2.0.1)
@@ -158,7 +158,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (2.11.1)
+    good_job (2.11.2)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
