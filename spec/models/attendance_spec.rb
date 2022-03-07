@@ -232,9 +232,15 @@ RSpec.describe Attendance, type: :model do
 
   describe '#remove_absences' do
     it 'removes an absence on the same service day if it exists' do
+      attendance.save!
+      attendance.child.reload
       absence = create(
         :nebraska_absence,
-        check_in: Time.current.in_time_zone(attendance.child.timezone).at_beginning_of_day
+        check_in: Time
+          .current
+          .in_time_zone(attendance.child.timezone)
+          .prev_occurring(Date::DAYNAMES[attendance.child.schedules.first.weekday].downcase.to_sym)
+          .at_beginning_of_day
       )
       expect(described_class.absences.length).to eq(1)
       expect do
