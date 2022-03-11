@@ -61,3 +61,11 @@
 .header-text {
     color: #004A6E;
 }
+
+.action-icon {
+    font-size: 12px;
+}
+
+.actionsButton {
+    min-width: 126px;
+}
