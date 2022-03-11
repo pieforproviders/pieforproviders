@@ -5,6 +5,6 @@ class SeedDemoAttendancesJob < ApplicationJob
   def perform
     return unless ENV.fetch('HEROKU_APP_NAME', nil) == 'pie-app-demo'
 
-    DemoAttendanceSeeder.call
+    DemoAttendanceSeeder.new.call
   end
 end
