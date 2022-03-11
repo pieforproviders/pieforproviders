@@ -116,9 +116,14 @@ export default function DashboardTitle({
         id="actionsDropdownButton"
         name="recordNew"
         onClick={updateIsActionsDropdownOpen}
+        className="actionsButton"
       >
         {t('recordDropdown')}
-        {isActionsDropdownOpen ? <DownOutlined /> : <LeftOutlined />}
+        {isActionsDropdownOpen ? (
+          <DownOutlined className="action-icon" />
+        ) : (
+          <LeftOutlined className="action-icon" />
+        )}
       </Button>
     </Dropdown>
   )
