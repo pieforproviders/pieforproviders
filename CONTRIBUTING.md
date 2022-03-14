@@ -6,7 +6,7 @@ Pie for Providers' [open issues](https://github.com/pieforproviders/pieforprovid
 
 One way to get started helping the project is to *file an issue*. You can do that on the Pie for Providers' issues page by clicking on the green button at the right. Issues can include bugs to fix, features to add, or documentation that looks outdated.  Our goal is to build an open and accessible API (with authentication and authorization protocols), as well as our front-end UI (see `/client`).  If you see any way to help these goals that that we haven't flagged ourselves, please feel free to create an issue.
 
-Contributions to Pie for Providers should be made in the form of GitHub pull requests. When contributing to this repository with a pull request, please fill out the pull request template as completely as is reasonable. Each pull request will be reviewed by a core contributor (someone with permission to merge) and either merged into `develop` or given feedback for requested changes.
+Contributions to Pie for Providers should be made in the form of GitHub pull requests. When contributing to this repository with a pull request, please fill out the pull request template as completely as is reasonable. Each pull request will be reviewed by a core contributor (someone with permission to merge) and either merged into `main` or given feedback for requested changes.
 
 ## Workflow
 
@@ -16,10 +16,10 @@ When you're ready to start working on an issue:
   - if you can't pull a ticket (due to permissions), comment on the issue that you'd like to work on and @katelovescode will help
   - take the first ticket you are comfortable with, starting from the top
   - if you can't find something in "To Do", check with the admins on Slack
-- [ ] Branch from `develop` and, if needed, rebase to the current `develop` branch before submitting your pull request
+- [ ] Branch from `main` and, if needed, rebase to the current `main` branch before submitting your pull request
 - [ ] Add tests relevant to the fixed bug or new feature
 - [ ] There's a convenience rake task to run all linters and tests and regenerating the Entity-Relationship Diagram if anything has changed: `bundle exec rails prep` - if you run this before making a pull request, you can be confident your PR will pass CI and that your table documentation is up to date
-- [ ] when your code is ready, make a pull request to `develop` - we prefer direct PRs rather than from forks, if possible!
+- [ ] when your code is ready, make a pull request to `main` - we prefer direct PRs rather than from forks, if possible!
 - [ ] when you have one approval, one of the admins will merge and the ticket will be moved to "In QA" automatically
 - [ ] one of our QAs will check it and move the ticket to "Approved", OR move the ticket back to "in progress" and comment/tag you if there are issues during QA
 
