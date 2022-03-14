@@ -5,7 +5,7 @@ concurrency:
 on:
   push:
     branches:
-      - 'develop'
+      - 'main'
   pull_request:
     paths-ignore:
       - 'docs/**'
