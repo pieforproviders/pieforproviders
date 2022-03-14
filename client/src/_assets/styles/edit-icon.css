@@ -1,3 +1,28 @@
+.edit-icon path:hover {
+  fill: #006C9E;
+}
+
+.edit-icon path:focus {
+  fill: #fff;
+}
+
+.edit-icon svg {
+  margin: 0.25rem;
+  margin-left: 0.3rem;
+}
+
 .edit-icon:hover {
-  fill: blue
+  height: 1.4rem;
+  width: 1.4rem;
+  background-color: #E2EBF3;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.edit-icon:focus {
+  height: 1.4rem;
+  width: 1.4rem;
+  background-color: #006C9E;
+  border-radius: 50%;
+  text-align: center;
 }

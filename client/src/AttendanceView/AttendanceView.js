@@ -7,7 +7,8 @@ import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
-import editIcon from '../_assets/editIcon.svg'
+import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
+import '_assets/styles/edit-icon.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
 
@@ -94,7 +95,7 @@ export function AttendanceView() {
             </div>
           )
         },
-        // eslint-disable-next-line react/display-name
+
         render: (_, record) => {
           const matchingServiceDay = record.serviceDays.find(serviceDay => {
             return new RegExp(columnDate.format('YYYY-MM-DD')).test(
@@ -137,10 +138,11 @@ export function AttendanceView() {
                 <div>
                   {hideEditButton ? null : (
                     <button
-                      className="float-right"
+                      className="float-right edit-icon"
                       onClick={handleEditAttendance}
                     >
-                      <img alt="editButton" src={editIcon} />
+                      <EditIcon />
+                      {/* <img alt="editButton" src={editIcon} /> */}
                     </button>
                   )}
                   <div className="flex justify-center">
@@ -183,7 +185,8 @@ export function AttendanceView() {
                     className="float-right"
                     onClick={handleEditAttendance}
                   >
-                    <img alt="edit" src={editIcon} />
+                    {/* <EditIcon className="edit-icon" /> */}
+                    {/* <img alt="edit" src={editIcon} /> */}
                   </button>
                 )}
                 <div className="mb-2 text-gray8 font-semiBold">
