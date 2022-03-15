@@ -83,8 +83,9 @@ export function Signup() {
   }
 
   return (
-    <main>
+    <main className="text-center">
       <div className="mb-8">
+        <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
         <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -104,7 +105,8 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        wrapperCol={{ md: 12 }}
+        className="m-20"
+        // wrapperCol={{ xl: 12 }}
       >
         <Form.Item
           className="body-2-bold text-primaryBlue"
