@@ -9,9 +9,9 @@ module Api
 
       # GET /children
       def index
-        @children = policy_scope(Child)
+        @children = policy_scope(Child.includes(business: :user))
 
-        render json: @children
+        render json: ChildBlueprint.render(@children, view: :cases)
       end
 
       # GET /children/:id

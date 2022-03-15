@@ -17,13 +17,11 @@ describe('<Attendance />', () => {
 
   afterEach(() => window.fetch.mockRestore())
 
-  it('makes call to case_list_for_dashboard when cases is not present', async () => {
+  it('makes call to children when cases is not present', async () => {
     doRender()
     await waitFor(() => {
       expect(window.fetch).toHaveBeenCalledTimes(1)
-      expect(window.fetch.mock.calls[0][0]).toBe(
-        '/api/v1/case_list_for_dashboard'
-      )
+      expect(window.fetch.mock.calls[0][0]).toBe('/api/v1/children')
     })
   })
 

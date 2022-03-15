@@ -10,6 +10,14 @@ class ChildBlueprint < Blueprinter::Base
   field :full_name
   field :wonderschool_id
 
+  view :cases do
+    association :business, blueprint: BusinessBlueprint
+    field :state
+    field :case_number do |child|
+      child&.approvals&.first&.case_number
+    end
+  end
+
   view :illinois_dashboard do
     field :case_number do |child, options|
       child.approvals.active_on(options[:filter_date]).first&.case_number

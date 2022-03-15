@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
 import ellipse from '_assets/ellipse.svg'
 import { PaddedButton } from '_shared/PaddedButton'
-import { useCaseData } from '_shared/_hooks/useCaseData'
+import { useCaseAttendanceData } from '_shared/_hooks/useCaseAttendanceData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { setCaseData } from '_reducers/casesReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
@@ -20,12 +20,11 @@ export function Attendance() {
   const { sendGAEvent } = useGoogleAnalytics()
   const history = useHistory()
   const dispatch = useDispatch()
-  const { reduceTableData } = useCaseData()
+  const { reduceTableData } = useCaseAttendanceData()
   const { makeRequest } = useApiResponse()
-  const { cases, token, user } = useSelector(state => ({
+  const { cases, token } = useSelector(state => ({
     cases: state.cases,
-    token: state.auth.token,
-    user: state.user
+    token: state.auth.token
   }))
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
@@ -279,13 +278,13 @@ export function Attendance() {
     const getCaseData = async () => {
       const response = await makeRequest({
         type: 'get',
-        url: '/api/v1/case_list_for_dashboard',
+        url: '/api/v1/children',
         headers: { Authorization: token }
       })
 
       if (response.ok) {
         const parsedResponse = await response.json()
-        const caseData = reduceTableData(parsedResponse, user)
+        const caseData = reduceTableData(parsedResponse)
         const reducedAttendanceData = reduceAttendanceData(caseData)
 
         dispatch(setCaseData(caseData))
