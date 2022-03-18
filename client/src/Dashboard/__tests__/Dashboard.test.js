@@ -17,15 +17,6 @@ describe('<Dashboard />', () => {
 
   afterEach(() => window.fetch.mockRestore())
 
-  it('renders the Dashboard page', async () => {
-    const { container } = doRender()
-    await waitFor(() => {
-      expect(container).toHaveTextContent('Your dashboard')
-      expect(window.fetch).toHaveBeenCalledTimes(1)
-      expect(window.fetch.mock.calls[0][0]).toBe('/api/v1/profile')
-    })
-  })
-
   it('renders the Dashboard page when a user is in state', async () => {
     const { container } = doRender({ initialState: { user: { state: 'NE' } } })
     await waitFor(() => {
