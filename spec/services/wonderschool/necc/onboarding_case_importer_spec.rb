@@ -195,6 +195,8 @@ module Wonderschool
             )
             child = create(:necc_child,
                            full_name: 'Thomas Eddleman',
+                           first_name: 'Thomas',
+                           last_name: 'Eddleman',
                            business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
@@ -248,6 +250,8 @@ module Wonderschool
             )
             child = create(:necc_child,
                            full_name: 'Thomas Eddleman',
+                           first_name: 'Thomas',
+                           last_name: 'Eddleman',
                            business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
@@ -310,6 +314,8 @@ module Wonderschool
             )
             create(:necc_child,
                    full_name: 'Thomas Eddleman',
+                   first_name: 'Thomas',
+                   last_name: 'Eddleman',
                    business: business,
                    date_of_birth: '2010-09-01',
                    wonderschool_id: '37821',
@@ -348,6 +354,8 @@ module Wonderschool
             )
             child = create(:necc_child,
                            full_name: 'Thomas Eddleman',
+                           first_name: 'Thomas',
+                           last_name: 'Eddleman',
                            business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
