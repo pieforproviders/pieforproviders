@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_174010) do
     t.date "last_active_date"
     t.string "inactive_reason"
     t.date "deleted_at"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["deleted_at"], name: "index_children_on_deleted_at"
     t.index ["full_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
