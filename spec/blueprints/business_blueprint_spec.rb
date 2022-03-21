@@ -6,8 +6,8 @@ RSpec.describe BusinessBlueprint do
   let(:business) { create(:business) }
   let(:blueprint) { described_class.render(business) }
 
-  it 'only includes the ID' do
-    expect(JSON.parse(blueprint).keys).to contain_exactly('id')
+  it 'only includes the expected fields' do
+    expect(JSON.parse(blueprint).keys).to contain_exactly('id', 'name')
   end
 
   context 'when IL view is requested' do
