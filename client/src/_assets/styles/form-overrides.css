@@ -16,3 +16,25 @@
 .ant-form-item-explain {
   text-align: left;
 }
+
+.signup span.ant-input-affix-wrapper, 
+.signup input#signup_email.ant-input,
+.signup .ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.signup  input#signup_fullName.ant-input {
+  border-radius: 5px;
+}
+
+.signup label.ant-radio-button-wrapper:first-child,
+.signup .ant-input-group.ant-input-group-compact > .ant-select > .ant-select-selector {
+  border-radius: 5px 0 0 5px;
+}
+
+.signup label.ant-radio-button-wrapper:last-child,
+.signup input#signup_phoneNumber.ant-input {
+  border-radius: 0 5px 5px 0;
+}
+
+.questions .ant-form-item-label > label {
+  padding-left: 0;
+  padding-bottom: 0.5rem
+}

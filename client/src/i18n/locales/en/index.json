@@ -4,6 +4,7 @@
   "spanish": "Español",
   "dashboard": "Dashboard",
   "signup": "Sign Up",
+  "signupNote": "Sign up today to claim more childcare subsidy funding",
   "or": "or",
   "login": "Log In",
   "logout": "Log Out",
@@ -246,5 +247,20 @@
   "daily": "full day",
   "hourly": "hours",
   "addCheckInTime": "Add check-in time",
-  "removeCheckInTime": "Remove check-in time"
+  "removeCheckInTime": "Remove check-in time",
+
+  "helpUsUnderstand": "Help us understand your current experience managing subsidy",
+  "true": "True",
+  "mostlyTrue": "Mostly true",
+  "mostlyFalse": "Mostly false",
+  "false": "False",
+  "feelStressed": "I feel stressed about monthly subsidy billing.",
+  "money": "Sometimes I don't get as much money as I thought I would from the subsidy.",
+  "time": "I spend too much time managing the subsidy.",
+  "acceptingMoreFamilies": "I am open to accepting more subsidy-enrolled families.",
+  "hopeForP4P": "What are you hoping to get from using Pie for Providers?",
+  "next": "Next",
+  "alreadyHaveAccount": "Already have an account?",
+  "dashboardBlankMessage": "Once you create your account, your dashboard will remain blank until we update it with more information.",
+  "learnMore": "To learn more about Pie for Providers, go to www.pieforproviders.com"
 }
