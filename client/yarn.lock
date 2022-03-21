@@ -13713,10 +13713,10 @@ ws@^7.4.6:
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.4.tgz#56bfa20b167427e138a7795de68d134fe92e21f9"
   integrity sha512-zP9z6GXm6zC27YtspwH99T3qTG7bBFv2VIkeHstMLrLlDJuzA7tQ5ls3OJ1hOGGCzTQPniNJoHXIAOS0Jljohg==
 
-xlsx@^0.18.2:
-  version "0.18.2"
-  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.18.2.tgz#b30b80659623d0260173b3c96c4ad308e9a5151e"
-  integrity sha512-BWLS+GO5yg5Hnro8mpbNkZq/a+dZ8689otFuHmb9wgCtiMpL+I9dpc+Sans6K9yYxTLEZ235Kr/JkmoTEMunzQ==
+xlsx@^0.18.4:
+  version "0.18.4"
+  resolved "https://registry.yarnpkg.com/xlsx/-/xlsx-0.18.4.tgz#eae7df428d6eb6a57cf595ee1fff6df95cc0a43d"
+  integrity sha512-u2plLVR/Ju2NxByPcWuxW3eOHEE/EH8w0vDyvHx8pFa8qO3fpq+l/57msr/Eq4cY5LErFOFD4sp4jIyPd6nFzQ==
   dependencies:
     adler-32 "~1.3.0"
     cfb "~1.2.1"
