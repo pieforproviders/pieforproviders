@@ -5,14 +5,17 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
+// import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
 import '_assets/styles/form-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
 import ConfirmationSent from './ConfirmationSent'
+import StateDropdown from './StateDropdown'
+import SignupQuestion from './SignupQuestion'
 
 const { Option } = Select
+const { TextArea } = Input
 
 /**
  * User Signup Page
@@ -21,30 +24,34 @@ const { Option } = Select
 export function Signup() {
   const [user, setUser] = useState({
     fullName: null,
-    greetingName: null,
     email: null,
     language: i18n.language,
-    organization: null,
     password: null,
-    passwordConfirmation: null,
     phoneType: 'cell',
     phoneNumber: null,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    serviceAgreementAccepted: false
+    state: null,
+    serviceAgreementAccepted: false,
+    stressedAboutBilling: null,
+    acceptMoreSubsidyFamilies: null,
+    notAsMuchMoney: null,
+    tooMuchTime: null,
+    getFromPie: null
   })
-  const [multiBusiness, setMultiBusiness] = useState(null)
+  // const [multiBusiness, setMultiBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
-  const { setIsMultiBusiness } = useMultiBusiness()
+  // const { setIsMultiBusiness } = useMultiBusiness()
   const { t } = useTranslation()
 
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
-
-    setIsMultiBusiness(multiBusiness)
+    // eslint-disable-next-line no-debugger
+    debugger
+    // setIsMultiBusiness(multiBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -86,6 +93,7 @@ export function Signup() {
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
+        <h2 className="eyebrow-small mb-2">{t('signupNote')}</h2>
         <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -105,10 +113,10 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        className="m-20"
+        className="m-20 signup"
         // wrapperCol={{ xl: 12 }}
       >
-        <Form.Item
+        {/* <Form.Item
           className="body-2-bold text-primaryBlue"
           label={t('organization')}
           name="organization"
@@ -128,7 +136,7 @@ export function Signup() {
               setUser({ ...user, organization: event.target.value })
             }
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -152,7 +160,7 @@ export function Signup() {
           />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           className="body-2-bold text-primaryBlue"
           label={t('greetingName')}
           name="greetingName"
@@ -172,9 +180,9 @@ export function Signup() {
               setUser({ ...user, greetingName: event.target.value })
             }
           />
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item
+        {/* <Form.Item
           className="body-2-bold text-primaryBlue"
           name="multiBusiness"
           label={t('multiBusiness')}
@@ -201,7 +209,7 @@ export function Signup() {
               {t('multiBusinessFalse')}
             </Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -337,6 +345,22 @@ export function Signup() {
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
+          name="state"
+          label={'State'}
+          rules={[
+            {
+              required: true,
+              message: 'Please choose a state'
+            }
+          ]}
+        >
+          <StateDropdown
+            onChange={value => setUser({ ...user, state: value })}
+          />
+        </Form.Item>
+
+        <Form.Item
+          className="body-2-bold text-primaryBlue"
           label={t('email')}
           name="email"
           rules={[
@@ -397,6 +421,41 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
+          className="body-2-bold text-primaryBlue questions pb-5"
+          name="survey"
+          label={t('helpUsUnderstand')}
+        >
+          {/* TODO: hook these up to user object via callback */}
+          <SignupQuestion
+            onChange={event =>
+              setUser({ ...user, stressedAboutBilling: event.target.value })
+            }
+            questionText={t('feelStressed')}
+          />
+          <SignupQuestion
+            onChange={event =>
+              setUser({ ...user, notAsMuchMoney: event.target.value })
+            }
+            questionText={t('money')}
+          />
+          <SignupQuestion
+            onChange={event =>
+              setUser({ ...user, tooMuchTime: event.target.value })
+            }
+            questionText={t('time')}
+          />
+          <SignupQuestion
+            onChange={event =>
+              setUser({
+                ...user,
+                acceptMoreSubsidyFamilies: event.target.value
+              })
+            }
+            questionText={t('acceptingMoreFamilies')}
+          />
+        </Form.Item>
+
+        {/* <Form.Item
           className="body-2-bold text-primaryBlue"
           name="passwordConfirmation"
           label={t('passwordConfirmation')}
@@ -420,6 +479,18 @@ export function Signup() {
             data-cy="passwordConfirmation"
             onChange={event =>
               setUser({ ...user, passwordConfirmation: event.target.value })
+            }
+          />
+        </Form.Item> */}
+        <Form.Item
+          className="body-2-bold text-primaryBlue questions"
+          name=""
+          label={'What are you hoping to get from using Pie for Providers?'}
+        >
+          <TextArea
+            rows={3}
+            onChange={event =>
+              setUser({ ...user, getFromPie: event.target.value })
             }
           />
         </Form.Item>
@@ -451,8 +522,12 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item wrapperCol={{ md: 8 }} className="text-center">
-          <PaddedButton data-cy="signupBtn" text={t('signup')} />
+        <Form.Item className="text-center">
+          <PaddedButton
+            data-cy="signupBtn"
+            text={t('next')}
+            classes="bg-green1 w-full"
+          />
         </Form.Item>
       </Form>
     </main>
