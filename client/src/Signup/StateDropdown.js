@@ -1,10 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const { Option } = Select
 
 function StateDropdown({ onChange }) {
+  const { t } = useTranslation()
   const stateOptions = [
     { value: 'AL', displayName: 'Alabama' },
     { value: 'AK', displayName: 'Alaska' },
@@ -59,7 +61,11 @@ function StateDropdown({ onChange }) {
     { value: 'WY', displayName: 'Wyoming' }
   ]
   return (
-    <Select className="text-left" placeholder="Choose one" onChange={onChange}>
+    <Select
+      className="text-left"
+      placeholder={t('chooseOne')}
+      onChange={onChange}
+    >
       {stateOptions.map(state => (
         <Option key={state.value} value={state.value}>
           {state.displayName}
