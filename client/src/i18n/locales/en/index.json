@@ -250,6 +250,8 @@
   "removeCheckInTime": "Remove check-in time",
 
   "helpUsUnderstand": "Help us understand your current experience managing subsidy*",
+  "state": "State",
+  "chooseOne": "Choose one",
   "true": "True",
   "mostlyTrue": "Mostly true",
   "mostlyFalse": "Mostly false",

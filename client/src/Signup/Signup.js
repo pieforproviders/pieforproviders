@@ -90,7 +90,7 @@ export function Signup() {
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
-        <h2 className="eyebrow-small mb-2">{t('signupNote')}</h2>
+        <h2 className="eyebrow-small mb-5">{t('signupNote')}</h2>
         <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
@@ -269,7 +269,7 @@ export function Signup() {
         <Form.Item
           className="body-2-bold text-primaryBlue"
           name="state"
-          label={'State'}
+          label={t('state')}
           rules={[
             {
               required: true,
