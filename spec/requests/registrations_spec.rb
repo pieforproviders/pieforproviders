@@ -100,7 +100,6 @@ RSpec.describe 'POST /signup', type: :request do
       expect(JSON.parse(response.body)['detail']['password'].first).to eq("can't be blank")
       expect(JSON.parse(response.body)['detail']['full_name'].first).to eq("can't be blank")
       expect(JSON.parse(response.body)['detail']['language'].first).to eq("can't be blank")
-      expect(JSON.parse(response.body)['detail']['organization'].first).to eq("can't be blank")
       expect(JSON.parse(response.body)['detail']['timezone'].first).to eq("can't be blank")
     end
   end
