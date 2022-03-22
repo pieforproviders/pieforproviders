@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-// import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
 import '_assets/styles/form-overrides.css'
+import '_assets/styles/next-button-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
@@ -49,9 +49,7 @@ export function Signup() {
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
-    // eslint-disable-next-line no-debugger
-    debugger
-    // setIsMultiBusiness(multiBusiness)
+
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -422,37 +420,43 @@ export function Signup() {
 
         <Form.Item
           className="body-2-bold text-primaryBlue questions pb-5"
-          name="survey"
           label={t('helpUsUnderstand')}
         >
-          {/* TODO: hook these up to user object via callback */}
-          <SignupQuestion
-            onChange={event =>
-              setUser({ ...user, stressedAboutBilling: event.target.value })
-            }
-            questionText={t('feelStressed')}
-          />
-          <SignupQuestion
-            onChange={event =>
-              setUser({ ...user, notAsMuchMoney: event.target.value })
-            }
-            questionText={t('money')}
-          />
-          <SignupQuestion
-            onChange={event =>
-              setUser({ ...user, tooMuchTime: event.target.value })
-            }
-            questionText={t('time')}
-          />
-          <SignupQuestion
-            onChange={event =>
-              setUser({
-                ...user,
-                acceptMoreSubsidyFamilies: event.target.value
-              })
-            }
-            questionText={t('acceptingMoreFamilies')}
-          />
+          <Form.Item name="feelStressedQuestion">
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, stressedAboutBilling: event.target.value })
+              }
+              questionText={t('feelStressed')}
+            />
+          </Form.Item>
+          <Form.Item name="moneyQuestion">
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, notAsMuchMoney: event.target.value })
+              }
+              questionText={t('money')}
+            />
+          </Form.Item>
+          <Form.Item name="timeQuestion">
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, tooMuchTime: event.target.value })
+              }
+              questionText={t('time')}
+            />
+          </Form.Item>
+          <Form.Item name="acceptingMoreQuestion">
+            <SignupQuestion
+              onChange={event =>
+                setUser({
+                  ...user,
+                  acceptMoreSubsidyFamilies: event.target.value
+                })
+              }
+              questionText={t('acceptingMoreFamilies')}
+            />
+          </Form.Item>
         </Form.Item>
 
         {/* <Form.Item
@@ -526,7 +530,7 @@ export function Signup() {
           <PaddedButton
             data-cy="signupBtn"
             text={t('next')}
-            classes="bg-green1 w-full"
+            classes="bg-green1 w-full next-button"
           />
         </Form.Item>
       </Form>
