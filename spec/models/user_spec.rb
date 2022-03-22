@@ -10,9 +10,7 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of(:email) }
   it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
   it { is_expected.to validate_presence_of(:full_name) }
-  it { is_expected.to validate_presence_of(:greeting_name) }
   it { is_expected.to validate_presence_of(:language) }
-  it { is_expected.to validate_presence_of(:organization) }
   it { is_expected.to validate_uniqueness_of(:phone_number).ignoring_case_sensitivity }
   it { is_expected.to validate_presence_of(:timezone) }
   it { is_expected.to validate_presence_of(:service_agreement_accepted) }
