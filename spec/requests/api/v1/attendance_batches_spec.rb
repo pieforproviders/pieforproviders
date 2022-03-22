@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
-  let!(:logged_in_user) { create(:confirmed_user) }
+  let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:approval) { create(:approval, num_children: 3, business: business) }
   let!(:children) { approval.children }

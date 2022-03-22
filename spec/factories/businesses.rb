@@ -17,11 +17,13 @@ FactoryBot.define do
     end
 
     trait :nebraska_ldds do
+      user factory: %i[confirmed_user nebraska]
       zipcode { '68123' }
       county { 'Douglas' }
     end
 
     trait :nebraska_other do
+      user factory: %i[confirmed_user nebraska]
       zipcode { '69201' }
       county { 'Cherry' }
     end
@@ -77,18 +79,21 @@ FactoryBot.define do
     end
 
     trait :nebraska_license_exempt_home_ds do
+      user factory: %i[confirmed_user nebraska]
       license_type { 'license_exempt_home' }
       zipcode { '68123' }
       county { 'Douglas' }
     end
 
     trait :nebraska_license_exempt_home_other do
+      user factory: %i[confirmed_user nebraska]
       license_type { 'license_exempt_home' }
       zipcode { '69201' }
       county { 'Cherry' }
     end
 
     trait :nebraska_family_in_home do
+      user factory: %i[confirmed_user nebraska]
       license_type { 'family_in_home' }
       zipcode { '68123' }
       county { 'Douglas' }

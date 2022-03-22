@@ -18,8 +18,8 @@ APR_1 = Date.new(THIS_YEAR, 4, 1)
 JUN_30 = Date.new(THIS_YEAR, 6, 30)
 
 # minimum birthdates (ages)
-MIN_BIRTHDAY = (Time.current - 2.weeks)
-MAX_BIRTHDAY = (Time.current - 14.years)
+MIN_BIRTHDAY = 2.weeks.ago
+MAX_BIRTHDAY = 14.years.ago
 
 # Use puts to show the number of records in the database for a given class
 def puts_records_in_db(klass)
@@ -54,6 +54,8 @@ puts_records_in_db(IllinoisRate)
   language: 'es',
   opt_in_email: false,
   opt_in_text: false,
+  state: 'NE',
+  get_from_pie: 'fame',
   organization: 'Pie for Providers',
   password: 'testpass1234!',
   password_confirmation: 'testpass1234!',
@@ -69,6 +71,8 @@ puts_records_in_db(IllinoisRate)
   language: 'en',
   opt_in_email: true,
   opt_in_text: true,
+  state: 'IL',
+  get_from_pie: 'fame',
   organization: 'Pie for Providers',
   password: 'testpass1234!',
   password_confirmation: 'testpass1234!',
@@ -85,6 +89,8 @@ puts_records_in_db(IllinoisRate)
   language: 'en',
   opt_in_email: true,
   opt_in_text: true,
+  state: 'NE',
+  get_from_pie: 'fame',
   organization: 'Nebraska Child Care',
   password: 'testpass1234!',
   password_confirmation: 'testpass1234!',
