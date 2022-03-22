@@ -249,7 +249,7 @@
   "addCheckInTime": "Add check-in time",
   "removeCheckInTime": "Remove check-in time",
 
-  "helpUsUnderstand": "Help us understand your current experience managing subsidy",
+  "helpUsUnderstand": "Help us understand your current experience managing subsidy*",
   "true": "True",
   "mostlyTrue": "Mostly true",
   "mostlyFalse": "Mostly false",
@@ -262,5 +262,5 @@
   "next": "Next",
   "alreadyHaveAccount": "Already have an account?",
   "dashboardBlankMessage": "Once you create your account, your dashboard will remain blank until we update it with more information.",
-  "learnMore": "To learn more about Pie for Providers, go to www.pieforproviders.com"
+  "learnMore": "To learn more about Pie for Providers, go to:"
 }
