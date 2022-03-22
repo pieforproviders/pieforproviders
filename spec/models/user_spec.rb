@@ -127,14 +127,14 @@ end
 #  encrypted_password           :string           default(""), not null
 #  full_name                    :string           not null
 #  get_from_pie                 :text
-#  greeting_name                :string           not null
+#  greeting_name                :string
 #  language                     :string           not null
 #  last_sign_in_at              :datetime
 #  last_sign_in_ip              :inet
 #  not_as_much_money            :text
 #  opt_in_email                 :boolean          default(TRUE), not null
 #  opt_in_text                  :boolean          default(TRUE), not null
-#  organization                 :string           not null
+#  organization                 :string
 #  phone_number                 :string
 #  phone_type                   :string
 #  remember_created_at          :datetime
