@@ -249,7 +249,7 @@
   "addCheckInTime": "Añadir timpo de entrada",
   "removeCheckInTime": "Eliminar timpo de entrada",
 
-  "helpUsUnderstand": "Ayúdanos a entender tu experiencia actual con la gestión del subsidio.",
+  "helpUsUnderstand": "Ayúdanos a entender tu experiencia actual con la gestión del subsidio*",
   "true": "Verdad",
   "mostlyTrue": "Más o menos verdad",
   "mostlyFalse": "Más o menos falso",
@@ -262,6 +262,5 @@
   "next": "Próximo",
   "alreadyHaveAccount": "¿Ya tienes una cuenta?",
   "dashboardBlankMessage": "Una vez que creas tu cuenta, tu tablero estará vacío hasta que lo actualizamos con más información.",
-  "learnMore": "Para aprender más sobre Pie for Providers, vaya a www.pieforproviders.com"
-
+  "learnMore": "Para aprender más sobre Pie for Providers, vaya a:"
 }

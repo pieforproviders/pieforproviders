@@ -38,12 +38,10 @@ export function Signup() {
     tooMuchTime: null,
     getFromPie: null
   })
-  // const [multiBusiness, setMultiBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
-  // const { setIsMultiBusiness } = useMultiBusiness()
   const { t } = useTranslation()
 
   const onFinish = async () => {
@@ -76,6 +74,7 @@ export function Signup() {
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
           rel="noopener noreferrer"
+          style={{ color: '#1b82ab' }}
         >
           {t('termsOfUse')}
         </a>
@@ -112,30 +111,7 @@ export function Signup() {
         onFinish={onFinish}
         name="signup"
         className="m-20 signup"
-        // wrapperCol={{ xl: 12 }}
       >
-        {/* <Form.Item
-          className="body-2-bold text-primaryBlue"
-          label={t('organization')}
-          name="organization"
-          rules={[
-            {
-              required: true,
-              message: t('organizationRequired')
-            }
-          ]}
-        >
-          <Input
-            placeholder={t('organizationPlaceholder')}
-            autoComplete="organization"
-            data-cy="organization"
-            value={user.organization}
-            onChange={event =>
-              setUser({ ...user, organization: event.target.value })
-            }
-          />
-        </Form.Item> */}
-
         <Form.Item
           className="body-2-bold text-primaryBlue"
           label={t('fullName')}
@@ -157,57 +133,6 @@ export function Signup() {
             }
           />
         </Form.Item>
-
-        {/* <Form.Item
-          className="body-2-bold text-primaryBlue"
-          label={t('greetingName')}
-          name="greetingName"
-          rules={[
-            {
-              required: true,
-              message: t('greetingNameRequired')
-            }
-          ]}
-        >
-          <Input
-            placeholder={t('greetingNamePlaceholder')}
-            autoComplete="nickname"
-            data-cy="greetingName"
-            value={user.greetingName}
-            onChange={event =>
-              setUser({ ...user, greetingName: event.target.value })
-            }
-          />
-        </Form.Item> */}
-
-        {/* <Form.Item
-          className="body-2-bold text-primaryBlue"
-          name="multiBusiness"
-          label={t('multiBusiness')}
-          rules={[
-            {
-              required: true,
-              message: t('multiBusinessRequired')
-            }
-          ]}
-        >
-          <Select
-            style={{ textAlign: 'left' }}
-            value={multiBusiness}
-            placeholder={t('multiBusinessPlaceholder')}
-            data-cy="multiBusiness"
-            onChange={value => {
-              setMultiBusiness(value)
-            }}
-          >
-            <Option value="yes" data-cy="yesMultiBusiness">
-              {t('multiBusinessTrue')}
-            </Option>
-            <Option value="no" data-cy="noSingleBusiness">
-              {t('multiBusinessFalse')}
-            </Option>
-          </Select>
-        </Form.Item> */}
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -459,43 +384,17 @@ export function Signup() {
           </Form.Item>
         </Form.Item>
 
-        {/* <Form.Item
-          className="body-2-bold text-primaryBlue"
-          name="passwordConfirmation"
-          label={t('passwordConfirmation')}
-          dependencies={['password']}
-          hasFeedback
-          rules={[
-            { required: true, message: t('passwordConfirmationRequired') },
-            ({ getFieldValue }) => ({
-              validator(rule, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(t('passwordConfirmationMatch'))
-              }
-            })
-          ]}
-        >
-          <Input.Password
-            placeholder={t('passwordConfirmationPlaceholder')}
-            autoComplete="new-password"
-            data-cy="passwordConfirmation"
-            onChange={event =>
-              setUser({ ...user, passwordConfirmation: event.target.value })
-            }
-          />
-        </Form.Item> */}
         <Form.Item
           className="body-2-bold text-primaryBlue questions"
-          name=""
-          label={'What are you hoping to get from using Pie for Providers?'}
+          name="openSignUpQuestion"
+          label={t('hopeForP4P')}
         >
           <TextArea
             rows={3}
             onChange={event =>
               setUser({ ...user, getFromPie: event.target.value })
             }
+            className="open-signup-question"
           />
         </Form.Item>
 
@@ -533,6 +432,20 @@ export function Signup() {
             classes="bg-green1 w-full next-button"
           />
         </Form.Item>
+        <div>
+          <p className="mb-4">{t('dashboardBlankMessage')}</p>
+          <p>{t('learnMore')}</p>
+          <p>
+            <a
+              style={{ color: '#1b82ab' }}
+              href="https://www.pieforproviders.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {'www.pieforproviders.com'}
+            </a>
+          </p>
+        </div>
       </Form>
     </main>
   )

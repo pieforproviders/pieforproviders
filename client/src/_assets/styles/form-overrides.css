@@ -38,3 +38,7 @@
   padding-left: 0;
   padding-bottom: 0.5rem
 }
+
+.open-signup-question.ant-input {
+  border-radius: 5px;
+}
