@@ -28,10 +28,8 @@ class User < UuidApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
   validates :get_from_pie, presence: true
-  validates :greeting_name, presence: true
   validates :language, presence: true
   validates :not_as_much_money, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False', nil] }
-  validates :organization, presence: true
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
   validates :phone_number, uniqueness: true, allow_nil: true
