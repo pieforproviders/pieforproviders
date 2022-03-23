@@ -63,9 +63,9 @@
 }
 
 .action-icon {
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
-.actionsButton {
-    min-width: 126px;
+.actions-button {
+    min-width: 7.875rem;
 }
