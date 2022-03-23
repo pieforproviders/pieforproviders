@@ -301,5 +301,8 @@
   "enterAmount": "Enter amount",
   "calculatedBy": "Calculated by",
   "pieForProvidersHasCalculated": "Pie for Providers has calculated your subsidy revenue for the month, based on attendance and state-specific rules.",
-  "paymentFailed": "We're sorry, but something went wrong recording the payment. Please enter the information and try again."
+  "paymentFailed": "We're sorry, but something went wrong recording the payment. Please enter the information and try again.",
+  "paymentRecordedMessage": "Looks like you've already recorded a payment for this month!",
+  "paymentRecordedHelpMessage": "If you want us to make a change, or have any questions, email us at ",
+  "savePayment": "Save payment"
 }

@@ -2,14 +2,25 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 
-export function ActionLink({ onClick, text = '', classes = '', children }) {
+export function ActionLink({
+  onClick,
+  text = '',
+  classes = '',
+  children,
+  href
+}) {
   const handleClick = e => {
     e.preventDefault()
     onClick()
   }
   return (
     <>
-      <Button onClick={handleClick} className={`${classes} mt-1`} type="link">
+      <Button
+        onClick={!href ? handleClick : undefined}
+        href={href}
+        className={`${classes} mt-1`}
+        type="link"
+      >
         {text || children}
       </Button>
     </>
@@ -17,8 +28,9 @@ export function ActionLink({ onClick, text = '', classes = '', children }) {
 }
 
 ActionLink.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   text: PropTypes.string,
   children: PropTypes.node,
-  classes: PropTypes.string
+  classes: PropTypes.string,
+  href: PropTypes.string
 }
