@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Alert, Table, Tooltip, Grid } from 'antd'
-import PaymentDataCell from './paymentDataCell'
+import { Alert, Table, Tooltip, Grid, Typography } from 'antd'
+import PaymentDataCell from './PaymentDataCell'
 import PropTypes from 'prop-types'
 import '_assets/styles/payment-table-overrides.css'
 import pieSliceLogo from '../_assets/pieSliceLogo.svg'
+import { SectionMessage } from '_shared/SectionMessage'
+import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
+import { ActionLink } from '../_shared/ActionLink'
 
 const { useBreakpoint } = Grid
 export function PaymentModal({
@@ -13,7 +16,8 @@ export function PaymentModal({
   lastMonth,
   childPayments,
   setChildPayments,
-  isFailedPaymentRequest
+  isFailedPaymentRequest,
+  isPaymentSubmitted
 }) {
   const { cases } = useSelector(state => state)
   const { t } = useTranslation()
@@ -28,9 +32,10 @@ export function PaymentModal({
   }, [])
 
   useEffect(() => {
-    calculateTotalPayments()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [childPayments])
+    let updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
+    updatedTotal = Math.round(updatedTotal * 100) / 100
+    setTotalPayment(updatedTotal)
+  }, [childPayments, setTotalPayment])
 
   function initChildPayments() {
     let payments = {}
@@ -42,12 +47,6 @@ export function PaymentModal({
 
     setChildPayments(payments)
     setOriginalPayments(payments)
-  }
-
-  function calculateTotalPayments() {
-    let updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
-    updatedTotal = Math.round(updatedTotal * 100) / 100
-    setTotalPayment(updatedTotal)
   }
 
   function updateCurrentRowIndex(childID) {
@@ -169,6 +168,19 @@ export function PaymentModal({
     />
   )
 
+  const paymentSubmittedMessage = (
+    <SectionMessage title={t('paymentRecordedMessage')} centered>
+      <Typography.Text className="text-sm">
+        {t('paymentRecordedHelpMessage')}
+      </Typography.Text>
+      <ActionLink
+        href={`mailto:${PIE_FOR_PROVIDERS_EMAIL}`}
+        text={PIE_FOR_PROVIDERS_EMAIL}
+        classes="p-0"
+      ></ActionLink>
+    </SectionMessage>
+  )
+
   const monthNames = [
     'jan',
     'feb',
@@ -213,7 +225,7 @@ export function PaymentModal({
 
       <div className="mt-4 mb-2 eyebrow-small">{t('step2')}</div>
       <p className="mb-4 body-1">{t('childrenPayment')}</p>
-      {table}
+      {!isPaymentSubmitted ? table : paymentSubmittedMessage}
     </div>
   )
 }
@@ -223,5 +235,6 @@ PaymentModal.propTypes = {
   lastMonth: PropTypes.instanceOf(Date).isRequired,
   childPayments: PropTypes.object.isRequired,
   setChildPayments: PropTypes.func.isRequired,
-  isFailedPaymentRequest: PropTypes.bool.isRequired
+  isFailedPaymentRequest: PropTypes.bool.isRequired,
+  isPaymentSubmitted: PropTypes.bool.isRequired
 }
