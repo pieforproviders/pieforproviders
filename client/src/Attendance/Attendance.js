@@ -274,26 +274,41 @@ export function Attendance() {
     }
   }
 
-  useEffect(() => {
-    const getCaseData = async () => {
-      const response = await makeRequest({
+  const getCaseData = async businessId => {
+    let request
+    if (businessId) {
+      request = {
+        type: 'get',
+        url: '/api/v1/children',
+        headers: { Authorization: token },
+        data: {
+          child: {
+            site: businessId
+          }
+        }
+      }
+    } else {
+      request = {
         type: 'get',
         url: '/api/v1/children',
         headers: { Authorization: token }
-      })
-
-      if (response.ok) {
-        const parsedResponse = await response.json()
-        const caseData = reduceTableData(parsedResponse)
-        const reducedAttendanceData = reduceAttendanceData(caseData)
-
-        dispatch(setCaseData(caseData))
-        latestAttendanceData.current = reducedAttendanceData
-        setAttendanceData(reducedAttendanceData)
-        setTableData(caseData)
       }
     }
+    const response = await makeRequest(request)
 
+    if (response.ok) {
+      const parsedResponse = await response.json()
+      const caseData = reduceTableData(parsedResponse)
+      const reducedAttendanceData = reduceAttendanceData(caseData)
+
+      dispatch(setCaseData(caseData))
+      latestAttendanceData.current = reducedAttendanceData
+      setAttendanceData(reducedAttendanceData)
+      setTableData(caseData)
+    }
+  }
+
+  useEffect(() => {
     if (cases.length === 0) {
       getCaseData()
     }
@@ -328,6 +343,7 @@ export function Attendance() {
         type="error"
         closable
       />
+      {/* TODO: put in filter component here, and pass getCaseData as well as all the state representations of caseData (in the redux store, in the useState, etc.) */}
       <Table
         dataSource={tableData.filter(c => c.active)}
         columns={columns}
