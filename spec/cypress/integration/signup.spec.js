@@ -8,7 +8,6 @@ const email = internet.email(firstName)
 const password = random.alphaNumeric(15)
 // enforces XXX-XXX-XXXX format, which our front-end is enforcing in the application
 const phoneNumber = phone.phoneNumberFormat()
-// const orgName = company.companyName()
 
 describe('Signup', () => {
   beforeEach(() => {

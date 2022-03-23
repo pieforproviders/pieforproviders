@@ -74,7 +74,7 @@ export function Signup() {
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color: '#1b82ab' }}
+          className="text-blue5"
         >
           {t('termsOfUse')}
         </a>
@@ -442,7 +442,7 @@ export function Signup() {
           <p>{t('learnMore')}</p>
           <p>
             <a
-              style={{ color: '#1b82ab' }}
+              className="text-blue5"
               href="https://www.pieforproviders.com/"
               target="_blank"
               rel="noopener noreferrer"
