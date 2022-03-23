@@ -10,6 +10,7 @@ import '_assets/styles/payment-table-overrides.css'
 import PaymentModal from '../Payment'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
+import dayjs from 'dayjs'
 
 const { useBreakpoint } = Grid
 const { Option } = Select
@@ -35,11 +36,18 @@ export default function DashboardTitle({
   const [isPaymentSuccessOpen, setPaymentSuccessOpen] = useState(false)
   const { makeRequest } = useApiResponse()
   const [isFailedPaymentRequest, setIsFailedPaymentRequest] = useState(false)
+  const [isPaymentSubmitted, setIsPaymentSubmitted] = useState(false)
   const { token } = useSelector(state => ({ token: state.auth.token }))
   const matchAndReplaceDate = (dateString = '') => {
     const match = dateString.match(/^[A-Za-z]+/)
     return match ? dateString.replace(match[0], t(match[0].toLowerCase())) : ''
   }
+
+  useEffect(() => {
+    checkIfPaymentRecorded()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const lastMonth = new Date()
   lastMonth.setMonth(lastMonth.getMonth() - 1)
   const renderMonthSelector = () => (
@@ -121,6 +129,31 @@ export default function DashboardTitle({
     </Dropdown>
   )
 
+  const checkIfPaymentRecorded = async () => {
+    const date = dayjs().subtract(1, 'month')
+    const response = await makeRequest({
+      type: 'get',
+      url: '/api/v1/payments?filter_date=' + date.format('YYYY-MM-DD'),
+      headers: {
+        Authorization: token
+      },
+      data: {}
+    })
+
+    if (!response.ok) {
+      console.log('error with response')
+      return
+    }
+
+    const parsedResponse = await response.json()
+    if (parsedResponse.length === 0) {
+      setIsPaymentSubmitted(false)
+      return
+    }
+
+    setIsPaymentSubmitted(true)
+  }
+
   const addPayment = async () => {
     const paymentsBatch = Object.entries(childPayments).flatMap(data => {
       return {
@@ -145,6 +178,7 @@ export default function DashboardTitle({
       setPaymentModalVisible(false)
       setIsFailedPaymentRequest(false)
       setPaymentSuccessOpen(true)
+      setIsPaymentSubmitted(true)
       return
     }
 
@@ -163,15 +197,22 @@ export default function DashboardTitle({
       }}
       width={1000}
       footer={
-        <div className="flex justify-center">
+        <div
+          className={`flex justify-center ${
+            isPaymentSubmitted ? ' mt-56' : ''
+          }`}
+        >
           <Button
             type="primary"
             shape="round"
             size="large"
             className="record-payment-button"
+            disabled={isPaymentSubmitted}
             onClick={addPayment}
           >
-            {t('recordPaymentOf')} ${totalPayment.toFixed()}
+            {isPaymentSubmitted
+              ? `${t('savePayment')}`
+              : `${t('recordPaymentOf')} ${totalPayment.toFixed()}`}
           </Button>
         </div>
       }
@@ -182,6 +223,7 @@ export default function DashboardTitle({
         childPayments={childPayments}
         setChildPayments={setChildPayments}
         isFailedPaymentRequest={isFailedPaymentRequest}
+        isPaymentSubmitted={isPaymentSubmitted}
       />
     </Modal>
   )
