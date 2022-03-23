@@ -90,8 +90,8 @@ export function Signup() {
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
-        <h2 className="eyebrow-small mb-5">{t('signupNote')}</h2>
-        <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
+        <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
+        <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
           {t('login')}
@@ -200,7 +200,7 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue mb-0 text-center"
+          className="mb-0 text-center body-2-bold text-primaryBlue"
           label={t('preferredLanguage')}
           name="language"
           valuePropName="checked"
@@ -344,7 +344,7 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue questions pb-5"
+          className="pb-5 body-2-bold text-primaryBlue questions"
           label={t('helpUsUnderstand')}
         >
           <Form.Item name="feelStressedQuestion">
@@ -353,6 +353,7 @@ export function Signup() {
                 setUser({ ...user, stressedAboutBilling: event.target.value })
               }
               questionText={t('feelStressed')}
+              tag="stressed"
             />
           </Form.Item>
           <Form.Item name="moneyQuestion">
@@ -361,6 +362,7 @@ export function Signup() {
                 setUser({ ...user, notAsMuchMoney: event.target.value })
               }
               questionText={t('money')}
+              tag="money"
             />
           </Form.Item>
           <Form.Item name="timeQuestion">
@@ -369,6 +371,7 @@ export function Signup() {
                 setUser({ ...user, tooMuchTime: event.target.value })
               }
               questionText={t('time')}
+              tag="time"
             />
           </Form.Item>
           <Form.Item name="acceptingMoreQuestion">
@@ -380,6 +383,7 @@ export function Signup() {
                 })
               }
               questionText={t('acceptingMoreFamilies')}
+              tag="moreFamilies"
             />
           </Form.Item>
         </Form.Item>
@@ -395,6 +399,7 @@ export function Signup() {
               setUser({ ...user, getFromPie: event.target.value })
             }
             className="open-signup-question"
+            data-cy="open-signup-question"
           />
         </Form.Item>
 
