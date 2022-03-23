@@ -3,7 +3,7 @@ class AddStateToUser < ActiveRecord::Migration[6.1]
     add_column :users, :state, :string, null: true, limit: 2
 
     User.all.map do |user|
-      user.state = user&.businesses&.first&.state
+      user.state = user&.businesses&.first&.state || 'NE'
       user.save!
     end
   end
