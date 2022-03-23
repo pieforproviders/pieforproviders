@@ -6,6 +6,7 @@ import PaymentDataCell from './paymentDataCell'
 import PropTypes from 'prop-types'
 import '_assets/styles/payment-table-overrides.css'
 import pieSliceLogo from '../_assets/pieSliceLogo.svg'
+import { useApiResponse } from '_shared/_hooks/useApiResponse'
 
 const { useBreakpoint } = Grid
 export function PaymentModal({
@@ -21,6 +22,8 @@ export function PaymentModal({
   const [originalPayments, setOriginalPayments] = useState({})
   const screens = useBreakpoint()
   const isSmallScreen = (screens.sm || screens.xs) && !screens.md
+  const { makeRequest } = useApiResponse()
+  const { token } = useSelector(state => ({ token: state.auth.token }))
 
   useEffect(() => {
     initChildPayments()
@@ -168,6 +171,19 @@ export function PaymentModal({
       }}
     />
   )
+
+  const checkIfPaymentRecorded = async () => {
+    const response = await makeRequest({
+      type: 'get',
+      url: '/api/v1/payments',
+      headers: {
+        Authorization: token
+      },
+      data: {
+        payments_batch: paymentsBatch
+      }
+    })
+  }
 
   const monthNames = [
     'jan',

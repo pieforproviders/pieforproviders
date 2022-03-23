@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Button, Grid, Typography, Select, Menu, Dropdown, Modal } from 'antd'
 import { LeftOutlined, DownOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'Z
 import '_assets/styles/dashboard-overrides.css'
 import '_assets/styles/payment-table-overrides.css'
 import PaymentModal from '../Payment'
