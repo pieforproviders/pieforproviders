@@ -116,7 +116,7 @@ export default function DashboardTitle({
         id="actionsDropdownButton"
         name="recordNew"
         onClick={updateIsActionsDropdownOpen}
-        className="actionsButton"
+        className="actions-button"
       >
         {t('recordDropdown')}
         {isActionsDropdownOpen ? (
