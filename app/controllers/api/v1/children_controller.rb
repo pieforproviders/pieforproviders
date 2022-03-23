@@ -59,7 +59,14 @@ module Api
       def child_params
         attributes = []
         attributes += %i[deleted_at] if current_user.admin?
-        attributes += %i[date_of_birth full_name first_name last_name business_id active last_active_date inactive_reason]
+        attributes += %i[date_of_birth
+                         full_name
+                         first_name
+                         last_name
+                         business_id
+                         active
+                         last_active_date
+                         inactive_reason]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]
         params.require(:child).permit(attributes)
       end
