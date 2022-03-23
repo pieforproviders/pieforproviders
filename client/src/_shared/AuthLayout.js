@@ -14,7 +14,6 @@ export function AuthLayout({
     window.MiniProfiler?.pageTransition()
   }, [])
   const { t, i18n } = useTranslation()
-  console.log(ContentComponent, 'content component')
 
   return (
     <Row className="h-screen">
