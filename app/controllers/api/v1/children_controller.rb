@@ -9,7 +9,11 @@ module Api
 
       # GET /children
       def index
-        @children = policy_scope(Child.includes(business: :user))
+        @children = if params.keys.include?('child') && child_params[:site]
+                      policy_scope(Child.includes(business: :user).where(business: Business.find(child_params[:site])))
+                    else
+                      policy_scope(Child.includes(business: :user))
+                    end
 
         render json: ChildBlueprint.render(@children, view: :cases)
       end
@@ -59,14 +63,17 @@ module Api
       def child_params
         attributes = []
         attributes += %i[deleted_at] if current_user.admin?
-        attributes += %i[date_of_birth
-                         full_name
-                         first_name
-                         last_name
-                         business_id
-                         active
-                         last_active_date
-                         inactive_reason]
+        attributes += %i[
+          date_of_birth
+          full_name
+          first_name
+          last_name
+          business_id
+          active
+          last_active_date
+          inactive_reason
+          site
+        ]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]
         params.require(:child).permit(attributes)
       end
