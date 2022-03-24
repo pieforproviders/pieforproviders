@@ -43,7 +43,7 @@ export function AuthLayout({
               <img
                 alt={t('pieforProvidersLogoAltText')}
                 src={pieFullTanLogo}
-                className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12"
+                className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12 max-w-40"
               />
             </header>
             <div className="text-center md:text-left">
