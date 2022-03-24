@@ -63,7 +63,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 ---
 
 <details>
-  <summary>Local Setup (Option One: Direct Install)</summary>
+  <summary>Local Setup (Option One: direct install)</summary>
 
 ---
 **for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript**
