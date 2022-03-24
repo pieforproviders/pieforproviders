@@ -23,21 +23,20 @@ class User < UuidApplicationRecord
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 
-  validates :accept_more_subsidy_families, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False', nil] }
+  validates :accept_more_subsidy_families, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
-  validates :get_from_pie, presence: true
   validates :language, presence: true
-  validates :not_as_much_money, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False', nil] }
+  validates :not_as_much_money, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
   validates :phone_number, uniqueness: true, allow_nil: true
   validates :service_agreement_accepted, presence: true
   validates :state, presence: true
-  validates :stressed_about_billing, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False', nil] }
+  validates :stressed_about_billing, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :timezone, presence: true
-  validates :too_much_time, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False', nil] }
+  validates :too_much_time, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
 
   scope :active, -> { where(active: true) }
 
