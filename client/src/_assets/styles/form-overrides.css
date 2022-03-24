@@ -13,6 +13,10 @@
   padding-left: 8px;
 }
 
+.phone .ant-form-item-label > label {
+  padding-left: 0;
+}
+
 .ant-form-item-explain {
   text-align: left;
 }
@@ -39,7 +43,7 @@
   padding-bottom: 0.5rem
 }
 
-.questions .ant-form-item-label > label::before {
+.questions .ant-form-item-label > label::before, .phone .ant-form-item-label > label::before {
   display: inline-block;
   margin-right: 4px;
   color: #D23C2A;

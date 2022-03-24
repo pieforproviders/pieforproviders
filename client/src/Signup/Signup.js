@@ -135,15 +135,9 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue"
+          className="body-2-bold text-primaryBlue phone"
           name="phone"
           label={`${t('phone')} (${t('phoneNote')})`}
-          rules={[
-            {
-              required: true,
-              message: t('phoneRequired')
-            }
-          ]}
         >
           <Input.Group compact>
             <label htmlFor="rc_select_1" className="sr-only">
@@ -181,6 +175,10 @@ export function Signup() {
                 {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
                   message: t('phoneNumberInvalid')
+                },
+                {
+                  required: true,
+                  message: t('phoneRequired')
                 }
               ]}
               hasFeedback={!!validationErrors?.phone_number}
