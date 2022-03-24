@@ -476,7 +476,7 @@ export function Signup() {
           <PaddedButton
             data-cy="signupBtn"
             text={t('next')}
-            classes="bg-green1 w-full next-button"
+            classes="bg-green1 border-green1 w-full next-button"
           />
         </Form.Item>
         <div>
