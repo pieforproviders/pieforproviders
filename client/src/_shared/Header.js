@@ -157,7 +157,7 @@ export function Header() {
       <img
         alt={t('pieforProvidersLogoAltText')}
         src={pieSliceLogo}
-        className="w-8 mr-2"
+        className="w-8 mr-2 max-h-40"
       />
       {windowWidth > 768 ? (
         <div className="flex-grow ml-10">
