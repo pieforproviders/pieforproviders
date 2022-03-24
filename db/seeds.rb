@@ -61,7 +61,11 @@ puts_records_in_db(IllinoisRate)
   password_confirmation: 'testpass1234!',
   service_agreement_accepted: true,
   timezone: 'Central Time (US & Canada)',
-  admin: true
+  admin: true,
+  stressed_about_billing: "True",
+  accept_more_subsidy_families: "True",
+  not_as_much_money: "True",
+  too_much_time: "True"
 )
 
 @user_kate = User.where(email: 'test@test.com').first_or_create(
@@ -79,7 +83,11 @@ puts_records_in_db(IllinoisRate)
   phone_number: '8888888888',
   phone_type: 'cell',
   service_agreement_accepted: true,
-  timezone: 'Central Time (US & Canada)'
+  timezone: 'Central Time (US & Canada)',
+  stressed_about_billing: "True",
+  accept_more_subsidy_families: "True",
+  not_as_much_money: "True",
+  too_much_time: "True"
 )
 
 @user_nebraska = User.where(email: 'nebraska@test.com').first_or_create(
@@ -95,7 +103,11 @@ puts_records_in_db(IllinoisRate)
   password: 'testpass1234!',
   password_confirmation: 'testpass1234!',
   service_agreement_accepted: true,
-  timezone: 'Mountain Time (US & Canada)'
+  timezone: 'Mountain Time (US & Canada)',
+  stressed_about_billing: "True",
+  accept_more_subsidy_families: "True",
+  not_as_much_money: "True",
+  too_much_time: "True"
 )
 
 @user_admin.confirm
