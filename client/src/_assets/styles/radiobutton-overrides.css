@@ -1,0 +1,16 @@
+.signup-question label.ant-radio-button-wrapper {
+ color: #676767;
+ font-weight: 400;
+}
+
+.signup-question label.ant-radio-button-wrapper.ant-radio-button-wrapper-checked {
+  color: #006C9E
+}
+
+.signup-question .ant-radio-button-wrapper:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
+.signup-question .ant-radio-button-wrapper:first-child {
+  border-radius: 5px 0 0 5px;
+}

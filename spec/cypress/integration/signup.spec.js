@@ -1,14 +1,13 @@
 import faker from 'faker'
 import { createSelector } from '../utils'
 
-const { name, internet, phone, company, random } = faker
+const { name, internet, phone, random } = faker
 const firstName = name.firstName()
 const fullName = name.findName(firstName)
 const email = internet.email(firstName)
 const password = random.alphaNumeric(15)
 // enforces XXX-XXX-XXXX format, which our front-end is enforcing in the application
 const phoneNumber = phone.phoneNumberFormat()
-const orgName = company.companyName()
 
 describe('Signup', () => {
   beforeEach(() => {
@@ -18,17 +17,26 @@ describe('Signup', () => {
       url: '/signup'
     }).as('signup')
     cy.visit('/signup')
-    cy.get(createSelector('organization')).type(orgName)
     cy.get(createSelector('name')).type(fullName)
-    cy.get(createSelector('greetingName')).type(firstName)
-    cy.get(createSelector('multiBusiness')).click()
-    cy.get(createSelector('yesMultiBusiness')).click()
     cy.get(createSelector('phoneType')).click()
     cy.get(createSelector('homePhone')).click()
+    cy.get(createSelector('phoneNumber')).type(phoneNumber)
     cy.get(createSelector('languageEs')).parent().parent().click() // this is annoying but it's because of nested ant design elements
+    cy.get(createSelector('state')).click()
+    cy.get(createSelector('CO')).click()
+    cy.get(createSelector('email')).type(email)
     cy.get(createSelector('password')).type(password)
-    cy.get(createSelector('passwordConfirmation')).type(password)
+    cy.get(createSelector('stressed-mostly-true')).parent().parent().click()
+    cy.get(createSelector('money-false')).parent().parent().click()
+    cy.get(createSelector('time-true')).parent().parent().click()
+    cy.get(createSelector('moreFamilies-mostly-false'))
+      .parent()
+      .parent()
+      .click()
+    cy.get(createSelector('open-signup-question')).type('Some Words')
     cy.get(createSelector('terms')).check()
+    cy.get(createSelector('signupBtn')).click()
+    cy.location('pathname').should('eq', '/signup')
   })
   describe('an existing user tries to sign up with the same data', () => {
     beforeEach(() => {
@@ -73,14 +81,7 @@ describe('Signup', () => {
   })
 
   describe('new user signs up', () => {
-    beforeEach(() => {
-      cy.get(createSelector('phoneType')).click()
-      cy.get(createSelector('homePhone')).click()
-      cy.get(createSelector('phoneNumber')).type(phoneNumber)
-      cy.get(createSelector('email')).type(email)
-      cy.get(createSelector('signupBtn')).click()
-      cy.location('pathname').should('eq', '/signup')
-    })
+    beforeEach(() => {})
 
     it('allows the user to sign up and displays confirmation sent info', () => {
       cy.get(createSelector('signupThanks')).should('exist')

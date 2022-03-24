@@ -18,6 +18,8 @@ class Child < UuidApplicationRecord
   validates :approvals, presence: true
   validates :date_of_birth, date_param: true, presence: true
   validates :full_name, presence: true
+  validates :first_name, presence: true
+  validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
   validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }, unless: -> { errors }
@@ -167,9 +169,11 @@ end
 #  active           :boolean          default(TRUE), not null
 #  date_of_birth    :date             not null
 #  deleted_at       :date
+#  first_name       :string           not null
 #  full_name        :string           not null
 #  inactive_reason  :string
 #  last_active_date :date
+#  last_name        :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  business_id      :uuid             not null

@@ -4,6 +4,8 @@ FactoryBot.define do
   factory :child do
     date_of_birth { (2.years.ago).strftime('%Y-%m-%d') }
     full_name { Faker::Name.name }
+    first_name { Faker::Name.first_name }
+    last_name { Faker::Name.last_name }
     business
     approvals { [create(:approval, create_children: false)] }
 
@@ -78,9 +80,11 @@ end
 #  active           :boolean          default(TRUE), not null
 #  date_of_birth    :date             not null
 #  deleted_at       :date
+#  first_name       :string           not null
 #  full_name        :string           not null
 #  inactive_reason  :string
 #  last_active_date :date
+#  last_name        :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  business_id      :uuid             not null

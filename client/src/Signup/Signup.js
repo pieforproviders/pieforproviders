@@ -5,14 +5,17 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
 import '_assets/styles/form-overrides.css'
+import '_assets/styles/next-button-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import i18n from 'i18n'
 import ConfirmationSent from './ConfirmationSent'
+import StateDropdown from './StateDropdown'
+import SignupQuestion from './SignupQuestion'
 
 const { Option } = Select
+const { TextArea } = Input
 
 /**
  * User Signup Page
@@ -21,30 +24,30 @@ const { Option } = Select
 export function Signup() {
   const [user, setUser] = useState({
     fullName: null,
-    greetingName: null,
     email: null,
     language: i18n.language,
-    organization: null,
     password: null,
-    passwordConfirmation: null,
     phoneType: 'cell',
     phoneNumber: null,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    serviceAgreementAccepted: false
+    state: null,
+    serviceAgreementAccepted: false,
+    stressedAboutBilling: null,
+    acceptMoreSubsidyFamilies: null,
+    notAsMuchMoney: null,
+    tooMuchTime: null,
+    getFromPie: null
   })
-  const [multiBusiness, setMultiBusiness] = useState(null)
   const [success, setSuccess] = useState(false)
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
-  const { setIsMultiBusiness } = useMultiBusiness()
   const { t } = useTranslation()
 
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
 
-    setIsMultiBusiness(multiBusiness)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -71,6 +74,7 @@ export function Signup() {
           href="https://www.pieforproviders.com/terms/"
           target="_blank"
           rel="noopener noreferrer"
+          className="text-blue5"
         >
           {t('termsOfUse')}
         </a>
@@ -83,9 +87,11 @@ export function Signup() {
   }
 
   return (
-    <main>
+    <main className="text-center">
       <div className="mb-8">
-        <h1 className="uppercase font-bold inline-block">{t('signup')}</h1>
+        <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
+        <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
+        <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
         {` ${t('or')} `}
         <Link to="/login" className="uppercase">
           {t('login')}
@@ -104,30 +110,8 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        wrapperCol={{ md: 12 }}
+        className="m-20 signup"
       >
-        <Form.Item
-          className="body-2-bold text-primaryBlue"
-          label={t('organization')}
-          name="organization"
-          rules={[
-            {
-              required: true,
-              message: t('organizationRequired')
-            }
-          ]}
-        >
-          <Input
-            placeholder={t('organizationPlaceholder')}
-            autoComplete="organization"
-            data-cy="organization"
-            value={user.organization}
-            onChange={event =>
-              setUser({ ...user, organization: event.target.value })
-            }
-          />
-        </Form.Item>
-
         <Form.Item
           className="body-2-bold text-primaryBlue"
           label={t('fullName')}
@@ -151,58 +135,7 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue"
-          label={t('greetingName')}
-          name="greetingName"
-          rules={[
-            {
-              required: true,
-              message: t('greetingNameRequired')
-            }
-          ]}
-        >
-          <Input
-            placeholder={t('greetingNamePlaceholder')}
-            autoComplete="nickname"
-            data-cy="greetingName"
-            value={user.greetingName}
-            onChange={event =>
-              setUser({ ...user, greetingName: event.target.value })
-            }
-          />
-        </Form.Item>
-
-        <Form.Item
-          className="body-2-bold text-primaryBlue"
-          name="multiBusiness"
-          label={t('multiBusiness')}
-          rules={[
-            {
-              required: true,
-              message: t('multiBusinessRequired')
-            }
-          ]}
-        >
-          <Select
-            style={{ textAlign: 'left' }}
-            value={multiBusiness}
-            placeholder={t('multiBusinessPlaceholder')}
-            data-cy="multiBusiness"
-            onChange={value => {
-              setMultiBusiness(value)
-            }}
-          >
-            <Option value="yes" data-cy="yesMultiBusiness">
-              {t('multiBusinessTrue')}
-            </Option>
-            <Option value="no" data-cy="noSingleBusiness">
-              {t('multiBusinessFalse')}
-            </Option>
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          className="body-2-bold text-primaryBlue"
+          className="body-2-bold text-primaryBlue phone"
           name="phone"
           label={`${t('phone')} (${t('phoneNote')})`}
         >
@@ -242,6 +175,10 @@ export function Signup() {
                 {
                   pattern: /^\d{3}-\d{3}-\d{4}$/,
                   message: t('phoneNumberInvalid')
+                },
+                {
+                  required: true,
+                  message: t('phoneRequired')
                 }
               ]}
               hasFeedback={!!validationErrors?.phone_number}
@@ -267,12 +204,18 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue mb-0 text-center"
+          className="mb-0 text-center body-2-bold text-primaryBlue"
           label={t('preferredLanguage')}
           name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
           style={{ marginBottom: '-6px' }}
+          rules={[
+            {
+              required: true,
+              message: t('preferredLanguageRequired')
+            }
+          ]}
         >
           <Radio.Group
             value={user.language}
@@ -331,6 +274,22 @@ export function Signup() {
               {t('spanish')}
             </Radio.Button>
           </Radio.Group>
+        </Form.Item>
+
+        <Form.Item
+          className="body-2-bold text-primaryBlue"
+          name="state"
+          label={t('state')}
+          rules={[
+            {
+              required: true,
+              message: 'Please choose a state'
+            }
+          ]}
+        >
+          <StateDropdown
+            onChange={value => setUser({ ...user, state: value })}
+          />
         </Form.Item>
 
         <Form.Item
@@ -395,30 +354,94 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue"
-          name="passwordConfirmation"
-          label={t('passwordConfirmation')}
-          dependencies={['password']}
-          hasFeedback
-          rules={[
-            { required: true, message: t('passwordConfirmationRequired') },
-            ({ getFieldValue }) => ({
-              validator(rule, value) {
-                if (!value || getFieldValue('password') === value) {
-                  return Promise.resolve()
-                }
-                return Promise.reject(t('passwordConfirmationMatch'))
-              }
-            })
-          ]}
+          className="flex mb-0 body-2-bold text-primaryBlue questions"
+          label={t('helpUsUnderstand')}
         >
-          <Input.Password
-            placeholder={t('passwordConfirmationPlaceholder')}
-            autoComplete="new-password"
-            data-cy="passwordConfirmation"
+          <Form.Item
+            name="feelStressedQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, stressedAboutBilling: event.target.value })
+              }
+              questionText={t('feelStressed')}
+              tag="stressed"
+            />
+          </Form.Item>
+          <Form.Item
+            name="moneyQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, notAsMuchMoney: event.target.value })
+              }
+              questionText={t('money')}
+              tag="money"
+            />
+          </Form.Item>
+          <Form.Item
+            name="timeQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
+            <SignupQuestion
+              onChange={event =>
+                setUser({ ...user, tooMuchTime: event.target.value })
+              }
+              questionText={t('time')}
+              tag="time"
+            />
+          </Form.Item>
+          <Form.Item
+            name="acceptingMoreQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
+            <SignupQuestion
+              onChange={event =>
+                setUser({
+                  ...user,
+                  acceptMoreSubsidyFamilies: event.target.value
+                })
+              }
+              questionText={t('acceptingMoreFamilies')}
+              tag="moreFamilies"
+            />
+          </Form.Item>
+        </Form.Item>
+
+        <Form.Item
+          className="body-2-bold text-primaryBlue questions"
+          name="openSignUpQuestion"
+          label={t('hopeForP4P')}
+        >
+          <TextArea
+            rows={3}
             onChange={event =>
-              setUser({ ...user, passwordConfirmation: event.target.value })
+              setUser({ ...user, getFromPie: event.target.value })
             }
+            className="open-signup-question"
+            data-cy="open-signup-question"
           />
         </Form.Item>
 
@@ -449,9 +472,27 @@ export function Signup() {
             <TermsLabel />
           </Checkbox>
         </Form.Item>
-        <Form.Item wrapperCol={{ md: 8 }} className="text-center">
-          <PaddedButton data-cy="signupBtn" text={t('signup')} />
+        <Form.Item className="text-center">
+          <PaddedButton
+            data-cy="signupBtn"
+            text={t('next')}
+            classes="bg-green1 w-full next-button"
+          />
         </Form.Item>
+        <div>
+          <p className="mb-4">{t('dashboardBlankMessage')}</p>
+          <p>{t('learnMore')}</p>
+          <p>
+            <a
+              className="text-blue5"
+              href="https://www.pieforproviders.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {'www.pieforproviders.com'}
+            </a>
+          </p>
+        </div>
       </Form>
     </main>
   )

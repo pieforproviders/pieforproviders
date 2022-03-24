@@ -172,6 +172,8 @@ RSpec.describe Child, type: :model do
     let!(:child) do
       create(:child,
              full_name: 'Parvati Patil',
+             first_name: 'Parvati',
+             last_name: 'Patil',
              date_of_birth: '2010-04-09',
              business_id: created_business.id,
              approvals_attributes: [attributes_for(:approval)])
@@ -182,6 +184,8 @@ RSpec.describe Child, type: :model do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',
+          first_name: 'Dev',
+          last_name: 'Patil',
           date_of_birth: '2015-04-09',
           business_id: created_business.id,
           approvals_attributes: [
@@ -218,6 +222,8 @@ RSpec.describe Child, type: :model do
       let(:new_child_params) do
         {
           full_name: 'Dev Patil',
+          first_name: 'Dev',
+          last_name: 'Patil',
           date_of_birth: '2015-04-09',
           business_id: created_business.id,
           approvals_attributes: [
@@ -259,9 +265,11 @@ end
 #  active           :boolean          default(TRUE), not null
 #  date_of_birth    :date             not null
 #  deleted_at       :date
+#  first_name       :string           not null
 #  full_name        :string           not null
 #  inactive_reason  :string
 #  last_active_date :date
+#  last_name        :string           not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  business_id      :uuid             not null

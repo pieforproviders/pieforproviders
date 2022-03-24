@@ -1,0 +1,4 @@
+button.next-button.ant-btn-primary:hover {
+  border-color: green;
+  background: green;
+}

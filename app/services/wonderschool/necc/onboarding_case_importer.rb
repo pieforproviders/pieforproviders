@@ -162,6 +162,8 @@ module Wonderschool
         {
           business_id: @business.id,
           full_name: @row['Full Name'],
+          first_name: @row['First Name'],
+          last_name: @row['Last Name'],
           wonderschool_id: @row['Wonderschool ID'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']

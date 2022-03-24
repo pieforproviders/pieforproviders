@@ -19,7 +19,11 @@ RSpec.describe 'POST /signup', type: :request do
         phone_type: 'cell',
         timezone: 'Eastern Time (US & Canada)',
         service_agreement_accepted: true,
-        state: 'NE'
+        state: 'NE',
+        too_much_time: 'True',
+        accept_more_subsidy_families: 'False',
+        not_as_much_money: 'Mostly True',
+        stressed_about_billing: 'Mostly False'
       }
     }
   end
@@ -37,12 +41,17 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
+<<<<<<< HEAD
   context 'with correct survey params' do
     let(:survey_params) do
       params[:user].store(:stressed_about_billing, 'True')
       params[:user].store(:too_much_time, 'Mostly True')
       params[:user].store(:accept_more_subsidy_families, 'False')
       params[:user].store(:not_as_much_money, 'Mostly False')
+=======
+  context 'with get_from_pie optional param' do
+    let(:survey_params) do
+>>>>>>> c7f6de81b12b419f39d7a2bd07c7c310a97c6eb2
       params[:user].store(:get_from_pie, 'Some stuff and more stuff.')
       params
     end
@@ -59,7 +68,11 @@ RSpec.describe 'POST /signup', type: :request do
     end
   end
 
+<<<<<<< HEAD
   context 'with incorrect survey params' do
+=======
+  context 'with invalid required survey params' do
+>>>>>>> c7f6de81b12b419f39d7a2bd07c7c310a97c6eb2
     before do
       post '/signup', params: bad_survey_params
     end
@@ -78,13 +91,21 @@ RSpec.describe 'POST /signup', type: :request do
 
     describe 'with missing required survey params' do
       let(:bad_survey_params) do
+<<<<<<< HEAD
         params[:user].delete(:get_from_pie)
+=======
+        params[:user].delete(:too_much_time)
+>>>>>>> c7f6de81b12b419f39d7a2bd07c7c310a97c6eb2
         params
       end
 
       it 'returns unprocessable entity' do
         expect(response.status).to eq 422
+<<<<<<< HEAD
         expect(JSON.parse(response.body)['detail']['get_from_pie'].first).to eq("can't be blank")
+=======
+        expect(JSON.parse(response.body)['detail']['too_much_time'].first).to eq('is not included in the list')
+>>>>>>> c7f6de81b12b419f39d7a2bd07c7c310a97c6eb2
       end
     end
   end
