@@ -61,6 +61,9 @@ module.exports = {
         bold: '700'
       }
     },
+    maxWidth: {
+      40: '10rem'
+    },
     screens: {
       xs: '360px',
       sm: '768px',
