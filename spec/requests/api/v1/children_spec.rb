@@ -30,7 +30,20 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
 
       it 'returns the correct children when a site filter is sent' do
-        get '/api/v1/children', headers: headers, params: { child: { site: user_business.id } }
+        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
+        expect(parsed_response.collect do |x|
+                 x['full_name']
+               end).not_to include(*second_business_children.pluck(:full_name))
+        expect(parsed_response.collect do |x|
+                 x['full_name']
+               end).not_to include(*other_business_children.pluck(:full_name))
+        expect(response).to match_response_schema('children')
+      end
+
+      it 'returns the correct children when multiple sites are sent in the filter' do
+        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
@@ -56,7 +69,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
       end
 
       it 'returns the correct children when a site filter is sent' do
-        get '/api/v1/children', headers: headers, params: { child: { site: user_business.id } }
+        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
@@ -65,6 +78,19 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(parsed_response.collect do |x|
                  x['full_name']
                end).not_to include(*other_business_children.pluck(:full_name))
+        expect(response).to match_response_schema('children')
+      end
+
+      it 'returns the correct children when multiple sites are sent in the filter' do
+        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
+        expect(parsed_response.collect do |x|
+                 x['full_name']
+               end).not_to include(*second_business_children.pluck(:full_name))
+        expect(parsed_response.collect do |x|
+                 x['full_name']
+               end).to include(*other_business_children.pluck(:full_name))
         expect(response).to match_response_schema('children')
       end
     end

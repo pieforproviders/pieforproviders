@@ -72,10 +72,9 @@ module Api
           active
           last_active_date
           inactive_reason
-          site
         ]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]
-        params.require(:child).permit(attributes)
+        params.require(:child).permit(attributes, site: [])
       end
 
       def make_approval_amounts
