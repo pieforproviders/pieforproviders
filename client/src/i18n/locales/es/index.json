@@ -47,6 +47,8 @@
   "preferredLanguageRequired": "Se requiere el idioma preferido",
   "emailInvalid": "El correo electrónico no es válido",
   "emailRequired": "Se requiere una dirección de correo electrónico",
+  "phoneRequired": "Se requiere un número de teléfono",
+  "surveyRequired": "Se require la respuesta",
   "passwordInvalid": "La contraseña debe tener un mínimo de 8 caracteres e incluir números y letras",
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
   "passwordConfirmation": "Confirma la contraseña",
@@ -248,8 +250,7 @@
   "hourly": "horas",
   "addCheckInTime": "Añadir timpo de entrada",
   "removeCheckInTime": "Eliminar timpo de entrada",
-
-  "helpUsUnderstand": "Ayúdanos a entender tu experiencia actual con la gestión del subsidio*",
+  "helpUsUnderstand": "Ayúdanos a entender tu experiencia actual con la gestión del subsidio",
   "state": "Estado",
   "chooseOne": "Elige uno",
   "true": "Verdad",

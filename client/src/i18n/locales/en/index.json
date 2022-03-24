@@ -11,6 +11,7 @@
   "email": "Email",
   "password": "Password",
   "emailAddressRequired": "Email address is required",
+  "phoneRequired": "Phone is required",
   "passwordRequired": "Password is required",
   "forgotPassword": "Forgot your password?",
   "resetPasswordText": "No worries. Click the button below and check your email to reset it.",
@@ -248,8 +249,8 @@
   "hourly": "hours",
   "addCheckInTime": "Add check-in time",
   "removeCheckInTime": "Remove check-in time",
-
-  "helpUsUnderstand": "Help us understand your current experience managing subsidy*",
+  "helpUsUnderstand": "Help us understand your current experience managing subsidy",
+  "surveyRequired": "Answer is required",
   "state": "State",
   "chooseOne": "Choose one",
   "true": "True",

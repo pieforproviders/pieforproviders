@@ -39,6 +39,16 @@
   padding-bottom: 0.5rem
 }
 
+.questions .ant-form-item-label > label::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #D23C2A;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}
+
 .open-signup-question.ant-input {
   border-radius: 5px;
 }

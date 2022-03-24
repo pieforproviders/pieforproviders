@@ -138,6 +138,12 @@ export function Signup() {
           className="body-2-bold text-primaryBlue"
           name="phone"
           label={`${t('phone')} (${t('phoneNote')})`}
+          rules={[
+            {
+              required: true,
+              message: t('phoneRequired')
+            }
+          ]}
         >
           <Input.Group compact>
             <label htmlFor="rc_select_1" className="sr-only">
@@ -206,6 +212,12 @@ export function Signup() {
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
           style={{ marginBottom: '-6px' }}
+          rules={[
+            {
+              required: true,
+              message: t('preferredLanguageRequired')
+            }
+          ]}
         >
           <Radio.Group
             value={user.language}
@@ -344,10 +356,18 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="pb-5 body-2-bold text-primaryBlue questions"
+          className="flex mb-0 body-2-bold text-primaryBlue questions"
           label={t('helpUsUnderstand')}
         >
-          <Form.Item name="feelStressedQuestion">
+          <Form.Item
+            name="feelStressedQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
             <SignupQuestion
               onChange={event =>
                 setUser({ ...user, stressedAboutBilling: event.target.value })
@@ -356,7 +376,15 @@ export function Signup() {
               tag="stressed"
             />
           </Form.Item>
-          <Form.Item name="moneyQuestion">
+          <Form.Item
+            name="moneyQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
             <SignupQuestion
               onChange={event =>
                 setUser({ ...user, notAsMuchMoney: event.target.value })
@@ -365,7 +393,15 @@ export function Signup() {
               tag="money"
             />
           </Form.Item>
-          <Form.Item name="timeQuestion">
+          <Form.Item
+            name="timeQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
             <SignupQuestion
               onChange={event =>
                 setUser({ ...user, tooMuchTime: event.target.value })
@@ -374,7 +410,15 @@ export function Signup() {
               tag="time"
             />
           </Form.Item>
-          <Form.Item name="acceptingMoreQuestion">
+          <Form.Item
+            name="acceptingMoreQuestion"
+            rules={[
+              {
+                required: true,
+                message: t('surveyRequired')
+              }
+            ]}
+          >
             <SignupQuestion
               onChange={event =>
                 setUser({

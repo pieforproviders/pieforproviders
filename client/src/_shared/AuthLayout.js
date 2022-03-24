@@ -32,18 +32,18 @@ export function AuthLayout({
             sm={{ span: 12, offset: 6 }}
             md={{ span: 24, offset: 0 }}
           >
-            <header className="text-right">
+            <header className="flex items-start text-right">
               <ActionLink
                 onClick={() =>
                   i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
                 }
                 text={i18n.language === 'en' ? 'Español' : 'English'}
-                classes="text-right no-underline p-0 h-auto"
+                classes="text-right no-underline p-0 h-auto flex-grow"
               />
               <img
                 alt={t('pieforProvidersLogoAltText')}
                 src={pieFullTanLogo}
-                className="w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12"
+                className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12"
               />
             </header>
             <div className="text-center md:text-left">
