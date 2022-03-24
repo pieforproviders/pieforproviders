@@ -431,7 +431,7 @@ export function Signup() {
         </Form.Item>
 
         <Form.Item
-          className="body-2-bold text-primaryBlue questions"
+          className="body-2-bold text-primaryBlue optional-questions"
           name="openSignUpQuestion"
           label={t('hopeForP4P')}
         >

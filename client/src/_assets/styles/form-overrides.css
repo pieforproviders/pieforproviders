@@ -38,11 +38,12 @@
   border-radius: 0 5px 5px 0;
 }
 
-.questions .ant-form-item-label > label {
+.questions .ant-form-item-label > label, .optional-questions .ant-form-item-label > label {
   padding-left: 0;
   padding-bottom: 0.5rem
 }
 
+/* required display */
 .questions .ant-form-item-label > label::before, .phone .ant-form-item-label > label::before {
   display: inline-block;
   margin-right: 4px;
