@@ -48,7 +48,7 @@
   "emailInvalid": "El correo electrónico no es válido",
   "emailRequired": "Se requiere una dirección de correo electrónico",
   "phoneRequired": "Se requiere un número de teléfono",
-  "surveyRequired": "Se require la respuesta",
+  "surveyRequired": "Se requiere una respuesta",
   "passwordInvalid": "La contraseña debe tener un mínimo de 8 caracteres e incluir números y letras",
   "passwordPlaceholder": "Más de 8 caracteres, letras y números",
   "passwordConfirmation": "Confirma la contraseña",
