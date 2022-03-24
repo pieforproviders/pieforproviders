@@ -31,7 +31,7 @@ class User < UuidApplicationRecord
   validates :not_as_much_money, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :opt_in_email, inclusion: { in: [true, false] }
   validates :opt_in_text, inclusion: { in: [true, false] }
-  validates :phone_number, uniqueness: true, allow_nil: true
+  validates :phone_number, uniqueness: true
   validates :service_agreement_accepted, presence: true
   validates :state, presence: true
   validates :stressed_about_billing, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
