@@ -110,7 +110,7 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        className="m-20 signup"
+        className="mb-20 ml-20 mr-20 signup"
       >
         <Form.Item
           className="body-2-bold text-primaryBlue"
