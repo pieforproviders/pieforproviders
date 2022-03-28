@@ -59,15 +59,23 @@ module App
 
     # custom configuration
     config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == 'true'
+    config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
+
+    # AWS
     config.aws_access_key_id = ENV.fetch('AWS_ACCESS_KEY_ID', '')
     config.aws_secret_access_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
     config.aws_region = ENV.fetch('AWS_REGION', '')
-    config.aws_necc_attendance_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_BUCKET', '')
-    config.aws_necc_attendance_archive_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_ARCHIVE_BUCKET', '')
+
+    # onboarding
     config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
     config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
-    config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
+
+    # Wonderschool Attendance - NECC
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')
+
+    # self-serve attendance
+    config.aws_necc_attendance_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_BUCKET', '')
+    config.aws_necc_attendance_archive_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_ARCHIVE_BUCKET', '')
 
     config.middleware.use Rack::RubyProf, path: './tmp/profile' if Rails.env.profile?
   end
