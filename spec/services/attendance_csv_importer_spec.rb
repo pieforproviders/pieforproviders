@@ -81,7 +81,7 @@ RSpec.describe AttendanceCsvImporter do
 
       it 'creates attendance records for every row in the file, idempotently' do
         expect { described_class.new.call }.to change(Attendance, :count).from(0).to(9)
-        Child.all.map(&:reload)
+        Attendance.all.map(&:reload)
         expect { described_class.new.call }.not_to change(Attendance, :count)
       end
 
