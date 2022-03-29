@@ -61,7 +61,7 @@ describe('<DashboardTable />', () => {
       userState: 'NE',
       setActiveKey: () => {},
       dateFilterValue: {
-        date: new Date().setMonth(new Date().getMonth() - 1),
+        date: new Date().setMonth(new Date().getMonth() - 2),
         displayDate: 'string'
       }
     })
