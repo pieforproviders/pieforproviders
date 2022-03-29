@@ -22,9 +22,11 @@ class Child < UuidApplicationRecord
   validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
-  # validates :full_name, uniqueness: { scope: %i[date_of_birth business_id] }, unless: -> { errors }
-  # TODO: I think this is the right way to scope this across two fields?
-  validates :business_id, uniqueness: { scope: %i[first_name last_name date_of_birth] }, unless: -> { errors }
+  validates :business_id,
+            uniqueness: { scope: %i[first_name last_name date_of_birth] },
+            unless: lambda {
+              errors[:date_of_birth].present? || errors[:first_name].present? || errors[:last_name].present?
+            }
 
   REASONS = %w[
     no_longer_in_my_care
