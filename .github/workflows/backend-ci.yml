@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD^
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -41,9 +38,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD^
       - name: Analyze code statically using Brakeman
         uses: artplan1/brakeman-action@v1.2.1
         with: 
@@ -84,9 +78,6 @@ jobs:
           sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'postgres';"
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - run: git checkout HEAD^
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
