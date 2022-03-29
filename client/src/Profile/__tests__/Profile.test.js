@@ -40,7 +40,6 @@ describe('<Profile />', () => {
   it('displays user properties', () => {
     render(<Profile />, initialState)
 
-    screen.getByText(/Candice/)
     screen.getByText(/Nebraska Provider/)
     screen.getByText(/English/)
     screen.getByText(/1111111111/)
@@ -67,16 +66,5 @@ describe('<Profile />', () => {
     screen.getByText(/Nebraska Home Child Care/)
     screen.getByText(/Test/)
     screen.getByText(/1 child care business/)
-  })
-
-  it('displays edit and change password buttons', () => {
-    render(<Profile />, initialState)
-
-    screen.getByRole('button', {
-      name: /edit/i
-    })
-    screen.getByRole('button', {
-      name: /change password/i
-    })
   })
 })

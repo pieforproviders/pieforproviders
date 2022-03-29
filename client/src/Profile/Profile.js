@@ -1,11 +1,8 @@
 import React from 'react'
 import { Avatar, Row, Col, Grid, Typography, Space, Divider } from 'antd'
-import EditIcon from '@material-ui/icons/Edit'
-import LockIcon from '@material-ui/icons/Lock'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useMultiBusiness } from '_shared/_hooks/useMultiBusiness'
-import IconButton from './IconButton'
 
 const { Title, Text } = Typography
 const { useBreakpoint } = Grid
@@ -39,7 +36,7 @@ export function Profile() {
               size={64}
               style={{ fontSize: 28 }}
             >
-              {user.greeting_name[0]}
+              {user.full_name[0]}
             </Avatar>
           </div>
         </div>
@@ -55,14 +52,6 @@ export function Profile() {
             <div>
               <Title style={{ marginBottom: 0 }}>{t('myProfile')}</Title>
             </div>
-            <div className="flex items-center">
-              <IconButton
-                className="ml-5 text-base"
-                icon={<EditIcon />}
-                text={screens.md ? 'Edit' : 'Edit Profile'}
-                onClick={() => null}
-              />
-            </div>
           </div>
           <Divider style={{ marginTop: 0 }} />
           <Space size="middle">
@@ -71,7 +60,7 @@ export function Profile() {
               size={54}
               style={{ fontSize: 28 }}
             >
-              {user.greeting_name[0]}
+              {user.full_name[0]}
             </Avatar>
             <div>
               <Title level={2} style={{ margin: 0 }}>
@@ -107,10 +96,6 @@ export function Profile() {
                 </Space>
               )}
               <Space direction="vertical">
-                <Text strong>{t('preferredName')}</Text>
-                <Text>{user.greeting_name}</Text>
-              </Space>
-              <Space direction="vertical">
                 <Text strong>{t('phone')}</Text>
                 <Text>{user.phone_number}</Text>
               </Space>
@@ -124,13 +109,6 @@ export function Profile() {
                   {user.language === 'es' ? t('spanish') : t('english')}
                 </Text>
               </Space>
-              {!screens.xs && (
-                <IconButton
-                  icon={<LockIcon />}
-                  text="Change Password"
-                  onClick={() => null}
-                />
-              )}
             </Space>
           </Col>
           {business && (
@@ -169,22 +147,6 @@ export function Profile() {
                   <Text strong>{t('accreditedQuestion')}</Text>
                   <Text>{business.accredited ? 'Yes' : 'No'}</Text>
                 </Space>
-              </Space>
-            </Col>
-          )}
-          {screens.xs && (
-            <Col>
-              <Space direction="vertical" align="start">
-                <IconButton
-                  icon={<EditIcon />}
-                  text="Edit Profile"
-                  onClick={() => null}
-                />
-                <IconButton
-                  icon={<LockIcon />}
-                  text="Change Password"
-                  onClick={() => null}
-                />
               </Space>
             </Col>
           )}
