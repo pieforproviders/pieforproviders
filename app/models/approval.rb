@@ -33,14 +33,22 @@ class Approval < UuidApplicationRecord
     return children if children.length == 1
 
     children.with_schedules.min do |a, b|
-      comp = b.total_time_scheduled_this_month(date: date) <=> a.total_time_scheduled_this_month(date: date)
+      comp = sort_by_scheduled_time(a, b, date)
 
       if comp.zero?
-        a.full_name <=> b.full_name
+        sort_by_name(a, b)
       else
         comp
       end
     end
+  end
+
+  def sort_by_scheduled_time(sort_a, sort_b, date)
+    sort_b.total_time_scheduled_this_month(date: date) <=> sort_a.total_time_scheduled_this_month(date: date)
+  end
+
+  def sort_by_name(sort_a, sort_b)
+    sort_a.first_name <=> sort_b.first_name
   end
 end
 

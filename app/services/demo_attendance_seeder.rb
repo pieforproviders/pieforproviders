@@ -18,7 +18,7 @@ class DemoAttendanceSeeder
       starting_date = (last_attendance_check_out(child: child) + 1.week).at_beginning_of_week(:sunday)
       weeks_to_populate = ((Time.current - starting_date).seconds.in_days / 7).round
 
-      Rails.logger.info { "\nChild: #{child.full_name}" }
+      Rails.logger.info { "\nChild: #{child.first_name} #{child.last_name}" }
       Rails.logger.info { "Starting date: #{starting_date}" }
       Rails.logger.info { "Weeks to populate: #{weeks_to_populate}\n\n" }
 

@@ -117,7 +117,7 @@ export default function DashboardTable({
     return child ? (
       <div>
         <p className="mb-1 text-lg">
-          {child.childName}
+          {`${child.childFirstName} ${child.childLastName}`}
           {isInactive(record) ? `  (${t('inactive')})` : ''}
         </p>
         <p className="flex flex-wrap mt-0.5">
@@ -290,8 +290,8 @@ export default function DashboardTable({
             width: 250,
             sorter: (a, b) =>
               columnSorter(
-                a.child.childName.match(/([A-zÀ-ú])+$/)[0],
-                b.child.childName.match(/([A-zÀ-ú])+$/)[0]
+                a.child.childLastName.match(/([A-zÀ-ú])+$/)[0],
+                b.child.childLastName.match(/([A-zÀ-ú])+$/)[0]
               )
           }
         ]
@@ -398,7 +398,7 @@ export default function DashboardTable({
     default: [
       {
         name: 'childName',
-        sorter: (a, b) => columnSorter(a.childName, b.childName),
+        sorter: (a, b) => columnSorter(a.childLastName, b.childLastName),
         // eslint-disable-next-line react/display-name
         render: (text, record) =>
           isInactive(record) ? (
@@ -495,7 +495,8 @@ export default function DashboardTable({
             <p>
               {t('markInactive') +
                 ': ' +
-                (selectedChild?.child?.childName || selectedChild?.childName)}
+                (`${selectedChild?.child?.childFirstName} ${selectedChild?.child?.childLastName}` ||
+                  `${selectedChild?.childFirstName} ${selectedChild?.childLastName}`)}
             </p>
           </div>
         }

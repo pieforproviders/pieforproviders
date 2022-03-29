@@ -10,8 +10,9 @@ default: &defaults
   filter_parameters:
     - email
     - full_name
+    - first_name
+    - last_name
   
-
   # Actions that should not be monitored by AppSignal
   # ignore_actions:
   #   - ApplicationController#isup

@@ -4,9 +4,11 @@ export function useCaseAttendanceData() {
       return child.state === 'NE'
         ? {
             id: child.id ?? '',
-            key: `${index}-${child.full_name}`,
+            key: `${index}-${child.first_name}-${child.last_name}`,
             child: {
               childName: child.full_name ?? '',
+              childFirstName: child.first_name ?? '',
+              childLastName: child.last_name ?? '',
               cNumber: child.case_number ?? '',
               business: child.business.name ?? ''
             },
@@ -14,8 +16,10 @@ export function useCaseAttendanceData() {
           }
         : {
             id: child.id ?? '',
-            key: `${index}-${child.full_name}`,
+            key: `${index}-${child.first_name}-${child.last_name}`,
             childName: child.full_name ?? '',
+            childFirstName: child.first_name ?? '',
+            childLastName: child.last_name ?? '',
             cNumber: child.case_number ?? '',
             business: child.business.name ?? '',
             active: child.active ?? true

@@ -14,6 +14,26 @@ RSpec.describe Child, type: :model do
   it { is_expected.to validate_presence_of(:date_of_birth) }
   it { is_expected.to validate_presence_of(:full_name) }
 
+  it 'validates that only one child with the same name and birthdate exist in a business' do
+    business = child.business
+    duplicate_child = build(
+      :child,
+      first_name: child.first_name,
+      last_name: child.last_name,
+      date_of_birth: child.date_of_birth,
+      business: business
+    )
+    expect(duplicate_child).not_to be_valid
+    duplicate_child_diff_business = build(
+      :child,
+      first_name: child.first_name,
+      last_name: child.last_name,
+      date_of_birth: child.date_of_birth,
+      business: create(:business)
+    )
+    expect(duplicate_child_diff_business).to be_valid
+  end
+
   it 'validates date_of_birth as a date' do
     child.update(date_of_birth: Time.current)
     expect(child).to be_valid
@@ -280,7 +300,7 @@ end
 #
 #  index_children_on_business_id  (business_id)
 #  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (full_name,date_of_birth,business_id) UNIQUE
+#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
 #
 # Foreign Keys
 #

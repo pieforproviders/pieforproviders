@@ -22,37 +22,53 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "returns the user's children" do
         get '/api/v1/children', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*second_business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*other_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*second_business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
 
       it 'returns the correct children when a site filter is sent' do
         get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*second_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*other_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*second_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
 
       it 'returns the correct children when multiple sites are sent in the filter' do
         get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*second_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*other_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*second_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
     end
@@ -63,35 +79,55 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "returns all users' children" do
         get '/api/v1/children', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*second_business_children.pluck(:full_name))
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*other_business_children.pluck(:full_name))
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*second_business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*other_business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
         expect(response).to match_response_schema('children')
       end
 
       it 'returns the correct children when a site filter is sent' do
         get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*second_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*other_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*second_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
 
       it 'returns the correct children when multiple sites are sent in the filter' do
         get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['full_name'] }).to include(*business_children.pluck(:full_name))
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).not_to include(*second_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*business_children.map do |c|
+                                 [c.first_name, c.last_name].join(' ')
+                               end)
         expect(parsed_response.collect do |x|
-                 x['full_name']
-               end).to include(*other_business_children.pluck(:full_name))
+                 "#{x['first_name']} #{x['last_name']}"
+               end).not_to include(*second_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
+        expect(parsed_response.collect do |x|
+                 "#{x['first_name']} #{x['last_name']}"
+               end).to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
     end
@@ -106,7 +142,9 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "returns the user's child" do
         get "/api/v1/children/#{business_children.first.id}", headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq(business_children.first.full_name)
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
+          business_children.first.first_name, business_children.first.last_name
+        ].join(' '))
         expect(response).to match_response_schema('child')
       end
 
@@ -122,14 +160,18 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "returns the user's child" do
         get "/api/v1/children/#{business_children.first.id}", headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq(business_children.first.full_name)
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
+          business_children.first.first_name, business_children.first.last_name
+        ].join(' '))
         expect(response).to match_response_schema('child')
       end
 
       it 'returns a child for another user' do
         get "/api/v1/children/#{other_business_children.first.id}", headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq(other_business_children.first.full_name)
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
+          other_business_children.first.first_name, other_business_children.first.last_name
+        ].join(' '))
         expect(response).to match_response_schema('child')
       end
     end
@@ -158,8 +200,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "creates a child for that user's business" do
         post '/api/v1/children', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq('Parvati Patil')
-        expect(logged_in_user.children.pluck(:full_name)).to include('Parvati Patil')
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
+        expect(logged_in_user.children.map { |c| [c.first_name, c.last_name].join(' ') }).to include('Parvati Patil')
         expect(response).to match_response_schema('child')
       end
 
@@ -172,8 +214,10 @@ RSpec.describe 'Api::V1::Children', type: :request do
           params[:child][:business_id] = nebraska_business.id
           post '/api/v1/children', params: params, headers: headers
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['full_name']).to eq('Parvati Patil')
-          expect(nebraska_business.children.pluck(:full_name)).to include('Parvati Patil')
+          expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
+          expect(nebraska_business.children.map do |c|
+                   [c.first_name, c.last_name].join(' ')
+                 end).to include('Parvati Patil')
           expect(response).to match_response_schema('child')
         end
       end
@@ -272,8 +316,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it 'creates a child for the passed business' do
         post '/api/v1/children', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq('Parvati Patil')
-        expect(logged_in_user.children.pluck(:full_name)).to include('Parvati Patil')
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
+        expect(logged_in_user.children.map { |c| [c.first_name, c.last_name].join(' ') }).to include('Parvati Patil')
         expect(response).to match_response_schema('child')
       end
 
@@ -303,8 +347,9 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "updates the user's child" do
         put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq('Padma Patil')
-        expect(business_children.first.reload.full_name).to eq('Padma Patil')
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
+        business_children.first.reload
+        expect("#{business_children.first.first_name} #{business_children.first.last_name}").to eq('Padma Patil')
         expect(response).to match_response_schema('child')
       end
 
@@ -330,16 +375,19 @@ RSpec.describe 'Api::V1::Children', type: :request do
       it "updates the user's child" do
         put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq('Padma Patil')
-        expect(business_children.first.reload.full_name).to eq('Padma Patil')
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
+        business_children.first.reload
+        expect("#{business_children.first.first_name} #{business_children.first.last_name}").to eq('Padma Patil')
         expect(response).to match_response_schema('child')
       end
 
       it 'updates a child for another user' do
         put "/api/v1/children/#{other_business_children.first.id}", params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['full_name']).to eq('Padma Patil')
-        expect(other_business_children.first.reload.full_name).to eq('Padma Patil')
+        expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
+        other_business_children.first.reload
+        expect("#{other_business_children.first.first_name} #{other_business_children.first.last_name}")
+          .to eq('Padma Patil')
         expect(response).to match_response_schema('child')
       end
     end
