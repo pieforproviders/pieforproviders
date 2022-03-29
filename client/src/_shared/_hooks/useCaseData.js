@@ -6,10 +6,12 @@ export function useCaseData() {
           return user.state === 'NE'
             ? {
                 id: childCase.id ?? '',
-                key: `${index}-${childCase.full_name}`,
+                key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 absences: childCase.nebraska_dashboard_case.absences ?? '',
                 child: {
                   childName: childCase.full_name ?? '',
+                  childFirstName: childCase.first_name ?? '',
+                  childLastName: childCase.last_name ?? '',
                   cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
                   business: business.name ?? ''
                 },
@@ -41,8 +43,10 @@ export function useCaseData() {
               }
             : {
                 id: childCase.id ?? '',
-                key: `${index}-${childCase.full_name}`,
+                key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 childName: childCase.full_name ?? '',
+                childFirstName: childCase.first_name ?? '',
+                childLastName: childCase.last_name ?? '',
                 cNumber: childCase.case_number ?? '',
                 business: business.name ?? '',
                 attendanceRate: {

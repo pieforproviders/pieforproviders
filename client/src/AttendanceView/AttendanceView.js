@@ -264,7 +264,9 @@ export function AttendanceView() {
     if (response.ok) {
       const parsedResponse = await response.json()
       const addServiceDay = (previousValue, currentValue) => {
-        const childName = currentValue.attendances[0]?.child.full_name || ''
+        const childName =
+          `${currentValue.attendances[0]?.child.first_name} ${currentValue.attendances[0]?.child.last_name}` ||
+          ''
         const index = previousValue.findIndex(item => item?.child === childName)
         index >= 0
           ? previousValue[index].serviceDays.push(currentValue)

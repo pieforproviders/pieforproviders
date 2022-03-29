@@ -88,6 +88,8 @@ describe('<DashboardTable />', () => {
           active: false,
           child: {
             childName: 'Inactive Child',
+            childFirstName: 'Inactive',
+            childLastName: 'Child',
             cNumber: 'wewewewe',
             business: 'Fake Business'
           },

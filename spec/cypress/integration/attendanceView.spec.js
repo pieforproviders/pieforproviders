@@ -58,7 +58,7 @@ describe('AttendanceView', () => {
           cy.appFactories([
             ['create', 'necc_child', { business_id: businesses[0].id }]
           ]).then(children => {
-            childFullName = children[0].full_name
+            childFullName = `${children[0].first_name} ${children[0].last_name}`
             cy.appFactories([
               ['create', 'child_approval', { child_id: children[0].id }]
             ]).then(child_approvals => {

@@ -8,6 +8,8 @@ class ChildBlueprint < Blueprinter::Base
   field :last_active_date
   field :inactive_reason
   field :full_name
+  field :first_name
+  field :last_name
   field :wonderschool_id
 
   view :cases do

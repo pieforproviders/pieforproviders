@@ -164,7 +164,8 @@ export function Attendance() {
           return (
             <div>
               <p className="mb-1 text-lg">
-                {record.childName || record.child.childName}
+                {`${record.childFirstName} ${record.childLastName}` ||
+                  `${record.child.childFirstName} ${record.child.childLastName}`}
               </p>
               <p className="flex flex-wrap mt-0.5">
                 {record.business || record.child.business}{' '}

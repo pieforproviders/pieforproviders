@@ -66,7 +66,7 @@ module Wonderschool
 
           it 'creates case records for the correct child with the correct data' do
             described_class.new.call
-            thomas = Child.find_by(full_name: 'Thomas Eddleman')
+            thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
             expect(thomas).to have_attributes(
               {
                 dhs_id: '14047907',
@@ -111,7 +111,7 @@ module Wonderschool
                 allocated_family_fee: 0
               }
             )
-            becky = Child.find_by(full_name: 'Becky Falzone')
+            becky = Child.find_by(first_name: 'Becky', last_name: 'Falzone')
             expect(becky).to have_attributes(
               {
                 dhs_id: '69370816',
@@ -172,8 +172,8 @@ module Wonderschool
           it "continues processing if the user doesn't exist" do
             first_user.destroy!
             described_class.new.call
-            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
-            expect(Child.find_by(full_name: 'Becky Falzone')).to be_present
+            expect(Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')).to be_nil
+            expect(Child.find_by(first_name: 'Becky', last_name: 'Falzone')).to be_present
             expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
           end
 
@@ -393,7 +393,7 @@ module Wonderschool
 
           it 'creates case records for the correct child with the correct data' do
             described_class.new.call
-            thomas = Child.find_by(full_name: 'Thomas Eddleman')
+            thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
             expect(thomas.approvals.length).to eq(2)
             expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
               [
@@ -453,13 +453,13 @@ module Wonderschool
             allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
             allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             described_class.new.call
-            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
-            expect(Child.find_by(full_name: 'Becky Falzone')).to be_nil
+            expect(Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')).to be_nil
+            expect(Child.find_by(first_name: 'Becky', last_name: 'Falzone')).to be_nil
             allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { missing_field_csv }
             allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
             described_class.new.call
-            expect(Child.find_by(full_name: 'Thomas Eddleman')).to be_nil
-            expect(Child.find_by(full_name: 'Becky Falzone')).to be_nil
+            expect(Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')).to be_nil
+            expect(Child.find_by(first_name: 'Becky', last_name: 'Falzone')).to be_nil
           end
         end
       end
