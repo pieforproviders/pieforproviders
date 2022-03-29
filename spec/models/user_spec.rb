@@ -44,6 +44,13 @@ RSpec.describe User, type: :model do
     expect(user.as_json.keys).not_to include('admin')
   end
 
+  it 'validates unique case-insensitively of email' do
+    create(:confirmed_user, email: "fakeemail@gmail.com")
+    new_user = build(:confirmed_user, email: " FakeEmaiL@gmaIl.com ")
+    expect(new_user).not_to be_valid
+    expect(new_user.errors.messages[:email]).to include('has already been taken')
+  end
+
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
 
