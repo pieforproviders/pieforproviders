@@ -88,20 +88,20 @@ RSpec.describe AttendanceCsvImporter do
       it 'creates attendance records for the correct child with the correct data' do
         described_class.new.call
         expect(hermione_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of Time.zone.parse('2020-12-03 5:23am')
+          .to be_within(1.minute).of '2020-12-03 5:23am'.in_time_zone(hermione_business1.timezone)
         expect(hermione_business1.attendances.order(:check_in).first.check_out).to be_nil
         expect(child2_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of Time.zone.parse('2021-02-24 6:04am')
+          .to be_within(1.minute).of '2021-02-24 6:04am'.in_time_zone(child2_business1.timezone)
         expect(child2_business1.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of Time.zone.parse('2021-02-24 4:35pm')
+          .to be_within(1.minute).of '2021-02-24 4:35pm'.in_time_zone(child2_business1.timezone)
         expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of Time.zone.parse('2021-03-10 6:54am')
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
         expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of Time.zone.parse('2021-03-10 6:27pm')
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
         expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of Time.zone.parse('2021-03-10 6:54am')
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
         expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of Time.zone.parse('2021-03-10 6:27pm')
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
       end
 
       it 'removes existing absences records for the correct child with the correct data' do

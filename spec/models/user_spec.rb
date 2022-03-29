@@ -45,8 +45,8 @@ RSpec.describe User, type: :model do
   end
 
   it 'validates unique case-insensitively of email' do
-    create(:confirmed_user, email: "fakeemail@gmail.com")
-    new_user = build(:confirmed_user, email: " FakeEmaiL@gmaIl.com ")
+    create(:confirmed_user, email: 'fakeemail@gmail.com')
+    new_user = build(:confirmed_user, email: ' FakeEmaiL@gmaIl.com ')
     expect(new_user).not_to be_valid
     expect(new_user.errors.messages[:email]).to include('has already been taken')
   end
