@@ -83,7 +83,7 @@ export function Header() {
             shape="circle"
             name="avatar"
           >
-            {user.greeting_name && user.greeting_name[0]}
+            {user.full_name && user.full_name[0]}
           </Button>
         </Dropdown>
       )}
