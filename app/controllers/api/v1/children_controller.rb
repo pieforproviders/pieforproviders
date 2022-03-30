@@ -9,7 +9,8 @@ module Api
 
       # GET /children
       def index
-        @children = if params.keys.include?('child') && child_params[:site]
+        # binding.pry_remote
+        @children = if params[:child].present? && child_params[:site]
                       policy_scope(Child.includes(business: :user).where(business: Business.find(child_params[:site])))
                     else
                       policy_scope(Child.includes(business: :user))

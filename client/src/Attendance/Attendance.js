@@ -161,12 +161,11 @@ export function Attendance() {
         key: 'name',
         // eslint-disable-next-line react/display-name
         render: (_, record) => {
+          const firstName = record.childFirstName || record.child.childFirstName
+          const lastName = record.childLastName || record.child.childLastName
           return (
             <div>
-              <p className="mb-1 text-lg">
-                {`${record.childFirstName} ${record.childLastName}` ||
-                  `${record.child.childFirstName} ${record.child.childLastName}`}
-              </p>
+              <p className="mb-1 text-lg">{`${firstName} ${lastName}`}</p>
               <p className="flex flex-wrap mt-0.5">
                 {record.business || record.child.business}{' '}
                 <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
