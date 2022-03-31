@@ -8,7 +8,7 @@ module Api
       def index
         @service_days = policy_scope(
           ServiceDay.joins(:attendances).includes(child: { business: :user })
-          .includes(attendances: { child_approval: :child })
+          .includes(attendances: { child_approval: :child }).order('children.last_name')
         ).for_week(filter_date)
 
         render json: ServiceDayBlueprint.render(@service_days)
