@@ -11,9 +11,9 @@ module Api
       def index
         # binding.pry_remote
         @children = if params[:child].present? && child_params[:site]
-                      policy_scope(Child.includes(business: :user).where(business: Business.find(child_params[:site])))
+                      policy_scope(Child.includes(business: :user).where(business: Business.find(child_params[:site])).order(:last_name))
                     else
-                      policy_scope(Child.includes(business: :user))
+                      policy_scope(Child.includes(business: :user).order(:last_name))
                     end
 
         render json: ChildBlueprint.render(@children, view: :cases)
