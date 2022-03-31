@@ -152,7 +152,7 @@ export function Signup() {
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
-          label={t('greetingName')}
+          label={t('greetingNamePrompt')}
           name="greetingName"
           rules={[
             {
