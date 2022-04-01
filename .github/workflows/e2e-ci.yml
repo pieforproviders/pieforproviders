@@ -47,7 +47,7 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           DEVISE_JWT_SECRET_KEY: imasecretkey
-      - uses: actions/setup-node@v3.0.0
+      - uses: actions/setup-node@v3.1.0
         with:
           node-version: '16'
       - name: Run Cypress tests
