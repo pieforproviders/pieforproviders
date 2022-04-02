@@ -5,18 +5,11 @@ module Api
     # API for user children
     class ChildrenController < Api::V1::ApiController
       before_action :set_child, only: %i[show update destroy]
+      before_action :set_children, only: %i[index]
       before_action :authorize_user, only: %i[show update destroy]
 
       # GET /children
       def index
-        # binding.pry_remote
-        @children = if params[:child].present? && child_params[:site]
-                      policy_scope(Child.includes(business: :user)
-                      .where(business: Business.find(child_params[:site])).order(:last_name))
-                    else
-                      policy_scope(Child.includes(business: :user).order(:last_name))
-                    end
-
         render json: ChildBlueprint.render(@children, view: :cases)
       end
 
@@ -56,6 +49,16 @@ module Api
 
       def set_child
         @child = policy_scope(Child).find(params[:id])
+      end
+
+      def set_children
+        # binding.pry_remote
+        @children = if params[:child].present? && child_params[:site]
+                      policy_scope(Child.includes(business: :user)
+                      .where(business: Business.find(child_params[:site])).order(:last_name))
+                    else
+                      policy_scope(Child.includes(business: :user).order(:last_name))
+                    end
       end
 
       def authorize_user
