@@ -130,6 +130,13 @@ RSpec.describe 'Api::V1::Children', type: :request do
                end).to include(*other_business_children.map { |c| [c.first_name, c.last_name].join(' ') })
         expect(response).to match_response_schema('children')
       end
+
+      it "returns the children ordered by last names" do
+        create(:child, last_name:'zzzz')
+        get '/api/v1/children', headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.last['last_name']).to eq('zzzz')
+      end
     end
   end
 
