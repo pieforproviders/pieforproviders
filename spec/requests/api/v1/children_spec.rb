@@ -131,8 +131,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('children')
       end
 
-      it "returns the children ordered by last names" do
-        create(:child, last_name:'zzzz')
+      it 'returns the children ordered by last names' do
+        create(:child, last_name: 'zzzz')
         get '/api/v1/children', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.last['last_name']).to eq('zzzz')
