@@ -9,7 +9,7 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
-  let!(:child) { create(:child, business: business) }
+  let!(:child) { create(:child, last_name: 'zzzz', business: business) }
   let!(:child_approval) { child.child_approvals.first }
   let!(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 
@@ -157,6 +157,12 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
                )
         expect(parsed_response.length).to eq(6)
         expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days in order by child last name' do
+        get '/api/v1/service_days', params: {}, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.last['attendances'].first['child']['last_name']).to eq('zzzz')
       end
     end
   end
