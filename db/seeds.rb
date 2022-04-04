@@ -150,7 +150,8 @@ def create_case(full_name,
                 effective_on: Faker::Date.between(from: 11.months.ago, to: 2.months.ago),
                 date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
                 copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
-                add_expired_approval: false)
+                add_expired_approval: false,
+                dhs_id: nil)
 
   frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
 
@@ -179,7 +180,8 @@ def create_case(full_name,
                                       full_name: full_name,
                                       first_name: full_name.split(' ').first,
                                       last_name: full_name.split(' ').last,
-                                      date_of_birth: date_of_birth)
+                                      date_of_birth: date_of_birth,
+                                      dhs_id: dhs_id)
   child.approvals << approvals
   child.save!
 
@@ -222,9 +224,9 @@ create_case('Sabina Akers', add_expired_approval: true)
 create_case('Mubiru Karstensen')
 create_case('Tarquinius Kelly', add_expired_approval: true)
 create_case('Rhonan Shaw', business: @business_nebraska)
-create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true)
-create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true)
-create_case('Manuel Céspedes', business: @business_nebraska)
+create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true, dhs_id: '5677')
+create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true, dhs_id: '5678')
+create_case('Manuel Céspedes', business: @business_nebraska, dhs_id: '1234')
 
 puts_records_in_db(Child)
 
