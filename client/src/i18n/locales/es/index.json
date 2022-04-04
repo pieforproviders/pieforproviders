@@ -301,5 +301,8 @@
   "enterAmount": "Pone el monto",
   "calculatedBy": "Calculado por Pie",
   "pieForProvidersHasCalculated": "Pie for Providers ha calculado tus ingresos del subsidio para el mes, basado en asistencia y reglas específicas del estado.",
-  "paymentFailed": "Lo sentimos, pero se produjo un error al registrar el pago. Ingrese la información y vuelva a intentarlo."
+  "paymentFailed": "Lo sentimos, pero se produjo un error al registrar el pago. Ingrese la información y vuelva a intentarlo.",
+  "paymentRecordedMessage": "¡Parece que ya anotaste un pago para este mes!",
+  "paymentRecordedHelpMessage": "Si quieres cambiar algo o tienes cualquiera pregunta, mándanos un email a ",
+  "savePayment": "Anota un pago"
 }
