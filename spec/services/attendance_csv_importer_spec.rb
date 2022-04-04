@@ -76,7 +76,9 @@ RSpec.describe AttendanceCsvImporter do
     context 'with valid data' do
       before do
         allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { attendance_csv }
-        allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+        allow(stubbed_client).to receive(:archive_file).with(source_bucket,
+                                                             archive_bucket,
+                                                             /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*\d{4}-)/)
       end
 
       it 'creates attendance records for every row in the file, idempotently' do
@@ -124,7 +126,9 @@ RSpec.describe AttendanceCsvImporter do
       allow(Rails.logger).to receive(:info)
       hermione_business1.destroy!
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { attendance_csv }
-      allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+      allow(stubbed_client).to receive(:archive_file).with(source_bucket,
+                                                           archive_bucket,
+                                                           /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*\d{4}-)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
         .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
@@ -140,7 +144,9 @@ RSpec.describe AttendanceCsvImporter do
 
     it 'continues processing if the record is invalid or missing a required field' do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
-      allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+      allow(stubbed_client).to receive(:archive_file).with(source_bucket,
+                                                           archive_bucket,
+                                                           /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*\d{4}-)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
         .with(archive_bucket, anything, CsvParser.new(invalid_csv).call)
@@ -149,7 +155,9 @@ RSpec.describe AttendanceCsvImporter do
       expect(child2_business1.attendances).to be_empty
       expect(third_child.attendances).to be_empty
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { missing_field_csv }
-      allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+      allow(stubbed_client).to receive(:archive_file).with(source_bucket,
+                                                           archive_bucket,
+                                                           /(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*\d{4}-)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
         .with(archive_bucket, anything, CsvParser.new(missing_field_csv).call)
