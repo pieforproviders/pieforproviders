@@ -52,7 +52,6 @@ module Api
       end
 
       def set_children
-        # binding.pry_remote
         @children = if params[:child].present? && child_params[:site]
                       policy_scope(Child.includes(business: :user)
                       .where(business: Business.find(child_params[:site])).order(:last_name))
