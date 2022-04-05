@@ -20,7 +20,8 @@ describe('Login', () => {
             full_name: fullName,
             greeting_name: firstName,
             password,
-            password_confirmation: password
+            password_confirmation: password,
+            state: 'NE'
           }
         ]
       ])
@@ -53,6 +54,41 @@ describe('Login', () => {
         cy.get(createSelector('password')).type(internet.password())
         cy.get(createSelector('loginBtn')).click()
         cy.get(createSelector('authError')).should('exist')
+      })
+    })
+  })
+
+  describe('confirmed non-NE users', () => {
+    beforeEach(() => {
+      cy.app('clean')
+      cy.appFactories([
+        [
+          'create',
+          'confirmed_user',
+          {
+            email,
+            full_name: fullName,
+            greeting_name: firstName,
+            password,
+            password_confirmation: password,
+            state: 'IL'
+          }
+        ]
+      ])
+    })
+
+    describe('valid credentials', () => {
+      it('allows a user to log in', () => {
+        cy.intercept({
+          method: 'POST',
+          url: '/login'
+        }).as('login')
+
+        cy.visit('/login')
+        cy.get(createSelector('email')).type(email)
+        cy.get(createSelector('password')).type(password)
+        cy.get(createSelector('loginBtn')).click()
+        cy.location('pathname').should('eq', '/comingsoon')
       })
     })
   })

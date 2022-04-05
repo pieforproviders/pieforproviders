@@ -265,5 +265,7 @@
   "next": "Next",
   "alreadyHaveAccount": "Already have an account?",
   "dashboardBlankMessage": "Once you create your account, your dashboard will remain blank until we update it with more information.",
-  "learnMore": "To learn more about Pie for Providers, go to:"
+  "learnMore": "To learn more about Pie for Providers, go to:",
+  "comingSoonMsg1": "Pie for Providers is not yet available in your state.",
+  "comingSoonMsg2": "We will let you know as soon as we are!"
 }
