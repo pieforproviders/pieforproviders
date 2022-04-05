@@ -72,7 +72,13 @@ export function Login() {
         dispatch(setUser(resp))
         identifyHotjar(resp.id ?? null, resp, console.info)
       })
-      history.push('/dashboard')
+
+      // currently only users from Nebraska are directed to the dashboard
+      if (resp.state === 'NE') {
+        history.push('/dashboard')
+      } else {
+        history.push('/comingsoon')
+      }
     }
   }
 

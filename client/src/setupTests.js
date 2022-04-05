@@ -47,7 +47,9 @@ window.matchMedia = query => ({
 function render(
   ui,
   {
-    initialState = { auth: { token: null, expiration: dayjs().format() } },
+    initialState = {
+      auth: { token: null, expiration: dayjs().format() }
+    },
     store = configureStore({
       reducer: rootReducer,
       preloadedState: initialState
