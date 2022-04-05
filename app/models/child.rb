@@ -55,7 +55,7 @@ class Child < UuidApplicationRecord
             .distinct
             .approved_for_date(date)
             .includes(:schedules)
-            .order(last_name: :desc)
+            .order(:last_name)
         }
 
   scope :with_schedules, -> { includes(:schedules) }

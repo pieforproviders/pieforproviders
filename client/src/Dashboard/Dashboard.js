@@ -315,6 +315,7 @@ export function Dashboard() {
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
+        setTableData={setTableData}
         userState={user.state ?? ''}
         setActiveKey={href => {
           if (activeKey) {

@@ -451,22 +451,15 @@ export default function DashboardTable({
   useEffect(() => {
     setSortedRows(
       [...tableData].sort((a, b) =>
-        inactiveCases.includes(a.key) && inactiveCases.includes(b.key)
+        (!isInactive(a) && !isInactive(b)) || (isInactive(a) && isInactive(b))
           ? 0
-          : inactiveCases.includes(a.key)
-          ? 1
-          : -1
+          : isInactive(b)
+          ? -1
+          : 1
       )
     )
-  }, [inactiveCases, tableData])
-
-  useEffect(() => {
-    setSortedRows(
-      [...tableData].sort((a, b) =>
-        !a.active && !b.active ? 0 : !a.active ? 1 : -1
-      )
-    )
-  }, [tableData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableData, inactiveCases])
 
   return (
     <>
