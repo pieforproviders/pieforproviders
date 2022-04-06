@@ -286,7 +286,6 @@ end
 #  date_of_birth    :date             not null
 #  deleted_at       :date
 #  first_name       :string           not null
-#  full_name        :string           not null
 #  inactive_reason  :string
 #  last_active_date :date
 #  last_name        :string           not null
