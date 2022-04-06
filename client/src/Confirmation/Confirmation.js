@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
@@ -42,8 +43,14 @@ export function Confirmation({ location }) {
             }
           })
         } else {
+          const { state } = await response.json()
           dispatch(addAuth(authToken))
-          history.push('/dashboard')
+
+          if (state === 'NE') {
+            history.push('/dashboard')
+          } else {
+            history.push('/comingsoon')
+          }
         }
       }
     }

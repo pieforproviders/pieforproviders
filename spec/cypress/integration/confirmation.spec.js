@@ -10,7 +10,7 @@ const confirmationToken = 'hotdog'
 const confirmationDate = new Date()
 
 describe('Confirmation', () => {
-  describe('unconfirmed users', () => {
+  describe('unconfirmed NE users', () => {
     beforeEach(() => {
       cy.app('clean')
       cy.appFactories([
@@ -24,7 +24,8 @@ describe('Confirmation', () => {
             password,
             password_confirmation: password,
             confirmation_token: confirmationToken,
-            confirmed_at: null
+            confirmed_at: null,
+            state: 'NE'
           }
         ]
       ])
@@ -88,6 +89,40 @@ describe('Confirmation', () => {
     })
   })
 
+  describe('unconfirmed non-NE users', () => {
+    beforeEach(() => {
+      cy.app('clean')
+      cy.appFactories([
+        [
+          'create',
+          'unconfirmed_user',
+          {
+            email,
+            full_name: fullName,
+            greeting_name: firstName,
+            password,
+            password_confirmation: password,
+            confirmation_token: confirmationToken,
+            confirmed_at: null,
+            state: 'IL'
+          }
+        ]
+      ])
+    })
+
+    describe('valid confirmation link', () => {
+      it('allows a user to confirm and redirects them', () => {
+        cy.intercept({
+          method: 'GET',
+          url: `/confirmation?confirmation_token=${confirmationToken}`
+        }).as('confirmation')
+
+        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+        cy.location('pathname').should('eq', '/comingsoon')
+      })
+    })
+  })
+
   describe('confirmed users', () => {
     beforeEach(() => {
       cy.app('clean')
@@ -102,7 +137,8 @@ describe('Confirmation', () => {
             password,
             password_confirmation: password,
             confirmation_token: confirmationToken,
-            confirmed_at: confirmationDate
+            confirmed_at: confirmationDate,
+            state: 'NE'
           }
         ]
       ])
