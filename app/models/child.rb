@@ -17,7 +17,6 @@ class Child < UuidApplicationRecord
 
   validates :approvals, presence: true
   validates :date_of_birth, date_param: true, presence: true
-  validates :full_name, presence: true
   validates :first_name, presence: true
   validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
