@@ -70,7 +70,6 @@ module Api
         attributes += %i[deleted_at] if current_user.admin?
         attributes += %i[
           date_of_birth
-          full_name
           first_name
           last_name
           business_id
