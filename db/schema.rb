@@ -91,6 +91,8 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.string "rate_type"
     t.uuid "rate_id"
     t.date "deleted_at"
+    t.date "effective_on"
+    t.date "expires_on"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
