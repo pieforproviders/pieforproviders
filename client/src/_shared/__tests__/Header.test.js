@@ -20,7 +20,7 @@ const authenticatedState = {
       token: 'whatever',
       expiration: dayjs().add('2', 'days').format()
     },
-    user: { greeting_name: 'User' }
+    user: { full_name: 'User' }
   }
 }
 
