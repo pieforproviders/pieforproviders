@@ -49,12 +49,12 @@ namespace :nebraska do
         93372762
         96039797
       ]
-      children.where(dhs_id: four_and_a_half_ids).map do |child|
+      children.where(dhs_id: four_and_a_half_ids).map do |_c|
         if options == 'dry-run'
-          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
-          puts "#{child.first_name} #{child.last_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
-                                                                                                :check_out,
-                                                                                                :absence)}"
+          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday,
+                                                                                                        :duration)}"
+          puts "#{child.first_name} #{child.last_name} absences to
+           be destroyed: #{child.attendances.absences.pluck(:check_in, :check_out, :absence)}"
         else
           child.schedules.map { |schedule| schedule.update(duration: 16_200) }
           child.attendances.absences.destroy_all
@@ -118,10 +118,11 @@ namespace :nebraska do
       ]
       children.where(dhs_id: two_ids).map do |child|
         if options == 'dry-run'
-          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
-          puts "#{child.first_name} #{child.last_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
-                                                                                                :check_out,
-                                                                                                :absence)}"
+          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday,
+                                                                                                        :duration)}"
+          puts "#{child.first_name} #{child.last_name} absences to be destroyed: #{child.attendances.absences.pluck(
+            :check_in, :check_out, :absence
+          )}"
         else
           child.schedules.map { |schedule| schedule.update(duration: 7_200) }
           child.attendances.absences.destroy_all
