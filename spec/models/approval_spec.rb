@@ -91,10 +91,9 @@ RSpec.describe Approval, type: :model do
     end
 
     it 'returns the first child alphabetically if the children have the same schedules' do
-      create(:child, approvals: [approval], full_name: 'Zed Ying', first_name: 'Zed', last_name: 'Ying')
+      create(:child, approvals: [approval], first_name: 'Zed', last_name: 'Ying')
       child_with_first_alpha = create(:child,
                                       approvals: [approval],
-                                      full_name: 'Alpha Bet',
                                       first_name: 'Alpha',
                                       last_name: 'Bet')
       expect(approval.child_with_most_scheduled_hours(date: Time.current.in_time_zone(child_with_first_alpha.timezone)))

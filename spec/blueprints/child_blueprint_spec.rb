@@ -10,7 +10,6 @@ RSpec.describe ChildBlueprint do
     expect(JSON.parse(described_class.render(child)).keys).to contain_exactly(
       'id',
       'active',
-      'full_name',
       'first_name',
       'last_name',
       'last_active_date',
@@ -27,7 +26,6 @@ RSpec.describe ChildBlueprint do
         'attendance_rate',
         'attendance_risk',
         'case_number',
-        'full_name',
         'first_name',
         'last_name',
         'guaranteed_revenue',
@@ -47,7 +45,6 @@ RSpec.describe ChildBlueprint do
       expect(JSON.parse(described_class.render(child, view: :nebraska_dashboard)).keys).to contain_exactly(
         'id',
         'active',
-        'full_name',
         'first_name',
         'last_name',
         'last_active_date',

@@ -494,9 +494,13 @@
             "type": "string",
             "example": "1992-11-01"
           },
-          "full_name": {
+          "first_name": {
             "type": "string",
-            "example": "Sean Flannery"
+            "example": "Sean"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Flannery"
           }
         }
       },
@@ -603,9 +607,13 @@
                 "type": "string",
                 "example": "1991-11-01"
               },
-              "full_name": {
+              "first_name": {
                 "type": "string",
-                "example": "Seamus Finnigan"
+                "example": "Seamus"
+              },
+              "last_name": {
+                "type": "string",
+                "example": "Finnigan"
               },
               "business_id": {
                 "type": "uuid",
@@ -613,7 +621,8 @@
               }
             },
             "required": [
-              "full_name",
+              "first_name",
+              "last_name",
               "date_of_birth",
               "business_id"
             ]

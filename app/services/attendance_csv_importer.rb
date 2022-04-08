@@ -56,7 +56,6 @@ class AttendanceCsvImporter
 
   def find_child(business, row)
     business.children.find_by(first_name: row['first_name'], last_name: row['last_name']) ||
-      business.children.find_by(full_name: row['full_name']) ||
       business.children.find_by(dhs_id: row['dhs_id'])
   end
 

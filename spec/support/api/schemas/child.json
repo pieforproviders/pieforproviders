@@ -11,9 +11,6 @@
       "type": "string",
       "format": "date"
     },
-    "full_name": {
-      "type": "string"
-    },
     "first_name": {
       "type": "string"
     },
