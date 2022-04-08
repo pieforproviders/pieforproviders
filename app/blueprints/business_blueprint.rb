@@ -13,7 +13,6 @@ class BusinessBlueprint < Blueprinter::Base
   end
 
   view :nebraska_dashboard do
-    exclude :id
     # TODO: Multithreading? Pseudocode
     # field :children, name: :cases, blueprint: Nebraska::DashboardCaseBlueprint do |busines, options|
     #   array1, array2 = business.children.with_dashboard_case(options[:filter_date]).partition
