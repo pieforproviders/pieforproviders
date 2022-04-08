@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory } from 'react-router-dom'
