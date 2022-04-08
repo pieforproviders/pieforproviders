@@ -3,19 +3,20 @@ import { render, fireEvent, screen } from 'setupTests'
 import { Header } from '_shared'
 import { MemoryRouter } from 'react-router-dom'
 
-const doRender = () => {
+const doRender = stateOptions => {
   return render(
     <MemoryRouter>
       <Header />
-    </MemoryRouter>
+    </MemoryRouter>,
+    stateOptions
   )
 }
 
 describe('<Header />', () => {
-  it('renders the Header component', () => {
-    doRender()
-    expect(screen.getByText(/Dashboard/)).toBeDefined()
-    expect(screen.getByText(/Attendance/)).toBeDefined()
+  it('renders the Header component with Dashboard and Attendance', () => {
+    const { container } = doRender({ initialState: { user: { state: 'NE' } } })
+    expect(container).toHaveTextContent('Dashboard')
+    expect(container).toHaveTextContent('Attendance')
 
     let element = screen.getByText(/Español/)
     fireEvent.click(element)
@@ -36,5 +37,18 @@ describe('<Header />', () => {
       'border-primaryBlue'
     )
     expect(dashboard_button.closest('div')).toHaveClass('border-primaryBlue')
+  })
+
+  it('renders the Header component with Dashboard and Attendance', () => {
+    const { container } = doRender({ initialState: { user: { state: 'IL' } } })
+    expect(container).not.toHaveTextContent('Dashboard')
+    expect(container).not.toHaveTextContent('Attendance')
+
+    let element = screen.getByText(/Español/)
+    fireEvent.click(element)
+    expect(element).toHaveTextContent(/English/)
+
+    fireEvent.click(element)
+    expect(element).toHaveTextContent(/Español/)
   })
 })

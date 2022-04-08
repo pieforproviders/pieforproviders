@@ -12,6 +12,7 @@ import AuthenticatedRoute from '_utils/_routes/AuthenticatedRoute.js'
 import Attendance from './Attendance'
 import AttendanceView from './AttendanceView'
 import Dashboard from './Dashboard'
+import ComingSoon from './ComingSoon'
 import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
 import NewPassword from './PasswordReset'
@@ -110,6 +111,9 @@ const Routes = () => {
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/dashboard">
           <Dashboard />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/comingsoon">
+          <ComingSoon />
         </AuthenticatedRoute>
         <AuthenticatedRoute exact path="/attendance">
           <AttendanceView />

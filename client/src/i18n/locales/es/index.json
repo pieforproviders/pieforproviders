@@ -265,5 +265,7 @@
   "next": "Próximo",
   "alreadyHaveAccount": "¿Ya tienes una cuenta?",
   "dashboardBlankMessage": "Una vez que creas tu cuenta, tu tablero estará vacío hasta que lo actualizamos con más información.",
-  "learnMore": "Para aprender más sobre Pie for Providers, vaya a:"
+  "learnMore": "Para aprender más sobre Pie for Providers, vaya a:",
+  "comingSoonMsg1": "Pie for Providers aún no está disponible en tu estado.",
+  "comingSoonMsg2": "¡Tan pronto lleguemos a tu estado, te contactaremos!"
 }
