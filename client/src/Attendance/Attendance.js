@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Alert, Button, DatePicker, Modal, Table } from 'antd'
+import { Alert, Button, DatePicker, Modal, Select, Table } from 'antd'
+import { FilterFilled } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -315,6 +316,12 @@ export function Attendance() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const sites = [
+    <Select.Option key="first">First</Select.Option>,
+    <Select.Option key="second">Second</Select.Option>,
+    <Select.Option key="third">Third</Select.Option>
+  ]
+
   return (
     <div>
       <p className="flex justify-center mb-4 h1-large">
@@ -343,7 +350,21 @@ export function Attendance() {
         type="error"
         closable
       />
-      {/* TODO: put in filter component here, and pass getCaseData as well as all the state representations of caseData (in the redux store, in the useState, etc.) */}
+      <div className="relative pt-5">
+        <FilterFilled className="absolute z-50 p-2" />
+        <Select
+          mode="multiple"
+          allowClear
+          className="site-filter"
+          style={{ minWidth: '144px' }}
+          placeholder="Filter by Site"
+          placeholderTextColor="#006C9E"
+          // onChange={handleChange}
+          // dropdownRender={children => console.log(children)}
+        >
+          {sites}
+        </Select>
+      </div>
       <Table
         dataSource={tableData.filter(c => c.active)}
         columns={columns}

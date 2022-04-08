@@ -20,3 +20,35 @@
  .ant-select-selection-selected-value {
   width: 100%;
 }
+
+.site-filter .ant-select-selection-overflow,
+.site-filter .ant-select-selection-placeholder {
+  padding-left: 1rem;
+}
+
+.site-filter .ant-select-selection-item-content,
+.site-filter .ant-select-selection-placeholder,
+.site-filter .anticon-close {
+  color: #006C9E;
+}
+
+.site-filter .anticon-close {
+  position: absolute;
+  top: 0.125rem;
+}
+
+.site-filter.ant-select-multiple .ant-select-selection-item {
+  padding-inline-end: 1rem;
+}
+
+.site-filter.ant-select-multiple .ant-select-selection-item,
+.site-filter.ant-select-multiple .ant-select-selection-item-remove,
+.site-filter.ant-select-multiple .ant-select-selection-item-content,
+.site-filter.ant-select-multiple .anticon-close {
+  color: white;
+  background: #006C9E;
+}
+
+.site-filter.site-filter.ant-select-multiple .ant-select-clear {
+  margin-top: -0.5rem;
+}
