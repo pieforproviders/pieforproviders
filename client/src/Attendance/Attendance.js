@@ -28,6 +28,7 @@ export function Attendance() {
     token: state.auth.token
   }))
   const [tableData, setTableData] = useState(cases)
+  const [businesses, setBusinesses] = useState([])
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
@@ -301,6 +302,19 @@ export function Attendance() {
       const parsedResponse = await response.json()
       const caseData = reduceTableData(parsedResponse)
       const reducedAttendanceData = reduceAttendanceData(caseData)
+      // TODO: Reduce Business Data?
+      // TODO: dispatch business to state?
+      // TODO: onChange of select - send new request with business ID
+      // TODO: get the dropdown to stop changing width when multiple businesses are selected
+      if (!businessId) {
+        setBusinesses(
+          parsedResponse.reduce((priorValue, newValue) => {
+            return !priorValue.some(item => item.id === newValue.business.id)
+              ? [...priorValue, newValue.business]
+              : priorValue
+          }, [])
+        )
+      }
 
       dispatch(setCaseData(caseData))
       latestAttendanceData.current = reducedAttendanceData
@@ -315,12 +329,6 @@ export function Attendance() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const sites = [
-    <Select.Option key="first">First</Select.Option>,
-    <Select.Option key="second">Second</Select.Option>,
-    <Select.Option key="third">Third</Select.Option>
-  ]
 
   return (
     <div>
@@ -358,11 +366,14 @@ export function Attendance() {
           className="site-filter"
           style={{ minWidth: '144px' }}
           placeholder="Filter by Site"
-          placeholderTextColor="#006C9E"
           // onChange={handleChange}
           // dropdownRender={children => console.log(children)}
         >
-          {sites}
+          {businesses.map(business => (
+            <Select.Option key={business.id} value={business.id}>
+              {business.name}
+            </Select.Option>
+          ))}
         </Select>
       </div>
       <Table
