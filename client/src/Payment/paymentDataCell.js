@@ -27,11 +27,7 @@ export default function PaymentDataCell({
   )
 
   function inputFormatter(value) {
-    if (!isDifferentPayment || !value) {
-      return t('enterAmount')
-    }
-
-    return `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    return value.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
   }
 
   function updatePayment(value) {
