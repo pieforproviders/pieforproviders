@@ -77,10 +77,6 @@ export default function DashboardTitle({
     setPaymentModalVisible(false)
   }
 
-  const updateIsActionsDropdownOpen = () => {
-    setActionsDropdownOpen(!isActionsDropdownOpen)
-  }
-
   const dashboardActions = (
     <Menu>
       <Menu.Item key="addAttendanceMenuItem">
@@ -110,14 +106,11 @@ export default function DashboardTitle({
       overlay={dashboardActions}
       className="flex ml-auto"
       trigger="click"
+      onVisibleChange={visible => {
+        setActionsDropdownOpen(visible)
+      }}
     >
-      <Button
-        type="primary"
-        id="actionsDropdownButton"
-        name="recordNew"
-        onClick={updateIsActionsDropdownOpen}
-        className="actions-button"
-      >
+      <Button type="primary" id="actionsDropdownButton" name="recordNew">
         {t('recordDropdown')}
         {isActionsDropdownOpen ? (
           <DownOutlined className="action-icon" />
@@ -165,6 +158,9 @@ export default function DashboardTitle({
       visible={isPaymentModalVisible}
       onCancel={handlePaymentModalCancel}
       destroyOnClose={true}
+      afterClose={() => {
+        setActionsDropdownOpen(false)
+      }}
       width={1000}
       footer={
         <div className="flex justify-center">
