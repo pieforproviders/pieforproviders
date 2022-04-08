@@ -51,8 +51,8 @@ namespace :nebraska do
       ]
       children.where(dhs_id: four_and_a_half_ids).map do |child|
         if options == 'dry-run'
-          puts "#{child.full_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
-          puts "#{child.full_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
+          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
+          puts "#{child.first_name} #{child.last_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
                                                                                                 :check_out,
                                                                                                 :absence)}"
         else
@@ -118,8 +118,8 @@ namespace :nebraska do
       ]
       children.where(dhs_id: two_ids).map do |child|
         if options == 'dry-run'
-          puts "#{child.full_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
-          puts "#{child.full_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
+          puts "#{child.first_name} #{child.last_name} schedules to be updated: #{child.schedules.pluck(:weekday, :duration)}"
+          puts "#{child.first_name} #{child.last_name} absences to be destroyed: #{child.attendances.absences.pluck(:check_in,
                                                                                                 :check_out,
                                                                                                 :absence)}"
         else

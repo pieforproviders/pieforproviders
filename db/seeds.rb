@@ -138,13 +138,14 @@ puts_records_in_db(Business)
 # Children w/ Required Approvals
 # ---------------------------------------------
 
-# find_or_create_by! a Child with the full_name,
+# find_or_create_by! a Child with the first and last,
 #  and birthday set randomly between the min_age and max_age.
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/PerceivedComplexity
 # rubocop:disable Metrics/ParameterLists
-def create_case(full_name,
+def create_case(first_name:, 
+                last_name:,
                 business: @business,
                 case_number: Faker::Number.number(digits: 10),
                 effective_on: Faker::Date.between(from: 11.months.ago, to: 2.months.ago),
@@ -177,9 +178,8 @@ def create_case(full_name,
 
   child = Child.find_or_initialize_by(business: business,
                                       wonderschool_id: business == @business_nebraska ? Faker::Name.wonderschool_id.to_i : nil,
-                                      full_name: full_name,
-                                      first_name: full_name.split(' ').first,
-                                      last_name: full_name.split(' ').last,
+                                      first_name: first_name,
+                                      last_name: last_name,
                                       date_of_birth: date_of_birth,
                                       dhs_id: dhs_id)
   child.approvals << approvals
@@ -215,18 +215,18 @@ end
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/AbcSize
 
-create_case('Maria Baca')
-create_case('Adédèjì Adébísí', case_number: '1234567A')
-create_case('Atinuke Adébísí', case_number: '1234567A', add_expired_approval: true)
-create_case("K'Shawn Henderson")
-create_case('Marcus Smith')
-create_case('Sabina Akers', add_expired_approval: true)
-create_case('Mubiru Karstensen')
-create_case('Tarquinius Kelly', add_expired_approval: true)
-create_case('Rhonan Shaw', business: @business_nebraska)
-create_case('Tanim Zaidi', business: @business_nebraska, add_expired_approval: true, dhs_id: '5677')
-create_case('Jasveen Khirwar', business: @business_nebraska, add_expired_approval: true, dhs_id: '5678')
-create_case('Manuel Céspedes', business: @business_nebraska, dhs_id: '1234')
+create_case(first_name: 'Maria', last_name: 'Baca')
+create_case(first_name: 'Adédèjì', last_name: 'Adébísí', case_number: '1234567A')
+create_case(first_name: 'Atinuke', last_name: 'Adébísí', case_number: '1234567A', add_expired_approval: true)
+create_case(first_name: "K'Shawn", last_name: 'Henderson')
+create_case(first_name: 'Marcus', last_name: 'Smith')
+create_case(first_name: 'Sabina', last_name: 'Akers', add_expired_approval: true)
+create_case(first_name: 'Mubiru', last_name: 'Karstensen')
+create_case(first_name: 'Tarquinius', last_name: 'Kelly', add_expired_approval: true)
+create_case(first_name: 'Rhonan', last_name: 'Shaw', business: @business_nebraska)
+create_case(first_name: 'Tanim', last_name: 'Zaidi', business: @business_nebraska, add_expired_approval: true, dhs_id: '5677')
+create_case(first_name: 'Jasveen', last_name: 'Khirwar', business: @business_nebraska, add_expired_approval: true, dhs_id: '5678')
+create_case(first_name: 'Manuel', last_name: 'Céspedes', business: @business_nebraska, dhs_id: '1234')
 
 puts_records_in_db(Child)
 

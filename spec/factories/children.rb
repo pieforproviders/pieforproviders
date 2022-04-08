@@ -3,7 +3,6 @@
 FactoryBot.define do
   factory :child do
     date_of_birth { (2.years.ago).strftime('%Y-%m-%d') }
-    full_name { Faker::Name.name }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     business

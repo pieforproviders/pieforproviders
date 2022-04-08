@@ -9,7 +9,6 @@ export function useCaseData() {
                 key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 absences: childCase.nebraska_dashboard_case.absences ?? '',
                 child: {
-                  childName: childCase.full_name ?? '',
                   childFirstName: childCase.first_name ?? '',
                   childLastName: childCase.last_name ?? '',
                   cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
@@ -44,7 +43,6 @@ export function useCaseData() {
             : {
                 id: childCase.id ?? '',
                 key: `${index}-${childCase.first_name}-${childCase.last_name}`,
-                childName: childCase.full_name ?? '',
                 childFirstName: childCase.first_name ?? '',
                 childLastName: childCase.last_name ?? '',
                 cNumber: childCase.case_number ?? '',

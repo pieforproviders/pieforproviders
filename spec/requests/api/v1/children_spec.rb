@@ -190,7 +190,6 @@ RSpec.describe 'Api::V1::Children', type: :request do
     let(:params) do
       {
         child: {
-          full_name: 'Parvati Patil',
           first_name: 'Parvati',
           last_name: 'Patil',
           date_of_birth: '1981-04-09',
@@ -233,7 +232,6 @@ RSpec.describe 'Api::V1::Children', type: :request do
         let(:params) do
           {
             child: {
-              full_name: 'Parvati Patil',
               first_name: 'Parvati',
               last_name: 'Patil',
               date_of_birth: '1981-04-09',
@@ -341,7 +339,6 @@ RSpec.describe 'Api::V1::Children', type: :request do
     let(:params) do
       {
         child: {
-          full_name: 'Padma Patil',
           first_name: 'Padma',
           last_name: 'Patil'
         }

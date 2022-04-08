@@ -34,7 +34,6 @@ RSpec.describe AttendanceCsvImporter do
   end
   let!(:hermione_business1) do
     create(:necc_child,
-           full_name: 'Hermione Granger',
            first_name: 'Hermione',
            last_name: 'Granger',
            dhs_id: '1234',
@@ -49,7 +48,6 @@ RSpec.describe AttendanceCsvImporter do
   end
   let!(:third_child) do
     create(:necc_child,
-           full_name: 'Lucy Pevensie',
            first_name: 'Lucy',
            last_name: 'Pevensie',
            dhs_id: '5677',
@@ -60,7 +58,6 @@ RSpec.describe AttendanceCsvImporter do
   before do
     # 4th child, different business
     create(:necc_child,
-           full_name: 'Hermione Granger',
            first_name: 'Hermione',
            last_name: 'Granger',
            dhs_id: '5679',

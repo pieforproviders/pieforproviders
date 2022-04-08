@@ -12,7 +12,8 @@ RSpec.describe Child, type: :model do
 
   it { is_expected.to validate_presence_of(:approvals) }
   it { is_expected.to validate_presence_of(:date_of_birth) }
-  it { is_expected.to validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:first_name) }
+  it { is_expected.to validate_presence_of(:last_name) }
 
   it 'validates that only one child with the same name and birthdate exist in a business' do
     business = child.business
@@ -132,9 +133,9 @@ RSpec.describe Child, type: :model do
     describe '#create_default_schedule' do
       it 'creates default schedules if no schedules_attributes are passed' do
         child.reload
-        expect(child.schedules.length).to eq(5)
         expect(child.schedules.first.duration).to eq(8.hours)
         expect(child.schedules.first.weekday).to eq(1)
+        expect(child.schedules.length).to eq(5)
       end
 
       it "doesn't create default schedules if schedules_attributes are passed" do
@@ -191,7 +192,6 @@ RSpec.describe Child, type: :model do
     let!(:created_business) { create(:business, user: user) }
     let!(:child) do
       create(:child,
-             full_name: 'Parvati Patil',
              first_name: 'Parvati',
              last_name: 'Patil',
              date_of_birth: '2010-04-09',
@@ -203,7 +203,6 @@ RSpec.describe Child, type: :model do
     context 'when the child has the same approval as a previous child in our system' do
       let(:new_child_params) do
         {
-          full_name: 'Dev Patil',
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
@@ -241,7 +240,6 @@ RSpec.describe Child, type: :model do
     context 'when the child has a unique approval' do
       let(:new_child_params) do
         {
-          full_name: 'Dev Patil',
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
