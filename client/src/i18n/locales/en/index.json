@@ -263,9 +263,10 @@
   "acceptingMoreFamilies": "I am open to accepting more subsidy-enrolled families.",
   "hopeForP4P": "What are you hoping to get from using Pie for Providers?",
   "next": "Next",
-  "alreadyHaveAccount": "Already have an account?",
   "dashboardBlankMessage": "Once you create your account, your dashboard will remain blank until we update it with more information.",
   "learnMore": "To learn more about Pie for Providers, go to:",
   "comingSoonMsg1": "Pie for Providers is not yet available in your state.",
-  "comingSoonMsg2": "We will let you know as soon as we are!"
+  "comingSoonMsg2": "We will let you know as soon as we are!",
+  "dontHaveAnAccount": "Don’t have an account yet?",
+  "alreadyHaveAnAccount": "Already have an account?"
 }
