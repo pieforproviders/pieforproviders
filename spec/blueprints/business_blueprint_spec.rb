@@ -27,7 +27,8 @@ RSpec.describe BusinessBlueprint do
     it 'includes the business name and all cases' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
         'cases',
-        'name'
+        'name',
+        'id'
       )
     end
   end
