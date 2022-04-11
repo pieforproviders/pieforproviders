@@ -169,7 +169,7 @@ export function Login() {
           />
         </Form.Item>
       </Form>
-      <div className="mx-20">
+      <div className="mx-20 mb-6">
         <p className="text-green3 m-4">{t('dontHaveAnAccount')}</p>
         <PaddedButton
           data-cy="signupBtn"
@@ -177,6 +177,20 @@ export function Login() {
           classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
           onClick={() => history.push('/signup')}
         />
+        <div className="text-black">
+          <p className="mb-4">{t('dashboardBlankMessage')}</p>
+          <p>{t('learnMore')}</p>
+          <p>
+            <a
+              className="text-blue5"
+              href="https://www.pieforproviders.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {'www.pieforproviders.com'}
+            </a>
+          </p>
+        </div>
       </div>
       <Form
         layout="vertical"
