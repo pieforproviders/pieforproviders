@@ -24,7 +24,8 @@
 .signup span.ant-input-affix-wrapper, 
 .signup input#signup_email.ant-input,
 .signup .ant-select:not(.ant-select-customize-input) .ant-select-selector,
-.signup  input#signup_fullName.ant-input {
+.signup  input#signup_fullName.ant-input,
+input#login_email.ant-input {
   border-radius: 5px;
 }
 
