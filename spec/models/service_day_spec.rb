@@ -296,6 +296,30 @@ RSpec.describe ServiceDay, type: :model do
       end
     end
   end
+
+  describe '#tag_hourly_amount' do
+    let(:attendance) { create(:nebraska_hourly_attendance) }
+    let(:service_day) { attendance.service_day }
+
+    it 'returns correct hourly amount' do
+      attendance.child.reload
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.tag_hourly_amount).to eq("5.5")
+    end
+  end
+
+  describe '#tag_daily_amount' do
+    let(:attendance) { create(:nebraska_daily_attendance) }
+    let(:service_day) { attendance.service_day }
+
+    it 'returns correct daily amount' do
+      attendance.child.reload
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.tag_daily_amount).to eq("1.0")
+    end
+  end
 end
 # == Schema Information
 #
