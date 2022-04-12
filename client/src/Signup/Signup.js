@@ -93,11 +93,13 @@ export function Signup() {
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
         <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
-        <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
-        {` ${t('or')} `}
-        <Link to="/login" className="uppercase">
-          {t('login')}
-        </Link>
+        <div className="m-10">
+          <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
+          {` ${t('or')} `}
+          <Link to="/login" className="uppercase">
+            {t('login')}
+          </Link>
+        </div>
       </div>
 
       {error && (

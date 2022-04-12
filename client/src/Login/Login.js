@@ -92,11 +92,13 @@ export function Login() {
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
         <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
-        <Link to="/signup" className="uppercase">
-          {t('signup')}
-        </Link>{' '}
-        {t('or ')}
-        <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+        <div className="m-10">
+          <Link to="/signup" className="uppercase">
+            {t('signup')}
+          </Link>{' '}
+          {t('or ')}
+          <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+        </div>
       </div>
 
       {apiError && (
