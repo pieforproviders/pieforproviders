@@ -111,20 +111,20 @@ class ServiceDay < UuidApplicationRecord
 
   def tag_daily_amount
     return unless tag_daily
-    
+
     Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_f&.to_s
   end
 
   def tag_hourly
     return unless state == 'NE'
 
-    hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? "hourly" : nil
+    hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? 'hourly' : nil
   end
 
   def tag_daily
     return unless state == 'NE'
 
-    daily? || daily_plus_hourly? || daily_plus_hourly_max? ? "daily" : nil
+    daily? || daily_plus_hourly? || daily_plus_hourly_max? ? 'daily' : nil
   end
 
   def tag_absence
