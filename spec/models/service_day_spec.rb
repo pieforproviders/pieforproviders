@@ -305,7 +305,7 @@ RSpec.describe ServiceDay, type: :model do
       attendance.child.reload
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.tag_hourly_amount).to eq("5.5")
+      expect(service_day.tag_hourly_amount).to eq('5.5')
     end
   end
 
@@ -317,7 +317,7 @@ RSpec.describe ServiceDay, type: :model do
       attendance.child.reload
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.tag_daily_amount).to eq("1.0")
+      expect(service_day.tag_daily_amount).to eq('1.0')
     end
   end
 end
