@@ -100,16 +100,16 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def tags
-    [tag_hourly_calculator, tag_hourly, tag_daily_calculator, tag_daily, tag_absence].compact
+    [tag_hourly_amount, tag_hourly, tag_daily_amount, tag_daily, tag_absence].compact
   end
 
-  def tag_hourly_calculator
+  def tag_hourly_amount
     return unless tag_hourly
 
     Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_f&.to_s
   end
 
-  def tag_daily_calculator
+  def tag_daily_amount
     return unless tag_daily
     
     Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_f&.to_s
