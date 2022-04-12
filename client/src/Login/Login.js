@@ -163,7 +163,7 @@ export function Login() {
 
         <Form.Item>
           <PaddedButton
-            classes="mt-2 w-full"
+            classes="mt-2 bg-green1 border-green1 w-full login-button"
             text={t('login')}
             data-cy="loginBtn"
           />
