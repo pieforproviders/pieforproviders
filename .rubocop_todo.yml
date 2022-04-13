@@ -11,6 +11,8 @@
 # IgnoredMethods: refine
 Metrics/BlockLength:
   Max: 208
+  Exclude:
+    - 'spec/models/service_day_spec.rb'
 
 # Offense count: 3
 # Configuration parameters: CountComments, Max, CountAsOne, ExcludedMethods, IgnoredMethods.
