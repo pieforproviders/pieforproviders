@@ -21,12 +21,12 @@ class BusinessBlueprint < Blueprinter::Base
   end
 
   view :profile do
+    field :id
     field :name
     field :license_type
     field :zipcode
     field :county
     field :qris_rating
     field :accredited
-    exclude :id
   end
 end

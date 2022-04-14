@@ -24,8 +24,9 @@ Rails.application.routes.draw do
 
   scope module: :api, defaults: { format: :json }, path: 'api' do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
-      resources :users, only: %i[index show]
+      resources :users, only: %i[index show update]
       get 'profile', to: 'users#show'
+      put 'profile', to: 'users#update'
       resources :businesses
       resources :children
       resources :attendances, only: %i[index update]
@@ -63,7 +64,10 @@ end
 #                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
 #                                    users GET    /api/v1/users(.:format)                                                                           api/v1/users#index {:format=>:json}
 #                                     user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show {:format=>:json}
+#                                          PATCH  /api/v1/users/:id(.:format)                                                                       api/v1/users#update {:format=>:json}
+#                                          PUT    /api/v1/users/:id(.:format)                                                                       api/v1/users#update {:format=>:json}
 #                                  profile GET    /api/v1/profile(.:format)                                                                         api/v1/users#show {:format=>:json}
+#                                          PUT    /api/v1/profile(.:format)                                                                         api/v1/users#update {:format=>:json}
 #                               businesses GET    /api/v1/businesses(.:format)                                                                      api/v1/businesses#index {:format=>:json}
 #                                          POST   /api/v1/businesses(.:format)                                                                      api/v1/businesses#create {:format=>:json}
 #                                 business GET    /api/v1/businesses/:id(.:format)                                                                  api/v1/businesses#show {:format=>:json}
