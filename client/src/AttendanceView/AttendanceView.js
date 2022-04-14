@@ -200,7 +200,8 @@ export function AttendanceView() {
                         i > 0 ? 'ml-1' : null
                       }`}
                     >
-                      {t(`${tag.toLowerCase()}`)}
+                      {`${tag.split(' ')[0]} `}
+                      {t(`${tag.split(' ')[1].toLowerCase()}`)}
                     </div>
                   ))}
                 </div>
