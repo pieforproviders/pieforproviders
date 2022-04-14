@@ -22,20 +22,28 @@
 }
 
 .signup span.ant-input-affix-wrapper, 
+.login span.ant-input-affix-wrapper, 
 .signup input#signup_email.ant-input,
+.login input#signup_email.ant-input,
 .signup .ant-select:not(.ant-select-customize-input) .ant-select-selector,
+.login .ant-select:not(.ant-select-customize-input) .ant-select-selector,
 .signup  input#signup_fullName.ant-input,
+.login  input#signup_fullName.ant-input,
 input#login_email.ant-input {
   border-radius: 5px;
 }
 
 .signup label.ant-radio-button-wrapper:first-child,
-.signup .ant-input-group.ant-input-group-compact > .ant-select > .ant-select-selector {
+.login label.ant-radio-button-wrapper:first-child,
+.signup .ant-input-group.ant-input-group-compact > .ant-select > .ant-select-selector,
+.login .ant-input-group.ant-input-group-compact > .ant-select > .ant-select-selector {
   border-radius: 5px 0 0 5px;
 }
 
 .signup label.ant-radio-button-wrapper:last-child,
-.signup input#signup_phoneNumber.ant-input {
+.login label.ant-radio-button-wrapper:last-child,
+.signup input#signup_phoneNumber.ant-input,
+.login input#signup_phoneNumber.ant-input {
   border-radius: 0 5px 5px 0;
 }
 
