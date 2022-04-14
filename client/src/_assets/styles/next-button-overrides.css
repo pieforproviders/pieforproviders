@@ -1,9 +1,9 @@
-button.next-button.ant-btn-primary:hover {
+button.next-button.ant-btn-primary:hover, button.login-button.ant-btn-primary:hover, button.signup-button.ant-btn-primary:hover {
   border-color: green;
   background: green;
 }
 
-button.ant-btn-primary:focus {
+button.next-button.ant-btn-primary:focus, button.login-button.ant-btn-primary:focus, button.signup-button.ant-btn-primary:focus  {
   background-color: #00853D;
   border-color: #00853D
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Alert, Form, Input, Select, Radio, Checkbox } from 'antd'
+import { useHistory } from 'react-router-dom'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
@@ -43,6 +44,7 @@ export function Signup() {
   const [error, setError] = useState(false)
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
+  const history = useHistory()
 
   const onFinish = async () => {
     setValidationErrors(null)
@@ -91,11 +93,13 @@ export function Signup() {
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
         <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
-        <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
-        {` ${t('or')} `}
-        <Link to="/login" className="uppercase">
-          {t('login')}
-        </Link>
+        <div className="m-10">
+          <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
+          {` ${t('or')} `}
+          <Link to="/login" className="uppercase">
+            {t('login')}
+          </Link>
+        </div>
       </div>
 
       {error && (
@@ -480,6 +484,13 @@ export function Signup() {
           />
         </Form.Item>
         <div>
+          <p className="text-green3 m-4">{t('alreadyHaveAnAccount')}</p>
+          <PaddedButton
+            data-cy="loginBtn"
+            text={'Login'}
+            classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
+            onClick={() => history.push('/login')}
+          />
           <p className="mb-4">{t('dashboardBlankMessage')}</p>
           <p>{t('learnMore')}</p>
           <p>

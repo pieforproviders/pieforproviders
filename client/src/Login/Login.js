@@ -88,13 +88,17 @@ export function Login() {
   }
 
   return (
-    <main>
-      <div className="mb-4">
-        <Link to="/signup" className="uppercase">
-          {t('signup')}
-        </Link>{' '}
-        {t('or ')}
-        <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+    <main className="text-center">
+      <div className="mb-8">
+        <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
+        <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
+        <div className="m-10">
+          <Link to="/signup" className="uppercase">
+            {t('signup')}
+          </Link>{' '}
+          {t('or ')}
+          <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+        </div>
       </div>
 
       {apiError && (
@@ -125,7 +129,7 @@ export function Login() {
         layout="vertical"
         name="login"
         onFinish={onFinish}
-        wrapperCol={{ md: 12 }}
+        className="mb-6 ml-20 mr-20 signup"
       >
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -160,14 +164,41 @@ export function Login() {
         </Form.Item>
 
         <Form.Item>
-          <PaddedButton classes="mt-2" text={t('login')} data-cy="loginBtn" />
+          <PaddedButton
+            classes="mt-2 bg-green1 border-green1 w-full login-button"
+            text={t('login')}
+            data-cy="loginBtn"
+          />
         </Form.Item>
       </Form>
+      <div className="mx-20 mb-6">
+        <p className="text-green3 m-4">{t('dontHaveAnAccount')}</p>
+        <PaddedButton
+          data-cy="signupBtn"
+          text={'Signup'}
+          classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
+          onClick={() => history.push('/signup')}
+        />
+        <div className="text-black">
+          <p className="mb-4">{t('dashboardBlankMessage')}</p>
+          <p>{t('learnMore')}</p>
+          <p>
+            <a
+              className="text-blue5"
+              href="https://www.pieforproviders.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {'www.pieforproviders.com'}
+            </a>
+          </p>
+        </div>
+      </div>
       <Form
         layout="vertical"
         name="reset-password"
         onFinish={onChooseReset}
-        className="mt-24"
+        className="my-10"
       >
         <div className="mb-6">
           <div className="h3-large mb-1 text-primaryBlue">

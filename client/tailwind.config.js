@@ -26,6 +26,7 @@ module.exports = {
         orange3: '#9C4814',
         green1: '#00853D',
         green2: '#DCFAEA',
+        green3: '#179D57',
         blueOverlay: '#004A6E80'
       },
       fontFamily: {
