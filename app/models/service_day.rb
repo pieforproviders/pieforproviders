@@ -120,7 +120,7 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def tag_daily_amount
-    Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_f&.to_s
+    Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_s
   end
 
   def tag_absence
