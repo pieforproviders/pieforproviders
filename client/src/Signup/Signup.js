@@ -92,7 +92,7 @@ export function Signup() {
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
-        <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
+        <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2>
         <div className="m-10">
           <h1 className="inline-block font-bold uppercase">{t('signup')}</h1>
           {` ${t('or')} `}
@@ -114,7 +114,7 @@ export function Signup() {
         layout="vertical"
         onFinish={onFinish}
         name="signup"
-        className="mb-20 ml-20 mr-20 signup"
+        className="mb-20 md:mx-20 signup"
       >
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -484,10 +484,10 @@ export function Signup() {
           />
         </Form.Item>
         <div>
-          <p className="text-green3 m-4">{t('alreadyHaveAnAccount')}</p>
+          <p className="m-4 text-green3">{t('alreadyHaveAnAccount')}</p>
           <PaddedButton
             data-cy="loginBtn"
-            text={'Login'}
+            text={t('login')}
             classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
             onClick={() => history.push('/login')}
           />

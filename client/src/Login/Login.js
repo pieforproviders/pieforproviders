@@ -91,13 +91,13 @@ export function Login() {
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
-        <h2 className="mb-5 eyebrow-small">{t('signupNote')}</h2>
+        <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2>
         <div className="m-10">
           <Link to="/signup" className="uppercase">
             {t('signup')}
           </Link>{' '}
           {t('or ')}
-          <h1 className="uppercase font-bold inline-block">{t('login')}</h1>
+          <h1 className="inline-block font-bold uppercase">{t('login')}</h1>
         </div>
       </div>
 
@@ -129,7 +129,7 @@ export function Login() {
         layout="vertical"
         name="login"
         onFinish={onFinish}
-        className="mb-6 ml-20 mr-20 signup"
+        className="mb-6 md:mx-20 login"
       >
         <Form.Item
           className="body-2-bold text-primaryBlue"
@@ -170,17 +170,14 @@ export function Login() {
             data-cy="loginBtn"
           />
         </Form.Item>
-      </Form>
-      <div className="mx-20 mb-6">
-        <p className="text-green3 m-4">{t('dontHaveAnAccount')}</p>
+        <p className="m-4 text-green3">{t('dontHaveAnAccount')}</p>
         <PaddedButton
           data-cy="signupBtn"
-          text={'Signup'}
+          text={t('signup')}
           classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
           onClick={() => history.push('/signup')}
         />
         <div className="text-black">
-          <p className="mb-4">{t('dashboardBlankMessage')}</p>
           <p>{t('learnMore')}</p>
           <p>
             <a
@@ -193,7 +190,7 @@ export function Login() {
             </a>
           </p>
         </div>
-      </div>
+      </Form>
       <Form
         layout="vertical"
         name="reset-password"
@@ -201,7 +198,7 @@ export function Login() {
         className="my-10"
       >
         <div className="mb-6">
-          <div className="h3-large mb-1 text-primaryBlue">
+          <div className="mb-1 h3-large text-primaryBlue">
             {t('forgotPassword')}
           </div>
           <div className="body-2-bold text-primaryBlue">
