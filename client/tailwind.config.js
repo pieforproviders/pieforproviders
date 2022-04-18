@@ -72,8 +72,5 @@ module.exports = {
       lg: '1280px'
     },
     plugins: [require('./tailwind/plugins/base')()],
-    future: {
-      removeDeprecatedGapUtilities: true
-    }
   }
 }

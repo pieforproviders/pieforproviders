@@ -8,7 +8,7 @@ const { useBreakpoint } = Grid
 export default function DashboardStats({ summaryData }) {
   const screens = useBreakpoint()
   return (
-    <div className="dashboard-stats grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 mx-2 my-10">
+    <div className="grid grid-cols-2 mx-2 my-10 dashboard-stats sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
       {summaryData.map((stat, i) => {
         const renderDivider = () => {
           if ((screens.sm || screens.xs) && !screens.md) {
@@ -16,7 +16,7 @@ export default function DashboardStats({ summaryData }) {
             return i % 2 === 0 ? (
               <Divider
                 style={{ height: '8.25rem', borderColor: '#BDBDBD' }}
-                className="stats-divider m-2"
+                className="m-2 stats-divider"
                 type="vertical"
               />
             ) : null
@@ -41,11 +41,11 @@ export default function DashboardStats({ summaryData }) {
                     <div key={i} className="mt-2">
                       <p>
                         <Typography.Text>{subStat.title}</Typography.Text>
-                        <Typography.Text className="text-blue2 font-semibold ml-1">
+                        <Typography.Text className="ml-1 font-semibold text-blue2">
                           {subStat.stat}
                         </Typography.Text>
                       </p>
-                      <Typography.Paragraph className="text-xs mt-1">
+                      <Typography.Paragraph className="mt-1 text-xs">
                         {subStat.definition}
                       </Typography.Paragraph>
                       {i + 1 === stat.length ? null : <Divider />}
@@ -54,15 +54,15 @@ export default function DashboardStats({ summaryData }) {
                 })
               ) : (
                 <div className="mt-2">
-                  <p className="h-6 xs:whitespace-no-wrap">
+                  <p className="h-6 xs:whitespace-nowrap">
                     <Typography.Text>{stat.title}</Typography.Text>
                   </p>
                   <p>
-                    <Typography.Text className="text-blue2 h2-large mb-6">
+                    <Typography.Text className="mb-6 text-blue2 h2-large">
                       {stat.stat}
                     </Typography.Text>
                   </p>
-                  <Typography.Paragraph className="text-xs mt-5 mr-8">
+                  <Typography.Paragraph className="mt-5 mr-8 text-xs">
                     {stat.definition}
                   </Typography.Paragraph>
                 </div>
@@ -72,7 +72,7 @@ export default function DashboardStats({ summaryData }) {
         }
 
         return (
-          <div key={i} className="dashboard-stat flex">
+          <div key={i} className="flex dashboard-stat">
             {renderStat()}
             {renderDivider()}
           </div>
