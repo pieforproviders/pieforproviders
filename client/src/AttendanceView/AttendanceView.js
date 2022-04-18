@@ -142,7 +142,6 @@ export function AttendanceView() {
                       onClick={handleEditAttendance}
                     >
                       <EditIcon />
-                      {/* <img alt="editButton" src={editIcon} /> */}
                     </button>
                   )}
                   <div className="flex justify-center">
@@ -181,13 +180,14 @@ export function AttendanceView() {
             return (
               <div className="text-center body-2">
                 {hideEditButton ? null : (
-                  <button
-                    className="float-right"
-                    onClick={handleEditAttendance}
-                  >
-                    {/* <EditIcon className="edit-icon" /> */}
-                    {/* <img alt="edit" src={editIcon} /> */}
-                  </button>
+                  <div className="float-right rounded-full group">
+                    <button
+                      onClick={handleEditAttendance}
+                      className="group-hover:bg-blue3"
+                    >
+                      <EditIcon className="m-1 fill-gray3 group-hover:fill-primaryBlue" />
+                    </button>
+                  </div>
                 )}
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
