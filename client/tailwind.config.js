@@ -82,9 +82,8 @@ module.exports = {
   plugins: [require('./tailwind/plugins/base')()],
   variants: {
     extend: {
-      fill: ['group-hover'],
-      stroke: ['group-hover'],
-      backgroundColor: ['group-hover']
+      fill: ['group-hover', 'group-focus'],
+      backgroundColor: ['group-hover', 'group-focus']
     }
   }
 }
