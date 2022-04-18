@@ -178,16 +178,14 @@ export function AttendanceView() {
             const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
 
             return (
-              <div className="text-center body-2">
+              <div className="relative text-center body-2">
                 {hideEditButton ? null : (
-                  <div className="float-right rounded-full group">
-                    <button
-                      onClick={handleEditAttendance}
-                      className="group-hover:bg-blue3"
-                    >
-                      <EditIcon className="m-1 fill-gray3 group-hover:fill-primaryBlue" />
-                    </button>
-                  </div>
+                  <button
+                    onClick={handleEditAttendance}
+                    className="absolute right-0 rounded-full group hover:bg-blue3 focus:bg-primaryBlue"
+                  >
+                    <EditIcon className="m-1.5 fill-gray3 group-hover:fill-primaryBlue group-focus:fill-white" />
+                  </button>
                 )}
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
