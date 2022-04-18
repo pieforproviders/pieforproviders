@@ -71,6 +71,20 @@ module.exports = {
       md: '1024px',
       lg: '1280px'
     },
-    plugins: [require('./tailwind/plugins/base')()],
+    fill: theme => ({
+      primaryBlue: theme('colors.primaryBlue'),
+      white: theme('colors.white'),
+      gray3: theme('colors.gray3'),
+      gray5: theme('colors.gray5'),
+      blue3: theme('colors.blue3')
+    })
+  },
+  plugins: [require('./tailwind/plugins/base')()],
+  variants: {
+    extend: {
+      fill: ['group-hover'],
+      stroke: ['group-hover'],
+      backgroundColor: ['group-hover']
+    }
   }
 }
