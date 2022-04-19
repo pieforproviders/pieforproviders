@@ -34,7 +34,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns all users' do
         get '/api/v1/users', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).not_to include(illinois_user.greeting_name)
+        expect(parsed_response.collect { |x| x['greeting_name'] }).to include(illinois_user.greeting_name)
         expect(parsed_response.collect { |x| x['greeting_name'] }).to include(nebraska_user.greeting_name)
         expect(response.status).to eq(200)
         expect(response).to match_response_schema('users')
@@ -75,7 +75,10 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'does not return the illinois user' do
         get "/api/v1/users/#{illinois_user.id}", headers: headers
-        expect(response.status).to eq(404)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
+        expect(response.status).to eq(200)
+        expect(response).to match_response_schema('user')
       end
 
       it 'returns the admin user using /profile' do
@@ -219,7 +222,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns the correct data schema' do
         get '/api/v1/case_list_for_dashboard', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(4)
         expect(response.status).to eq(200)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
