@@ -6,6 +6,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
   let!(:illinois_user) { create(:confirmed_user) }
+  let!(:illinois_business) { create(:business, user: illinois_user) }
   let!(:nebraska_user) { create(:confirmed_user) }
   let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
@@ -99,6 +100,44 @@ RSpec.describe 'Api::V1::Users', type: :request do
       #   expect(parsed_response['greeting_name']).to eq(nebraska_user.greeting_name)
       #   expect(response).to match_response_schema('user')
       # end
+    end
+  end
+
+  describe 'PUT /api/v1/users/:id' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as a non-admin user' do
+      let(:params) do
+        {
+          user: {
+            id: illinois_user.id,
+            full_name: 'Padma Patil',
+            businesses_attributes: [
+              {
+                id: illinois_user.businesses.first.id,
+                name: 'Test Child Care'
+              }
+            ]
+          }
+        }
+      end
+
+      before { sign_in illinois_user }
+
+      it "updates the user's profile" do
+        put "/api/v1/users/#{illinois_user.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['full_name']).to eq('Padma Patil')
+        expect(parsed_response['businesses'].first['name']).to eq('Test Child Care')
+        expect(illinois_user.reload.full_name).to eq('Padma Patil')
+        expect(illinois_user.businesses.first.reload.name).to eq('Test Child Care')
+        expect(response).to match_response_schema('user')
+      end
+
+      it "does not update another user's profile" do
+        put "/api/v1/users/#{nebraska_user.id}", params: params, headers: headers
+        expect(response.status).to eq(404)
+      end
     end
   end
 
