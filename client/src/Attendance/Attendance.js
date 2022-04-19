@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState, useRef } from 'react'
 import { Alert, Button, DatePicker, Modal, Select, Table } from 'antd'
 import { FilterFilled } from '@ant-design/icons'
@@ -9,6 +10,7 @@ import { PaddedButton } from '_shared/PaddedButton'
 import { useCaseAttendanceData } from '_shared/_hooks/useCaseAttendanceData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { setCaseData } from '_reducers/casesReducer'
+import { setFilteredCases } from '_reducers/uiReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
@@ -29,6 +31,7 @@ export function Attendance() {
   }))
   const [tableData, setTableData] = useState(cases)
   const [businesses, setBusinesses] = useState([])
+  // const [selectedBusinesses, setSelectedBusinesses] = useState([])
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
@@ -276,16 +279,17 @@ export function Attendance() {
     }
   }
 
-  const getCaseData = async businessId => {
+  const getCaseData = async (businessIds = []) => {
+    // TODO: update to use query params, instead of data/ body
     let request
-    if (businessId) {
+    if (businessIds.length > 0) {
       request = {
         type: 'get',
         url: '/api/v1/children',
         headers: { Authorization: token },
         data: {
           child: {
-            site: businessId
+            site: businessIds
           }
         }
       }
@@ -303,10 +307,7 @@ export function Attendance() {
       const caseData = reduceTableData(parsedResponse)
       const reducedAttendanceData = reduceAttendanceData(caseData)
       // TODO: Reduce Business Data?
-      // TODO: dispatch business to state?
-      // TODO: onChange of select - send new request with business ID
-      // TODO: get the dropdown to stop changing width when multiple businesses are selected
-      if (!businessId) {
+      if (businessIds.length === 0) {
         setBusinesses(
           parsedResponse.reduce((priorValue, newValue) => {
             return !priorValue.some(item => item.id === newValue.business.id)
@@ -316,6 +317,7 @@ export function Attendance() {
         )
       }
 
+      dispatch(setFilteredCases(businessIds))
       dispatch(setCaseData(caseData))
       latestAttendanceData.current = reducedAttendanceData
       setAttendanceData(reducedAttendanceData)
@@ -329,6 +331,17 @@ export function Attendance() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const setWidths = () => {
+    const longestName = businesses.reduce(
+      (a, b) => (a.name?.length > b.name?.length ? a.name : b.name),
+      ''
+    )
+    return {
+      minWidth: `${longestName.length * 10}px`,
+      maxWidth: `${longestName.length * 10}px`
+    }
+  }
 
   return (
     <div>
@@ -364,16 +377,20 @@ export function Attendance() {
           mode="multiple"
           allowClear
           className="site-filter"
-          style={{ minWidth: '144px' }}
           placeholder="Filter by Site"
-          // onChange={handleChange}
-          // dropdownRender={children => console.log(children)}
+          onChange={value => {
+            getCaseData(value)
+          }}
+          dropdownStyle={setWidths()}
+          style={{ minWidth: '200px' }}
         >
-          {businesses.map(business => (
-            <Select.Option key={business.id} value={business.id}>
-              {business.name}
-            </Select.Option>
-          ))}
+          {businesses.map(business => {
+            return (
+              <Select.Option key={business.id} value={business.id}>
+                {business.name}
+              </Select.Option>
+            )
+          })}
         </Select>
       </div>
       <Table
