@@ -49,7 +49,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.with_dashboard_case),
+          policy_scope(User.nebraska.with_dashboard_case),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
