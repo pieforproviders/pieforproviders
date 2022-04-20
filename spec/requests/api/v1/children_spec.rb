@@ -38,8 +38,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('children')
       end
 
-      it 'returns the correct children when a site filter is sent' do
-        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
+      it 'returns the correct children when a business filter is sent' do
+        get '/api/v1/children', headers: headers, params: { business: [user_business.id] }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
@@ -55,8 +55,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('children')
       end
 
-      it 'returns the correct children when multiple sites are sent in the filter' do
-        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
+      it 'returns the correct children when multiple businesses are sent in the filter' do
+        get '/api/v1/children', headers: headers, params: { business: [user_business.id, other_business.id] }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
@@ -97,8 +97,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('children')
       end
 
-      it 'returns the correct children when a site filter is sent' do
-        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id] } }
+      it 'returns the correct children when a business filter is sent' do
+        get '/api/v1/children', headers: headers, params: { business: [user_business.id] }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
@@ -114,8 +114,8 @@ RSpec.describe 'Api::V1::Children', type: :request do
         expect(response).to match_response_schema('children')
       end
 
-      it 'returns the correct children when multiple sites are sent in the filter' do
-        get '/api/v1/children', headers: headers, params: { child: { site: [user_business.id, other_business.id] } }
+      it 'returns the correct children when multiple businesses are sent in the filter' do
+        get '/api/v1/children', headers: headers, params: { business: [user_business.id, other_business.id] }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
