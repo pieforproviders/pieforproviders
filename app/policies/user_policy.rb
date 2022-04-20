@@ -14,7 +14,7 @@ class UserPolicy < ApplicationPolicy
   class Scope < ApplicationScope
     def resolve
       if user.admin?
-        scope.all.includes(:businesses).where(businesses: { state: 'NE' })
+        scope.all
       else
         scope.where(id: user.id).active
       end
