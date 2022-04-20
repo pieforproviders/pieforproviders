@@ -39,6 +39,7 @@ class User < UuidApplicationRecord
   validates :too_much_time, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
 
   scope :active, -> { where(active: true) }
+  scope :nebraska, -> { where(state: 'NE') }
 
   scope :with_dashboard_case,
         lambda {
