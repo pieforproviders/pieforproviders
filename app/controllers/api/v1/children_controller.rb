@@ -52,9 +52,9 @@ module Api
       end
 
       def set_children
-        @children = if params[:child].present? && child_params[:site]
+        @children = if params[:business].present?
                       policy_scope(Child.includes(business: :user).where(
-                        business: Business.find(child_params[:site])
+                        business: Business.find(params[:business].split(','))
                       ).order(:last_name))
                     else
                       policy_scope(Child.includes(business: :user).order(:last_name))
@@ -78,7 +78,7 @@ module Api
           inactive_reason
         ]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]
-        params.require(:child).permit(attributes, site: [])
+        params.require(:child).permit(attributes, business: [])
       end
 
       def make_approval_amounts
