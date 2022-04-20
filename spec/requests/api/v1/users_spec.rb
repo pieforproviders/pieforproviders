@@ -6,6 +6,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
   let!(:illinois_user) { create(:confirmed_user) }
+  let!(:illinois_business) { create(:business, user: illinois_user) }
   let!(:nebraska_user) { create(:confirmed_user) }
   let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
@@ -33,7 +34,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns all users' do
         get '/api/v1/users', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).not_to include(illinois_user.greeting_name)
+        expect(parsed_response.collect { |x| x['greeting_name'] }).to include(illinois_user.greeting_name)
         expect(parsed_response.collect { |x| x['greeting_name'] }).to include(nebraska_user.greeting_name)
         expect(response.status).to eq(200)
         expect(response).to match_response_schema('users')
@@ -74,7 +75,10 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'does not return the illinois user' do
         get "/api/v1/users/#{illinois_user.id}", headers: headers
-        expect(response.status).to eq(404)
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
+        expect(response.status).to eq(200)
+        expect(response).to match_response_schema('user')
       end
 
       it 'returns the admin user using /profile' do
@@ -99,6 +103,44 @@ RSpec.describe 'Api::V1::Users', type: :request do
       #   expect(parsed_response['greeting_name']).to eq(nebraska_user.greeting_name)
       #   expect(response).to match_response_schema('user')
       # end
+    end
+  end
+
+  describe 'PUT /api/v1/users/:id' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as a non-admin user' do
+      let(:params) do
+        {
+          user: {
+            id: illinois_user.id,
+            full_name: 'Padma Patil',
+            businesses_attributes: [
+              {
+                id: illinois_user.businesses.first.id,
+                name: 'Test Child Care'
+              }
+            ]
+          }
+        }
+      end
+
+      before { sign_in illinois_user }
+
+      it "updates the user's profile" do
+        put "/api/v1/users/#{illinois_user.id}", params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['full_name']).to eq('Padma Patil')
+        expect(parsed_response['businesses'].first['name']).to eq('Test Child Care')
+        expect(illinois_user.reload.full_name).to eq('Padma Patil')
+        expect(illinois_user.businesses.first.reload.name).to eq('Test Child Care')
+        expect(response).to match_response_schema('user')
+      end
+
+      it "does not update another user's profile" do
+        put "/api/v1/users/#{nebraska_user.id}", params: params, headers: headers
+        expect(response.status).to eq(404)
+      end
     end
   end
 
@@ -180,7 +222,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns the correct data schema' do
         get '/api/v1/case_list_for_dashboard', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(4)
         expect(response.status).to eq(200)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end

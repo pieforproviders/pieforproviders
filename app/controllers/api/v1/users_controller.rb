@@ -4,8 +4,8 @@ module Api
   module V1
     # API for application users
     class UsersController < Api::V1::ApiController
-      before_action :set_user, only: %i[show]
-      before_action :authorize_user, only: %i[show]
+      before_action :set_user, only: %i[show update]
+      before_action :authorize_user, only: %i[show update]
 
       # GET /users
       def index
@@ -21,6 +21,15 @@ module Api
           @user,
           view: :profile
         )
+      end
+
+      # PUT /profile or PUT /users/:id
+      def update
+        if @user.update(user_params)
+          render json: UserBlueprint.render(@user, view: :profile)
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
       end
 
       # GET /case_list_for_dashboard
@@ -64,6 +73,13 @@ module Api
           view: :illinois_dashboard,
           filter_date: filter_date
         )
+      end
+
+      def user_params
+        attributes = []
+        attributes += %i[id full_name email language phone_number]
+        attributes += [{ businesses_attributes: %i[id accredited county license_type name qris_rating zipcode] }]
+        params.require(:user).permit(attributes)
       end
     end
   end

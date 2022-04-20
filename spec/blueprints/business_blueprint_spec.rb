@@ -37,6 +37,7 @@ RSpec.describe BusinessBlueprint do
 
     it 'includes the required fields' do
       expect(JSON.parse(blueprint).keys).to contain_exactly(
+        'id',
         'name',
         'license_type',
         'zipcode',
