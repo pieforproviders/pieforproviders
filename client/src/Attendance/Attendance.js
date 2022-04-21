@@ -281,25 +281,16 @@ export function Attendance() {
 
   const getCaseData = async (businessIds = []) => {
     // TODO: update to use query params, instead of data/ body
-    let request
-    if (businessIds.length > 0) {
-      request = {
-        type: 'get',
-        url: '/api/v1/children',
-        headers: { Authorization: token },
-        data: {
-          child: {
-            site: businessIds
-          }
-        }
-      }
-    } else {
-      request = {
-        type: 'get',
-        url: '/api/v1/children',
-        headers: { Authorization: token }
-      }
+    const url =
+      businessIds.length > 0
+        ? `/api/v1/children?business=${businessIds.join(',')}`
+        : '/api/v1/children'
+    const request = {
+      type: 'get',
+      url: url,
+      headers: { Authorization: token }
     }
+
     const response = await makeRequest(request)
 
     if (response.ok) {
