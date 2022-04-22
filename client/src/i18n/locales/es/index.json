@@ -248,6 +248,8 @@
   "noInfo": "no info",
   "daily": "día completo",
   "hourly": "horas",
+  "hourly_one": "hora",
+  "hourly_other": "horas",
   "addCheckInTime": "Añadir timpo de entrada",
   "removeCheckInTime": "Eliminar timpo de entrada",
   "helpUsUnderstand": "Ayúdanos a entender tu experiencia actual con la gestión del subsidio",
