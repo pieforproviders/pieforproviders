@@ -177,6 +177,24 @@ export function AttendanceView() {
             )
             const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
 
+            const tags = (matchingServiceDay.tags || []).map((tag, i) => {
+              let amount = tag.split(' ')[0]
+              let count = parseInt(amount, 10) <= 1 ? 1 : 0
+
+              return (
+                <div
+                  key={i}
+                  className={`bg-green2 text-green1 box-border p-1 mt-1 ${
+                    i > 0 ? 'ml-1' : null
+                  }`}
+                >
+                  {`${amount} `}
+                  {i18n.t(`${tag.split(' ')[1].toLowerCase()}`, {
+                    count: count
+                  })}
+                </div>
+              )
+            })
             return (
               <div className="relative text-center body-2">
                 {hideEditButton ? null : (
@@ -193,19 +211,7 @@ export function AttendanceView() {
                 <div className="text-xs text-darkGray">
                   {checkInCheckOutTime}
                 </div>
-                <div className="flex justify-center">
-                  {(matchingServiceDay.tags || []).map((tag, i) => (
-                    <div
-                      key={i}
-                      className={`bg-green2 text-green1 box-border p-1 mt-1 ${
-                        i > 0 ? 'ml-1' : null
-                      }`}
-                    >
-                      {`${tag.split(' ')[0]} `}
-                      {t(`${tag.split(' ')[1].toLowerCase()}`)}
-                    </div>
-                  ))}
-                </div>
+                <div className="flex justify-center">{tags}</div>
               </div>
             )
           }

@@ -247,6 +247,8 @@
   "noInfo": "no info",
   "daily": "full day",
   "hourly": "hours",
+  "hourly_one": "hour",
+  "hourly_other": "hours",
   "addCheckInTime": "Add check-in time",
   "removeCheckInTime": "Remove check-in time",
   "helpUsUnderstand": "Help us understand your current experience managing subsidy",
