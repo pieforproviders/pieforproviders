@@ -9,6 +9,7 @@ import ellipse from '_assets/ellipse.svg'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useCaseAttendanceData } from '_shared/_hooks/useCaseAttendanceData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setFilteredCases } from '_reducers/uiReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
@@ -25,13 +26,12 @@ export function Attendance() {
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseAttendanceData()
   const { makeRequest } = useApiResponse()
-  const { cases, token } = useSelector(state => ({
+  const { businesses, cases, token } = useSelector(state => ({
+    businesses: state.businesses,
     cases: state.cases,
     token: state.auth.token
   }))
   const [tableData, setTableData] = useState(cases)
-  const [businesses, setBusinesses] = useState([])
-  // const [selectedBusinesses, setSelectedBusinesses] = useState([])
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
@@ -299,13 +299,12 @@ export function Attendance() {
       const reducedAttendanceData = reduceAttendanceData(caseData)
       // TODO: Reduce Business Data?
       if (businessIds.length === 0) {
-        setBusinesses(
-          parsedResponse.reduce((priorValue, newValue) => {
-            return !priorValue.some(item => item.id === newValue.business.id)
-              ? [...priorValue, newValue.business]
-              : priorValue
-          }, [])
-        )
+        const businessData = parsedResponse.reduce((priorValue, newValue) => {
+          return !priorValue.some(item => item.id === newValue.business.id)
+            ? [...priorValue, newValue.business]
+            : priorValue
+        }, [])
+        dispatch(setBusinesses(businessData))
       }
 
       dispatch(setFilteredCases(businessIds))
@@ -320,6 +319,7 @@ export function Attendance() {
     if (cases.length === 0) {
       getCaseData()
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
