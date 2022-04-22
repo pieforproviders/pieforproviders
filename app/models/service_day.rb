@@ -116,7 +116,8 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def tag_hourly_amount
-    Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_f&.to_s
+    a = Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
+    a.to_i == a ? a.to_i.to_s : a.to_s
   end
 
   def tag_daily_amount
