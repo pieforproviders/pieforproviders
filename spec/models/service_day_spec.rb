@@ -298,14 +298,22 @@ RSpec.describe ServiceDay, type: :model do
   end
 
   describe '#tag_hourly_amount' do
-    let(:attendance) { create(:nebraska_hourly_attendance) }
-    let(:service_day) { attendance.service_day }
-
-    it 'returns correct hourly amount' do
+    it 'returns correct hourly amount if decimal' do
+      attendance = create(:nebraska_hourly_attendance)
+      service_day = attendance.service_day
       attendance.child.reload
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.tag_hourly_amount).to eq('5.5')
+    end
+
+    it 'returns correct hourly amount if integer' do
+      attendance = create(:nebraska_hour_attendance)
+      service_day = attendance.service_day
+      attendance.child.reload
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.tag_hourly_amount).to eq('1')
     end
   end
 
