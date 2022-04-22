@@ -40,6 +40,10 @@ FactoryBot.define do
         absence { Attendance::ABSENCE_TYPES.sample }
       end
 
+      trait :hour do
+        check_out { check_in + 1.hour }
+      end
+
       trait :hourly do
         check_out { check_in + 5.hours + 20.minutes }
       end
@@ -57,6 +61,7 @@ FactoryBot.define do
       end
 
       factory :nebraska_absence, traits: [:absence]
+      factory :nebraska_hour_attendance, traits: [:hour]
       factory :nebraska_hourly_attendance, traits: [:hourly]
       factory :nebraska_daily_attendance, traits: [:daily]
       factory :nebraska_daily_plus_hourly_attendance, traits: [:daily_plus_hourly]
