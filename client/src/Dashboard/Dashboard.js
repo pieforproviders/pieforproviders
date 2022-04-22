@@ -9,6 +9,7 @@ import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
+import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 
 export function Dashboard() {
@@ -263,6 +264,17 @@ export function Dashboard() {
         setDates(updatedDates)
       }
 
+      dispatch(
+        setBusinesses(
+          parsedResponse.flatMap(x =>
+            x.businesses.reduce((priorValue, newValue) => {
+              return !priorValue.some(item => item.id === newValue.id)
+                ? [...priorValue, { name: newValue.name, id: newValue.id }]
+                : priorValue
+            }, [])
+          )
+        )
+      )
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
