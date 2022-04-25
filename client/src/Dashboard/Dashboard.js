@@ -21,7 +21,8 @@ export function Dashboard() {
     currency: 'USD',
     minimumFractionDigits: 0
   })
-  const { token, user } = useSelector(state => ({
+  const { businesses, token, user } = useSelector(state => ({
+    businesses: state.businesses,
     token: state.auth.token,
     user: state.user
   }))
@@ -264,17 +265,6 @@ export function Dashboard() {
         setDates(updatedDates)
       }
 
-      dispatch(
-        setBusinesses(
-          parsedResponse.flatMap(x =>
-            x.businesses.reduce((priorValue, newValue) => {
-              return !priorValue.some(item => item.id === newValue.id)
-                ? [...priorValue, { name: newValue.name, id: newValue.id }]
-                : priorValue
-            }, [])
-          )
-        )
-      )
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
@@ -294,11 +284,28 @@ export function Dashboard() {
 
       if (response.ok) {
         const resp = await response.json()
+
         dispatch(setUser(resp))
         identifyHotjar(resp.id ?? null, resp, console.info)
         setSummaryTotals(
           summaryDataTotalsConfig[`${resp.state === 'NE' ? 'ne' : 'default'}`]
         )
+      }
+    }
+
+    const getBusinessData = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/businesses',
+        headers: {
+          Authorization: token
+        }
+      })
+
+      if (response.ok) {
+        const resp = await response.json()
+
+        dispatch(setBusinesses(resp))
       }
     }
 
@@ -308,6 +315,10 @@ export function Dashboard() {
 
     if (Object.keys(user).length === 0) {
       getUserData()
+    }
+
+    if (businesses.length === 0) {
+      getBusinessData()
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     // still haven't found a better way around this - sometimes we really do
