@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { useEffect, useState, useRef } from 'react'
 import { Alert, Button, DatePicker, Modal, Select, Table } from 'antd'
 import { FilterFilled } from '@ant-design/icons'
@@ -297,7 +296,7 @@ export function Attendance() {
       const parsedResponse = await response.json()
       const caseData = reduceTableData(parsedResponse)
       const reducedAttendanceData = reduceAttendanceData(caseData)
-      // TODO: Reduce Business Data?
+
       if (businessIds.length === 0) {
         const businessData = parsedResponse.reduce((priorValue, newValue) => {
           return !priorValue.some(item => item.id === newValue.business.id)
@@ -316,9 +315,7 @@ export function Attendance() {
   }
 
   useEffect(() => {
-    if (cases.length === 0) {
-      getCaseData()
-    }
+    getCaseData()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
