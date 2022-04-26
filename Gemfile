@@ -49,6 +49,7 @@ group :development, :test do
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
   gem 'pry-remote'
+  gem 'rspec-benchmark'
   gem 'rspec-rails'
   gem 'rubocop-performance'
   gem 'rubocop-rails'
@@ -57,6 +58,7 @@ end
 
 group :development do
   gem 'annotate', github: 'Vasfed/annotate_models', branch: 'rails6_warning'
+  gem 'benchmark-ips'
   gem 'guard-rspec', require: false
   gem 'letter_opener_web', '~> 2.0'
   gem 'listen', '>= 3.0.5', '< 3.8'
