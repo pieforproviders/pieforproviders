@@ -297,7 +297,7 @@ export function Attendance() {
       const caseData = reduceTableData(parsedResponse)
       const reducedAttendanceData = reduceAttendanceData(caseData)
 
-      if (businessIds.length === 0) {
+      if (businesses.length === 0) {
         const businessData = parsedResponse.reduce((priorValue, newValue) => {
           return !priorValue.some(item => item.id === newValue.business.id)
             ? [...priorValue, newValue.business]
@@ -371,6 +371,7 @@ export function Attendance() {
           }}
           dropdownStyle={setWidths()}
           style={{ minWidth: '200px' }}
+          role="siteFilter"
         >
           {businesses.map(business => {
             return (

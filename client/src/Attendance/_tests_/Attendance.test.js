@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, waitFor } from 'setupTests'
+import { fireEvent, render, screen, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { Attendance } from '../Attendance'
 
@@ -26,13 +26,22 @@ describe('<Attendance />', () => {
   })
 
   it('renders content', async () => {
-    const { container } = doRender()
+    const id = 12
+    const { container } = doRender({
+      initialState: { businesses: [{ name: 'testing name', id }] }
+    })
+
     await waitFor(() => {
+      const select = screen.getAllByRole('siteFilter')[1]
+      fireEvent.select(select, { target: { value: id.toString() } })
+      expect(select).toHaveProperty('value', id.toString())
+
       expect(container).toHaveTextContent('Enter attendance history')
       expect(container).toHaveTextContent(
         'Important: if we already have access to your attendance records through another software (for example, Wonderschool) please do not enter your attendance information here. If you have any questions, you can email us at team@pieforproviders.com'
       )
       expect(container).toHaveTextContent('Save')
+      expect(container).toHaveTextContent('Filter by Site')
     })
   })
 })
