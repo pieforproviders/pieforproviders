@@ -57,3 +57,6 @@ latest.dump
 
 # snaplet config
 .snaplet
+
+# prod-like seeds
+/spec/fixtures/files/prod_like_seeds/*
