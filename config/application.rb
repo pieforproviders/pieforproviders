@@ -61,6 +61,9 @@ module App
     config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == 'true'
     config.sendmail_username = ENV.fetch('SENDMAIL_USERNAME', '')
 
+    # performance testing
+    config.performance_testing = ENV.fetch('PERFORMANCE_TESTING', false) == 'true'
+
     # AWS
     config.aws_access_key_id = ENV.fetch('AWS_ACCESS_KEY_ID', '')
     config.aws_secret_access_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
