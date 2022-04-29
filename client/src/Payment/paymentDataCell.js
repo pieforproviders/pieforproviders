@@ -16,7 +16,8 @@ export default function PaymentDataCell({
     <InputNumber
       className={'w-32 ' + (isSmallTableSize ? 'mt-1 ml-4' : 'mr-1')}
       placeholder={t('enterAmount')}
-      formatter={value => inputFormatter(value)}
+      formatter={value => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+      prefix={paymentValue >= 0 ? '$' : ''}
       parser={value => value.replace(/\$\s?|(,*)/g, '')}
       disabled={!isDifferentPayment}
       min={0}
@@ -25,14 +26,6 @@ export default function PaymentDataCell({
       onChange={updatePayment}
     />
   )
-
-  function inputFormatter(value) {
-    if (!isDifferentPayment || !value) {
-      return t('enterAmount')
-    }
-
-    return `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  }
 
   function updatePayment(value) {
     setPaymentValue(value)
