@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.xdescribe 'Api::V1::Users', type: :request do
   include_context 'with correct api version header'
   include_context 'when authenticated as an admin'
-  let!(:nebraska_business) do
-    create(:business, :nebraska_ldds, user: create(:confirmed_user, :nebraska))
-  end
+  # let!(:nebraska_business) do
+  #   create(:business, :nebraska_ldds, user: create(:confirmed_user, :nebraska))
+  # end
 
   before do
     start_time = Time.current
@@ -26,8 +26,8 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
         NebraskaApprovalAmount
       ]
       tables_to_import.each do |klass|
-        file = Rails.root.join("spec/fixtures/files/prod_like_seeds/#{klass.model_name.plural}.json")
-        klass.insert_all(JSON.parse(file.read)) if file
+        # file = Rails.root.join("spec/fixtures/files/prod_like_seeds/#{klass.model_name.plural}.json")
+        # klass.insert_all(JSON.parse(file.read)) if file
       end
     else
       create_list(:attendance, 200)

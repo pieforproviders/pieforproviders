@@ -419,6 +419,7 @@ module Nebraska
         'finds reimbursable absent days for given month; COVID are reimbursable w/o restriction, others capped at 5'
       ) do
         month ||= filter_date
+        # rubocop:disable Layout/LineLength
         # ServiceDay.find_by_sql("(select service_days.*
         #   from service_days
         #   join attendances on attendances.service_day_id = service_days.id
@@ -434,6 +435,7 @@ module Nebraska
         #   where service_days.child_id = '#{child.id}'
         #   and service_days.date between '#{month.at_beginning_of_month.to_date}' and '#{month.at_end_of_month.to_date}'
         #   and attendances.absence = 'covid_absence'")
+        # rubocop:enable Layout/LineLength
         absent_days.reimbursable_absences(month)
         # absences = month ? absences_for_month(month: month) : absences_this_month
 
@@ -496,7 +498,6 @@ module Nebraska
       end
     end
 
-    # rubocop:disable Metrics/MethodLength
     def reimbursable_approval_absent_days
       Appsignal.instrument_sql(
         'dashboard_case.reimbursable_approval_absent_days',
@@ -508,13 +509,12 @@ module Nebraska
         date = approval.effective_on.to_date
 
         while date <= filter_date.at_end_of_month
-          days.merge(reimbursable_absent_service_days(month: date))
+          days.merge(reimbursable_absent_service_days(month: date), rewhere: true)
           date += 1.month
         end
         @reimbursable_approval_absent_days ||= days
       end
     end
-    # rubocop:enable Metrics/MethodLength
 
     def make_calculated_service_day(service_day:)
       Appsignal.instrument_sql(
