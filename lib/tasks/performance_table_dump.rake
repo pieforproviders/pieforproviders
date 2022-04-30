@@ -3,6 +3,7 @@
 # This dumps all dev tables to JSON in the fixtures/files/prod_like_seeds folder
 task performance_table_dump: :environment do
   if Rails.env.development?
+    # rubocop:disable Layout/LineLength
     sql = "
     CREATE or REPLACE FUNCTION copy_table(table_name text)
     RETURNS void AS $$
@@ -29,6 +30,7 @@ task performance_table_dump: :environment do
 
     select copy_loop(ARRAY['users', 'businesses', 'approvals', 'child_approvals', 'children', 'nebraska_rates', 'schedules', 'service_days', 'attendances', 'nebraska_approval_amounts'])
     "
+    # rubocop:enable Layout/LineLength
     ActiveRecord::Base.connection.execute(sql)
   else
     puts 'Error dumping tables to json: this environment does not allow for dumping tables to json'
