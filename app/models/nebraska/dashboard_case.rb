@@ -235,27 +235,17 @@ module Nebraska
 
     def active_nebraska_approval_amount
       Appsignal.instrument_sql(
-        'dashboard_case.active_nebraska_approval_amount'
+        'dashboard_case.active_nebraska_approval_amount',
+        'selects the current active nebraska approval amount for this child and memoizes it'
       ) do
         @active_nebraska_approval_amount ||= child&.active_nebraska_approval_amount(filter_date)
       end
     end
 
-    def service_days_this_month
-      Appsignal.instrument_sql(
-        'dashboard_case.service_days_this_month',
-        'selects only the service_days for this month and memoizes them'
-      ) do
-        @service_days_this_month ||= attended_days&.select do |service_day|
-          service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
-        end
-      end
-    end
-
     def absences_this_month
       Appsignal.instrument_sql(
-        'dashboard_case.service_days_this_month',
-        'selects only the service_days for this month and memoizes them'
+        'dashboard_case.absences_this_month',
+        'selects only the absences for this month and memoizes them'
       ) do
         @absences_this_month ||= absent_days&.select do |service_day|
           service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
@@ -266,7 +256,7 @@ module Nebraska
     def attendances_this_month
       Appsignal.instrument_sql(
         'dashboard_case.attendances_this_month',
-        'selects attendances_this_month'
+        'selects only the attendances for this month and memoizes them'
       ) do
         @attendances_this_month ||= attended_days&.select do |service_day|
           service_day.date.between?(filter_date.at_beginning_of_month, filter_date.at_end_of_month)
