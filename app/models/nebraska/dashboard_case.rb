@@ -40,11 +40,13 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.absences'
       ) do
-        return 0 unless absences_this_month
-
-        absences_this_month.select do |service_day|
-          service_day.attendances.none? { |attendance| attendance.absence == 'covid_absence' }
-        end.length
+        child
+          &.service_days
+          &.joins(:attendances)
+          &.for_month(filter_date)
+          &.where
+          &.not(attendances: { absence: 'covid_absence' })
+          &.size
       end
     end
 
@@ -449,7 +451,10 @@ module Nebraska
         'dashboard_case.approval_days_to_count_for_duration_limits',
         'reduce out nils from attendances for the approval'
       ) do
-        [attended_days, non_covid_approval_absences].compact.reduce([], :|)
+        @approval_days_to_count_for_duration_limits ||= [
+          attended_days,
+          non_covid_approval_absences
+        ].compact.reduce([], :|)
       end
     end
 
