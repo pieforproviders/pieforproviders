@@ -28,6 +28,12 @@ class ServiceDay < UuidApplicationRecord
   scope :non_absences, -> { joins(:attendances).where(attendances: { absence: nil }) }
   scope :covid_absences, -> { joins(:attendances).where(attendances: { absence: 'covid_absence' }) }
   scope :standard_absences, -> { joins(:attendances).where(attendances: { absence: 'absence' }) }
+  scope :reimbursable_absences,
+        lambda { |month = nil|
+          month ||= Time.current
+          covid_absences.for_month(month).merge(standard_absences.for_month(month).order(total_time_in_care: :desc).limit(5))
+        }
+
   scope :ne_hourly,
         lambda {
           joins(:attendances, { child: :business })
@@ -86,7 +92,6 @@ class ServiceDay < UuidApplicationRecord
           day ||= Time.current
           where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
         }
-
   scope :for_weekday,
         lambda { |weekday|
           where("select date_part('dow', DATE(date)) = ?", weekday)
