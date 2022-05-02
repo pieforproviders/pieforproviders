@@ -27,7 +27,7 @@ module Nebraska
         'dashboard_case.attendance_risk'
       ) do
         Nebraska::Monthly::AttendanceRiskCalculator.new(
-          child: child,
+          timezone: child.timezone,
           filter_date: filter_date,
           family_fee: family_fee,
           scheduled_revenue: scheduled_revenue,
@@ -71,7 +71,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.earned_revenue'
       ) do
-        [
+        @earned_revenue ||= [
           attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
             family_fee,
@@ -84,7 +84,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.estimated_revenue'
       ) do
-        [
+        @estimated_revenue ||= [
           estimated_month_days_revenue +
             attended_month_days_revenue +
             reimbursable_month_absent_days_revenue -
@@ -98,7 +98,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.scheduled_revenue'
       ) do
-        [
+        @scheduled_revenue ||= [
           scheduled_month_days_revenue -
             family_fee,
           Money.from_amount(0)

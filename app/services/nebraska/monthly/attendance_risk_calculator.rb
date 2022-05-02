@@ -4,10 +4,10 @@ module Nebraska
   module Monthly
     # Calculate attendance risk for a child on a given date
     class AttendanceRiskCalculator
-      attr_reader :child, :family_fee, :filter_date, :scheduled_revenue, :estimated_revenue
+      attr_reader :timezone, :family_fee, :filter_date, :scheduled_revenue, :estimated_revenue
 
-      def initialize(child:, family_fee:, filter_date:, scheduled_revenue:, estimated_revenue:)
-        @child = child
+      def initialize(timezone:, family_fee:, filter_date:, scheduled_revenue:, estimated_revenue:)
+        @timezone = timezone
         @family_fee = family_fee
         @filter_date = filter_date
         @scheduled_revenue = scheduled_revenue + family_fee
@@ -38,7 +38,7 @@ module Nebraska
       end
 
       def minimum_days_to_calculate
-        filter_date.in_time_zone(child.timezone).at_beginning_of_month + 9.days
+        filter_date.in_time_zone(timezone).at_beginning_of_month + 9.days
       end
     end
   end
