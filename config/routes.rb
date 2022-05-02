@@ -26,7 +26,9 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
       resources :users, only: %i[index show]
       get 'profile', to: 'users#show'
-      resources :businesses
+      resources :businesses do
+        get 'cases', on: :member, to: 'cases#index'
+      end
       resources :children
       resources :attendances, only: %i[index update destroy]
       resources :service_days, only: :index
