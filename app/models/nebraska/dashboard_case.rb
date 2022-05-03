@@ -40,7 +40,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.absences'
       ) do
-        absent_days
+        @absences ||= absent_days
           &.for_month(filter_date)
           &.standard_absences
           &.size || 0
@@ -112,8 +112,10 @@ module Nebraska
       ) do
         return 0 unless attendances_this_month
 
-        attendances_this_month.reduce(0) do |sum, service_day|
-          sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
+        @full_days ||= attendances_this_month.reduce(0) do |sum, service_day|
+          sum + Nebraska::Daily::DaysDurationCalculator.new(
+            total_time_in_care: service_day.total_time_in_care
+          ).call
         end
       end
     end
@@ -124,8 +126,10 @@ module Nebraska
       ) do
         return 0 unless attendances_this_month
 
-        attendances_this_month.reduce(0) do |sum, service_day|
-          sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
+        @hours ||= attendances_this_month.reduce(0) do |sum, service_day|
+          sum + Nebraska::Daily::HoursDurationCalculator.new(
+            total_time_in_care: service_day.total_time_in_care
+          ).call
         end
       end
     end
@@ -137,8 +141,11 @@ module Nebraska
       ) do
         return 0 unless attended_days || reimbursable_approval_absent_days
 
-        days = approval_days_to_count_for_duration_limits.reduce(0) do |sum, service_day|
-          sum + Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
+        @full_days_remaining ||= days = approval_days_to_count_for_duration_limits
+                                        .reduce(0) do |sum, service_day|
+          sum + Nebraska::Daily::DaysDurationCalculator.new(
+            total_time_in_care: service_day.total_time_in_care
+          ).call
         end
 
         [full_days_authorized - days, 0].max
@@ -151,8 +158,11 @@ module Nebraska
       ) do
         return 0 unless attended_days || reimbursable_approval_absent_days
 
-        hours = approval_days_to_count_for_duration_limits.reduce(0) do |sum, service_day|
-          sum + Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: service_day.total_time_in_care).call
+        @hours_remaining ||= hours = approval_days_to_count_for_duration_limits
+                                     .reduce(0) do |sum, service_day|
+          sum + Nebraska::Daily::HoursDurationCalculator.new(
+            total_time_in_care: service_day.total_time_in_care
+          ).call
         end
 
         [hours_authorized - hours, 0].max
@@ -163,7 +173,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.full_days_authorized'
       ) do
-        child_approval&.full_days || 0
+        @full_days_authorized ||= child_approval&.full_days || 0
       end
     end
 
@@ -171,7 +181,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.hours_authorized'
       ) do
-        child_approval&.hours || 0
+        @hours_authorized ||= child_approval&.hours || 0
       end
     end
 
@@ -182,7 +192,7 @@ module Nebraska
         authorized_weekly_hours = child_approval&.authorized_weekly_hours
         return "0.0 of #{authorized_weekly_hours}" unless attendances_this_month || reimbursable_month_absent_days
 
-        attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
+        @attended_weekly_hours ||= attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
           attendances: attendances_this_month,
           absences: reimbursable_month_absent_days,
           filter_date: filter_date
@@ -195,7 +205,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.approval_effective_on'
       ) do
-        child_approval&.effective_on
+        @approval_effective_on ||= child_approval&.effective_on
       end
     end
 
@@ -203,7 +213,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.approval_expires_on'
       ) do
-        child_approval&.expires_on
+        @approval_expires_on ||= child_approval&.expires_on
       end
     end
 
@@ -280,7 +290,7 @@ module Nebraska
         'dashboard_case.scheduled_month_days_revenue',
         'map & sum earned revenue of scheduled month days'
       ) do
-        scheduled_month_days&.map(&:earned_revenue)&.sum || 0
+        @scheduled_month_days_revenue ||= scheduled_month_days&.map(&:earned_revenue)&.sum || 0
       end
     end
 
@@ -289,7 +299,7 @@ module Nebraska
         'dashboard_case.estimated_month_days_revenue',
         'map & sum earned revenue of estimated month days'
       ) do
-        estimated_month_days&.map(&:earned_revenue)&.sum || 0
+        @estimated_month_days_revenue ||= estimated_month_days&.map(&:earned_revenue)&.sum || 0
       end
     end
 
@@ -298,7 +308,7 @@ module Nebraska
         'dashboard_case.attended_month_days_revenue',
         'map & sum earned revenue of attended month days'
       ) do
-        attendances_this_month&.map(&:earned_revenue)&.sum || 0
+        @attended_month_days_revenue ||= attendances_this_month&.map(&:earned_revenue)&.sum || 0
       end
     end
 
@@ -307,7 +317,7 @@ module Nebraska
         'dashboard_case.reimbursable_month_absent_days_revenue',
         'map & sum earned revenue of reimbursable month absent days'
       ) do
-        reimbursable_month_absent_days&.map(&:earned_revenue)&.sum || 0
+        @reimbursable_month_absent_days_revenue ||= reimbursable_month_absent_days&.map(&:earned_revenue)&.sum || 0
       end
     end
 
@@ -361,7 +371,7 @@ module Nebraska
         'dashboard_case.month_schedule_start',
         'gets first of the month of the filter_date'
       ) do
-        filter_date.in_time_zone(child.timezone).at_beginning_of_month.to_date
+        @month_schedule_start ||= filter_date.in_time_zone(child.timezone).at_beginning_of_month.to_date
       end
     end
 
@@ -370,7 +380,7 @@ module Nebraska
         'dashboard_case.month_schedule_end',
         'gets last of the month of the filter_date'
       ) do
-        filter_date.in_time_zone(child.timezone).at_end_of_month.to_date
+        @month_schedule_end ||= filter_date.in_time_zone(child.timezone).at_end_of_month.to_date
       end
     end
 
@@ -397,9 +407,10 @@ module Nebraska
         'dashboard_case.attended_and_absent_dates',
         'gets attended and absent days to remove them from estimated days above'
       ) do
-        [attendances_this_month, absences_this_month].compact.reduce([], :|).collect do |attended_day|
-          attended_day.date.to_date
-        end
+        @attended_and_absent_dates ||= [
+          attendances_this_month,
+          absences_this_month
+        ].compact.reduce([], :|).collect { |attended_day| attended_day.date.to_date }
       end
     end
 
@@ -425,7 +436,7 @@ module Nebraska
         'dashboard_case.non_covid_approval_absences',
         'finds reimbursable absent days that are COVID absence'
       ) do
-        reimbursable_approval_absent_days.reject do |absence|
+        @non_covid_approval_absences ||= reimbursable_approval_absent_days.reject do |absence|
           absence.attendances.any? do |attendance|
             attendance.absence == 'covid_absence'
           end
