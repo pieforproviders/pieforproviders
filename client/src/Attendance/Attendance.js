@@ -15,6 +15,7 @@ import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
 import '_assets/styles/alert-overrides.css'
+import '_assets/styles/filter-select-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
 
@@ -30,6 +31,7 @@ export function Attendance() {
     cases: state.cases,
     token: state.auth.token
   }))
+  const [filterOpen, setFilterOpen] = useState(false)
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
   const [errors, setErrors] = useState(true)
@@ -362,6 +364,8 @@ export function Attendance() {
       <div className="relative pt-5">
         <FilterFilled className="absolute z-50 p-2" />
         <Select
+          open={filterOpen}
+          showSearch={false}
           mode="multiple"
           allowClear
           className="site-filter"
@@ -369,9 +373,11 @@ export function Attendance() {
           onChange={value => {
             getCaseData(value)
           }}
+          onSelect={() => setFilterOpen(!filterOpen)}
           dropdownStyle={setWidths()}
           style={{ minWidth: '200px' }}
           role="siteFilter"
+          onClick={() => setFilterOpen(!filterOpen)}
         >
           {businesses.map(business => {
             return (
