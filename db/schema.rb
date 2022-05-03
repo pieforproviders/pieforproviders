@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_27_154107) do
+ActiveRecord::Schema.define(version: 2022_05_03_011145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -193,6 +193,28 @@ ActiveRecord::Schema.define(version: 2022_04_27_154107) do
     t.index ["expires_on"], name: "index_nebraska_approval_amounts_on_expires_on"
   end
 
+  create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "month", default: "2022-05-03 01:22:59", null: false
+    t.string "attendance_risk", default: "not_enough_info", null: false
+    t.integer "absences", default: 0, null: false
+    t.integer "earned_revenue_cents"
+    t.string "earned_revenue_currency", default: "USD", null: false
+    t.integer "estimated_revenue_cents"
+    t.string "estimated_revenue_currency", default: "USD", null: false
+    t.integer "scheduled_revenue_cents"
+    t.string "scheduled_revenue_currency", default: "USD", null: false
+    t.integer "full_days", default: 0, null: false
+    t.float "hours", default: 0.0, null: false
+    t.integer "full_days_remaining", default: 0, null: false
+    t.float "hours_remaining", default: 0.0, null: false
+    t.float "attended_weekly_hours", default: 0.0, null: false
+    t.uuid "child_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["child_id"], name: "index_nebraska_dashboard_cases_on_child_id"
+    t.index ["month", "child_id"], name: "index_nebraska_dashboard_cases_on_month_and_child_id", unique: true
+  end
+
   create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "region", null: false
     t.string "rate_type", null: false
@@ -293,6 +315,7 @@ ActiveRecord::Schema.define(version: 2022_04_27_154107) do
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
+  add_foreign_key "nebraska_dashboard_cases", "children"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
   add_foreign_key "service_days", "schedules"
