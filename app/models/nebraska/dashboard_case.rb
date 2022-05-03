@@ -55,6 +55,7 @@ module Nebraska
       end
     end
 
+    # TODO: calculate this on the child_approval level and store it
     def family_fee
       Appsignal.instrument_sql(
         'dashboard_case.family_fee'
