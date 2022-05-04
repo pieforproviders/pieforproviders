@@ -14,9 +14,7 @@ class DashboardUpdater
     update_dashboard
   end
 
-  private
-
-  def update_dashboard
-    Nebraska::DashboardUpdater.new(attendance: attendance).call if state == 'NE'
-  end
+  # def update_dashboard
+  #   Nebraska::DashboardUpdater.new(attendance: attendance).call if state == 'NE'
+  # end
 end

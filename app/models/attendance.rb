@@ -10,7 +10,7 @@ class Attendance < UuidApplicationRecord
   after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_save_commit :remove_other_attendances, if: :saved_change_to_absence?
   after_save_commit :calculate_service_day
-  after_save_commit :update_dashboard
+  # after_save_commit :update_dashboard
   after_destroy :destroy_empty_service_day, if: :service_day_has_no_attendances
 
   belongs_to :child_approval
@@ -162,9 +162,9 @@ class Attendance < UuidApplicationRecord
     service_day.destroy!
   end
 
-  def update_dashboard
-    DashboardUpdaterJob.perform_later(attendance: self)
-  end
+  # def update_dashboard
+  #   DashboardUpdaterJob.perform_later(attendance: self)
+  # end
 end
 
 # == Schema Information
