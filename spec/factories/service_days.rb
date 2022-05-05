@@ -3,7 +3,14 @@
 FactoryBot.define do
   factory :service_day do
     child
-    date { Faker::Time.between(from: Time.current.at_beginning_of_month, to: Time.current).to_datetime }
+    date do
+      last_monday = Time.current.in_time_zone(child.timezone).prev_occurring(:monday)
+      Faker::Time.between(from: last_monday.at_beginning_of_day, to: last_monday.at_end_of_day).to_datetime
+    end
+
+    trait :absence do
+      absence_type { ServiceDay::ABSENCE_TYPES.sample }
+    end
   end
 end
 
@@ -12,6 +19,7 @@ end
 # Table name: service_days
 #
 #  id                      :uuid             not null, primary key
+#  absence_type            :string
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null

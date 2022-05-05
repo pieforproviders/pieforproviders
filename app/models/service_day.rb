@@ -19,7 +19,14 @@ class ServiceDay < UuidApplicationRecord
 
   monetize :earned_revenue_cents, allow_nil: true
 
+  ABSENCE_TYPES = %w[
+    absence
+    covid_absence
+  ].freeze
+
+  validates :absence_type, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
   validates :date, date_time_param: true, presence: true
+  validate :prevent_creation_of_absence_without_schedule
 
   delegate :business, to: :child
   delegate :state, to: :child
@@ -95,9 +102,20 @@ class ServiceDay < UuidApplicationRecord
   scope :with_attendances, -> { includes(:attendances) }
 
   def absence?
-    attendances.any? { |attendance| attendance.absence.present? }
+    absence_type.present?
   end
 
+  def prevent_creation_of_absence_without_schedule
+    return unless absence?
+
+    errors.add(:absence_type, "can't create for a day without a schedule") unless schedule_for_weekday
+  end
+
+  def schedule_for_weekday
+    child.schedules.active_on(date).for_weekday(date.wday).first
+  end
+
+  # TODO: extract tags to a service object
   def tags
     [tag_hourly, tag_daily, tag_absence].compact
   end
@@ -162,6 +180,7 @@ end
 # Table name: service_days
 #
 #  id                      :uuid             not null, primary key
+#  absence_type            :string
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null
