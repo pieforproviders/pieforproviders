@@ -6,6 +6,7 @@ import { Button, Modal, Select, Table, Tag } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { attendanceCategories, fullDayCategories } from '_utils/constants'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { LoadingDisplay } from '_shared/LoadingDisplay'
 import { updateCase } from '_reducers/casesReducer'
 import DatePicker from './DatePicker'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -480,6 +481,10 @@ export default function DashboardTable({
           triggerDesc: t('sortDesc'),
           triggerAsc: t('sortAsc'),
           cancelSort: t('sortCancel')
+        }}
+        loading={{
+          spinning: true,
+          indicator: <LoadingDisplay />
         }}
       />
       <Modal

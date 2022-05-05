@@ -1,3 +1,5 @@
+/* eslint-disable no-debugger */
+/* eslint-disable no-constant-condition */
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -251,6 +253,24 @@ export function Dashboard() {
       url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
       headers: { Authorization: token }
     })
+    // TODO: get the API to return 'content-length' header
+    // const total = Number(response.headers.get('content-length'))
+
+    // const reader = response.body.getReader()
+    // let bytesReceived = 0
+    // let parsedResponse
+    // while (true) {
+    //   parsedResponse = await reader.read()
+    //   if (parsedResponse.done) {
+    //     console.log('Fetch complete')
+    //     break
+    //   }
+    //   debugger
+    //   bytesReceived += parsedResponse.value.length
+    //   console.log(total)
+    //   console.log('Received', bytesReceived, 'bytes of data so far')
+    // }
+    // debugger
     const parsedResponse = await response.json()
 
     if (!parsedResponse.error) {
