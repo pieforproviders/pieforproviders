@@ -81,5 +81,6 @@ module App
     config.aws_necc_attendance_archive_bucket = ENV.fetch('AWS_NECC_ATTENDANCE_ARCHIVE_BUCKET', '')
 
     config.middleware.use Rack::RubyProf, path: './tmp/profile' if Rails.env.profile?
+    config.middleware.use(Rack::ContentLength)
   end
 end
