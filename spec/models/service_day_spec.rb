@@ -5,6 +5,10 @@ require 'rails_helper'
 RSpec.describe ServiceDay, type: :model do
   let(:service_day) { build(:service_day) }
 
+  it 'factory should be valid (default; no args)' do
+    expect(service_day).to be_valid
+  end
+
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:date) }
 
@@ -21,10 +25,6 @@ RSpec.describe ServiceDay, type: :model do
     expect(service_day).not_to be_valid
     service_day.date = nil
     expect(service_day).not_to be_valid
-  end
-
-  it 'factory should be valid (default; no args)' do
-    expect(build(:service_day)).to be_valid
   end
 
   # scopes
@@ -334,6 +334,7 @@ end
 # Table name: service_days
 #
 #  id                      :uuid             not null, primary key
+#  absence_type            :string
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null
