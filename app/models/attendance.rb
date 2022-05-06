@@ -20,6 +20,8 @@ class Attendance < UuidApplicationRecord
   # this uses the new behavior in advance of that release
   attribute :time_in_care, :interval
 
+  accepts_nested_attributes_for :service_day
+
   validates :check_in, time_param: true, presence: true
   validates :check_out, time_param: true, unless: proc { |attendance| attendance.check_out_before_type_cast.nil? }
   validate :check_out_after_check_in
