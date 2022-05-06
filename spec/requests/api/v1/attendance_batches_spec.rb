@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -33,12 +34,18 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               {
                 check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'absence'
+                }
               },
               {
                 check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'covid_absence'
+                }
               }
             ]
           }
@@ -82,12 +89,18 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               {
                 check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'covid_absence'
+                }
               },
               {
                 check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'fake_reason'
+                }
               }
             ]
           }
@@ -111,8 +124,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             )
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to eq(['absence'])
-          expect(parsed_response['meta']['errors'].values.flatten).to eq(['is not included in the list'])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list',
+                                                                                   'is not included in the list'])
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -125,12 +139,18 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               {
                 check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'fake_reason'
+                }
               },
               {
                 check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
                 absence: 'fake_reason',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'fake_reason'
+                }
               }
             ]
           }
@@ -142,8 +162,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           parsed_response = JSON.parse(response.body)
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to eq(['absence'])
-          expect(parsed_response['meta']['errors'].values.flatten).to eq(['is not included in the list'])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list',
+                                                                                   'is not included in the list'])
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -156,13 +177,19 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               {
                 check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
                 absence: 'covid_absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'covid_absence'
+                }
               },
               {
                 # attendance on a Sunday, not a default scheduled day
                 check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'absence'
+                }
               }
             ]
           }
@@ -186,8 +213,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             )
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to eq(['absence'])
-          expect(parsed_response['meta']['errors'].values.flatten).to eq(["can't create for a day without a schedule"])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].values.flatten).to match_array(
+            [
+              "can't create for a day without a schedule",
+              "can't create for a day without a schedule"
+            ]
+          )
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -201,13 +233,19 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
                 # attendance on a Sunday, not a default scheduled day
                 check_in: Helpers.prior_weekday(effective_date + 30.days, 0).to_s,
                 absence: 'covid_absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'covid_absence'
+                }
               },
               {
                 # attendance on a Sunday, not a default scheduled day
                 check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
                 absence: 'absence',
-                child_id: children[0].id
+                child_id: children[0].id,
+                service_day_attributes: {
+                  absence_type: 'absence'
+                }
               }
             ]
           }
@@ -219,8 +257,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           parsed_response = JSON.parse(response.body)
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to eq(['absence'])
-          expect(parsed_response['meta']['errors'].values.flatten).to eq(["can't create for a day without a schedule"])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].values.flatten).to match_array(
+            [
+              "can't create for a day without a schedule", "can't create for a day without a schedule"
+            ]
+          )
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -414,3 +456,4 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

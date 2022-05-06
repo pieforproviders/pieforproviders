@@ -22,6 +22,7 @@ module Api
       def attendances
         batch.compact_blank.map do |attendance|
           ActiveRecord::Base.transaction do
+            generate_service_day(attendance) if attendance['service_day_attributes']
             att = Attendance.create(attendance)
             att.errors.messages.map { |k, v| @errors[k] = v } if att.errors.present?
             att
@@ -48,6 +49,26 @@ module Api
         end
       end
 
+      def generate_service_day(attendance)
+        attendance.merge!(service_day_id: service_day(attendance).id)
+      end
+
+      def child(attendance)
+        ChildApproval.find(attendance['child_approval_id']).child
+      end
+
+      def service_day(attendance)
+        child = child(attendance)
+        sd = ServiceDay.create(
+          attendance['service_day_attributes'].merge(
+            date: attendance['check_in'].in_time_zone(child.timezone).at_beginning_of_day,
+            child: child
+          )
+        )
+        sd.errors.messages.map { |k, v| @errors[k] = v } if sd.errors.present?
+        sd
+      end
+
       def add_error_and_return_nil(key, message = "can't be blank")
         @errors[key] += [message]
         nil
@@ -63,7 +84,13 @@ module Api
       end
 
       def attendance_batch_params
-        params.permit(attendance_batch: %i[absence check_in check_out child_id]).require(:attendance_batch)
+        params.permit(attendance_batch: [:absence,
+                                         :check_in,
+                                         :check_out,
+                                         :child_id,
+                                         {
+                                           service_day_attributes: [:absence_type]
+                                         }]).require(:attendance_batch)
       end
 
       def serialized_response
