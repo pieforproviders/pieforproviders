@@ -62,7 +62,8 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns the correct date' do
-      expect(user.first_approval_effective_date).to eq(earliest_child.approvals.order(effective_on: :desc).first.effective_on)
+      expect(user.first_approval_effective_date)
+        .to eq(earliest_child.approvals.order(effective_on: :desc).first.effective_on)
     end
   end
 
