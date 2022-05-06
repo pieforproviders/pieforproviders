@@ -53,13 +53,16 @@ RSpec.describe User, type: :model do
 
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
+    let!(:earliest_child) do
+      create(:child, business: business, approvals: [create(:approval, effective_on: 3.years.ago)])
+    end
 
     before do
       create_list(:child, 3, business: business)
     end
 
     it 'returns the correct date' do
-      expect(user.first_approval_effective_date).to eq(Approval.all.order(effective_on: :desc).first.effective_on)
+      expect(user.first_approval_effective_date).to eq(earliest_child.approvals.order(effective_on: :desc).first.effective_on)
     end
   end
 

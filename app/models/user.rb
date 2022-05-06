@@ -65,7 +65,7 @@ class User < UuidApplicationRecord
   def first_approval_effective_date
     return if approvals.blank?
 
-    approvals.order(effective_on: :desc).first.effective_on
+    approvals.order(effective_on: :asc).first.effective_on
   end
 end
 
