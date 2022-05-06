@@ -137,6 +137,7 @@ end
 RSpec.shared_context 'with a prior month hourly attendance' do |extra_days|
   before do
     extra_days ||= 0
+    child.reload
     create(
       :attendance,
       child_approval: child_approval,
@@ -151,7 +152,7 @@ end
 RSpec.shared_context 'with a prior month daily attendance' do |extra_days|
   before do
     extra_days ||= 0
-
+    child.reload
     create(
       :attendance,
       child_approval: child_approval,
@@ -166,12 +167,18 @@ end
 RSpec.shared_context 'with a prior month covid absence' do |extra_days|
   before do
     extra_days ||= 0
+    date = prior_month_check_in + extra_days.days
+    schedule = child.schedules.find_by(
+      weekday: date.wday,
+      effective_on: ..date,
+      expires_on: [date.., nil]
+    )
     create(
-      :nebraska_absence,
-      child_approval: child_approval,
-      check_in: prior_month_check_in + extra_days.days + 3.hours,
-      check_out: nil,
-      absence: 'covid_absence'
+      :service_day,
+      child: child,
+      date: date,
+      schedule: schedule,
+      absence_type: 'covid_absence'
     )
     perform_enqueued_jobs
     ServiceDay.all.each(&:reload)
@@ -181,12 +188,18 @@ end
 RSpec.shared_context 'with a prior month absence' do |extra_days|
   before do
     extra_days ||= 0
+    date = prior_month_check_in + extra_days.days
+    schedule = child.schedules.find_by(
+      weekday: date.wday,
+      effective_on: ..date,
+      expires_on: [date.., nil]
+    )
     create(
-      :nebraska_absence,
-      child_approval: child_approval,
-      check_in: prior_month_check_in + extra_days.days + 3.hours,
-      check_out: nil,
-      absence: 'absence'
+      :service_day,
+      child: child,
+      date: date,
+      schedule: schedule,
+      absence_type: 'absence'
     )
     perform_enqueued_jobs
     ServiceDay.all.each(&:reload)

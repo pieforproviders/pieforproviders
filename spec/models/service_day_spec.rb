@@ -27,34 +27,51 @@ RSpec.describe ServiceDay, type: :model do
     expect(service_day).not_to be_valid
   end
 
+  it 'validates that absence_type is a permitted value only' do
+    service_day.date = Helpers.prior_weekday(Time.current, 0)
+    service_day.save!
+
+    service_day.absence_type = 'covid_absence'
+    expect(service_day).not_to be_valid
+    expect(service_day.errors.messages[:absence_type]).to include("can't create for a day without a schedule")
+
+    absence = build(:service_day, child: service_day.child, absence_type: 'covid_absence')
+    expect(absence).to be_valid
+    expect(absence.errors.messages).to eq({})
+
+    absence = build(:service_day, child: service_day.child, absence_type: 'fake_reason')
+    expect(absence).not_to be_valid
+    expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
+  end
+
   # scopes
   context 'with absences scopes' do
-    let(:absence) { create(:nebraska_absence, absence: 'absence') }
-    let(:covid_absence) { create(:nebraska_absence, absence: 'covid_absence') }
-    let(:attendance) { create(:nebraska_hourly_attendance) }
+    let(:absence) { create(:service_day, absence_type: 'absence') }
+    let(:covid_absence) { create(:service_day, absence_type: 'covid_absence') }
+    let(:attendance) { create(:service_day) }
 
     it 'returns absences only' do
-      expect(described_class.absences).to include(absence.service_day)
-      expect(described_class.absences).to include(covid_absence.service_day)
-      expect(described_class.absences).not_to include(attendance.service_day)
+      expect(described_class.absences).to include(absence)
+      expect(described_class.absences).to include(covid_absence)
+      expect(described_class.absences).not_to include(attendance)
     end
 
     it 'returns non-absences only' do
-      expect(described_class.non_absences).not_to include(absence.service_day)
-      expect(described_class.non_absences).not_to include(covid_absence.service_day)
-      expect(described_class.non_absences).to include(attendance.service_day)
+      expect(described_class.non_absences).not_to include(absence)
+      expect(described_class.non_absences).not_to include(covid_absence)
+      expect(described_class.non_absences).to include(attendance)
     end
 
     it 'returns standard absences only' do
-      expect(described_class.standard_absences).to include(absence.service_day)
-      expect(described_class.standard_absences).not_to include(covid_absence.service_day)
-      expect(described_class.standard_absences).not_to include(attendance.service_day)
+      expect(described_class.standard_absences).to include(absence)
+      expect(described_class.standard_absences).not_to include(covid_absence)
+      expect(described_class.standard_absences).not_to include(attendance)
     end
 
     it 'returns covid absences only' do
-      expect(described_class.covid_absences).not_to include(absence.service_day)
-      expect(described_class.covid_absences).to include(covid_absence.service_day)
-      expect(described_class.covid_absences).not_to include(attendance.service_day)
+      expect(described_class.covid_absences).not_to include(absence)
+      expect(described_class.covid_absences).to include(covid_absence)
+      expect(described_class.covid_absences).not_to include(attendance)
     end
   end
 

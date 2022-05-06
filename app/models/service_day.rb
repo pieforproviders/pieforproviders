@@ -4,11 +4,7 @@
 class ServiceDay < UuidApplicationRecord
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
-  after_save_commit :calculate_service_day,
-                    on: :update,
-                    if: proc { |service_day|
-                          service_day.saved_change_to_schedule_id?(to: nil)
-                        }
+  after_save_commit :calculate_service_day
 
   belongs_to :child
   belongs_to :schedule, optional: true
@@ -31,10 +27,10 @@ class ServiceDay < UuidApplicationRecord
   delegate :business, to: :child
   delegate :state, to: :child
 
-  scope :absences, -> { joins(:attendances).where.not(attendances: { absence: nil }) }
-  scope :non_absences, -> { joins(:attendances).where(attendances: { absence: nil }) }
-  scope :covid_absences, -> { joins(:attendances).where(attendances: { absence: 'covid_absence' }) }
-  scope :standard_absences, -> { joins(:attendances).where(attendances: { absence: 'absence' }) }
+  scope :absences, -> { where.not(absence_type: nil) }
+  scope :non_absences, -> { where(absence_type: nil) }
+  scope :covid_absences, -> { where(absence_type: 'covid_absence') }
+  scope :standard_absences, -> { where(absence_type: 'absence') }
 
   scope :ne_hourly,
         lambda {
@@ -172,7 +168,7 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def calculate_service_day
-    ServiceDayCalculatorJob.perform_later(id)
+    ServiceDayCalculatorJob.perform_later(self) if previously_new_record? || saved_change_to_schedule_id?(to: nil)
   end
 end
 # == Schema Information
