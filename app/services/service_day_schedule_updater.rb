@@ -12,6 +12,8 @@ class ServiceDayScheduleUpdater
   end
 
   def call
+    return if service_days.blank?
+
     reassign_service_days
     service_days.each(&:reload)
     calculate_service_day
@@ -25,10 +27,10 @@ class ServiceDayScheduleUpdater
   end
 
   def reassign_service_days
-    service_days.each { |sd| sd.update!(schedule: schedule) }
+    service_days.each { |sd| sd.update!(schedule: schedule) unless sd.schedule == schedule }
   end
 
   def calculate_service_day
-    service_days.each { |service_day| ServiceDayCalculatorJob.perform_later(service_day.id) }
+    service_days.each { |service_day| ServiceDayCalculatorJob.perform_later(service_day) }
   end
 end

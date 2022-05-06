@@ -17,24 +17,20 @@ module Nebraska
     private
 
     def generate_absences
-      return if attendance_on_date.present? || schedule.empty? || child_approval.nil?
+      return if attendance_on_date.present? || schedule.blank?
 
       ActiveRecord::Base.transaction do
-        Attendance.find_or_create_by!(
-          child_approval: child_approval,
-          check_in: date.at_beginning_of_day,
-          check_out: nil,
-          absence: 'absence'
+        ServiceDay.find_or_create_by!(
+          child: child,
+          date: date,
+          absence_type: 'absence',
+          schedule: schedule
         )
       end
     end
 
     def schedule
-      child.schedules.for_weekday(date.wday)
-    end
-
-    def child_approval
-      child.active_child_approval(date)
+      child.schedules.for_weekday(date.wday).active_on(date).first
     end
 
     def attendance_on_date

@@ -151,7 +151,7 @@ class Attendance < UuidApplicationRecord
   end
 
   def calculate_service_day
-    ServiceDayCalculatorJob.perform_later(service_day.id)
+    ServiceDayCalculatorJob.perform_later(service_day)
   end
 
   def service_day_has_no_attendances

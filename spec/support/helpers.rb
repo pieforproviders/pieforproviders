@@ -20,12 +20,12 @@ module Helpers
   end
 
   def self.next_attendance_day(child_approval:, date: nil)
-    attendances = child_approval.attendances
-    attendances.reload
-    if attendances.present?
-      attendances
-        .order(check_in: :desc)
-        .first.check_in.in_time_zone(child_approval.child.timezone)
+    service_days = child_approval.child.service_days
+    service_days.reload
+    if service_days.present?
+      service_days
+        .order(date: :desc)
+        .first.date.in_time_zone(child_approval.child.timezone)
         .at_beginning_of_day + 1.day
     else
       date || Time.current.at_beginning_of_day
@@ -34,18 +34,27 @@ module Helpers
 
   def self.build_nebraska_absence_list(num:, child_approval:, type: 'absence', date: nil)
     child = child_approval.child
-    child.reload
     num.times do
+      child.service_days.reload
       day_for_next_attendance = next_attendance_day(child_approval: child_approval, date: date)
-      while child.schedules.select { |schedule| schedule.weekday == day_for_next_attendance.wday }.blank?
+      while child.schedules.where(
+        weekday: day_for_next_attendance.wday,
+        effective_on: ..day_for_next_attendance,
+        expires_on: [day_for_next_attendance.., nil]
+      ).blank?
         day_for_next_attendance += 1.day
       end
+      schedule = child.schedules.where(
+        weekday: day_for_next_attendance.wday,
+        effective_on: ..day_for_next_attendance,
+        expires_on: [day_for_next_attendance.., nil]
+      ).first
       FactoryBot.create(
-        :nebraska_absence,
-        child_approval: child_approval,
-        check_in: day_for_next_attendance + 3.hours,
-        check_out: nil,
-        absence: type
+        :service_day,
+        child: child,
+        date: day_for_next_attendance,
+        schedule: schedule,
+        absence_type: type
       )
     end
   end

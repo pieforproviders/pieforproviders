@@ -438,9 +438,7 @@ module Nebraska
         'finds reimbursable absent days that are COVID absence'
       ) do
         @non_covid_approval_absences ||= reimbursable_approval_absent_days.reject do |absence|
-          absence.attendances.any? do |attendance|
-            attendance.absence == 'covid_absence'
-          end
+          absence.absence_type == 'covid_absence'
         end
       end
     end
@@ -474,9 +472,7 @@ module Nebraska
         'create two arrays of absences by type'
       ) do
         absences.partition do |service_day|
-          service_day.attendances.any? do |attendance|
-            attendance.absence == 'covid_absence'
-          end
+          service_day.absence_type == 'covid_absence'
         end
       end
     end
