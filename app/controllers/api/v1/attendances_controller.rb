@@ -14,7 +14,14 @@ module Api
       end
 
       def update
-        if @attendance.update(attendance_params)
+        # if the attendance is updated and either there are no service_day_attributes or
+        # the update w/ the service_day_attributes works, render successfully
+        # otherwise render errors
+        if @attendance.update(attendance_params.except(:service_day_attributes)) &&
+           (
+             !attendance_params['service_day_attributes'] ||
+             update_service_day(attendance_params['service_day_attributes'])
+           )
           render json: AttendanceBlueprint.render(@attendance)
         else
           render json: @attendance.errors, status: :unprocessable_entity
@@ -46,7 +53,21 @@ module Api
       end
 
       def attendance_params
-        params.require(:attendance).permit(%i[absence check_in check_out])
+        params.require(:attendance).permit(:absence, :check_in, :check_out, service_day_attributes: [:absence_type])
+      end
+
+      def update_service_day(params)
+        # update the existing service_day for the attendance; stack all errors
+        # from an unsuccessful update onto the attendance object
+        @attendance.service_day.update(params)
+        if @attendance.service_day.errors.present?
+          @attendance.service_day.errors.messages.map do |k, v|
+            @errors[k] = v
+          end
+          false
+        else
+          true
+        end
       end
     end
   end
