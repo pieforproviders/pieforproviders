@@ -28,11 +28,17 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:past_attendances) do
     check_in_date = Faker::Time.between(from: two_weeks_ago_week_start_date, to: two_weeks_ago_week_end_date)
 
-    create_list(:attendance, 2, child_approval: child.child_approvals.first, check_in: check_in_date)
+    att = create_list(:attendance, 2, child_approval: child.child_approvals.first, check_in: check_in_date)
+    perform_enqueued_jobs
+    ServiceDay.all.reload
+    att
   end
 
   let!(:extra_attendances) do
-    create_list(:attendance, 3, check_in: Faker::Time.between(from: week_start_date, to: week_current_date))
+    att = create_list(:attendance, 3, check_in: Faker::Time.between(from: week_start_date, to: week_current_date))
+    perform_enqueued_jobs
+    ServiceDay.all.reload
+    att
   end
 
   describe 'GET /api/v1/attendances' do
@@ -102,9 +108,11 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   describe 'PUT /api/v1/attendance/:id' do
     include_context 'with correct api version header'
 
-    let(:attendance) { past_attendances.first }
-    let(:new_check_in) { attendance.check_in + 1.hour }
-    let(:new_check_out) { attendance.check_in + 6.hours }
+    let!(:attendance) { past_attendances.first }
+    let!(:new_check_in) { attendance.check_in + 1.hour }
+    let!(:new_check_out) { attendance.check_in + 6.hours }
+
+    before { ServiceDay.all.reload }
 
     context 'when logged in as a non-admin user' do
       before do
@@ -126,11 +134,13 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
       end
 
       it 'can change an attendance to an absence' do
-        absence_params = { attendance: { absence: 'absence' } }
+        absence_params = { attendance: { absence: 'absence', service_day_attributes: { absence_type: 'absence' } } }
         create(:schedule, child: child, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
         put "/api/v1/attendances/#{attendance.id}", params: absence_params, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['absence']).to eq('absence')
+        attendance.reload
+        expect(attendance.service_day.absence_type).to eq('absence')
       end
 
       it "cannot update a different user's attendance" do
@@ -149,7 +159,8 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
           attendance: {
             check_in: new_check_in.to_s,
             check_out: new_check_out.to_s,
-            absence: 'absence'
+            absence: 'absence',
+            service_day_attributes: { absence_type: 'absence' }
           }
         }
       end
@@ -160,10 +171,13 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
       it 'can update check_in check_out absence for a non-admin attendance' do
         put "/api/v1/attendances/#{attendance.id}", params: params, headers: headers
+
         parsed_response = JSON.parse(response.body)
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
         expect(parsed_response['absence']).to eq('absence')
+        attendance.reload
+        expect(attendance.service_day.absence_type).to eq('absence')
       end
     end
   end
