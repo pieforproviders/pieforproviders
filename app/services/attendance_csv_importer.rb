@@ -46,12 +46,14 @@ class AttendanceCsvImporter
   def create_attendance(row, child)
     check_in = row['check_in'].in_time_zone(child.timezone)
 
-    Attendance.find_or_create_by!(
+    att = Attendance.find_or_create_by!(
       child_approval: child.active_child_approval(check_in),
       check_in: check_in,
       check_out: row['check_out']&.in_time_zone(child&.timezone),
       absence: row['absence']
     )
+
+    att.service_day.update!(row['absence'])
   end
 
   def find_child(business, row)

@@ -111,10 +111,12 @@ RSpec.describe AttendanceCsvImporter do
                absence: 'absence')
         expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
         expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
+        expect(child2_business1.service_days.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
         child2_business1.reload
         described_class.new.call
         expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
         expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
+        expect(child2_business1.service_days.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
       end
     end
 
