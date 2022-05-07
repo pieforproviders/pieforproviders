@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/ModuleLength
 module Wonderschool
   module Necc
     RSpec.describe AttendanceCsvImporter do
@@ -83,15 +84,34 @@ module Wonderschool
           it 'removes existing absences records for the correct child with the correct data' do
             create(:attendance,
                    child_approval: second_child.child_approvals.first,
-                   check_in: Time.zone.parse('2021-02-24'),
+                   check_in: Time.zone.local(2021, 0o2, 24, second_child.timezone),
                    check_out: nil,
                    absence: 'absence')
-            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
-            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
-            second_child.reload
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).length).to eq(1)
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).absences.length).to eq(1)
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).absences.length).to eq(1)
             described_class.new.call
-            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
-            expect(second_child.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).length).to eq(1)
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).absences.length).to eq(0)
+            expect(second_child
+              .attendances.for_day(
+                Time.zone.local(2021, 0o2, 24, second_child.timezone)
+              ).absences.length).to eq(0)
           end
         end
 
@@ -130,3 +150,4 @@ module Wonderschool
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

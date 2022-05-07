@@ -39,13 +39,18 @@ module Wonderschool
         attendance = child.attendances.find_or_initialize_by(wonderschool_id: row['attendance_id'])
         check_in = row['checked_in_at']
 
+        update_attendance_and_service_day(attendance, check_in, child, row)
+      rescue StandardError => e
+        send_appsignal_error('attendance-csv-importer', e, row['child_id'])
+      end
+
+      def update_attendance_and_service_day(attendance, check_in, child, row)
         attendance.update!(
           child_approval: child.active_child_approval(check_in),
           check_in: check_in,
           check_out: row['checked_out_at']
         )
-      rescue StandardError => e
-        send_appsignal_error('attendance-csv-importer', e, row['child_id'])
+        attendance.service_day.update!(absence: nil) if attendance.service_day.absence?
       end
 
       def log_missing_child(id)
