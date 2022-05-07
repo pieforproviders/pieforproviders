@@ -93,15 +93,14 @@ class Attendance < UuidApplicationRecord
   end
 
   def find_or_create_service_day
-    self.service_day = ServiceDay.find_or_create_by!(
+    self.service_day = ServiceDay.find_or_create_by(
       child: child,
-      date: check_in.in_time_zone(user.timezone).at_beginning_of_day
+      date: check_in.in_time_zone(child.timezone).at_beginning_of_day
     )
 
-    return unless schedule_for_weekday
+    return unless schedule_for_weekday || absence
 
-    service_day.schedule = schedule_for_weekday
-    service_day.save!
+    service_day.update(schedule: schedule_for_weekday, absence_type: absence)
   end
 
   def remove_absences

@@ -124,7 +124,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             )
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence service_day.absence_type])
           expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list',
                                                                                    'is not included in the list'])
           expect(response).to match_response_schema('attendance_batch')
@@ -162,7 +162,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           parsed_response = JSON.parse(response.body)
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence service_day.absence_type])
           expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list',
                                                                                    'is not included in the list'])
           expect(response).to match_response_schema('attendance_batch')
@@ -213,7 +213,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
             )
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence service_day.absence_type])
           expect(parsed_response['meta']['errors'].values.flatten).to match_array(
             [
               "can't create for a day without a schedule",
@@ -257,7 +257,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           parsed_response = JSON.parse(response.body)
 
           expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence absence_type])
+          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence service_day.absence_type])
           expect(parsed_response['meta']['errors'].values.flatten).to match_array(
             [
               "can't create for a day without a schedule", "can't create for a day without a schedule"
