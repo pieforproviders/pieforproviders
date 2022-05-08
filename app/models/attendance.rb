@@ -11,7 +11,7 @@ class Attendance < UuidApplicationRecord
   after_save_commit :remove_other_attendances, if: :saved_change_to_absence?
   after_save_commit :calculate_service_day
   # after_save_commit :update_dashboard
-  after_destroy :destroy_empty_service_day, if: :service_day_has_no_attendances
+  after_destroy :delete_or_mark_absent, if: :service_day_has_no_attendances
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -159,8 +159,8 @@ class Attendance < UuidApplicationRecord
     service_day.attendances.empty?
   end
 
-  def destroy_empty_service_day
-    service_day.destroy!
+  def delete_or_mark_absent
+    service_day.schedule ? service_day.update!(absence_type: 'absence') : service_day.destroy!
   end
 
   # def update_dashboard
