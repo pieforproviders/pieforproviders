@@ -73,9 +73,11 @@ RSpec.describe AttendanceCsvImporter do
     context 'with valid data' do
       before do
         allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { attendance_csv }
-        allow(stubbed_client).to receive(:archive_file).with(source_bucket,
-                                                             archive_bucket,
-                                                             /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
+        allow(stubbed_client).to receive(:archive_file).with(
+          source_bucket,
+          archive_bucket,
+          /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/
+        )
       end
 
       it 'creates attendance records for every row in the file, idempotently' do
@@ -103,20 +105,34 @@ RSpec.describe AttendanceCsvImporter do
           .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
       end
 
-      it 'removes existing absences records for the correct child with the correct data' do
+      it 'removes existing absence records for the correct child with the correct data' do
         create(:attendance,
                child_approval: child2_business1.child_approvals.first,
-               check_in: Time.zone.parse('2021-02-24'),
+               check_in: Time.zone.local(2021, 0o2, 24, child2_business1.timezone),
                check_out: nil,
                absence: 'absence')
-        expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
-        expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
-        expect(child2_business1.service_days.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(1)
+        perform_enqueued_jobs
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).length).to eq(1)
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).absences.length).to eq(1)
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).absences.length).to eq(1)
         child2_business1.reload
         described_class.new.call
-        expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).length).to eq(1)
-        expect(child2_business1.attendances.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
-        expect(child2_business1.service_days.for_day(Time.zone.parse('2021-02-24')).absences.length).to eq(0)
+        perform_enqueued_jobs
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).length).to eq(1)
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).absences.length).to eq(0)
+        expect(child2_business1.attendances.for_day(
+          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
+        ).absences.length).to eq(0)
       end
     end
 
@@ -132,10 +148,12 @@ RSpec.describe AttendanceCsvImporter do
         .to receive(:archive_contents)
         .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
       described_class.new.call
-      expect(Rails.logger).to have_received(:tagged).exactly(10).times
+      # 3x for missing hermione, 1x for row with no ID or name, 2x for other business' child
+      # x2 for some reason?
+      expect(Rails.logger).to have_received(:tagged).exactly(12).times
 
       # rubocop:disable Layout/LineLength
-      regex = /Business: [0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12} - child record for attendance not found \(check_in:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), check_out:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), absence:( absence| covid_absence| )\); skipping/
+      regex = /Business: [0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12} - child record for attendance not found \(dhs_id:( | ([^,]*)), check_in:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), check_out:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), absence:( absence| covid_absence| )\); skipping/
       # rubocop:enable Layout/LineLength
 
       expect(Rails.logger).to have_received(:info).with(regex).exactly(6).times

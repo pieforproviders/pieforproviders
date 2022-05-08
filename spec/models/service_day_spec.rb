@@ -258,59 +258,79 @@ RSpec.describe ServiceDay, type: :model do
   end
 
   describe '#total_time_in_care' do
-    context 'with a nebraska child' do
-      let(:attendance) { create(:nebraska_hourly_attendance, check_out: nil) }
-      let(:service_day) { attendance.service_day }
+    let(:attendance) { create(:nebraska_hourly_attendance, check_out: nil) }
+    let(:service_day) { attendance.service_day }
 
-      it 'for a single check-in with no check-out, returns the scheduled duration if the day has a schedule' do
-        attendance.child.reload
-        perform_enqueued_jobs
-        service_day.reload
-        expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
-      end
+    it 'calculates the right total when the service day is changed to an absence' do
+      attendance.update!(check_out: attendance.check_in + 6.hours)
+      service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
+      service_day.update!(absence_type: 'absence')
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(10.minutes)
+    end
 
-      it 'for a single check-in with no check-out, returns 8 hours if day has no schedule' do
-        attendance.child.schedules.destroy_all
-        perform_enqueued_jobs
-        service_day.reload
-        expect(service_day.total_time_in_care).to eq(8.hours)
-      end
+    it 'calculates the right total when the service day is changed from an absence back to a non-absence' do
+      attendance.update!(check_out: attendance.check_in + 6.hours)
+      service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
+      service_day.update!(absence_type: 'absence')
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(10.minutes)
+      service_day.update!(absence_type: nil)
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(6.hours)
+    end
 
-      it 'for multiple check-ins with and without check-outs, returns scheduled duration if total is less' do
-        create(
-          :attendance,
-          child_approval: attendance.child.child_approvals.first,
-          check_in: attendance.check_in + 1.hour + 30.minutes,
-          check_out: attendance.check_in + 3.hours + 30.minutes
-        )
-        perform_enqueued_jobs
-        service_day.reload
-        expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
-      end
+    it 'for a single check-in with no check-out, returns the scheduled duration if the day has a schedule' do
+      attendance.child.reload
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
+    end
 
-      it 'for multiple check-ins with and without check-outs, returns attended duration if total is more' do
-        create(
-          :attendance,
-          child_approval: attendance.child.child_approvals.first,
-          check_in: attendance.check_in + 1.hour + 30.minutes,
-          check_out: attendance.check_in + 10.hours + 30.minutes
-        )
-        perform_enqueued_jobs
-        service_day.reload
-        expect(service_day.total_time_in_care).to eq(9.hours)
-      end
+    it 'for a single check-in with no check-out, returns 8 hours if day has no schedule' do
+      attendance.child.schedules.destroy_all
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(8.hours)
+    end
 
-      it 'with one or more check-ins, and none have a check-out, returns scheduled duration' do
-        create(
-          :attendance,
-          child_approval: attendance.child.child_approvals.first,
-          check_in: attendance.check_in + 3.hours + 30.minutes,
-          check_out: nil
-        )
-        perform_enqueued_jobs
-        service_day.reload
-        expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
-      end
+    it 'for multiple check-ins with and without check-outs, returns scheduled duration if total is less' do
+      create(
+        :attendance,
+        child_approval: attendance.child.child_approvals.first,
+        check_in: attendance.check_in + 1.hour + 30.minutes,
+        check_out: attendance.check_in + 3.hours + 30.minutes
+      )
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
+    end
+
+    it 'for multiple check-ins with and without check-outs, returns attended duration if total is more' do
+      create(
+        :attendance,
+        child_approval: attendance.child.child_approvals.first,
+        check_in: attendance.check_in + 1.hour + 30.minutes,
+        check_out: attendance.check_in + 10.hours + 30.minutes
+      )
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(9.hours)
+    end
+
+    it 'with one or more check-ins, and none have a check-out, returns scheduled duration' do
+      create(
+        :attendance,
+        child_approval: attendance.child.child_approvals.first,
+        check_in: attendance.check_in + 3.hours + 30.minutes,
+        check_out: nil
+      )
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
     end
   end
 

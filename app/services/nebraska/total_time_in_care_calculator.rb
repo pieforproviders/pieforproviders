@@ -24,6 +24,8 @@ module Nebraska
     def schedule_or_duration
       scheduled_duration = schedule&.duration || 8.hours
 
+      return scheduled_duration if service_day.absence?
+
       if total_recorded_attended_time <= scheduled_duration && missing_clock_out?
         scheduled_duration
       else
