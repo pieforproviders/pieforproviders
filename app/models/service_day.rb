@@ -168,7 +168,11 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def calculate_service_day
-    ServiceDayCalculatorJob.perform_later(self) if previously_new_record? || saved_change_to_schedule_id?(to: nil)
+    return unless previously_new_record? ||
+                  saved_change_to_schedule_id?(to: nil) ||
+                  saved_change_to_absence_type
+
+    ServiceDayCalculatorJob.perform_later(self)
   end
 end
 # == Schema Information

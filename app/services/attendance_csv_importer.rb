@@ -32,11 +32,15 @@ class AttendanceCsvImporter
   end
 
   def process_row(row, file_name)
-    business = Business.find_by(name: file_name.split('-').first)
-    log_missing_business(file_name.split('-').first) and return unless business
+    unless (business = Business.find_by(name: file_name.split('-').first))
+      log_missing_business(file_name.split('-').first)
+      return
+    end
 
-    child = find_child(business, row)
-    log_missing_child(business.id, row['check_in'], row['check_out'], row['absence']) and return unless child
+    unless (child = find_child(business, row))
+      log_missing_child(business.id, row['check_in'], row['check_out'], row['absence'], row['dhs_id'])
+      return
+    end
 
     create_attendance(row, child)
   rescue StandardError => e
@@ -53,19 +57,19 @@ class AttendanceCsvImporter
       absence: row['absence']
     )
 
-    att.service_day.update!(row['absence'])
+    att.service_day.update!(absence_type: row['absence'])
   end
 
   def find_child(business, row)
-    business.children.find_by(first_name: row['first_name'], last_name: row['last_name']) ||
-      business.children.find_by(dhs_id: row['dhs_id'])
+    business.children.find_by(dhs_id: row['dhs_id']) ||
+      business.children.find_by(first_name: row['first_name'], last_name: row['last_name'])
   end
 
-  def log_missing_child(id, check_in, check_out, absence)
+  def log_missing_child(id, check_in, check_out, absence, dhs_id)
     Rails.logger.tagged('attendance import') do
-      # rubocop:disable Layout/LineLength
-      message = "Business: #{id} - child record for attendance not found (check_in: #{check_in}, check_out: #{check_out}, absence: #{absence}); skipping"
-      # rubocop:enable Layout/LineLength
+      message = "Business: #{id} - child record for attendance "\
+                "not found (dhs_id: #{dhs_id}, check_in: #{check_in}, "\
+                "check_out: #{check_out}, absence: #{absence}); skipping"
       Rails.logger.info message
     end
   end
