@@ -367,14 +367,32 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  describe '#delete_empty_service_day' do
+  describe '#delete_or_mark_absent' do
     let!(:attendance) { create(:nebraska_hourly_attendance) }
 
-    it 'deletes the service day if this was the last attendance for that service day' do
+    it 'deletes the service day if this was the last attendance for that service day w/ no schedule' do
       service_day_id = attendance.service_day.id
+      attendance&.service_day&.schedule&.destroy!
+      attendance.service_day.reload
       attendance.destroy!
       ServiceDay.all.map(&:reload)
       expect(ServiceDay.all.pluck(:id)).not_to include(service_day_id)
+    end
+
+    it "doesn't delete the service day if this was the last attendance for that service day w/ a schedule" do
+      service_day_id = attendance.service_day.id
+      unless attendance.service_day.schedule
+        attendance.service_day.update(
+          schedule: create(:schedule,
+                           weekday: attendance.wday,
+                           effective_on: attendance - 5.days,
+                           expires_on: nil)
+        )
+      end
+      attendance.destroy!
+      ServiceDay.all.map(&:reload)
+      expect(ServiceDay.all.pluck(:id)).to include(service_day_id)
+      expect(attendance.service_day.absence_type).to eq('absence')
     end
 
     it 'does not delete the service day if this was not the last attendance for that service day' do
