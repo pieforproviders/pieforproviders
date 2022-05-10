@@ -98,7 +98,6 @@ module Wonderschool
               ).absences.length
             ).to eq(1)
             described_class.new.call
-            # perform_enqueued_jobs
             expect(
               second_child
               .attendances.for_day(
