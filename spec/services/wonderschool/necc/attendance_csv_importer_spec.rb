@@ -88,6 +88,9 @@ module Wonderschool
                    :absence,
                    date: Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone),
                    child: second_child)
+            # perform_enqueued_jobs
+            second_child.attendances.reload
+            # ServiceDay.all.map(&:reload)
             expect(
               second_child
               .attendances.for_day(Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone))
@@ -108,8 +111,11 @@ module Wonderschool
                                                                                      0o2,
                                                                                      24).in_time_zone(second_child.timezone)).to_json}"
             described_class.new.call
-            ServiceDay.all.map(&:reload)
-            Attendance.all.map(&:reload)
+            # perform_enqueued_jobs
+            # Attendance.all.map(&:reload)
+            # ServiceDay.all.map(&:reload)
+            # binding.pry
+            second_child.attendances.reload
             puts "Attendances - AFTER CALL: #{second_child.attendances.to_json}"
             puts "Service Days - AFTER CALL: #{second_child.service_days.to_json}"
             puts "Attendances for day - AFTER CALL: #{second_child.attendances.for_day(Time.new(2021,
