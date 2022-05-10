@@ -98,13 +98,13 @@ module Wonderschool
               ).absences.length
             ).to eq(1)
             described_class.new.call
-            perform_enqueued_jobs
-            # expect(
-            #   second_child
-            #   .attendances.for_day(
-            #     Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
-            #   ).length
-            # ).to eq(1)
+            # perform_enqueued_jobs
+            expect(
+              second_child
+              .attendances.for_day(
+                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
+              ).length
+            ).to eq(1)
             expect(
               second_child
               .service_days.for_day(
