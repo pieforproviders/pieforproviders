@@ -99,23 +99,23 @@ module Wonderschool
                 Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
               ).absences.length
             ).to eq(1)
-            puts "Attendances: #{second_child.attendances}"
-            puts "Service Days: #{second_child.service_days}"
+            puts "Attendances: #{second_child.attendances.to_json}"
+            puts "Service Days: #{second_child.service_days.to_json}"
             puts "Attendances for day: #{second_child.attendances.for_day(Time.new(2021,
                                                                                    0o2,
-                                                                                   24).in_time_zone(second_child.timezone))}"
+                                                                                   24).in_time_zone(second_child.timezone)).to_json}"
             puts "Service Days for day: #{second_child.service_days.for_day(Time.new(2021,
                                                                                      0o2,
-                                                                                     24).in_time_zone(second_child.timezone))}"
+                                                                                     24).in_time_zone(second_child.timezone)).to_json}"
             described_class.new.call
-            puts "Attendances - AFTER CALL: #{second_child.attendances}"
-            puts "Service Days - AFTER CALL: #{second_child.service_days}"
+            puts "Attendances - AFTER CALL: #{second_child.attendances.to_json}"
+            puts "Service Days - AFTER CALL: #{second_child.service_days.to_json}"
             puts "Attendances for day - AFTER CALL: #{second_child.attendances.for_day(Time.new(2021,
                                                                                                 0o2,
-                                                                                                24).in_time_zone(second_child.timezone))}"
+                                                                                                24).in_time_zone(second_child.timezone)).to_json}"
             puts "Service Days for day - AFTER CALL: #{second_child.service_days.for_day(Time.new(2021,
                                                                                                   0o2,
-                                                                                                  24).in_time_zone(second_child.timezone))}"
+                                                                                                  24).in_time_zone(second_child.timezone)).to_json}"
             expect(
               second_child
               .attendances.for_day(
