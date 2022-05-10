@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/ModuleLength
 module Wonderschool
   module Necc
     RSpec.describe AttendanceCsvImporter do
@@ -81,61 +80,28 @@ module Wonderschool
               .to be_within(1.minute).of Time.zone.parse('2021-03-11 00:27:53+00')
           end
 
-          it 'removes existing absence records for the correct child with the correct data' do
-            puts "Time of service_day: #{Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)}"
-            puts "Current time: #{Time.current}"
+          fit 'removes existing absences records for the correct child with the correct data' do
+            # TODO: somewhere in here, more than one service day is being created for 2/24/2021
+            # one for the beginning of the day
+            time = Time.new(2021, 0o2, 24, 0, 0, 0, ActiveSupport::TimeZone.new(second_child.timezone))
+            puts "Time: #{time}"
             create(:service_day,
-                   :absence,
-                   date: Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone),
-                   child: second_child)
-            # perform_enqueued_jobs
-            second_child.attendances.reload
-            # ServiceDay.all.map(&:reload)
-            expect(
-              second_child
-              .attendances.for_day(Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone))
-              .length
-            ).to eq(0)
-            expect(
-              second_child
-              .service_days.for_day(
-                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
-              ).absences.length
-            ).to eq(1)
-            puts "Attendances: #{second_child.attendances.to_json}"
-            puts "Service Days: #{second_child.service_days.to_json}"
-            puts "Attendances for day: #{second_child.attendances.for_day(Time.new(2021,
-                                                                                   0o2,
-                                                                                   24).in_time_zone(second_child.timezone)).to_json}"
-            puts "Service Days for day: #{second_child.service_days.for_day(Time.new(2021,
-                                                                                     0o2,
-                                                                                     24).in_time_zone(second_child.timezone)).to_json}"
+                   child: second_child,
+                   date: time.at_beginning_of_day,
+                   absence_type: 'absence')
+            expect(second_child.attendances.for_day(time).length).to eq(0)
+            expect(second_child.service_days.for_day(time).absences.length).to eq(1)
+            puts "Attendances: #{second_child.attendances.pluck(:check_in)}"
+            puts "Attendances for day: #{second_child.attendances.for_day(time).pluck(:check_in)}"
+            puts "ServiceDays: #{second_child.service_days.pluck(:date)}"
+            puts "ServiceDays for day: #{second_child.service_days.for_day(time).pluck(:date)}"
             described_class.new.call
-            # perform_enqueued_jobs
-            # Attendance.all.map(&:reload)
-            # ServiceDay.all.map(&:reload)
-            # binding.pry
-            second_child.attendances.reload
-            puts "Attendances - AFTER CALL: #{second_child.attendances.to_json}"
-            puts "Service Days - AFTER CALL: #{second_child.service_days.to_json}"
-            puts "Attendances for day - AFTER CALL: #{second_child.attendances.for_day(Time.new(2021,
-                                                                                                0o2,
-                                                                                                24).in_time_zone(second_child.timezone)).to_json}"
-            puts "Service Days for day - AFTER CALL: #{second_child.service_days.for_day(Time.new(2021,
-                                                                                                  0o2,
-                                                                                                  24).in_time_zone(second_child.timezone)).to_json}"
-            expect(
-              second_child
-              .attendances.for_day(
-                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
-              ).length
-            ).to eq(1)
-            expect(
-              second_child
-              .service_days.for_day(
-                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
-              ).absences.length
-            ).to eq(0)
+            expect(second_child.attendances.for_day(time).length).to eq(1)
+            expect(second_child.service_days.for_day(time).absences.length).to eq(0)
+            puts "Attendances AFTER CALL: #{second_child.attendances.pluck(:check_in)}"
+            puts "Attendances for day AFTER CALL: #{second_child.attendances.for_day(time).pluck(:check_in)}"
+            puts "ServiceDays AFTER CALL: #{second_child.service_days.pluck(:date)}"
+            puts "ServiceDays for day AFTER CALL: #{second_child.service_days.for_day(time).pluck(:date)}"
           end
         end
 
@@ -174,4 +140,3 @@ module Wonderschool
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
