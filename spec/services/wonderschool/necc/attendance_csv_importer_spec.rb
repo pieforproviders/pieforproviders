@@ -80,28 +80,19 @@ module Wonderschool
               .to be_within(1.minute).of Time.zone.parse('2021-03-11 00:27:53+00')
           end
 
-          fit 'removes existing absences records for the correct child with the correct data' do
+          it 'removes existing absences records for the correct child with the correct data' do
             # TODO: somewhere in here, more than one service day is being created for 2/24/2021
             # one for the beginning of the day
             time = Time.new(2021, 0o2, 24, 0, 0, 0, ActiveSupport::TimeZone.new(second_child.timezone))
-            puts "Time: #{time}"
             create(:service_day,
                    child: second_child,
                    date: time.at_beginning_of_day,
                    absence_type: 'absence')
             expect(second_child.attendances.for_day(time).length).to eq(0)
             expect(second_child.service_days.for_day(time).absences.length).to eq(1)
-            puts "Attendances: #{second_child.attendances.pluck(:check_in)}"
-            puts "Attendances for day: #{second_child.attendances.for_day(time).pluck(:check_in)}"
-            puts "ServiceDays: #{second_child.service_days.pluck(:date)}"
-            puts "ServiceDays for day: #{second_child.service_days.for_day(time).pluck(:date)}"
             described_class.new.call
             expect(second_child.attendances.for_day(time).length).to eq(1)
             expect(second_child.service_days.for_day(time).absences.length).to eq(0)
-            puts "Attendances AFTER CALL: #{second_child.attendances.pluck(:check_in)}"
-            puts "Attendances for day AFTER CALL: #{second_child.attendances.for_day(time).pluck(:check_in)}"
-            puts "ServiceDays AFTER CALL: #{second_child.service_days.pluck(:date)}"
-            puts "ServiceDays for day AFTER CALL: #{second_child.service_days.for_day(time).pluck(:date)}"
           end
         end
 
