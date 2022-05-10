@@ -82,6 +82,8 @@ module Wonderschool
           end
 
           it 'removes existing absence records for the correct child with the correct data' do
+            puts "Time of service_day: #{Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)}"
+            puts "Current time: #{Time.current}"
             create(:service_day,
                    :absence,
                    date: Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone),
@@ -97,7 +99,23 @@ module Wonderschool
                 Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
               ).absences.length
             ).to eq(1)
+            puts "Attendances: #{second_child.attendances}"
+            puts "Service Days: #{second_child.service_days}"
+            puts "Attendances for day: #{second_child.attendances.for_day(Time.new(2021,
+                                                                                   0o2,
+                                                                                   24).in_time_zone(second_child.timezone))}"
+            puts "Service Days for day: #{second_child.service_days.for_day(Time.new(2021,
+                                                                                     0o2,
+                                                                                     24).in_time_zone(second_child.timezone))}"
             described_class.new.call
+            puts "Attendances - AFTER CALL: #{second_child.attendances}"
+            puts "Service Days - AFTER CALL: #{second_child.service_days}"
+            puts "Attendances for day - AFTER CALL: #{second_child.attendances.for_day(Time.new(2021,
+                                                                                                0o2,
+                                                                                                24).in_time_zone(second_child.timezone))}"
+            puts "Service Days for day - AFTER CALL: #{second_child.service_days.for_day(Time.new(2021,
+                                                                                                  0o2,
+                                                                                                  24).in_time_zone(second_child.timezone))}"
             expect(
               second_child
               .attendances.for_day(
