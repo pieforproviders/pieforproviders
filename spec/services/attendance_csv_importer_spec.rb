@@ -104,36 +104,6 @@ RSpec.describe AttendanceCsvImporter do
         expect(third_child.attendances.order(:check_in).first.check_out)
           .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
       end
-
-      it 'removes existing absence records for the correct child with the correct data' do
-        create(:attendance,
-               child_approval: child2_business1.child_approvals.first,
-               check_in: Time.zone.local(2021, 0o2, 24, child2_business1.timezone),
-               check_out: nil,
-               absence: 'absence')
-        perform_enqueued_jobs
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).length).to eq(1)
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).absences.length).to eq(1)
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).absences.length).to eq(1)
-        child2_business1.reload
-        described_class.new.call
-        perform_enqueued_jobs
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).length).to eq(1)
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).absences.length).to eq(0)
-        expect(child2_business1.attendances.for_day(
-          Time.zone.local(2021, 0o2, 24, child2_business1.timezone)
-        ).absences.length).to eq(0)
-      end
     end
 
     it "continues processing if the child doesn't exist" do

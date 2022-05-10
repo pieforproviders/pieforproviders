@@ -59,12 +59,14 @@ module Api
 
       def service_day(attendance)
         child = child(attendance)
-        ServiceDay.create(
+        sd = ServiceDay.create(
           attendance['service_day_attributes'].merge(
             date: attendance['check_in'].in_time_zone(child.timezone).at_beginning_of_day,
             child: child
           )
         )
+        sd.errors.messages.map { |k, v| @errors[k] = v } if sd.errors.present?
+        sd
       end
 
       def add_error_and_return_nil(key, message = "can't be blank")
@@ -82,8 +84,7 @@ module Api
       end
 
       def attendance_batch_params
-        params.permit(attendance_batch: [:absence,
-                                         :check_in,
+        params.permit(attendance_batch: [:check_in,
                                          :check_out,
                                          :child_id,
                                          {

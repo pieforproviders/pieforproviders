@@ -103,7 +103,6 @@ end
 # Table name: attendances
 #
 #  id                :uuid             not null, primary key
-#  absence           :string
 #  check_in          :datetime         not null
 #  check_out         :datetime
 #  deleted_at        :date
@@ -116,7 +115,6 @@ end
 #
 # Indexes
 #
-#  index_attendances_on_absence            (absence)
 #  index_attendances_on_check_in           (check_in)
 #  index_attendances_on_child_approval_id  (child_approval_id)
 #  index_attendances_on_service_day_id     (service_day_id)

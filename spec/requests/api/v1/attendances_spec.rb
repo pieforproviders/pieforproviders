@@ -134,12 +134,17 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
       end
 
       it 'can change an attendance to an absence' do
+        check_in = attendance.check_in
+        check_out = attendance.check_out
         absence_params = { attendance: { absence: 'absence', service_day_attributes: { absence_type: 'absence' } } }
         create(:schedule, child: child, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
         put "/api/v1/attendances/#{attendance.id}", params: absence_params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response['absence']).to eq('absence')
         attendance.reload
+        expect(DateTime.parse(parsed_response['check_in']))
+          .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))
+        expect(DateTime.parse(parsed_response['check_out']))
+          .to eq(DateTime.parse(check_out.in_time_zone(child.timezone).to_s))
         expect(attendance.service_day.absence_type).to eq('absence')
       end
 
@@ -175,7 +180,6 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
         parsed_response = JSON.parse(response.body)
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
-        expect(parsed_response['absence']).to eq('absence')
         attendance.reload
         expect(attendance.service_day.absence_type).to eq('absence')
       end

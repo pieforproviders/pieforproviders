@@ -81,37 +81,36 @@ module Wonderschool
               .to be_within(1.minute).of Time.zone.parse('2021-03-11 00:27:53+00')
           end
 
-          it 'removes existing absences records for the correct child with the correct data' do
-            create(:attendance,
-                   child_approval: second_child.child_approvals.first,
-                   check_in: Time.zone.local(2021, 0o2, 24, second_child.timezone),
-                   check_out: nil,
-                   absence: 'absence')
-            expect(second_child
-              .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).length).to eq(1)
-            expect(second_child
-              .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).absences.length).to eq(1)
-            expect(second_child
-              .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).absences.length).to eq(1)
+          it 'removes existing absence records for the correct child with the correct data' do
+            create(:service_day,
+                   :absence,
+                   date: Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone),
+                   child: second_child)
+            expect(
+              second_child
+              .attendances.for_day(Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone))
+              .length
+            ).to eq(0)
+            expect(
+              second_child
+              .service_days.for_day(
+                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
+              ).absences.length
+            ).to eq(1)
             described_class.new.call
-            expect(second_child
+            perform_enqueued_jobs
+            expect(
+              second_child
               .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).length).to eq(1)
-            expect(second_child
-              .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).absences.length).to eq(0)
-            expect(second_child
-              .attendances.for_day(
-                Time.zone.local(2021, 0o2, 24, second_child.timezone)
-              ).absences.length).to eq(0)
+                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
+              ).length
+            ).to eq(1)
+            expect(
+              second_child
+              .service_days.for_day(
+                Time.new(2021, 0o2, 24).in_time_zone(second_child.timezone)
+              ).absences.length
+            ).to eq(0)
           end
         end
 

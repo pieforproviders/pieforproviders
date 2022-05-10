@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module Nebraska
-  # Service to generate absences, to be scheduled daily
+  # Service to find the region in Nebraska where a business is located
+  # for rate calculation
   class RegionFinder
     attr_reader :business
 

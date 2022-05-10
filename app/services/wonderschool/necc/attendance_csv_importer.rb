@@ -50,7 +50,7 @@ module Wonderschool
           check_in: check_in,
           check_out: row['checked_out_at']
         )
-        attendance.service_day.update!(absence: nil) if attendance.service_day.absence?
+        attendance.service_day.update!(absence_type: nil) if attendance.service_day.absence?
       end
 
       def log_missing_child(id)

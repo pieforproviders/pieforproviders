@@ -5,8 +5,10 @@ desc 'Fix missing absences for newly onboarded kids'
 namespace :nebraska do
   task fix_absences: :environment do
     empty_service_days = ServiceDay.where.missing(:attendances)
-    Rails.logger.info(empty_service_days.length)
-    empty_service_days.map(&:destroy)
+    Rails.logger.info("Empty service days: #{empty_service_days.size}")
+    empty_service_days.map do |service_day|
+      service_day.schedule ? service_day.update!(absence_type: 'absence') : service_day.destroy!
+    end
 
     children = Child.nebraska.includes(:approvals)
 
