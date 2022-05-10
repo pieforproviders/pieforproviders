@@ -106,7 +106,7 @@ export function PaymentModal({
         <div>
           <div className="mb-2">
             {childNameHeader}
-            {childCase.child.childName}
+            {`${childCase.child.childFirstName} ${childCase.child.childLastName}`}
           </div>
           <div className="mb-2">
             <div className="mb-2 ">{earnedRevenueHeader}</div>
@@ -128,7 +128,7 @@ export function PaymentModal({
       responsive: ['sm'],
       render: childCase => {
         return (
-          <div className="payment-table-text">{childCase.child.childName}</div>
+          <div className="payment-table-text">{`${childCase.child.childFirstName} ${childCase.child.childLastName}`}</div>
         )
       }
     },
