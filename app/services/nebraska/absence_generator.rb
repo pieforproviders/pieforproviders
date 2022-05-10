@@ -20,12 +20,11 @@ module Nebraska
       return if attendance_on_date.present? || schedule.blank?
 
       ActiveRecord::Base.transaction do
-        ServiceDay.find_or_create_by!(
+        sd = ServiceDay.find_or_create_by!(
           child: child,
-          date: date,
-          absence_type: 'absence',
-          schedule: schedule
+          date: date
         )
+        sd.update!(absence_type: 'absence', schedule: schedule)
       end
     end
 

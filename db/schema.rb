@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_05_214542) do
+ActiveRecord::Schema.define(version: 2022_05_09_190840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -41,10 +41,8 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
     t.string "wonderschool_id"
-    t.string "absence"
     t.date "deleted_at"
     t.uuid "service_day_id"
-    t.index ["absence"], name: "index_attendances_on_absence"
     t.index ["check_in"], name: "index_attendances_on_check_in"
     t.index ["child_approval_id"], name: "index_attendances_on_child_approval_id"
     t.index ["service_day_id"], name: "index_attendances_on_service_day_id"

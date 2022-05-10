@@ -34,8 +34,7 @@ module Nebraska
     end
 
     def missing_clock_out?
-      attended_days = attendances.select { |attendance| attendance.absence.nil? }
-      attended_days.empty? || attended_days.any? do |attendance|
+      attendances.empty? || attendances.any? do |attendance|
         attendance.check_in && !attendance.check_out
       end
     end

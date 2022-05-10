@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe Attendance, type: :model do
   let(:attendance) { build(:attendance, check_out: nil) }
 
@@ -39,23 +38,6 @@ RSpec.describe Attendance, type: :model do
     expect(attendance).to be_valid
   end
 
-  it 'validates that absence is a permitted value only' do
-    attendance.check_in = Helpers.prior_weekday(attendance.check_in, 0)
-    attendance.save!
-
-    attendance.absence = 'covid_absence'
-    expect(attendance).not_to be_valid
-    expect(attendance.errors.messages[:absence]).to include("can't create for a day without a schedule")
-
-    absence = create(:nebraska_absence, absence: 'covid_absence')
-    expect(absence).to be_valid
-    expect(absence.errors.messages).to eq({})
-
-    absence = build(:nebraska_absence, absence: 'fake_reason')
-    expect(absence).not_to be_valid
-    expect(absence.errors.messages[:absence]).to include('is not included in the list')
-  end
-
   it 'validates that the check_out is after the check_in if it is present' do
     attendance.update(check_out: 90.years.ago)
     expect(attendance.errors.messages[:check_out]).to be_present
@@ -63,25 +45,6 @@ RSpec.describe Attendance, type: :model do
     expect(attendance.errors.messages[:check_out]).not_to be_present
     attendance.update(check_out: nil)
     expect(attendance.errors.messages[:check_out]).not_to be_present
-  end
-
-  it 'validates that an absence only occurs on a scheduled day' do
-    child = create(:necc_child)
-    child.reload
-    # ensures the attendance check in falls on the calendar weekday in the schedule
-    attendance_check_in = Helpers.prior_weekday(child.schedules.first.effective_on + 30.days, 0)
-    attendance = build(:nebraska_absence, child_approval: child.child_approvals.first, check_in: attendance_check_in)
-    expect(attendance).not_to be_valid
-  end
-
-  it 'validates that there is only one absence per service day' do
-    absence = create(:nebraska_absence)
-    second_absence = build(:nebraska_absence,
-                           check_in: absence.check_in + 45.minutes,
-                           child_approval: absence.child_approval,
-                           service_day: absence.service_day)
-    expect(second_absence).not_to be_valid
-    expect(second_absence.errors.messages[:absence]).to include('there is already an absence for this date')
   end
 
   it 'factory should be valid (default; no args)' do
@@ -230,55 +193,6 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  describe '#remove_absences' do
-    it 'removes an absence on the same service day if it exists' do
-      attendance.save!
-      attendance.child.reload
-      absence = create(
-        :nebraska_absence,
-        check_in: Time
-          .current
-          .in_time_zone(attendance.child.timezone)
-          .prev_occurring(Date::DAYNAMES[attendance.child.schedules.first.weekday].downcase.to_sym)
-          .at_beginning_of_day
-      )
-      expect(described_class.absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: absence.check_in + 45.minutes,
-          child_approval: absence.child_approval
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(0)
-    end
-
-    it 'removes an absence associated to the same child_approval on the same check_in day if it exists' do
-      absence = create(:nebraska_absence)
-      expect(described_class.absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: absence.check_in + 45.minutes,
-          child_approval: absence.child_approval
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(0)
-    end
-
-    it 'does not remove a non-absence from the same day' do
-      attendance = create(:nebraska_hourly_attendance)
-      expect(described_class.absences.length).to eq(0)
-      expect(described_class.non_absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: attendance.check_in + 45.minutes,
-          child_approval: attendance.child_approval
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(0)
-      expect(described_class.non_absences.length).to eq(2)
-    end
-  end
-
   describe '#assign_new_service_day' do
     let!(:attendance) { create(:nebraska_hourly_attendance) }
 
@@ -302,36 +216,6 @@ RSpec.describe Attendance, type: :model do
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
       expect(attendance.service_day).to eq(service_day)
-    end
-  end
-
-  describe '#remove_other_attendances' do
-    let!(:attendance) { create(:nebraska_hourly_attendance) }
-
-    it 'removes other attendances on the same service day if absence is created' do
-      expect(described_class.non_absences.length).to eq(1)
-      expect do
-        described_class.create!(
-          check_in: attendance.check_in + 45.minutes,
-          child_approval: attendance.child_approval,
-          service_day: attendance.service_day,
-          absence: 'absence'
-        )
-      end.not_to change(ServiceDay, :count)
-      expect(described_class.absences.length).to eq(1)
-      expect(described_class.non_absences.length).to eq(0)
-    end
-
-    it 'removes other attendance on the same service day if attendance is updated to absence' do
-      described_class.create!(
-        check_in: attendance.check_in + 45.minutes,
-        child_approval: attendance.child_approval,
-        service_day: attendance.service_day
-      )
-      expect(described_class.non_absences.length).to eq(2)
-      attendance.update(absence: 'absence')
-      expect(described_class.absences.length).to eq(1)
-      expect(described_class.non_absences.length).to eq(0)
     end
   end
 
@@ -407,13 +291,11 @@ RSpec.describe Attendance, type: :model do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
 # == Schema Information
 #
 # Table name: attendances
 #
 #  id                :uuid             not null, primary key
-#  absence           :string
 #  check_in          :datetime         not null
 #  check_out         :datetime
 #  deleted_at        :date
@@ -426,7 +308,6 @@ end
 #
 # Indexes
 #
-#  index_attendances_on_absence            (absence)
 #  index_attendances_on_check_in           (check_in)
 #  index_attendances_on_child_approval_id  (child_approval_id)
 #  index_attendances_on_service_day_id     (service_day_id)

@@ -9,7 +9,6 @@ RSpec.describe AttendanceBlueprint do
   it 'returns the correct fields' do
     expect(JSON.parse(blueprint).keys).to contain_exactly(
       'id',
-      'absence',
       'check_in',
       'check_out',
       'child',

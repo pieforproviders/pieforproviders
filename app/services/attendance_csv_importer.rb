@@ -53,8 +53,7 @@ class AttendanceCsvImporter
     att = Attendance.find_or_create_by!(
       child_approval: child.active_child_approval(check_in),
       check_in: check_in,
-      check_out: row['check_out']&.in_time_zone(child&.timezone),
-      absence: row['absence']
+      check_out: row['check_out']&.in_time_zone(child&.timezone)
     )
 
     att.service_day.update!(absence_type: row['absence'])

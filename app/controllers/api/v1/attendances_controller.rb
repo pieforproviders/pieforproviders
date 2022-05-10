@@ -53,7 +53,7 @@ module Api
       end
 
       def attendance_params
-        params.require(:attendance).permit(:absence, :check_in, :check_out, service_day_attributes: [:absence_type])
+        params.require(:attendance).permit(:check_in, :check_out, service_day_attributes: [:absence_type])
       end
 
       def update_service_day(params)
