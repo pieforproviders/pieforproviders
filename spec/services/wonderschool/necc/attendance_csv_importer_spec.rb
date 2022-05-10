@@ -108,6 +108,8 @@ module Wonderschool
                                                                                      0o2,
                                                                                      24).in_time_zone(second_child.timezone)).to_json}"
             described_class.new.call
+            ServiceDay.all.map(&:reload)
+            Attendance.all.map(&:reload)
             puts "Attendances - AFTER CALL: #{second_child.attendances.to_json}"
             puts "Service Days - AFTER CALL: #{second_child.service_days.to_json}"
             puts "Attendances for day - AFTER CALL: #{second_child.attendances.for_day(Time.new(2021,
