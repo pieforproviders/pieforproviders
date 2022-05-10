@@ -41,6 +41,7 @@ module Wonderschool
 
         update_attendance_and_service_day(attendance, check_in, child, row)
       rescue StandardError => e
+        puts "We got an error: #{e.message}, #{row['child_id']} #{row['checked_in_at']} #{row['checked_out_at']}"
         send_appsignal_error('attendance-csv-importer', e, row['child_id'])
       end
 
