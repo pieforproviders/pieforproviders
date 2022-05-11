@@ -145,6 +145,7 @@ export default function DashboardTitle({
       setPaymentModalVisible(false)
       setIsFailedPaymentRequest(false)
       setPaymentSuccessOpen(true)
+      setIsPaymentSubmitted(true)
       return
     }
 
