@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 2022_05_09_190840) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-10 19:40:48", null: false
+    t.datetime "month", default: "2022-05-11 19:17:16", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -270,6 +270,23 @@ ActiveRecord::Schema.define(version: 2022_05_09_190840) do
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
+  end
+
+  create_table "temporary_nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.text "attendance_risk"
+    t.text "absences"
+    t.text "earned_revenue"
+    t.text "estimated_revenue"
+    t.text "full_days"
+    t.text "hours"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "as_of"
+    t.decimal "family_fee"
+    t.string "hours_attended"
+    t.date "deleted_at"
+    t.index ["child_id"], name: "index_temporary_nebraska_dashboard_cases_on_child_id"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

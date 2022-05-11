@@ -83,7 +83,6 @@ export function PaymentModal({
     </div>
   )
 
-  //test comment
   function earnedRevenueBody(childCase) {
     return (
       <div className="payment-table-text">&#36; {childCase.earnedRevenue}</div>
