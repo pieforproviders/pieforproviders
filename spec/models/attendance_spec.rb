@@ -296,7 +296,6 @@ end
 # Table name: attendances
 #
 #  id                :uuid             not null, primary key
-#  absence           :string
 #  check_in          :datetime         not null
 #  check_out         :datetime
 #  deleted_at        :date

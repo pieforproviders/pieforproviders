@@ -1,1 +1,1 @@
-export { PaymentModal as default } from './paymentModal'
+export { PaymentModal as default } from './PaymentModal'
