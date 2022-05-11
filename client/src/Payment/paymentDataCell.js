@@ -23,7 +23,6 @@ export default function PaymentDataCell({
       min={0}
       max={1000000000000}
       value={paymentValue}
-      keyboard={false}
       onChange={updatePayment}
     />
   )
