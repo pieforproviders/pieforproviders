@@ -6,12 +6,26 @@ const ui = createSlice({
   name: 'ui',
   initialState,
   reducers: {
-    setFilteredCases(_state, action) {
+    setFilteredCases(state, action) {
       const filteredCases = action.payload
-      return [...filteredCases]
+      return { ...state, filteredCases: [...filteredCases] }
+    },
+    setLoading(state, action) {
+      const isLoading = action.payload
+      return {
+        ...state,
+        isLoading
+      }
+    },
+    setProgress(state, action) {
+      const progress = action.payload
+      return {
+        ...state,
+        progress
+      }
     }
   }
 })
 
-export const { setFilteredCases } = ui.actions
+export const { setFilteredCases, setLoading, setProgress } = ui.actions
 export default ui.reducer

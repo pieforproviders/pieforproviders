@@ -1,9 +1,12 @@
 import React from 'react'
 import pieWithSlice from '../_assets/pieWithSlice.png'
 import { Progress } from 'antd'
+import { useSelector } from 'react-redux'
 import '_assets/styles/progress-bar-overrides.css'
 
 export function LoadingDisplay() {
+  const percentage = useSelector(state => state.ui.progress?.percentage || 0)
+
   return (
     <div>
       <div className="mt-4">
@@ -16,7 +19,7 @@ export function LoadingDisplay() {
         className="table-loading"
         strokeColor={'#006C9E'}
         size="large"
-        percent={55}
+        percent={percentage}
         showInfo={false}
       />
     </div>
