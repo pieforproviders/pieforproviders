@@ -11,6 +11,7 @@ import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
 import '_assets/styles/edit-icon.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
+import { LoadingDisplay } from '_shared/LoadingDisplay'
 
 const { useBreakpoint } = Grid
 
@@ -22,7 +23,10 @@ export function AttendanceView() {
   const { makeRequest } = useApiResponse()
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
-  const { token } = useSelector(state => ({ token: state.auth.token }))
+  const { isLoading, token } = useSelector(state => ({
+    isLoading: state.ui.isLoading,
+    token: state.auth.token
+  }))
   const [dateSelected, setDateSelected] = useState(dayjs())
   // TODO Refactor: rename and rework this to be a boolean flag to show the modal, and pass
   // attendanceData directly to the modal to fill the fields
@@ -550,6 +554,10 @@ export function AttendanceView() {
             sticky
             scroll={{ x: 1500 }}
             className="my-5"
+            loading={{
+              spinning: isLoading,
+              indicator: <LoadingDisplay />
+            }}
           />
         </div>
       ) : (

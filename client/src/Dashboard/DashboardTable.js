@@ -38,9 +38,9 @@ export default function DashboardTable({
     currency: 'USD',
     minimumFractionDigits: 2
   })
-  const { token } = useSelector(state => ({
+  const { isLoading, token } = useSelector(state => ({
     token: state.auth.token,
-    user: state.user
+    isLoading: state.ui.isLoading
   }))
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
@@ -483,7 +483,7 @@ export default function DashboardTable({
           cancelSort: t('sortCancel')
         }}
         loading={{
-          spinning: true,
+          spinning: isLoading,
           indicator: <LoadingDisplay />
         }}
       />

@@ -18,6 +18,7 @@ import '_assets/styles/alert-overrides.css'
 import '_assets/styles/filter-select-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
+import { LoadingDisplay } from '_shared/LoadingDisplay'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
@@ -26,9 +27,10 @@ export function Attendance() {
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseAttendanceData()
   const { makeRequest } = useApiResponse()
-  const { businesses, cases, token } = useSelector(state => ({
+  const { businesses, cases, isLoading, token } = useSelector(state => ({
     businesses: state.businesses,
     cases: state.cases,
+    isLoading: state.ui.isLoading,
     token: state.auth.token
   }))
   const [filterOpen, setFilterOpen] = useState(false)
@@ -479,6 +481,10 @@ export function Attendance() {
         sticky
         scroll={{ x: 1500 }}
         className="my-5"
+        loading={{
+          spinning: isLoading,
+          indicator: <LoadingDisplay />
+        }}
       />
       <div className="flex justify-center">
         <PaddedButton
