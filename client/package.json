@@ -54,7 +54,7 @@
     "prebuild": "yarn run build:style",
     "prestart": "yarn run build:style",
     "start": "craco start",
-    "test": "craco test --env=jest-environment-jsdom-sixteen --coverage --watchAll",
+    "test": "craco test --transformIgnorePatterns `node_modules/(?!fetch-progress)/` --env=jest-environment-jsdom-sixteen --coverage --watchAll",
     "test-once": "CI=true craco test"
   },
   "prettier": {

@@ -1,6 +1,6 @@
-import fetchProgress from 'fetch-progress'
-import { store } from 'index'
+import { store } from '../../configureStore'
 import { setLoading, setProgress } from '_reducers/uiReducer'
+import fetchProgress from 'fetch-progress'
 
 const GET = 'GET'
 const POST = 'POST'
