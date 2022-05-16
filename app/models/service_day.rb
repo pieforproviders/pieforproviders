@@ -32,49 +32,6 @@ class ServiceDay < UuidApplicationRecord
   scope :covid_absences, -> { where(absence_type: 'covid_absence') }
   scope :standard_absences, -> { where(absence_type: 'absence') }
 
-  scope :ne_hourly,
-        lambda {
-          joins(:attendances, { child: :business })
-            .where(children: { businesses: { state: 'NE' } })
-            .having(
-              'sum("attendances"."time_in_care") <= ?',
-              (5.hours + 45.minutes).to_s
-            )
-            .group(:id)
-        }
-  scope :ne_daily,
-        lambda {
-          joins(:attendances, { child: :business })
-            .where(children: { businesses: { state: 'NE' } })
-            .having(
-              'sum("attendances"."time_in_care") between ? and ?',
-              (5.hours + 46.minutes).to_s,
-              10.hours.to_s
-            )
-            .group(:id)
-        }
-  scope :ne_daily_plus_hourly,
-        lambda {
-          joins(:attendances, { child: :business })
-            .where(children: { businesses: { state: 'NE' } })
-            .having(
-              'sum("attendances"."time_in_care") between ? and ?',
-              (10.hours + 1.minute).to_s,
-              18.hours.to_s
-            )
-            .group(:id)
-        }
-  scope :ne_daily_plus_hourly_max,
-        lambda {
-          joins(:attendances, { child: :business })
-            .where(children: { businesses: { state: 'NE' } })
-            .having(
-              'sum("attendances"."time_in_care") > ?',
-              18.hours.to_s
-            )
-            .group(:id)
-        }
-
   scope :for_month,
         lambda { |month = nil|
           month ||= Time.current
