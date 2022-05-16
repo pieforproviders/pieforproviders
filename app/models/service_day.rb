@@ -52,6 +52,13 @@ class ServiceDay < UuidApplicationRecord
           where("select date_part('dow', DATE(date)) = ?", weekday)
         }
 
+  scope :for_period,
+        lambda { |start_time = nil, end_time = nil|
+          start_time ||= Time.current
+          end_time ||= Time.current
+          where(date: start_time.at_beginning_of_day..end_time.at_end_of_day)
+        }
+
   scope :with_attendances, -> { includes(:attendances) }
 
   def absence?
