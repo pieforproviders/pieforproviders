@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import '_assets/styles/form-overrides.css'
 import '_assets/styles/next-button-overrides.css'
 import RadioButtonUncheckedIcon from '@material-ui/icons/RadioButtonUnchecked'
@@ -39,6 +40,7 @@ export function Signup() {
     tooMuchTime: null,
     getFromPie: null
   })
+  const { sendGAEvent } = useGoogleAnalytics()
   const [success, setSuccess] = useState(false)
   const [validationErrors, setValidationErrors] = useState(null)
   const [error, setError] = useState(false)
@@ -57,6 +59,8 @@ export function Signup() {
     })
     if (response.status === 201) {
       setSuccess(true)
+
+      sendGAEvent('signup success', { state: user.state })
     } else if (response.status === 422) {
       const { errors } = await response.json()
       setValidationErrors(errors)
