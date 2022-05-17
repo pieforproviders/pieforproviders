@@ -19,6 +19,7 @@ const ui = createSlice({
     },
     setProgress(state, action) {
       const progress = action.payload
+
       return {
         ...state,
         progress

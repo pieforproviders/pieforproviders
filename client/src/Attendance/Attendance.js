@@ -8,9 +8,11 @@ import ellipse from '_assets/ellipse.svg'
 import { PaddedButton } from '_shared/PaddedButton'
 import { useCaseAttendanceData } from '_shared/_hooks/useCaseAttendanceData'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useProgress } from '_shared/_hooks/useProgress'
 import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setFilteredCases } from '_reducers/uiReducer'
+import { setLoading } from '_reducers/uiReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
@@ -22,6 +24,7 @@ import { LoadingDisplay } from '_shared/LoadingDisplay'
 
 export function Attendance() {
   const { t, i18n } = useTranslation()
+  const { parseResult } = useProgress()
   const { sendGAEvent } = useGoogleAnalytics()
   const history = useHistory()
   const dispatch = useDispatch()
@@ -367,7 +370,8 @@ export function Attendance() {
   }
 
   const getCaseData = async (businessIds = []) => {
-    // TODO: update to use query params, instead of data/ body
+    dispatch(setLoading(true))
+
     const url =
       businessIds.length > 0
         ? `/api/v1/children?business=${businessIds.join(',')}`
@@ -377,11 +381,10 @@ export function Attendance() {
       url: url,
       headers: { Authorization: token }
     }
-
     const response = await makeRequest(request)
 
     if (response.ok) {
-      const parsedResponse = await response.json()
+      const parsedResponse = await parseResult(response)
       const caseData = reduceTableData(parsedResponse)
       const reducedAttendanceData = reduceAttendanceData(caseData)
 
@@ -400,6 +403,7 @@ export function Attendance() {
       setAttendanceData(reducedAttendanceData)
       setTableData(caseData)
     }
+    dispatch(setLoading(false))
   }
 
   useEffect(() => {
@@ -482,6 +486,7 @@ export function Attendance() {
         scroll={{ x: 1500 }}
         className="my-5"
         loading={{
+          delay: 1000,
           spinning: isLoading,
           indicator: <LoadingDisplay />
         }}

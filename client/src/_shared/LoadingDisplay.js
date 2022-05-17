@@ -5,7 +5,9 @@ import { useSelector } from 'react-redux'
 import '_assets/styles/progress-bar-overrides.css'
 
 export function LoadingDisplay() {
-  const percentage = useSelector(state => state.ui.progress?.percentage || 0)
+  const percentage = useSelector(state => {
+    return state.ui.progress || 0
+  })
 
   return (
     <div>

@@ -40,7 +40,7 @@ export default function DashboardTable({
   })
   const { isLoading, token } = useSelector(state => ({
     token: state.auth.token,
-    isLoading: state.ui.isLoading
+    isLoading: state.ui.isLoading || false
   }))
   const { t } = useTranslation()
   const columnSorter = (a, b) => (a < b ? -1 : a > b ? 1 : 0)
@@ -483,6 +483,7 @@ export default function DashboardTable({
           cancelSort: t('sortCancel')
         }}
         loading={{
+          delay: 300,
           spinning: isLoading,
           indicator: <LoadingDisplay />
         }}

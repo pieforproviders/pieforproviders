@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Button, Grid, Table } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import dayjs from 'dayjs'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
+import { useProgress } from '_shared/_hooks/useProgress'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import smallPie from '../_assets/smallPie.png'
 import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
+import { setLoading } from '_reducers/uiReducer'
 import '_assets/styles/edit-icon.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
@@ -17,6 +19,8 @@ const { useBreakpoint } = Grid
 
 export function AttendanceView() {
   const { i18n, t } = useTranslation()
+  const { parseResult } = useProgress()
+  const dispatch = useDispatch()
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
@@ -326,6 +330,7 @@ export function AttendanceView() {
   }
 
   const getServiceDays = async () => {
+    dispatch(setLoading(true))
     const response = await makeRequest({
       type: 'get',
       url:
@@ -337,7 +342,7 @@ export function AttendanceView() {
     })
 
     if (response.ok) {
-      const parsedResponse = await response.json()
+      const parsedResponse = await parseResult(response)
       const addServiceDay = (previousValue, currentValue) => {
         const childName =
           `${currentValue?.child.first_name} ${currentValue?.child.last_name}` ||
@@ -358,6 +363,7 @@ export function AttendanceView() {
       setAttendanceData(reducedData)
       setColumns(generateColumns())
     }
+    dispatch(setLoading(false))
   }
 
   const handleModalSave = async () => {

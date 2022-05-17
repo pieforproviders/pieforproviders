@@ -1,7 +1,3 @@
-import { store } from '../../configureStore'
-import { setLoading, setProgress } from '_reducers/uiReducer'
-import fetchProgress from 'fetch-progress'
-
 const GET = 'GET'
 const POST = 'POST'
 const PUT = 'PUT'
@@ -20,35 +16,22 @@ async function fetchData({
   onUnauthorized,
   onError
 }) {
-  const { dispatch } = store
-  dispatch(setLoading(true))
   const response = await fetch(path, {
     method: method,
     body: data ? JSON.stringify(data) : null,
     headers: headers ? headers : defaultHeaders
+  }).then(response => {
+    if (response.status === 204) {
+      return {}
+    } else if (response.status === 401 && !!onUnauthorized) {
+      return onUnauthorized(response)
+    } else if (response.status >= 500 && !!onError) {
+      return onError(response)
+    } else {
+      return response
+    }
   })
-    .then(
-      fetchProgress({
-        onProgress(progress) {
-          dispatch(setProgress(progress))
-        },
-        onError(err) {
-          console.log(err)
-        }
-      })
-    )
-    .then(response => {
-      if (response.status === 204) {
-        return {}
-      } else if (response.status === 401 && !!onUnauthorized) {
-        return onUnauthorized(response)
-      } else if (response.status >= 500 && !!onError) {
-        return onError(response)
-      } else {
-        return response
-      }
-    })
-  dispatch(setLoading(false))
+
   return response
 }
 
