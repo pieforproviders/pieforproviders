@@ -4,12 +4,20 @@ FactoryBot.define do
   factory :service_day do
     child
     date do
-      last_monday = Time.current.in_time_zone(child.timezone).prev_occurring(:monday)
-      Faker::Time.between(from: last_monday.at_beginning_of_day, to: last_monday.at_end_of_day).to_datetime
+      Time.current.in_time_zone(child.timezone).at_beginning_of_day
     end
 
     trait :absence do
       absence_type { ServiceDay::ABSENCE_TYPES.sample }
+    end
+
+    trait :on_scheduled_day do
+      date do
+        Helpers.next_weekday(
+          Time.current.in_time_zone(child.timezone).at_beginning_of_day,
+          child.schedules.first.weekday
+        )
+      end
     end
   end
 end

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ServiceDayBlueprint do
-  let(:service_day) { create(:attendance).service_day }
+  let(:service_day) { create(:service_day) }
   let(:blueprint) { described_class.render(service_day) }
 
   it 'returns the correct fields' do

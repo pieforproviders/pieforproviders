@@ -108,25 +108,25 @@ class ServiceDay < UuidApplicationRecord
   end
 
   def hourly?
-    return false unless state == 'NE'
+    return false unless state == 'NE' && total_time_in_care
 
     total_time_in_care <= (5.hours + 45.minutes)
   end
 
   def daily?
-    return false unless state == 'NE'
+    return false unless state == 'NE' && total_time_in_care
 
     total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
   end
 
   def daily_plus_hourly?
-    return false unless state == 'NE'
+    return false unless state == 'NE' && total_time_in_care
 
     total_time_in_care > 10.hours && total_time_in_care <= 18.hours
   end
 
   def daily_plus_hourly_max?
-    return false unless state == 'NE'
+    return false unless state == 'NE' && total_time_in_care
 
     total_time_in_care > 18.hours
   end

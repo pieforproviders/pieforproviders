@@ -48,42 +48,56 @@ RSpec.describe ServiceDay, type: :model do
   context 'with absences scopes' do
     let(:absence) { create(:service_day, absence_type: 'absence') }
     let(:covid_absence) { create(:service_day, absence_type: 'covid_absence') }
-    let(:attendance) { create(:service_day) }
+    let(:service_day_with_attendance) { create(:service_day) }
+    let(:attendance) { create(:attendance, service_day: service_day) }
 
     it 'returns absences only' do
       expect(described_class.absences).to include(absence)
       expect(described_class.absences).to include(covid_absence)
-      expect(described_class.absences).not_to include(attendance)
+      expect(described_class.absences).not_to include(service_day_with_attendance)
     end
 
     it 'returns non-absences only' do
       expect(described_class.non_absences).not_to include(absence)
       expect(described_class.non_absences).not_to include(covid_absence)
-      expect(described_class.non_absences).to include(attendance)
+      expect(described_class.non_absences).to include(service_day_with_attendance)
     end
 
     it 'returns standard absences only' do
       expect(described_class.standard_absences).to include(absence)
       expect(described_class.standard_absences).not_to include(covid_absence)
-      expect(described_class.standard_absences).not_to include(attendance)
+      expect(described_class.standard_absences).not_to include(service_day_with_attendance)
     end
 
     it 'returns covid absences only' do
       expect(described_class.covid_absences).not_to include(absence)
       expect(described_class.covid_absences).to include(covid_absence)
-      expect(described_class.covid_absences).not_to include(attendance)
+      expect(described_class.covid_absences).not_to include(service_day_with_attendance)
     end
   end
 
   context 'with date scopes' do
-    let(:child) { create(:child) }
+    let(:child) { create(:necc_child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) { create(:attendance, check_in: Time.current, child_approval: child_approval) }
-    let(:current_service_day) { current_attendance.service_day }
+    let(:current_service_day) do
+      create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
+    end
+    let(:current_attendance) do
+      create(:attendance, service_day: current_service_day, check_in: Time.current, child_approval: child_approval)
+    end
     let(:past_attendance) do
       create(
         :attendance,
+        service_day: create(
+          :service_day,
+          child: child,
+          date: Time.new(2020, 12, 1, 9, 31, 0, timezone).at_beginning_of_day
+        ),
         child_approval: child_approval,
         check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
         check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone)
@@ -107,6 +121,7 @@ RSpec.describe ServiceDay, type: :model do
       let(:current_attendance) do
         create(
           :attendance,
+          service_day: current_service_day,
           check_in: Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours,
           child_approval: child_approval
         )
@@ -140,8 +155,24 @@ RSpec.describe ServiceDay, type: :model do
   end
 
   describe '#total_time_in_care' do
-    let(:attendance) { create(:nebraska_hourly_attendance, check_out: nil) }
-    let(:service_day) { attendance.service_day }
+    let!(:child) { create(:necc_child) }
+    let!(:service_day) do
+      create(:service_day,
+             child: child,
+             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day)
+    end
+    let!(:attendance) do
+      create(:nebraska_hourly_attendance,
+             service_day: service_day,
+             check_in: service_day.date + 2.hours,
+             check_out: nil,
+             child_approval: child.child_approvals.first)
+    end
+
+    before do
+      perform_enqueued_jobs
+      service_day.reload
+    end
 
     it 'calculates the right total when the service day is changed to an absence' do
       attendance.update!(check_out: attendance.check_in + 6.hours)
@@ -166,14 +197,13 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     it 'for a single check-in with no check-out, returns the scheduled duration if the day has a schedule' do
-      attendance.child.reload
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
     end
 
     it 'for a single check-in with no check-out, returns 8 hours if day has no schedule' do
-      attendance.child.schedules.destroy_all
+      child.schedules.destroy_all
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.total_time_in_care).to eq(8.hours)
@@ -182,18 +212,22 @@ RSpec.describe ServiceDay, type: :model do
     it 'for multiple check-ins with and without check-outs, returns scheduled duration if total is less' do
       create(
         :attendance,
-        child_approval: attendance.child.child_approvals.first,
-        check_in: attendance.check_in + 1.hour + 30.minutes,
-        check_out: attendance.check_in + 3.hours + 30.minutes
+        service_day: service_day,
+        child_approval: child.child_approvals.first,
+        check_in: service_day.date + 1.hour + 30.minutes,
+        check_out: service_day.date + 3.hours + 30.minutes
       )
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
+      expect(service_day.total_time_in_care).to eq(child.schedules.first.duration)
     end
 
     it 'for multiple check-ins with and without check-outs, returns attended duration if total is more' do
+      child = create(:necc_child)
+      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
       create(
         :attendance,
+        service_day: service_day,
         child_approval: attendance.child.child_approvals.first,
         check_in: attendance.check_in + 1.hour + 30.minutes,
         check_out: attendance.check_in + 10.hours + 30.minutes
@@ -204,8 +238,11 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     it 'with one or more check-ins, and none have a check-out, returns scheduled duration' do
+      child = create(:necc_child)
+      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
       create(
         :attendance,
+        service_day: service_day,
         child_approval: attendance.child.child_approvals.first,
         check_in: attendance.check_in + 3.hours + 30.minutes,
         check_out: nil
@@ -218,18 +255,24 @@ RSpec.describe ServiceDay, type: :model do
 
   describe '#tag_hourly_amount' do
     it 'returns correct hourly amount if decimal' do
-      attendance = create(:nebraska_hourly_attendance)
-      service_day = attendance.service_day
-      attendance.child.reload
+      child = create(:necc_child)
+      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      create(:nebraska_hourly_attendance,
+             service_day: service_day,
+             check_in: service_day.date + 2.hours,
+             child_approval: child.child_approvals.first)
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.tag_hourly_amount).to eq('5.5')
     end
 
     it 'returns correct hourly amount if integer' do
-      attendance = create(:nebraska_hour_attendance)
-      service_day = attendance.service_day
-      attendance.child.reload
+      child = create(:necc_child)
+      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      create(:nebraska_hour_attendance,
+             service_day: service_day,
+             check_in: service_day.date + 2.hours,
+             child_approval: child.child_approvals.first)
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.tag_hourly_amount).to eq('1')
@@ -237,11 +280,10 @@ RSpec.describe ServiceDay, type: :model do
   end
 
   describe '#tag_daily_amount' do
-    let(:attendance) { create(:nebraska_daily_attendance) }
-    let(:service_day) { attendance.service_day }
-
     it 'returns correct daily amount' do
-      attendance.child.reload
+      child = create(:necc_child)
+      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      create(:nebraska_daily_attendance, service_day: service_day)
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.tag_daily_amount).to eq('1')

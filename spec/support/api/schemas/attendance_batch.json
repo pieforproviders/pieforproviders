@@ -9,10 +9,10 @@
         }
       }
     },
-    "attendances": {
+    "service_days": {
       "type": "array",
       "items": {
-        "$ref": "attendance.json"
+        "$ref": "service_day.json"
       }
     }
   }

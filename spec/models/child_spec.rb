@@ -133,9 +133,8 @@ RSpec.describe Child, type: :model do
     describe '#create_default_schedule' do
       it 'creates default schedules if no schedules_attributes are passed' do
         child.reload
-        expect(child.schedules.first.duration).to eq(8.hours)
-        expect(child.schedules.first.weekday).to eq(1)
-        expect(child.schedules.length).to eq(5)
+        expect(child.schedules.pluck(:duration).uniq).to eq([8.hours])
+        expect(child.schedules.pluck(:weekday)).to match_array([1, 2, 3, 4, 5])
       end
 
       it "doesn't create default schedules if schedules_attributes are passed" do
@@ -172,8 +171,16 @@ RSpec.describe Child, type: :model do
       expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
       child.approvals << expired_approval
       expired_child_approval = expired_approval.child_approvals.where(child: child).first
-      current_attendances = create_list(:attendance, 3, child_approval: current_child_approval)
-      expired_attendances = create_list(:attendance, 3, child_approval: expired_child_approval)
+      current_attendances = []
+      expired_attendances = []
+      3.times do
+        service_day = create(:service_day, child: child)
+        current_attendances.push(create(:attendance, service_day: service_day, child_approval: current_child_approval))
+      end
+      3.times do
+        service_day = create(:service_day, child: child)
+        expired_attendances.push(create(:attendance, service_day: service_day, child_approval: expired_child_approval))
+      end
       expect(child.attendances.pluck(:id))
         .to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
     end

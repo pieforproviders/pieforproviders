@@ -6,8 +6,13 @@ require 'rails_helper'
 RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
   describe '#earned_revenue' do
     let!(:child) { create(:necc_child) }
-    let(:attendance) { build(:attendance, child_approval: child.child_approvals.first) }
-    let(:service_day) { attendance.service_day }
+    let(:service_day) { create(:service_day, child: child) }
+    let(:attendance) do
+      build(:attendance,
+            service_day: service_day,
+            check_in: service_day.date + 2.hours,
+            child_approval: child.child_approvals.first)
+    end
     let(:schedule) do
       child.schedules.select do |schedule|
         schedule.weekday == attendance.check_in.to_date.wday &&
@@ -183,6 +188,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.service_day.reload
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -205,6 +211,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.service_day.reload
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -230,6 +237,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.service_day.reload
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -350,6 +358,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           service_day.reload
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -370,6 +379,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -393,6 +403,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
@@ -532,6 +543,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -552,6 +564,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -575,6 +588,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -691,6 +705,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -711,6 +726,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -734,6 +750,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
@@ -873,6 +890,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -893,6 +911,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -916,6 +935,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1032,6 +1052,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1052,6 +1073,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1075,6 +1097,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1214,6 +1237,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1234,6 +1258,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1257,6 +1282,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1373,6 +1399,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1393,6 +1420,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1416,6 +1444,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1555,6 +1584,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1575,6 +1605,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1598,6 +1629,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1714,6 +1746,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1734,6 +1767,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1757,6 +1791,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes
@@ -1896,6 +1931,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 2.hours + 0.minutes,
           check_out: attendance.check_in + 8.hours + 30.minutes
@@ -1916,6 +1952,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 12.hours + 30.minutes
@@ -1939,6 +1976,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
         attendance.save!
         create(
           :attendance,
+          service_day: service_day,
           child_approval: attendance.child_approval,
           check_in: attendance.check_in + 5.hours + 0.minutes,
           check_out: attendance.check_in + 20.hours + 30.minutes
@@ -2055,6 +2093,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 2.hours + 0.minutes,
             check_out: attendance.check_in + 8.hours + 30.minutes
@@ -2075,6 +2114,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 12.hours + 30.minutes
@@ -2098,6 +2138,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           attendance.save!
           create(
             :attendance,
+            service_day: service_day,
             child_approval: attendance.child_approval,
             check_in: attendance.check_in + 5.hours + 0.minutes,
             check_out: attendance.check_in + 20.hours + 30.minutes

@@ -13,20 +13,36 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
   describe '#call' do
     before do
       create_list(:child, 2, approvals: [multiple_child_family_approval])
-      travel_to multiple_child_family_approval.effective_on + 1.day
+      travel_to multiple_child_family_approval.effective_on.at_end_of_month + 10.days
       create(:illinois_approval_amount,
              part_days_approved_per_week: 2,
              full_days_approved_per_week: 0,
              child_approval: single_child_family.child_approvals.first,
              month: Time.current)
-      create_list(:illinois_part_day_attendance, 3, child_approval: single_child_family.child_approvals.first)
+      3.times do |idx|
+        service_day = create(:service_day,
+                             date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
+                             child: single_child_family)
+        create(:illinois_part_day_attendance,
+               service_day: service_day,
+               child_approval: single_child_family.child_approvals.first,
+               check_in: service_day.date + 3.hours)
+      end
       multiple_child_family_approval.children.each do |child|
         create(:illinois_approval_amount,
                part_days_approved_per_week: 2,
                full_days_approved_per_week: 0,
                child_approval: child.child_approvals.first,
                month: Time.current)
-        create_list(:illinois_part_day_attendance, 3, child_approval: child.child_approvals.first)
+        3.times do |idx|
+          service_day = create(:service_day,
+                               date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
+                               child: child)
+          create(:illinois_part_day_attendance,
+                 service_day: service_day,
+                 child_approval: child.child_approvals.first,
+                 check_in: service_day.date + 3.hours)
+        end
       end
     end
 

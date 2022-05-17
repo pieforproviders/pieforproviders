@@ -11,34 +11,55 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:business) { create(:business, user: logged_in_user) }
   let!(:child) { create(:child, business: business) }
 
-  let!(:week_current_date) { Time.zone.local(2021, 9, 15) } # Wednesday
+  let!(:week_current_date) { '2021-9-15'.in_time_zone(child.timezone) } # Wednesday
   let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday
-  let!(:week_end_date) { week_current_date.at_end_of_week(:sunday) - 1.day - 11.hours } # Friday
 
   let!(:two_weeks_ago_week_current_date) { week_current_date - 2.weeks }
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
-  let!(:two_weeks_ago_week_end_date) { week_end_date - 2.weeks }
 
   let!(:this_week_attendances) do
-    check_in_date = Faker::Time.between(from: week_start_date, to: week_end_date)
-
-    create_list(:attendance, 3, child_approval: child.child_approvals.first, check_in: check_in_date)
+    service_days = []
+    3.times do |idx|
+      check_in_date = week_start_date + idx.days
+      service_day = create(:service_day, date: check_in_date.at_beginning_of_day, child: child)
+      service_days << service_day
+      create(:attendance,
+             check_in: check_in_date + 3.hours,
+             child_approval: child.child_approvals.first,
+             service_day: service_day)
+    end
+    perform_enqueued_jobs
+    service_days.each(&:reload).map(&:attendances).flatten
   end
 
   let!(:past_attendances) do
-    check_in_date = Faker::Time.between(from: two_weeks_ago_week_start_date, to: two_weeks_ago_week_end_date)
-
-    att = create_list(:attendance, 2, child_approval: child.child_approvals.first, check_in: check_in_date)
+    service_days = []
+    2.times do |idx|
+      check_in_date = two_weeks_ago_week_start_date + idx.days
+      service_day = create(:service_day, date: check_in_date.at_beginning_of_day, child: child)
+      service_days << service_day
+      create(:attendance,
+             check_in: check_in_date + 3.hours,
+             child_approval: child.child_approvals.first,
+             service_day: service_day)
+    end
     perform_enqueued_jobs
-    ServiceDay.all.reload
-    att
+    service_days.each(&:reload).map(&:attendances).flatten
   end
 
   let!(:extra_attendances) do
-    att = create_list(:attendance, 3, check_in: Faker::Time.between(from: week_start_date, to: week_current_date))
+    service_days = []
+    3.times do |idx|
+      check_in_date = week_start_date + idx.days
+      service_day = create(:service_day, date: check_in_date.at_beginning_of_day)
+      service_days << service_day
+      create(:attendance,
+             check_in: check_in_date + 3.hours,
+             child_approval: service_day.child.child_approvals.first,
+             service_day: service_day)
+    end
     perform_enqueued_jobs
-    ServiceDay.all.reload
-    att
+    service_days.each(&:reload).map(&:attendances).flatten
   end
 
   describe 'GET /api/v1/attendances' do
@@ -108,7 +129,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
   describe 'PUT /api/v1/attendance/:id' do
     include_context 'with correct api version header'
 
-    let!(:attendance) { past_attendances.first }
+    let!(:attendance) { past_attendances.select { |attendance| attendance.check_in.wday.between?(1, 5) }.first }
     let!(:new_check_in) { attendance.check_in + 1.hour }
     let!(:new_check_out) { attendance.check_in + 6.hours }
 
@@ -173,13 +194,32 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
         sign_in admin_user
       end
 
-      it 'can update check_in check_out absence for a non-admin attendance' do
-        put "/api/v1/attendances/#{attendance.id}", params: params, headers: headers
-
+      it 'can submit a new check_in for an attendance' do
+        check_in_params = { attendance: { check_in: new_check_in.to_s } }
+        put "/api/v1/attendances/#{attendance.id}", params: check_in_params, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
+      end
+
+      it 'can submit a new check_out for an attendance' do
+        check_out_params = { attendance: { check_out: new_check_out.to_s } }
+        put "/api/v1/attendances/#{attendance.id}", params: check_out_params, headers: headers
+        parsed_response = JSON.parse(response.body)
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
-        attendance.service_day.reload
+      end
+
+      it 'can change an attendance to an absence' do
+        check_in = attendance.check_in
+        check_out = attendance.check_out
+        absence_params = { attendance: { service_day_attributes: { absence_type: 'absence' } } }
+        create(:schedule, child: child, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
+        put "/api/v1/attendances/#{attendance.id}", params: absence_params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        attendance.reload
+        expect(DateTime.parse(parsed_response['check_in']))
+          .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))
+        expect(DateTime.parse(parsed_response['check_out']))
+          .to eq(DateTime.parse(check_out.in_time_zone(child.timezone).to_s))
         expect(attendance.service_day.absence_type).to eq('absence')
       end
     end
