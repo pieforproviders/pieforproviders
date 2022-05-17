@@ -20,7 +20,9 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     before { child.reload }
 
     it 'with one attendance less than 6 hours, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 4.hours + 5.minutes)
@@ -29,14 +31,16 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(4.1)
     end
 
     it 'with one attendance more than 6 hours but less than 10 hours, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 6.hours + 15.minutes)
@@ -45,14 +49,16 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(6.3)
     end
 
     it 'with one attendance greater than 10 hours but less than 18 hours, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 12.hours + 42.minutes)
@@ -61,14 +67,16 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(12.7)
     end
 
     it 'with one attendance greater than 18 hours, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 19.hours + 11.minutes)
@@ -77,18 +85,22 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(19.2)
     end
 
     it 'with one attendance during the filter week and one before the filter week, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 12.hours + 42.minutes)
+      saturday_service_day = create(:service_day, date: check_in.at_beginning_of_week(:sunday) - 1.day, child: child)
       create(:attendance,
+             service_day: saturday_service_day,
              child_approval: child_approval,
              check_in: check_in.at_beginning_of_week(:sunday) - 1.day + 8.hours,
              check_out: nil)
@@ -97,22 +109,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(12.7)
     end
 
     it 'with multiple attendances during the filter week, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 6.hours + 15.minutes)
+      second_service_day = create(:service_day, date: check_in + 1.day, child: child)
       create(:attendance,
+             service_day: second_service_day,
              child_approval: child_approval,
              check_in: check_in + 1.day,
              check_out: check_in + 1.day + 12.hours + 42.minutes)
+      third_service_day = create(:service_day, date: check_in + 2.days, child: child)
       create(:attendance,
+             service_day: third_service_day,
              child_approval: child_approval,
              check_in: check_in + 2.days,
              check_out: check_in + 2.days + 4.hours + 5.minutes)
@@ -121,18 +139,21 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(23.0)
     end
 
     it 'with an attendance during the filter week with multiple check-ins, returns the total' do
+      service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in,
              check_out: check_in + 1.hour)
       create(:attendance,
+             service_day: service_day,
              child_approval: child_approval,
              check_in: check_in + 2.hours,
              check_out: check_in + 12.hours + 42.minutes)
@@ -141,8 +162,8 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       expect(
         described_class.new(
           filter_date: first_attendance_date,
-          attendances: service_days.with_attendances.non_absences,
-          absences: service_days.with_attendances.absences
+          attendances: service_days.non_absences,
+          absences: service_days.absences
         ).call
       ).to eq(11.7)
     end

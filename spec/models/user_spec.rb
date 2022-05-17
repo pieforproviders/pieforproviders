@@ -77,26 +77,36 @@ RSpec.describe User, type: :model do
       )
     end
     let!(:first_attendance) do
+      service_day = create(:service_day, child: child, date: six_months_ago)
       create(
         :attendance,
+        service_day: service_day,
         check_in: six_months_ago + 11.hours,
         child_approval: child.child_approvals.first
       )
     end
     let!(:second_attendance) do
+      service_day = create(:service_day, child: child, date: six_months_ago + 2.days)
       create(
         :attendance,
+        service_day: service_day,
         check_in: six_months_ago + 2.days + 12.hours,
         child_approval: first_attendance.child_approval
       )
     end
     let!(:third_attendance) do
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time
+                .current
+                .in_time_zone(first_attendance.child_approval.child.timezone)
+                .at_beginning_of_day
+      )
       create(
         :attendance,
-        check_in: Time
-          .current
-          .in_time_zone(first_attendance.child_approval.child.timezone)
-          .at_beginning_of_day + 6.hours,
+        service_day: service_day,
+        check_in: service_day.date + 6.hours,
         child_approval: first_attendance.child_approval
       )
     end

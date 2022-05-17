@@ -800,23 +800,37 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     )
 
     child_with_less_hours.active_child_approval(attendance_date).update!(full_days: 300, hours: 1500)
+    10.times do |idx|
+      child_service_day = create(
+        :service_day,
+        child: child,
+        date: (attendance_date + idx.days).in_time_zone(child.timezone).at_beginning_of_day
+      )
+      child_with_less_hours_service_day = create(
+        :service_day,
+        child: child_with_less_hours,
+        date: (attendance_date + idx.days).in_time_zone(child_with_less_hours.timezone).at_beginning_of_day
+      )
+      perform_enqueued_jobs
+      ServiceDay.all.reload
+      create(
+        :attendance,
+        child_approval: child.child_approvals.first,
+        service_day: child_service_day,
+        check_in: attendance_date.to_datetime + idx.days + 3.hours,
+        check_out: attendance_date.to_datetime + idx.days + 6.hours
+      )
+      create(
+        :attendance,
+        child_approval: child_with_less_hours.child_approvals.first,
+        service_day: child_with_less_hours_service_day,
+        check_in: attendance_date.to_datetime + idx.days + 3.hours,
+        check_out: attendance_date.to_datetime + idx.days + 6.hours
+      )
+      perform_enqueued_jobs
+      ServiceDay.all.reload
+    end
 
-    create_list(
-      :attendance,
-      10,
-      child_approval: child_approval,
-      check_in: attendance_date.to_datetime + 3.hours,
-      check_out: attendance_date.to_datetime + 6.hours
-    )
-    create_list(
-      :attendance,
-      10,
-      child_approval: child_with_less_hours.active_child_approval(attendance_date),
-      check_in: attendance_date.to_datetime + 3.hours,
-      check_out: attendance_date.to_datetime + 6.hours
-    )
-
-    perform_enqueued_jobs
     child.reload
     child_with_less_hours.reload
 
@@ -847,6 +861,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
 
     # even though they've both attended 10 times, the expectation is that the one with more hours will have less
     # revenue because we're subtracting the family fee from that child
-    expect(child_json['earned_revenue']).to eq([child_with_less_hours_json['earned_revenue'].to_f - 80.00, 0.0].max)
+    expect(Money.from_amount(child_json['earned_revenue'])).to eq([
+      Money.from_amount(child_with_less_hours_json['earned_revenue']) - Money.from_amount(80), 0.0
+    ].max)
   end
 end

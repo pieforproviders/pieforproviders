@@ -24,7 +24,8 @@ RSpec.describe Nebraska::AbsenceGenerator, type: :service do
 
     context 'when the child has an attendance on the date' do
       before do
-        create(:attendance, child_approval: child_approval, check_in: attendance_date)
+        service_day = create(:service_day, child: child)
+        create(:attendance, service_day: service_day, child_approval: child_approval, check_in: attendance_date)
         perform_enqueued_jobs
         child.reload
       end

@@ -81,24 +81,23 @@ RSpec.describe AttendanceCsvImporter do
       end
 
       it 'creates attendance records for every row in the file, idempotently' do
-        expect { described_class.new.call }.to change(Attendance, :count).from(0).to(9)
-        Attendance.all.map(&:reload)
-        expect { described_class.new.call }.not_to change(Attendance, :count)
+        expect { described_class.new.call }
+          .to change(ServiceDay, :count).from(0).to(9)
+          .and change(Attendance, :count).from(0).to(5)
+        ServiceDay.all.map(&:reload)
+        expect { described_class.new.call }.to not_change(ServiceDay, :count).and not_change(Attendance, :count)
       end
 
       it 'creates attendance records for the correct child with the correct data' do
         described_class.new.call
         expect(hermione_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2020-12-03 5:23am'.in_time_zone(hermione_business1.timezone)
-        expect(hermione_business1.attendances.order(:check_in).first.check_out).to be_nil
+          .to be_within(1.minute).of '2021-03-05 5:14am'.in_time_zone(hermione_business1.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-05 12:23pm'.in_time_zone(hermione_business1.timezone)
         expect(child2_business1.attendances.order(:check_in).first.check_in)
           .to be_within(1.minute).of '2021-02-24 6:04am'.in_time_zone(child2_business1.timezone)
         expect(child2_business1.attendances.order(:check_in).first.check_out)
           .to be_within(1.minute).of '2021-02-24 4:35pm'.in_time_zone(child2_business1.timezone)
-        expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
-        expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
         expect(third_child.attendances.order(:check_in).first.check_in)
           .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
         expect(third_child.attendances.order(:check_in).first.check_out)

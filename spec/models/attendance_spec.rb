@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
-  let(:attendance) { build(:attendance, check_out: nil) }
+  let(:service_day) { create(:service_day) }
+  let(:child_approval) { service_day.child.child_approvals.first }
+  let(:attendance) { build(:attendance, check_out: nil, service_day: service_day, child_approval: child_approval) }
 
   it { is_expected.to belong_to(:child_approval) }
 
@@ -48,18 +50,25 @@ RSpec.describe Attendance, type: :model do
   end
 
   it 'factory should be valid (default; no args)' do
-    expect(build(:attendance)).to be_valid
+    service_day = create(:service_day)
+    expect(build(:attendance, service_day: service_day)).to be_valid
   end
 
   context 'with date scopes' do
     let(:child) { create(:child) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
-    let(:current_attendance) { create(:attendance, check_in: Time.current, child_approval: child_approval) }
+    let(:current_attendance) do
+      service_day = create(:service_day, date: Time.current.in_time_zone(timezone).at_beginning_of_day)
+      create(:attendance, check_in: Time.current, child_approval: child_approval, service_day: service_day)
+    end
     let(:past_attendance) do
+      time = Time.new(2020, 12, 1, 9, 31, 0, timezone)
+      service_day = create(:service_day, date: time.at_beginning_of_day)
       create(:attendance,
              child_approval: child_approval,
-             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
+             service_day: service_day,
+             check_in: time,
              check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
     end
 
@@ -76,10 +85,13 @@ RSpec.describe Attendance, type: :model do
     end
 
     describe '#for_week' do
+      let(:time) { Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current) }
+      let(:service_day) { create(:service_day, date: time.at_beginning_of_day, child: child_approval.child) }
       let(:current_attendance) do
         create(
           :attendance,
-          check_in: Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current),
+          check_in: time,
+          service_day: service_day,
           child_approval: child_approval
         )
       end
@@ -114,27 +126,39 @@ RSpec.describe Attendance, type: :model do
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
     let(:part_day) do
+      time = Time.new(2020, 12, 1, 9, 31, 0, timezone)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
       create(:attendance,
              child_approval: child_approval,
-             check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
+             service_day: service_day,
+             check_in: time,
              check_out: Time.new(2020, 12, 1, 13, 30, 0, timezone))
     end
     let(:full_day) do
+      time = Time.new(2020, 12, 2, 9, 31, 0, timezone)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
       create(:attendance,
              child_approval: child_approval,
-             check_in: Time.new(2020, 12, 2, 9, 31, 0, timezone),
+             service_day: service_day,
+             check_in: time,
              check_out: Time.new(2020, 12, 2, 21, 31, 0, timezone))
     end
     let(:full_plus_part_day) do
+      time = Time.new(2020, 12, 3, 9, 31, 0, timezone)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
       create(:attendance,
              child_approval: child_approval,
-             check_in: Time.new(2020, 12, 3, 9, 31, 0, timezone),
+             service_day: service_day,
+             check_in: time,
              check_out: Time.new(2020, 12, 3, 21, 32, 0, timezone))
     end
     let(:full_plus_full_day) do
+      time = Time.new(2020, 12, 4, 9, 31, 0, timezone)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
       create(:attendance,
              child_approval: child_approval,
-             check_in: Time.new(2020, 12, 4, 9, 31, 0, timezone),
+             service_day: service_day,
+             check_in: time,
              check_out: Time.new(2020, 12, 5, 2, 31, 0, timezone))
     end
 
@@ -166,35 +190,24 @@ RSpec.describe Attendance, type: :model do
     end
 
     it 'returns 0 when missing a check_out' do
-      attendance = create(:attendance, check_out: nil)
+      service_day = create(:service_day)
+      attendance = create(:attendance,
+                          check_out: nil,
+                          service_day: service_day,
+                          child_approval: service_day.child.child_approvals.first)
       expect(attendance.time_in_care.seconds).to eq(0.seconds)
     end
   end
 
-  describe '#find_or_create_service_day' do
-    it "creates a service day if it doesn't already exist" do
-      expect { attendance.save! }.to change(ServiceDay, :count).from(0).to(1)
-    end
-
-    it 'associates to an existing service day' do
-      service_day = create(
-        :service_day,
-        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day,
-        child: attendance.child
-      )
-      service_day.reload
-      expect { attendance.save! }.not_to change(ServiceDay, :count)
-      expect(attendance.service_day).to eq(service_day)
-    end
-
-    it 'does not create a service day if no check-in is present' do
-      attendance.check_in = nil
-      expect { attendance.save }.not_to change(ServiceDay, :count)
-    end
-  end
-
   describe '#assign_new_service_day' do
-    let!(:attendance) { create(:nebraska_hourly_attendance) }
+    let!(:child) { create(:necc_child) }
+    let!(:service_day) { create(:service_day, date: Time.current.in_time_zone(child.timezone).at_beginning_of_day) }
+    let!(:attendance) do
+      create(:nebraska_hourly_attendance,
+             check_in: service_day.date + 3.hours,
+             service_day: service_day,
+             child_approval: service_day.child.child_approvals.first)
+    end
 
     it 'creates a new service day when check_in time is changed to different day' do
       service_day_id = attendance.service_day.id
@@ -220,7 +233,13 @@ RSpec.describe Attendance, type: :model do
   end
 
   describe '#remove_old_service_day' do
-    let!(:attendance) { create(:nebraska_hourly_attendance) }
+    let!(:service_day) { create(:service_day) }
+    let!(:attendance) do
+      create(:nebraska_hourly_attendance,
+             check_in: service_day.date + 3.hours,
+             service_day: service_day,
+             child_approval: service_day.child.child_approvals.first)
+    end
 
     it 'deletes old service day when updating to new date' do
       old_service_day_id = attendance.service_day.id
@@ -252,7 +271,13 @@ RSpec.describe Attendance, type: :model do
   end
 
   describe '#delete_or_mark_absent' do
-    let!(:attendance) { create(:nebraska_hourly_attendance) }
+    let!(:service_day) { create(:service_day) }
+    let!(:attendance) do
+      create(:nebraska_hourly_attendance,
+             check_in: service_day.date + 3.hours,
+             service_day: service_day,
+             child_approval: service_day.child.child_approvals.first)
+    end
 
     it 'deletes the service day if this was the last attendance for that service day w/ no schedule' do
       service_day_id = attendance.service_day.id
@@ -268,8 +293,8 @@ RSpec.describe Attendance, type: :model do
       unless attendance.service_day.schedule
         attendance.service_day.update(
           schedule: create(:schedule,
-                           weekday: attendance.wday,
-                           effective_on: attendance - 5.days,
+                           weekday: attendance.check_in.wday,
+                           effective_on: attendance.check_in - 5.days,
                            expires_on: nil)
         )
       end
@@ -283,6 +308,7 @@ RSpec.describe Attendance, type: :model do
       service_day_id = attendance.service_day.id
       create(:nebraska_hourly_attendance,
              child_approval: attendance.child_approval,
+             service_day: attendance.service_day,
              check_in: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 3.hours,
              check_out: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 6.hours)
       attendance.destroy!

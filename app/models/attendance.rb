@@ -4,7 +4,6 @@
 class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out
   before_validation :calc_time_in_care, if: :child_approval
-  before_validation :find_or_create_service_day, on: :create, if: :check_in
   before_update :assign_new_service_day, if: :will_save_change_to_check_in?
   after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
   after_save_commit :calculate_service_day
@@ -78,7 +77,13 @@ class Attendance < UuidApplicationRecord
                         end
   end
 
-  def find_or_create_service_day
+  def same_service_day?
+    service_day.date == check_in.in_time_zone(child.timezone).at_beginning_of_day
+  end
+
+  def assign_new_service_day
+    return if same_service_day?
+
     self.service_day = ServiceDay.find_or_create_by(
       child: child,
       date: check_in.in_time_zone(child.timezone).at_beginning_of_day
@@ -87,12 +92,6 @@ class Attendance < UuidApplicationRecord
     return unless schedule_for_weekday
 
     service_day.update(schedule: schedule_for_weekday)
-  end
-
-  def assign_new_service_day
-    return if service_day.date == check_in.in_time_zone(child.timezone).at_beginning_of_day
-
-    find_or_create_service_day
   end
 
   def remove_old_service_day

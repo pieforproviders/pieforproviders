@@ -51,14 +51,31 @@ class AttendanceCsvImporter
 
   def create_attendance(row, child)
     check_in = row['check_in'].in_time_zone(child.timezone)
+    check_out = row['check_out']&.in_time_zone(child.timezone)
 
-    att = Attendance.find_or_create_by!(
-      child_approval: child.active_child_approval(check_in),
-      check_in: check_in,
-      check_out: row['check_out']&.in_time_zone(child&.timezone)
-    )
+    if row['absence']
+      find_or_create_service_day(row: row, child: child, check_in: check_in)
+    else
+      child_approval = active_child_approval(check_in: check_in, child: child)
+      attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
+      return if attendance
 
-    att.service_day.update!(absence_type: row['absence'])
+      Commands::Attendance::Create.new(check_in: check_in, child_id: child.id, check_out: check_out).create
+    end
+  end
+
+  def active_child_approval(check_in:, child:)
+    child
+      &.approvals
+      &.active_on(check_in)
+      &.first
+      &.child_approvals
+      &.find_by(child: child)
+  end
+
+  def find_or_create_service_day(row:, child:, check_in:)
+    service_day = ServiceDay.find_or_create_by!(child: child, date: check_in.at_beginning_of_day)
+    service_day.update!(absence_type: row['absence'])
   end
 
   def find_child(business, row)

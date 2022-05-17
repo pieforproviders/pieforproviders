@@ -60,14 +60,20 @@ describe('AttendanceView', () => {
           ]).then(children => {
             childFullName = `${children[0].first_name} ${children[0].last_name}`
             cy.appFactories([
-              ['create', 'child_approval', { child_id: children[0].id }]
-            ]).then(child_approvals => {
+              ['create', 'child_approval', { child_id: children[0].id }],
+              [
+                'create',
+                'service_day',
+                { child_id: children[0].id, date: checkIn }
+              ]
+            ]).then(([child_approval, service_day]) => {
               cy.appFactories([
                 [
                   'create',
                   'nebraska_hourly_attendance',
                   {
-                    child_approval_id: child_approvals[0].id,
+                    child_approval_id: child_approval.id,
+                    service_day_id: service_day.id,
                     check_in: checkIn,
                     check_out: checkOut
                   }

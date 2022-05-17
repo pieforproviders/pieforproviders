@@ -22,99 +22,126 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:two_weeks_ago_week_start_date) { week_start_date - 2.weeks }
 
   let!(:this_week_service_days) do
-    service_days = build_list(:attendance, 3) do |attendance|
-      attendance.child_approval = child_approval
-      attendance.check_in = Helpers.next_attendance_day(
+    service_days = []
+    3.times do
+      date = Helpers.next_attendance_day(
         child_approval: child_approval,
         date: week_start_date
-      ) + 3.hours
-      attendance.check_out = Helpers.next_attendance_day(
+      )
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
         child_approval: child_approval,
-        date: week_start_date
-      ) + 9.hours + 18.minutes
-      attendance.save!
-    end.map(&:service_day)
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
 
   let!(:past_service_days) do
-    service_days = [
-      create(:attendance, check_in: two_weeks_ago_week_start_date, child_approval: child_approval).service_day,
-      create(:attendance, check_in: two_weeks_ago_week_start_date + 2.days, child_approval: child_approval).service_day
-    ]
+    service_days = []
+    2.times do |idx|
+      date = two_weeks_ago_week_start_date + idx.days
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
+        child_approval: child_approval,
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
 
   let!(:user_second_business_service_days) do
-    service_days = build_list(:attendance, 3) do |attendance|
-      child_approval = create(:child_approval, child: create(:child, business: user_second_business))
-      attendance.child_approval = child_approval
-      attendance.check_in = Helpers.next_attendance_day(
+    child = create(:child, business: user_second_business)
+    child_approval = child.child_approvals.first
+    service_days = []
+    3.times do
+      date = Helpers.next_attendance_day(
         child_approval: child_approval,
         date: week_start_date
-      ) + 3.hours
-      attendance.check_out = Helpers.next_attendance_day(
+      )
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
         child_approval: child_approval,
-        date: week_start_date
-      ) + 9.hours + 18.minutes
-      attendance.save!
-    end.map(&:service_day)
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
 
   let!(:user_second_business_past_service_days) do
-    service_days = build_list(:attendance, 3) do |attendance|
-      child_approval = create(:child_approval, child: create(:child, business: user_second_business))
-      attendance.child_approval = child_approval
-      attendance.check_in = Helpers.next_attendance_day(
+    child = create(:child, business: user_second_business)
+    child_approval = child.child_approvals.first
+    service_days = []
+    3.times do |idx|
+      date = two_weeks_ago_week_start_date + idx.days
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
         child_approval: child_approval,
-        date: two_weeks_ago_week_start_date
-      ) + 3.hours
-      attendance.check_out = Helpers.next_attendance_day(
-        child_approval: child_approval,
-        date: two_weeks_ago_week_start_date
-      ) + 9.hours + 18.minutes
-      attendance.save!
-    end.map(&:service_day)
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
 
   let!(:another_user_service_days) do
-    service_days = build_list(:attendance, 3) do |attendance|
-      child_approval = create(:child_approval, child: create(:child, business: other_business))
-      attendance.child_approval = child_approval
-      attendance.check_in = Helpers.next_attendance_day(
+    child = create(:child, business: other_business)
+    child_approval = child.child_approvals.first
+    service_days = []
+    3.times do
+      date = Helpers.next_attendance_day(
         child_approval: child_approval,
         date: week_start_date
-      ) + 3.hours
-      attendance.check_out = Helpers.next_attendance_day(
+      )
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
         child_approval: child_approval,
-        date: week_start_date
-      ) + 9.hours + 18.minutes
-      attendance.save!
-    end.map(&:service_day)
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
 
   let!(:another_user_past_service_days) do
-    service_days = build_list(:attendance, 3) do |attendance|
-      child_approval = create(:child_approval, child: create(:child, business: other_business))
-      attendance.child_approval = child_approval
-      attendance.check_in = Helpers.next_attendance_day(
+    child = create(:child, business: other_business)
+    child_approval = child.child_approvals.first
+    service_days = []
+    3.times do |idx|
+      date = two_weeks_ago_week_start_date + idx.days
+      service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
+      service_days << service_day
+      create(
+        :attendance,
+        check_in: date + 3.hours,
+        check_out: date + 9.hours + 18.minutes,
         child_approval: child_approval,
-        date: two_weeks_ago_week_start_date
-      ) + 3.hours
-      attendance.check_out = Helpers.next_attendance_day(
-        child_approval: child_approval,
-        date: two_weeks_ago_week_start_date
-      ) + 9.hours + 18.minutes
-      attendance.save!
-    end.map(&:service_day)
+        service_day: service_day
+      )
+    end
     perform_enqueued_jobs
     service_days.each(&:reload)
   end
