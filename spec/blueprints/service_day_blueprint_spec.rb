@@ -8,9 +8,11 @@ RSpec.describe ServiceDayBlueprint do
 
   it 'returns the correct fields' do
     expect(JSON.parse(blueprint).keys).to contain_exactly(
+      'absence_type',
       'attendances',
       'id',
       'child_id',
+      'child',
       'date',
       'tags',
       'total_time_in_care'

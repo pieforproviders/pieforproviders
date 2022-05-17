@@ -144,7 +144,7 @@ puts_records_in_db(Business)
 # rubocop:disable Metrics/CyclomaticComplexity
 # rubocop:disable Metrics/PerceivedComplexity
 # rubocop:disable Metrics/ParameterLists
-def create_case(first_name:, 
+def create_case(first_name:,
                 last_name:,
                 business: @business,
                 case_number: Faker::Number.number(digits: 10),
@@ -177,7 +177,13 @@ def create_case(first_name:,
   end
 
   child = Child.find_or_initialize_by(business: business,
-                                      wonderschool_id: business == @business_nebraska ? Faker::Name.wonderschool_id.to_i : nil,
+                                      wonderschool_id: if business == @business_nebraska
+                                                         if Random.rand(10) > 3
+                                                           nil
+                                                         else
+                                                           Faker::Name.wonderschool_id.to_i
+                                                         end
+                                                       end,
                                       first_name: first_name,
                                       last_name: last_name,
                                       date_of_birth: date_of_birth,
@@ -224,8 +230,16 @@ create_case(first_name: 'Sabina', last_name: 'Akers', add_expired_approval: true
 create_case(first_name: 'Mubiru', last_name: 'Karstensen')
 create_case(first_name: 'Tarquinius', last_name: 'Kelly', add_expired_approval: true)
 create_case(first_name: 'Rhonan', last_name: 'Shaw', business: @business_nebraska)
-create_case(first_name: 'Tanim', last_name: 'Zaidi', business: @business_nebraska, add_expired_approval: true, dhs_id: '5677')
-create_case(first_name: 'Jasveen', last_name: 'Khirwar', business: @business_nebraska, add_expired_approval: true, dhs_id: '5678')
+create_case(first_name: 'Tanim',
+            last_name: 'Zaidi',
+            business: @business_nebraska,
+            add_expired_approval: true,
+            dhs_id: '5677')
+create_case(first_name: 'Jasveen',
+            last_name: 'Khirwar',
+            business: @business_nebraska,
+            add_expired_approval: true,
+            dhs_id: '5678')
 create_case(first_name: 'Manuel', last_name: 'Céspedes', business: @business_nebraska, dhs_id: '1234')
 
 puts_records_in_db(Child)

@@ -98,10 +98,11 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     context 'when a service day has no attendances' do
       before { Attendance.all.destroy_all }
 
-      it 'does not display that attendance in the response' do
+      it 'displays the service days with empty attendances' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response).to be_empty
+        expect(parsed_response.map { |pr| pr['attendances'] }.compact_blank).to be_empty
+        expect(response).to match_response_schema('service_days')
       end
     end
 
@@ -162,7 +163,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       it 'displays the service_days in order by child last name' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.last['attendances'].first['child']['last_name']).to eq('zzzz')
+        expect(parsed_response.last['child']['last_name']).to eq('zzzz')
       end
     end
   end
