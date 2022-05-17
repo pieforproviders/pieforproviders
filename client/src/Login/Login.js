@@ -10,10 +10,12 @@ import AuthStatusAlert from 'AuthStatusAlert'
 import { batch, useDispatch } from 'react-redux'
 import { addAuth, removeAuth } from '_reducers/authReducer'
 import { setUser } from '_reducers/userReducer'
+import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 
 export function Login() {
   const dispatch = useDispatch()
   const location = useLocation()
+  const { sendGAEvent } = useGoogleAnalytics()
   const { identifyHotjar } = useHotjar()
   const [apiError, setApiError] = useState(null)
   const [apiSuccess, setApiSuccess] = useState(null)
@@ -72,6 +74,8 @@ export function Login() {
         dispatch(setUser(resp))
         identifyHotjar(resp.id ?? null, resp, console.info)
       })
+
+      sendGAEvent('login success', { userId: resp.id })
 
       // currently only users from Nebraska are directed to the dashboard
       if (resp.state === 'NE') {
