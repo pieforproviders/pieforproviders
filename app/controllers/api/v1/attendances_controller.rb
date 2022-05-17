@@ -10,7 +10,10 @@ module Api
       def index
         @attendances = policy_scope(Attendance).for_week(filter_date)
 
-        render json: AttendanceBlueprint.render(@attendances.includes({ child_approval: :child }))
+        render json: AttendanceBlueprint.render(
+          @attendances.includes({ child_approval: :child }),
+          view: :with_child
+        )
       end
 
       def update
@@ -19,10 +22,13 @@ module Api
         # otherwise render errors
         if @attendance.update(attendance_params.except(:service_day_attributes)) &&
            (
-             !attendance_params['service_day_attributes'] ||
+             attendance_params['service_day_attributes'].blank? ||
              update_service_day(attendance_params['service_day_attributes'])
            )
-          render json: AttendanceBlueprint.render(@attendance)
+          render json: AttendanceBlueprint.render(
+            @attendance,
+            view: :with_child
+          )
         else
           render json: @attendance.errors, status: :unprocessable_entity
         end

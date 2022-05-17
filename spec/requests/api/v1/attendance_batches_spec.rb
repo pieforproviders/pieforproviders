@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/BlockLength
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -25,7 +26,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
     let!(:effective_date) { children[0].schedules.first.effective_on.in_time_zone(children[0].timezone) }
 
     context 'when sent with an absence string' do
-      context 'with a permitted absence type' do
+      context 'with a permitted absence type on the service day' do
         let(:valid_absence_batch) do
           {
             attendance_batch:
@@ -48,35 +49,50 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'creates attendances and returns successful records' do
+        it 'creates service days and returns an empty array' do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          first_parsed_response_object, second_parsed_response_object = parsed_response['attendances']
-          first_input_object, second_input_object = valid_absence_batch[:attendance_batch]
-
-          expect(DateTime.parse(first_parsed_response_object['check_in']))
-            .to be_within(1.second)
-            .of(DateTime.parse(first_input_object[:check_in]))
-          expect(first_parsed_response_object['child_approval_id'])
-            .to eq(
-              Child.find(first_input_object[:child_id])
-                .active_child_approval(Date.parse(first_input_object[:check_in])).id
-            )
-
-          expect(DateTime.parse(second_parsed_response_object['check_in']))
-            .to be_within(1.second)
-            .of(DateTime.parse(second_input_object[:check_in]))
-          expect(second_parsed_response_object['child_approval_id'])
-            .to eq(
-              Child.find(second_input_object[:child_id])
-                .active_child_approval(Date.parse(second_input_object[:check_in])).id
-            )
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to eq({})
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
 
-      context 'with a non-permitted absence type on one record' do
+      context 'with a permitted absence type on the attendance' do
+        let(:valid_absence_batch) do
+          {
+            attendance_batch:
+            [
+              {
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'absence'
+              },
+              {
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'covid_absence'
+              }
+            ]
+          }
+        end
+
+        it 'creates attendances and returns successful records' do
+          post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
+
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to eq({})
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(2)
+          expect(response).to match_response_schema('attendance_batch')
+        end
+      end
+
+      context 'with a non-permitted absence type on one record on the service day' do
         let(:single_invalid_absence_batch) do
           {
             attendance_batch:
@@ -103,26 +119,50 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          first_parsed_response_object, = parsed_response['attendances']
-          first_input_object, = single_invalid_absence_batch[:attendance_batch]
-
-          expect(DateTime.parse(first_parsed_response_object['check_in']))
-            .to be_within(1.second)
-            .of(DateTime.parse(first_input_object[:check_in]))
-          expect(first_parsed_response_object['child_approval_id'])
-            .to eq(
-              Child.find(first_input_object[:child_id])
-                .active_child_approval(Date.parse(first_input_object[:check_in])).id
-            )
-
-          expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
 
-      context 'with a non-permitted absence type on all records' do
+      context 'with a non-permitted absence type on one record on the attendance' do
+        let(:single_invalid_absence_batch) do
+          {
+            attendance_batch:
+            [
+              {
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'covid_absence'
+              },
+              {
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'fake_reason'
+              }
+            ]
+          }
+        end
+
+        it 'returns json errors' do
+          post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
+
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(1)
+          expect(response).to match_response_schema('attendance_batch')
+        end
+      end
+
+      context 'with a non-permitted absence type on all records on the service day' do
         let(:all_invalid_absence_batch) do
           {
             attendance_batch:
@@ -149,15 +189,50 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-
-          expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response['meta']['errors'].values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
 
-      context 'with an absence on a non-scheduled day on one record' do
+      context 'with a non-permitted absence type on all records on the attendance' do
+        let(:all_invalid_absence_batch) do
+          {
+            attendance_batch:
+            [
+              {
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'fake_reason'
+              },
+              {
+                check_in: Helpers.prior_weekday(effective_date + 15.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'fake_reason'
+              }
+            ]
+          }
+        end
+
+        it 'returns json errors' do
+          post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
+
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(0)
+          expect(response).to match_response_schema('attendance_batch')
+        end
+      end
+
+      context 'with an absence on a non-scheduled day on one record on the service day' do
         let(:single_non_scheduled_absence_batch) do
           {
             attendance_batch:
@@ -185,30 +260,55 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          first_parsed_response_object, = parsed_response['attendances']
-          first_input_object, = single_non_scheduled_absence_batch[:attendance_batch]
-
-          expect(DateTime.parse(first_parsed_response_object['check_in']))
-            .to be_within(1.second)
-            .of(DateTime.parse(first_input_object[:check_in]))
-          expect(first_parsed_response_object['child_approval_id'])
-            .to eq(
-              Child.find(first_input_object[:child_id])
-                .active_child_approval(Date.parse(first_input_object[:check_in])).id
-            )
-
-          expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response['meta']['errors'].values.flatten).to match_array(
-            [
-              "can't create for a day without a schedule"
-            ]
-          )
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(["can't create for a day without a schedule"])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
 
-      context 'with an absence on a non-scheduled day on all records' do
+      context 'with an absence on a non-scheduled day on one record on the attendance' do
+        let(:single_non_scheduled_absence_batch) do
+          {
+            attendance_batch:
+            [
+              {
+                check_in: Helpers.prior_weekday(effective_date + 30.days, children[0].schedules.first.weekday).to_s,
+                child_id: children[0].id,
+                absence: 'covid_absence'
+              },
+              {
+                # attendance on a Sunday, not a default scheduled day
+                check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
+                child_id: children[0].id,
+                absence: 'absence'
+              }
+            ]
+          }
+        end
+
+        it 'returns json errors' do
+          post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
+
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(["can't create for a day without a schedule"])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(1)
+          expect(response).to match_response_schema('attendance_batch')
+        end
+      end
+
+      context 'with an absence on a non-scheduled day on all records on the service day' do
         let(:all_non_scheduled_absence_batch) do
           {
             attendance_batch:
@@ -237,12 +337,51 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(["can't create for a day without a schedule"])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(0)
+          expect(response).to match_response_schema('attendance_batch')
+        end
+      end
 
-          expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response['meta']['errors'].values.flatten).to match_array(
-            ["can't create for a day without a schedule"]
-          )
+      context 'with an absence on a non-scheduled day on all records on the attendance' do
+        let(:all_non_scheduled_absence_batch) do
+          {
+            attendance_batch:
+            [
+              {
+                # attendance on a Sunday, not a default scheduled day
+                check_in: Helpers.prior_weekday(effective_date + 30.days, 0).to_s,
+                child_id: children[0].id,
+                absence: 'covid_absence'
+              },
+              {
+                # attendance on a Sunday, not a default scheduled day
+                check_in: Helpers.prior_weekday(effective_date + 15.days, 0).to_s,
+                child_id: children[0].id,
+                absence: 'absence'
+              }
+            ]
+          }
+        end
+
+        it 'returns json errors' do
+          post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
+
+          parsed_response = JSON.parse(response.body)
+          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(["can't create for a day without a schedule"])
+          expect(Attendance.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -273,9 +412,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: valid_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['meta']['errors']).to be_present
-          expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_approval_id'])
-          expect(parsed_response['meta']['errors'].values.flatten[0])
+          expect(parsed_response.dig('meta', 'errors')).to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to eq(['child_approval_id'])
+          expect(parsed_response.dig('meta', 'errors').values.flatten[0])
             .to include('has no active approval for attendance date')
           expect(response).to match_response_schema('attendance_batch')
         end
@@ -353,9 +492,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               .active_child_approval(Date.parse(first_input_object[:check_in])).id
           )
 
-        expect(parsed_response['meta']['errors']).to be_present
-        expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_id'])
-        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("can't be blank")
+        expect(parsed_response.dig('meta', 'errors')).to be_present
+        expect(parsed_response.dig('meta', 'errors').keys.flatten).to eq(['child_id'])
+        expect(parsed_response.dig('meta', 'errors').values.flatten[0]).to eq("can't be blank")
         expect(response).to match_response_schema('attendance_batch')
       end
     end
@@ -382,9 +521,9 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
         parsed_response = JSON.parse(response.body)
 
-        expect(parsed_response['meta']['errors']).to be_present
-        expect(parsed_response['meta']['errors'].keys.flatten).to eq(%w[child_id])
-        expect(parsed_response['meta']['errors'].values.flatten[0]).to eq("can't be blank")
+        expect(parsed_response.dig('meta', 'errors')).to be_present
+        expect(parsed_response.dig('meta', 'errors').keys.flatten).to eq(%w[child_id])
+        expect(parsed_response.dig('meta', 'errors').values.flatten[0]).to eq("can't be blank")
         expect(response).to match_response_schema('attendance_batch')
       end
     end
@@ -427,12 +566,13 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
               .active_child_approval(Date.parse(first_input_object[:check_in])).id
           )
 
-        expect(parsed_response['meta']['errors']).to be_present
-        expect(parsed_response['meta']['errors'].keys.flatten).to eq(['child_id'])
-        expect(parsed_response['meta']['errors'].values.flatten[0])
+        expect(parsed_response.dig('meta', 'errors')).to be_present
+        expect(parsed_response.dig('meta', 'errors').keys.flatten).to eq(['child_id'])
+        expect(parsed_response.dig('meta', 'errors').values.flatten[0])
           .to eq("not allowed to create an attendance for child #{non_owner_child.id}")
         expect(response).to match_response_schema('attendance_batch')
       end
     end
   end
 end
+# rubocop:enable Metrics/BlockLength

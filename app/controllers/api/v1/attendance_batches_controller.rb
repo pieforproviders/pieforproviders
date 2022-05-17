@@ -11,6 +11,8 @@ module Api
       # because API integrations currently won't have that information, it's all internal only
       # API users should not have to know which approval is active in order to submit an attendance
 
+      # TODO: this will get moved into the command pattern soon
+
       def create
         @errors = Hash.new([])
         @attendance_batch = attendances
@@ -19,84 +21,117 @@ module Api
 
       private
 
+      attr_reader :attendance_batch, :attendance_params, :initial_attendance_params, :errors
+
       def attendances
-        batch.compact_blank.map do |attendance|
+        batch.compact_blank.map do |attendance_params|
           ActiveRecord::Base.transaction do
-            generate_service_day(attendance) if attendance['service_day_attributes']
-            att = Attendance.create(attendance)
-            att.errors.messages.map { |k, v| @errors[k] = v } if att.errors.present?
+            @attendance_params = attendance_params
+            add_service_day_id
+
+            next if absence_type
+
+            att = Attendance.create(attendance_params)
+            att.errors.messages.map { |k, v| errors[k] = v } if att&.errors
             att
           end
         end
       end
 
       def batch
-        attendance_batch_params.to_a.map! do |attendance|
-          next add_error_and_return_nil(:child_id) unless attendance[:child_id]
+        attendance_batch_params.to_a.map! do |initial_attendance_params|
+          @initial_attendance_params = initial_attendance_params
+          next unless check_params
 
-          authorize Child.find(attendance[:child_id]), :update?
-          next add_error_and_return_nil(:check_in) unless attendance[:check_in]
+          authorize Child.find(initial_attendance_params[:child_id]), :update?
 
-          child_approval_id = child_approval_id(attendance)
           next unless child_approval_id
 
-          attendance.except(:child_id).merge(child_approval_id: child_approval_id)
+          initial_attendance_params.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
           next add_error_and_return_nil(
             :child_id,
-            "not allowed to create an attendance for child #{attendance[:child_id]}"
+            "not allowed to create an attendance for child #{initial_attendance_params[:child_id]}"
           )
         end
       end
 
-      def generate_service_day(attendance)
-        attendance.merge!(service_day_id: service_day(attendance).id)
+      def check_params
+        case initial_attendance_params
+        when ->(params) { !params.key?(:check_in) }
+          add_error_and_return_nil(:check_in)
+        when ->(params) { !params.key?(:child_id) }
+          add_error_and_return_nil(:child_id)
+        else
+          true
+        end
       end
 
-      def child(attendance)
-        ChildApproval.find(attendance['child_approval_id']).child
+      def child_approval_error_message
+        "child #{initial_attendance_params[:child_id]} has no active approval "\
+          "for attendance date #{initial_attendance_params[:check_in]}"
       end
 
-      def service_day(attendance)
-        child = child(attendance)
-        sd = ServiceDay.create(
-          attendance['service_day_attributes'].merge(
-            date: attendance['check_in'].in_time_zone(child.timezone).at_beginning_of_day,
-            child: child
-          )
-        )
-        sd.errors.messages.map { |k, v| @errors[k] = v } if sd.errors.present?
-        sd
+      def absence_type
+        @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
+      end
+
+      def child_approval_id
+        id = Child
+             .find(initial_attendance_params[:child_id])
+             &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
+        @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+      end
+
+      def child
+        @child = ChildApproval.find(attendance_params[:child_approval_id]).child
+      end
+
+      def add_service_day_id
+        find_or_create_service_day
+        attendance_params.merge!(service_day_id: service_day.id)
+      end
+
+      def find_or_create_service_day
+        service_day.update(absence_type: absence_type)
+        service_day&.errors&.messages&.map { |k, v| errors[k] = v }
+      end
+
+      def service_day
+        @service_day = ServiceDay.find_by(child: child, date: date) ||
+                       ServiceDay.create(child: child, date: date, absence_type: absence_type)
+      end
+
+      def date
+        @date = attendance_params.dig(:service_day_attributes, :date) ||
+                attendance_params[:check_in]&.in_time_zone(child&.timezone)&.at_beginning_of_day
       end
 
       def add_error_and_return_nil(key, message = "can't be blank")
-        @errors[key] += [message]
+        errors[key] += [message]
         nil
       end
 
-      def child_approval_id(attendance)
-        Child.find(attendance[:child_id])
-          &.active_child_approval(Date.parse(attendance[:check_in]))
-          &.id || add_error_and_return_nil(
-            :child_approval_id,
-            "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}"
-          )
-      end
-
       def attendance_batch_params
-        params.permit(attendance_batch: [:check_in,
-                                         :check_out,
-                                         :child_id,
-                                         {
-                                           service_day_attributes: [:absence_type]
-                                         }]).require(:attendance_batch)
+        params.permit(
+          attendance_batch: [
+            :absence,
+            :check_in,
+            :check_out,
+            :child_id,
+            {
+              service_day_attributes: [:absence_type]
+            }
+          ]
+        ).require(:attendance_batch)
       end
 
       def serialized_response
         AttendanceBlueprint.render(
-          @attendance_batch,
+          attendance_batch.compact_blank,
+          view: :with_child,
           root: :attendances,
-          meta: { errors: @errors }
+          meta: { errors: errors }
         )
       end
     end

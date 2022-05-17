@@ -6,6 +6,8 @@ class ServiceDayBlueprint < Blueprinter::Base
   field :child_id
   field :date
   field :tags
+  field :absence_type
   field :total_time_in_care
+  association :child, blueprint: ChildBlueprint
   association :attendances, blueprint: AttendanceBlueprint
 end

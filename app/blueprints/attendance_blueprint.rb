@@ -7,5 +7,8 @@ class AttendanceBlueprint < Blueprinter::Base
   field :check_out
   field :time_in_care
   field :child_approval_id
-  association :child, blueprint: ChildBlueprint
+
+  view :with_child do
+    association :child, blueprint: ChildBlueprint
+  end
 end
