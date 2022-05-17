@@ -1,9 +1,8 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-constant-condition */
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
+import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
 import { setUser } from '_reducers/userReducer'
@@ -13,11 +12,15 @@ import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
 import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
+import { setLoading } from '_reducers/uiReducer'
 
 export function Dashboard() {
   const dispatch = useDispatch()
+  const { parseResult } = useProgress()
   const { identifyHotjar } = useHotjar()
   const { reduceTableData } = useCaseData()
+  const { makeRequest } = useApiResponse()
+  const { t, i18n } = useTranslation()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -58,8 +61,6 @@ export function Dashboard() {
     dateFilterMonths: []
   })
   const [activeKey, setActiveKey] = useState()
-  const { makeRequest } = useApiResponse()
-  const { t, i18n } = useTranslation()
 
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
@@ -247,31 +248,14 @@ export function Dashboard() {
   }
 
   const getDashboardData = async (filterDate = undefined) => {
+    dispatch(setLoading(true))
     const baseUrl = '/api/v1/case_list_for_dashboard'
     const response = await makeRequest({
       type: 'get',
       url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
       headers: { Authorization: token }
     })
-    // TODO: get the API to return 'content-length' header
-    // const total = Number(response.headers.get('content-length'))
-
-    // const reader = response.body.getReader()
-    // let bytesReceived = 0
-    // let parsedResponse
-    // while (true) {
-    //   parsedResponse = await reader.read()
-    //   if (parsedResponse.done) {
-    //     console.log('Fetch complete')
-    //     break
-    //   }
-    //   debugger
-    //   bytesReceived += parsedResponse.value.length
-    //   console.log(total)
-    //   console.log('Received', bytesReceived, 'bytes of data so far')
-    // }
-    // debugger
-    const parsedResponse = await response.json()
+    const parsedResponse = await parseResult(response)
 
     if (!parsedResponse.error) {
       const tableData = reduceTableData(parsedResponse, user)
@@ -290,6 +274,7 @@ export function Dashboard() {
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
       setTableData(tableData)
     }
+    dispatch(setLoading(false))
   }
 
   useEffect(() => {
