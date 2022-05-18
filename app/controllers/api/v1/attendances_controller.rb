@@ -20,11 +20,7 @@ module Api
         # if the attendance is updated and either there are no service_day_attributes or
         # the update w/ the service_day_attributes works, render successfully
         # otherwise render errors
-        if @attendance.update(attendance_params.except(:service_day_attributes)) &&
-           (
-             attendance_params['service_day_attributes'].blank? ||
-             update_service_day(attendance_params['service_day_attributes'])
-           )
+        if @attendance.update(attendance_params)
           render json: AttendanceBlueprint.render(
             @attendance,
             view: :with_child
@@ -59,21 +55,19 @@ module Api
       end
 
       def attendance_params
-        params.require(:attendance).permit(:check_in, :check_out, service_day_attributes: [:absence_type])
+        if service_day_params
+          params
+            .require(:attendance)
+            .merge(service_day_attributes: service_day_params)
+            .permit(:check_in, :check_out, service_day_attributes: %i[absence_type id])
+        else
+          params.require(:attendance).permit(:check_in, :check_out)
+        end
       end
 
-      def update_service_day(params)
-        # update the existing service_day for the attendance; stack all errors
-        # from an unsuccessful update onto the attendance object
-        @attendance.service_day.update(params)
-        if @attendance.service_day.errors.present?
-          @attendance.service_day.errors.messages.map do |k, v|
-            @errors[k] = v
-          end
-          false
-        else
-          true
-        end
+      def service_day_params
+        service_day_id = params.dig(:attendance, :service_day_attributes, :id).presence || @attendance&.service_day&.id
+        params.dig(:attendance, :service_day_attributes)&.merge(id: service_day_id)&.permit(:id, :absence_type)
       end
     end
   end

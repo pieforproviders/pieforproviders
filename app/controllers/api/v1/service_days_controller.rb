@@ -14,10 +14,25 @@ module Api
         render json: ServiceDayBlueprint.render(@service_days)
       end
 
+      # POST /service_days
+      def create
+        @service_day = ServiceDay.new(service_day_params)
+
+        if @service_day.save
+          render json: @service_day, status: :created
+        else
+          render json: @service_day.errors, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def filter_date
         params[:filter_date] ? Time.zone.parse(params[:filter_date]) : Time.current
+      end
+
+      def service_day_params
+        params.require(:service_day).permit(:date, :absence_type, :child_id)
       end
     end
   end

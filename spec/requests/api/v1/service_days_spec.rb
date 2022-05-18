@@ -167,4 +167,118 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       end
     end
   end
+
+  describe 'POST /api/v1/service_days' do
+    include_context 'with correct api version header'
+
+    let(:params_without_child_id) do
+      {
+        service_day: {
+          date: Time.current.to_date.to_s
+        }
+      }
+    end
+
+    let(:params_with_child_id) do
+      {
+        service_day: {
+          date: Time.current.to_date.to_s,
+          child_id: child.id
+        }
+      }
+    end
+
+    let(:params_with_absence) do
+      {
+        service_day: {
+          date: Time.current.to_date.to_s,
+          child_id: child.id,
+          absence_type: 'absence'
+        }
+      }
+    end
+
+    let(:params_with_bad_absence_reason) do
+      {
+        service_day: {
+          date: Time.current.to_date.to_s,
+          child_id: child.id,
+          absence_type: 'not-an-absence'
+        }
+      }
+    end
+
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
+
+      it 'creates a service_day for the child' do
+        post '/api/v1/service_days', params: params_with_child_id, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['child_id']).to eq(child.id)
+        expect(child.reload.service_days.pluck(:date))
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+        expect(response).to match_response_schema('service_day')
+        expect(response.status).to eq(201)
+      end
+
+      it 'does not create a service_day without a child id' do
+        post '/api/v1/service_days', params: params_without_child_id, headers: headers
+        expect(response.status).to eq(422)
+      end
+
+      it 'does not create a service_day with a bad absence type' do
+        post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
+        expect(response.status).to eq(422)
+      end
+
+      it 'creates an absence for the child' do
+        post '/api/v1/service_days', params: params_with_absence, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['child_id']).to eq(child.id)
+        expect(parsed_response['absence_type']).to eq(params_with_absence[:service_day][:absence_type])
+        expect(child.reload.service_days.pluck(:date))
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+        expect(response).to match_response_schema('service_day')
+        expect(response.status).to eq(201)
+      end
+    end
+
+    context 'when logged in as an admin user' do
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
+
+      it 'creates a service_day for the child' do
+        post '/api/v1/service_days', params: params_with_child_id, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['child_id']).to eq(child.id)
+        expect(child.reload.service_days.pluck(:date))
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+        expect(response).to match_response_schema('service_day')
+        expect(response.status).to eq(201)
+      end
+
+      it 'does not create a service_day without a child id' do
+        post '/api/v1/service_days', params: params_without_child_id, headers: headers
+        expect(response.status).to eq(422)
+      end
+
+      it 'does not create a service_day with a bad absence type' do
+        post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
+        expect(response.status).to eq(422)
+      end
+
+      it 'creates an absence for the child' do
+        post '/api/v1/service_days', params: params_with_absence, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['child_id']).to eq(child.id)
+        expect(parsed_response['absence_type']).to eq(params_with_absence[:service_day][:absence_type])
+        expect(child.reload.service_days.pluck(:date))
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+        expect(response).to match_response_schema('service_day')
+        expect(response.status).to eq(201)
+      end
+    end
+  end
 end
