@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import PropTypes, { object } from 'prop-types'
+import PropTypes from 'prop-types'
 import { Button, Checkbox } from 'antd'
 import dayjs from 'dayjs'
 import { TimePicker } from '../_shared'
@@ -11,31 +11,36 @@ export default function AttendanceDataCell({
   record = {},
   columnIndex,
   columnDate,
-  defaultValues = [],
+  defaultValues = { absenceType: null, date: null, attendances: [] },
   updateAttendanceData = () => {}
 }) {
   const { t } = useTranslation()
   const secondCheckInExists = () =>
-    Object.keys(defaultValues[1] || {}).length > 0
+    Object.keys(defaultValues.attendances[1] || {}).length > 0
 
   const createTimePickerValues = () => {
     const setTimeValue = value =>
       value ? dayjs(value, 'YYYY-MM-DD hh:mm') : null
-
     return {
-      firstCheckIn: setTimeValue(defaultValues[0]?.check_in),
-      firstCheckOut: setTimeValue(defaultValues[0]?.check_out),
-      secondCheckIn: setTimeValue(defaultValues[1]?.check_in),
-      secondCheckOut: setTimeValue(defaultValues[1]?.check_out)
+      firstCheckIn: absence
+        ? null
+        : setTimeValue(defaultValues.attendances[0]?.check_in),
+      firstCheckOut: absence
+        ? null
+        : setTimeValue(defaultValues.attendances[0]?.check_out),
+      secondCheckIn: absence
+        ? null
+        : setTimeValue(defaultValues.attendances[1]?.check_in),
+      secondCheckOut: absence
+        ? null
+        : setTimeValue(defaultValues.attendances[1]?.check_out)
     }
   }
-  const [absence, setAbsence] = useState(
-    defaultValues.find(v => v.absence)?.absence || null
-  )
+  const [absence, setAbsence] = useState(defaultValues.absenceType || null)
   const [checkInSelected, setCheckInSelected] = useState(false)
   const [checkOutSelected, setCheckOutSelected] = useState(false)
   const [showSecondCheckIn, setShowSecondCheckIn] = useState(
-    secondCheckInExists()
+    secondCheckInExists() && !absence
   )
   const [timePickerValues, setTimePickerValues] = useState(
     createTimePickerValues()
@@ -48,10 +53,18 @@ export default function AttendanceDataCell({
   }
 
   useEffect(() => {
-    if (defaultValues.length > 0) {
+    if (defaultValues.attendances.length > 0) {
       setTimePickerValues(createTimePickerValues())
-      setShowSecondCheckIn(secondCheckInExists())
-      setAbsence(defaultValues.find(v => v.absence)?.absence || null)
+      setShowSecondCheckIn(secondCheckInExists() && !absence)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [absence])
+
+  useEffect(() => {
+    if (defaultValues.attendances.length > 0) {
+      setTimePickerValues(createTimePickerValues())
+      setShowSecondCheckIn(secondCheckInExists() && !absence)
+      setAbsence(defaultValues.absenceType || null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultValues])
@@ -88,8 +101,8 @@ export default function AttendanceDataCell({
                 ? handleChange({
                     update: {
                       check_in:
-                        (defaultValues[0]?.check_in?.slice(0, 11) || '') +
-                        dateString
+                        (defaultValues.attendances[0]?.check_in?.slice(0, 11) ||
+                          '') + dateString
                     },
                     callback: () => {
                       setTimePickerValues(prevValues => ({
@@ -124,8 +137,8 @@ export default function AttendanceDataCell({
                     update: {
                       check_out:
                         ((
-                          defaultValues[0]?.check_out ||
-                          defaultValues[0]?.check_in
+                          defaultValues.attendances[0]?.check_out ||
+                          defaultValues.attendances[0]?.check_in
                         )?.slice(0, 11) || '') + dateString
                     },
                     callback: () => {
@@ -154,6 +167,7 @@ export default function AttendanceDataCell({
               className="absence"
               checked={absence === 'absence'}
               disabled={
+                /* disable this box if the absence is already marked as covid-related, or if check-in/out is selected */
                 absence === 'covid-related' ||
                 checkInSelected ||
                 checkOutSelected
@@ -161,48 +175,54 @@ export default function AttendanceDataCell({
               onChange={e => {
                 e.target.checked
                   ? handleChange({
-                      update: { absence: 'absence' },
+                      update: { absenceType: 'absence' },
                       callback: () => {
                         setShowSecondCheckIn(false)
                         setAbsence('absence')
                       }
                     })
                   : handleChange({
-                      update: { absence: null },
-                      callback: setAbsence(null)
+                      update: { absenceType: null },
+                      callback: () => {
+                        setAbsence(null)
+                      }
                     })
               }}
             />
             <span className="ml-3">{t('absent')}</span>
           </p>
-          {columnDate && new Date(columnDate) <= new Date('2021-07-31') && (
-            <p className="mt-2">
-              <Checkbox
-                className="absence"
-                checked={absence === 'covid-related'}
-                disabled={
-                  absence === 'absence' || checkInSelected || checkOutSelected
-                }
-                onChange={e =>
-                  e.target.checked
-                    ? handleChange({
-                        update: { absence: 'covid-related' },
-                        callback: () => {
-                          setShowSecondCheckIn(false)
-                          setAbsence('covid-related')
-                        }
-                      })
-                    : handleChange({
-                        update: { absence: null },
-                        callback: setAbsence(null)
-                      })
-                }
-              />
-              <span className="ml-3">
-                {t('absent') + ' - ' + t('covidRelated')}
-              </span>
-            </p>
-          )}
+          {
+            /* show COVID checkbox before 2021-07-31 */
+            columnDate && new Date(columnDate) <= new Date('2021-07-31') && (
+              <p className="mt-2">
+                <Checkbox
+                  className="absence"
+                  checked={absence === 'covid-related'}
+                  disabled={
+                    /* disable this box if the absence is already marked as a regular absence, or if check-in/out is selected */
+                    absence === 'absence' || checkInSelected || checkOutSelected
+                  }
+                  onChange={e =>
+                    e.target.checked
+                      ? handleChange({
+                          update: { absenceType: 'covid-related' },
+                          callback: () => {
+                            setShowSecondCheckIn(false)
+                            setAbsence('covid-related')
+                          }
+                        })
+                      : handleChange({
+                          update: { absenceType: null },
+                          callback: setAbsence(null)
+                        })
+                  }
+                />
+                <span className="ml-3">
+                  {t('absent') + ' - ' + t('covidRelated')}
+                </span>
+              </p>
+            )
+          }
         </div>
       </div>
       <div className="flex flex-row mt-4">
@@ -219,8 +239,14 @@ export default function AttendanceDataCell({
                     ? handleChange({
                         update: {
                           check_in:
-                            (defaultValues[1]?.check_in?.slice(0, 11) ||
-                              defaultValues[0]?.check_in?.slice(0, 11) ||
+                            (defaultValues.attendances[1]?.check_in?.slice(
+                              0,
+                              11
+                            ) ||
+                              defaultValues.attendances[0]?.check_in?.slice(
+                                0,
+                                11
+                              ) ||
                               '') + dateString
                         },
                         callback: () =>
@@ -252,8 +278,14 @@ export default function AttendanceDataCell({
                     ? handleChange({
                         update: {
                           check_out:
-                            (defaultValues[1]?.check_out?.slice(0, 11) ||
-                              defaultValues[0]?.check_out?.slice(0, 11) ||
+                            (defaultValues.attendances[1]?.check_out?.slice(
+                              0,
+                              11
+                            ) ||
+                              defaultValues.attendances[0]?.check_out?.slice(
+                                0,
+                                11
+                              ) ||
                               '') + dateString
                         },
                         callback: () =>
@@ -277,11 +309,11 @@ export default function AttendanceDataCell({
             <div className="flex items-center">
               <Button
                 type="text"
-                className="flex font-semibold font-proxima-nova -ml-4"
+                className="flex -ml-4 font-semibold font-proxima-nova"
                 onClick={() => {
                   handleChange({
                     update: {
-                      absence: null,
+                      absenceType: null,
                       check_in: null,
                       check_out: null
                     },
@@ -299,7 +331,7 @@ export default function AttendanceDataCell({
                 }}
               >
                 <CloseOutlined className="font-semibold text-red1" />
-                <p className="text-red1 ml-1">{t('removeCheckInTime')}</p>
+                <p className="ml-1 text-red1">{t('removeCheckInTime')}</p>
               </Button>
             </div>
           </div>
@@ -308,7 +340,7 @@ export default function AttendanceDataCell({
             <Button
               disabled={absence}
               type="text"
-              className="flex font-semibold font-proxima-nova -ml-4"
+              className="flex -ml-4 font-semibold font-proxima-nova"
               onClick={() => setShowSecondCheckIn(true)}
             >
               <PlusOutlined className="font-semibold text-primaryBlue" />
@@ -324,7 +356,7 @@ export default function AttendanceDataCell({
 AttendanceDataCell.propTypes = {
   columnDate: PropTypes.string,
   columnIndex: PropTypes.number,
-  defaultValues: PropTypes.arrayOf(object),
+  defaultValues: PropTypes.object,
   record: PropTypes.object,
   updateAttendanceData: PropTypes.func
 }

@@ -24,50 +24,80 @@ export function AttendanceView() {
   // columns will be current dates
   const { token } = useSelector(state => ({ token: state.auth.token }))
   const [dateSelected, setDateSelected] = useState(dayjs())
+  // TODO Refactor: rename and rework this to be a boolean flag to show the modal, and pass
+  // attendanceData directly to the modal to fill the fields
   const [editAttendanceModalData, setEditAttendanceModalData] = useState(null)
-  const [updatedAttendanceData, setUpdatedAttendanceData] = useState([{}, {}])
+  // TODO Refactor: rename this hook to just be attendanceData and setAttendanceData
+  const [updatedAttendanceData, setUpdatedAttendanceData] = useState({
+    absenceType: null,
+    attendances: [{}, {}]
+  })
+  // TODO Refactor: move the modal logic into its own component
   const [modalButtonDisabled, setModalButtonDisabled] = useState(false)
   const latestAttendanceData = useRef(updatedAttendanceData)
   const titleData = useRef({ childName: null, columnDate: null })
 
-  const updateAttendanceData = data => {
-    const index = data.secondCheckIn ? 1 : 0
-    const updatedData = latestAttendanceData.current.map((value, i) => {
-      if (index === i) {
-        const updatedValueKeys = Object.keys(data.update)
-        const currentValueKeys = Object.keys(value)
-        const updatedValue =
-          updatedValueKeys.length === 0 ||
-          (currentValueKeys.includes('absence') &&
-            (updatedValueKeys.includes('check_in') ||
-              updatedValueKeys.includes('check_out'))) ||
-          (updatedValueKeys.includes('absence') &&
-            (currentValueKeys.includes('check_in') ||
-              currentValueKeys.includes('check_out')))
-            ? data.update
-            : { ...value, ...data.update }
+  const updateAttendanceData = ({ record, secondCheckIn, update }) => {
+    const index = secondCheckIn ? 1 : 0
+    const updatedData = {
+      absenceType: update.absenceType,
+      attendances: latestAttendanceData.current.attendances.map((value, i) => {
+        if (index === i) {
+          const updatedValueKeys = Object.keys(update)
+          const currentValueKeys = Object.keys(value)
 
-        const mergedValue =
-          Object.keys(value).length === 0
-            ? {
-                child_id: data.record?.serviceDays[0]?.child_id || '',
-                ...updatedValue
-              }
-            : {
-                ...value,
-                ...updatedValue
-              }
+          /* 
+          var definition of updatedValue
+          if nothing has been updated OR
+          if the current value has an absence key and the updated data has check-in or check-out keys OR
+          if the updated data has an absence key and the current value has check-in or check-out keys
+          then use the updated data exclusively
+          otherwise, spread the current value and the updated data together
+        */
+          const updatedValue =
+            updatedValueKeys.length === 0 ||
+            (latestAttendanceData.current.absenceType &&
+              (updatedValueKeys.includes('check_in') ||
+                updatedValueKeys.includes('check_out'))) ||
+            (update.absenceType &&
+              (currentValueKeys.includes('check_in') ||
+                currentValueKeys.includes('check_out')))
+              ? update
+              : { ...value, ...update }
 
-        // disabled saving on modal if only checkout time exists
-        if (index === 0) {
-          setModalButtonDisabled(!(mergedValue.check_in || mergedValue.absence))
+          /* 
+          var definition of mergedValue
+          if the current value has no keys (i.e. does not yet exist)
+          then merge the updated data with the child id from the data's serviceDays
+          otherwise, spread the current value and updatedValue together
+          TODO Refactor: is this second spread necessary?  Or could we just say updatedValue?
+          Some of this looping seems extra
+        */
+          const mergedValue =
+            Object.keys(value).length === 0
+              ? {
+                  child_id: record?.serviceDays[0]?.child_id || '',
+                  ...updatedValue
+                }
+              : {
+                  ...value,
+                  ...updatedValue
+                }
+
+          // disabled saving on modal if only checkout time exists
+          // TODO Refactor: no attendance should be saveable with a check-out and no check-in
+          if (index === 0) {
+            setModalButtonDisabled(
+              !(mergedValue.check_in || update.absenceType)
+            )
+          }
+
+          return mergedValue
         }
 
-        return mergedValue
-      }
-
-      return value
-    })
+        return value
+      })
+    }
 
     latestAttendanceData.current = updatedData
     setUpdatedAttendanceData(updatedData)
@@ -103,9 +133,7 @@ export function AttendanceView() {
             )
           })
           const hideEditButton =
-            matchingServiceDay?.attendances.some(
-              attendance => attendance.child?.wonderschool_id
-            ) || false
+            matchingServiceDay?.child?.wonderschool_id || false
 
           const handleEditAttendance = () => {
             const currentAttendances =
@@ -116,11 +144,13 @@ export function AttendanceView() {
               currentAttendances.length === 1
                 ? [...currentAttendances, {}]
                 : currentAttendances
-
             setEditAttendanceModalData({
               record,
               columnDate: columnDate.format('YYYY-MM-DD'),
-              defaultValues: attendances,
+              defaultValues: {
+                absenceType: matchingServiceDay.absence_type,
+                attendances: attendances
+              },
               updateAttendanceData
             })
 
@@ -128,8 +158,14 @@ export function AttendanceView() {
               childName: record.child,
               columnDate
             }
-            latestAttendanceData.current = attendances
-            setUpdatedAttendanceData(attendances)
+            latestAttendanceData.current = {
+              absenceType: matchingServiceDay.absence_type,
+              attendances: attendances
+            }
+            setUpdatedAttendanceData({
+              absenceType: matchingServiceDay.absence_type,
+              attendances: attendances
+            })
           }
 
           if (matchingServiceDay !== undefined) {
@@ -273,13 +309,14 @@ export function AttendanceView() {
       const parsedResponse = await response.json()
       const addServiceDay = (previousValue, currentValue) => {
         const childName =
-          `${currentValue.attendances[0]?.child.first_name} ${currentValue.attendances[0]?.child.last_name}` ||
+          `${currentValue?.child.first_name} ${currentValue?.child.last_name}` ||
           ''
         const index = previousValue.findIndex(item => item?.child === childName)
         index >= 0
           ? previousValue[index].serviceDays.push(currentValue)
           : previousValue.push({
               child: childName,
+              key: `${childName}${currentValue.date}`,
               serviceDays: [currentValue]
             })
         return previousValue
@@ -292,108 +329,103 @@ export function AttendanceView() {
     }
   }
 
-  const handleModalClose = async () => {
+  const handleModalSave = async () => {
     let responses = []
     const formatAttendanceData = attendance => {
-      if (attendance.absence) {
-        return {
-          absence: attendance.absence,
-          check_in: dayjs(attendance.check_in.slice(0, 19)).format(
-            'YYYY-MM-DD hh:mm a'
-          )
-        }
-      }
-
-      if (attendance.check_in && !attendance.check_out) {
+      if (dayjs(attendance.check_in) > dayjs(attendance.check_out)) {
         return {
           check_in: attendance.check_in,
-          check_out: null
+          check_out: dayjs(attendance.check_out).add(1, 'day').format()
         }
-      }
-
-      const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
-      const parsedCheckIn = dayjs(attendance.check_in.slice(0, 19))
-        .format('hh:mm a')
-        .match(timeRegex)
-      const parsedCheckOut = dayjs(attendance.check_out.slice(0, 19))
-        .format('hh:mm a')
-        .match(timeRegex)
-      const currentDate = dayjs(editAttendanceModalData.columnDate)
-      let checkoutDate
-
-      if (
-        (parsedCheckIn[3] === 'am' &&
-          parsedCheckOut[3] === 'am' &&
-          Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
-        (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
-      ) {
-        checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
       } else {
-        checkoutDate = currentDate.format('YYYY-MM-DD')
-      }
-
-      return {
-        check_in: `${currentDate.format('YYYY-MM-DD')} ${parsedCheckIn[0]}`,
-        check_out: `${checkoutDate} ${parsedCheckOut[0]}`
+        return {
+          check_in: attendance.check_in,
+          check_out: attendance.check_out || null
+        }
       }
     }
 
-    updatedAttendanceData.forEach(async attendance => {
-      // if it's an old attendance we call the attendances PUT endpoint,
-      // if the user creates a new, second attendance for that day we need to call the attendance_batches endpoint
-      // if the attendance values needed are all null the attendance needs to be deleted
-      if (
-        !attendance.absence &&
-        !attendance.check_in &&
-        !attendance.check_out &&
-        attendance.id
-      ) {
-        const response = await makeRequest({
-          type: 'del',
-          url: '/api/v1/attendances/' + attendance.id,
-          headers: {
-            Authorization: token
-          }
-        })
-        responses.push(response)
-      } else if (Object.keys(attendance).includes('child_id')) {
-        const response = await makeRequest({
-          type: 'post',
-          url: '/api/v1/attendance_batches',
-          headers: {
-            Authorization: token
-          },
-          data: {
-            attendance_batch: [
-              {
-                ...formatAttendanceData(attendance),
-                child_id: attendance.child_id
-              }
-            ]
-          }
-        })
-        responses.push(response)
-      } else if (Object.keys(attendance).length > 0) {
-        const response = await makeRequest({
-          type: 'put',
-          url: '/api/v1/attendances/' + attendance.id,
-          headers: {
-            Authorization: token
-          },
-          data: {
-            attendance: {
-              ...formatAttendanceData(attendance),
-              absence: attendance.absence
+    if (updatedAttendanceData.absenceType) {
+      // If we're an absence, push an update to the first attendance
+      // This is a workaround because the attendance/service day API isn't fully fleshed
+      // out yet, there's no updating service days
+      const response = await makeRequest({
+        type: 'put',
+        url: '/api/v1/attendances/' + updatedAttendanceData.attendances[0].id,
+        headers: {
+          Authorization: token
+        },
+        data: {
+          attendance: {
+            service_day_attributes: {
+              absence_type: updatedAttendanceData.absenceType
             }
           }
-        })
-        responses.push(response)
-      }
-    })
+        }
+      })
+      responses.push(response)
+    } else {
+      updatedAttendanceData.attendances.forEach(async attendance => {
+        // if it's an old attendance we call the attendances PUT endpoint,
+        // if the user creates a new, second attendance for that day we need to call the attendance_batches endpoint
+        // if the attendance values needed are all null the attendance needs to be deleted
+        if (!attendance.check_in && !attendance.check_out && attendance.id) {
+          const response = await makeRequest({
+            // when you delete a second check-in/attendance
+            type: 'del',
+            url: '/api/v1/attendances/' + attendance.id,
+            headers: {
+              Authorization: token
+            }
+          })
+          responses.push(response)
+        } else if (Object.keys(attendance).includes('child_id')) {
+          // when you add a second check-in/attendance that didn't exist
+          const response = await makeRequest({
+            type: 'post',
+            url: '/api/v1/attendance_batches',
+            headers: {
+              Authorization: token
+            },
+            data: {
+              attendance_batch: [
+                {
+                  ...formatAttendanceData(attendance),
+                  child_id: attendance.child_id,
+                  service_day_attributes: {
+                    absence_type: updatedAttendanceData.absenceType
+                  }
+                }
+              ]
+            }
+          })
+          responses.push(response)
+        } else if (Object.keys(attendance).length > 0) {
+          // when you change any existing check-in/attendance
+          const response = await makeRequest({
+            type: 'put',
+            url: '/api/v1/attendances/' + attendance.id,
+            headers: {
+              Authorization: token
+            },
+            data: {
+              attendance: {
+                ...formatAttendanceData(attendance),
+                service_day_attributes: {
+                  absence_type: updatedAttendanceData.absenceType
+                }
+              }
+            }
+          })
+          responses.push(response)
+        }
+      })
+    }
 
     const responsesOk = responses.every(r => r.ok)
 
     if (!responsesOk) {
+      // TODO: better logging of errors
       console.log('error sending attendance data to API')
     }
 
@@ -401,9 +433,15 @@ export function AttendanceView() {
       childName: null,
       columnDate: null
     }
-    latestAttendanceData.current = [{}, {}]
+    latestAttendanceData.current = {
+      absenceType: null,
+      attendances: [{}, {}]
+    }
     setEditAttendanceModalData(null)
-    setUpdatedAttendanceData([{}, {}])
+    setUpdatedAttendanceData({
+      absenceType: null,
+      attendances: [{}, {}]
+    })
   }
 
   useEffect(() => {
@@ -464,8 +502,8 @@ export function AttendanceView() {
       )}
       <EditAttendanceModal
         editAttendanceModalData={editAttendanceModalData}
-        handleModalClose={async () => {
-          await handleModalClose()
+        handleModalSave={async () => {
+          await handleModalSave()
           setTimeout(getServiceDays, 2000)
         }}
         modalButtonDisabled={modalButtonDisabled}

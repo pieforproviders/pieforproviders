@@ -26,6 +26,7 @@ module Api
             view: :with_child
           )
         else
+          Rails.logger.info @attendance.errors.messages
           render json: @attendance.errors, status: :unprocessable_entity
         end
       end
