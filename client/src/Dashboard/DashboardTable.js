@@ -243,7 +243,7 @@ export default function DashboardTable({
     setIsMIModalVisible(true)
   }
 
-  const handleModalClose = () => {
+  const handleModalCancel = () => {
     setSelectedChild({})
     setInactiveReason(null)
     setInactiveDate(null)
@@ -277,7 +277,7 @@ export default function DashboardTable({
         reason_selected: inactiveReason
       })
     }
-    handleModalClose()
+    handleModalCancel()
   }
 
   const columnConfig = {
@@ -495,9 +495,9 @@ export default function DashboardTable({
         }
         visible={isMIModalVisible}
         onOk={handleMIModalOk}
-        onCancel={handleModalClose}
+        onCancel={handleModalCancel}
         footer={[
-          <Button key="cancelModal" onClick={handleModalClose}>
+          <Button key="cancelModal" onClick={handleModalCancel}>
             {t('cancel')}
           </Button>,
           <Button

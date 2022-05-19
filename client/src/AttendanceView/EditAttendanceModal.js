@@ -6,7 +6,7 @@ import AttendanceDataCell from '_shared/AttendanceDataCell'
 
 export function EditAttendanceModal({
   editAttendanceModalData = null,
-  handleModalClose = () => {},
+  handleModalSave = () => {},
   modalButtonDisabled = true,
   setEditAttendanceModalData = () => {},
   setUpdatedAttendanceData = () => {},
@@ -17,13 +17,16 @@ export function EditAttendanceModal({
     <Modal
       visible={editAttendanceModalData}
       onCancel={() => {
-        setUpdatedAttendanceData([{}, {}])
+        setUpdatedAttendanceData({
+          absenceType: null,
+          attendances: [{}, {}]
+        })
         setEditAttendanceModalData(null)
       }}
       okButtonProps={{
         disabled: modalButtonDisabled
       }}
-      onOk={handleModalClose}
+      onOk={handleModalSave}
       okText={'Save'}
       title={
         <div className="text-gray1">
@@ -45,7 +48,7 @@ export function EditAttendanceModal({
 EditAttendanceModal.propTypes = {
   editAttendanceModalData: PropTypes.object,
   modalButtonDisabled: PropTypes.bool,
-  handleModalClose: PropTypes.func,
+  handleModalSave: PropTypes.func,
   setEditAttendanceModalData: PropTypes.func,
   setUpdatedAttendanceData: PropTypes.func,
   titleData: PropTypes.shape({
