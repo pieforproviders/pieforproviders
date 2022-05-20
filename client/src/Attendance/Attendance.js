@@ -33,14 +33,20 @@ export function Attendance() {
   }))
   const [filterOpen, setFilterOpen] = useState(false)
   const [tableData, setTableData] = useState(cases)
-  const [isSuccessModalVisible, setSuccessModalVisibile] = useState(false)
+  const [isSuccessModalVisible, setSuccessModalVisible] = useState(false)
   const [errors, setErrors] = useState(true)
   const reduceAttendanceData = data =>
+    /* 
+    accumulate an array of arrays of objects where the top-level key is the child id
+    and each array item is an object with keys for absenceType and attendances (itself an array)
+    */
     data.reduce((acc, cv) => {
       return {
         ...acc,
         ...{
-          [cv.id]: [...Array(7).keys()].map(() => [{}, {}])
+          [cv.id]: [...Array(7).keys()].map(() => {
+            return { absenceType: null, attendances: [{}, {}] }
+          })
         }
       }
     }, {})
@@ -54,10 +60,17 @@ export function Attendance() {
   const latestColumnDates = useRef(columnDates)
   const latestError = useRef(errors)
 
-  const columnErrorIsPresent = columnIndex =>
-    !!Object.values(latestAttendanceData.current).find(row =>
-      row[columnIndex].some(attendance => Object.keys(attendance).length > 0)
-    ) && latestColumnDates.current[columnIndex] === ''
+  const columnErrorIsPresent = columnIndex => {
+    return (
+      !!Object.values(latestAttendanceData.current).find(row => {
+        return (
+          row[columnIndex].attendances.some(
+            attendance => Object.keys(attendance).length > 0
+          ) || row[columnIndex].absenceType
+        )
+      }) && latestColumnDates.current[columnIndex] === ''
+    )
+  }
 
   const updateAttendanceData = ({
     update,
@@ -65,30 +78,67 @@ export function Attendance() {
     columnIndex,
     secondCheckIn
   }) => {
-    const newArr = latestAttendanceData.current[record?.id].map(
-      (value, index) => {
-        const valueIndex = secondCheckIn ? 1 : 0
+    const newDayData = latestAttendanceData.current[record?.id].map(
+      (day, index) => {
+        const attendanceIndex = secondCheckIn ? 1 : 0
         // this logic adds and removes fields as needed depending on whether checkin/out or an absence is selected
-        const updatedAttendanceValue =
-          index === columnIndex
-            ? Object.keys(update).length === 0 ||
-              (Object.keys(value[valueIndex]).includes('absence') &&
-                (Object.keys(update).includes('check_in') ||
-                  Object.keys(update).includes('check_out'))) ||
-              (Object.keys(update).includes('absence') &&
-                (Object.keys(value[valueIndex]).includes('check_in') ||
-                  Object.keys(value[valueIndex]).includes('check_out')))
-              ? removeEmptyStringValue(update)
-              : removeEmptyStringValue({ ...value[valueIndex], ...update })
-            : value[valueIndex]
-        return value.map((v, i) =>
-          valueIndex === i ? updatedAttendanceValue : v
-        )
+
+        // if the index of this day on the case record's array of days
+        // matches the index of the column in the table where the update is coming from, transform it
+        let updatedAttendanceValue
+        if (index === columnIndex) {
+          // if there are no updates in the update object OR
+          // the existing data includes absence AND the update includes check-in or check_out OR
+          // the update includes absence AND the existing data includes check_in or check_out
+          const attendanceUpdates = Object.keys(update)
+            .filter(key => !key.includes('absenceType'))
+            .reduce((obj, key) => {
+              return Object.assign(obj, {
+                [key]: update[key]
+              })
+            }, {})
+          if (
+            Object.keys(update).length === 0 ||
+            (day.absenceType &&
+              (Object.keys(update).includes('check_in') ||
+                Object.keys(update).includes('check_out'))) ||
+            (update.absenceType &&
+              (Object.keys(day.attendances[attendanceIndex]).includes(
+                'check_in'
+              ) ||
+                Object.keys(day.attendances[attendanceIndex]).includes(
+                  'check_out'
+                )))
+          ) {
+            // remove the empty string value from update and return it wholesale
+            updatedAttendanceValue = removeEmptyStringValue(attendanceUpdates)
+          } else {
+            // otherwise, remove the empty string value from a spread of the existing data and the new data
+            updatedAttendanceValue = removeEmptyStringValue({
+              ...day.attendances[attendanceIndex],
+              ...attendanceUpdates
+            })
+          }
+        } else {
+          // otherwise return the day as normal to the map
+          updatedAttendanceValue = day.attendances[attendanceIndex]
+        }
+
+        return {
+          absenceType:
+            index === columnIndex
+              ? update.absenceType || day.absenceType
+              : day.absenceType,
+          attendances: day.attendances.map((v, i) =>
+            attendanceIndex === i ? updatedAttendanceValue : v
+          )
+        }
       }
     )
+
     const updatedReference = {
       ...latestAttendanceData.current,
-      [record.id]: newArr
+      [record.id]: newDayData
     }
     latestAttendanceData.current = updatedReference
 
@@ -100,7 +150,7 @@ export function Attendance() {
       setColumns(generateColumns())
     }
     setAttendanceData(prevData => {
-      return { ...prevData, [record.id]: newArr }
+      return { ...prevData, [record.id]: newDayData }
     })
   }
 
@@ -190,78 +240,105 @@ export function Attendance() {
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
   const handleSave = async () => {
-    const attendanceBatch = Object.entries(attendanceData).flatMap(data =>
-      data[1]
-        .flatMap((values, columnIndex) => {
-          return values.map(value => {
-            if (Object.keys(value).length === 0) {
-              return value
-            }
-
-            if (Object.keys(value).includes('absence')) {
-              return {
-                ...value,
-                check_in: columnDates[columnIndex],
-                child_id: data[0]
-              }
-            }
-
-            if (
-              Object.keys(value).includes('check_in') &&
-              !Object.keys(value).includes('check_out')
-            ) {
-              return {
-                check_in: `${columnDates[columnIndex]} ${value.check_in}`,
-                child_id: data[0]
-              }
-            }
-
-            const timeRegex = /(1[0-2]|0?[1-9]):([0-5][0-9]) (am|pm)/
-            const parsedCheckIn = value.check_in.match(timeRegex)
-            const parsedCheckOut = value.check_out.match(timeRegex)
-            const currentDate = dayjs(columnDates[columnIndex])
-            let checkoutDate
-
-            if (
-              (parsedCheckIn[3] === 'am' &&
-                parsedCheckOut[3] === 'am' &&
-                Number(parsedCheckIn[1]) > Number(parsedCheckOut[1])) ||
-              (parsedCheckIn[3] === 'pm' && parsedCheckOut[3] === 'am')
-            ) {
-              checkoutDate = currentDate.add(1, 'day').format('YYYY-MM-DD')
-            } else {
-              checkoutDate = currentDate.format('YYYY-MM-DD')
-            }
-
-            return {
-              check_in: `${columnDates[columnIndex]} ${value.check_in}`,
-              check_out: `${checkoutDate} ${value.check_out}`,
-              child_id: data[0]
-            }
-          })
-        })
-        .filter(value => {
-          return (
-            Object.keys(value).length > 0 &&
-            // removes any junk date conversions
-            !Object.values(value).some(v => v.match(/^Invalid Date/))
-          )
-        })
-    )
-
-    const response = await makeRequest({
-      type: 'post',
-      url: '/api/v1/attendance_batches',
-      headers: {
-        Authorization: token
-      },
-      data: {
-        attendance_batch: attendanceBatch
+    let responses = []
+    // TODO Refactor: find a more compact way to do this between Attendance
+    // and AttendanceView to remove duplicate code and comparison logic
+    const formatAttendanceData = (attendance, index) => {
+      const checkIn = attendance.check_in
+        ? dayjs(`${latestColumnDates.current[index]} ${attendance.check_in}`)
+        : null
+      const checkOut = attendance.check_out
+        ? dayjs(`${latestColumnDates.current[index]} ${attendance.check_out}`)
+        : null
+      return {
+        check_in: checkIn ? checkIn.format() : null,
+        check_out: checkOut
+          ? checkIn.isAfter(checkOut)
+            ? checkOut.add(1, 'day').format()
+            : checkOut.format()
+          : null
       }
+    }
+
+    const absenceRequests = Object.entries(attendanceData).flatMap(record => {
+      return record[1]
+        .filter(day => day.absenceType)
+        .flatMap((day, index) => {
+          return {
+            service_day: {
+              child_id: record[0],
+              date: dayjs(columnDates[index]),
+              absence_type: day.absenceType
+            }
+          }
+        })
     })
 
-    if (response.ok) {
-      setSuccessModalVisibile(true)
+    const attendanceBatch = Object.entries(attendanceData).flatMap(record => {
+      // record[1] = mapped record value = all the service days for a child
+      return (
+        record[1]
+          // filter out days that are not absences and are not attendances
+          .filter(
+            day =>
+              !day.absenceType &&
+              day.attendances.filter(
+                attendance => Object.keys(attendance).length > 0
+              ).length > 0
+          )
+          .flatMap((day, index) => {
+            return (
+              day.attendances
+                // filter out attendances with no check-in or check-out
+                .filter(attendance => Object.keys(attendance).length > 0)
+                .flatMap(attendance => {
+                  const formattedDates = formatAttendanceData(attendance, index)
+                  return {
+                    check_in: formattedDates.check_in,
+                    check_out: formattedDates.check_out,
+                    child_id: record[0] // record[0] = mapped record key = child_id
+                  }
+                })
+            )
+          })
+      )
+    })
+
+    if (attendanceBatch.length > 0) {
+      const response = await makeRequest({
+        type: 'post',
+        url: '/api/v1/attendance_batches',
+        headers: {
+          Authorization: token
+        },
+        data: {
+          attendance_batch: attendanceBatch
+        }
+      })
+      responses.push(response)
+    }
+
+    if (absenceRequests.length > 0) {
+      absenceRequests.forEach(async request => {
+        const response = await makeRequest({
+          type: 'post',
+          url: '/api/v1/service_days',
+          headers: {
+            Authorization: token
+          },
+          data: request
+        })
+        responses.push(response)
+      })
+    }
+
+    const responsesOk = responses.every(r => r.ok)
+
+    if (!responsesOk) {
+      // TODO: handle bad request
+      console.log('error sending attendance data to API')
+    } else {
+      setSuccessModalVisible(true)
       // implemented per: https://help.hotjar.com/hc/en-us/articles/4405109971095-Events-API-Reference
       window.hj =
         window.hj ||
@@ -274,9 +351,6 @@ export function Attendance() {
         number: `${attendanceBatch.length}`,
         page_title: 'edit_attendance'
       })
-    } else {
-      // TODO: handle bad request
-      console.log('bad request')
     }
   }
 
@@ -318,7 +392,6 @@ export function Attendance() {
 
   useEffect(() => {
     getCaseData()
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -409,7 +482,7 @@ export function Attendance() {
         title={<div className="eyebrow-large text-gray9">{t('success')}</div>}
         visible={isSuccessModalVisible}
         onCancel={() => {
-          setSuccessModalVisibile(false)
+          setSuccessModalVisible(false)
           history.push('/dashboard')
         }}
         footer={[
@@ -417,7 +490,7 @@ export function Attendance() {
             type="primary"
             key="ok"
             onClick={() => {
-              setSuccessModalVisibile(false)
+              setSuccessModalVisible(false)
               history.push('/dashboard')
             }}
           >
