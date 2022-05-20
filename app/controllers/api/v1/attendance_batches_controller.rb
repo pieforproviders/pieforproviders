@@ -45,14 +45,15 @@ module Api
       end
 
       def batch
-        attendance_batch_params.to_a.map! do |attendance|
-          next unless attendance_valid?(attendance)
+        attendance_batch_params.to_a.map! do |initial_attendance_params|
+          @initial_attendance_params = initial_attendance_params
+          next unless attendance_valid?
 
-          next unless (child_approval_id = get_child_approval_id(attendance))
+          next unless child_approval_id
 
           initial_attendance_params.except(:child_id).merge(child_approval_id: child_approval_id)
         rescue Pundit::NotAuthorizedError
-          next add_unauthorized_error(attendance)
+          next add_unauthorized_error
         end
       end
 
@@ -84,12 +85,12 @@ module Api
         @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
       end
 
-      def child_approval_id
-        id = Child
-             .find(initial_attendance_params[:child_id])
-             &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-        @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
-      end
+      # def child_approval_id
+      #   id = Child
+      #        .find(initial_attendance_params[:child_id])
+      #        &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
+      #   @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+      # end
 
       def child
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
@@ -107,31 +108,32 @@ module Api
                 attendance_params[:check_in]&.in_time_zone(child&.timezone)&.at_beginning_of_day
       end
 
-      def add_unauthorized_error(attendance)
+      def add_unauthorized_error
         Batchable.add_error_and_return_nil(
           :child_id,
           @errors,
-          "not allowed to create an attendance for child #{attendance[:child_id]}"
+          "not allowed to create an attendance for child #{initial_attendance_params[:child_id]}"
         )
       end
 
-      def get_child_approval_id(attendance)
-        Batchable.child_approval_id(
-          attendance[:child_id],
-          attendance[:check_in],
+      def child_approval_id
+        @child_approval_id = Batchable.child_approval_id(
+          initial_attendance_params[:child_id],
+          initial_attendance_params[:check_in],
           @errors,
-          "child #{attendance[:child_id]} has no active approval for attendance date #{attendance[:check_in]}"
+          "child #{initial_attendance_params[:child_id]} has "\
+          "no active approval for attendance date #{initial_attendance_params[:check_in]}"
         )
       end
 
-      def attendance_valid?(attendance)
-        unless attendance[:child_id]
+      def attendance_valid?
+        unless initial_attendance_params[:child_id]
           Batchable.add_error_and_return_nil(:child_id, @errors)
           return false
         end
 
-        authorize Child.find(attendance[:child_id]), :update?
-        unless attendance[:check_in]
+        authorize Child.find(initial_attendance_params[:child_id]), :update?
+        unless initial_attendance_params[:check_in]
           Batchable.add_error_and_return_nil(:check_in, @errors)
           return false
         end
