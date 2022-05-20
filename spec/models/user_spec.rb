@@ -93,7 +93,10 @@ RSpec.describe User, type: :model do
     let!(:third_attendance) do
       create(
         :attendance,
-        check_in: Time.current.in_time_zone(user.timezone).at_beginning_of_day + 6.hours,
+        check_in: Time
+          .current
+          .in_time_zone(first_attendance.child_approval.child.timezone)
+          .at_beginning_of_day + 6.hours,
         child_approval: first_attendance.child_approval
       )
     end

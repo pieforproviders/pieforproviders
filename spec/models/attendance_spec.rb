@@ -179,7 +179,7 @@ RSpec.describe Attendance, type: :model do
     it 'associates to an existing service day' do
       service_day = create(
         :service_day,
-        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day,
+        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day,
         child: attendance.child
       )
       service_day.reload
@@ -211,7 +211,7 @@ RSpec.describe Attendance, type: :model do
     it 'assigned to an existing service day when check_in time is changed to different day' do
       service_day = create(
         :service_day,
-        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
         child: attendance.child
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
@@ -226,7 +226,7 @@ RSpec.describe Attendance, type: :model do
       old_service_day_id = attendance.service_day.id
       create(
         :service_day,
-        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
         child: attendance.child
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
@@ -243,7 +243,7 @@ RSpec.describe Attendance, type: :model do
       )
       create(
         :service_day,
-        date: attendance.check_in.in_time_zone(attendance.user.timezone).at_beginning_of_day - 1.day,
+        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
         child: attendance.child
       )
       attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)

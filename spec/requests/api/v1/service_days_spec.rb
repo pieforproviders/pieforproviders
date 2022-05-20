@@ -174,7 +174,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_without_child_id) do
       {
         service_day: {
-          date: Time.current.to_date.to_s
+          date: Time.current.in_time_zone(child.timezone).to_date.to_s
         }
       }
     end
@@ -182,7 +182,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_with_child_id) do
       {
         service_day: {
-          date: Time.current.to_date.to_s,
+          date: Time.current.in_time_zone(child.timezone).to_date.to_s,
           child_id: child.id
         }
       }
@@ -191,7 +191,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_with_absence) do
       {
         service_day: {
-          date: Time.current.to_date.to_s,
+          date: Time.current.in_time_zone(child.timezone).to_date.to_s,
           child_id: child.id,
           absence_type: 'absence'
         }
@@ -201,7 +201,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_with_bad_absence_reason) do
       {
         service_day: {
-          date: Time.current.to_date.to_s,
+          date: Time.current.in_time_zone(child.timezone).to_date.to_s,
           child_id: child.id,
           absence_type: 'not-an-absence'
         }
@@ -275,7 +275,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         expect(parsed_response['child_id']).to eq(child.id)
         expect(parsed_response['absence_type']).to eq(params_with_absence[:service_day][:absence_type])
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+          .to include(Time.current.in_time_zone(child.timezone).at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
         expect(response.status).to eq(201)
       end

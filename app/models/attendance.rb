@@ -90,7 +90,7 @@ class Attendance < UuidApplicationRecord
   end
 
   def assign_new_service_day
-    return if service_day.date == check_in.in_time_zone(user.timezone).at_beginning_of_day
+    return if service_day.date == check_in.in_time_zone(child.timezone).at_beginning_of_day
 
     find_or_create_service_day
   end
