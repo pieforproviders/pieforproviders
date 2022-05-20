@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -575,4 +574,3 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength

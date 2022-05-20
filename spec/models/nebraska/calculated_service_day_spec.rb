@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
   describe '#earned_revenue' do
@@ -2146,4 +2145,3 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
   end
 end
 # rubocop:enable RSpec/NestedGroups
-# rubocop:enable Metrics/BlockLength

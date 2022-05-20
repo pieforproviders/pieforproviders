@@ -229,7 +229,7 @@ RSpec.describe Child, type: :model do
       end
 
       it 'does not create an approval' do
-        expect { described_class.create! new_child_params }.to change(Approval, :count).by(0)
+        expect { described_class.create! new_child_params }.not_to change(Approval, :count)
       end
 
       it 'does create a child approval' do
