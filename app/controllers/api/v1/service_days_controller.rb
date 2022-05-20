@@ -16,7 +16,11 @@ module Api
 
       # POST /service_days
       def create
-        @service_day = ServiceDay.new(service_day_params)
+        @service_day = ServiceDay.new(
+          child_id: service_day_params[:child_id],
+          date: date,
+          absence_type: service_day_params[:absence_type]
+        )
 
         if @service_day.save
           render json: @service_day, status: :created
@@ -26,6 +30,12 @@ module Api
       end
 
       private
+
+      def date
+        service_day_params[:date]
+          .to_date
+          .in_time_zone(Child.find_by(id: service_day_params[:child_id])&.timezone)
+      end
 
       def filter_date
         params[:filter_date] ? Time.zone.parse(params[:filter_date]) : Time.current

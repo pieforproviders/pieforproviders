@@ -11,7 +11,7 @@ export default function AttendanceDataCell({
   record = {},
   columnIndex,
   columnDate,
-  defaultValues = { absenceType: null, date: null, attendances: [] },
+  defaultValues = { absenceType: null, attendances: [] },
   updateAttendanceData = () => {}
 }) {
   const { t } = useTranslation()
