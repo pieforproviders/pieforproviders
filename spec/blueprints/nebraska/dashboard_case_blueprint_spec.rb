@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe Nebraska::DashboardCaseBlueprint do
   include_context 'with nebraska child created for dashboard'
   include_context 'with nebraska rates created for dashboard'
@@ -851,4 +850,3 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     expect(child_json['earned_revenue']).to eq([child_with_less_hours_json['earned_revenue'].to_f - 80.00, 0.0].max)
   end
 end
-# rubocop:enable Metrics/BlockLength

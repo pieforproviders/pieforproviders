@@ -4,7 +4,6 @@ require 'rails_helper'
 
 module Wonderschool
   module Necc
-    # rubocop:disable Metrics/BlockLength
     RSpec.describe OnboardingCaseImporter do
       let!(:file_name) { 'file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
@@ -460,6 +459,5 @@ module Wonderschool
         end
       end
     end
-    # rubocop:enable Metrics/BlockLength
   end
 end

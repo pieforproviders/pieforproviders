@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Metrics/BlockLength
 RSpec.describe 'Api::V1::Children', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:user_business) { create(:business_with_children, user: logged_in_user) }
@@ -421,4 +420,3 @@ RSpec.describe 'Api::V1::Children', type: :request do
     end
   end
 end
-# rubocop:enable Metrics/BlockLength
