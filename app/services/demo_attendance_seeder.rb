@@ -13,6 +13,7 @@ class DemoAttendanceSeeder
   private
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def generate_attendances
     Child.all.each do |child|
       starting_date = (last_attendance_check_out(child: child) + 1.week).at_beginning_of_week(:sunday)
@@ -33,6 +34,7 @@ class DemoAttendanceSeeder
       Rails.logger.info "\n===============\n"
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
   def create_attendances(child:, weeks_to_populate:, starting_date:)

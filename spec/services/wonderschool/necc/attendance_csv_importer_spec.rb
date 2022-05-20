@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable Metrics/ModuleLength
 module Wonderschool
   module Necc
     RSpec.describe AttendanceCsvImporter do
@@ -131,3 +132,4 @@ module Wonderschool
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
