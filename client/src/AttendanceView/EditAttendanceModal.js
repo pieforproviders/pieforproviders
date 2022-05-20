@@ -19,6 +19,7 @@ export function EditAttendanceModal({
       onCancel={() => {
         setUpdatedAttendanceData({
           absenceType: null,
+          date: null,
           attendances: [{}, {}]
         })
         setEditAttendanceModalData(null)

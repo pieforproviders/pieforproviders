@@ -81,6 +81,7 @@ end
 #                                          PUT    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#update {:format=>:json}
 #                                          DELETE /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#destroy {:format=>:json}
 #                             service_days GET    /api/v1/service_days(.:format)                                                                    api/v1/service_days#index {:format=>:json}
+#                                          POST   /api/v1/service_days(.:format)                                                                    api/v1/service_days#create {:format=>:json}
 #                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}
 #                                          GET    /*path(.:format)                                                                                  static#fallback_index_html
