@@ -32,6 +32,7 @@ module Helpers
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def self.build_nebraska_absence_list(num:, child_approval:, type: 'absence', date: nil)
     child = child_approval.child
     num.times do
@@ -58,4 +59,5 @@ module Helpers
       )
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -31,6 +31,7 @@ class AttendanceCsvImporter
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def process_row(row, file_name)
     unless (business = Business.find_by(name: file_name.split('-').first))
       log_missing_business(file_name.split('-').first)
@@ -46,6 +47,7 @@ class AttendanceCsvImporter
   rescue StandardError => e
     send_appsignal_error('self-serve-attendance-csv-importer', e, child&.id)
   end
+  # rubocop:enable Metrics/MethodLength
 
   def create_attendance(row, child)
     check_in = row['check_in'].in_time_zone(child.timezone)
