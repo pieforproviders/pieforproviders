@@ -243,13 +243,9 @@ export function Attendance() {
     let responses = []
     // TODO Refactor: find a more compact way to do this between Attendance
     // and AttendanceView to remove duplicate code and comparison logic
-    const formatAttendanceData = (attendance, index) => {
-      const checkIn = attendance.check_in
-        ? dayjs(`${latestColumnDates.current[index]} ${attendance.check_in}`)
-        : null
-      const checkOut = attendance.check_out
-        ? dayjs(`${latestColumnDates.current[index]} ${attendance.check_out}`)
-        : null
+    const formatAttendanceData = ({ check_in, check_out, date }) => {
+      const checkIn = check_in ? dayjs(`${date} ${check_in}`) : null
+      const checkOut = check_out ? dayjs(`${date} ${check_out}`) : null
       return {
         check_in: checkIn ? checkIn.format() : null,
         check_out: checkOut
@@ -276,32 +272,46 @@ export function Attendance() {
 
     const attendanceBatch = Object.entries(attendanceData).flatMap(record => {
       // record[1] = mapped record value = all the service days for a child
-      return (
-        record[1]
-          // filter out days that are not absences and are not attendances
-          .filter(
-            day =>
-              !day.absenceType &&
-              day.attendances.filter(
-                attendance => Object.keys(attendance).length > 0
-              ).length > 0
-          )
-          .flatMap((day, index) => {
-            return (
-              day.attendances
-                // filter out attendances with no check-in or check-out
-                .filter(attendance => Object.keys(attendance).length > 0)
-                .flatMap(attendance => {
-                  const formattedDates = formatAttendanceData(attendance, index)
-                  return {
-                    check_in: formattedDates.check_in,
-                    check_out: formattedDates.check_out,
-                    child_id: record[0] // record[0] = mapped record key = child_id
-                  }
-                })
+      return record[1]
+        .map((serviceDay, index) => {
+          // tack on the date of the record before filtering
+          if (
+            serviceDay.attendances.some(
+              attendance => Object.keys(attendance).length > 0
             )
-          })
-      )
+          ) {
+            serviceDay.attendances.map(attendance => {
+              if (Object.keys(attendance).length > 0) {
+                attendance.date = latestColumnDates.current[index]
+              }
+              return attendance
+            })
+          }
+          return serviceDay
+        })
+        .filter(
+          // filter out days that are not absences and are not attendances
+          day =>
+            !day.absenceType &&
+            day.attendances.filter(
+              attendance => Object.keys(attendance).length > 0
+            ).length > 0
+        )
+        .flatMap(day => {
+          return (
+            day.attendances
+              // filter out attendances with no check-in or check-out
+              .filter(attendance => Object.keys(attendance).length > 0)
+              .flatMap(attendance => {
+                const formattedDates = formatAttendanceData(attendance)
+                return {
+                  check_in: formattedDates.check_in,
+                  check_out: formattedDates.check_out,
+                  child_id: record[0] // record[0] = mapped record key = child_id
+                }
+              })
+          )
+        })
     })
 
     if (attendanceBatch.length > 0) {
