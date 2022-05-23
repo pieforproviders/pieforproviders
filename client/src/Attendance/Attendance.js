@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Alert, Button, DatePicker, Modal, Select, Table } from 'antd'
-import { FilterFilled } from '@ant-design/icons'
+import { Alert, Button, DatePicker, Modal, Table } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,6 +15,7 @@ import { setLoading } from '_reducers/uiReducer'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import removeEmptyStringValue from '../_utils/removeEmptyStringValue'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
+import SiteFilterSelect from '_shared/SiteFilterSelect'
 import '_assets/styles/alert-overrides.css'
 import '_assets/styles/filter-select-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -30,13 +30,15 @@ export function Attendance() {
   const dispatch = useDispatch()
   const { reduceTableData } = useCaseAttendanceData()
   const { makeRequest } = useApiResponse()
-  const { businesses, cases, isLoading, token } = useSelector(state => ({
-    businesses: state.businesses,
-    cases: state.cases,
-    isLoading: state.ui.isLoading,
-    token: state.auth.token
-  }))
-  const [filterOpen, setFilterOpen] = useState(false)
+  const { businesses, cases, isLoading, token, filteredCases } = useSelector(
+    state => ({
+      businesses: state.businesses,
+      cases: state.cases,
+      isLoading: state.ui.isLoading,
+      token: state.auth.token,
+      filteredCases: state.ui.filteredCases
+    })
+  )
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false)
   const [errors, setErrors] = useState(true)
@@ -396,7 +398,6 @@ export function Attendance() {
         }, [])
         dispatch(setBusinesses(businessData))
       }
-
       dispatch(setFilteredCases(businessIds))
       dispatch(setCaseData(caseData))
       latestAttendanceData.current = reducedAttendanceData
@@ -407,20 +408,9 @@ export function Attendance() {
   }
 
   useEffect(() => {
-    getCaseData()
+    getCaseData(filteredCases)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const setWidths = () => {
-    const longestName = businesses.reduce(
-      (a, b) => (a.name?.length > b.name?.length ? a.name : b.name),
-      ''
-    )
-    return {
-      minWidth: `${longestName.length * 10}px`,
-      maxWidth: `${longestName.length * 10}px`
-    }
-  }
 
   return (
     <div>
@@ -451,31 +441,12 @@ export function Attendance() {
         closable
       />
       <div className="relative pt-5">
-        <FilterFilled className="absolute z-50 p-2" />
-        <Select
-          open={filterOpen}
-          showSearch={false}
-          mode="multiple"
-          allowClear
-          className="site-filter"
-          placeholder="Filter by Site"
+        <SiteFilterSelect
+          businesses={businesses}
           onChange={value => {
             getCaseData(value)
           }}
-          onSelect={() => setFilterOpen(!filterOpen)}
-          dropdownStyle={setWidths()}
-          style={{ minWidth: '200px' }}
-          role="siteFilter"
-          onClick={() => setFilterOpen(!filterOpen)}
-        >
-          {businesses.map(business => {
-            return (
-              <Select.Option key={business.id} value={business.id}>
-                {business.name}
-              </Select.Option>
-            )
-          })}
-        </Select>
+        />
       </div>
       <Table
         dataSource={tableData.filter(c => c.active)}

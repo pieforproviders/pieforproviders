@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {}
+const initialState = {
+  filteredCases: [],
+  isLoading: false,
+  progress: null
+}
 
 const ui = createSlice({
   name: 'ui',
@@ -8,7 +12,7 @@ const ui = createSlice({
   reducers: {
     setFilteredCases(state, action) {
       const filteredCases = action.payload
-      return { ...state, filteredCases: [...filteredCases] }
+      return { ...state, filteredCases: filteredCases }
     },
     setLoading(state, action) {
       const isLoading = action.payload
