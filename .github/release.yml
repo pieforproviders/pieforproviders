@@ -4,7 +4,7 @@ changelog:
   categories:
     - title: 🏕 Features
       exclude:
-        - labels:
+        labels:
           - dependencies
     - title: 👒 Dependencies
       labels:
