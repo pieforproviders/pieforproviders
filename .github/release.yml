@@ -3,6 +3,8 @@
 changelog:
   categories:
     - title: 🏕 Features
+      labels:
+        - '*'
       exclude:
         labels:
           - dependencies
