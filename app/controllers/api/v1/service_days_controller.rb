@@ -4,13 +4,10 @@ module Api
   module V1
     # API for user service_days
     class ServiceDaysController < Api::V1::ApiController
+      before_action :set_service_days, only: %i[index]
+
       # GET /service_days
       def index
-        @service_days = policy_scope(
-          ServiceDay.left_outer_joins(:attendances).includes(child: { business: :user })
-          .includes(attendances: { child_approval: :child }).order('children.last_name')
-        ).for_week(filter_date)
-
         render json: ServiceDayBlueprint.render(@service_days)
       end
 
@@ -31,6 +28,37 @@ module Api
 
       private
 
+      def set_service_days
+        @service_days = if params[:business].present?
+                          service_days_for_business
+                        else
+                          service_days_for_user
+                        end
+      end
+
+      def service_days_for_business
+        policy_scope(
+          ServiceDay
+          .left_outer_joins(:attendances)
+          .includes(:attendances, { child: { business: :user } })
+          .joins(child: :business)
+          .where(children: { businesses: Business.find(params[:business].split(',')) })
+          .order('children.last_name')
+          .for_week(filter_date)
+        )
+      end
+
+      def service_days_for_user
+        policy_scope(
+          ServiceDay
+          .left_outer_joins(:attendances)
+          .includes(:attendances, { child: { business: :user } })
+          .joins(:child)
+          .order('children.last_name')
+          .for_week(filter_date)
+        )
+      end
+
       def date
         service_day_params[:date]
           .to_date
@@ -42,7 +70,7 @@ module Api
       end
 
       def service_day_params
-        params.require(:service_day).permit(:date, :absence_type, :child_id)
+        params.require(:service_day).permit(:date, :absence_type, :child_id, business: [])
       end
     end
   end

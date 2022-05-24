@@ -9,6 +9,8 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:other_business) { create(:business, :nebraska_ldds) }
   let!(:child) { create(:child, last_name: 'zzzz', business: business) }
   let!(:child_approval) { child.child_approvals.first }
   let!(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
@@ -22,12 +24,14 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:this_week_service_days) do
     service_days = build_list(:attendance, 3) do |attendance|
       attendance.child_approval = child_approval
-      attendance.check_in = Helpers
-                            .next_attendance_day(child_approval: child_approval, date: week_start_date) +
-                            3.hours
-      attendance.check_out = Helpers
-                             .next_attendance_day(child_approval: child_approval, date: week_start_date) +
-                             9.hours + 18.minutes
+      attendance.check_in = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 3.hours
+      attendance.check_out = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 9.hours + 18.minutes
       attendance.save!
     end.map(&:service_day)
     perform_enqueued_jobs
@@ -43,16 +47,72 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     service_days.each(&:reload)
   end
 
+  let!(:user_second_business_service_days) do
+    service_days = build_list(:attendance, 3) do |attendance|
+      child_approval = create(:child_approval, child: create(:child, business: user_second_business))
+      attendance.child_approval = child_approval
+      attendance.check_in = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 3.hours
+      attendance.check_out = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 9.hours + 18.minutes
+      attendance.save!
+    end.map(&:service_day)
+    perform_enqueued_jobs
+    service_days.each(&:reload)
+  end
+
+  let!(:user_second_business_past_service_days) do
+    service_days = build_list(:attendance, 3) do |attendance|
+      child_approval = create(:child_approval, child: create(:child, business: user_second_business))
+      attendance.child_approval = child_approval
+      attendance.check_in = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: two_weeks_ago_week_start_date
+      ) + 3.hours
+      attendance.check_out = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: two_weeks_ago_week_start_date
+      ) + 9.hours + 18.minutes
+      attendance.save!
+    end.map(&:service_day)
+    perform_enqueued_jobs
+    service_days.each(&:reload)
+  end
+
   let!(:another_user_service_days) do
     service_days = build_list(:attendance, 3) do |attendance|
-      attendance.child_approval = create(:child_approval,
-                                         child: create(:child, business: create(:business, :nebraska_ldds)))
-      attendance.check_in = Helpers
-                            .next_attendance_day(child_approval: child_approval, date: week_start_date) +
-                            3.hours
-      attendance.check_out = Helpers
-                             .next_attendance_day(child_approval: child_approval, date: week_start_date) +
-                             9.hours + 18.minutes
+      child_approval = create(:child_approval, child: create(:child, business: other_business))
+      attendance.child_approval = child_approval
+      attendance.check_in = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 3.hours
+      attendance.check_out = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: week_start_date
+      ) + 9.hours + 18.minutes
+      attendance.save!
+    end.map(&:service_day)
+    perform_enqueued_jobs
+    service_days.each(&:reload)
+  end
+
+  let!(:another_user_past_service_days) do
+    service_days = build_list(:attendance, 3) do |attendance|
+      child_approval = create(:child_approval, child: create(:child, business: other_business))
+      attendance.child_approval = child_approval
+      attendance.check_in = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: two_weeks_ago_week_start_date
+      ) + 3.hours
+      attendance.check_out = Helpers.next_attendance_day(
+        child_approval: child_approval,
+        date: two_weeks_ago_week_start_date
+      ) + 9.hours + 18.minutes
       attendance.save!
     end.map(&:service_day)
     perform_enqueued_jobs
@@ -62,101 +122,435 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   describe 'GET /api/v1/service_days' do
     include_context 'with correct api version header'
 
-    before do
-      travel_to week_current_date
-      sign_in logged_in_user
-    end
+    before { travel_to week_current_date }
 
     after { travel_back }
 
-    context 'when sent with a filter date' do
-      let(:params) { { filter_date: two_weeks_ago_week_current_date } }
+    context 'when logged in as a non-admin user' do
+      before { sign_in logged_in_user }
 
-      it 'displays the service_days' do
-        get '/api/v1/service_days', params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect do |x|
-                 x['child_id']
-               end).to match_array(past_service_days.collect(&:child_id))
-        expect(parsed_response.collect do |x|
-                 x['date']
-               end).to match_array(past_service_days.collect(&:date))
-        expect(parsed_response.collect do |x|
-                 x['tags']
-               end).to match_array(past_service_days.collect(&:tags))
-        expect(parsed_response.collect do |x|
-          x['total_time_in_care']
-        end).to match_array(
-          past_service_days
-          .collect { |service_day| service_day.total_time_in_care.to_s }
-        )
-        expect(parsed_response.length).to eq(2)
-        expect(response).to match_response_schema('service_days')
-      end
-    end
-
-    context 'when a service day has no attendances' do
-      before { Attendance.all.destroy_all }
-
-      it 'displays the service days with empty attendances' do
+      it 'displays the service days with empty attendances if none exist' do
+        Attendance.all.destroy_all
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.map { |pr| pr['attendances'] }.compact_blank).to be_empty
         expect(response).to match_response_schema('service_days')
       end
-    end
 
-    context 'when sent without a filter date' do
-      it 'displays the service_days' do
+      it 'displays the service_days when sent with a filter date' do
+        params = { filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *past_service_days.collect(&:child_id),
+              *user_second_business_past_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *past_service_days.collect(&:date),
+              *user_second_business_past_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *past_service_days.collect(&:tags),
+              *user_second_business_past_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
+        expect(parsed_response.length).to eq(5)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with a business id' do
+        params = { business: [user_second_business.id] }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(user_second_business_service_days.collect(&:child_id))
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(user_second_business_service_days.collect(&:date))
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(user_second_business_service_days.collect(&:tags))
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+          )
+        expect(parsed_response.length).to eq(3)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with multiple business ids' do
+        params = { business: [business.id, user_second_business.id] }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] }.uniq)
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:child_id),
+              *user_second_business_service_days.collect(&:child_id)
+            ].uniq
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:date),
+              *user_second_business_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:tags),
+              *user_second_business_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
+        expect(parsed_response.length).to eq(6)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with a business id and filter date' do
+        params = { business: [user_second_business.id], filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(user_second_business_past_service_days.collect(&:child_id))
+        expect(parsed_response.collect do |x|
+                 x['date']
+               end).to match_array(user_second_business_past_service_days.collect(&:date))
+        expect(parsed_response.collect do |x|
+                 x['tags']
+               end).to match_array(user_second_business_past_service_days.collect(&:tags))
+        expect(parsed_response.collect do |x|
+          x['total_time_in_care']
+        end).to match_array(
+          user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+        )
+        expect(parsed_response.length).to eq(3)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with multiple business ids and filter date' do
+        params = { business: [business.id, user_second_business.id], filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:child_id),
+              *past_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:date),
+              *past_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:tags),
+              *past_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
+        expect(parsed_response.length).to eq(5)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays no service_days when sent with a business ID for the wrong user' do
+        params = { business: [other_business.id] }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response).to eq([])
+        expect(parsed_response.length).to eq(0)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent without a filter date' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect do |x|
                  x['child_id']
-               end).to match_array(this_week_service_days.collect(&:child_id))
+               end).to match_array(
+                 [
+                   *this_week_service_days.collect(&:child_id),
+                   *user_second_business_service_days.collect(&:child_id)
+                 ]
+               )
         expect(parsed_response.collect do |x|
                  x['date']
-               end).to match_array(this_week_service_days.collect(&:date))
+               end).to match_array(
+                 [
+                   *this_week_service_days.collect(&:date),
+                   *user_second_business_service_days.collect(&:date)
+                 ]
+               )
         expect(parsed_response.collect do |x|
                  x['tags']
-               end).to match_array(this_week_service_days.collect(&:tags))
+               end).to match_array(
+                 [
+                   *this_week_service_days.collect(&:tags),
+                   *user_second_business_service_days.collect(&:tags)
+                 ]
+               )
         expect(parsed_response.collect do |x|
                  x['total_time_in_care']
                end).to match_array(
-                 this_week_service_days
-                 .collect { |service_day| service_day.total_time_in_care.to_s }
+                 [
+                   *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+                   *user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+                 ]
                )
-        expect(parsed_response.length).to eq(3)
+        expect(parsed_response.length).to eq(6)
         expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days in order by child last name' do
+        get '/api/v1/service_days', params: {}, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.last['child']['last_name']).to eq('zzzz')
       end
     end
 
-    context 'when viewed by an admin' do
+    context 'when logged in as an admin user' do
       before do
         admin = create(:admin)
         sign_in admin
       end
 
-      it 'displays the service_days' do
+      it 'displays the service days with empty attendances if none exist' do
+        Attendance.all.destroy_all
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        all_current_service_days = this_week_service_days + another_user_service_days
+        expect(parsed_response.map { |pr| pr['attendances'] }.compact_blank).to be_empty
+        expect(response).to match_response_schema('service_days')
+      end
 
-        expect(parsed_response.collect do |x|
-                 x['child_id']
-               end).to match_array(all_current_service_days.collect(&:child_id))
-        expect(parsed_response.collect do |x|
-                 x['date']
-               end).to match_array(all_current_service_days.collect(&:date))
-        expect(parsed_response.collect do |x|
-                 x['tags']
-               end).to match_array(all_current_service_days.collect(&:tags))
-        expect(parsed_response.collect do |x|
-                 x['total_time_in_care']
-               end).to match_array(
-                 all_current_service_days
-                 .collect { |service_day| service_day.total_time_in_care.to_s }
-               )
+      it 'displays the service_days when sent with a filter date' do
+        params = { filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *past_service_days.collect(&:child_id),
+              *user_second_business_past_service_days.collect(&:child_id),
+              *another_user_past_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+
+              *past_service_days.collect(&:date),
+              *user_second_business_past_service_days.collect(&:date),
+              *another_user_past_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *past_service_days.collect(&:tags),
+              *user_second_business_past_service_days.collect(&:tags),
+              *another_user_past_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *user_second_business_past_service_days.collect do |service_day|
+                service_day.total_time_in_care.to_s
+              end,
+              *another_user_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
+        expect(parsed_response.length).to eq(8)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with a business id' do
+        params = { business: [other_business.id] }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            another_user_service_days.collect(&:child_id)
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            another_user_service_days.collect(&:date)
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            another_user_service_days.collect(&:tags)
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            another_user_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+          )
+        expect(parsed_response.length).to eq(3)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with multiple business ids' do
+        params = { business: [business.id, other_business.id] }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:child_id),
+              *another_user_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:date),
+              *another_user_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:tags),
+              *another_user_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *another_user_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
         expect(parsed_response.length).to eq(6)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with a business id and filter date' do
+        params = { business: [user_second_business.id], filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(user_second_business_past_service_days.collect(&:child_id))
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(user_second_business_past_service_days.collect(&:date))
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(user_second_business_past_service_days.collect(&:tags))
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+          )
+        expect(parsed_response.length).to eq(3)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent with multiple business ids and filter date' do
+        params = { business: [other_business.id, user_second_business.id],
+                   filter_date: two_weeks_ago_week_current_date }
+        get '/api/v1/service_days', params: params, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:child_id),
+              *another_user_past_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:date),
+              *another_user_past_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect(&:tags),
+              *another_user_past_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *user_second_business_past_service_days.collect do |service_day|
+                service_day.total_time_in_care.to_s
+              end,
+              *another_user_past_service_days.collect do |service_day|
+                service_day.total_time_in_care.to_s
+              end
+            ]
+          )
+        expect(parsed_response.length).to eq(6)
+        expect(response).to match_response_schema('service_days')
+      end
+
+      it 'displays the service_days when sent without a filter date' do
+        get '/api/v1/service_days', params: {}, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |x| x['child_id'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:child_id),
+              *user_second_business_service_days.collect(&:child_id),
+              *another_user_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['date'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:date),
+              *user_second_business_service_days.collect(&:date),
+              *another_user_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['tags'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:tags),
+              *user_second_business_service_days.collect(&:tags),
+              *another_user_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+          .to match_array(
+            [
+              *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *another_user_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
+        expect(parsed_response.length).to eq(9)
         expect(response).to match_response_schema('service_days')
       end
 
