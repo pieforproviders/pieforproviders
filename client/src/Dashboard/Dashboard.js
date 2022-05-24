@@ -5,6 +5,7 @@ import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
@@ -13,6 +14,9 @@ import DashboardTitle from './DashboardTitle'
 import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
+import Notifications from './Notifications'
+
+const env = runtimeEnv()
 
 export function Dashboard() {
   const dispatch = useDispatch()
@@ -340,6 +344,11 @@ export function Dashboard() {
         getDashboardData={getDashboardData}
       />
       <DashboardStats summaryData={summaryData} />
+      {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
+        <div className="my-5">
+          <Notifications />
+        </div>
+      ) : null}
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
