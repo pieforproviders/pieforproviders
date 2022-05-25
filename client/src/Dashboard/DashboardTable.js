@@ -483,7 +483,7 @@ export default function DashboardTable({
           cancelSort: t('sortCancel')
         }}
         loading={{
-          delay: 300,
+          delay: 500,
           spinning: isLoading,
           indicator: <LoadingDisplay />
         }}
