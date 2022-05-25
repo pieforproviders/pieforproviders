@@ -5,12 +5,13 @@ require 'rails_helper'
 RSpec.describe Nebraska::DashboardCase, type: :model do
   let(:child) { create(:necc_child) }
   let(:date) { Time.current.to_date }
+  let(:child_approval) { child.child_approvals.first }
+  let(:service_days) { child.service_days&.for_period(child_approval.effective_on, child_approval.expires_on) }
 
   describe '#family_fee' do
     before { child.reload }
 
     it 'returns the database value' do
-      service_days = child.child_approvals.first.service_days.with_attendances
       expect(described_class.new(
         child: child,
         filter_date: date,
@@ -27,7 +28,6 @@ RSpec.describe Nebraska::DashboardCase, type: :model do
         approvals: [child.approvals.first],
         schedules: [create(:schedule, weekday: 1)]
       )
-      service_days = child.child_approvals.first.service_days.with_attendances
       expect(described_class.new(
         child: child,
         filter_date: date,
@@ -41,6 +41,29 @@ RSpec.describe Nebraska::DashboardCase, type: :model do
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
       ).family_fee).to eq(0)
+    end
+  end
+
+  describe '#attended_weekly_hours' do
+    it 'shows attended hours w/ weekly hours when the child_approval has weekly hours' do
+      expect(described_class.new(
+        child: child,
+        filter_date: date,
+        attended_days: service_days.non_absences,
+        absent_days: service_days.absences
+      ).attended_weekly_hours).to eq(
+        "0.0 of #{child_approval.authorized_weekly_hours}"
+      )
+    end
+
+    it 'shows attended hours w/o weekly hours when the child_approval has noweekly hours' do
+      child_approval.update!(authorized_weekly_hours: nil)
+      expect(described_class.new(
+        child: child,
+        filter_date: date,
+        attended_days: service_days.non_absences,
+        absent_days: service_days.absences
+      ).attended_weekly_hours).to eq('0.0 of ')
     end
   end
 end
