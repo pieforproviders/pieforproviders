@@ -27,7 +27,7 @@ end
 #  full_days_remaining        :integer          default(0), not null
 #  hours                      :float            default(0.0), not null
 #  hours_remaining            :float            default(0.0), not null
-#  month                      :datetime         default(Fri, 13 May 2022 21:00:29.748360000 UTC +00:00), not null
+#  month                      :datetime         not null
 #  scheduled_revenue_cents    :integer
 #  scheduled_revenue_currency :string           default("USD"), not null
 #  created_at                 :datetime         not null
