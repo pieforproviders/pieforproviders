@@ -56,7 +56,9 @@ init.sql
 latest.dump
 
 # snaplet config
-.snaplet
+.snaplet/config.json
+.snaplet/transformations.d.ts
+.snaplet/snapshots
 
 # prod-like seeds
 /spec/fixtures/files/prod_like_seeds/*
