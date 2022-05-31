@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import pieFullTanLogo from '_assets/pieFullTanLogo.svg'
 import '_assets/styles/layouts.css'
 import { ActionLink } from '_shared/ActionLink'
@@ -13,6 +14,7 @@ export function AuthLayout({
   useEffect(() => {
     window.MiniProfiler?.pageTransition()
   }, [])
+  let location = useLocation()
   const { t, i18n } = useTranslation()
 
   return (
@@ -40,11 +42,28 @@ export function AuthLayout({
                 text={i18n.language === 'en' ? 'Español' : 'English'}
                 classes="text-right no-underline p-0 h-auto flex-grow"
               />
-              <img
-                alt={t('pieforProvidersLogoAltText')}
-                src={pieFullTanLogo}
-                className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12 max-w-40"
-              />
+              {location.pathname === '/login' ||
+              location.pathname === '/signup' ? (
+                <div className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12 max-w-40">
+                  <a
+                    href="https://www.pieforproviders.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <img
+                      alt={t('pieforProvidersLogoAltText')}
+                      src={pieFullTanLogo}
+                      // className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12 max-w-40"
+                    />
+                  </a>
+                </div>
+              ) : (
+                <img
+                  alt={t('pieforProvidersLogoAltText')}
+                  src={pieFullTanLogo}
+                  className="order-first w-24 mx-auto mt-0 mb-10 xs:w-48 xs:mb-16 md:mb-12 max-w-40"
+                />
+              )}
             </header>
             <div className="text-center md:text-left">
               <ContentComponent />
