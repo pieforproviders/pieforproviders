@@ -34,5 +34,6 @@ describe('<SiteFilterSelect />', () => {
       { ui: { filteredCases: [1] } }
     )
     expect(screen.getByText(/business1/)).toBeDefined()
+    expect(screen.queryByText(/business2/)).toBeNull()
   })
 })
