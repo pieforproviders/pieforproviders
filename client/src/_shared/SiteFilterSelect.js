@@ -21,7 +21,6 @@ export default function SiteFilterSelect({ businesses, onChange }) {
   return (
     <>
       <FilterFilled className="absolute z-50 p-2" />
-      {/* TODO updated default selected to match global state's filteredBusinesses */}
       <Select
         open={filterOpen}
         showSearch={false}
