@@ -14,17 +14,23 @@ import '_assets/styles/edit-icon.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
+import { setFilteredCases } from '_reducers/uiReducer'
+import SiteFilterSelect from '_shared/SiteFilterSelect'
 
 const { useBreakpoint } = Grid
 
 export function AttendanceView() {
+  const dispatch = useDispatch()
   const { i18n, t } = useTranslation()
   const { parseResult } = useProgress()
-  const dispatch = useDispatch()
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
   const history = useHistory()
   const { makeRequest } = useApiResponse()
+  const { businesses, filteredCases } = useSelector(state => ({
+    businesses: state.businesses,
+    filteredCases: state.ui.filteredCases
+  }))
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
   const { isLoading, token } = useSelector(state => ({
@@ -329,12 +335,13 @@ export function AttendanceView() {
     setDateSelected(newDate)
   }
 
-  const getServiceDays = async () => {
+  const getServiceDays = async (businessIds = []) => {
     dispatch(setLoading(true))
     const response = await makeRequest({
       type: 'get',
-      url:
-        '/api/v1/service_days?filter_date=' + dateSelected.format('YYYY-MM-DD'),
+      url: `/api/v1/service_days?filter_date=${dateSelected.format(
+        'YYYY-MM-DD'
+      )}&business=${businessIds.length > 0 ? businessIds.join(',') : ''}`,
       headers: {
         Authorization: token
       },
@@ -359,7 +366,7 @@ export function AttendanceView() {
       }
 
       const reducedData = parsedResponse.reduce(addServiceDay, [])
-
+      dispatch(setFilteredCases(businessIds))
       setAttendanceData(reducedData)
       setColumns(generateColumns())
     }
@@ -518,7 +525,7 @@ export function AttendanceView() {
   }
 
   useEffect(() => {
-    getServiceDays()
+    getServiceDays(filteredCases)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
 
@@ -550,6 +557,12 @@ export function AttendanceView() {
               hasNext={dateSelected.day(6) < dayjs().day(0)}
               dateSelected={dateSelected}
               handleDateChange={handleDateChange}
+            />
+          </div>
+          <div className="relative pt-5">
+            <SiteFilterSelect
+              businesses={businesses}
+              onChange={value => getServiceDays(value)}
             />
           </div>
           <Table
