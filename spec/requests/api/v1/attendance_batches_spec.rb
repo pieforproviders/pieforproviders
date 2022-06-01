@@ -52,7 +52,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to eq({})
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
@@ -79,11 +79,11 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'creates attendances and returns successful records' do
+        it 'creates service days and returns successful records' do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to eq({})
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
@@ -118,10 +118,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(['Validation failed: Absence type is not included in the list'])
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
@@ -151,10 +153,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(['Validation failed: Absence type is not included in the list'])
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
@@ -188,10 +192,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(
+            [
+              'Validation failed: Absence type is not included in the list',
+              'Validation failed: Absence type is not included in the list'
+            ]
+          )
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
@@ -221,10 +232,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
-          expect(parsed_response.dig('meta', 'errors').values.flatten).to match_array(['is not included in the list'])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(
+            parsed_response.dig('meta', 'errors').values.flatten
+          ).to match_array(
+            [
+              'Validation failed: Absence type is not included in the list',
+              'Validation failed: Absence type is not included in the list'
+            ]
+          )
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
@@ -259,12 +277,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["can't create for a day without a schedule"])
+          ).to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
@@ -295,12 +313,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["can't create for a day without a schedule"])
+          ).to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(1)
           expect(response).to match_response_schema('attendance_batch')
@@ -336,12 +354,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["can't create for a day without a schedule"])
+          ).to match_array(
+            [
+              "Validation failed: Absence type can't create for a day without a schedule",
+              "Validation failed: Absence type can't create for a day without a schedule"
+            ]
+          )
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
@@ -373,12 +396,17 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['attendances']).to eq([])
+          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[absence_type])
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["can't create for a day without a schedule"])
+          ).to match_array(
+            [
+              "Validation failed: Absence type can't create for a day without a schedule",
+              "Validation failed: Absence type can't create for a day without a schedule"
+            ]
+          )
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(0)
           expect(response).to match_response_schema('attendance_batch')
@@ -423,28 +451,28 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         post '/api/v1/attendance_batches', params: valid_batch, headers: headers
 
         parsed_response = JSON.parse(response.body)
-        first_parsed_response_object, second_parsed_response_object = parsed_response['attendances']
+        first_parsed_response_object, second_parsed_response_object = parsed_response['service_days']
         first_input_object, second_input_object = valid_batch[:attendance_batch]
 
-        expect(DateTime.parse(first_parsed_response_object['check_in']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_in']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_in]))
-        expect(DateTime.parse(first_parsed_response_object['check_out']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_out']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_out]))
-        expect(first_parsed_response_object['child_approval_id'])
+        expect(first_parsed_response_object['attendances'].first['child_approval_id'])
           .to eq(
             Child.find(first_input_object[:child_id])
               .active_child_approval(Date.parse(first_input_object[:check_in])).id
           )
 
-        expect(DateTime.parse(second_parsed_response_object['check_in']))
+        expect(DateTime.parse(second_parsed_response_object['attendances'].first['check_in']))
           .to be_within(1.second)
           .of(DateTime.parse(second_input_object[:check_in]))
-        expect(DateTime.parse(second_parsed_response_object['check_out']))
+        expect(DateTime.parse(second_parsed_response_object['attendances'].first['check_out']))
           .to be_within(1.second)
           .of(DateTime.parse(second_input_object[:check_out]))
-        expect(second_parsed_response_object['child_approval_id'])
+        expect(second_parsed_response_object['attendances'].first['child_approval_id'])
           .to eq(
             Child.find(second_input_object[:child_id])
               .active_child_approval(Date.parse(second_input_object[:check_in])).id
@@ -476,16 +504,16 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         post '/api/v1/attendance_batches', params: batch_with_one_invalid_record, headers: headers
 
         parsed_response = JSON.parse(response.body)
-        first_parsed_response_object, = parsed_response['attendances']
+        first_parsed_response_object, = parsed_response['service_days']
         first_input_object, = batch_with_one_invalid_record[:attendance_batch]
 
-        expect(DateTime.parse(first_parsed_response_object['check_in']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_in']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_in]))
-        expect(DateTime.parse(first_parsed_response_object['check_out']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_out']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_out]))
-        expect(first_parsed_response_object['child_approval_id'])
+        expect(first_parsed_response_object['attendances'].first['child_approval_id'])
           .to eq(
             Child.find(first_input_object[:child_id])
               .active_child_approval(Date.parse(first_input_object[:check_in])).id
@@ -550,16 +578,16 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
         post '/api/v1/attendance_batches', params: batch_with_child_not_in_care, headers: headers
 
         parsed_response = JSON.parse(response.body)
-        first_parsed_response_object, = parsed_response['attendances']
+        first_parsed_response_object, = parsed_response['service_days']
         first_input_object, = batch_with_child_not_in_care[:attendance_batch]
 
-        expect(DateTime.parse(first_parsed_response_object['check_in']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_in']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_in]))
-        expect(DateTime.parse(first_parsed_response_object['check_out']))
+        expect(DateTime.parse(first_parsed_response_object['attendances'].first['check_out']))
           .to be_within(1.second)
           .of(DateTime.parse(first_input_object[:check_out]))
-        expect(first_parsed_response_object['child_approval_id'])
+        expect(first_parsed_response_object['attendances'].first['child_approval_id'])
           .to eq(
             Child.find(first_input_object[:child_id])
               .active_child_approval(Date.parse(first_input_object[:check_in])).id

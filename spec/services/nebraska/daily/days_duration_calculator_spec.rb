@@ -3,8 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
-  let!(:attendance) { create(:nebraska_daily_attendance) }
-  let!(:service_day) { attendance.service_day }
+  let(:child) { create(:necc_child) }
+  let(:child_approval) { child.child_approvals.first }
+  let(:service_day) { create(:service_day, child: child) }
+  let!(:attendance) do
+    create(
+      :nebraska_daily_attendance,
+      service_day: service_day,
+      child_approval: child_approval
+    )
+  end
 
   describe '#call' do
     it 'does not return days for a service day with a single attendance in the hourly range' do
@@ -38,6 +46,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 1.hour + 7.minutes)
       create(
         :nebraska_hourly_attendance,
+        service_day: service_day,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 2.hours,
         check_out: attendance.check_in + 3.hours + 38.minutes
@@ -52,6 +61,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 7.hours + 14.minutes)
       create(
         :nebraska_hourly_attendance,
+        service_day: service_day,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 8.hours,
         check_out: attendance.check_in + 9.hours + 6.minutes
@@ -65,6 +75,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 11.hours + 38.minutes)
       create(
         :nebraska_hourly_attendance,
+        service_day: service_day,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 12.hours,
         check_out: attendance.check_in + 13.hours + 18.minutes
@@ -79,6 +90,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 19.hours + 12.minutes)
       create(
         :nebraska_hourly_attendance,
+        service_day: service_day,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 20.hours,
         check_out: attendance.check_in + 21.hours + 31.minutes

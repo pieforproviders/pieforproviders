@@ -21,19 +21,24 @@ module Api
 
       private
 
-      attr_reader :attendance_batch, :attendance_params, :initial_attendance_params, :errors
+      attr_reader :attendance_batch,
+                  :attendance_params,
+                  :initial_attendance_params,
+                  :errors
 
       def attendances
         batch.compact_blank.map do |attendance_params|
+          @attendance_params = attendance_params
           ActiveRecord::Base.transaction do
-            @attendance_params = attendance_params
-            add_service_day_id
-
-            next if absence_type
-
-            att = Attendance.create(attendance_params)
-            att.errors.messages.map { |k, v| errors[k] = v } if att&.errors
-            att
+            if absence_type
+              service_day
+            else
+              Commands::Attendance::Create.new(
+                check_in: check_in,
+                child_id: child.id,
+                check_out: check_out
+              ).create.service_day
+            end
           end
         end
       end
@@ -72,6 +77,14 @@ module Api
           "for attendance date #{initial_attendance_params[:check_in]}"
       end
 
+      def check_in
+        @check_in = attendance_params[:check_in]
+      end
+
+      def check_out
+        @check_out = attendance_params[:check_out]
+      end
+
       def absence_type
         @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
       end
@@ -87,19 +100,11 @@ module Api
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
       end
 
-      def add_service_day_id
-        find_or_create_service_day
-        attendance_params.merge!(service_day_id: service_day.id)
-      end
-
-      def find_or_create_service_day
-        service_day.update(absence_type: absence_type)
-        service_day&.errors&.messages&.map { |k, v| errors[k] = v }
-      end
-
       def service_day
-        @service_day = ServiceDay.find_by(child: child, date: date) ||
-                       ServiceDay.create(child: child, date: date, absence_type: absence_type)
+        @service_day = ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
+                       ServiceDay.create!(child: child, date: date, absence_type: absence_type)
+      rescue StandardError => e
+        add_error_and_return_nil(:service_day, e.message)
       end
 
       def date
@@ -127,10 +132,9 @@ module Api
       end
 
       def serialized_response
-        AttendanceBlueprint.render(
+        ServiceDayBlueprint.render(
           attendance_batch.compact_blank,
-          view: :with_child,
-          root: :attendances,
+          root: :service_days,
           meta: { errors: errors }
         )
       end

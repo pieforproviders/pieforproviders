@@ -94,7 +94,7 @@ export function Login() {
   return (
     <main className="text-center">
       <div className="mb-8">
-        <h1 className="h1-large">{t('gettingStartedWelcome')}</h1>
+        <h1 className="h1-large leading-8">{t('gettingStartedWelcome')}</h1>
         <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2>
         <div className="m-10">
           <Link to="/signup" className="uppercase">
