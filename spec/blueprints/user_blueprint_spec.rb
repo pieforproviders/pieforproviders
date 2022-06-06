@@ -4,7 +4,12 @@ require 'rails_helper'
 
 RSpec.describe UserBlueprint do
   let(:user) { create(:user) }
-  let(:last_month) { Time.current.in_time_zone(user.timezone).at_beginning_of_day - 1.month }
+  let(:last_month) do
+    Helpers
+      .prior_weekday(
+        Time.current.in_time_zone(user.timezone).at_beginning_of_month - 1.month + 10.days, 1
+      )
+  end
   let(:blueprint) { described_class.render(user) }
   let(:parsed_response) { JSON.parse(blueprint) }
 
@@ -127,8 +132,12 @@ RSpec.describe UserBlueprint do
       end
 
       it 'returns the as_of date for the last attendance in the prior month' do
-        service_day = create(:service_day, date: last_month)
-        attendance = create(:attendance, check_in: last_month, service_day: service_day)
+        child = create(:necc_child, business: nebraska_business)
+        service_day = create(:service_day, date: last_month, child: child)
+        attendance = create(:attendance,
+                            child_approval: child.child_approvals.first,
+                            check_in: last_month,
+                            service_day: service_day)
         perform_enqueued_jobs
         ServiceDay.all.each(&:reload)
         blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)

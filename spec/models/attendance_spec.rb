@@ -271,7 +271,7 @@ RSpec.describe Attendance, type: :model do
   end
 
   describe '#delete_or_mark_absent' do
-    let!(:service_day) { create(:service_day) }
+    let!(:service_day) { create(:service_day, date: Helpers.prior_weekday(Time.current, 1)) }
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
              check_in: service_day.date + 3.hours,
