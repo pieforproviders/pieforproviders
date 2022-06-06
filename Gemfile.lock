@@ -108,7 +108,7 @@ GEM
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
     crass (1.0.6)
-    cypress-on-rails (1.12.1)
+    cypress-on-rails (1.13.0)
       rack
     data_migrate (8.0.0)
       activerecord (>= 5.0)
@@ -407,7 +407,7 @@ DEPENDENCIES
   brakeman
   bullet
   byebug
-  cypress-on-rails (~> 1.12)
+  cypress-on-rails (~> 1.13)
   data_migrate
   database_cleaner
   devise
