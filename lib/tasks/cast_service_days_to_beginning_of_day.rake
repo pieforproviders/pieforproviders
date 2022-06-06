@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/SkipsModelValidations
 # Fix all service_days where the date is not at the beginning of the day for the child
 desc 'Cast all service_days to the beginning of the day'
 task cast_service_days_to_beginning_of_day: :environment do
@@ -28,3 +29,4 @@ task remove_duplicate_service_days: :environment do
     service_day.destroy if service_day.attendances.empty?
   end
 end
+# rubocop:enable Rails/SkipsModelValidations

@@ -35,19 +35,28 @@ RSpec.describe ServiceDay, type: :model do
     expect(service_day).not_to be_valid
     expect(service_day.errors.messages[:absence_type]).to include("can't create for a day without a schedule")
 
-    absence = build(:service_day, child: service_day.child, absence_type: 'covid_absence')
+    absence = build(
+      :service_day,
+      child: service_day.child,
+      absence_type: 'covid_absence',
+      date: Helpers.prior_weekday(Time.current, 1)
+    )
     expect(absence).to be_valid
     expect(absence.errors.messages).to eq({})
 
-    absence = build(:service_day, child: service_day.child, absence_type: 'fake_reason')
+    absence = build(
+      :service_day, child: service_day.child, absence_type: 'fake_reason', date: Helpers.prior_weekday(Time.current, 1)
+    )
     expect(absence).not_to be_valid
     expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
   end
 
   # scopes
   context 'with absences scopes' do
-    let(:absence) { create(:service_day, absence_type: 'absence') }
-    let(:covid_absence) { create(:service_day, absence_type: 'covid_absence') }
+    let(:absence) { create(:service_day, absence_type: 'absence', date: Helpers.prior_weekday(Time.current, 1)) }
+    let(:covid_absence) do
+      create(:service_day, absence_type: 'covid_absence', date: Helpers.prior_weekday(Time.current, 1))
+    end
     let(:service_day_with_attendance) { create(:service_day) }
     let(:attendance) { create(:attendance, service_day: service_day) }
 
