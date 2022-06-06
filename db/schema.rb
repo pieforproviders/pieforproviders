@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
   create_table "attendances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
     t.datetime "check_out"
-    t.interval "time_in_care", null: false
+    t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "child_approval_id", null: false
@@ -194,7 +194,7 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-25 19:42:15", null: false
+    t.datetime "month", default: "2022-05-05 01:37:11", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
