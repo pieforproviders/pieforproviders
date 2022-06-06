@@ -36,15 +36,21 @@ module Wonderschool
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
         @child = Child.find_or_initialize_by(child_params)
-        unless @child.approvals.find_by(approval_params)
-          @child.approvals << Approval.find_or_create_by!(approval_params)
-        end
+        @approval = find_approval
 
         raise NotEnoughInfo unless @child.valid?
 
         build_case
       rescue StandardError => e
         send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
+      end
+
+      def find_approval
+        unless @child.approvals.find_by(approval_params)
+          @child.approvals << Approval.find_or_create_by!(approval_params)
+        end
+        @child.save
+        @child.approvals.find_by(approval_params)
       end
 
       def update_overlapping_approvals
@@ -63,12 +69,26 @@ module Wonderschool
       end
 
       def build_case
-        @child.save
         @business.update!(optional_business_params)
         update_overlapping_approvals
-        @child_approval = @child.reload.child_approvals.find_by(approval: @child.approvals.find_by(approval_params))
+        @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
         update_child_approval
         update_nebraska_approval_amounts
+        create_absences
+      end
+
+      def update_overlapping_approval_amounts(period, existing_aa)
+        date = nebraska_approval_amount_params(period)[:effective_on]
+        overlapping_approval_amounts = @child.nebraska_approval_amounts.reject do |naa|
+          naa == existing_aa
+        end
+        overlapping_approval_amounts.select! { |naa| date.between?(naa.effective_on, naa.expires_on) }
+        overlapping_approval_amounts.presence&.map { |oaa| oaa.update!(expires_on: date - 1.day) }
+        existing_aa&.update!(nebraska_approval_amount_params(period))
+      end
+
+      def update_child_approval
+        @child_approval&.update!(child_approval_params)
       end
 
       def update_nebraska_approval_amounts
@@ -92,18 +112,12 @@ module Wonderschool
         @child.nebraska_approval_amounts.find_by(params)
       end
 
-      def update_overlapping_approval_amounts(period, existing_aa)
-        date = nebraska_approval_amount_params(period)[:effective_on]
-        overlapping_approval_amounts = @child.nebraska_approval_amounts.reject do |naa|
-          naa == existing_aa
+      def create_absences
+        today = Time.current.in_time_zone(@child.timezone)
+        # generate prior absences
+        (@approval.effective_on..([@approval.expires_on, today].min)).each do |date|
+          Nebraska::AbsenceGeneratorJob.perform_later(child: @child, date: date)
         end
-        overlapping_approval_amounts.select! { |naa| date.between?(naa.effective_on, naa.expires_on) }
-        overlapping_approval_amounts.presence&.map { |oaa| oaa.update!(expires_on: date - 1.day) }
-        existing_aa&.update!(nebraska_approval_amount_params(period))
-      end
-
-      def update_child_approval
-        @child_approval&.update!(child_approval_params)
       end
 
       def approval_params
