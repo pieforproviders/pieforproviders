@@ -5,7 +5,7 @@ module Nebraska
   class AbsenceGenerator
     attr_reader :child, :date
 
-    def initialize(child, date = nil)
+    def initialize(child:, date: nil)
       @child = child
       @date = (date || Time.current).in_time_zone(child.timezone).at_beginning_of_day
     end
