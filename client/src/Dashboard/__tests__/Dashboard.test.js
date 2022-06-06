@@ -1,4 +1,5 @@
 import React from 'react'
+import dayjs from 'dayjs'
 import { render, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { Dashboard } from '../Dashboard'
@@ -11,6 +12,7 @@ const doRender = stateOptions => {
     stateOptions
   )
 }
+const date = dayjs().subtract(1, 'month')
 
 describe('<Dashboard />', () => {
   beforeEach(() => jest.spyOn(window, 'fetch'))
@@ -21,9 +23,13 @@ describe('<Dashboard />', () => {
     const { container } = doRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
-      expect(window.fetch).toHaveBeenCalledTimes(2)
-      expect(window.fetch.mock.calls[0][0]).toBe('/api/v1/profile')
-      expect(window.fetch.mock.calls[1][0]).toBe('/api/v1/businesses')
+      expect(window.fetch).toHaveBeenCalledTimes(3)
+
+      expect(window.fetch.mock.calls[0][0]).toBe(
+        '/api/v1/payments?filter_date=' + date.format('YYYY-MM-DD')
+      )
+      expect(window.fetch.mock.calls[1][0]).toBe('/api/v1/profile')
+      expect(window.fetch.mock.calls[2][0]).toBe('/api/v1/businesses')
     })
   })
 
@@ -31,11 +37,15 @@ describe('<Dashboard />', () => {
     const { container } = doRender({ initialState: { user: { state: 'NE' } } })
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
-      expect(window.fetch).toHaveBeenCalledTimes(2)
+      expect(window.fetch).toHaveBeenCalledTimes(3)
       expect(window.fetch.mock.calls[0][0]).toBe(
+        '/api/v1/payments?filter_date=' + date.format('YYYY-MM-DD')
+      )
+
+      expect(window.fetch.mock.calls[1][0]).toBe(
         '/api/v1/case_list_for_dashboard'
       )
-      expect(window.fetch.mock.calls[1][0]).toBe('/api/v1/businesses')
+      expect(window.fetch.mock.calls[2][0]).toBe('/api/v1/businesses')
     })
   })
 })
