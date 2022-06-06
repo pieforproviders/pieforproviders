@@ -7,7 +7,7 @@ module Nebraska
 
     def initialize(child, date = nil)
       @child = child
-      @date = (date || Time.current).in_time_zone(child.timezone)
+      @date = (date || Time.current).in_time_zone(child.timezone).at_beginning_of_day
     end
 
     def call
