@@ -15,7 +15,7 @@ task remove_duplicate_service_days: :environment do
   columns_that_make_record_distinct = %i[child_id date]
   distinct_ids = ServiceDay.select("MIN(concat(id, '')) as id").group(columns_that_make_record_distinct).map(&:id)
   duplicate_records = ServiceDay.where.not(id: distinct_ids)
-  puts "Duplicate Records: #{duplicate_records.count}"
+  Rails.logger.info "Duplicate Records: #{duplicate_records.count}"
   duplicate_records.each do |service_day|
     new_service_day = ServiceDay
                       .where(
@@ -23,7 +23,7 @@ task remove_duplicate_service_days: :environment do
                         date: service_day.date
                       )
                       .where.not(id: service_day.id).first
-    puts "New ID: #{new_service_day.id}"
+    Rails.logger.info "New ID: #{new_service_day.id}"
     service_day.attendances.update_all(service_day_id: new_service_day.id)
     new_service_day.update_column(:absence_type, nil)
     service_day.destroy if service_day.attendances.empty?
