@@ -137,7 +137,7 @@ A record that `has_many` attendances and `belongs_to` a child
 
 ## Open Questions
 - Undefined behavior as listed above
-- Is this desired behavior?
+- Is this desired behavior?  When?
 > - if the child is not scheduled for that day  
 >   - if a `ServiceDay` exists for that day for that child  
 >     - delete the `ServiceDay`
