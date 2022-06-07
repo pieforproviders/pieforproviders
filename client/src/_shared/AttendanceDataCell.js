@@ -12,8 +12,14 @@ export default function AttendanceDataCell({
   columnIndex,
   columnDate,
   defaultValues = { absenceType: null, attendances: [] },
-  updateAttendanceData = () => {}
+  updateAttendanceData = () => {},
+  reset = null
 }) {
+  useEffect(() => {
+    setCheckInSelected(false)
+    setCheckOutSelected(false)
+  }, [record])
+
   const { t } = useTranslation()
   const secondCheckInExists = () =>
     Object.keys(defaultValues.attendances[1] || {}).length > 0
@@ -85,7 +91,6 @@ export default function AttendanceDataCell({
       />
     )
   }
-
   return (
     <div className="flex flex-col m-">
       <div className="flex flex-row">
@@ -358,5 +363,6 @@ AttendanceDataCell.propTypes = {
   columnIndex: PropTypes.number,
   defaultValues: PropTypes.object,
   record: PropTypes.object,
-  updateAttendanceData: PropTypes.func
+  updateAttendanceData: PropTypes.func,
+  reset: PropTypes.bool
 }
