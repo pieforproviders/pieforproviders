@@ -6,7 +6,7 @@
 A day on which a child is scheduled to attend but does not - represented by a `ServiceDay` with an `absence_type`
 
 - attendance  
-A day on which a child attends, whether or not they are scheduled - represented by an `Attendance` with `check_in` and `check_out`
+A day on which a child attends, whether or not they are scheduled - represented by an `Attendance` with `check_in` and an optional `check_out`
 
 - `ServiceDay`  
 A record that `has_many` attendances and `belongs_to` a child
