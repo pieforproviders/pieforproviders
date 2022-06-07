@@ -12,8 +12,7 @@ export default function AttendanceDataCell({
   columnIndex,
   columnDate,
   defaultValues = { absenceType: null, attendances: [] },
-  updateAttendanceData = () => {},
-  reset = null
+  updateAttendanceData = () => {}
 }) {
   useEffect(() => {
     setCheckInSelected(false)
@@ -363,6 +362,5 @@ AttendanceDataCell.propTypes = {
   columnIndex: PropTypes.number,
   defaultValues: PropTypes.object,
   record: PropTypes.object,
-  updateAttendanceData: PropTypes.func,
-  reset: PropTypes.bool
+  updateAttendanceData: PropTypes.func
 }
