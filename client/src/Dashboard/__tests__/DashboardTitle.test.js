@@ -38,21 +38,28 @@ const neRender = (
   )
 }
 
-const ilRender = (
-  props = {
-    dates: { asOf: 'Mar 16' },
-    userState: 'IL',
-    getDashboardData: () => {}
-  }
-) => {
-  return render(
-    <MemoryRouter>
-      <DashboardTitle {...props} />
-    </MemoryRouter>
-  )
-}
+// const ilRender = (
+//   props = {
+//     dates: { asOf: 'Mar 16' },
+//     userState: 'IL',
+//     getDashboardData: () => {}
+//   }
+// ) => {
+//   return render(
+//     <MemoryRouter>
+//       <DashboardTitle {...props} />
+//     </MemoryRouter>
+//   )
+// }
 
 describe('<DashboardTitle />', () => {
+  beforeEach(() => {
+    jest.spyOn(window, 'fetch').mockImplementation(jest.fn())
+    window.fetch.mockResolvedValueOnce({})
+  })
+
+  afterEach(() => window.fetch.mockRestore())
+
   it('renders DashboardTitle', async () => {
     const { container } = neRender()
     await waitFor(() => {
@@ -133,7 +140,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('renders Payment modal when add record payment is clicked', async () => {
-    const { container } = ilRender()
+    const { container } = neRender()
     await waitFor(() => {
       expect(container).toHaveTextContent('Your dashboard')
     })
@@ -141,6 +148,7 @@ describe('<DashboardTitle />', () => {
     let paymentButton = screen.queryByRole('button', {
       name: /Payment/
     })
+
     expect(paymentButton).not.toBeInTheDocument()
     fireEvent.click(recordNewButton)
 
