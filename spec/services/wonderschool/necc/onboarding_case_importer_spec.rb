@@ -25,7 +25,7 @@ module Wonderschool
 
       before do
         # this lands us in the 'effective' period for all the approvals in the CSV fixture
-        travel_to Date.parse('May 20th, 2021')
+        travel_to Date.parse('May 20th, 2021').in_time_zone(first_user.timezone)
         allow(Rails.application.config).to receive(:aws_necc_onboarding_bucket) { source_bucket }
         allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }
@@ -42,7 +42,10 @@ module Wonderschool
           end
 
           it 'creates case records for every row in the file, idempotently' do
-            expect { described_class.new.call }
+            expect do
+              described_class.new.call
+              perform_enqueued_jobs
+            end
               .to change(Child, :count)
               .from(0).to(5)
               .and change(Business, :count)
@@ -53,13 +56,19 @@ module Wonderschool
               .from(0).to(3)
               .and change(NebraskaApprovalAmount, :count)
               .from(0).to(6)
+              .and change(ServiceDay, :count)
+              .from(0).to(188 + 188 + 188 + 80 + 128) # number of weekdays since the start of each approval period
               .and not_raise_error
-            expect { described_class.new.call }
+            expect do
+              described_class.new.call
+              perform_enqueued_jobs
+            end
               .to not_change(Child, :count)
               .and not_change(Business, :count)
               .and not_change(ChildApproval, :count)
               .and not_change(Approval, :count)
               .and not_change(NebraskaApprovalAmount, :count)
+              .and not_change(ServiceDay, :count)
               .and not_raise_error
           end
 
