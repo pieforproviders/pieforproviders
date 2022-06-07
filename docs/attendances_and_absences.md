@@ -96,17 +96,10 @@ A record that `has_many` attendances and `belongs_to` a child
 
 ### Attendance Edit
 
-#### _User-facing UI Attendance Edit - `AttendancesController#update` & `AttendancesController#destroy`_
+#### _User-facing UI Attendance Edit - `AttendancesController#update`_
 
 - if the update changes an existing attendance
   - update the attendance w/ the `check_in`, `check_out`
-- if the update removes an existing attendance
-  - delete the `Attendance` record
-    - if there are no more attendances for that day
-      - if the child is scheduled for that day
-        - update the `ServiceDay` to `absence_type: "absence"`
-      - if the child is not scheduled for that day
-        - delete the `ServiceDay`
 - if the update adds an additional attendance
   - if a `ServiceDay` exists for that day for that child
     - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay`
@@ -129,6 +122,18 @@ A record that `has_many` attendances and `belongs_to` a child
   > - error handling
 
 ### Attendance Deletion
+
+#### _User-facing UI Attendance Delete - `AttendancesController#destroy`_
+
+- delete the `Attendance` record
+  - if there are no more attendances for that day
+    - if the child is scheduled for that day
+      - update the `ServiceDay` to `absence_type: "absence"`
+    - if the child is not scheduled for that day
+      - delete the `ServiceDay`
+
+  > Behavior currently not defined 
+  > - error handling
 
 ## Open Questions
 - Undefined behavior as listed above
