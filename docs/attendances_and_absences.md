@@ -9,7 +9,7 @@ A day on which a child is scheduled to attend but does not - represented by a `S
 A day on which a child attends, whether or not they are scheduled - represented by an `Attendance` with `check_in` and an optional `check_out`
 
 - `ServiceDay`  
-A record that `has_many` attendances and `belongs_to` a child
+A record that `has_many` attendances (0 or more) and `belongs_to` a child and represents a single day in the child's timezone
 
 ## Expected Behavior
 
