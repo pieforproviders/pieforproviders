@@ -1,7 +1,7 @@
 # Attendances & Absences
 
 ## Definitions
-
+-----------------
 - absence  
 A day on which a child is scheduled to attend but does not - represented by a `ServiceDay` with an `absence_type`
 
@@ -11,17 +11,23 @@ A day on which a child attends, whether or not they are scheduled - represented 
 - `ServiceDay`  
 A record that `has_many` attendances (0 or more) and `belongs_to` a child and represents a single day in the child's timezone
 
-## Expected Behavior
+## Absences added during Onboarding 
+-----------------
+### Internal Onboarding CSV Import
+#### `Wonderschool::Necc::OnboardingCaseImporter`
 
-### Absences added during Onboarding 
+- NO-OP: as a new approval is added, we will not create any prior absences
 
-#### _Internal Onboarding CSV Import -  `Wonderschool::Necc::OnboardingCaseImporter`_
+## Attendance Entry
+-----------------
+### Internal Pie CSV Import
+#### `AttendanceCsvImporter`
 
-- as a new approval is added, create a new absence for every child in that approval from the beginning of the approval to the end of the approval (or to the day of onboarding, whichever comes first)
-
-### Attendance Entry
-
-#### _Internal Pie CSV Import - `AttendanceCsvImporter`_
+> **Assumptions/Decisions**
+> - if this is an import for attendance dates before the child was onboarded, a Pie staffer must add absences to the spreadsheet to have them count appropriately
+> 
+> **Behavior currently not defined**
+> - error handling
 
 - for each row:
   - if the row contains an attendance
@@ -33,21 +39,25 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
   - if the row contains an absence
     - if the child is scheduled for that day
       - if a `ServiceDay` exists for that day for that child
-        - change the `ServiceDay` to an absence w/ the `absence_type`
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
       - if a `ServiceDay` does not exist for that day for that child
-        - create a `ServiceDay` for that day for that child w/ the `absence_type`
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
     - if the child is not scheduled for that day
       - if a `ServiceDay` exists for that day for that child
-        - delete the `ServiceDay`, along with its `Attendances` if they exist
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
       - if a `ServiceDay` does not exist for that day for that child
-        - do nothing
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
 
-    > Behavior currently not defined 
-    > - error handling
+### Daily Wonderschool CSV Import
+#### `Wonderschool::Necc::AttendanceCsvImporter`
 
-#### _Daily Wonderschool CSV Import - `Wonderschool::Necc::AttendanceCsvImporter`_
-
-**Assumption: We do not get absences from Wonderschool**
+> **Assumptions/Decisions**
+> - We do not get absences from Wonderschool
+> - if an attendance exists in the wonderschool import one day and does not exist the next day, we will not find missing attendances and remove them
+>
+> **Behavior currently not defined**
+> - there is currently no user-facing way to delete Wonderschool attendances
+> - error handling
 
 - for each row:
   - if an attendance exists with the `wonderschool_id`
@@ -62,12 +72,11 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
       - create a `ServiceDay` for that day for that child
       - add an `Attendance` w/ the `check_in`, `check_out`, `wonderschool_id` associated to the new `ServiceDay`
 
-  > Behavior currently not defined 
-  > - if an attendance exists in the wonderschool import one day and does not exist the next day, we do not find missing attendances and remove them
-  > - there is currently no user-facing way to delete Wonderschool attendances
-  > - error handling
+### User-facing UI Attendance & Absence Creation
+#### `AttendanceBatchesController#create` & `ServiceDaysController#create`
 
-#### _User-facing UI Attendance & Absence Creation - `AttendanceBatchesController#create` & `ServiceDaysController#create`_
+> **Behavior currently not defined**
+> - error handling
 
 - for each record in the batch:
   - if the record contains an attendance
@@ -83,29 +92,33 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
   - if the record contains an absence
     - if the child is scheduled for that day
       - if a `ServiceDay` exists for that day for that child
-        - change the `ServiceDay` to an absence w/ the `absence_type`
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
       - if a `ServiceDay` does not exist for that day for that child
-        - create a `ServiceDay` for that day for that child w/ the `absence_type`
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
     - if the child is not scheduled for that day
       - if a `ServiceDay` exists for that day for that child
-        - delete the `ServiceDay`, along with its `Attendances` if they exist
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
       - if a `ServiceDay` does not exist for that day for that child
-        - do nothing
-
-  > Behavior currently not defined 
-  > - error handling
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
 
 ### Daily Automatic Absence Creation
+#### `Nebraska::AbsenceGenerator`
 
-> `Nebraska::AbsenceGenerator`
+> **Behavior currently not defined**
+> - error handling
 
-- for all children in Nebraska, generates a `ServiceDay` with `absence_type: "absence"` if the child is scheduled that day and if there's no current attendance
+- for all children in Nebraska, generates a `ServiceDay` with `absence_type: "automatic_absence_on_scheduled_day"` if the child is scheduled that day and if there's no current attendances on that `ServiceDay`
 
-### Attendance Edit
+## Attendance Edit
+-----------------
+### User-facing UI Attendance Edit
+#### `AttendancesController#update`
 
-#### _User-facing UI Attendance Edit - `AttendancesController#update`_
-
-**Assumption/Current Behavior: Users cannot edit WS attendance**
+> **Assumptions/Decisions**
+> - Users cannot edit WS attendance
+> 
+> **Behavior currently not defined**
+> - error handling
 
 - if the update changes an existing attendance
   - if the `check_in` or `check_out` are different
@@ -113,46 +126,40 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
   - if the `check_in` and `check_out` are the same
     - do nothing
 - if the update adds an additional attendance
-  - if a `ServiceDay` exists for that day for that child
-    - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay`
-  - if a `ServiceDay` does not exist for that day for that child
-    - create a `ServiceDay` for that day for that child
-    - add an `Attendance` w/ the `check_in`, `check_out`, associated to the new `ServiceDay`
+  - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay`
 - if the update changes the ServiceDay to an absence
   - if the child is scheduled for that day
-    - change the `ServiceDay` to an absence w/ the `absence_type`
+      - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
   - if the child is not scheduled for that day
-    - delete the `ServiceDay`, along with its `Attendances` if they exist
+    - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
 
-  > Behavior currently not defined 
-  > - error handling
+## Attendance Deletion
+-----------------
+### User-facing UI Attendance Delete
+#### `AttendancesController#destroy`
 
-### Attendance Deletion
-
-#### _User-facing UI Attendance Delete - `AttendancesController#destroy`_
-
-**Assumption/Current Behavior: Users cannot delete WS attendance**
+> **Assumptions/Decisions**
+> - Users cannot delete WS attendance
+> 
+> **Behavior currently not defined**
+> - error handling
 
 - delete the `Attendance` record
   - if there are more attendances for that day
     - do nothing
   - if there are no more attendances for that day
-    - if the child is scheduled for that day
-      - update the `ServiceDay` to `absence_type: "absence"`
-    - if the child is not scheduled for that day
-      - delete the `ServiceDay`
+    - delete the `ServiceDay`
 
-  > Behavior currently not defined 
-  > - error handling
+## Next Steps
+-----------------
+- Undefined behavior as listed above (explicitly call out possible error states)
+- Audit current behavior for differences
+- Write tickets to address ^
 
 ## Open Questions
-- Undefined behavior as listed above
-- Is this desired behavior?  When?
-> - if the child is not scheduled for that day  
->   - if a `ServiceDay` exists for that day for that child  
->     - delete the `ServiceDay`
-- How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
+-----------------
+- Implementation: How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
 
 ## Engineering Improvements Suggested
-
+-----------------
 - Move the reliant behavior (edits/attendances/ServiceDay absences, etc.) to their own commands and call them in explicit orders as necessary
