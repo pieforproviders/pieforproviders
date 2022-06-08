@@ -1,7 +1,6 @@
 # Attendances & Absences
 
 ## Definitions
------------------
 - absence  
 A day on which a child is scheduled to attend but does not - represented by a `ServiceDay` with an `absence_type`
 
@@ -12,14 +11,12 @@ A day on which a child attends, whether or not they are scheduled - represented 
 A record that `has_many` attendances (0 or more) and `belongs_to` a child and represents a single day in the child's timezone
 
 ## Absences added during Onboarding 
------------------
 ### Internal Onboarding CSV Import
 #### `Wonderschool::Necc::OnboardingCaseImporter`
 
 - NO-OP: as a new approval is added, we will not create any prior absences
 
 ## Attendance Entry
------------------
 ### Internal Pie CSV Import
 #### `AttendanceCsvImporter`
 
@@ -110,7 +107,6 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 - for all children in Nebraska, generates a `ServiceDay` with `absence_type: "automatic_absence_on_scheduled_day"` if the child is scheduled that day and if there's no current attendances on that `ServiceDay`
 
 ## Attendance Edit
------------------
 ### User-facing UI Attendance Edit
 #### `AttendancesController#update`
 
@@ -134,7 +130,6 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
     - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
 
 ## Attendance Deletion
------------------
 ### User-facing UI Attendance Delete
 #### `AttendancesController#destroy`
 
@@ -151,15 +146,12 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
     - delete the `ServiceDay`
 
 ## Next Steps
------------------
 - Undefined behavior as listed above (explicitly call out possible error states)
 - Audit current behavior for differences
 - Write tickets to address ^
 
 ## Open Questions
------------------
 - Implementation: How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
 
 ## Engineering Improvements Suggested
------------------
 - Move the reliant behavior (edits/attendances/ServiceDay absences, etc.) to their own commands and call them in explicit orders as necessary
