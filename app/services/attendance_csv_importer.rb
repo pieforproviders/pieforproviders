@@ -58,7 +58,7 @@ class AttendanceCsvImporter
     else
       child_approval = active_child_approval(check_in: check_in, child: child)
       attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
-      return if attendance
+      return if attendance # makes the import idempotent
 
       Commands::Attendance::Create.new(check_in: check_in, child_id: child.id, check_out: check_out).create
     end
