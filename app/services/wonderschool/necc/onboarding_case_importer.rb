@@ -191,8 +191,7 @@ module Wonderschool
         {
           effective_on: approval_period[:effective_on],
           expires_on: approval_period[:expires_on],
-          family_fee: approval_period[:family_fee],
-          allocated_family_fee: approval_period[:allocated_family_fee]
+          family_fee: approval_period[:family_fee]
         }
       end
 
@@ -209,7 +208,6 @@ module Wonderschool
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
             family_fee: find_field(approval_number, 'Family Fee', 'Allocated'),
-            allocated_family_fee: find_field(approval_number, 'Allocated')
           }
         end
       end
