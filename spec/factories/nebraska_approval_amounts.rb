@@ -14,15 +14,14 @@ end
 #
 # Table name: nebraska_approval_amounts
 #
-#  id                   :uuid             not null, primary key
-#  allocated_family_fee :decimal(, )      not null
-#  deleted_at           :date
-#  effective_on         :date             not null
-#  expires_on           :date             not null
-#  family_fee           :decimal(, )      not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  child_approval_id    :uuid             not null
+#  id                :uuid             not null, primary key
+#  deleted_at        :date
+#  effective_on      :date             not null
+#  expires_on        :date             not null
+#  family_fee        :decimal(, )      not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  child_approval_id :uuid             not null
 #
 # Indexes
 #
