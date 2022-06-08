@@ -83,9 +83,9 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 > **Assumptions/Decisions**
 > - We do not get absences from Wonderschool
 > - if an attendance exists in the wonderschool import one day and does not exist the next day, we will not find missing attendances and remove them
+> - will will not currently build a user-facing way to delete Wonderschool attendances
 >
 > **Behavior currently not defined**
-> - there is currently no user-facing way to delete Wonderschool attendances
 > - error handling
 
 - Potential Errors
@@ -236,13 +236,12 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
     - delete the `ServiceDay`
 
 ## Next Steps
-- Undefined behavior as listed above (explicitly call out possible error states)
-- Audit current behavior for differences
-- Write tickets to address ^
+- Rebecca to review error handling
+- Kate/Rebecca to write tickets to address new error handling
 
 ## Open Questions
-- Implementation: How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
-- What are we using Schedules for?  Decouple from ServiceDays
+- How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
+- What are we using Schedules for?  Decouple from ServiceDays?
 
 ## Engineering Improvements Suggested
 - Move the reliant behavior (edits/attendances/ServiceDay absences, etc.) to their own commands and call them in explicit orders as necessary
@@ -257,6 +256,7 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 - Add `absence_on_scheduled_day` to types
 - Add `absence_on_unscheduled_day` to types
 - Change input from all sources to include new absence types
+- Ensure consistent user authorization and policy scoping for Attendances and ServiceDays 
 
 ## Possible Error States
 ### Attendance - Model Validations
