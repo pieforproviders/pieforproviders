@@ -207,7 +207,7 @@ module Wonderschool
           {
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
-            family_fee: find_field(approval_number, 'Family Fee', 'Allocated'),
+            family_fee: find_field(approval_number, 'Family Fee', 'Allocated')
           }
         end
       end
