@@ -56,8 +56,7 @@ module Wonderschool
               .from(0).to(3)
               .and change(NebraskaApprovalAmount, :count)
               .from(0).to(6)
-              .and change(ServiceDay, :count)
-              .from(0).to(188 + 188 + 188 + 80 + 128) # number of weekdays since the start of each approval period
+              .and not_change(ServiceDay, :count)
               .and not_raise_error
             expect do
               described_class.new.call
