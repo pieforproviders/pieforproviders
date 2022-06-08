@@ -60,9 +60,9 @@ module Api
       def check_params
         case initial_attendance_params
         when ->(params) { !params.key?(:check_in) }
-          add_error_and_return_nil(:check_in)
+          Batchable.add_error_and_return_nil(:check_in, @errors)
         when ->(params) { !params.key?(:child_id) }
-          add_error_and_return_nil(:child_id)
+          Batchable.add_error_and_return_nil(:child_id, @errors)
         else
           true
         end
@@ -85,13 +85,6 @@ module Api
         @absence_type = attendance_params.dig(:service_day_attributes, :absence_type) || attendance_params[:absence]
       end
 
-      # def child_approval_id
-      #   id = Child
-      #        .find(initial_attendance_params[:child_id])
-      #        &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-      #   @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
-      # end
-
       def child
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
       end
@@ -100,7 +93,7 @@ module Api
         @service_day = ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
                        ServiceDay.create!(child: child, date: date, absence_type: absence_type)
       rescue StandardError => e
-        add_error_and_return_nil(:service_day, e.message)
+        Batchable.add_error_and_return_nil(:service_day, @errors, e.message)
       end
 
       def date
