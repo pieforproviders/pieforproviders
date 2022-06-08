@@ -139,7 +139,7 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
       - user does not have permissions
   - find the current child_approval
     - Potential Errors
-      - user does not have permissions
+      - there is no current child approval for that date for that child
   - if the record contains an attendance
     - if a `ServiceDay` exists for that day for that child
       - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay` and the active `ChildApproval`
