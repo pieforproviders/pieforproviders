@@ -5,5 +5,7 @@ class CreateNotifications < ActiveRecord::Migration[6.1]
       t.references :approval, foreign_key: true, type: :uuid
       t.timestamps
     end
+
+    add_index :notifications, %i[child_id approval_id], unique: true
   end
 end

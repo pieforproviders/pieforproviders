@@ -1,24 +1,20 @@
 # frozen_string_literal: true
 
 module Api
-	module V1
-		class NotificationsController < Api::V1::ApiController
-			before_action :set_notifications, only: %i[index]
+  module V1
+    # API for notifications
+    class NotificationsController < Api::V1::ApiController
+      before_action :set_notifications, only: %i[index]
 
-			def index
-				notifications_list = []
-				@notifications.each do |notification|
-					notify = NotificationBlueprint.render(notification)
-					notifications << notify
-				end
-				render json: notifications
-			end
+      def index
+        render json: NotificationBlueprint.render(@notifications)
+      end
 
-			private
+      private
 
-			def set_notifications
-				@notifications = policy_scope(Notifications.includes(child: {business: :user}))
-			end
-		end
-	end
+      def set_notifications
+        @notifications = policy_scope(Notification.includes(:child, :approval))
+      end
+    end
+  end
 end

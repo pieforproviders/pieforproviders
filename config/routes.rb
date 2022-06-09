@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       resources :attendances, only: %i[index update destroy]
       resources :service_days, only: %i[index create]
       resources :attendance_batches, only: :create
-      resources :notications, only: :index
+      resources :notifications, only: :index
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
     end
   end
@@ -84,6 +84,7 @@ end
 #                             service_days GET    /api/v1/service_days(.:format)                                                                    api/v1/service_days#index {:format=>:json}
 #                                          POST   /api/v1/service_days(.:format)                                                                    api/v1/service_days#create {:format=>:json}
 #                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
+#                            notifications GET    /api/v1/notifications(.:format)                                                                   api/v1/notifications#index {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}
 #                                          GET    /*path(.:format)                                                                                  static#fallback_index_html
 #            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create

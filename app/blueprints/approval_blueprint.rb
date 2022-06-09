@@ -2,7 +2,7 @@
 
 # Serializer for approvals
 class ApprovalBlueprint < Blueprinter::Base
-	view :notification do
-		fields :effective_on, :expires_on
-	end
+  view :notification do
+    fields :effective_on, :expires_on
+  end
 end
