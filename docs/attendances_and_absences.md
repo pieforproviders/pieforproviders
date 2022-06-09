@@ -57,25 +57,25 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
         - add an `Attendance` w/ the `check_in`, `check_out`, associated to the new `ServiceDay`
           - Potential Errors
             - [Attendance Model Validations](#attendance---model-validations)
-    - if the row contains an absence
-      - if the child is scheduled for that day
-        - if a `ServiceDay` exists for that day for that child
-          - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
-            - Potential Errors
+  - if the row contains an absence
+    - if the child is scheduled for that day
+      - if a `ServiceDay` exists for that day for that child
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
+          - Potential Errors
+            - [Service Day Model Validations](#service-day---model-validations)
+      - if a `ServiceDay` does not exist for that day for that child
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
+          - Potential Errors
               - [Service Day Model Validations](#service-day---model-validations)
-        - if a `ServiceDay` does not exist for that day for that child
-          - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
-            - Potential Errors
-                - [Service Day Model Validations](#service-day---model-validations)
-      - if the child is not scheduled for that day
-        - if a `ServiceDay` exists for that day for that child
-          - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
-            - Potential Errors
-              - [Service Day Model Validations](#service-day---model-validations)
-        - if a `ServiceDay` does not exist for that day for that child
-          - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
-            - Potential Errors
-              - [Service Day Model Validations](#service-day---model-validations)
+    - if the child is not scheduled for that day
+      - if a `ServiceDay` exists for that day for that child
+        - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
+          - Potential Errors
+            - [Service Day Model Validations](#service-day---model-validations)
+      - if a `ServiceDay` does not exist for that day for that child
+        - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
+          - Potential Errors
+            - [Service Day Model Validations](#service-day---model-validations)
 
 ### Daily Wonderschool CSV Import
 #### `Wonderschool::Necc::AttendanceCsvImporter`
