@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_05_214542) do
+ActiveRecord::Schema.define(version: 2022_06_07_193259) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -234,6 +234,15 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
 
+  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id"
+    t.uuid "approval_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["approval_id"], name: "index_notifications_on_approval_id"
+    t.index ["child_id"], name: "index_notifications_on_child_id"
+  end
+
   create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
     t.date "expires_on"
@@ -317,6 +326,8 @@ ActiveRecord::Schema.define(version: 2022_05_05_214542) do
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"
+  add_foreign_key "notifications", "approvals"
+  add_foreign_key "notifications", "children"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
   add_foreign_key "service_days", "schedules"

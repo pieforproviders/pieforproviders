@@ -55,4 +55,8 @@ class ChildBlueprint < Blueprinter::Base
       )
     end
   end
+
+  view :notification do
+    fields :first_name, :last_name
+  end
 end
