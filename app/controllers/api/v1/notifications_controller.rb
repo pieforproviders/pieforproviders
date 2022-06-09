@@ -13,7 +13,9 @@ module Api
       private
 
       def set_notifications
-        @notifications = policy_scope(Notification.includes(:child, :approval))
+        @notifications = policy_scope(Notification.includes(:child, :approval)).sort_by do |notif|
+          notif.approval.expires_on
+        end
       end
     end
   end

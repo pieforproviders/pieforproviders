@@ -6,12 +6,17 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
-  let!(:approval) { create(:approval, num_children: 3, business: business) }
-  let!(:children) { approval.children }
+  let!(:approval) { create(:approval, num_children: 1, business: business, expires_on: 3.days.after) }
+  let!(:early_approval) { create(:approval, num_children: 1, business: business, expires_on: 1.day.after) }
+  let!(:late_approval) { create(:approval, num_children: 1, business: business, expires_on: 29.days.after) }
+  let!(:children) { [approval.children.first, early_child, late_child] }
+  let!(:early_child) { early_approval.children.first }
+  let!(:late_child) { late_approval.children.first }
   let!(:non_owner_child) { create(:necc_child) }
 
   before do
-    create(:notification, child: children.first, approval: approval)
+    approvals = [approval, early_approval, late_approval]
+    children.length.times { |i| create(:notification, child: children[i], approval: approvals[i]) }
     create(:notification, child: non_owner_child, approval: non_owner_child.approvals.first)
   end
 
@@ -21,12 +26,19 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
     context 'when logged in as an admin user' do
       before { sign_in admin_user }
 
-      it 'returns the all notifications' do
+      it 'returns all notifications' do
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |x| x['first_name'] }).to include(children.first.first_name)
         expect(parsed_response.collect { |x| x['first_name'] }).to include(non_owner_child.first_name)
         expect(response).to match_response_schema('notifications')
+      end
+
+      it 'returns notifications in a chronological order' do
+        get '/api/v1/notifications', headers: headers
+        parsed_response = JSON.parse(response.body)
+        expires_on_arr = parsed_response.collect { |x| x['expires_on'] }
+        expect(expires_on_arr).to eq(expires_on_arr.sort)
       end
     end
 
@@ -39,6 +51,13 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
         expect(parsed_response.collect { |x| x['first_name'] }).to include(children.first.first_name)
         expect(parsed_response.collect { |x| x['first_name'] }).not_to include(non_owner_child.first_name)
         expect(response).to match_response_schema('notifications')
+      end
+
+      it 'returns notifications in a chronological order' do
+        get '/api/v1/notifications', headers: headers
+        parsed_response = JSON.parse(response.body)
+        expires_on_arr = parsed_response.collect { |x| x['expires_on'] }
+        expect(expires_on_arr).to eq(expires_on_arr.sort)
       end
     end
   end
