@@ -28,20 +28,29 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 
 - Potential Errors
   - can't find AWS source bucket
+    - log error to AppSignal w/ alerts to customer support & tech team
   - no files in AWS source bucket
+    - log error to AppSignal w/ alerts to customer support & tech team
   - no contents in file(s)
+    - log error to AppSignal w/ alerts to customer support & tech team
   - CSV parse failure of contents
+    - log error to AppSignal w/ alerts to customer support & tech team
   - can't find AWS archive bucket
+    - log error to AppSignal w/ alerts to tech team
   - can't archive file(s) in AWS archive bucket
+    - log error to AppSignal w/ alerts to tech team
 
 - for each row:
   - find `Business` by splitting the file name
     - Potential Errors
       - can't find business by properly-formatted file name
+        - log error to AppSignal w/ alerts to customer support & tech team
       - can't find business by improperly-formatted file name
+        - log error to AppSignal w/ alerts to customer support & tech team
   - find `Child` by `Business` and DHS ID or First & Last Name
     - Potential Errors
       - can't find child
+        - log error to AppSignal w/ alerts to customer support
   - if the row contains an attendance
     - if an `Attendance` exists for that child with the same check_in, check_out, and `ChildApproval`
       - do nothing
@@ -50,32 +59,39 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
         - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay` and the active `ChildApproval`
           - Potential Errors
             - [Attendance Model Validations](#attendance---model-validations)
+              - log error to AppSignal w/ alerts to customer support
       - if a `ServiceDay` does not exist for that day for that child
         - create a `ServiceDay` for that day for that child
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - log error to AppSignal w/ alerts to customer support
         - add an `Attendance` w/ the `check_in`, `check_out`, associated to the new `ServiceDay`
           - Potential Errors
             - [Attendance Model Validations](#attendance---model-validations)
+              - log error to AppSignal w/ alerts to customer support
   - if the row contains an absence
     - if the child is scheduled for that day
       - if a `ServiceDay` exists for that day for that child
         - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - log error to AppSignal w/ alerts to customer support
       - if a `ServiceDay` does not exist for that day for that child
         - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
           - Potential Errors
               - [Service Day Model Validations](#service-day---model-validations)
+                - log error to AppSignal w/ alerts to customer support
     - if the child is not scheduled for that day
       - if a `ServiceDay` exists for that day for that child
         - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - log error to AppSignal w/ alerts to customer support
       - if a `ServiceDay` does not exist for that day for that child
         - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - log error to AppSignal w/ alerts to customer support
 
 ### Daily Wonderschool CSV Import
 #### `Wonderschool::Necc::AttendanceCsvImporter`
@@ -90,20 +106,27 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 
 - Potential Errors
   - can't parse the URI
+    - log error to AppSignal w/ alerts to customer support & tech team
   - can't parse the CSV file
+    - log error to AppSignal w/ alerts to customer support & tech team
   - no contents in file
+    - log error to AppSignal w/ alerts to customer support & tech team
   - can't find AWS archive bucket
+    - log error to AppSignal w/ alerts to tech team
   - can't archive file(s) in AWS archive bucket
+    - log error to AppSignal w/ alerts to tech team
 
 - for each row:
   - find child by `wonderschool_id`
     - Potential Errors
       - can't find child
+        - log error to AppSignal w/ alerts to customer support
   - if an attendance exists with the `Attendance.wonderschool_id`
     - if the `check_in` or `check_out` are different
       - update the attendance w/ the `check_in`, `check_out`
         - Potential Errors
           - [Attendance Model Validations](#attendance---model-validations)
+            - log error to AppSignal w/ alerts to customer support
     - if the `check_in` and `check_out` are the same
       - do nothing
   - if an attendance does not exist with the `Attendance.wonderschool_id`
@@ -111,13 +134,16 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
       - add an `Attendance` w/ the `check_in`, `check_out`, `wonderschool_id` associated to that `ServiceDay`
         - Potential Errors
           - [Attendance Model Validations](#attendance---model-validations)
+            - log error to AppSignal w/ alerts to customer support
     - if a `ServiceDay` does not exist for that day for that child
       - create a `ServiceDay` for that day for that child
         - Potential Errors
           - [Service Day Model Validations](#service-day---model-validations)
+            - log error to AppSignal w/ alerts to customer support
       - add an `Attendance` w/ the `check_in`, `check_out`, `wonderschool_id` associated to the new `ServiceDay`
         - Potential Errors
           - [Attendance Model Validations](#attendance---model-validations)
+            - log error to AppSignal w/ alerts to customer support
 
 ### User-facing UI Attendance & Absence Creation
 #### `AttendanceBatchesController#create` & `ServiceDaysController#create`
@@ -127,56 +153,98 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 
 - Potential Errors
   - param batch is empty
+    - return error in API response
+    - display API error to user
+    - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - param batch is malformed
+    - return error in API response
+    - display API error to user
+    - log error to AppSignal for front-end w/ alerts to tech team & customer support
 
 - for each record in the batch:
   - find `Child` by child_id
     - Potential Errors
       - can't find child
+        - return error in API response
+        - display API error to user
+        - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - child_id is wrong/nil/malformed
+        - return error in API response
+        - display API error to user
+        - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - ensure user has permissions to create for that child
     - Potential Errors
       - user does not have permissions
+        - return error in API response
+        - display API error to user
+        - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - find the current child_approval
     - Potential Errors
       - there is no current child approval for that date for that child
+        - return error in API response
+        - display API error to user
+        - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - if the record contains an attendance
     - if a `ServiceDay` exists for that day for that child
       - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay` and the active `ChildApproval`
         - Potential Errors
           - [Attendance Model Validations](#attendance---model-validations)
+            - return error in API response
+            - display API error to user
+            - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - if the `ServiceDay` has an `absence_type`
         - change the `absence_type` to nil
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - return error in API response
+              - display API error to user
+              - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - if the `ServiceDay` has a nil `absence_type`
         - do nothing
     - if a `ServiceDay` does not exist for that day for that child
       - create a `ServiceDay` for that day for that child
         - Potential Errors
           - [Service Day Model Validations](#service-day---model-validations)
+            - return error in API response
+            - display API error to user
+            - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - add an `Attendance` w/ the `check_in`, `check_out`, associated to the new `ServiceDay`
         - Potential Errors
           - [Attendance Model Validations](#attendance---model-validations)
+            - return error in API response
+            - display API error to user
+            - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - if the record contains an absence
     - if the child is scheduled for that day
       - if a `ServiceDay` exists for that day for that child
         - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - return error in API response
+              - display API error to user
+              - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - if a `ServiceDay` does not exist for that day for that child
         - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_scheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - return error in API response
+              - display API error to user
+              - log error to AppSignal for front-end w/ alerts to tech team & customer support
     - if the child is not scheduled for that day
       - if a `ServiceDay` exists for that day for that child
         - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - return error in API response
+              - display API error to user
+              - log error to AppSignal for front-end w/ alerts to tech team & customer support
       - if a `ServiceDay` does not exist for that day for that child
         - create a `ServiceDay` for that day for that child w/ the `absence_type: "absence_on_unscheduled_day"`
           - Potential Errors
             - [Service Day Model Validations](#service-day---model-validations)
+              - return error in API response
+              - display API error to user
+              - log error to AppSignal for front-end w/ alerts to tech team & customer support
 
 ### Daily Automatic Absence Creation
 #### `Nebraska::AbsenceGenerator`
@@ -187,6 +255,7 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 - for all children in Nebraska, generates a `ServiceDay` with `absence_type: "automatic_absence_on_scheduled_day"` if the child is scheduled that day and if there's no current attendances on that `ServiceDay`
   - Potential Errors
     - [Service Day Model Validations](#service-day---model-validations)
+      - log error to AppSignal w/ alerts to tech team & customer support
 
 ## Attendance Edit
 ### User-facing UI Attendance Edit
@@ -203,21 +272,33 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
     - update the attendance w/ the `check_in`, `check_out`
       - Potential Errors
         - [Attendance Model Validations](#attendance---model-validations)
+          - return error in API response
+          - display API error to user
+          - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - if the `check_in` and `check_out` are the same
     - do nothing
 - if the update adds an additional attendance
   - add an `Attendance` w/ the `check_in`, `check_out` associated to that `ServiceDay` and the active `ChildApproval`
     - Potential Errors
       - [Attendance Model Validations](#attendance---model-validations)
+        - return error in API response
+        - display API error to user
+        - log error to AppSignal for front-end w/ alerts to tech team & customer support
 - if the update changes the ServiceDay to an absence
   - if the child is scheduled for that day
       - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_scheduled_day"`
         - Potential Errors
           - [Service Day Model Validations](#service-day---model-validations)
+            - return error in API response
+            - display API error to user
+            - log error to AppSignal for front-end w/ alerts to tech team & customer support
   - if the child is not scheduled for that day
     - change the `ServiceDay` to an absence w/ the `absence_type: "absence_on_unscheduled_day"`
       - Potential Errors
         - [Service Day Model Validations](#service-day---model-validations)
+          - return error in API response
+          - display API error to user
+          - log error to AppSignal for front-end w/ alerts to tech team & customer support
 
 ## Attendance Deletion
 ### User-facing UI Attendance Delete
@@ -234,10 +315,14 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
     - do nothing
   - if there are no more attendances for that day
     - delete the `ServiceDay`
+      - Potential Errors
+        - can't delete the `ServiceDay`
+          - return error in API response
+          - display API error to user
+          - log error to AppSignal for front-end w/ alerts to tech team & customer support
 
 ## Next Steps
-- Rebecca to review error handling
-- Kate/Rebecca to write tickets to address new error handling
+- Kate to write tickets to address new error handling
 
 ## Open Questions
 - How much should an attendance know about its service day?  Ideally - nothing - but how will the front-end/API consumers know when they need to explicitly turn a ServiceDay to an attendance, etc.?
@@ -245,7 +330,7 @@ A record that `has_many` attendances (0 or more) and `belongs_to` a child and re
 
 ## Engineering Improvements Suggested
 - Move the reliant behavior (edits/attendances/ServiceDay absences, etc.) to their own commands and call them in explicit orders as necessary
-- in AttendanceCsvImporter (internal) - don't update w/ absence if it's nil & existing record also has nil absence - just saves a db call (see: `app/services/attendance_csv_importer.rb:78`)
+- in AttendanceCsvImporter (internal) - don't update w/ absence if it's nil & existing record also has nil absence - just saves a db call (see: `app/services/attendance_csv_customer support.rb:78`)
 - find another way to get Business from AttendanceCsvImporter rather than file name
 - get Business at the top of the AttendanceCsvImporter and set for each file (we're currently setting it in every row)
 - Better batching behavior (AttendanceBatchesController is not my fave)
