@@ -7,6 +7,7 @@ class Approval < UuidApplicationRecord
   has_many :child_approvals, dependent: :destroy, inverse_of: :approval, autosave: true
   has_many :children, through: :child_approvals
   has_many :illinois_approval_amounts, through: :child_approvals
+  has_many :notifications, dependent: :destroy
 
   accepts_nested_attributes_for :child_approvals, :children
 
