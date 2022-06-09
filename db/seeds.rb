@@ -154,6 +154,7 @@ def create_case(first_name:,
                 date_of_birth: Faker::Date.between(from: MAX_BIRTHDAY, to: MIN_BIRTHDAY),
                 copay: Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000),
                 add_expired_approval: false,
+                add_expiring_approval: false,
                 dhs_id: nil)
 
   frequency = copay ? Approval::COPAY_FREQUENCIES.sample : nil
@@ -176,6 +177,16 @@ def create_case(first_name:,
       effective_on: effective_on - 1.year,
       expires_on: effective_on - 1.day
     )
+  end
+
+  if add_expiring_approval
+    approvals << Approval.find_or_create_by!(
+      case_number: case_number,
+      copay_cents: copay ? copay - 1200 : nil,
+      copay_frequency: frequency,
+      effective_on: effective_on - 1.year,
+      expires_on: 20.days.after
+      )
   end
 
   child = Child.find_or_initialize_by(business: business,
@@ -243,6 +254,7 @@ create_case(first_name: 'Jasveen',
             add_expired_approval: true,
             dhs_id: '5678')
 create_case(first_name: 'Manuel', last_name: 'Céspedes', business: @business_nebraska, dhs_id: '1234')
+create_case(first_name: 'Kevin', last_name: 'Chen', case_number: '1234567A', add_expiring_approval: true)
 
 puts_records_in_db(Child)
 

@@ -1,0 +1,19 @@
+{
+	"properties" : {
+		"effective_on": {
+			"type": "string",
+			"format" : "date"
+		},
+		"expires_on": {
+			"type": "string",
+			"format" : "date"
+		},
+		"first_name": {
+			"type": "string"
+		},
+		"last_name": {
+			"type": "string"
+		}
+	},
+	"type" : "object"
+}

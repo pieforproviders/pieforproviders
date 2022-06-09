@@ -5,6 +5,19 @@
     "version": "v1"
   },
   "paths": {
+    "/api/v1/notifications" :{
+      "get" : {
+        "summary" : "get all notifications for a user",
+        "tags" : [
+          "notifications"
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "notifications found"
+          }
+        }
+      }
+    },
     "/api/v1/businesses": {
       "get": {
         "summary": "lists all businesses for a user",
