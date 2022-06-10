@@ -3,13 +3,13 @@
 # Multiple children for expiring notification? One for each kid or a single one?
 class NotificationGenerator
   def call
-    Approval.where('expires_on <= ?', 30.days.after).each do |approval|
-      approval.child_approvals.each do |child_approval|
-        generate_notification(approval.id, child_approval.child_id)
+    Notification.destroy_all
+    sql = "Select approval_id, child_id, max(expires_on) from (select * from child_approvals inner join approvals on child_approvals.approval_id = approvals.id) as bigtable group by child_id, approval_id;"
+    ActiveRecord::Base.connection.execute(sql).each do |record|
+      if record["max"].between?(0.days.after, 30.days.after)
+        generate_notification(record["approval_id"], record["child_id"])
       end
     end
-
-    Notification.joins(:approval).where('approvals.expires_on < ?', 0.days.ago).each(&:destroy)
   end
 
   private
