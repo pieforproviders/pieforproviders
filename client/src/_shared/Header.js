@@ -162,7 +162,7 @@ export function Header() {
         className="w-8 mr-2"
       />
       {windowWidth > 768 && userStateIsNE ? (
-        <div className="flex-grow ml-10">
+        <div className="ml-10 grow">
           <div className="flex">
             <div
               className={`header-nav-button -mb-4 pb-4 ${
@@ -197,9 +197,7 @@ export function Header() {
           </div>
         </div>
       ) : (
-        <div className={`text-2xl font-semibold flex-grow`}>
-          Pie for Providers
-        </div>
+        <div className={`text-2xl font-semibold grow`}>Pie for Providers</div>
       )}
       {windowWidth > 768 ? renderDesktopMenu() : renderMobileMenu()}
     </header>

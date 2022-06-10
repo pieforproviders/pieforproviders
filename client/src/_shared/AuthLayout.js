@@ -40,7 +40,7 @@ export function AuthLayout({
                   i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
                 }
                 text={i18n.language === 'en' ? 'Español' : 'English'}
-                classes="text-right no-underline p-0 h-auto flex-grow"
+                classes="text-right no-underline p-0 h-auto grow"
               />
               {location.pathname === '/login' ||
               location.pathname === '/signup' ? (
