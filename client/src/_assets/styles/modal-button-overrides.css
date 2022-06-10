@@ -1,0 +1,3 @@
+.ant-modal-footer > .ant-btn-primary:not(:hover) {
+  background-color: #006C9E;
+}

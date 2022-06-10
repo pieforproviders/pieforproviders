@@ -539,7 +539,7 @@ export function AttendanceView() {
             </div>
             <Button
               type="primary"
-              className="absolute"
+              className="absolute bg-primaryBlue"
               style={{ right: '3rem' }}
               onClick={() => {
                 sendGAEvent('attendance_input_clicked', {
