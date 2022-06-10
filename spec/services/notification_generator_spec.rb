@@ -34,8 +34,9 @@ RSpec.describe NotificationGenerator, type: :service do
 
     context 'when a valid approval for notification has been updated to a year later' do
       before do
-        create(:notification, child: expired_children.first, approval: expired_approval)
-        create(:approval, create_children: false, children: [expired_children.first], expires_on: 365.days.after)
+        valid = create(:approval, num_children: 1, expires_on: 20.days.after)
+        create(:notification, child: valid.children.first, approval: valid)
+        create(:approval, create_children: false, children: [valid.children.first], expires_on: 365.days.after)
       end
 
       it 'removes the notification' do
