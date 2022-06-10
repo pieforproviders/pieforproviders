@@ -4,7 +4,9 @@
 class NotificationGenerator
   def call
     Notification.destroy_all
-    sql = "Select approval_id, child_id, max(expires_on) from (select * from child_approvals inner join approvals on child_approvals.approval_id = approvals.id) as bigtable group by child_id, approval_id;"
+    sql = "select approval_id, child_id, max(expires_on) from " \
+          "(select * from child_approvals inner join approvals on child_approvals.approval_id = approvals.id) "\
+          "as bigtable group by approval_id, child_id;"
     ActiveRecord::Base.connection.execute(sql).each do |record|
       if record["max"].between?(0.days.after, 30.days.after)
         generate_notification(record["approval_id"], record["child_id"])
