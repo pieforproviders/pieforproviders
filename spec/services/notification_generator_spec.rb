@@ -1,0 +1,46 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe NotificationGenerator, type: :service do
+  let!(:expired_approval) { create(:approval, num_children: 3, expires_on: 1.day.before) }
+  let!(:expired_children) { expired_approval.children }
+
+  describe '#call' do
+    context 'when there are only expired approvals' do
+      it 'does not create any notifications' do
+        expect { described_class.new.call }.not_to change(Notification, :count)
+      end
+    end
+
+    context 'when there are both valid approvals and expired approvals' do
+      before { create(:approval, num_children: 3, expires_on: 20.days.after) }
+
+      it 'creates only notifications for valid approvals' do
+        expect { described_class.new.call }.to change(Notification, :count).from(0).to(3)
+      end
+    end
+
+    context 'when there is an expired notification' do
+      before do
+        create(:notification, child: expired_children.first, approval: expired_approval)
+        create(:approval, num_children: 3, expires_on: 20.days.after)
+      end
+
+      it 'clears expired notifications and generates new notifications' do
+        expect { described_class.new.call }.to change(Notification, :count).from(1).to(3)
+      end
+    end
+
+    context 'when an expired approval has been updated' do
+      before do
+        create(:notification, child: expired_children.first, approval: expired_approval)
+        create(:approval, create_children: false, children: [expired_children.first], expires_on: 20.days.after)
+      end
+
+      it 'clears expired approval and generates new notifications' do
+        expect { described_class.new.call }.not_to change(Notification, :count)
+      end
+    end
+  end
+end
