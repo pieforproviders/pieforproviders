@@ -39,7 +39,11 @@ module Wonderschool
         attendance = child.attendances.find_by(wonderschool_id: row['attendance_id'])
         update_attendance_and_service_day(attendance, child, row)
       rescue StandardError => e
-        send_appsignal_error('attendance-csv-importer', e, row['child_id'])
+        send_appsignal_error(
+          action: 'wonderschool-necc-attendance-csv-importer',
+          exception: e,
+          metadata: { child_id: row['child_id'] }
+        )
       end
 
       def update_attendance_and_service_day(attendance, child, row)

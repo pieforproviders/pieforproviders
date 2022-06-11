@@ -7,7 +7,14 @@ class DateParamValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     value.is_a?(Date) ? value : Time.zone.parse(value).to_date
   rescue TypeError, ArgumentError => e
-    send_appsignal_error('date-param-invalid', e, [record&.id, record&.class].join(', '))
+    send_appsignal_error(
+      action: 'date-param-invalid',
+      exception: e,
+      metadata: {
+        record_id: record&.id,
+        record_class: record&.class
+      }
+    )
     record.errors.add(attribute, e.message)
   end
 end
