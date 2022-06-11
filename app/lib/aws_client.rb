@@ -17,7 +17,7 @@ class AwsClient
       region: region
     )
   rescue StandardError => e
-    send_appsignal_error('aws-client', e)
+    send_appsignal_error(action: 'aws-client', exception: e)
   end
 
   def list_file_names(source_bucket)
@@ -26,7 +26,11 @@ class AwsClient
 
     file_names[:contents].map! { |file| file[:key] }
   rescue StandardError => e
-    send_appsignal_error('aws-list-file-names', e, source_bucket)
+    send_appsignal_error(
+      action: 'aws-list-file-names',
+      exception: e,
+      metadata: { source_bucket: source_bucket }
+    )
   end
 
   def get_file_contents(source_bucket, file_name)
@@ -35,19 +39,41 @@ class AwsClient
 
     object.body
   rescue StandardError => e
-    send_appsignal_error('aws-get-file-contents', e, [source_bucket, file_name].join(' - '))
+    send_appsignal_error(
+      action: 'aws-get-file-contents',
+      exception: e,
+      metadata: {
+        source_bucket: source_bucket,
+        file_name: file_name
+      }
+    )
   end
 
   def archive_file(source_bucket, archive_bucket, file_name)
     @client.copy_object({ bucket: archive_bucket, copy_source: "#{source_bucket}/#{file_name}", key: file_name })
     @client.delete_object({ bucket: source_bucket, key: file_name })
   rescue StandardError => e
-    send_appsignal_error('aws-archive-file', e, [source_bucket, archive_bucket, file_name].join(' - '))
+    send_appsignal_error(
+      action: 'aws-archive-file',
+      exception: e,
+      metadata: {
+        source_bucket: source_bucket,
+        archive_bucket: archive_bucket,
+        file_name: file_name
+      }
+    )
   end
 
   def archive_contents(archive_bucket, file_name, contents)
     @client.put_object({ bucket: archive_bucket, key: file_name, body: contents })
   rescue StandardError => e
-    send_appsignal_error('aws-archive-contents', e, [archive_bucket, file_name, contents].join(' - '))
+    send_appsignal_error(
+      action: 'aws-archive-contents',
+      exception: e,
+      metadata: {
+        archive_bucket: archive_bucket,
+        file_name: file_name
+      }
+    )
   end
 end

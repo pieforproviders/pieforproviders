@@ -42,7 +42,11 @@ module Wonderschool
 
         build_case
       rescue StandardError => e
-        send_appsignal_error('onboarding-case-importer', e, @row['Case number'])
+        send_appsignal_error(
+          action: 'onboarding-case-importer',
+          exception: e,
+          metadata: { case_number: @row['Case number'] }
+        )
       end
 
       def find_approval

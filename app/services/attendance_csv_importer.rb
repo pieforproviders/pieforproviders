@@ -45,7 +45,11 @@ class AttendanceCsvImporter
 
     create_attendance(row, child)
   rescue StandardError => e
-    send_appsignal_error('self-serve-attendance-csv-importer', e, child&.id)
+    send_appsignal_error(
+      action: 'self-serve-attendance-csv-importer',
+      exception: e,
+      metadata: { child_id: child&.id }
+    )
   end
   # rubocop:enable Metrics/MethodLength
 
