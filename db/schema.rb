@@ -240,7 +240,6 @@ ActiveRecord::Schema.define(version: 2022_06_07_193259) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["approval_id"], name: "index_notifications_on_approval_id"
-    t.index ["child_id", "approval_id"], name: "index_notifications_on_child_id_and_approval_id", unique: true
     t.index ["child_id"], name: "index_notifications_on_child_id"
   end
 

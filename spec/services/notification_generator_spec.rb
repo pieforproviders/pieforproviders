@@ -24,11 +24,32 @@ RSpec.describe NotificationGenerator, type: :service do
     context 'when there is an expired notification' do
       before do
         create(:notification, child: expired_children.first, approval: expired_approval)
+      end
+
+      it 'clears expired notifications' do
+        expect { described_class.new.call }.to change(Notification, :count).from(1).to(0)
+      end
+    end
+
+    context 'when there is an expired notification and valid notifications' do
+      before do
+        create(:notification, child: expired_children.first, approval: expired_approval)
         create(:approval, num_children: 3, expires_on: 20.days.after)
       end
 
       it 'clears expired notifications and generates new notifications' do
         expect { described_class.new.call }.to change(Notification, :count).from(1).to(3)
+      end
+    end
+
+    context 'when there is a depreciated approval and an updated approval' do
+      before do
+        valid = create(:approval, num_children: 1, expires_on: 20.days.after)
+        create(:approval, create_children: false, children: [valid.children.first], expires_on: 365.days.after)
+      end
+
+      it 'doesn\'t create a new notification' do
+        expect { described_class.new.call }.not_to change(Notification, :count)
       end
     end
 

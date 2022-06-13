@@ -19,9 +19,8 @@ end
 #
 # Indexes
 #
-#  index_notifications_on_approval_id               (approval_id)
-#  index_notifications_on_child_id                  (child_id)
-#  index_notifications_on_child_id_and_approval_id  (child_id,approval_id) UNIQUE
+#  index_notifications_on_approval_id  (approval_id)
+#  index_notifications_on_child_id     (child_id)
 #
 # Foreign Keys
 #
