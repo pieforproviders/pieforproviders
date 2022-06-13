@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Multiple children for expiring notification? One for each kid or a single one?
+# Creates notifications for each approval that is expiring within 30 days. Clears
+# expiring notifications and any notifications that have received updated approvals
 class NotificationGenerator
   def call
     approvals_without_notification = Approval.where.missing(:notifications).where('expires_on between ? and ?',

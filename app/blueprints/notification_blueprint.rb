@@ -2,9 +2,6 @@
 
 # Serializer for notifications
 class NotificationBlueprint < Blueprinter::Base
-  # association :child do |_child|
-  #  blueprint: ChildBlueprint, view: :notification
-  # end
   field :first_name do |notification|
     notification.child.first_name
   end
