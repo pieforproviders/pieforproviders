@@ -4,6 +4,8 @@
 class AwsClient
   include AppsignalReporting
 
+  class NoBucketFoundError < StandardError; end
+
   class NoFilesFoundError < StandardError; end
 
   class EmptyContentsError < StandardError; end
@@ -20,11 +22,24 @@ class AwsClient
     send_appsignal_error(action: 'aws-client', exception: e)
   end
 
-  def list_file_names(source_bucket)
-    file_names = @client.list_objects_v2({ bucket: source_bucket })
-    raise NoFilesFoundError if file_names.empty?
+  def find_bucket(name:)
+    raise NoBucketFoundError unless @client.list_buckets.buckets.map(&:name).include?(name)
 
-    file_names[:contents].map! { |file| file[:key] }
+    true
+  rescue StandardError => e
+    # binding.pry
+    send_appsignal_error(
+      action: 'aws-find-bucket',
+      exception: e,
+      metadata: { name: name }
+    )
+  end
+
+  def list_file_names(source_bucket)
+    bucket_objects = find_bucket(name: source_bucket) && @client.list_objects_v2({ bucket: source_bucket }).contents
+    raise NoFilesFoundError if bucket_objects.empty?
+
+    bucket_objects.map! { |object| object[:key] }
   rescue StandardError => e
     send_appsignal_error(
       action: 'aws-list-file-names',
@@ -34,10 +49,12 @@ class AwsClient
   end
 
   def get_file_contents(source_bucket, file_name)
-    object = @client.get_object({ bucket: source_bucket, key: file_name })
-    raise EmptyContentsError if object.blank?
+    contents = find_bucket(name: source_bucket) &&
+               @client.get_object({ bucket: source_bucket, key: file_name }).body.read
+    raise EmptyContentsError if contents.blank?
 
-    object.body
+    contents
+    # TODO: return entire object, csv parsers should check for object.content_type == 'text/csv'
   rescue StandardError => e
     send_appsignal_error(
       action: 'aws-get-file-contents',
@@ -50,6 +67,7 @@ class AwsClient
   end
 
   def archive_file(source_bucket, archive_bucket, file_name)
+    find_bucket(name: source_bucket) && find_bucket(name: archive_bucket)
     @client.copy_object({ bucket: archive_bucket, copy_source: "#{source_bucket}/#{file_name}", key: file_name })
     @client.delete_object({ bucket: source_bucket, key: file_name })
   rescue StandardError => e
@@ -65,6 +83,7 @@ class AwsClient
   end
 
   def archive_contents(archive_bucket, file_name, contents)
+    find_bucket(name: archive_bucket)
     @client.put_object({ bucket: archive_bucket, key: file_name, body: contents })
   rescue StandardError => e
     send_appsignal_error(

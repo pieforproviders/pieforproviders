@@ -9,7 +9,6 @@ module Wonderschool
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
       let!(:stubbed_client) { instance_double(AwsClient) }
-      let!(:stubbed_aws_s3_client) { instance_double(Aws::S3::Client, delete_object: nil) }
 
       let!(:onboarding_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data.csv')) }
       let!(:renewal_csv) do
@@ -178,7 +177,7 @@ module Wonderschool
             described_class.new.call
             expect(Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')).to be_nil
             expect(Child.find_by(first_name: 'Becky', last_name: 'Falzone')).to be_present
-            expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
+            expect(stubbed_client).to have_received(:archive_file)
           end
 
           it 'skips the child if all their existing details are the same' do
@@ -518,7 +517,7 @@ module Wonderschool
             described_class.new.call
             expect(Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')).to be_nil
             expect(Child.find_by(first_name: 'Becky', last_name: 'Falzone')).to be_present
-            expect(stubbed_aws_s3_client).not_to have_received(:delete_object)
+            expect(stubbed_client).to have_received(:archive_file)
           end
 
           it 'skips the child if all their existing details are the same' do
