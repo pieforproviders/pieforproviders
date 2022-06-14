@@ -343,12 +343,12 @@ export function Dashboard() {
         makeMonth={makeMonth}
         getDashboardData={getDashboardData}
       />
-      <DashboardStats summaryData={summaryData} />
-      {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
-        <div className="my-5">
+      <div className="flex md:flex-row xs:flex-col mb-10">
+        <DashboardStats summaryData={summaryData} />
+        {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
           <Notifications />
-        </div>
-      ) : null}
+        ) : null}
+      </div>
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
