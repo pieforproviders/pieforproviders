@@ -56,8 +56,7 @@ module Wonderschool
               .from(0).to(3)
               .and change(NebraskaApprovalAmount, :count)
               .from(0).to(6)
-              .and change(ServiceDay, :count)
-              .from(0).to(188 + 188 + 188 + 80 + 128) # number of weekdays since the start of each approval period
+              .and not_change(ServiceDay, :count)
               .and not_raise_error
             expect do
               described_class.new.call
@@ -115,8 +114,7 @@ module Wonderschool
               {
                 effective_on: Date.parse('2020-09-01'),
                 expires_on: Date.parse('2021-08-31'),
-                family_fee: 0,
-                allocated_family_fee: 0
+                family_fee: 0
               }
             )
             becky = Child.find_by(first_name: 'Becky', last_name: 'Falzone')
@@ -161,8 +159,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2020-11-24'),
                        expires_on: Date.parse('2021-05-23'),
-                       family_fee: Money.from_amount(60.00),
-                       allocated_family_fee: 60.00
+                       family_fee: Money.from_amount(60.00)
                      }
                    )
             expect(becky.child_approvals.first.nebraska_approval_amounts.find_by(
@@ -171,8 +168,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2021-05-24'),
                        expires_on: Date.parse('2021-11-23'),
-                       family_fee: Money.from_amount(85.00),
-                       allocated_family_fee: 85.00
+                       family_fee: Money.from_amount(85.00)
                      }
                    )
           end
@@ -222,8 +218,7 @@ module Wonderschool
             child.reload.nebraska_approval_amounts.first.update!(
               effective_on: Date.parse('2020-09-01'),
               expires_on: Date.parse('2021-08-31'),
-              family_fee: 0,
-              allocated_family_fee: 0
+              family_fee: 0
             )
             expect { described_class.new.call }
               .to change(Child, :count)
@@ -277,8 +272,7 @@ module Wonderschool
             child.reload.nebraska_approval_amounts.first.update!(
               effective_on: Date.parse('2020-09-01'),
               expires_on: Date.parse('2021-08-31'),
-              family_fee: 120,
-              allocated_family_fee: 120
+              family_fee: 120
             )
             expect { described_class.new.call }
               .to change(Child, :count)
@@ -299,7 +293,6 @@ module Wonderschool
             expect(child.child_approvals.first.special_needs_daily_rate).to be_nil
             expect(child.child_approvals.first.special_needs_hourly_rate).to be_nil
             expect(child.nebraska_approval_amounts.first.family_fee).to eq(0)
-            expect(child.nebraska_approval_amounts.first.allocated_family_fee).to eq(0)
           end
 
           it 'processes existing child with new approval details if new approval dates are different' do
@@ -461,8 +454,7 @@ module Wonderschool
               {
                 effective_on: Date.parse('2020-09-01'),
                 expires_on: Date.parse('2021-08-31'),
-                family_fee: 0,
-                allocated_family_fee: 0
+                family_fee: 0
               }
             )
             becky = Child.find_by(first_name: 'Becky', last_name: 'Falzone')
@@ -507,8 +499,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2020-11-24'),
                        expires_on: Date.parse('2021-05-23'),
-                       family_fee: Money.from_amount(60.00),
-                       allocated_family_fee: 60.00
+                       family_fee: Money.from_amount(60.00)
                      }
                    )
             expect(becky.child_approvals.first.nebraska_approval_amounts.find_by(
@@ -517,8 +508,7 @@ module Wonderschool
                      {
                        effective_on: Date.parse('2021-05-24'),
                        expires_on: Date.parse('2021-11-23'),
-                       family_fee: Money.from_amount(85.00),
-                       allocated_family_fee: 85.00
+                       family_fee: Money.from_amount(85.00)
                      }
                    )
           end
@@ -568,8 +558,7 @@ module Wonderschool
             child.reload.nebraska_approval_amounts.first.update!(
               effective_on: Date.parse('2020-09-01'),
               expires_on: Date.parse('2021-08-31'),
-              family_fee: 0,
-              allocated_family_fee: 0
+              family_fee: 0
             )
             expect { described_class.new.call }
               .to change(Child, :count)
@@ -623,8 +612,7 @@ module Wonderschool
             child.reload.nebraska_approval_amounts.first.update!(
               effective_on: Date.parse('2020-09-01'),
               expires_on: Date.parse('2021-08-31'),
-              family_fee: 120,
-              allocated_family_fee: 120
+              family_fee: 120
             )
             expect { described_class.new.call }
               .to change(Child, :count)
@@ -645,7 +633,6 @@ module Wonderschool
             expect(child.child_approvals.first.special_needs_daily_rate).to be_nil
             expect(child.child_approvals.first.special_needs_hourly_rate).to be_nil
             expect(child.nebraska_approval_amounts.first.family_fee).to eq(0)
-            expect(child.nebraska_approval_amounts.first.allocated_family_fee).to eq(0)
           end
 
           it 'processes existing child with new approval details if new approval dates are different' do

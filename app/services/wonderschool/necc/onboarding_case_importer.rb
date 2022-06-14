@@ -74,7 +74,6 @@ module Wonderschool
         @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
         update_child_approval
         update_nebraska_approval_amounts
-        create_absences
       end
 
       def update_overlapping_approval_amounts(period, existing_aa)
@@ -110,14 +109,6 @@ module Wonderschool
         params = nebraska_approval_amount_params(period)
                  .slice(:effective_on, :expires_on).merge(child_approval: @child_approval)
         @child.nebraska_approval_amounts.find_by(params)
-      end
-
-      def create_absences
-        today = Time.current.in_time_zone(@child.timezone)
-        # generate prior absences
-        (@approval.effective_on..([@approval.expires_on, today].min)).each do |date|
-          Nebraska::AbsenceGeneratorJob.perform_later(child: @child, date: date)
-        end
       end
 
       def approval_params
@@ -191,8 +182,7 @@ module Wonderschool
         {
           effective_on: approval_period[:effective_on],
           expires_on: approval_period[:expires_on],
-          family_fee: approval_period[:family_fee],
-          allocated_family_fee: approval_period[:allocated_family_fee]
+          family_fee: approval_period[:family_fee]
         }
       end
 
@@ -208,8 +198,7 @@ module Wonderschool
           {
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
-            family_fee: find_field(approval_number, 'Family Fee', 'Allocated'),
-            allocated_family_fee: find_field(approval_number, 'Allocated')
+            family_fee: find_field(approval_number, 'Family Fee', 'Allocated')
           }
         end
       end

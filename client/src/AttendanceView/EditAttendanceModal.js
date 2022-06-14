@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'antd'
+import '_assets/styles/modal-button-overrides.css'
 import { useTranslation } from 'react-i18next'
 import AttendanceDataCell from '_shared/AttendanceDataCell'
 

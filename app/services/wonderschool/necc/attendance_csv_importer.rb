@@ -46,6 +46,8 @@ module Wonderschool
         check_in = row['checked_in_at']
         check_out = row['checked_out_at']
         if attendance
+          # TODO: return unless check_in or check_out or absence_type are different
+          # TODO: this logic belongs in the command ^^^
           attendance.update!(
             child_approval: child.active_child_approval(check_in),
             check_in: check_in,

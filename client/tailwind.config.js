@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ['./src/**/*.js'],
+  content: ['./src/**/*.js'],
   theme: {
     extend: {
       colors: {
@@ -79,11 +79,5 @@ module.exports = {
       blue3: theme('colors.blue3')
     })
   },
-  plugins: [require('./tailwind/plugins/base')()],
-  variants: {
-    extend: {
-      fill: ['group-hover', 'group-focus'],
-      backgroundColor: ['group-hover', 'group-focus']
-    }
-  }
+  plugins: [require('./tailwind/plugins/base')()]
 }

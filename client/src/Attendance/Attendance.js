@@ -464,7 +464,7 @@ export function Attendance() {
       />
       <div className="flex justify-center">
         <PaddedButton
-          classes="mt-3 w-40"
+          classes="mt-3 w-40 bg-primaryBlue"
           text={t('save')}
           onClick={handleSave}
           disabled={latestError.current}
@@ -480,6 +480,7 @@ export function Attendance() {
         footer={[
           <Button
             type="primary"
+            className="bg-primaryBlue"
             key="ok"
             onClick={() => {
               setSuccessModalVisible(false)
