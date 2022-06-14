@@ -2,16 +2,23 @@
 
 require 'rails_helper'
 
-RSpec.xdescribe AppsignalReporting do
+RSpec.describe AppsignalReporting do
   let!(:included_class) { Class.new { include AppsignalReporting } }
   let!(:stubbed_appsignal) { double('Appsignal') }
-  let!(:exception) { double('StandardError') }
-  let!(:identifier) { 'identifier' }
+
+  before do
+    stub_const('Appsignal', stubbed_appsignal)
+    allow(stubbed_appsignal).to receive(:send_error)
+  end
 
   describe '#send_error' do
-    it "calls Appsignal's #send_error method with an exception and an identifier" do
-      included_class.new.send_appsignal_error(exception: exception, metadata: { identifier: identifier })
-      expect(stubbed_appsignal).to have_received(:send_error).with(exception).and_yield
+    it "calls stubbed_appsignal's #send_error method with required fields" do
+      included_class.new.send_appsignal_error(
+        action: 'action',
+        exception: StandardError,
+        metadata: { identifier: 'identifier' }
+      )
+      expect(stubbed_appsignal).to have_received(:send_error).with(StandardError)
     end
   end
 end

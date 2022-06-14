@@ -6,7 +6,8 @@ module AppsignalReporting
     Appsignal.send_error(exception) do |transaction|
       transaction.set_action(action)
       transaction.set_namespace(namespace) if namespace
-      transaction.params = { time: Time.current.to_s }.merge(metadata)
+      transaction.params = { time: Time.current.to_s }.merge(metadata || {})
     end
+    # TODO: catch an appsignal exception and.............?  mail it to myself?  :shrug:
   end
 end
