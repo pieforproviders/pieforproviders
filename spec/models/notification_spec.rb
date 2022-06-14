@@ -3,7 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Notification, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { is_expected.to belong_to(:child) }
+  it { is_expected.to belong_to(:approval) }
+
+  it 'validates the uniquness of approvals scoped to child' do
+    notif = create(:notification)
+    expect(notif).to validate_uniqueness_of(:approval).scoped_to(:child_id)
+  end
 end
 
 # == Schema Information

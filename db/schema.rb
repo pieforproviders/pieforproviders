@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_193259) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-06-14 01:19:45", null: false
+    t.datetime "month", default: "2022-06-14 16:25:30", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"

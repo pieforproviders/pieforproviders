@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :notification do
     child
-    approval
+    approval { child.approvals.first }
   end
 end
 

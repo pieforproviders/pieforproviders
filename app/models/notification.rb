@@ -3,7 +3,7 @@
 class Notification < ApplicationRecord
   belongs_to :child
   belongs_to :approval
-  validates :approval_id, uniqueness: { scope: :child_id }
+  validates :approval, uniqueness: { scope: :child_id }
 end
 
 # == Schema Information

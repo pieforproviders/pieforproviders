@@ -16,7 +16,7 @@ class Child < UuidApplicationRecord
   has_many :service_days, dependent: :destroy
   has_many :attendances, through: :service_days, dependent: :destroy
   has_many :nebraska_dashboard_cases, dependent: :destroy
-  has_one :notification, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   validates :approvals, presence: true
   validates :date_of_birth, date_param: true, presence: true
