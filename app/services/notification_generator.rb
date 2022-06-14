@@ -4,26 +4,48 @@
 # expiring notifications and any notifications that have received updated approvals
 class NotificationGenerator
   def call
-    approvals_without_notification = Approval.where.missing(:notifications).where('expires_on between ? and ?',
-                                                                                  0.days.after,
-                                                                                  30.days.after)
-    if approvals_without_notification.length.positive?
-      approvals_without_notification.each do |record|
-        record.children.each { |child| generate_notification(record.id, child.id) }
-      end
-    end
-
-    delete_notifications
+    sync_notifications
   end
 
   private
 
-  def delete_notifications
-    Approval.all.each do |record|
-      next if record.expires_on.between?(0.days.after, 30.days.after)
+  def sync_notifications
+    generate_notifications
+    delete_notifications
+  end
 
-      record.children.each do |child|
-        child.notification&.destroy
+  def generate_notifications
+    approvals_without_notification = Approval.where.missing(:notifications)\
+                                             .where('expires_on between ? and ?', 0.days.after, 30.days.after)
+    return unless approvals_without_notification.length.positive?
+
+    approvals_without_notification.each do |approval|
+      approval.children.each do |child|
+        generate_notification_for_child(child, approval)
+      end
+    end
+  end
+
+  def generate_notification_for_child(child, approval)
+    return if child.approvals.where(effective_on: approval.expires_on..).presence
+
+    generate_notification(approval.id, child.id)
+  end
+
+  def delete_notification_for_child(child, approval)
+    return unless child.approvals.where(effective_on: approval.expires_on..).presence
+
+    Notification.find_by(child: child, approval: approval).destroy
+  end
+
+  def delete_notifications
+    Approval.joins(:notifications).each do |approval|
+      if approval.expires_on < 0.days.after
+        approval.notifications.destroy_all
+        next
+      end
+      approval.children.each do |child|
+        delete_notification_for_child(child, approval)
       end
     end
   end

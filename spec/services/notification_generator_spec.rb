@@ -45,7 +45,11 @@ RSpec.describe NotificationGenerator, type: :service do
     context 'when there is a depreciated approval and an updated approval' do
       before do
         valid = create(:approval, num_children: 1, expires_on: 20.days.after)
-        create(:approval, create_children: false, children: [valid.children.first], expires_on: 365.days.after)
+        create(:approval,
+               create_children: false,
+               children: [valid.children.first],
+               expires_on: 365.days.after,
+               effective_on: 21.days.after)
       end
 
       it 'doesn\'t create a new notification' do
@@ -57,7 +61,11 @@ RSpec.describe NotificationGenerator, type: :service do
       before do
         valid = create(:approval, num_children: 1, expires_on: 20.days.after)
         create(:notification, child: valid.children.first, approval: valid)
-        create(:approval, create_children: false, children: [valid.children.first], expires_on: 365.days.after)
+        create(:approval,
+               create_children: false,
+               children: [valid.children.first],
+               expires_on: 365.days.after,
+               effective_on: 21.days.after)
       end
 
       it 'removes the notification' do
