@@ -15,8 +15,7 @@ class NotificationGenerator
   end
 
   def generate_notifications
-    approvals_without_notification = Approval.where.missing(:notifications)\
-                                             .where('expires_on between ? and ?', 0.days.after, 30.days.after)
+    approvals_without_notification = Approval.where.missing(:notifications).where(expires_on: 0.days.after..30.days.after)
     return unless approvals_without_notification.length.positive?
 
     approvals_without_notification.each do |approval|
