@@ -58,6 +58,6 @@
   "dependencies": {
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
-    "tailwindcss": "^3.1.2"
+    "tailwindcss": "^3.1.3"
   }
 }
