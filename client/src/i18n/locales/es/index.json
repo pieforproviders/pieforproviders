@@ -270,5 +270,11 @@
   "comingSoonMsg1": "Pie for Providers aún no está disponible en tu estado.",
   "comingSoonMsg2": "¡Tan pronto lleguemos a tu estado, te contactaremos!",
   "dontHaveAnAccount": "¿Aún no tienes una cuenta?",
-  "alreadyHaveAnAccount": "¿Ya tienes una cuenta?"
+  "alreadyHaveAnAccount": "¿Ya tienes una cuenta?",
+  "notifications": "NOTIFICACIONES",
+  "noNotifications1": "No tienes notificaciones actualmente",
+  "noNotifications2": "Te comunicaremos cuando haya algo nuevo.",
+  "subsidyAuth": "La autorización de ",
+  "subAuthExpires": "caduca el ",
+  "emailTo": "Envía la nueva autorización a "
 }

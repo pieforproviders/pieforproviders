@@ -270,5 +270,11 @@
   "comingSoonMsg1": "Pie for Providers is not yet available in your state.",
   "comingSoonMsg2": "We will let you know as soon as we are!",
   "dontHaveAnAccount": "Don’t have an account yet?",
-  "alreadyHaveAnAccount": "Already have an account?"
+  "alreadyHaveAnAccount": "Already have an account?",
+  "notifications": "NOTIFICATIONS",
+  "noNotifications1": "No notifications right now",
+  "noNotifications2": "We’ll let you know when there’s an update.",
+  "subsidyAuth": "subsidy authorization",
+  "subAuthExpires": "expires on ",
+  "emailTo": "Email the updated letter to "
 }
