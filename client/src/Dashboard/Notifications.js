@@ -6,22 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ExclamationCircleOutlined, MailOutlined } from '@ant-design/icons'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
-const mockMessages = [
-  {
-    first_name: 'Jasveen',
-    last_name: 'Khirwar',
-    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
-    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
-  },
-  {
-    first_name: 'Jane',
-    last_name: 'Queen',
-    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
-    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
-  }
-]
-
-const Notifications = ({ messages = mockMessages }) => {
+const Notifications = ({ messages }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -35,7 +20,7 @@ const Notifications = ({ messages = mockMessages }) => {
           <Divider />
         </div>
       }
-      dataSource={messages}
+      dataSource={messages.slice(0, 2)}
       locale={{
         emptyText: (
           <div className="flex">

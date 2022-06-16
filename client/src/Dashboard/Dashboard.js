@@ -331,7 +331,7 @@ export function Dashboard() {
 
       if (response.ok) {
         const resp = await response.json()
-        debugger
+
         setNotificationMessages(resp)
       }
     }
