@@ -7,7 +7,10 @@ class DemoAttendanceSeeder
   def call
     generate_attendances
   rescue StandardError => e
-    send_appsignal_error('seeding attendances', e)
+    send_appsignal_error(
+      action: 'seeding demo attendances',
+      exception: e
+    )
   end
 
   private
