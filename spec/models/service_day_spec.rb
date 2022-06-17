@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe ServiceDay, type: :model do
-  let(:service_day) { build(:service_day) }
+  let(:child) { create(:child) }
+  let(:service_day) { build(:service_day, child: child) }
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -37,15 +38,18 @@ RSpec.describe ServiceDay, type: :model do
 
     absence = build(
       :service_day,
-      child: service_day.child,
+      child: child,
       absence_type: 'covid_absence',
-      date: Helpers.prior_weekday(Time.current, 1)
+      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
     expect(absence).to be_valid
     expect(absence.errors.messages).to eq({})
 
     absence = build(
-      :service_day, child: service_day.child, absence_type: 'fake_reason', date: Helpers.prior_weekday(Time.current, 1)
+      :service_day,
+      child: child,
+      absence_type: 'fake_reason',
+      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
     expect(absence).not_to be_valid
     expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
@@ -53,9 +57,19 @@ RSpec.describe ServiceDay, type: :model do
 
   # scopes
   context 'with absences scopes' do
-    let(:absence) { create(:service_day, absence_type: 'absence', date: Helpers.prior_weekday(Time.current, 1)) }
+    let(:absence) do
+      create(
+        :service_day,
+        absence_type: 'absence',
+        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+      )
+    end
     let(:covid_absence) do
-      create(:service_day, absence_type: 'covid_absence', date: Helpers.prior_weekday(Time.current, 1))
+      create(
+        :service_day,
+        absence_type: 'covid_absence',
+        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+      )
     end
     let(:service_day_with_attendance) { create(:service_day) }
     let(:attendance) { create(:attendance, service_day: service_day) }
@@ -166,9 +180,11 @@ RSpec.describe ServiceDay, type: :model do
   describe '#total_time_in_care' do
     let!(:child) { create(:necc_child) }
     let!(:service_day) do
-      create(:service_day,
-             child: child,
-             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day)
+      create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
+      )
     end
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
@@ -233,7 +249,11 @@ RSpec.describe ServiceDay, type: :model do
 
     it 'for multiple check-ins with and without check-outs, returns attended duration if total is more' do
       child = create(:necc_child)
-      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
       create(
         :attendance,
         service_day: service_day,
@@ -248,7 +268,11 @@ RSpec.describe ServiceDay, type: :model do
 
     it 'with one or more check-ins, and none have a check-out, returns scheduled duration' do
       child = create(:necc_child)
-      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
       create(
         :attendance,
         service_day: service_day,
@@ -265,7 +289,11 @@ RSpec.describe ServiceDay, type: :model do
   describe '#tag_hourly_amount' do
     it 'returns correct hourly amount if decimal' do
       child = create(:necc_child)
-      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
       create(:nebraska_hourly_attendance,
              service_day: service_day,
              check_in: service_day.date + 2.hours,
@@ -277,7 +305,11 @@ RSpec.describe ServiceDay, type: :model do
 
     it 'returns correct hourly amount if integer' do
       child = create(:necc_child)
-      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
       create(:nebraska_hour_attendance,
              service_day: service_day,
              check_in: service_day.date + 2.hours,
@@ -291,7 +323,11 @@ RSpec.describe ServiceDay, type: :model do
   describe '#tag_daily_amount' do
     it 'returns correct daily amount' do
       child = create(:necc_child)
-      service_day = create(:service_day, child: child, date: Time.current.in_time_zone(child.timezone))
+      service_day = create(
+        :service_day,
+        child: child,
+        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      )
       create(:nebraska_daily_attendance, service_day: service_day)
       perform_enqueued_jobs
       service_day.reload

@@ -6,6 +6,7 @@ FactoryBot.define do
     date do
       Time.current.in_time_zone(child.timezone).at_beginning_of_day
     end
+    schedule { child.schedules.find_by(weekday: date.wday) }
 
     trait :absence do
       absence_type { ServiceDay::ABSENCE_TYPES.sample }

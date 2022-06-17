@@ -117,9 +117,6 @@ RSpec.describe AttendanceCsvImporter do
         .to receive(:archive_contents)
         .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
       described_class.new.call
-      # 3x for missing hermione, 1x for row with no ID or name, 2x for other business' child
-      # x2 for some reason?
-      expect(Rails.logger).to have_received(:tagged).exactly(12).times
 
       # rubocop:disable Layout/LineLength
       regex = /Business: [0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12} - child record for attendance not found \(dhs_id:( | ([^,]*)), check_in:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), check_out:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), absence:( absence| covid_absence| )\); skipping/

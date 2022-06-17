@@ -20,7 +20,8 @@ module Api
         # if the attendance is updated and either there are no service_day_attributes or
         # the update w/ the service_day_attributes works, render successfully
         # otherwise render errors
-        if @attendance.update(attendance_params)
+
+        if update_command
           render json: AttendanceBlueprint.render(
             @attendance,
             view: :with_child
@@ -42,6 +43,21 @@ module Api
       end
 
       private
+
+      def update_command
+        # TODO: move this to the service day update and remove nested attributes here
+        absence_type = if service_day_params&.keys&.include?('absence_type')
+                         service_day_params['absence_type']
+                       else
+                         @attendance.service_day.absence_type
+                       end
+        Commands::Attendance::Update.new(
+          attendance: @attendance,
+          check_in: attendance_params['check_in'] || @attendance.check_in,
+          check_out: attendance_params['check_out'] || @attendance.check_out,
+          absence_type: absence_type
+        ).update
+      end
 
       def filter_date
         if params[:filter_date]
