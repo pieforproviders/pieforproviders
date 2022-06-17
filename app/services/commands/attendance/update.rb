@@ -2,10 +2,10 @@
 
 module Commands
   module Attendance
-    # Command pattern to create an attendance, find or create its ServiceDay,
+    # Command pattern to update an attendance, associate or update its service day,
     # recalculate the ServiceDay calculated fields and recalculate the Dashboard
     class Update
-      attr_reader :absence_type, :attendance, :check_in, :check_out, :child, :wonderschool_id
+      attr_reader :absence_type, :attendance, :check_in, :check_out, :child
 
       def initialize(attendance:, absence_type:, check_in:, check_out:)
         @attendance = attendance
