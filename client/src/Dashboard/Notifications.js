@@ -8,6 +8,7 @@ import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
 const Notifications = ({ messages }) => {
   const { t, i18n } = useTranslation()
+  console.log('messages:', messages)
 
   return (
     <List
@@ -38,14 +39,8 @@ const Notifications = ({ messages }) => {
         )
       }}
       renderItem={item => {
-        const effectiveDate = dayjs(
-          item.effective_on.slice(5, 16),
-          'DD MMM YYYY'
-        )
-        const expirationDate = dayjs(
-          item.expiration_date.slice(5, 16),
-          'DD MMM YYYY'
-        )
+        const effectiveDate = dayjs(item.effective_on)
+        const expirationDate = dayjs(item.expires_on)
         return (
           <div className="flex items-start">
             <ExclamationCircleOutlined className="mr-3 text-xl text-red-500" />
