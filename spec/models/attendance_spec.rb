@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
   let(:service_day) { create(:service_day) }
+  let(:now) { Time.current }
   let(:child_approval) { service_day.child.child_approvals.first }
   let(:attendance) { build(:attendance, check_out: nil, service_day: service_day, child_approval: child_approval) }
 
@@ -13,30 +14,30 @@ RSpec.describe Attendance, type: :model do
 
   # this needs to get moved to the custom validator specs instead of inside models
   it 'validates check_in as a Time' do
-    attendance.update(check_in: Time.current)
+    attendance.update(check_in: now)
     expect(attendance).to be_valid
     attendance.check_in = "I'm a string"
     expect(attendance).not_to be_valid
     attendance.check_in = nil
     expect(attendance).not_to be_valid
-    attendance.check_in = Time.current.strftime('%Y-%m-%d %I:%M%P')
+    attendance.check_in = now.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance).to be_valid
-    attendance.check_in = Time.current.to_date
+    attendance.check_in = now.to_date
     expect(attendance).to be_valid
   end
 
   # this needs to get moved to the custom validator specs instead of inside models
   it 'validates check_out as an optional Time' do
-    attendance.update(check_out: Time.current)
+    attendance.update(check_out: now)
     expect(attendance).to be_valid
     attendance.check_out = "I'm a string"
     expect(attendance).not_to be_valid
     attendance.check_out = nil
     expect(attendance).to be_valid
-    attendance.check_out = Time.current.strftime('%Y-%m-%d %I:%M%P')
+    attendance.check_out = now.strftime('%Y-%m-%d %I:%M%P')
     expect(attendance).to be_valid
-    attendance.check_in = Time.current.to_date - 2.hours
-    attendance.check_out = Time.current.to_date
+    attendance.check_in = now.to_date - 2.hours
+    attendance.check_out = now.to_date
     expect(attendance).to be_valid
   end
 
@@ -59,8 +60,8 @@ RSpec.describe Attendance, type: :model do
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
     let(:current_attendance) do
-      service_day = create(:service_day, date: Time.current.in_time_zone(timezone).at_beginning_of_day)
-      create(:attendance, check_in: Time.current, child_approval: child_approval, service_day: service_day)
+      service_day = create(:service_day, date: now.in_time_zone(timezone).at_beginning_of_day)
+      create(:attendance, check_in: now, child_approval: child_approval, service_day: service_day)
     end
     let(:past_attendance) do
       time = Time.new(2020, 12, 1, 9, 31, 0, timezone)
@@ -85,8 +86,14 @@ RSpec.describe Attendance, type: :model do
     end
 
     describe '#for_week' do
-      let(:time) { Faker::Time.between(from: Time.current.at_beginning_of_week(:sunday), to: Time.current) }
-      let(:service_day) { create(:service_day, date: time.at_beginning_of_day, child: child_approval.child) }
+      let(:time) { Faker::Time.between(from: now.at_beginning_of_week(:sunday), to: now) }
+      let(:service_day) do
+        create(
+          :service_day,
+          date: time.in_time_zone(child_approval.child.timezone).at_beginning_of_day,
+          child: child_approval.child
+        )
+      end
       let(:current_attendance) do
         create(
           :attendance,
@@ -199,121 +206,62 @@ RSpec.describe Attendance, type: :model do
     end
   end
 
-  describe '#assign_new_service_day' do
-    let!(:child) { create(:necc_child) }
-    let!(:service_day) { create(:service_day, date: Time.current.in_time_zone(child.timezone).at_beginning_of_day) }
-    let!(:attendance) do
-      create(:nebraska_hourly_attendance,
-             check_in: service_day.date + 3.hours,
-             service_day: service_day,
-             child_approval: service_day.child.child_approvals.first)
-    end
-
-    it 'creates a new service day when check_in time is changed to different day' do
-      service_day_id = attendance.service_day.id
-      attendance.update!(check_in: attendance.check_in + 1.day, check_out: attendance.check_out + 1.day)
-      expect(attendance.service_day.id).not_to eq(service_day_id)
-    end
-
-    it 'keeps the same service day when check_in time update is still the same day' do
-      service_day_id = attendance.service_day.id
-      attendance.update!(check_in: attendance.check_in + 5.hours, check_out: attendance.check_out + 5.hours)
-      expect(attendance.service_day.id).to eq(service_day_id)
-    end
-
-    it 'assigned to an existing service day when check_in time is changed to different day' do
-      service_day = create(
-        :service_day,
-        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
-        child: attendance.child
-      )
-      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
-      expect(attendance.service_day).to eq(service_day)
-    end
-  end
-
-  describe '#remove_old_service_day' do
-    let!(:service_day) { create(:service_day) }
-    let!(:attendance) do
-      create(:nebraska_hourly_attendance,
-             check_in: service_day.date + 3.hours,
-             service_day: service_day,
-             child_approval: service_day.child.child_approvals.first)
-    end
-
-    it 'deletes old service day when updating to new date' do
-      old_service_day_id = attendance.service_day.id
-      create(
-        :service_day,
-        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
-        child: attendance.child
-      )
-      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
-      expect(ServiceDay.find_by(id: old_service_day_id)).to be_nil
-      expect(described_class.find_by(id: attendance.id)).to be_present
-    end
-
-    it 'does not delete old service day if it still has attendance' do
-      old_service_day_id = attendance.service_day.id
-      described_class.create!(
-        check_in: attendance.check_in + 45.minutes,
-        child_approval: attendance.child_approval,
-        service_day: attendance.service_day
-      )
-      create(
-        :service_day,
-        date: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day - 1.day,
-        child: attendance.child
-      )
-      attendance.update!(check_in: attendance.check_in - 1.day, check_out: attendance.check_out - 1.day)
-      expect(ServiceDay.find_by(id: old_service_day_id)).to be_present
-    end
-  end
-
   describe '#delete_or_mark_absent' do
-    let!(:service_day) { create(:service_day, date: Helpers.prior_weekday(Time.current, 1)) }
-    let!(:attendance) do
-      create(:nebraska_hourly_attendance,
-             check_in: service_day.date + 3.hours,
-             service_day: service_day,
-             child_approval: service_day.child.child_approvals.first)
+    let!(:child) { create(:child) }
+    let!(:service_day) do
+      create(
+        :service_day,
+        child: child,
+        date: Helpers.prior_weekday(now, 1).at_beginning_of_day
+      )
     end
+    let!(:attendance) do
+      create(
+        :nebraska_hourly_attendance,
+        check_in: service_day.date + 3.hours,
+        service_day: service_day,
+        child_approval: service_day.child.child_approvals.first
+      )
+    end
+
+    before { child.reload }
 
     it 'deletes the service day if this was the last attendance for that service day w/ no schedule' do
-      service_day_id = attendance.service_day.id
-      attendance&.service_day&.schedule&.destroy!
+      service_day.schedule&.destroy!
       attendance.service_day.reload
       attendance.destroy!
       ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all.pluck(:id)).not_to include(service_day_id)
+      expect(ServiceDay.all).not_to include(service_day)
     end
 
     it "doesn't delete the service day if this was the last attendance for that service day w/ a schedule" do
-      service_day_id = attendance.service_day.id
-      unless attendance.service_day.schedule
-        attendance.service_day.update(
-          schedule: create(:schedule,
-                           weekday: attendance.check_in.wday,
-                           effective_on: attendance.check_in - 5.days,
-                           expires_on: nil)
+      unless service_day.schedule
+        service_day.update!(
+          schedule: create(
+            :schedule,
+            weekday: attendance.check_in.in_time_zone(service_day.child.timezone).wday,
+            effective_on: attendance.check_in - 5.days,
+            expires_on: nil
+          )
         )
       end
       attendance.destroy!
       ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all.pluck(:id)).to include(service_day_id)
-      expect(attendance.service_day.absence_type).to eq('absence')
+      expect(ServiceDay.all).to include(service_day)
+      expect(service_day.absence_type).to eq('absence')
     end
 
     it 'does not delete the service day if this was not the last attendance for that service day' do
-      service_day_id = attendance.service_day.id
-      create(:nebraska_hourly_attendance,
-             child_approval: attendance.child_approval,
-             service_day: attendance.service_day,
-             check_in: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 3.hours,
-             check_out: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 6.hours)
+      create(
+        :nebraska_hourly_attendance,
+        child_approval: attendance.child_approval,
+        service_day: attendance.service_day,
+        check_in: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 3.hours,
+        check_out: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 6.hours
+      )
       attendance.destroy!
       ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all.pluck(:id)).to include(service_day_id)
+      expect(ServiceDay.all).to include(service_day)
     end
   end
 end

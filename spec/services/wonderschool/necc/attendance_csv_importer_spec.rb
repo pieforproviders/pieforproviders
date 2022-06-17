@@ -105,7 +105,6 @@ module Wonderschool
             .to receive(:archive_contents)
             .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
           described_class.new.call
-          expect(Rails.logger).to have_received(:tagged).exactly(8).times
           expect(Rails.logger)
             .to have_received(:info).with('Child with Wonderschool ID 1234 not in Pie; skipping').exactly(4).times
         end

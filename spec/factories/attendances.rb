@@ -5,6 +5,12 @@ require Rails.root.join('spec/support/helpers')
 FactoryBot.define do
   factory :attendance do
     child_approval
+    service_day do
+      create(:service_day,
+             date: check_in.in_time_zone(child_approval.child.timezone).at_beginning_of_day,
+             absence_type: nil,
+             child: child_approval.child)
+    end
 
     check_in do
       Faker::Time
