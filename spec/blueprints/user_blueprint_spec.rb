@@ -38,7 +38,9 @@ RSpec.describe UserBlueprint do
 
       before do
         child = create(:child, business: illinois_business)
-        service_day = create(:service_day, child: child, date: last_month)
+        service_day = create(:service_day,
+                             child: child,
+                             date: last_month.in_time_zone(child.timezone).at_beginning_of_day)
         create(:attendance,
                check_in: last_month,
                service_day: service_day,
@@ -58,7 +60,10 @@ RSpec.describe UserBlueprint do
       end
 
       it 'returns the as_of date for the last attendance in the prior month in Illinois' do
-        service_day = create(:service_day, date: last_month)
+        service_day = create(
+          :service_day,
+          date: last_month.in_time_zone(illinois_business.children.first.timezone).at_beginning_of_day
+        )
         attendance = create(:attendance, check_in: last_month, service_day: service_day)
         blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
@@ -105,7 +110,9 @@ RSpec.describe UserBlueprint do
     context "when there are approvals for this user's children" do
       before do
         child = create(:necc_child, business: nebraska_business)
-        service_day = create(:service_day, child: child, date: last_month.at_beginning_of_month)
+        service_day = create(:service_day,
+                             child: child,
+                             date: last_month.in_time_zone(child.timezone).at_beginning_of_month)
         create(:attendance,
                check_in: last_month,
                service_day: service_day,
@@ -133,7 +140,9 @@ RSpec.describe UserBlueprint do
 
       it 'returns the as_of date for the last attendance in the prior month' do
         child = create(:necc_child, business: nebraska_business)
-        service_day = create(:service_day, date: last_month, child: child)
+        service_day = create(:service_day,
+                             child: child,
+                             date: last_month.in_time_zone(child.timezone).at_beginning_of_day)
         attendance = create(:attendance,
                             child_approval: child.child_approvals.first,
                             check_in: last_month,

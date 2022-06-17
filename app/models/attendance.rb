@@ -2,11 +2,7 @@
 
 # Attendance of a child during a specific cycle for a child case
 class Attendance < UuidApplicationRecord
-  before_validation :round_check_in, :round_check_out
-  before_validation :calc_time_in_care, if: :child_approval
-  before_update :assign_new_service_day, if: :will_save_change_to_check_in?
-  after_update :remove_old_service_day, if: :saved_change_to_service_day_id?
-  after_save_commit :calculate_service_day
+  before_validation :round_check_in, :round_check_out, :calc_time_in_care
   # after_save_commit :update_dashboard
   after_destroy :delete_or_mark_absent, if: :service_day_has_no_attendances
 
@@ -77,41 +73,10 @@ class Attendance < UuidApplicationRecord
                         end
   end
 
-  def same_service_day?
-    service_day.date == check_in.in_time_zone(child.timezone).at_beginning_of_day
-  end
-
-  def assign_new_service_day
-    return if same_service_day?
-
-    self.service_day = ServiceDay.find_or_create_by(
-      child: child,
-      date: check_in.in_time_zone(child.timezone).at_beginning_of_day
-    )
-
-    return unless schedule_for_weekday
-
-    service_day.update(schedule: schedule_for_weekday)
-  end
-
-  def remove_old_service_day
-    previous_service_day = ServiceDay.find_by(id: service_day_id_previously_was)
-
-    previous_service_day.destroy if previous_service_day.attendances.blank?
-  end
-
-  def schedule_for_weekday
-    child_approval.child.schedules.active_on(check_in.to_date).for_weekday(check_in.wday).first
-  end
-
   def check_out_after_check_in
     return if check_out.blank? || check_in.blank?
 
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
-  end
-
-  def calculate_service_day
-    ServiceDayCalculatorJob.perform_later(service_day)
   end
 
   def service_day_has_no_attendances

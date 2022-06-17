@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
@@ -56,6 +57,7 @@ export function Dashboard() {
   )
   const [summaryData, setSummaryData] = useState([])
   const [tableData, setTableData] = useState([])
+  const [notificationMessages, setNotificationMessages] = useState([])
   const [dates, setDates] = useState({
     asOf: '',
     dateFilterValue: {
@@ -318,6 +320,22 @@ export function Dashboard() {
       }
     }
 
+    const getNotifications = async () => {
+      const response = await makeRequest({
+        type: 'get',
+        url: '/api/v1/notifications',
+        headers: {
+          Authorization: token
+        }
+      })
+
+      if (response.ok) {
+        const resp = await response.json()
+
+        setNotificationMessages(resp)
+      }
+    }
+
     if (Object.keys(user).length !== 0) {
       getDashboardData(dates?.dateFilterValue?.date)
     }
@@ -328,6 +346,10 @@ export function Dashboard() {
 
     if (businesses.length === 0) {
       getBusinessData()
+    }
+
+    if (notificationMessages.length === 0) {
+      getNotifications()
     }
     // Interesting re: refresh tokens - https://github.com/waiting-for-dev/devise-jwt/issues/7#issuecomment-322115576
     // still haven't found a better way around this - sometimes we really do
@@ -343,12 +365,12 @@ export function Dashboard() {
         makeMonth={makeMonth}
         getDashboardData={getDashboardData}
       />
-      <DashboardStats summaryData={summaryData} />
-      {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
-        <div className="my-5">
-          <Notifications />
-        </div>
-      ) : null}
+      <div className="flex mb-10 md:flex-row xs:flex-col">
+        <DashboardStats summaryData={summaryData} />
+        {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
+          <Notifications messages={notificationMessages} />
+        ) : null}
+      </div>
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}

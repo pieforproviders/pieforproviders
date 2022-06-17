@@ -9,7 +9,9 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::Attendances', type: :request do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:business) { create(:business, user: logged_in_user) }
-  let!(:child) { create(:child, business: business) }
+  let!(:child) do
+    create(:child, business: business, effective_date: '2021-9-15'.in_time_zone(logged_in_user.timezone) - 2.months)
+  end
 
   let!(:week_current_date) { '2021-9-15'.in_time_zone(child.timezone) } # Wednesday
   let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday

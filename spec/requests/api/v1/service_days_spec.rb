@@ -11,7 +11,14 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:other_business) { create(:business, :nebraska_ldds) }
-  let!(:child) { create(:child, last_name: 'zzzz', business: business) }
+  let!(:child) do
+    create(
+      :child,
+      last_name: 'zzzz',
+      business: business,
+      effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
+    )
+  end
   let!(:child_approval) { child.child_approvals.first }
   let!(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 
@@ -61,7 +68,11 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   end
 
   let!(:user_second_business_service_days) do
-    child = create(:child, business: user_second_business)
+    child = create(
+      :child,
+      business: user_second_business,
+      effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
+    )
     child_approval = child.child_approvals.first
     service_days = []
     3.times do
@@ -84,7 +95,11 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   end
 
   let!(:user_second_business_past_service_days) do
-    child = create(:child, business: user_second_business)
+    child = create(
+      :child,
+      business: user_second_business,
+      effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
+    )
     child_approval = child.child_approvals.first
     service_days = []
     3.times do |idx|
@@ -104,7 +119,11 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   end
 
   let!(:another_user_service_days) do
-    child = create(:child, business: other_business)
+    child = create(
+      :child,
+      business: other_business,
+      effective_date: '2021-09-15'.in_time_zone(other_business.user.timezone) - 3.months
+    )
     child_approval = child.child_approvals.first
     service_days = []
     3.times do
@@ -127,7 +146,11 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   end
 
   let!(:another_user_past_service_days) do
-    child = create(:child, business: other_business)
+    child = create(
+      :child,
+      business: other_business,
+      effective_date: '2021-09-15'.in_time_zone(other_business.user.timezone) - 3.months
+    )
     child_approval = child.child_approvals.first
     service_days = []
     3.times do |idx|

@@ -20,16 +20,17 @@ module Helpers
   end
 
   def self.next_attendance_day(child_approval:, date: nil)
-    service_days = child_approval.child.service_days
-    service_days.reload
-    if service_days.present?
-      service_days
-        .order(date: :desc)
-        .first.date.in_time_zone(child_approval.child.timezone)
-        .at_beginning_of_day + 1.day
-    else
-      date || Time.current.at_beginning_of_day
-    end
+    latest_day = latest_service_day(child_approval: child_approval)
+    (latest_day && (latest_day + 1.day)) ||
+      date.in_time_zone(child_approval.child.timezone) ||
+      Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_day
+  end
+
+  def self.latest_service_day(child_approval:)
+    days = child_approval.child.service_days.presence
+    return nil unless days
+
+    days.order(date: :desc).first.date.in_time_zone(child_approval.child.timezone).at_beginning_of_day
   end
 
   # rubocop:disable Metrics/MethodLength

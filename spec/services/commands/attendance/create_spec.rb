@@ -124,7 +124,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
         .and raise_error(ActiveRecord::RecordInvalid)
     end
 
-    it 'assigns a schedule when one is present' do
+    it 'assigns a schedule when one is present for that weekday' do
       described_class.new(
         check_in: check_in,
         check_out: check_in + 6.hours,
@@ -133,7 +133,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
       expect(ServiceDay.first.schedule).to be_present
     end
 
-    it 'assigns a schedule when there is no schedule' do
+    it 'does not assign a schedule when one is not present for that weekday' do
       described_class.new(
         check_in: check_in.prev_occurring(:saturday),
         check_out: check_in.prev_occurring(:saturday) + 6.hours,

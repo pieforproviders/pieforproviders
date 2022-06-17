@@ -2,11 +2,14 @@
 
 FactoryBot.define do
   factory :child do
+    transient do
+      effective_date { 9.months.ago }
+    end
     date_of_birth { (2.years.ago).strftime('%Y-%m-%d') }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     business
-    approvals { [create(:approval, create_children: false)] }
+    approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -24,10 +27,9 @@ FactoryBot.define do
       transient do
         effective_date { 6.months.ago }
       end
-
       business { create(:business, :nebraska_ldds) }
       wonderschool_id { SecureRandom.uuid }
-      approvals { [create(:approval, effective_on: effective_date, create_children: false)] }
+      approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
 
       after(:create) do |child, evaluator|
         create(:nebraska_approval_amount,
