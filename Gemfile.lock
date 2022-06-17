@@ -162,7 +162,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (2.15.1)
+    good_job (2.16.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -216,7 +216,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     mini_portile2 (2.8.0)
-    minitest (5.15.0)
+    minitest (5.16.0)
     monetize (1.11.0)
       money (~> 6.12)
     money (6.16.0)
@@ -282,7 +282,7 @@ GEM
       activesupport (>= 4.2)
       choice (~> 0.2.0)
       ruby-graphviz (~> 1.2)
-    rails-html-sanitizer (1.4.2)
+    rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
     railties (6.1.6)
       actionpack (= 6.1.6)
@@ -416,7 +416,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   flamegraph
-  good_job (~> 2.15.1)
+  good_job (~> 2.16.0)
   guard-rspec
   hash_dig_and_collect
   holidays
