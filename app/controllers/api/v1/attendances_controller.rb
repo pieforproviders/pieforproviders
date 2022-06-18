@@ -35,7 +35,9 @@ module Api
       def destroy
         # hard delete
         if @attendance
-          @attendance.destroy
+          Commands::Attendance::Delete.new(
+            attendance: @attendance
+          ).delete
           render status: :no_content
         else
           render status: :not_found

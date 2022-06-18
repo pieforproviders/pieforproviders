@@ -205,65 +205,6 @@ RSpec.describe Attendance, type: :model do
       expect(attendance.time_in_care.seconds).to eq(0.seconds)
     end
   end
-
-  describe '#delete_or_mark_absent' do
-    let!(:child) { create(:child) }
-    let!(:service_day) do
-      create(
-        :service_day,
-        child: child,
-        date: Helpers.prior_weekday(now, 1).at_beginning_of_day
-      )
-    end
-    let!(:attendance) do
-      create(
-        :nebraska_hourly_attendance,
-        check_in: service_day.date + 3.hours,
-        service_day: service_day,
-        child_approval: service_day.child.child_approvals.first
-      )
-    end
-
-    before { child.reload }
-
-    it 'deletes the service day if this was the last attendance for that service day w/ no schedule' do
-      service_day.schedule&.destroy!
-      attendance.service_day.reload
-      attendance.destroy!
-      ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all).not_to include(service_day)
-    end
-
-    it "doesn't delete the service day if this was the last attendance for that service day w/ a schedule" do
-      unless service_day.schedule
-        service_day.update!(
-          schedule: create(
-            :schedule,
-            weekday: attendance.check_in.in_time_zone(service_day.child.timezone).wday,
-            effective_on: attendance.check_in - 5.days,
-            expires_on: nil
-          )
-        )
-      end
-      attendance.destroy!
-      ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all).to include(service_day)
-      expect(service_day.absence_type).to eq('absence')
-    end
-
-    it 'does not delete the service day if this was not the last attendance for that service day' do
-      create(
-        :nebraska_hourly_attendance,
-        child_approval: attendance.child_approval,
-        service_day: attendance.service_day,
-        check_in: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 3.hours,
-        check_out: attendance.check_in.in_time_zone(attendance.child.timezone).at_beginning_of_day + 6.hours
-      )
-      attendance.destroy!
-      ServiceDay.all.map(&:reload)
-      expect(ServiceDay.all).to include(service_day)
-    end
-  end
 end
 # == Schema Information
 #
