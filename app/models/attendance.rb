@@ -4,7 +4,6 @@
 class Attendance < UuidApplicationRecord
   before_validation :round_check_in, :round_check_out, :calc_time_in_care
   # after_save_commit :update_dashboard
-  after_destroy :delete_or_mark_absent, if: :service_day_has_no_attendances
 
   belongs_to :child_approval
   belongs_to :service_day
@@ -77,14 +76,6 @@ class Attendance < UuidApplicationRecord
     return if check_out.blank? || check_in.blank?
 
     errors.add(:check_out, 'must be after the check in time') if check_out < check_in
-  end
-
-  def service_day_has_no_attendances
-    service_day.attendances.empty?
-  end
-
-  def delete_or_mark_absent
-    service_day.schedule ? service_day.update!(absence_type: 'absence') : service_day.destroy!
   end
 
   # def update_dashboard
