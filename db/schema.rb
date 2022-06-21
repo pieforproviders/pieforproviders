@@ -13,11 +13,10 @@
 ActiveRecord::Schema.define(version: 2022_06_21_165259) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "approvals", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "case_number"
     t.integer "copay_cents"
     t.string "copay_currency", default: "USD", null: false
@@ -33,7 +32,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["expires_on"], name: "index_approvals_on_expires_on"
   end
 
-  create_table "attendances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "check_in", null: false
     t.datetime "check_out"
     t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
@@ -50,7 +49,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["service_day_id"], name: "index_attendances_on_service_day_id"
   end
 
-  create_table "blocked_tokens", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "blocked_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "jti", null: false
     t.datetime "expiration", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -58,7 +57,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
   end
 
-  create_table "businesses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "license_type", null: false
     t.string "name", null: false
@@ -76,7 +75,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
 
-  create_table "child_approvals", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "child_approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "approval_id", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -87,16 +86,16 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.string "rate_type"
     t.uuid "rate_id"
+    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.date "deleted_at"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
-  create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "children", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
     t.uuid "business_id", null: false
@@ -117,13 +116,13 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
-  create_table "good_job_processes", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "state"
   end
 
-  create_table "good_jobs", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "queue_name"
     t.integer "priority"
     t.jsonb "serialized_params"
@@ -148,7 +147,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
-  create_table "illinois_approval_amounts", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "illinois_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "month", null: false
     t.integer "part_days_approved_per_week"
     t.integer "full_days_approved_per_week"
@@ -159,7 +158,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["child_approval_id"], name: "index_illinois_approval_amounts_on_child_approval_id"
   end
 
-  create_table "illinois_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "illinois_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "bronze_percentage"
     t.decimal "silver_percentage"
     t.decimal "gold_percentage"
@@ -179,7 +178,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["expires_on"], name: "index_illinois_rates_on_expires_on"
   end
 
-  create_table "nebraska_approval_amounts", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "nebraska_approval_amounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_approval_id", null: false
     t.date "effective_on", null: false
     t.date "expires_on", null: false
@@ -192,8 +191,8 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["expires_on"], name: "index_nebraska_approval_amounts_on_expires_on"
   end
 
-  create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-05 01:37:11", null: false
+  create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "month", default: "2022-06-14 16:25:30", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -214,7 +213,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["month", "child_id"], name: "index_nebraska_dashboard_cases_on_month_and_child_id", unique: true
   end
 
-  create_table "nebraska_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "region", null: false
     t.string "rate_type", null: false
     t.decimal "amount", null: false
@@ -233,7 +232,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
 
-  create_table "notifications", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id"
     t.uuid "approval_id"
     t.datetime "created_at", precision: 6, null: false
@@ -243,7 +242,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["child_id"], name: "index_notifications_on_child_id"
   end
 
-  create_table "schedules", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.date "effective_on", null: false
     t.date "expires_on"
     t.integer "weekday", null: false
@@ -260,7 +259,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["weekday"], name: "index_schedules_on_weekday"
   end
 
-  create_table "service_days", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "service_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "date", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -276,7 +275,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
   end
 
-  create_table "users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "full_name", null: false
     t.string "greeting_name"
