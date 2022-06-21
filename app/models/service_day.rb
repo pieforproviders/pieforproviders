@@ -23,6 +23,7 @@ class ServiceDay < UuidApplicationRecord
   validates :absence_type, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
   validates :date, date_time_param: true, presence: true
   validate :prevent_creation_of_absence_without_schedule
+  validates :child, uniqueness: { scope: :date }
 
   delegate :business, to: :child
   delegate :state, to: :child
@@ -156,9 +157,10 @@ end
 #
 # Indexes
 #
-#  index_service_days_on_child_id     (child_id)
-#  index_service_days_on_date         (date)
-#  index_service_days_on_schedule_id  (schedule_id)
+#  index_service_days_on_child_id           (child_id)
+#  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
+#  index_service_days_on_date               (date)
+#  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys
 #
