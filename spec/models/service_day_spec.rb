@@ -13,7 +13,7 @@ RSpec.describe ServiceDay, type: :model do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:date) }
 
-  fit 'validates the uniqueness of child_id scoped to date' do 
+  it 'validates the uniqueness of child_id scoped to date' do
     expect(service_day).to validate_uniqueness_of(:child).scoped_to(:date)
   end
 
