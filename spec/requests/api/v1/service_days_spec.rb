@@ -30,10 +30,10 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
 
   let!(:this_week_service_days) do
     service_days = []
-    3.times do
+    3.times do |idx|
       date = Helpers.next_attendance_day(
         child_approval: child_approval,
-        date: week_start_date
+        date: week_start_date + idx.days
       )
       service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
       service_days << service_day
@@ -75,10 +75,10 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     )
     child_approval = child.child_approvals.first
     service_days = []
-    3.times do
+    3.times do |idx|
       date = Helpers.next_attendance_day(
         child_approval: child_approval,
-        date: week_start_date
+        date: week_start_date + idx.days
       )
       service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
       service_days << service_day
@@ -126,10 +126,10 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     )
     child_approval = child.child_approvals.first
     service_days = []
-    3.times do
+    3.times do |idx|
       date = Helpers.next_attendance_day(
         child_approval: child_approval,
-        date: week_start_date
+        date: week_start_date + idx.days
       )
       service_day = create(:service_day, child: child, date: date.at_beginning_of_day)
       service_days << service_day
