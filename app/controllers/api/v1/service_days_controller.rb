@@ -12,9 +12,24 @@ module Api
         render json: ServiceDayBlueprint.render(@service_days)
       end
 
-      def update; end
+      # PUT /service_days
+      def update
+        if @service_day.update_attributes(service_day_params)
+          render json: @service_day, status: :updated
+        else
+          render json: @service_day.errors, status: :unprocessable_entity
+        end
+      end
 
-      def destroy; end
+      # DELETE /service_days
+      def destroy 
+        result = @service_day.destroy
+        if result
+          render json: result, status: :destroyed
+        else
+          render json: @service_day, status: :unprocessable_entity
+        end
+      end
 
       # POST /service_days
       def create
