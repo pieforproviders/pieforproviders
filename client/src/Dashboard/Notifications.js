@@ -53,7 +53,7 @@ const Notifications = ({ messages }) => {
                     {t('subsidyAuth') +
                       ' ' +
                       t('subAuthExpires') +
-                      effectiveDate.format('MMM D') +
+                      expirationDate.format('MMM D') +
                       '. '}
                   </>
                 ) : (
@@ -63,9 +63,9 @@ const Notifications = ({ messages }) => {
                       {item.first_name + ' ' + item.last_name + ' '}
                     </span>
                     {t('subAuthExpires') +
-                      effectiveDate.format('D') +
+                      expirationDate.format('D') +
                       ' de ' +
-                      effectiveDate.format('MMM') +
+                      expirationDate.format('MMM') +
                       '. '}
                   </>
                 )}
@@ -79,13 +79,13 @@ const Notifications = ({ messages }) => {
               </div>
               {i18n.language === 'en' ? (
                 <div className="mt-1 text-gray-400">
-                  {expirationDate.format('MMM D, YYYY') || ''}
+                  {effectiveDate.format('MMM D, YYYY') || ''}
                 </div>
               ) : (
                 <div className="mt-1 text-gray-400">
-                  {expirationDate.format('D') +
+                  {effectiveDate.format('D') +
                     ' de ' +
-                    expirationDate.format('MMM, YYYY')}
+                    effectiveDate.format('MMM, YYYY')}
                 </div>
               )}
               <Divider />
