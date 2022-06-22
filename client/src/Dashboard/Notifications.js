@@ -1,12 +1,33 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Divider, List } from 'antd'
+import { Button, Divider, List } from 'antd'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { ExclamationCircleOutlined, MailOutlined } from '@ant-design/icons'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
-const Notifications = ({ messages }) => {
+const mockMessages = [
+  {
+    first_name: 'Jasveen',
+    last_name: 'Khirwar',
+    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
+    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
+  },
+  {
+    first_name: 'Jane',
+    last_name: 'Queen',
+    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
+    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
+  },
+  {
+    first_name: 'Snoop',
+    last_name: 'Queen',
+    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
+    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
+  }
+]
+
+const Notifications = ({ setShowModal, showFooter = false }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -15,12 +36,12 @@ const Notifications = ({ messages }) => {
       header={
         <div className="text-lg font-semibold">
           <p>{`${t('notifications')} ${
-            messages.length > 0 ? `(${messages.length})` : ''
+            mockMessages.length > 0 ? `(${mockMessages.length})` : ''
           }`}</p>
           <Divider />
         </div>
       }
-      dataSource={messages.slice(0, 2)}
+      dataSource={showFooter ? mockMessages.slice(0, 2) : mockMessages}
       locale={{
         emptyText: (
           <div className="flex">
@@ -37,6 +58,15 @@ const Notifications = ({ messages }) => {
           </div>
         )
       }}
+      footer={
+        showFooter ? (
+          <div>
+            <Button type="link" onClick={() => setShowModal(true)}>
+              <span className="underline">See all notifications here</span>
+            </Button>
+          </div>
+        ) : null
+      }
       renderItem={item => {
         const effectiveDate = dayjs(item.created_at)
         const expirationDate = dayjs(item.expires_on)
@@ -98,7 +128,9 @@ const Notifications = ({ messages }) => {
 }
 
 Notifications.propTypes = {
-  messages: PropTypes.array
+  messages: PropTypes.array,
+  setShowModal: PropTypes.func,
+  showFooter: PropTypes.bool
 }
 
 export default Notifications
