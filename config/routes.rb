@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resources :businesses
       resources :children
       resources :attendances, only: %i[index update destroy]
-      resources :service_days, only: %i[index create]
+      resources :service_days, only: %i[index create update destroy]
       resources :attendance_batches, only: :create
       resources :notifications, only: :index
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'

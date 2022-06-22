@@ -5,11 +5,16 @@ module Api
     # API for user service_days
     class ServiceDaysController < Api::V1::ApiController
       before_action :set_service_days, only: %i[index]
+      before_action :set_service_day, only: %i[update destroy]
 
       # GET /service_days
       def index
         render json: ServiceDayBlueprint.render(@service_days)
       end
+
+      def update; end
+
+      def destroy; end
 
       # POST /service_days
       def create
@@ -27,6 +32,17 @@ module Api
       end
 
       private
+
+      def set_service_day
+        service_day = if params[:business].present?
+                        service_days_for_business.find_by(child_id: params[:child_id],\
+                                                          date: params[:date])
+                      else
+                        service_days_for_user.find_by(child_id: params[:child_id],\
+                                                      date: params[:date])
+                      end
+        @service_day = service_day.first
+      end
 
       def set_service_days
         @service_days = if params[:business].present?
