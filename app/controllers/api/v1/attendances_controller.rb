@@ -5,11 +5,10 @@ module Api
     # API for user attendances
     class AttendancesController < Api::V1::ApiController
       before_action :set_attendance, only: %i[update destroy]
+      before_action :set_attendances, only: %i[index]
 
       # GET /attendances
       def index
-        @attendances = policy_scope(Attendance).for_week(filter_date)
-
         render json: AttendanceBlueprint.render(
           @attendances.includes({ child_approval: :child }),
           view: :with_child
@@ -67,6 +66,10 @@ module Api
         else
           Time.current.at_end_of_day
         end
+      end
+
+      def set_attendances
+        @attendances = policy_scope(Attendance).for_week(filter_date)
       end
 
       def set_attendance
