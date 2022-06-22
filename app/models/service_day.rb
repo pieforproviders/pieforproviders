@@ -16,6 +16,8 @@ class ServiceDay < UuidApplicationRecord
   monetize :earned_revenue_cents, allow_nil: true
 
   ABSENCE_TYPES = %w[
+    absence_on_scheduled_day
+    absence_on_unscheduled_day
     absence
     covid_absence
   ].freeze
