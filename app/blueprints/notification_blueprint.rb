@@ -11,7 +11,5 @@ class NotificationBlueprint < Blueprinter::Base
   field :expires_on do |notification|
     notification.approval.expires_on
   end
-  field :effective_on do |notification|
-    notification.approval.effective_on
-  end
+  field :effective_on, &:created_at
 end
