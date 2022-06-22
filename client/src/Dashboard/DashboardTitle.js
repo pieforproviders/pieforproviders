@@ -106,9 +106,6 @@ export default function DashboardTitle({
               {t('addAttendance')} <PlusOutlined />
             </Button>
           </div>
-          <Typography.Text className="text-base">
-            {t('revenueProjections')}
-          </Typography.Text>
         </div>
       )}
     </div>

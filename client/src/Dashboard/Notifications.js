@@ -8,7 +8,6 @@ import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
 const Notifications = ({ messages }) => {
   const { t, i18n } = useTranslation()
-  console.log('messages:', messages)
 
   return (
     <List
