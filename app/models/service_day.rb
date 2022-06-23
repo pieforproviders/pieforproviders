@@ -34,6 +34,8 @@ class ServiceDay < UuidApplicationRecord
   scope :non_absences, -> { where(absence_type: nil) }
   scope :covid_absences, -> { where(absence_type: 'covid_absence') }
   scope :standard_absences, -> { where(absence_type: 'absence') }
+  scope :absence_on_scheduled_day, -> { where(absence_type: 'absence_on_scheduled_day')}
+  scope :absence_on_unscheduled_day, -> { where(absence_type: 'absence_on_unscheduled_day')}
 
   scope :for_month,
         lambda { |month = nil|
