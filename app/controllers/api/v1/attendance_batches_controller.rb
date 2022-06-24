@@ -102,8 +102,8 @@ module Api
 
       def check_scheduled_day
         day_of_week = Date.parse(@date.to_s).cwday
-        @service_day.update!(absence_type: \
-                               (if child.schedules.where(weekday: day_of_week, expires_on: ..@date)
+        @service_day.update!(absence_type:
+                               (if child.schedules.where(weekday: day_of_week, expires_on: @date..).presence
                                   'absence_on_scheduled_day'
                                 else
                                   'absence_on_unscheduled_day'
