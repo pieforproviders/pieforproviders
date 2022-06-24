@@ -100,9 +100,23 @@ module Api
         @child = ChildApproval.find(attendance_params[:child_approval_id]).child
       end
 
+      def check_scheduled_day
+        day_of_week = Date.parse(@date.to_s).cwday
+        @service_day.update!(absence_type: \
+                               (if child.schedules.where(weekday: day_of_week, expires_on: ..@date)
+                                  'absence_on_scheduled_day'
+                                else
+                                  'absence_on_unscheduled_day'
+                                end))
+      end
+
       def service_day
-        @service_day = ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
+        @service_day = ServiceDay.find_by(child: child, date: date) || \
                        ServiceDay.create!(child: child, date: date, absence_type: absence_type)
+        if absence_type == 'absence'
+          check_scheduled_day
+        end
+        @service_day
       rescue StandardError => e
         add_error_and_return_nil(:service_day, e.message)
       end
