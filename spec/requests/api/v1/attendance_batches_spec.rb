@@ -26,6 +26,8 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
     context 'when sent with an absence string' do
       context 'with a permitted absence type on the service day' do
+        before { children[0].schedules.first.update!(expires_on: effective_date + 1.year) }
+
         let(:valid_absence_batch) do
           {
             attendance_batch:
@@ -57,6 +59,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
+        end
+
+        it 'creates a service day with an absence_on_scheduled_day absence_type' do
+          post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
+
+          expect(ServiceDay.where(absence_type: 'absence_on_scheduled_day').size).to eq(1)
         end
       end
 
@@ -286,6 +294,12 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
+        end
+
+        it 'generates a service day with an absence_on_unscheduled_day absence_type' do
+          post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
+
+          expect(ServiceDay.where(absence_type: 'absence_on_unscheduled_day').size).to eq(1)
         end
       end
 
