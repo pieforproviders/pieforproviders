@@ -37,8 +37,8 @@ RSpec.describe ServiceDay, type: :model do
     service_day.save!
 
     service_day.absence_type = 'covid_absence'
-    expect(service_day).not_to be_valid
-    expect(service_day.errors.messages[:absence_type]).to include("can't create for a day without a schedule")
+    expect(service_day).to be_valid
+    expect(service_day.errors.messages[:absence_type]).not_to include("can't create for a day without a schedule")
 
     absence = build(
       :service_day,
@@ -268,7 +268,8 @@ RSpec.describe ServiceDay, type: :model do
       expect(service_day.total_time_in_care).to eq(10.minutes)
     end
 
-    it 'calculates the right total when the service day is changed from an absence_on_scheduled_day back to a non-absence' do
+    it 'calculates the right total when the service day is changed from an absence_on_scheduled_day' \
+       'back to a non-absence' do
       attendance.update!(check_out: attendance.check_in + 6.hours)
       service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
       service_day.update!(absence_type: 'absence_on_scheduled_day')

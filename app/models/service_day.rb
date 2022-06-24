@@ -24,7 +24,6 @@ class ServiceDay < UuidApplicationRecord
 
   validates :absence_type, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
   validates :date, date_time_param: true, presence: true
-  validate :prevent_creation_of_absence_without_schedule
   validates :child, uniqueness: { scope: :date }
 
   delegate :business, to: :child
@@ -33,9 +32,9 @@ class ServiceDay < UuidApplicationRecord
   scope :absences, -> { where.not(absence_type: nil) }
   scope :non_absences, -> { where(absence_type: nil) }
   scope :covid_absences, -> { where(absence_type: 'covid_absence') }
-  scope :standard_absences, -> { where(absence_type: 'absence') }
-  scope :absence_on_scheduled_day, -> { where(absence_type: 'absence_on_scheduled_day')}
-  scope :absence_on_unscheduled_day, -> { where(absence_type: 'absence_on_unscheduled_day')}
+  scope :standard_absences, -> { where(absence_type: %w[absence absence_on_scheduled_day]) }
+  scope :absence_on_scheduled_day, -> { where(absence_type: 'absence_on_scheduled_day') }
+  scope :absence_on_unscheduled_day, -> { where(absence_type: 'absence_on_unscheduled_day') }
 
   scope :for_month,
         lambda { |month = nil|
@@ -68,12 +67,6 @@ class ServiceDay < UuidApplicationRecord
 
   def absence?
     absence_type.present?
-  end
-
-  def prevent_creation_of_absence_without_schedule
-    return unless absence?
-
-    errors.add(:absence_type, "can't create for a day without a schedule") unless schedule_for_weekday
   end
 
   def schedule_for_weekday
