@@ -113,9 +113,7 @@ module Api
       def service_day
         @service_day = ServiceDay.find_by(child: child, date: date) || \
                        ServiceDay.create!(child: child, date: date, absence_type: absence_type)
-        if absence_type == 'absence'
-          check_scheduled_day
-        end
+        check_scheduled_day if absence_type == 'absence'
         @service_day
       rescue StandardError => e
         add_error_and_return_nil(:service_day, e.message)
