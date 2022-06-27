@@ -6,28 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ExclamationCircleOutlined, MailOutlined } from '@ant-design/icons'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
-const mockMessages = [
-  {
-    first_name: 'Jasveen',
-    last_name: 'Khirwar',
-    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
-    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
-  },
-  {
-    first_name: 'Jane',
-    last_name: 'Queen',
-    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
-    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
-  },
-  {
-    first_name: 'Snoop',
-    last_name: 'Queen',
-    effective_on: 'Mon, 06 Jun 2022 18:01:18.814736000 UTC +00:00',
-    expiration_date: 'Mon, 01 Jun 2022 18:01:18.814736000 UTC +00:00'
-  }
-]
-
-const Notifications = ({ setShowModal, isModal = false }) => {
+const Notifications = ({ messages, setShowModal, isModal = false }) => {
   const { t, i18n } = useTranslation()
 
   return (
@@ -38,12 +17,12 @@ const Notifications = ({ setShowModal, isModal = false }) => {
       header={
         <div className="text-lg font-semibold">
           <p>{`${t('notifications')} ${
-            mockMessages.length > 0 ? `(${mockMessages.length})` : ''
+            messages.length > 0 ? `(${messages.length})` : ''
           }`}</p>
           {isModal ? null : <Divider />}
         </div>
       }
-      dataSource={isModal ? mockMessages : mockMessages.slice(0, 2)}
+      dataSource={isModal ? messages : messages.slice(0, 2)}
       locale={{
         emptyText: (
           <div className="flex">
@@ -61,7 +40,7 @@ const Notifications = ({ setShowModal, isModal = false }) => {
         )
       }}
       footer={
-        !isModal ? (
+        !isModal && messages.length > 0 ? (
           <div className="bg-blue4">
             <Button type="link" onClick={() => setShowModal(true)}>
               <span className="underline">See all notifications here</span>
@@ -120,7 +99,7 @@ const Notifications = ({ setShowModal, isModal = false }) => {
                     effectiveDate.format('MMM, YYYY')}
                 </div>
               )}
-              {!isModal || (isModal && mockMessages.length !== index + 1) ? (
+              {!isModal || (isModal && messages.length !== index + 1) ? (
                 <Divider />
               ) : null}
             </div>
