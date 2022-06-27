@@ -38,7 +38,7 @@ const Notifications = ({ messages }) => {
         )
       }}
       renderItem={item => {
-        const effectiveDate = dayjs(item.effective_on)
+        const effectiveDate = dayjs(item.created_at)
         const expirationDate = dayjs(item.expires_on)
         return (
           <div className="flex items-start">
