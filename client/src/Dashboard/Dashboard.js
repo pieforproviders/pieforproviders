@@ -374,7 +374,7 @@ export function Dashboard() {
           <Notifications
             messages={notificationMessages}
             setShowModal={setShowNotificationsModal}
-            showFooter={true}
+            isModal={false}
           />
         ) : null}
       </div>
@@ -405,7 +405,7 @@ export function Dashboard() {
         onOk={() => setShowNotificationsModal(false)}
         onCancel={() => setShowNotificationsModal(false)}
       >
-        <Notifications messages={notificationMessages} />
+        <Notifications messages={notificationMessages} isModal={true} />
       </Modal>
     </div>
   )
