@@ -3,8 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe ServiceDay, type: :model do
-  let(:child) { create(:child) }
+  let(:schedule) {create(:schedule, weekday: 1, expires_on: Time.current + 1.years)}
+  let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
+
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -52,18 +54,8 @@ RSpec.describe ServiceDay, type: :model do
     absence = build(
       :service_day,
       child: child,
-      absence_type: 'absence_on_scheduled_day',
-      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
-    )
-
-    expect(absence).to be_valid
-    expect(absence.errors.messages).to eq({})
-
-    absence = build(
-      :service_day,
-      child: child,
-      absence_type: 'absence_on_unscheduled_day',
-      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+      absence_type: 'absence',
+      date: Helpers.prior_weekday(Time.current,1).in_time_zone(child.timezone).at_beginning_of_day
     )
 
     expect(absence).to be_valid
@@ -77,6 +69,32 @@ RSpec.describe ServiceDay, type: :model do
     )
     expect(absence).not_to be_valid
     expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
+  end
+
+  context 'with absence types' do 
+    let(:unscheduled_absence) do
+      create(
+        :service_day,
+        absence_type: 'absence',
+        date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
+      )
+    end
+    let(:scheduled_absence) do
+      create(
+        :service_day,
+        absence_type: 'absence',
+        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+      )
+    end
+    describe '#set_absence_type_by_schedule' do 
+      fit 'changes absence type of unscheduled days to absence_on_unscheduled_day' do 
+        expect(unscheduled_absence.absence_type).to eq('absence_on_unscheduled_day')
+      end
+
+      fit 'changes absence type of scheduled days to absence_on_scheduled_day' do 
+        expect(scheduled_absence.absence_type).to eq('absence_on_scheduled_day')
+      end
+    end
   end
 
   # scopes
@@ -96,29 +114,12 @@ RSpec.describe ServiceDay, type: :model do
       )
     end
 
-    let(:absence_on_unscheduled_day) do
-      create(
-        :service_day,
-        absence_type: 'absence_on_unscheduled_day',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
-      )
-    end
-
-    let(:absence_on_scheduled_day) do
-      create(
-        :service_day,
-        absence_type: 'absence_on_scheduled_day',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
-      )
-    end
     let(:service_day_with_attendance) { create(:service_day) }
     let(:attendance) { create(:attendance, service_day: service_day) }
 
     it 'returns absences only' do
       expect(described_class.absences).to include(absence)
       expect(described_class.absences).to include(covid_absence)
-      expect(described_class.absences).to include(absence_on_unscheduled_day)
-      expect(described_class.absences).to include(absence_on_scheduled_day)
       expect(described_class.absences).not_to include(service_day_with_attendance)
     end
 
