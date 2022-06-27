@@ -27,21 +27,23 @@ const mockMessages = [
   }
 ]
 
-const Notifications = ({ setShowModal, showFooter = false }) => {
+const Notifications = ({ setShowModal, isModal = false }) => {
   const { t, i18n } = useTranslation()
 
   return (
     <List
-      className="px-8 mt-4 bg-blue4 md:ml-4 md:w-2/3 xl:w-3/4"
+      className={`px-8 ${
+        isModal ? 'my-4' : 'bg-blue4 mt-4 md:ml-4 md:w-2/3 xl:w-3/4'
+      }`}
       header={
         <div className="text-lg font-semibold">
           <p>{`${t('notifications')} ${
             mockMessages.length > 0 ? `(${mockMessages.length})` : ''
           }`}</p>
-          <Divider />
+          {isModal ? null : <Divider />}
         </div>
       }
-      dataSource={showFooter ? mockMessages.slice(0, 2) : mockMessages}
+      dataSource={isModal ? mockMessages : mockMessages.slice(0, 2)}
       locale={{
         emptyText: (
           <div className="flex">
@@ -59,15 +61,15 @@ const Notifications = ({ setShowModal, showFooter = false }) => {
         )
       }}
       footer={
-        showFooter ? (
-          <div>
+        !isModal ? (
+          <div className="bg-blue4">
             <Button type="link" onClick={() => setShowModal(true)}>
               <span className="underline">See all notifications here</span>
             </Button>
           </div>
         ) : null
       }
-      renderItem={item => {
+      renderItem={(item, index) => {
         const effectiveDate = dayjs(item.created_at)
         const expirationDate = dayjs(item.expires_on)
         return (
@@ -118,7 +120,9 @@ const Notifications = ({ setShowModal, showFooter = false }) => {
                     effectiveDate.format('MMM, YYYY')}
                 </div>
               )}
-              <Divider />
+              {!isModal || (isModal && mockMessages.length !== index + 1) ? (
+                <Divider />
+              ) : null}
             </div>
           </div>
         )
@@ -130,7 +134,7 @@ const Notifications = ({ setShowModal, showFooter = false }) => {
 Notifications.propTypes = {
   messages: PropTypes.array,
   setShowModal: PropTypes.func,
-  showFooter: PropTypes.bool
+  isModal: PropTypes.bool
 }
 
 export default Notifications
