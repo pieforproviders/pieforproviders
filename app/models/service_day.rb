@@ -4,7 +4,8 @@
 class ServiceDay < UuidApplicationRecord
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
-  after_save_commit :calculate_service_day, :set_absence_type_by_schedule
+  after_save_commit :calculate_service_day
+  before_save :set_absence_type_by_schedule
 
   belongs_to :child
   belongs_to :schedule, optional: true
@@ -140,12 +141,8 @@ class ServiceDay < UuidApplicationRecord
   def set_absence_type_by_schedule
     return unless absence_type == 'absence'
 
-    day_of_week = Date.parse(date.to_s).cwday
-    update!(absence_type: (if Schedule.where(child_id: child.id, weekday: day_of_week).presence
-                             'absence_on_scheduled_day'
-                           else
-                             'absence_on_unscheduled_day'
-                           end))
+    schedule = child.schedules.active_on(date).for_weekday(date.wday)
+    self.absence_type = schedule.presence ? 'absence_on_scheduled_day' : 'absence_on_unscheduled_day'
   end
 end
 # == Schema Information

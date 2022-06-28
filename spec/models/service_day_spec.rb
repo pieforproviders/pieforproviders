@@ -109,7 +109,7 @@ RSpec.describe ServiceDay, type: :model do
 
   # scopes
   context 'with absences scopes' do
-    let(:absence) do
+    let!(:absence) do
       create(
         :service_day,
         child: child,
@@ -117,7 +117,7 @@ RSpec.describe ServiceDay, type: :model do
         date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
-    let(:covid_absence) do
+    let!(:covid_absence) do
       create(
         :service_day,
         child: child,
@@ -126,12 +126,11 @@ RSpec.describe ServiceDay, type: :model do
       )
     end
 
-    let(:service_day_with_attendance) { create(:service_day) }
+    let!(:service_day_with_attendance) { create(:service_day) }
     let(:attendance) { create(:attendance, service_day: service_day) }
 
     it 'returns absences only' do
-      absence.reload
-      expect(described_class.absences.map(&:id)).to include(absence.id)
+      expect(described_class.absences).to include(absence)
       expect(described_class.absences).to include(covid_absence)
       expect(described_class.absences).not_to include(service_day_with_attendance)
     end
@@ -146,7 +145,7 @@ RSpec.describe ServiceDay, type: :model do
       absence.reload
       child.reload
       # binding.pry()
-      expect(described_class.standard_absences.map(&:id)).to include(absence.id)
+      expect(described_class.standard_absences).to include(absence)
       expect(described_class.standard_absences).not_to include(covid_absence)
       expect(described_class.standard_absences).not_to include(service_day_with_attendance)
     end
