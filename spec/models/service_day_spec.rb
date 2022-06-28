@@ -3,10 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe ServiceDay, type: :model do
-  let(:schedule) {create(:schedule, weekday: 1, expires_on: Time.current + 1.years)}
+  let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
-
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -55,7 +54,7 @@ RSpec.describe ServiceDay, type: :model do
       :service_day,
       child: child,
       absence_type: 'absence',
-      date: Helpers.prior_weekday(Time.current,1).in_time_zone(child.timezone).at_beginning_of_day
+      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
 
     expect(absence).to be_valid
@@ -71,27 +70,38 @@ RSpec.describe ServiceDay, type: :model do
     expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
   end
 
-  context 'with absence types' do 
-    let(:unscheduled_absence) do
-      create(
-        :service_day,
-        absence_type: 'absence',
-        date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
-      )
+  context 'with absence types' do
+    let(:type_schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
+    let(:type_child) { schedule.child }
+
+    before do
+      Schedule.where(child_id: type_child.id, weekday: [2, 3, 4, 5, 6, 7]).destroy_all
+      type_child.reload
     end
-    let(:scheduled_absence) do
-      create(
-        :service_day,
-        absence_type: 'absence',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
-      )
-    end
-    describe '#set_absence_type_by_schedule' do 
-      fit 'changes absence type of unscheduled days to absence_on_unscheduled_day' do 
+
+    describe '#set_absence_type_by_schedule' do
+      let(:unscheduled_absence) do
+        create(
+          :service_day,
+          child: type_child,
+          absence_type: 'absence',
+          date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
+        )
+      end
+      let(:scheduled_absence) do
+        create(
+          :service_day,
+          child: type_child,
+          absence_type: 'absence',
+          date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        )
+      end
+
+      it 'changes absence type of unscheduled days to absence_on_unscheduled_day' do
         expect(unscheduled_absence.absence_type).to eq('absence_on_unscheduled_day')
       end
 
-      fit 'changes absence type of scheduled days to absence_on_scheduled_day' do 
+      it 'changes absence type of scheduled days to absence_on_scheduled_day' do
         expect(scheduled_absence.absence_type).to eq('absence_on_scheduled_day')
       end
     end
@@ -102,6 +112,7 @@ RSpec.describe ServiceDay, type: :model do
     let(:absence) do
       create(
         :service_day,
+        child: child,
         absence_type: 'absence',
         date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
       )
@@ -109,6 +120,7 @@ RSpec.describe ServiceDay, type: :model do
     let(:covid_absence) do
       create(
         :service_day,
+        child: child,
         absence_type: 'covid_absence',
         date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
       )
@@ -118,7 +130,8 @@ RSpec.describe ServiceDay, type: :model do
     let(:attendance) { create(:attendance, service_day: service_day) }
 
     it 'returns absences only' do
-      expect(described_class.absences).to include(absence)
+      absence.reload
+      expect(described_class.absences.map(&:id)).to include(absence.id)
       expect(described_class.absences).to include(covid_absence)
       expect(described_class.absences).not_to include(service_day_with_attendance)
     end
@@ -130,7 +143,10 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     it 'returns standard absences only' do
-      expect(described_class.standard_absences).to include(absence)
+      absence.reload
+      child.reload
+      # binding.pry()
+      expect(described_class.standard_absences.map(&:id)).to include(absence.id)
       expect(described_class.standard_absences).not_to include(covid_absence)
       expect(described_class.standard_absences).not_to include(service_day_with_attendance)
     end
@@ -240,6 +256,7 @@ RSpec.describe ServiceDay, type: :model do
     before do
       perform_enqueued_jobs
       service_day.reload
+      child.reload
     end
 
     it 'calculates the right total when the service day is changed to an absence' do

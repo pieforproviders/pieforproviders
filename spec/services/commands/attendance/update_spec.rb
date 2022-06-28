@@ -64,7 +64,7 @@ RSpec.describe Commands::Attendance::Update, type: :service do
 
       expect(attendance.check_in).to eq(check_in)
       expect(attendance.check_out).to eq(check_out)
-      expect(attendance.service_day.absence_type).to eq('absence')
+      expect(attendance.service_day.absence_type).to eq('absence_on_scheduled_day')
       # TODO: And not call the update methods?
     end
 
