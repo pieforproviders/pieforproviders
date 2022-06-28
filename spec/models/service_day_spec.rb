@@ -75,7 +75,7 @@ RSpec.describe ServiceDay, type: :model do
     let(:type_child) { schedule.child }
 
     before do
-      Schedule.where(child_id: type_child.id, weekday: [2, 3, 4, 5, 6, 7]).destroy_all
+      type_child.schedules.where(weekday: [2, 3, 4, 5, 6, 7]).destroy_all
       type_child.reload
     end
 
