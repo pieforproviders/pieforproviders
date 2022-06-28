@@ -33,18 +33,22 @@ export function Header() {
   }
 
   const renderDesktopMenu = () => (
-    <>
+    <div className="ml-auto">
       {i18n.language === 'es' ? (
         <Button onClick={() => changeLanguage('en')}>{t('english')}</Button>
       ) : (
-        <Button onClick={() => changeLanguage('es')}>{t('spanish')}</Button>
+        <Button className="underline" onClick={() => changeLanguage('es')}>
+          {t('spanish')}
+        </Button>
       )}
       {isAuthenticated && (
         <Button type="link" onClick={logout}>
-          {t('logout')}
+          <div className="text-primaryBlue underline hover:text-blue2">
+            {t('logout')}
+          </div>
         </Button>
       )}
-    </>
+    </div>
   )
 
   const renderMobileMenu = () => {
@@ -130,6 +134,7 @@ export function Header() {
 
     return (
       <Dropdown
+        className="ml-auto"
         overlay={mobileMenu}
         overlayStyle={{ width: '100%' }}
         trigger="click"
