@@ -679,7 +679,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         post '/api/v1/service_days', params: params_with_absence, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
-        expect(parsed_response['absence_type']).to be_in(["absence_on_scheduled_day","absence_on_unscheduled_day"])
+        expect(parsed_response['absence_type']).to be_in(%w[absence_on_scheduled_day absence_on_unscheduled_day])
         expect(child.reload.service_days.pluck(:date))
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
@@ -717,7 +717,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         post '/api/v1/service_days', params: params_with_absence, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
-        expect(parsed_response['absence_type']).to be_in(["absence_on_scheduled_day","absence_on_unscheduled_day"])
+        expect(parsed_response['absence_type']).to be_in(%w[absence_on_scheduled_day absence_on_unscheduled_day])
         expect(child.reload.service_days.pluck(:date))
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')

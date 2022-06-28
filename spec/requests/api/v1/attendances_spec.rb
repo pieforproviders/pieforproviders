@@ -168,7 +168,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
           .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))
         expect(DateTime.parse(parsed_response['check_out']))
           .to eq(DateTime.parse(check_out.in_time_zone(child.timezone).to_s))
-        expect(attendance.service_day.absence_type).to eq('absence')
+        expect(attendance.service_day.absence_type).to eq('absence_on_scheduled_day')
       end
 
       it "cannot update a different user's attendance" do
@@ -222,7 +222,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
           .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))
         expect(DateTime.parse(parsed_response['check_out']))
           .to eq(DateTime.parse(check_out.in_time_zone(child.timezone).to_s))
-        expect(attendance.service_day.absence_type).to eq('absence')
+        expect(attendance.service_day.absence_type).to eq('absence_on_scheduled_day')
       end
     end
   end

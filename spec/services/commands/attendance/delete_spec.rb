@@ -67,7 +67,7 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
       service_day.reload
       expect(ServiceDay.all.count).to eq(1)
       expect(service_day.attendances).not_to include(attendance)
-      expect(service_day.absence_type).to eq('absence')
+      expect(service_day.absence_type).to eq('absence_on_scheduled_day')
       expect(service_day.total_time_in_care).to eq(8.hours)
     end
   end

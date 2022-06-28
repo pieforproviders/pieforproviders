@@ -63,7 +63,6 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
         it 'creates a service day with an absence_on_scheduled_day absence_type' do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
-
           expect(ServiceDay.where(absence_type: 'absence_on_scheduled_day').size).to eq(1)
         end
       end
