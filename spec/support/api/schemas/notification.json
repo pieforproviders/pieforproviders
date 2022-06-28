@@ -1,6 +1,6 @@
 {
 	"properties" : {
-		"effective_on": {
+		"created_at": {
 			"type": "string",
 			"format" : "date"
 		},
