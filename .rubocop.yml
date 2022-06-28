@@ -21,6 +21,8 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   CountAsOne: ['array', 'heredoc', 'hash']
+  Exclude: 
+    - app/models/service_day.rb
 
 Metrics/MethodLength:
   CountAsOne: ['array', 'heredoc', 'hash']
