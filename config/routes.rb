@@ -83,6 +83,9 @@ end
 #                                          DELETE /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#destroy {:format=>:json}
 #                             service_days GET    /api/v1/service_days(.:format)                                                                    api/v1/service_days#index {:format=>:json}
 #                                          POST   /api/v1/service_days(.:format)                                                                    api/v1/service_days#create {:format=>:json}
+#                              service_day PATCH  /api/v1/service_days/:id(.:format)                                                                api/v1/service_days#update {:format=>:json}
+#                                          PUT    /api/v1/service_days/:id(.:format)                                                                api/v1/service_days#update {:format=>:json}
+#                                          DELETE /api/v1/service_days/:id(.:format)                                                                api/v1/service_days#destroy {:format=>:json}
 #                       attendance_batches POST   /api/v1/attendance_batches(.:format)                                                              api/v1/attendance_batches#create {:format=>:json}
 #                            notifications GET    /api/v1/notifications(.:format)                                                                   api/v1/notifications#index {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}

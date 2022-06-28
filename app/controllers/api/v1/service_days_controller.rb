@@ -14,7 +14,7 @@ module Api
 
       # PUT /service_days
       def update
-        if @service_day.update_attributes(service_day_params)
+        if @service_day.update(service_day_params)
           render json: @service_day, status: :updated
         else
           render json: @service_day.errors, status: :unprocessable_entity
@@ -22,7 +22,7 @@ module Api
       end
 
       # DELETE /service_days
-      def destroy 
+      def destroy
         result = @service_day.destroy
         if result
           render json: result, status: :destroyed
