@@ -1,26 +1,28 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Divider, List } from 'antd'
+import { Button, Divider, List } from 'antd'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { ExclamationCircleOutlined, MailOutlined } from '@ant-design/icons'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 
-const Notifications = ({ messages }) => {
+const Notifications = ({ messages, setShowModal, isModal = false }) => {
   const { t, i18n } = useTranslation()
 
   return (
     <List
-      className="px-8 mt-4 bg-blue4 md:ml-4 md:w-2/3 xl:w-3/4"
+      className={`px-8 ${
+        isModal ? 'my-4' : 'bg-blue4 mt-4 md:ml-4 md:w-2/3 xl:w-3/4'
+      }`}
       header={
         <div className="text-lg font-semibold">
           <p>{`${t('notifications')} ${
             messages.length > 0 ? `(${messages.length})` : ''
           }`}</p>
-          <Divider />
+          {isModal ? null : <Divider />}
         </div>
       }
-      dataSource={messages.slice(0, 2)}
+      dataSource={isModal ? messages : messages.slice(0, 2)}
       locale={{
         emptyText: (
           <div className="flex">
@@ -37,8 +39,17 @@ const Notifications = ({ messages }) => {
           </div>
         )
       }}
-      renderItem={item => {
-        const effectiveDate = dayjs(item.effective_on)
+      footer={
+        !isModal && messages.length > 0 ? (
+          <div className="bg-blue4">
+            <Button type="link" onClick={() => setShowModal(true)}>
+              <span className="underline">See all notifications here</span>
+            </Button>
+          </div>
+        ) : null
+      }
+      renderItem={(item, index) => {
+        const effectiveDate = dayjs(item.created_at)
         const expirationDate = dayjs(item.expires_on)
         return (
           <div className="flex items-start">
@@ -88,7 +99,9 @@ const Notifications = ({ messages }) => {
                     effectiveDate.format('MMM, YYYY')}
                 </div>
               )}
-              <Divider />
+              {!isModal || (isModal && messages.length !== index + 1) ? (
+                <Divider />
+              ) : null}
             </div>
           </div>
         )
@@ -98,7 +111,9 @@ const Notifications = ({ messages }) => {
 }
 
 Notifications.propTypes = {
-  messages: PropTypes.array
+  messages: PropTypes.array,
+  setShowModal: PropTypes.func,
+  isModal: PropTypes.bool
 }
 
 export default Notifications

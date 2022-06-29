@@ -1,6 +1,7 @@
 /* eslint-disable no-debugger */
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Modal } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useProgress } from '_shared/_hooks/useProgress'
@@ -16,6 +17,7 @@ import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
+import '_assets/styles/notification-modal-overrides.css'
 
 const env = runtimeEnv()
 
@@ -67,6 +69,7 @@ export function Dashboard() {
     dateFilterMonths: []
   })
   const [activeKey, setActiveKey] = useState()
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false)
 
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
@@ -368,7 +371,11 @@ export function Dashboard() {
       <div className="flex mb-10 md:flex-row xs:flex-col">
         <DashboardStats summaryData={summaryData} />
         {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
-          <Notifications messages={notificationMessages} />
+          <Notifications
+            messages={notificationMessages}
+            setShowModal={setShowNotificationsModal}
+            isModal={false}
+          />
         ) : null}
       </div>
       <DashboardTable
@@ -391,6 +398,15 @@ export function Dashboard() {
         activeKey={activeKey}
         setActiveKey={handleDefinitionsPanel}
       />
+      <Modal
+        className="notifications-modal"
+        visible={showNotificationsModal}
+        cancelButtonProps={{ style: { display: 'none' } }}
+        onOk={() => setShowNotificationsModal(false)}
+        onCancel={() => setShowNotificationsModal(false)}
+      >
+        <Notifications messages={notificationMessages} isModal={true} />
+      </Modal>
     </div>
   )
 }
