@@ -5,7 +5,7 @@
 # This will be put on Heroku Scheduler once a day
 desc 'Create daily absences'
 task nebraska_daily_absences: :environment do
-  Child.nebraska.each do |_child|
+  Child.nebraska.each do |child|
     Nebraska::AbsenceGeneratorJob.perform_later(child: child)
   end
 end
