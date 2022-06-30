@@ -5,13 +5,14 @@ import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { ExclamationCircleOutlined, MailOutlined } from '@ant-design/icons'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
+import '_assets/styles/notification-list-overrides.css'
 
 const Notifications = ({ messages, setShowModal, isModal = false }) => {
   const { t, i18n } = useTranslation()
 
   return (
     <List
-      className={`px-8 ${
+      className={`notifications-list px-8 ${
         isModal ? 'my-4' : 'bg-blue4 mt-4 md:ml-4 md:w-2/3 xl:w-3/4'
       }`}
       header={
@@ -19,7 +20,9 @@ const Notifications = ({ messages, setShowModal, isModal = false }) => {
           <p>{`${t('notifications')} ${
             messages.length > 0 ? `(${messages.length})` : ''
           }`}</p>
-          {isModal ? null : <Divider />}
+          {isModal ? null : (
+            <Divider style={{ borderTop: '1px solid #bdbdbd' }} />
+          )}
         </div>
       }
       dataSource={isModal ? messages : messages.slice(0, 2)}
@@ -43,7 +46,9 @@ const Notifications = ({ messages, setShowModal, isModal = false }) => {
         !isModal && messages.length > 0 ? (
           <div className="bg-blue4">
             <Button type="link" onClick={() => setShowModal(true)}>
-              <span className="underline">See all notifications here</span>
+              <span className="underline text-base">
+                {t('seeAllNotifications')}
+              </span>
             </Button>
           </div>
         ) : null
@@ -100,7 +105,7 @@ const Notifications = ({ messages, setShowModal, isModal = false }) => {
                 </div>
               )}
               {!isModal || (isModal && messages.length !== index + 1) ? (
-                <Divider />
+                <Divider style={{ borderTop: '1px solid #bdbdbd' }} />
               ) : null}
             </div>
           </div>
