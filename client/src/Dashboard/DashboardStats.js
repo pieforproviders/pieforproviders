@@ -34,7 +34,10 @@ export default function DashboardStats({ summaryData }) {
               </Typography.Text>
             </p>
             <p>
-              <Typography.Text className="text-blue2 h2-large text-5xl">
+              <Typography.Text
+                className="text-blue2 h2-large"
+                style={{ fontSize: '40px' }}
+              >
                 {item.stat}
               </Typography.Text>
             </p>
