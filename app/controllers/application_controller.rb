@@ -23,12 +23,12 @@ class ApplicationController < ActionController::API
 
   def validation_error(resource)
     render json: {
-      status: '422',
-      title: 'Unprocessable Entity',
-      errors: resource.errors.details,
-      detail: resource.errors,
-      code: '100'
-    },
+             status: '422',
+             title: 'Unprocessable Entity',
+             errors: resource.errors.details,
+             detail: resource.errors,
+             code: '100'
+           },
            status: :unprocessable_entity
   end
 

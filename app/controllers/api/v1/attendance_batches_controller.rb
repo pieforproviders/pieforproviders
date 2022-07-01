@@ -73,7 +73,7 @@ module Api
       end
 
       def child_approval_error_message
-        "child #{initial_attendance_params[:child_id]} has no active approval "\
+        "child #{initial_attendance_params[:child_id]} has no active approval " \
           "for attendance date #{initial_attendance_params[:check_in]}"
       end
 
