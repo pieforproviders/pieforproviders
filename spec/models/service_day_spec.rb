@@ -13,6 +13,10 @@ RSpec.describe ServiceDay, type: :model do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:date) }
 
+  it 'validates the uniqueness of child_id scoped to date' do
+    expect(service_day).to validate_uniqueness_of(:child).scoped_to(:date)
+  end
+
   it 'validates date as a datetime' do
     service_day.update(date: Time.current)
     expect(service_day).to be_valid
@@ -352,9 +356,10 @@ end
 #
 # Indexes
 #
-#  index_service_days_on_child_id     (child_id)
-#  index_service_days_on_date         (date)
-#  index_service_days_on_schedule_id  (schedule_id)
+#  index_service_days_on_child_id           (child_id)
+#  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
+#  index_service_days_on_date               (date)
+#  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys
 #
