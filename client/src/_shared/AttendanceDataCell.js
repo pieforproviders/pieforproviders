@@ -6,6 +6,7 @@ import { TimePicker } from '../_shared'
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/checkbox-overrides.css'
+import '_assets/styles/timepicker-overrides.css'
 
 export default function AttendanceDataCell({
   record = {},
