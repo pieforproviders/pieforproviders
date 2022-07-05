@@ -14,20 +14,24 @@ module Api
 
       # PUT /service_days
       def update
-        if @service_day.update(service_day_params)
-          render json: @service_day, status: :updated
+        if @service_day
+          if @service_day.update(service_day_params)
+            render json: @service_day
+          else
+            render json: @service_day.errors, status: :unprocessable_entity
+          end
         else
-          render json: @service_day.errors, status: :unprocessable_entity
+          render status: :not_found
         end
       end
 
       # DELETE /service_days
       def destroy
-        result = @service_day.destroy
-        if result
-          render json: result, status: :destroyed
+        if @service_day
+          @service_day.destroy
+          render status: :no_content
         else
-          render json: @service_day, status: :unprocessable_entity
+          render status: :not_found
         end
       end
 
@@ -49,14 +53,11 @@ module Api
       private
 
       def set_service_day
-        service_day = if params[:business].present?
-                        service_days_for_business.find_by(child_id: params[:child_id],\
-                                                          date: params[:date])
-                      else
-                        service_days_for_user.find_by(child_id: params[:child_id],\
-                                                      date: params[:date])
-                      end
-        @service_day = service_day.first
+        @service_day = if params[:business].present?
+                         service_days_for_business.find(params[:id])
+                       else
+                         service_days_for_user.find(params[:id])
+                       end
       end
 
       def set_service_days

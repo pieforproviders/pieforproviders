@@ -169,6 +169,45 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     service_days.each(&:reload)
   end
 
+  describe 'PUT /api/v1/service_days' do
+    include_context 'with correct api version header'
+    before { travel_to business.children.first.service_days.first.date }
+
+    context 'when logged in as a non admin user' do
+      before { sign_in logged_in_user }
+
+      it 'displays nothing if service day does not exist' do
+        to_be_deleted = create(:service_day)
+        params = { service_day: to_be_deleted.slice(:date, :absence_type, :child_id) }
+        params[:business] = [to_be_deleted.business.id]
+        to_be_deleted_id = to_be_deleted.id
+        to_be_deleted.destroy
+        put "/api/v1/service_days/#{to_be_deleted_id}", params: params, headers: headers
+        expect(response.status).to eq(404)
+      end
+
+      it 'displays nothing if service day is not within the scope of the user' do
+        unscoped_service_day = other_business.children.first.service_days.to_a[1]
+        params = { service_day: unscoped_service_day.slice(:date, :absence_type, :child_id) }
+        params[:business] = [unscoped_service_day.business.id]
+        put "/api/v1/service_days/#{unscoped_service_day.id}", params: params, headers: headers
+        expect(response.status).to eq(404)
+      end
+
+      it 'displays updated service day if service day is within scope of the user' do
+        scoped_service_day = business.children.first.service_days.select do |x|
+          [1, 2, 3, 4, 5].include? x.date.to_date.cwday
+        end.first
+        params = { service_day: scoped_service_day.slice(:date, :child_id) }
+        params[:business] = [scoped_service_day.business.id]
+        params[:service_day][:absence_type] = 'absence'
+        put "/api/v1/service_days/#{scoped_service_day.id}", params: params, headers: headers
+        resp = JSON.parse(response.body)
+        expect(resp['absence_type']).to be_in(%w[absence absence_on_unscheduled_day absence_on_scheduled_day])
+      end
+    end
+  end
+
   describe 'GET /api/v1/service_days' do
     include_context 'with correct api version header'
 
@@ -653,7 +692,10 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     end
 
     context 'when logged in as a non-admin user' do
-      before { sign_in logged_in_user }
+      before do 
+        sign_in logged_in_user 
+        child.reload
+      end
 
       it 'creates a service_day for the child' do
         post '/api/v1/service_days', params: params_with_child_id, headers: headers
