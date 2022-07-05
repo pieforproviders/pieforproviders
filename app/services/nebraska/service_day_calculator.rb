@@ -11,7 +11,11 @@ module Nebraska
     end
 
     def call
-      update_calculations
+      if @service_day.absence_type == 'absence_on_unscheduled_day'
+        @service_day.update(total_time_in_care: 8.hours)
+      else
+        update_calculations
+      end
     end
 
     private

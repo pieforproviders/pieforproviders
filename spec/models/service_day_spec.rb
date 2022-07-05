@@ -142,9 +142,6 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     it 'returns standard absences only' do
-      absence.reload
-      child.reload
-      # binding.pry()
       expect(described_class.standard_absences).to include(absence)
       expect(described_class.standard_absences).not_to include(covid_absence)
       expect(described_class.standard_absences).not_to include(service_day_with_attendance)
@@ -282,7 +279,7 @@ RSpec.describe ServiceDay, type: :model do
       service_day.update!(absence_type: 'absence_on_unscheduled_day')
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.total_time_in_care).to eq(10.minutes)
+      expect(service_day.total_time_in_care).to eq(8.hours)
     end
 
     it 'calculates the right total when the service day is changed from an absence_on_scheduled_day' \
