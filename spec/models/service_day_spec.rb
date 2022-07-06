@@ -122,12 +122,12 @@ RSpec.describe ServiceDay, type: :model do
         :service_day,
         child: child,
         absence_type: 'covid_absence',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
 
     let!(:service_day_with_attendance) { create(:service_day) }
-    let(:attendance) { create(:attendance, service_day: service_day) }
+    let(:attendance) { create(:attendance, service_day: service_day_with_attendance) }
 
     it 'returns absences only' do
       expect(described_class.absences).to include(absence)
