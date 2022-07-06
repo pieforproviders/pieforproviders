@@ -662,17 +662,17 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         expect(child.reload.service_days.pluck(:date))
           .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(:created)
       end
 
       it 'does not create a service_day without a child id' do
         post '/api/v1/service_days', params: params_without_child_id, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'does not create a service_day with a bad absence type' do
         post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'creates an absence for the child' do
@@ -683,7 +683,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         expect(child.reload.service_days.pluck(:date))
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(:created)
       end
     end
 
@@ -700,17 +700,17 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         expect(child.reload.service_days.pluck(:date))
           .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(:created)
       end
 
       it 'does not create a service_day without a child id' do
         post '/api/v1/service_days', params: params_without_child_id, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'does not create a service_day with a bad absence type' do
         post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'creates an absence for the child' do
@@ -721,7 +721,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         expect(child.reload.service_days.pluck(:date))
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(:created)
       end
     end
   end

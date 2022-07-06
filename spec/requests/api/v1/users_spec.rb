@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'returns only the user' do
         get '/api/v1/users', headers: headers
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -35,7 +35,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |x| x['greeting_name'] }).not_to include(illinois_user.greeting_name)
         expect(parsed_response.collect { |x| x['greeting_name'] }).to include(nebraska_user.greeting_name)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('users')
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get "/api/v1/users/#{illinois_user.id}", headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
@@ -59,13 +59,13 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/profile', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
       it 'does not return another user' do
         get "/api/v1/users/#{nebraska_user.id}", headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -74,14 +74,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'does not return the illinois user' do
         get "/api/v1/users/#{illinois_user.id}", headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
 
       it 'returns the admin user using /profile' do
         get '/api/v1/profile', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['greeting_name']).to eq(admin_user.greeting_name)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
@@ -141,7 +141,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('illinois_case_list_for_dashboard')
       end
 
@@ -149,7 +149,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('illinois_case_list_for_dashboard')
       end
     end
@@ -161,7 +161,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
@@ -169,7 +169,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
     end
@@ -181,7 +181,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
@@ -189,7 +189,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
     end

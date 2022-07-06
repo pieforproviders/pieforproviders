@@ -176,7 +176,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
         sign_in different_user
         check_in_params = { attendance: { check_in: new_check_in.to_s } }
         put "/api/v1/attendances/#{attendance.id}", params: check_in_params, headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -239,14 +239,14 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
       it 'can delete an attendance in its own user account' do
         delete "/api/v1/attendances/#{attendance.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
       end
 
       it "cannot update a different user's attendance" do
         different_user = create(:confirmed_user)
         sign_in different_user
         delete "/api/v1/attendances/#{attendance.id}", headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -259,7 +259,7 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
 
       it 'can delete a non-admin attendance' do
         delete "/api/v1/attendances/#{attendance.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
       end
     end
   end
