@@ -5,12 +5,10 @@ module Api
     # API for user businesses
     class BusinessesController < Api::V1::ApiController
       before_action :set_business, only: %i[show update destroy]
-      before_action :authorize_user, only: %i[show update destroy]
+      before_action :set_businesses, only: %i[index]
 
       # GET /businesses
       def index
-        @businesses = policy_scope(Business)
-
         render json: @businesses
       end
 
@@ -60,8 +58,8 @@ module Api
         @business = policy_scope(Business).find(params[:id])
       end
 
-      def authorize_user
-        authorize @business
+      def set_businesses
+        @businesses = policy_scope(Business)
       end
 
       def business_params
