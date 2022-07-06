@@ -53,11 +53,7 @@ module Api
       private
 
       def set_service_day
-        @service_day = if params[:business].present?
-                         service_days_for_business.find(params[:id])
-                       else
-                         service_days_for_user.find(params[:id])
-                       end
+        @service_day = policy_scope(ServiceDay).find(params[:id])
       end
 
       def set_service_days

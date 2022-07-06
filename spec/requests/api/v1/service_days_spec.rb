@@ -171,39 +171,101 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
 
   describe 'PUT /api/v1/service_days' do
     include_context 'with correct api version header'
-    before { travel_to business.children.first.service_days.first.date }
-
     context 'when logged in as a non admin user' do
-      before { sign_in logged_in_user }
+      before do
+        sign_in logged_in_user
+        business.reload
+      end
 
-      it 'displays nothing if service day does not exist' do
+      it 'returns nothing if service day does not exist' do
         to_be_deleted = create(:service_day)
-        params = { service_day: to_be_deleted.slice(:date, :absence_type, :child_id) }
-        params[:business] = [to_be_deleted.business.id]
-        to_be_deleted_id = to_be_deleted.id
+        params = { service_day: { absence_type: 'absence' } }
         to_be_deleted.destroy
-        put "/api/v1/service_days/#{to_be_deleted_id}", params: params, headers: headers
-        expect(response.status).to eq(404)
+        put "/api/v1/service_days/#{to_be_deleted.id}", params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
       end
 
-      it 'displays nothing if service day is not within the scope of the user' do
-        unscoped_service_day = other_business.children.first.service_days.to_a[1]
-        params = { service_day: unscoped_service_day.slice(:date, :absence_type, :child_id) }
-        params[:business] = [unscoped_service_day.business.id]
+      it 'returns nothing if service day is not within the scope of the user' do
+        unscoped_service_day = other_business.children.first.service_days.first
+        params = { service_day: { absence_type: 'absence' } }
         put "/api/v1/service_days/#{unscoped_service_day.id}", params: params, headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
 
-      it 'displays updated service day if service day is within scope of the user' do
+      it 'updates service day if service day is within scope of the user' do
         scoped_service_day = business.children.first.service_days.select do |x|
           [1, 2, 3, 4, 5].include? x.date.to_date.cwday
         end.first
-        params = { service_day: scoped_service_day.slice(:date, :child_id) }
-        params[:business] = [scoped_service_day.business.id]
-        params[:service_day][:absence_type] = 'absence'
+        params = { service_day: { absence_type: 'absence' } }
         put "/api/v1/service_days/#{scoped_service_day.id}", params: params, headers: headers
         resp = JSON.parse(response.body)
-        expect(resp['absence_type']).to be_in(%w[absence absence_on_unscheduled_day absence_on_scheduled_day])
+        expect(resp['absence_type']).to eq('absence_on_scheduled_day')
+      end
+    end
+
+    context 'when logged in as an admin user' do
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
+
+      it 'returns nothing if service day does not exist' do
+        to_be_deleted = create(:service_day)
+        params = { service_day: { absence_type: 'absence' } }
+        to_be_deleted.destroy
+        put "/api/v1/service_days/#{to_be_deleted.id}", params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'updates any service_day' do
+        unscoped_service_day = other_business.children.first.service_days.select do |x|
+          [1, 2, 3, 4, 5].include? x.date.to_date.cwday
+        end.first
+        params = { service_day: { absence_type: 'absence' } }
+        put "/api/v1/service_days/#{unscoped_service_day.id}", params: params, headers: headers
+        resp = JSON.parse(response.body)
+        expect(resp['absence_type']).to eq('absence_on_scheduled_day')
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/service_days' do
+    include_context 'with correct api version header'
+    context 'when logged in as a non admin user' do
+      before do
+        sign_in logged_in_user
+      end
+
+      it 'returns 404 if service day does not exist' do
+        to_be_deleted = create(:service_day)
+        to_be_deleted.destroy
+        delete "/api/v1/service_days/#{to_be_deleted.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns 404 if service day is not within the scope of the user' do
+        unscoped_service_day = other_business.children.first.service_days.first
+        delete "/api/v1/service_days/#{unscoped_service_day.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'can delete a service day in the user\'s account' do
+        scoped_service_day = business.children.first.service_days.first
+        delete "/api/v1/service_days/#{scoped_service_day.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+
+    context 'when logged in as an admin user' do
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
+
+      it 'can delete a service day in any account' do
+        unscoped_service_day = other_business.children.first.service_days.first
+        delete "/api/v1/service_days/#{unscoped_service_day.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
       end
     end
   end
@@ -654,6 +716,8 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
   describe 'POST /api/v1/service_days' do
     include_context 'with correct api version header'
 
+    before { child.reload }
+
     let(:params_without_child_id) do
       {
         service_day: {
@@ -665,7 +729,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_with_child_id) do
       {
         service_day: {
-          date: Time.current.in_time_zone(child.timezone).to_date.to_s,
+          date: (Time.current.in_time_zone(child.timezone).to_date + 1.day).to_s,
           child_id: child.id
         }
       }
@@ -684,7 +748,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     let(:params_with_bad_absence_reason) do
       {
         service_day: {
-          date: Helpers.prior_weekday(Time.current.in_time_zone(child.timezone).to_date, 1),
+          date: Helpers.prior_weekday(Time.current.in_time_zone(child.timezone).to_date, 2),
           child_id: child.id,
           absence_type: 'not-an-absence'
         }
@@ -692,17 +756,18 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     end
 
     context 'when logged in as a non-admin user' do
-      before do 
-        sign_in logged_in_user 
+      before do
+        sign_in logged_in_user
         child.reload
       end
 
       it 'creates a service_day for the child' do
+        child.reload
         post '/api/v1/service_days', params: params_with_child_id, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -713,11 +778,13 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       end
 
       it 'does not create a service_day with a bad absence type' do
+        child.reload
         post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'creates an absence for the child' do
+        child.reload
         post '/api/v1/service_days', params: params_with_absence, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
@@ -736,11 +803,12 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       end
 
       it 'creates a service_day for the child' do
+        child.reload
         post '/api/v1/service_days', params: params_with_child_id, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day)
+          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -756,6 +824,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       end
 
       it 'creates an absence for the child' do
+        child.reload
         post '/api/v1/service_days', params: params_with_absence, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)

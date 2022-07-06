@@ -449,6 +449,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
       context 'when the child has no active approval for that time period' do
         it 'returns an error' do
           children[0].approvals.first.update!(expires_on: '2021-02-01')
+          children[0].approvals.first.reload
           post '/api/v1/attendance_batches', params: valid_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
