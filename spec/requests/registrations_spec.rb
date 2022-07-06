@@ -71,7 +71,7 @@ RSpec.describe 'POST /signup', type: :request do
       end
 
       it 'returns unprocessable entity' do
-        expect(response.status).to eq 422
+        expect(response).to have_http_status :unprocessable_entity
         expect(JSON.parse(response.body)['detail']['stressed_about_billing'].first).to eq('is not included in the list')
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe 'POST /signup', type: :request do
       end
 
       it 'returns unprocessable entity' do
-        expect(response.status).to eq 422
+        expect(response).to have_http_status :unprocessable_entity
         expect(JSON.parse(response.body)['detail']['too_much_time'].first).to eq('is not included in the list')
       end
     end
@@ -95,7 +95,7 @@ RSpec.describe 'POST /signup', type: :request do
     before { post '/signup', params: bad_params }
 
     it 'returns unprocessable entity' do
-      expect(response.status).to eq 422
+      expect(response).to have_http_status :unprocessable_entity
       expect(JSON.parse(response.body)['detail']['email'].first).to eq("can't be blank")
       expect(JSON.parse(response.body)['detail']['password'].first).to eq("can't be blank")
       expect(JSON.parse(response.body)['detail']['full_name'].first).to eq("can't be blank")
@@ -111,7 +111,7 @@ RSpec.describe 'POST /signup', type: :request do
     end
 
     it 'returns unprocessable entity' do
-      expect(response.status).to eq 422
+      expect(response).to have_http_status :unprocessable_entity
       expect(JSON.parse(response.body)['detail']['email'].first).to eq('has already been taken')
     end
   end

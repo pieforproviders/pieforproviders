@@ -35,7 +35,7 @@ RSpec.describe 'sessions requests', type: :request do
       before { post url }
 
       it 'returns unathorized status' do
-        expect(response.status).to eq 401
+        expect(response).to have_http_status :unauthorized
       end
     end
   end

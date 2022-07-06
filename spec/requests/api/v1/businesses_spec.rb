@@ -51,7 +51,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
 
       it 'does not return a business for another user' do
         get "/api/v1/businesses/#{non_user_business.id}", headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -114,7 +114,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
 
       it 'fails unless the user is passed' do
         post '/api/v1/businesses', params: params_without_user, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -143,7 +143,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
 
       it 'does not update a business for another user' do
         put "/api/v1/businesses/#{non_user_business.id}", params: params, headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
 
       it 'cannot update a business to inactive' do
@@ -152,7 +152,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
               business: params.merge({ active: false })
             },
             headers: headers
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(user_business.reload.active).to be(true)
       end
     end
@@ -182,7 +182,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
               business: params.merge({ active: false })
             },
             headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
         expect(user_business.reload.active).to be(true)
       end
 
@@ -193,7 +193,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
               business: params.merge({ active: false })
             },
             headers: headers
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(user_business.reload.active).to be(false)
       end
 
@@ -204,7 +204,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
               business: params.merge({ active: false })
             },
             headers: headers
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(user_business.reload.active).to be(false)
       end
     end
@@ -219,7 +219,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       it "soft-deletes the user's business if there are no active children" do
         user_business.children.destroy_all
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
         expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to eq(Time.current.to_date)
         expect(response.body).to be_empty
@@ -227,7 +227,7 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
 
       it "does not soft-delete the user's business if there are active children" do
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
         expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to be_nil
         expect(JSON.parse(response.body).keys).to include('children')
@@ -240,14 +240,14 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       it "soft-deletes the user's business if there are no active children" do
         user_business.children.destroy_all
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
         expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to eq(Time.current.to_date)
       end
 
       it "does not soft-delete the user's business if there are active children" do
         delete "/api/v1/businesses/#{user_business.id}", headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
         expect(user_business.reload.active).to be(true)
         expect(user_business.reload.deleted_at).to be_nil
       end
