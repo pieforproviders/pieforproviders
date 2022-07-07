@@ -5,11 +5,10 @@ module Api
     # API for application users
     class UsersController < Api::V1::ApiController
       before_action :set_user, only: %i[show]
-      before_action :authorize_user, only: %i[show]
+      before_action :set_users, only: %i[index]
 
       # GET /users
       def index
-        @users = policy_scope(User)
         authorize User
 
         render json: UserBlueprint.render(@users)
@@ -35,8 +34,8 @@ module Api
         @user = params[:id] ? policy_scope(User).find(params[:id]) : current_user
       end
 
-      def authorize_user
-        authorize @user
+      def set_users
+        @users = policy_scope(User)
       end
 
       def filter_date
