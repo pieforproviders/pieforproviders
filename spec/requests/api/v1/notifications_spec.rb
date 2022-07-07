@@ -20,6 +20,127 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
     create(:notification, child: non_owner_child, approval: non_owner_child.approvals.first)
   end
 
+  describe 'POST /api/v1/notifications' do
+    include_context 'with correct api version header'
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
+
+      it 'creates a notification for an existing child and approval' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to match_response_schema('notification')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['first_name']).to eq(child.first_name)
+      end
+
+      it 'returns an error if the child does not exist' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        child.destroy
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if the approval does not exist' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        existing_approval.destroy
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if the approval does not belong to child' do
+        approval_one = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        approval_two = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = approval_two.children.first
+        params = { notification: { child_id: child.id, approval_id: approval_one.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if approval is expired' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.before)
+        child = existing_approval.children.first
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns an error if approval has been renewed recently' do
+        child = create(:necc_child)
+        params = { notification: { child_id: child.id, approval_id: child.approvals.first.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'when logged in as a non admin' do
+      before { sign_in logged_in_user }
+
+      it 'returns an error if approval has been renewed recently' do
+        child = children.first
+        params = { notification: { child_id: child.id, approval_id: child.approvals.first.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'creates a notification for an existing child and approval' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to match_response_schema('notification')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['first_name']).to eq(child.first_name)
+      end
+
+      it 'returns an error if the child does not exist' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        child.destroy
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if the approval does not exist' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = existing_approval.children.first
+        existing_approval.destroy
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if the approval does not belong to child' do
+        approval_one = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        approval_two = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        child = approval_two.children.first
+        params = { notification: { child_id: child.id, approval_id: approval_one.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if approval is expired' do
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.before)
+        child = existing_approval.children.first
+        params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'returns an error if the child is not within the scope of the user' do
+        params = { notification: { child_id: non_owner_child.id, approval_id: non_owner_child.approvals.first.id } }
+        post '/api/v1/notifications', params: params, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'DELETE /api/v1/notifications' do
     include_context 'with correct api version header'
     context 'when logged in as an admin user' do

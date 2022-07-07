@@ -6,7 +6,6 @@ module Api
     class ChildrenController < Api::V1::ApiController
       before_action :set_child, only: %i[show update destroy]
       before_action :set_children, only: %i[index]
-      before_action :authorize_user, only: %i[show update destroy]
 
       # GET /children
       def index
@@ -59,10 +58,6 @@ module Api
                     else
                       policy_scope(Child.includes(business: :user).order(:last_name))
                     end
-      end
-
-      def authorize_user
-        authorize @child
       end
 
       def child_params
