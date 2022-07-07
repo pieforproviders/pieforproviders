@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2022_06_21_165259) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -86,9 +87,9 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
+    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.string "rate_type"
     t.uuid "rate_id"
-    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.date "deleted_at"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
@@ -192,7 +193,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-06-28 21:23:16", null: false
+    t.datetime "month", default: "2022-05-05 01:37:11", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
