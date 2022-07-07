@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       resources :attendances, only: %i[index update destroy]
       resources :service_days, only: %i[index create update destroy]
       resources :attendance_batches, only: :create
-      resources :notifications, only: :index
+      resources :notifications, only: %i[index update destroy]
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
     end
   end

@@ -20,6 +20,92 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
     create(:notification, child: non_owner_child, approval: non_owner_child.approvals.first)
   end
 
+  describe 'DELETE /api/v1/notifications' do
+    include_context 'with correct api version header'
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
+
+      it 'deletes the notification' do
+        delete "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it 'returns error if notification does not exist' do
+        does_not_exist = children.first.notifications.first
+        does_not_exist.destroy
+        delete "/api/v1/notifications/#{does_not_exist.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when logged in as a non-admin' do
+      before { sign_in logged_in_user }
+
+      it 'returns error if notification is not within scope of user' do
+        delete "/api/v1/notifications/#{non_owner_child.notifications.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns error if notification does not exist' do
+        does_not_exist = children.first.notifications.first
+        does_not_exist.destroy
+        delete "/api/v1/notifications/#{does_not_exist.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'deletes the notification if it is within the scope of the user' do
+        delete "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+  end
+
+  describe 'PUT /api/v1/notifications' do
+    include_context 'with correct api version header'
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
+
+      it 'updates the notification' do
+        new_time = Time.current.in_time_zone(children.first.timezone).at_beginning_of_day
+        params = { notification: { created_at: new_time } }
+        put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
+        resp = JSON.parse(response.body)
+        expect(resp['created_at']).to eq(new_time.to_s)
+      end
+
+      it 'returns error if notifictaion does not exist' do
+        does_not_exist = children.first.notifications.first
+        does_not_exist.destroy
+        put "/api/v1/notifications/#{does_not_exist.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when logged in as a non-admin' do
+      before { sign_in logged_in_user }
+
+      it 'returns error if notifictaion does not exist' do
+        does_not_exist = children.first.notifications.first
+        does_not_exist.destroy
+        put "/api/v1/notifications/#{does_not_exist.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns error if notification is not within scope of user' do
+        put "/api/v1/notifications/#{non_owner_child.notifications.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'updates the notification if is in the scope of the user' do
+        new_time = Time.current.in_time_zone(children.first.timezone).at_beginning_of_day
+        params = { notification: { created_at: new_time } }
+        put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
+        resp = JSON.parse(response.body)
+        expect(resp['created_at']).to eq(new_time.to_s)
+      end
+    end
+  end
+
   describe 'GET /api/v1/notifications' do
     include_context 'with correct api version header'
 
