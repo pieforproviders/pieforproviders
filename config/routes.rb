@@ -28,10 +28,10 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
-      resources :attendances, only: %i[index update destroy]
-      resources :service_days, only: %i[index create update destroy]
+      resources :attendances
+      resources :service_days
       resources :attendance_batches, only: :create
-      resources :notifications, only: %i[index update destroy create]
+      resources :notifications
       get 'case_list_for_dashboard', to: 'users#case_list_for_dashboard'
     end
   end

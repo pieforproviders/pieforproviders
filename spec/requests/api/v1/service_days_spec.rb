@@ -169,6 +169,53 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
     service_days.each(&:reload)
   end
 
+  describe 'GET /api/v1/service_days/::id' do
+    include_context 'with correct api version header'
+    context 'when logged in as an admin' do
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
+
+      it 'gets the service day by id' do
+        get "/api/v1/service_days/#{business.children.first.service_days.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('service_day')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['id']).to eq(business.children.first.service_days.first.id)
+      end
+
+      it 'returns an error if the service day does not exist' do
+        service_day = business.children.first.service_days.first
+        service_day.destroy
+        get "/api/v1/service_days/#{service_day.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when logged in as a non-admin' do
+      before { sign_in logged_in_user }
+
+      it 'gets the service day by id' do
+        get "/api/v1/service_days/#{business.children.first.service_days.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('service_day')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['id']).to eq(business.children.first.service_days.first.id)
+      end
+
+      it 'returns an error if the service day does not exist' do
+        service_day = business.children.first.service_days.first
+        service_day.destroy
+        get "/api/v1/service_days/#{service_day.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns an error if the service day is not within the scope of the user' do
+        get "/api/v1/service_days/#{other_business.children.first.service_days.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'PUT /api/v1/service_days' do
     include_context 'with correct api version header'
     context 'when logged in as a non admin user' do

@@ -20,6 +20,51 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
     create(:notification, child: non_owner_child, approval: non_owner_child.approvals.first)
   end
 
+  describe 'GET /api/v1/notifications/::id' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as an admin user' do
+      before { sign_in admin_user }
+
+      it 'gets the notification by id' do
+        get "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('notification')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['first_name']).to eq(children.first.first_name)
+      end
+
+      it 'returns not found when notification does not exist' do
+        notify = children.first.notifications.first
+        notify.destroy
+        get "/api/v1/notifications/#{notify.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when logged in as a non-admin' do
+      before { sign_in logged_in_user }
+
+      it 'gets the notification by id' do
+        get "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('notification')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['first_name']).to eq(children.first.first_name)
+      end
+
+      it 'returns not found when notification does not exist' do
+        notify = children.first.notifications.first
+        notify.destroy
+        get "/api/v1/notifications/#{notify.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns not found when notification is within the scope of the user' do
+        get "/api/v1/notifications/#{non_owner_child.notifications.first.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST /api/v1/notifications' do
     include_context 'with correct api version header'
     context 'when logged in as an admin user' do

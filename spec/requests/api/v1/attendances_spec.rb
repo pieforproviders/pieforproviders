@@ -64,6 +64,57 @@ RSpec.describe 'Api::V1::Attendances', type: :request do
     service_days.each(&:reload).map(&:attendances).flatten
   end
 
+  describe 'GET /api/v1/attendances/::id' do
+    include_context 'with correct api version header'
+
+    context 'when viewed by an admin' do
+      before do
+        admin = create(:admin)
+        sign_in admin
+      end
+
+      it 'gets the attendance by id' do
+        get "/api/v1/attendances/#{extra_attendances.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('attendance')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['id']).to eq(extra_attendances.first.id)
+      end
+
+      it 'returns error if attendance does not exist' do
+        attendance = extra_attendances.first
+        attendance.destroy
+        get "/api/v1/attendances/#{attendance.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when viewed by a non-admin' do
+      before { sign_in logged_in_user }
+
+      it 'gets the attendance by id' do
+        get "/api/v1/attendances/#{this_week_attendances.first.id}", params: {}, headers: headers
+        expect(response).to match_response_schema('attendance')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['id']).to eq(this_week_attendances.first.id)
+      end
+
+      it 'returns error if attendance does not exist' do
+        attendance = extra_attendances.first
+        attendance.destroy
+        get "/api/v1/attendances/#{attendance.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns error if attendance is not within scope of user' do
+        different_user = create(:confirmed_user)
+        sign_in different_user
+        attendance = extra_attendances.first
+        get "/api/v1/attendances/#{attendance.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /api/v1/attendances' do
     include_context 'with correct api version header'
 

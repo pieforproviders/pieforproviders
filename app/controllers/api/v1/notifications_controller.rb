@@ -4,7 +4,7 @@ module Api
   module V1
     # API for notifications
     class NotificationsController < Api::V1::ApiController
-      before_action :set_notification,  only: %i[update destroy]
+      before_action :set_notification,  only: %i[update destroy show]
       before_action :set_notifications, only: %i[index]
       before_action :set_child_and_approval,  only: %i[create]
 
@@ -16,6 +16,14 @@ module Api
           else
             render :nothing, status: :bad_request
           end
+        else
+          render status: :not_found
+        end
+      end
+
+      def show
+        if @notification
+          render json: NotificationBlueprint.render(@notification)
         else
           render status: :not_found
         end

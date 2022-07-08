@@ -5,7 +5,7 @@ module Api
     # API for user service_days
     class ServiceDaysController < Api::V1::ApiController
       before_action :set_service_days, only: %i[index]
-      before_action :set_service_day, only: %i[update destroy]
+      before_action :set_service_day, only: %i[update destroy show]
 
       # GET /service_days
       def index
@@ -47,6 +47,15 @@ module Api
           render json: @service_day, status: :created
         else
           render json: @service_day.errors, status: :unprocessable_entity
+        end
+      end
+
+      # GET /service_days/::id
+      def show
+        if @service_day
+          render json: @service_day
+        else
+          render status: :not_found
         end
       end
 
