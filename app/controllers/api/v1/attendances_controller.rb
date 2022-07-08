@@ -4,7 +4,7 @@ module Api
   module V1
     # API for user attendances
     class AttendancesController < Api::V1::ApiController
-      before_action :set_attendance, only: %i[update destroy]
+      before_action :set_attendance, only: %i[update destroy show]
       before_action :set_attendances, only: %i[index]
 
       # GET /attendances
@@ -13,6 +13,14 @@ module Api
           @attendances.includes({ child_approval: :child }),
           view: :with_child
         )
+      end
+
+      def show
+        if @attendance
+          render json: AttendanceBlueprint.render(@attendance, view: :with_child)
+        else
+          render status: :no_content
+        end
       end
 
       def update
