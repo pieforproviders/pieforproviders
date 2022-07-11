@@ -186,7 +186,7 @@ module Wonderschool
         {
           effective_on: approval_period[:effective_on],
           expires_on: approval_period[:expires_on],
-          family_fee: approval_period[:family_fee]
+          family_fee: approval_period[:family_fee].to_s.gsub(/[^\d.]/, '').to_f
         }
       end
 
