@@ -277,5 +277,6 @@
   "subsidyAuth": "La autorización de ",
   "subAuthExpires": "caduca el ",
   "emailTo": "Envía la nueva autorización a ",
-  "seeAllNotifications": "Ver todas las notificaciones aquí"
+  "seeAllNotifications": "Ver todas las notificaciones aquí",
+  "noCheckOut": "sin hora de salida"
 }
