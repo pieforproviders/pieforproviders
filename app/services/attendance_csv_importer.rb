@@ -17,7 +17,9 @@ class AttendanceCsvImporter
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
   end
 
-  def call
+  def call(start_date = nil, end_date = 0.days.after)
+    @start_date = start_date
+    @end_date = end_date
     process_attendances
   end
 
@@ -39,6 +41,8 @@ class AttendanceCsvImporter
   def process_row(row)
     @row = row
     @child = child
+
+    return unless (@start_date..@end_date).cover?(@row['check_in'].in_time_zone(@child.timezone).at_beginning_of_day)
 
     create_attendance
   rescue StandardError => e

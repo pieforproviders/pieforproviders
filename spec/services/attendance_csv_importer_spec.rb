@@ -80,6 +80,20 @@ RSpec.describe AttendanceCsvImporter do
         )
       end
 
+      it 'creates attendance records for a given date range' do
+        expect { described_class.new.call('2021-03-10'.to_date, 0.days.after) }
+          .to change(ServiceDay, :count).from(0).to(4)
+          .and change(Attendance, :count).from(0).to(2)
+        expect(third_child.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+        expect(third_child.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(hermione_business1.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(hermione_business1.timezone)
+      end
+
       it 'creates attendance records for every row in the file, idempotently' do
         expect { described_class.new.call }
           .to change(ServiceDay, :count).from(0).to(9)
