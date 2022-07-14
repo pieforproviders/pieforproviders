@@ -99,7 +99,25 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit!
+        params.require(:user).permit(:email,
+                                     :active,
+                                     :full_name,
+                                     :greeting_name,
+                                     :language,
+                                     :opt_in_email,
+                                     :opt_in_text,
+                                     :phone_number,
+                                     :state,
+                                     :get_from_pie,
+                                     :organization,
+                                     :password,
+                                     :password_confirmation,
+                                     :service_agreement_accepted,
+                                     :timezone,
+                                     :stressed_about_billing,
+                                     :accept_more_subsidy_families,
+                                     :not_as_much_money, \
+                                     :too_much_time)
       end
     end
   end
