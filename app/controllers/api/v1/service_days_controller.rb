@@ -16,7 +16,7 @@ module Api
       def update
         if @service_day
           if @service_day.update(service_day_params)
-            render json: @service_day
+            render json: ServiceDayBlueprint.render(@service_day)
           else
             render json: @service_day.errors, status: :unprocessable_entity
           end
@@ -53,7 +53,7 @@ module Api
       # GET /service_days/::id
       def show
         if @service_day
-          render json: @service_day
+          render json: ServiceDayBlueprint.render(@service_day)
         else
           render status: :not_found
         end

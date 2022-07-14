@@ -7,10 +7,6 @@ class NotificationGenerator
     sync_notifications
   end
 
-  def singular_call(child, approval)
-    generate_notification_for_child(child, approval)
-  end
-
   private
 
   def sync_notifications
