@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   scope module: :api, defaults: { format: :json }, path: 'api' do
     scope module: :v1, constraints: ApiConstraint.new(version: 1, default: true), path: 'v1' do
-      resources :users, only: %i[index show]
+      resources :users
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children

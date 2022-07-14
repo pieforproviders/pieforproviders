@@ -15,6 +15,107 @@ RSpec.describe 'Api::V1::Users', type: :request do
     allow(user).to receive(:send_password_change_notification?).and_return(false)
   end
 
+  describe 'PUT /api/v1/users/::id' do
+    include_context 'with correct api version header'
+    context 'when logged in as non admin' do
+      before { sign_in illinois_user }
+
+      it 'updates the user' do
+        put "/api/v1/users/#{illinois_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        expect(response).to match_response_schema('user')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq('Harvey')
+      end
+
+      it 'returns error if user is not within the scope of the user' do
+        admin = create(:admin)
+        put "/api/v1/users/#{admin.id}", params: { user: { full_name: 'Harvey Dent' } }, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when logged in as admin' do
+      before { sign_in admin_user }
+
+      it 'updates the user' do
+        put "/api/v1/users/#{admin_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        expect(response).to match_response_schema('user')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq('Harvey')
+      end
+
+      it 'can update any user' do
+        dummy = create(:confirmed_user)
+        put "/api/v1/users/#{dummy.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        expect(response).to match_response_schema('user')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq('Harvey')
+      end
+    end
+  end
+
+  describe 'POST /api/v1/users' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as admin' do
+      before { sign_in admin_user }
+
+      it 'creates a new user' do
+        params =
+          { user: { email: 'nebraska@test.com',
+                    active: true,
+                    full_name: 'Nebraska Provider',
+                    greeting_name: 'Candice',
+                    language: 'en',
+                    opt_in_email: true,
+                    opt_in_text: true,
+                    phone_number: '777-666-5555',
+                    state: 'NE',
+                    get_from_pie: 'fame',
+                    organization: 'Nebraska Child Care',
+                    password: 'testpass1234!',
+                    password_confirmation: 'testpass1234!',
+                    service_agreement_accepted: true,
+                    timezone: 'Mountain Time (US & Canada)',
+                    stressed_about_billing: 'True',
+                    accept_more_subsidy_families: 'True',
+                    not_as_much_money: 'True',
+                    too_much_time: 'True' } }
+        post '/api/v1/users', params: params, headers: headers
+        expect(response).to match_response_schema('user')
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response['greeting_name']).to eq('Candice')
+      end
+    end
+  end
+
+  describe 'DELETE /api/v1/users/::id' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as admin' do
+      before { sign_in admin_user }
+
+      it 'deletes any user' do
+        delete "/api/v1/users/#{illinois_user.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
+      end
+    end
+
+    context 'when logged in as non admin' do
+      before { sign_in illinois_user }
+
+      it 'can delete the user\'s own account' do
+        delete "/api/v1/users/#{illinois_user.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it 'cannot delete other users\' accounts' do
+        delete "/api/v1/users/#{nebraska_user.id}", params: {}, headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET /api/v1/users' do
     include_context 'with correct api version header'
 
@@ -33,7 +134,6 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns all users' do
         get '/api/v1/users', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).not_to include(illinois_user.greeting_name)
         expect(parsed_response.collect { |x| x['greeting_name'] }).to include(nebraska_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('users')
@@ -74,7 +174,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
 
       it 'does not return the illinois user' do
         get "/api/v1/users/#{illinois_user.id}", headers: headers
-        expect(response).to have_http_status(:not_found)
+        expect(response).to match_response_schema('user')
       end
 
       it 'returns the admin user using /profile' do

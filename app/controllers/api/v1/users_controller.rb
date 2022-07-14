@@ -4,7 +4,7 @@ module Api
   module V1
     # API for application users
     class UsersController < Api::V1::ApiController
-      before_action :set_user, only: %i[show]
+      before_action :set_user, only: %i[show update destroy]
       before_action :set_users, only: %i[index]
 
       # GET /users
@@ -12,6 +12,42 @@ module Api
         authorize User
 
         render json: UserBlueprint.render(@users)
+      end
+
+      def destroy
+        if @user
+          if @user.destroy
+            render status: :no_content
+          else
+            render json: @user.errors, status: :unprocessable_entity
+          end
+        else
+          render status: :not_found
+        end
+      end
+
+      # PUT /users
+      def update
+        if @user
+          if @user.update(user_params)
+            render json: UserBlueprint.render(@user)
+          else
+            render json: @user.errors, status: :unprocessable_entity
+          end
+        else
+          render status: :not_found
+        end
+      end
+
+      def create
+        authorize User
+
+        @user = User.new(user_params)
+        if @user.save
+          render json: UserBlueprint.render(@user)
+        else
+          render json: @user.errors, status: :unprocessable_entity
+        end
       end
 
       # GET /profile or GET /users/:id
@@ -60,6 +96,10 @@ module Api
           view: :illinois_dashboard,
           filter_date: filter_date
         )
+      end
+
+      def user_params
+        params.require(:user).permit!
       end
     end
   end

@@ -30,7 +30,7 @@
     },
     "total_time_in_care": {
       "type": [
-        "integer",
+        // "integer",
         "string",
         "null"
       ]

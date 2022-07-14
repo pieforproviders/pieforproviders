@@ -10,11 +10,10 @@ module Api
 
       def create
         if @approval
-          @notification = Commands::Notification::Create.new(child: @child, approval: @approval).create
-          if @notification
-            render json: NotificationBlueprint.render(@notification)
+          if check_approval_validity
+            create_notif_with_valid_params
           else
-            render :nothing, status: :bad_request
+            render status: :bad_request
           end
         else
           render status: :not_found
@@ -55,6 +54,21 @@ module Api
       end
 
       private
+
+      def check_approval_validity
+        return unless @approval.notifications.empty? && @approval.expires_on.between?(0.days.after, 30.days.after)
+
+        @child.approvals.where(effective_on: @approval.expires_on..).empty?
+      end
+
+      def create_notif_with_valid_params
+        @notification = Notification.create(approval_id: @approval.id, child_id: @child.id)
+        if @notification.save
+          render json: NotificationBlueprint.render(@notification)
+        else
+          render json: @notification.errors, status: :unprocessable_entity
+        end
+      end
 
       def set_notification
         @notification = policy_scope(Notification).find(params[:id])

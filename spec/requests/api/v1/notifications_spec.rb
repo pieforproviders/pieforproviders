@@ -71,7 +71,7 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       before { sign_in admin_user }
 
       it 'creates a notification for an existing child and approval' do
-        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 3.days.after)
         child = existing_approval.children.first
         params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
         post '/api/v1/notifications', params: params, headers: headers
@@ -134,8 +134,11 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       end
 
       it 'creates a notification for an existing child and approval' do
-        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.after)
+        existing_approval = create(:approval, num_children: 1, business: business, expires_on: 3.days.after)
         child = existing_approval.children.first
+        logged_in_user.reload
+        existing_approval.reload
+        child.reload
         params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
         post '/api/v1/notifications', params: params, headers: headers
         expect(response).to match_response_schema('notification')
