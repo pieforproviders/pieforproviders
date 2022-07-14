@@ -242,7 +242,7 @@ export function AttendanceView() {
                   ? dayjs(attendance.check_out, 'YYYY-MM-DD hh:mm').format(
                       'h:mm a'
                     )
-                  : 'no check out time'
+                  : t('noCheckOut')
                 return `${check_in} - ${check_out}`
               })
               .join(', ')
