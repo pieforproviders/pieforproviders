@@ -289,11 +289,12 @@ export default function DashboardTable({
             name: 'child',
             render: renderChild,
             width: 250,
-            sorter: (a, b) =>
+            sorter: (a, b) => {
               columnSorter(
-                a.child.childLastName.match(/([A-zÀ-ú])+$/)[0],
-                b.child.childLastName.match(/([A-zÀ-ú])+$/)[0]
+                a.child.childLastName.match(/([A-zÀ-ú])+/)[0],
+                b.child.childLastName.match(/([A-zÀ-ú])+/)[0]
               )
+            }
           }
         ]
       },
