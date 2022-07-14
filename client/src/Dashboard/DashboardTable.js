@@ -291,8 +291,8 @@ export default function DashboardTable({
             width: 250,
             sorter: (a, b) =>
               columnSorter(
-                a.child.childLastName.match(/([A-zÀ-ú])+$/)[0],
-                b.child.childLastName.match(/([A-zÀ-ú])+$/)[0]
+                a.child.childLastName.match(/([A-zÀ-ú])+/)[0],
+                b.child.childLastName.match(/([A-zÀ-ú])+/)[0]
               )
           }
         ]
