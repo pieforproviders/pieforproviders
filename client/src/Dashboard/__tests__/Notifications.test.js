@@ -21,4 +21,11 @@ describe('<Notifications />', () => {
       screen.getByText(`NOTIFICATIONS (${messages.length})`)
     ).toBeInTheDocument()
   })
+
+  it('shows modal option', () => {
+    render(<Notifications messages={[...messages, ...messages, ...messages]} />)
+
+    expect(screen.getByText(`NOTIFICATIONS (3)`)).toBeInTheDocument()
+    expect(screen.getByText(`See all notifications here`)).toBeInTheDocument()
+  })
 })

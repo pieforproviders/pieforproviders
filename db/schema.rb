@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_08_035549) do
+ActiveRecord::Schema.define(version: 2022_06_21_165259) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 2022_06_08_035549) do
     t.string "earned_revenue_currency", default: "USD", null: false
     t.uuid "schedule_id"
     t.string "absence_type"
+    t.index ["child_id", "date"], name: "index_service_days_on_child_id_and_date", unique: true
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"

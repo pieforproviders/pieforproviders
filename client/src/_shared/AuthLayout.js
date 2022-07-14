@@ -39,8 +39,12 @@ export function AuthLayout({
                 onClick={() =>
                   i18n.changeLanguage(i18n.language === 'en' ? 'es' : 'en')
                 }
-                text={i18n.language === 'en' ? 'Español' : 'English'}
-                classes="text-right no-underline p-0 h-auto grow"
+                text={
+                  <span className="underline hover:text-blue2">
+                    {i18n.language === 'en' ? 'Español' : 'English'}
+                  </span>
+                }
+                classes="text-right underline p-0 h-auto grow"
               />
               {location.pathname === '/login' ||
               location.pathname === '/signup' ? (

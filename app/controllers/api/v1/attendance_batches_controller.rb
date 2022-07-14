@@ -73,7 +73,7 @@ module Api
       end
 
       def child_approval_error_message
-        "child #{initial_attendance_params[:child_id]} has no active approval "\
+        "child #{initial_attendance_params[:child_id]} has no active approval " \
           "for attendance date #{initial_attendance_params[:check_in]}"
       end
 
@@ -101,8 +101,8 @@ module Api
       end
 
       def service_day
-        @service_day = ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
-                       ServiceDay.create!(child: child, date: date, absence_type: absence_type)
+        ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
+          ServiceDay.create!(child: child, date: date, absence_type: absence_type)
       rescue StandardError => e
         add_error_and_return_nil(:service_day, e.message)
       end

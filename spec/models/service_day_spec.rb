@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe ServiceDay, type: :model do
-  let(:child) { create(:child) }
+  let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
+  let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
 
   it 'factory should be valid (default; no args)' do
@@ -12,6 +13,10 @@ RSpec.describe ServiceDay, type: :model do
 
   it { is_expected.to belong_to(:child) }
   it { is_expected.to validate_presence_of(:date) }
+
+  it 'validates the uniqueness of child_id scoped to date' do
+    expect(service_day).to validate_uniqueness_of(:child).scoped_to(:date)
+  end
 
   it 'validates date as a datetime' do
     service_day.update(date: Time.current)
@@ -33,8 +38,8 @@ RSpec.describe ServiceDay, type: :model do
     service_day.save!
 
     service_day.absence_type = 'covid_absence'
-    expect(service_day).not_to be_valid
-    expect(service_day.errors.messages[:absence_type]).to include("can't create for a day without a schedule")
+    expect(service_day).to be_valid
+    expect(service_day.errors.messages[:absence_type]).not_to include("can't create for a day without a schedule")
 
     absence = build(
       :service_day,
@@ -48,6 +53,16 @@ RSpec.describe ServiceDay, type: :model do
     absence = build(
       :service_day,
       child: child,
+      absence_type: 'absence',
+      date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+    )
+
+    expect(absence).to be_valid
+    expect(absence.errors.messages).to eq({})
+
+    absence = build(
+      :service_day,
+      child: child,
       absence_type: 'fake_reason',
       date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
@@ -55,24 +70,64 @@ RSpec.describe ServiceDay, type: :model do
     expect(absence.errors.messages[:absence_type]).to include('is not included in the list')
   end
 
+  context 'with absence types' do
+    let(:type_schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
+    let(:type_child) { schedule.child }
+
+    before do
+      type_child.schedules.where(weekday: [2, 3, 4, 5, 6, 7]).destroy_all
+      type_child.reload
+    end
+
+    describe '#set_absence_type_by_schedule' do
+      let(:unscheduled_absence) do
+        create(
+          :service_day,
+          child: type_child,
+          absence_type: 'absence',
+          date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
+        )
+      end
+      let(:scheduled_absence) do
+        create(
+          :service_day,
+          child: type_child,
+          absence_type: 'absence',
+          date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        )
+      end
+
+      it 'changes absence type of unscheduled days to absence_on_unscheduled_day' do
+        expect(unscheduled_absence.absence_type).to eq('absence_on_unscheduled_day')
+      end
+
+      it 'changes absence type of scheduled days to absence_on_scheduled_day' do
+        expect(scheduled_absence.absence_type).to eq('absence_on_scheduled_day')
+      end
+    end
+  end
+
   # scopes
   context 'with absences scopes' do
-    let(:absence) do
+    let!(:absence) do
       create(
         :service_day,
+        child: child,
         absence_type: 'absence',
         date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
-    let(:covid_absence) do
+    let!(:covid_absence) do
       create(
         :service_day,
+        child: child,
         absence_type: 'covid_absence',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
-    let(:service_day_with_attendance) { create(:service_day) }
-    let(:attendance) { create(:attendance, service_day: service_day) }
+
+    let!(:service_day_with_attendance) { create(:service_day) }
+    let(:attendance) { create(:attendance, service_day: service_day_with_attendance) }
 
     it 'returns absences only' do
       expect(described_class.absences).to include(absence)
@@ -197,6 +252,7 @@ RSpec.describe ServiceDay, type: :model do
     before do
       perform_enqueued_jobs
       service_day.reload
+      child.reload
     end
 
     it 'calculates the right total when the service day is changed to an absence' do
@@ -206,6 +262,38 @@ RSpec.describe ServiceDay, type: :model do
       perform_enqueued_jobs
       service_day.reload
       expect(service_day.total_time_in_care).to eq(10.minutes)
+    end
+
+    it 'calculates the right total when the service day is changed to an absence_on_scheduled_day' do
+      attendance.update!(check_out: attendance.check_in + 6.hours)
+      service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
+      service_day.update!(absence_type: 'absence_on_scheduled_day')
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(10.minutes)
+    end
+
+    it 'calculates the right total when the service day is changed to an absence_on_unscheduled_day' do
+      attendance.update!(check_out: attendance.check_in + 6.hours)
+      service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
+      service_day.update!(absence_type: 'absence_on_unscheduled_day')
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(8.hours)
+    end
+
+    it 'calculates the right total when the service day is changed from an absence_on_scheduled_day' \
+       'back to a non-absence' do
+      attendance.update!(check_out: attendance.check_in + 6.hours)
+      service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
+      service_day.update!(absence_type: 'absence_on_scheduled_day')
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(10.minutes)
+      service_day.update!(absence_type: nil)
+      perform_enqueued_jobs
+      service_day.reload
+      expect(service_day.total_time_in_care).to eq(6.hours)
     end
 
     it 'calculates the right total when the service day is changed from an absence back to a non-absence' do
@@ -352,9 +440,10 @@ end
 #
 # Indexes
 #
-#  index_service_days_on_child_id     (child_id)
-#  index_service_days_on_date         (date)
-#  index_service_days_on_schedule_id  (schedule_id)
+#  index_service_days_on_child_id           (child_id)
+#  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
+#  index_service_days_on_date               (date)
+#  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys
 #

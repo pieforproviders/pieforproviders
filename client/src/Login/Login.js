@@ -185,7 +185,6 @@ export function Login() {
           <p>{t('learnMore')}</p>
           <p>
             <a
-              className="text-blue5"
               href="https://www.pieforproviders.com/"
               target="_blank"
               rel="noopener noreferrer"

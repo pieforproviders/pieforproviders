@@ -5,6 +5,7 @@ class ServiceDay < UuidApplicationRecord
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
   after_save_commit :calculate_service_day
+  before_save :set_absence_type_by_schedule
 
   belongs_to :child
   belongs_to :schedule, optional: true
@@ -16,13 +17,15 @@ class ServiceDay < UuidApplicationRecord
   monetize :earned_revenue_cents, allow_nil: true
 
   ABSENCE_TYPES = %w[
+    absence_on_scheduled_day
+    absence_on_unscheduled_day
     absence
     covid_absence
   ].freeze
 
   validates :absence_type, inclusion: { in: ABSENCE_TYPES }, allow_nil: true
   validates :date, date_time_param: true, presence: true
-  validate :prevent_creation_of_absence_without_schedule
+  validates :child, uniqueness: { scope: :date }
 
   delegate :business, to: :child
   delegate :state, to: :child
@@ -30,7 +33,9 @@ class ServiceDay < UuidApplicationRecord
   scope :absences, -> { where.not(absence_type: nil) }
   scope :non_absences, -> { where(absence_type: nil) }
   scope :covid_absences, -> { where(absence_type: 'covid_absence') }
-  scope :standard_absences, -> { where(absence_type: 'absence') }
+  scope :standard_absences, -> { where(absence_type: %w[absence absence_on_scheduled_day]) }
+  scope :absence_on_scheduled_day, -> { where(absence_type: 'absence_on_scheduled_day') }
+  scope :absence_on_unscheduled_day, -> { where(absence_type: 'absence_on_unscheduled_day') }
 
   scope :for_month,
         lambda { |month = nil|
@@ -63,12 +68,6 @@ class ServiceDay < UuidApplicationRecord
 
   def absence?
     absence_type.present?
-  end
-
-  def prevent_creation_of_absence_without_schedule
-    return unless absence?
-
-    errors.add(:absence_type, "can't create for a day without a schedule") unless schedule_for_weekday
   end
 
   def schedule_for_weekday
@@ -138,6 +137,13 @@ class ServiceDay < UuidApplicationRecord
 
     ServiceDayCalculatorJob.perform_later(self)
   end
+
+  def set_absence_type_by_schedule
+    return unless absence_type == 'absence'
+
+    schedule = child.schedules.active_on(date).for_weekday(date.wday)
+    self.absence_type = schedule.presence ? 'absence_on_scheduled_day' : 'absence_on_unscheduled_day'
+  end
 end
 # == Schema Information
 #
@@ -156,9 +162,10 @@ end
 #
 # Indexes
 #
-#  index_service_days_on_child_id     (child_id)
-#  index_service_days_on_date         (date)
-#  index_service_days_on_schedule_id  (schedule_id)
+#  index_service_days_on_child_id           (child_id)
+#  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
+#  index_service_days_on_date               (date)
+#  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys
 #

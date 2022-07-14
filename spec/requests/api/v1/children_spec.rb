@@ -156,7 +156,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
       it 'does not return a child for another user' do
         get "/api/v1/children/#{other_business_children.first.id}", headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -269,7 +269,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
         it 'does not create approval amounts when no month is passed' do
           post '/api/v1/children', params: params, headers: headers
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(:created)
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts).to be_empty
@@ -278,7 +278,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
         it 'creates 12 approval amounts when a single month is passed' do
           post '/api/v1/children', params: one_month_amount, headers: headers
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(:created)
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
@@ -290,7 +290,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
         it 'creates 12 approval amounts when 12 months are passed' do
           post '/api/v1/children', params: all_month_amounts, headers: headers
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(:created)
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
@@ -302,7 +302,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
         it 'creates exactly the number of approval amounts passed when the number is between 1 and 12' do
           post '/api/v1/children', params: some_month_amounts, headers: headers
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(:created)
           json = JSON.parse(response.body)
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(6)
@@ -327,7 +327,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
       it 'fails unless the business is passed' do
         post '/api/v1/children', params: params_without_business, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -358,7 +358,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
       it 'does not update a child for another user' do
         put "/api/v1/children/#{other_business_children.first.id}", params: params, headers: headers
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
       end
 
       it 'returns an error if the data is invalid' do
@@ -368,7 +368,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
           }
         }
         put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
@@ -404,7 +404,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{business_children.first.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
         expect(business_children.first.reload.deleted_at).to eq(Time.current.to_date)
       end
     end
@@ -414,7 +414,7 @@ RSpec.describe 'Api::V1::Children', type: :request do
 
       it "soft-deletes the user's child" do
         delete "/api/v1/children/#{business_children.first.id}", headers: headers
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
         expect(business_children.first.reload.deleted_at).to eq(Time.current.to_date)
       end
     end

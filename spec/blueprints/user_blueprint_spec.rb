@@ -118,7 +118,11 @@ RSpec.describe UserBlueprint do
                service_day: service_day,
                child_approval: child.child_approvals.first)
         2.times do |idx|
-          service_day = create(:service_day, child: child)
+          service_day = create(
+            :service_day,
+            child: child,
+            date: Time.current.in_time_zone(child.timezone).at_beginning_of_day + idx.days
+          )
           create(:attendance,
                  child_approval: child.child_approvals.first,
                  service_day: service_day,

@@ -26,6 +26,8 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
 
     context 'when sent with an absence string' do
       context 'with a permitted absence type on the service day' do
+        before { children[0].schedules.first.update!(expires_on: effective_date + 1.year) }
+
         let(:valid_absence_batch) do
           {
             attendance_batch:
@@ -57,6 +59,11 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
+        end
+
+        it 'creates a service day with an absence_on_scheduled_day absence_type' do
+          post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
+          expect(ServiceDay.where(absence_type: 'absence_on_scheduled_day').size).to eq(1)
         end
       end
 
@@ -273,19 +280,25 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'returns json errors' do
+        it 'does not return json errors' do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
-          expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(parsed_response.dig('meta', 'errors')).not_to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
+          ).not_to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
           expect(Attendance.all.size).to eq(0)
-          expect(ServiceDay.all.size).to eq(1)
+          expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
+        end
+
+        it 'generates a service day with an absence_on_unscheduled_day absence_type' do
+          post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
+
+          expect(ServiceDay.where(absence_type: 'absence_on_unscheduled_day').size).to eq(1)
         end
       end
 
@@ -309,18 +322,18 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'returns json errors' do
+        it 'does not return json errors' do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
-          expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(parsed_response.dig('meta', 'errors')).not_to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
+          ).not_to match_array(["Validation failed: Absence type can't create for a day without a schedule"])
           expect(Attendance.all.size).to eq(0)
-          expect(ServiceDay.all.size).to eq(1)
+          expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -350,23 +363,23 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'returns json errors' do
+        it 'does not return json errors' do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
-          expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(parsed_response.dig('meta', 'errors')).not_to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(
+          ).not_to match_array(
             [
               "Validation failed: Absence type can't create for a day without a schedule",
               "Validation failed: Absence type can't create for a day without a schedule"
             ]
           )
           expect(Attendance.all.size).to eq(0)
-          expect(ServiceDay.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
         end
       end
@@ -392,23 +405,23 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           }
         end
 
-        it 'returns json errors' do
+        it 'does not return json errors' do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
           expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
-          expect(parsed_response.dig('meta', 'errors')).to be_present
-          expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
+          expect(parsed_response.dig('meta', 'errors')).not_to be_present
+          expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
             parsed_response.dig('meta', 'errors').values.flatten
-          ).to match_array(
+          ).not_to match_array(
             [
               "Validation failed: Absence type can't create for a day without a schedule",
               "Validation failed: Absence type can't create for a day without a schedule"
             ]
           )
           expect(Attendance.all.size).to eq(0)
-          expect(ServiceDay.all.size).to eq(0)
+          expect(ServiceDay.all.size).to eq(2)
           expect(response).to match_response_schema('attendance_batch')
         end
       end

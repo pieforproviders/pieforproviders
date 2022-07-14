@@ -9,6 +9,10 @@ module.exports = function () {
         fontSize: '100%',
         color: config('theme.colors.primaryBlue'),
         textDecoration: 'underline'
+      },
+      'a:hover': {
+        color: config('theme.colors.blue2'),
+        textDecoration: 'underline'
       }
     }
     addBase(baseStyles)

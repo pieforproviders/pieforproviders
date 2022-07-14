@@ -94,8 +94,8 @@ class AttendanceCsvImporter
 
   def log_missing_child
     Rails.logger.tagged('attendance import') do
-      message = "Business: #{@business.id} - child record for attendance "\
-                "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, "\
+      message = "Business: #{@business.id} - child record for attendance " \
+                "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
                 "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping"
       Rails.logger.info message
     end
