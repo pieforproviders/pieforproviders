@@ -11,15 +11,15 @@ class AttendanceCsvImporter
 
   class NoSuchChild < StandardError; end
 
-  def initialize
+  def initialize(start_date: nil, end_date: 0.days.after)
     @client = AwsClient.new
     @source_bucket = Rails.application.config.aws_necc_attendance_bucket
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
+    @start_date = start_date&.at_beginning_of_day
+    @end_date = end_date&.at_end_of_day
   end
 
-  def call(start_date = nil, end_date = 0.days.after)
-    @start_date = start_date
-    @end_date = end_date
+  def call(_start_date = nil, _end_date = 0.days.after)
     process_attendances
   end
 
