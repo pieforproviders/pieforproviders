@@ -19,7 +19,7 @@ class AttendanceCsvImporter
     @end_date = end_date&.at_end_of_day
   end
 
-  def call(_start_date = nil, _end_date = 0.days.after)
+  def call
     process_attendances
   end
 
