@@ -46,14 +46,17 @@ const Routes = () => {
   useEffect(() => {
     const script = document.createElement('script')
     script.async = true
-    script.src =
-      '/mini-profiler-resources/includes.js?v=12b4b45a3c42e6e15503d7a03810ff33'
-    script.type = 'text/javascript'
-    script.id = 'mini-profiler'
-    script.setAttribute(
-      'data-css-url',
-      '/mini-profiler-resources/includes.css?v=12b4b45a3c42e6e15503d7a03810ff33'
-    )
+
+    if (env.NODE_ENV !== 'development') {
+      script.src =
+        '/mini-profiler-resources/includes.js?v=12b4b45a3c42e6e15503d7a03810ff33'
+      script.type = 'text/javascript'
+      script.id = 'mini-profiler'
+      script.setAttribute(
+        'data-css-url',
+        '/mini-profiler-resources/includes.css?v=12b4b45a3c42e6e15503d7a03810ff33'
+      )
+    }
     script.setAttribute('data-version', '12b4b45a3c42e6e15503d7a03810ff33')
     script.setAttribute('data-path', '/mini-profiler-resources/')
     script.setAttribute('data-horizontal-position', 'left')
