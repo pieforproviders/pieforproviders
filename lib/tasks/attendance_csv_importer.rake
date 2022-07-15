@@ -6,7 +6,7 @@ task attendance_csv_importer: :environment do
   # Archive file to S3
   start_date = ENV['start_date']&.to_date || 1.year.before
   end_date = ENV['end_date']&.to_date || 0.days.after
-  AttendanceCsvImporter.new.call(start_date, end_date)
+  AttendanceCsvImporter.new(start_date: start_date, end_date: end_date).call
   Appsignal.stop 'read_wonderschool_necc_attendances'
   sleep 5
 end
