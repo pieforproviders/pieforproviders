@@ -61,21 +61,23 @@ end
 #
 # Table name: nebraska_rates
 #
-#  id              :uuid             not null, primary key
-#  accredited_rate :boolean          default(FALSE), not null
-#  amount          :decimal(, )      not null
-#  county          :string
-#  deleted_at      :date
-#  effective_on    :date             not null
-#  expires_on      :date
-#  license_type    :string           not null
-#  max_age         :decimal(, )
-#  name            :string           not null
-#  rate_type       :string           not null
-#  region          :string           not null
-#  school_age      :boolean          default(FALSE)
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
+#  id                                :uuid             not null, primary key
+#  accredited_rate                   :boolean          default(FALSE), not null
+#  amount                            :decimal(, )      not null
+#  county                            :string
+#  deleted_at                        :date
+#  effective_on                      :date             not null
+#  expires_on                        :date
+#  license_type                      :string           not null
+#  max_age                           :decimal(, )
+#  name                              :string           not null
+#  qris_rating                       :string
+#  rate_type                         :string           not null
+#  region                            :string           not null
+#  school_age                        :boolean          default(FALSE)
+#  use_qris_rating_to_determine_rate :boolean          default(FALSE)
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
 #
 # Indexes
 #

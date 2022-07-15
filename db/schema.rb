@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_21_165259) do
+ActiveRecord::Schema.define(version: 2022_07_15_175251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
-  create_table "good_job_processes", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "state"
@@ -192,7 +192,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["expires_on"], name: "index_nebraska_approval_amounts_on_expires_on"
   end
 
-  create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "month", default: "2022-05-05 01:37:11", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
@@ -214,7 +214,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["month", "child_id"], name: "index_nebraska_dashboard_cases_on_month_and_child_id", unique: true
   end
 
-  create_table "nebraska_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "nebraska_rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "region", null: false
     t.string "rate_type", null: false
     t.decimal "amount", null: false
@@ -229,11 +229,13 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
     t.date "deleted_at"
+    t.string "qris_rating"
+    t.boolean "use_qris_rating_to_determine_rate", default: false
     t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
 
-  create_table "notifications", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id"
     t.uuid "approval_id"
     t.datetime "created_at", precision: 6, null: false
@@ -260,7 +262,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.index ["weekday"], name: "index_schedules_on_weekday"
   end
 
-  create_table "service_days", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+  create_table "service_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "date", null: false
     t.uuid "child_id", null: false
     t.datetime "created_at", precision: 6, null: false
