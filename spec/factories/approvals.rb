@@ -6,7 +6,7 @@ FactoryBot.define do
     copay_cents { Random.rand(10) > 7 ? nil : Faker::Number.between(from: 1000, to: 10_000) }
     copay_frequency { copay ? Copays.frequencies.keys.sample : nil }
     effective_on { 9.months.ago.to_date }
-    expires_on { effective_on + 1.year }
+    expires_on { effective_on + 2.years }
 
     transient do
       create_children { true }
