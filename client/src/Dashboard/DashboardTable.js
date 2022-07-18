@@ -234,7 +234,7 @@ export default function DashboardTable({
           src={isInactive(record) ? grayVector : vector}
           className="mr-2"
         />
-        {t('markInactive')}
+        <span className="underline hover:text-blue2">{t('markInactive')}</span>
       </Button>
     </div>
   )
