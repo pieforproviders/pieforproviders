@@ -7,6 +7,7 @@ FactoryBot.define do
     amount { Faker::Number.within(range: 10.0..50.0) }
     license_type { 'family_child_care_home_i' }
     effective_on { 11.months.ago.to_date }
+    qris_rating { nil }
     # TODO: make this a trait and control it rather than randomizing
     expires_on do
       Random.rand(10) > 7 ? nil : effective_on + 1.year
@@ -80,23 +81,22 @@ end
 #
 # Table name: nebraska_rates
 #
-#  id                                :uuid             not null, primary key
-#  accredited_rate                   :boolean          default(FALSE), not null
-#  amount                            :decimal(, )      not null
-#  county                            :string
-#  deleted_at                        :date
-#  effective_on                      :date             not null
-#  expires_on                        :date
-#  license_type                      :string           not null
-#  max_age                           :decimal(, )
-#  name                              :string           not null
-#  qris_rating                       :string
-#  rate_type                         :string           not null
-#  region                            :string           not null
-#  school_age                        :boolean          default(FALSE)
-#  use_qris_rating_to_determine_rate :boolean          default(FALSE)
-#  created_at                        :datetime         not null
-#  updated_at                        :datetime         not null
+#  id              :uuid             not null, primary key
+#  accredited_rate :boolean          default(FALSE)
+#  amount          :decimal(, )      not null
+#  county          :string
+#  deleted_at      :date
+#  effective_on    :date             not null
+#  expires_on      :date
+#  license_type    :string           not null
+#  max_age         :decimal(, )
+#  name            :string           not null
+#  qris_rating     :string
+#  rate_type       :string           not null
+#  region          :string           not null
+#  school_age      :boolean          default(FALSE)
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
 #
 # Indexes
 #

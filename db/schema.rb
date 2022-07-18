@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2022_07_15_175251) do
     t.string "rate_type", null: false
     t.decimal "amount", null: false
     t.string "county"
-    t.boolean "accredited_rate", default: false, null: false
+    t.boolean "accredited_rate", default: false
     t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", null: false
@@ -230,7 +230,6 @@ ActiveRecord::Schema.define(version: 2022_07_15_175251) do
     t.boolean "school_age", default: false
     t.date "deleted_at"
     t.string "qris_rating"
-    t.boolean "use_qris_rating_to_determine_rate", default: false
     t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end

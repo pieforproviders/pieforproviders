@@ -35,19 +35,27 @@ class Business < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  def ne_qris_bump
-    exponents = {
+  def ne_qris_bump(date: nil)
+    # qris rates are used to determine rates after 7/1/22
+    # rather than being a multiplier
+    return 1 if date && date >= '2022-07-01'.to_date
+
+    exponents = set_exponents
+    exponent = qris_rating && exponents[qris_rating.to_sym] ? exponents[qris_rating.to_sym] : 0
+    1.05**exponent # compounding qris formula
+  end
+
+  private
+
+  def set_exponents
+    {
       step_one: 0,
       step_two: 0,
       step_three: accredited ? 0 : 1,
       step_four: accredited ? 1 : 2,
       step_five: accredited ? 2 : 3
     }
-    exponent = qris_rating && exponents[qris_rating.to_sym] ? exponents[qris_rating.to_sym] : 0
-    1.05**exponent # compounding qris formula
   end
-
-  private
 
   def prevent_deactivation_with_active_children
     return unless children.pluck(:active).uniq.include?(true) && will_save_change_to_active?(from: true, to: false)

@@ -39,20 +39,28 @@ module Nebraska
       end
 
       def ne_base_revenue
-        (hours * hourly_rate * business.ne_qris_bump) +
-          (days * daily_rate * business.ne_qris_bump)
+        (hours * hourly_rate * business.ne_qris_bump(date: @date)) +
+          (days * daily_rate * business.ne_qris_bump(date: @date))
       end
 
       def hourly_rate
         rates.find do |rate|
-          rate.rate_type == 'hourly' && rate.effective_on <= date && (rate.expires_on.nil? || rate.expires_on > date)
+          rate.rate_type == 'hourly' && rate_time_check(rate) && qris_check(rate)
         end&.amount || 0
       end
 
       def daily_rate
         rates.find do |rate|
-          rate.rate_type == 'daily' && rate.effective_on <= date && (rate.expires_on.nil? || rate.expires_on > date)
+          rate.rate_type == 'daily' && rate_time_check(rate) && qris_check(rate)
         end&.amount || 0
+      end
+
+      def rate_time_check(rate)
+        rate.effective_on <= date && (rate.expires_on.nil? || rate.expires_on > date)
+      end
+
+      def qris_check(rate)
+        !rate.qris_rating || (rate.qris_rating && rate.qris_rating == business.qris_rating)
       end
     end
   end
