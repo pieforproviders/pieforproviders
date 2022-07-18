@@ -46,7 +46,7 @@ const Notifications = ({ messages, setShowModal, isModal = false }) => {
         !isModal && messages.length > 0 ? (
           <div className="bg-blue4">
             <Button type="link" onClick={() => setShowModal(true)}>
-              <span className="underline text-base">
+              <span className="underline text-base hover:text-blue2">
                 {t('seeAllNotifications')}
               </span>
             </Button>
