@@ -342,7 +342,7 @@ module Wonderschool
               county: 'Corke',
               license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
             )
-            approval = create(
+            existing_approval = create(
               :approval,
               case_number: '14635435',
               effective_on: '2020-06-01',
@@ -356,9 +356,9 @@ module Wonderschool
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
-                           approvals: [approval],
+                           approvals: [existing_approval],
                            effective_date: Time.zone.parse('2020-06-01'))
-            nebraska_approval_amount = child.nebraska_approval_amounts.first
+            existing_nebraska_approval_amount = child.nebraska_approval_amounts.first
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
@@ -372,12 +372,18 @@ module Wonderschool
               .from(1).to(7)
               .and not_raise_error
             child.reload
-            expect((child.approvals.reject { |app| app == approval }).first.expires_on).to eq(Date.parse('2021-08-31'))
-            expect(approval.reload.expires_on).to eq(Date.parse('2020-08-31'))
-            expect(child.nebraska_approval_amounts.reject do |naa|
-              naa == nebraska_approval_amount
-            end.first.expires_on).to eq(Date.parse('2021-08-31'))
-            expect(nebraska_approval_amount.reload.expires_on).to eq(Date.parse('2020-08-31'))
+            expect(
+              child.approvals.reject do |app|
+                app == existing_approval
+              end.first.expires_on
+            ).to eq(Date.parse('2021-08-31'))
+            expect(existing_approval.reload.expires_on).to eq(Date.parse('2020-08-31'))
+            expect(
+              child.nebraska_approval_amounts.reject do |naa|
+                naa == existing_nebraska_approval_amount
+              end.first.expires_on
+            ).to eq(Date.parse('2021-08-31'))
+            expect(existing_nebraska_approval_amount.reload.expires_on).to eq(Date.parse('2020-08-31'))
           end
         end
 
@@ -781,6 +787,85 @@ module Wonderschool
             expect(
               second_approval.child_approvals.first.nebraska_approval_amounts.first.family_fee
             ).to eq(Money.from_amount(120))
+          end
+        end
+
+        context 'with updated approval periods' do
+          before do
+            allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
+            allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+          end
+
+          it 'updates the existing details if approval periods are different' do
+            business = create(
+              :business,
+              user: second_user,
+              name: "Kate's Kids",
+              zipcode: '68845',
+              county: 'Corke',
+              license_type: 'Family Child Care Home I'.downcase.tr(' ', '_')
+            )
+            approval = create(
+              :approval,
+              case_number: '56582912',
+              effective_on: '2020-11-24',
+              expires_on: '2021-11-23',
+              create_children: false
+            )
+            child = create(:necc_child,
+                           first_name: 'Becky',
+                           last_name: 'Falzone',
+                           business: business,
+                           date_of_birth: '2013-12-26',
+                           wonderschool_id: '37827',
+                           dhs_id: '69370816',
+                           approvals: [approval])
+            child.reload.child_approvals.first.update!(
+              enrolled_in_school: false,
+              authorized_weekly_hours: 45,
+              full_days: 330,
+              hours: 1760,
+              special_needs_rate: true,
+              special_needs_hourly_rate: 9.43,
+              special_needs_daily_rate: 90.77,
+              rate_type: nil,
+              rate_id: nil
+            )
+            child.reload.nebraska_approval_amounts.first.update!(
+              effective_on: Date.parse('2020-11-24'),
+              expires_on: Date.parse('2021-11-23'),
+              family_fee: 120
+            )
+            expect { described_class.new.call }
+              .to change(Child, :count)
+              .from(1).to(5)
+              .and change(Business, :count)
+              .from(1).to(2)
+              .and change(ChildApproval, :count)
+              .from(1).to(5)
+              .and change(Approval, :count)
+              .from(1).to(3)
+              .and change(NebraskaApprovalAmount, :count)
+              .from(1).to(6)
+              .and not_raise_error
+            child.reload
+            expect(child.child_approvals.first.full_days).to eq(330)
+            expect(child.child_approvals.first.hours).to eq(1760)
+            expect(child.child_approvals.first.special_needs_rate).to be(true)
+            expect(child.child_approvals.first.special_needs_hourly_rate).to eq(Money.from_amount(9.43))
+            expect(child.child_approvals.first.special_needs_daily_rate).to eq(Money.from_amount(90.77))
+            expect(child.nebraska_approval_amounts.order(:effective_on).first.effective_on)
+              .to eq(Date.parse('2020-11-24'))
+            expect(child.nebraska_approval_amounts.order(:effective_on).last.effective_on)
+              .to eq(Date.parse('2021-05-24'))
+            expect(child.nebraska_approval_amounts.order(:effective_on).first.expires_on)
+              .to eq(Date.parse('2021-05-23'))
+            expect(child.nebraska_approval_amounts.order(:effective_on).last.expires_on)
+              .to eq(Date.parse('2021-11-23'))
+            expect(child.nebraska_approval_amounts.order(:effective_on).first.family_fee)
+              .to eq(Money.from_amount(60))
+            expect(child.nebraska_approval_amounts.order(:effective_on).last.family_fee)
+              .to eq(Money.from_amount(85))
           end
         end
 

@@ -90,13 +90,21 @@ module Wonderschool
       end
 
       def update_overlapping_approval_amounts(period, existing_aa)
-        date = nebraska_approval_amount_params(period)[:effective_on]
-        overlapping_approval_amounts = @child.nebraska_approval_amounts.reject do |naa|
-          naa == existing_aa
+        date = period[:effective_on]
+        overlapping_approval_amounts(existing_aa, date).presence&.map do |oaa|
+          if oaa.effective_on == date
+            oaa.update!(period)
+          else
+            oaa.update!(period.except(:effective_on).merge(expires_on: date - 1.day))
+          end
         end
-        overlapping_approval_amounts.select! { |naa| date.between?(naa.effective_on, naa.expires_on) }
-        overlapping_approval_amounts.presence&.map { |oaa| oaa.update!(expires_on: date - 1.day) }
-        existing_aa&.update!(nebraska_approval_amount_params(period))
+        existing_aa&.update!(period)
+      end
+
+      def overlapping_approval_amounts(existing_aa, date)
+        @child.nebraska_approval_amounts
+              .reject { |naa| naa == existing_aa }
+              .select { |naa| date.between?(naa.effective_on, naa.expires_on) }
       end
 
       def update_child_approval
@@ -113,15 +121,15 @@ module Wonderschool
           next if existing_aa
 
           NebraskaApprovalAmount.find_or_create_by!(
-            nebraska_approval_amount_params(period).merge(child_approval: @child_approval)
+            period.merge(child_approval: @child_approval)
           )
         end
       end
 
       def existing_approval_amount(period)
-        params = nebraska_approval_amount_params(period)
-                 .slice(:effective_on, :expires_on).merge(child_approval: @child_approval)
-        @child.nebraska_approval_amounts.find_by(params)
+        @child.nebraska_approval_amounts.find_by(
+          period.except(:family_fee).merge(child_approval: @child_approval)
+        )
       end
 
       def approval_params
@@ -191,14 +199,6 @@ module Wonderschool
         { approvals_attributes: [approval_params] }.merge({ approval_periods: group_approval_periods })
       end
 
-      def nebraska_approval_amount_params(approval_period)
-        {
-          effective_on: approval_period[:effective_on],
-          expires_on: approval_period[:expires_on],
-          family_fee: approval_period[:family_fee].to_s.gsub(/[^\d.]/, '').to_f
-        }
-      end
-
       # groups the approval period fields by headers, i.e. "Approval #1 - Family Fee", "Approval #1 - Begin Date", etc.
       def group_approval_periods
         @approval_fields = CSV::Row.new(@row.headers, @row.fields)
@@ -211,7 +211,7 @@ module Wonderschool
           {
             effective_on: find_field(approval_number, 'Begin'),
             expires_on: find_field(approval_number, 'End'),
-            family_fee: find_field(approval_number, 'Family Fee', 'Allocated')
+            family_fee: find_field(approval_number, 'Family Fee', 'Allocated').to_s.gsub(/[^\d.]/, '').to_f
           }
         end
       end
