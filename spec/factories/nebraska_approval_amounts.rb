@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :nebraska_approval_amount do
     effective_on { 9.months.ago.to_date }
-    expires_on { effective_on + 1.year }
+    expires_on { effective_on + 1.year - 1.day }
     family_fee { Faker::Number.decimal(l_digits: 2) }
     child_approval
   end
