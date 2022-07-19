@@ -46,7 +46,7 @@ class AttendanceCsvImporter
       action: 'self-serve-attendance-csv-importer',
       exception: e,
       namespace: e.instance_of?(NoSuchChild) ? 'customer-support' : nil,
-      metadata: { child_id: @child&.id }
+      tags: { child_id: @child&.id }
     )
   end
 

@@ -42,7 +42,7 @@ module Wonderschool
         send_appsignal_error(
           action: 'wonderschool-necc-attendance-csv-importer',
           exception: e,
-          metadata: { child_id: row['child_id'] }
+          tags: { child_id: row['child_id'] }
         )
       end
 

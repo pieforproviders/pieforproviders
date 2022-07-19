@@ -10,7 +10,7 @@ class DateTimeParamValidator < ActiveModel::EachValidator
     send_appsignal_error(
       action: 'date-time-param-invalid',
       exception: e,
-      metadata: {
+      tags: {
         record_id: record&.id,
         record_class: record&.class
       }
