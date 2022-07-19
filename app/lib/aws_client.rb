@@ -31,7 +31,7 @@ class AwsClient
       action: 'aws-find-bucket',
       exception: e,
       namespace: tech_only ? 'tech-support' : nil,
-      metadata: { name: name }
+      tags: { name: name }
     )
   end
 
@@ -44,7 +44,7 @@ class AwsClient
     send_appsignal_error(
       action: 'aws-list-file-names',
       exception: e,
-      metadata: { source_bucket: source_bucket }
+      tags: { source_bucket: source_bucket }
     )
   end
 
@@ -59,7 +59,7 @@ class AwsClient
     send_appsignal_error(
       action: 'aws-get-file-contents',
       exception: e,
-      metadata: {
+      tags: {
         source_bucket: source_bucket,
         file_name: file_name
       }
@@ -75,7 +75,7 @@ class AwsClient
       action: 'aws-archive-file',
       exception: e,
       namespace: 'tech-support',
-      metadata: {
+      tags: {
         source_bucket: source_bucket,
         archive_bucket: archive_bucket,
         file_name: file_name
@@ -85,13 +85,13 @@ class AwsClient
 
   def archive_contents(archive_bucket, file_name, contents)
     find_bucket(name: archive_bucket, tech_only: true)
-    @client.put_object({ bucket: archive_bucket, key: file_name, body: contents })
+    @client.put_object({ bucket: archive_bucket, key: file_name, body: contents.to_s })
   rescue StandardError => e
     send_appsignal_error(
       action: 'aws-archive-contents',
       exception: e,
       namespace: 'tech-support',
-      metadata: {
+      tags: {
         archive_bucket: archive_bucket,
         file_name: file_name
       }

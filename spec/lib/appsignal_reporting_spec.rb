@@ -16,7 +16,7 @@ RSpec.describe AppsignalReporting do
       included_class.new.send_appsignal_error(
         action: 'action',
         exception: StandardError,
-        metadata: { identifier: 'identifier' }
+        tags: { identifier: 'identifier' }
       )
       expect(stubbed_appsignal).to have_received(:send_error).with(StandardError)
     end

@@ -10,7 +10,7 @@ class TimeParamValidator < ActiveModel::EachValidator
     send_appsignal_error(
       action: 'time-param-invalid',
       exception: e,
-      metadata: {
+      tags: {
         record_id: record&.id,
         record_class: record&.class
       }

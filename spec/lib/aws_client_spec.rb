@@ -33,7 +33,7 @@ RSpec.describe AwsClient do
           action: 'aws-find-bucket',
           exception: described_class::NoBucketFound,
           namespace: nil,
-          metadata: { name: 'bucket' }
+          tags: { name: 'bucket' }
         )
     end
 
@@ -47,7 +47,7 @@ RSpec.describe AwsClient do
           action: 'aws-find-bucket',
           exception: described_class::NoBucketFound,
           namespace: 'tech-support',
-          metadata: { name: 'bucket' }
+          tags: { name: 'bucket' }
         )
     end
   end
@@ -69,7 +69,7 @@ RSpec.describe AwsClient do
         .with(
           action: 'aws-list-file-names',
           exception: described_class::NoFilesFound,
-          metadata: { source_bucket: 'bucket' }
+          tags: { source_bucket: 'bucket' }
         )
     end
   end
@@ -91,7 +91,7 @@ RSpec.describe AwsClient do
         .with(
           action: 'aws-get-file-contents',
           exception: described_class::EmptyContents,
-          metadata: {
+          tags: {
             source_bucket: 'bucket',
             file_name: 'file'
           }
@@ -118,7 +118,7 @@ RSpec.describe AwsClient do
           action: 'aws-archive-file',
           exception: Aws::S3::Errors::KeyTooLongError,
           namespace: 'tech-support',
-          metadata: {
+          tags: {
             source_bucket: 'source_bucket',
             archive_bucket: 'archive_bucket',
             file_name: 'file'
@@ -138,7 +138,7 @@ RSpec.describe AwsClient do
           action: 'aws-archive-file',
           exception: Aws::S3::Errors::InvalidBucketName,
           namespace: 'tech-support',
-          metadata: {
+          tags: {
             source_bucket: 'source_bucket',
             archive_bucket: 'archive_bucket',
             file_name: 'file'
@@ -165,7 +165,7 @@ RSpec.describe AwsClient do
           action: 'aws-archive-contents',
           exception: Aws::S3::Errors::InvalidBucketName,
           namespace: 'tech-support',
-          metadata: {
+          tags: {
             archive_bucket: 'archive_bucket',
             file_name: 'file'
           }

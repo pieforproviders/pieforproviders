@@ -35,8 +35,6 @@ class ApplicationController < ActionController::API
   private
 
   def set_appsignal_context
-    return unless Rails.env.production?
-
     Appsignal.tag_request(
       user_id: current_user&.id,
       url: request.url,
