@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Attendance, type: :model do
+  before { travel_to '2022-06-01'.to_date }
+
+  after  { travel_back }
+
   let(:service_day) { create(:service_day) }
   let(:now) { Time.current }
   let(:child_approval) { service_day.child.child_approvals.first }
