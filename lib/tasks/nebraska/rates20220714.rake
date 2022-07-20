@@ -15,7 +15,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '5.50',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -26,7 +26,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '35.50',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -37,7 +37,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '5.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -48,7 +48,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '34.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -59,7 +59,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '5.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -70,7 +70,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '33.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -81,7 +81,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '5.50',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -92,7 +92,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'LDDS',
           amount: '32.00',
-          qris_rating: rating
+          quality_rating: rating
         )
       end
 
@@ -105,7 +105,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.80',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -116,7 +116,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '36.75',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -127,7 +127,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.25',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -138,7 +138,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '35.70',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -149,7 +149,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.25',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -160,7 +160,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '34.75',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -171,7 +171,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.80',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -182,7 +182,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '33.60',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -193,7 +193,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '6.10',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -204,7 +204,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '38.60',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -215,7 +215,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.55',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -226,7 +226,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '37.50',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -237,7 +237,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.55',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -248,7 +248,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '36.40',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -259,7 +259,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '6.10',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -270,7 +270,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '35.30',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       # step_five FCCHI LDDS
@@ -282,7 +282,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '6.40',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -293,7 +293,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '40.55',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -304,7 +304,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.80',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -315,7 +315,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '39.40',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -326,7 +326,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '5.80',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -337,7 +337,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '38.20',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -348,7 +348,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '6.40',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -359,7 +359,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'LDDS',
         amount: '37.50',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
     end
 
@@ -453,7 +453,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.40',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -464,7 +464,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '57.75',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -475,7 +475,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.05',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -486,7 +486,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '52.50',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -497,7 +497,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '7.35',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -508,7 +508,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '47.25',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -519,7 +519,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '6.85',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -530,7 +530,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '42.00',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     # LDDS Licensed Centers LDDS step_four
@@ -542,7 +542,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.85',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -553,7 +553,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '60.65',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -564,7 +564,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.45',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -575,7 +575,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '55.15',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -586,7 +586,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '7.75',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -597,7 +597,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '49.65',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -608,7 +608,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '7.20',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -619,7 +619,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '44.10',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     # LDDS Licensed Centers LDDS step_five
@@ -631,7 +631,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '9.30',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -642,7 +642,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '63.70',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -653,7 +653,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.90',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -664,7 +664,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '57.90',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -675,7 +675,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '8.10',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -686,7 +686,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '52.10',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -697,7 +697,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '7.55',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -708,7 +708,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'LDDS',
       amount: '46.35',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     # License Exempt LD
@@ -884,7 +884,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '3.45',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -895,7 +895,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '30.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -906,7 +906,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '3.25',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -917,7 +917,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '28.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -928,7 +928,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '3.25',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -939,7 +939,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '27.00',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -950,7 +950,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '3.45',
-          qris_rating: rating
+          quality_rating: rating
         )
 
         NebraskaRate.find_or_create_by!(
@@ -961,7 +961,7 @@ namespace :nebraska do
           max_age: 18,
           region: 'Other',
           amount: '26.25',
-          qris_rating: rating
+          quality_rating: rating
         )
       end
 
@@ -974,7 +974,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.65',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -985,7 +985,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '31.50',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -996,7 +996,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.45',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1007,7 +1007,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '29.40',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1018,7 +1018,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.45',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1029,7 +1029,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '28.35',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1040,7 +1040,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.65',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1051,7 +1051,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '27.60',
-        qris_rating: 'step_three'
+        quality_rating: 'step_three'
       )
 
       # Other County FCCHI and FCCHII step_four
@@ -1063,7 +1063,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.80',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1074,7 +1074,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '33.10',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1085,7 +1085,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.60',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1096,7 +1096,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '30.90',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1107,7 +1107,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.60',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1118,7 +1118,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '29.80',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1129,7 +1129,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.80',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1140,7 +1140,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '28.95',
-        qris_rating: 'step_four'
+        quality_rating: 'step_four'
       )
 
       # Other County FCCHI and FCCHII step_five
@@ -1152,7 +1152,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '4.00',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1163,7 +1163,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '34.75',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1174,7 +1174,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.80',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1185,7 +1185,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '32.45',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1196,7 +1196,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '3.80',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1207,7 +1207,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '31.30',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1218,7 +1218,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '4.00',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
 
       NebraskaRate.find_or_create_by!(
@@ -1229,7 +1229,7 @@ namespace :nebraska do
         max_age: 18,
         region: 'Other',
         amount: '30.40',
-        qris_rating: 'step_five'
+        quality_rating: 'step_five'
       )
     end
 
@@ -1323,7 +1323,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.25',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1334,7 +1334,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '38.15',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1345,7 +1345,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.25',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1356,7 +1356,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '36.75',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1367,7 +1367,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.25',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1378,7 +1378,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '33.90',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1389,7 +1389,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.00',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1400,7 +1400,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '33.60',
-      qris_rating: 'step_three'
+      quality_rating: 'step_three'
     )
 
     # Other County Licensed Centers step_four
@@ -1412,7 +1412,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.55',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1423,7 +1423,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '40.05',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1434,7 +1434,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.55',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1445,7 +1445,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '38.65',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1456,7 +1456,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.55',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1467,7 +1467,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '35.60',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1478,7 +1478,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.25',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1489,7 +1489,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '35.30',
-      qris_rating: 'step_four'
+      quality_rating: 'step_four'
     )
 
     # Other County Licensed Centers step_five
@@ -1501,7 +1501,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.80',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1512,7 +1512,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '42.05',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1523,7 +1523,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.80',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1534,7 +1534,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '40.55',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1545,7 +1545,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.80',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1556,7 +1556,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '37.35',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1567,7 +1567,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '5.50',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     NebraskaRate.find_or_create_by!(
@@ -1578,7 +1578,7 @@ namespace :nebraska do
       max_age: 18,
       region: 'Other',
       amount: '37.05',
-      qris_rating: 'step_five'
+      quality_rating: 'step_five'
     )
 
     # Other County License Exempt Home

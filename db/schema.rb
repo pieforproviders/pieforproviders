@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_15_175251) do
+ActiveRecord::Schema.define(version: 2022_07_20_165954) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 2022_07_15_175251) do
     t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "qris_rating"
+    t.string "quality_rating"
     t.boolean "accredited"
     t.date "deleted_at"
     t.string "inactive_reason"
@@ -229,7 +229,7 @@ ActiveRecord::Schema.define(version: 2022_07_15_175251) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
     t.date "deleted_at"
-    t.string "qris_rating"
+    t.string "quality_rating"
     t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end

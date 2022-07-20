@@ -3,6 +3,7 @@
 # The businesses for which users are responsible for keeping subsidy data
 class Business < UuidApplicationRecord
   include Licenses
+  include QualityRatings
 
   before_save :state_from_zipcode
   before_update :prevent_deactivation_with_active_children
@@ -15,20 +16,7 @@ class Business < UuidApplicationRecord
 
   accepts_nested_attributes_for :children
 
-  QRIS_RATINGS = %w[
-    not_rated
-    step_one
-    step_two
-    step_three
-    step_four
-    step_five
-    gold
-    silver
-    bronze
-  ].freeze
-
   validates :active, inclusion: { in: [true, false] }
-  validates :qris_rating, inclusion: { in: QRIS_RATINGS }, allow_nil: true
   validates :name, presence: true, uniqueness: { scope: :user_id }
   validates :county, presence: true
   validates :zipcode, presence: true
@@ -36,18 +24,17 @@ class Business < UuidApplicationRecord
   scope :active, -> { where(active: true) }
 
   def ne_qris_bump(date: nil)
-    # qris rates are used to determine rates after 7/1/22
+    # qris rating is used to determine reimbursement rates after 7/1/22
     # rather than being a multiplier
     return 1 if date && date >= '2022-07-01'.to_date
 
-    exponents = set_exponents
-    exponent = qris_rating && exponents[qris_rating.to_sym] ? exponents[qris_rating.to_sym] : 0
+    exponent = quality_rating && exponents[quality_rating.to_sym] ? exponents[quality_rating.to_sym] : 0
     1.05**exponent # compounding qris formula
   end
 
   private
 
-  def set_exponents
+  def exponents
     {
       step_one: 0,
       step_two: 0,
@@ -81,7 +68,7 @@ end
 #  inactive_reason :string
 #  license_type    :string           not null
 #  name            :string           not null
-#  qris_rating     :string
+#  quality_rating  :string
 #  state           :string
 #  zipcode         :string
 #  created_at      :datetime         not null

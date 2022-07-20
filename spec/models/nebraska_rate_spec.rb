@@ -7,7 +7,7 @@ RSpec.describe NebraskaRate, type: :model do
 
   it { is_expected.to have_many(:child_approvals) }
 
-  it { is_expected.to validate_inclusion_of(:qris_rating).in_array(NebraskaRate::QRIS_RATING) }
+  it { is_expected.to validate_inclusion_of(:quality_rating).in_array(QualityRatings::TYPES) }
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:effective_on) }
   it { is_expected.to validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
@@ -72,7 +72,7 @@ end
 #  license_type    :string           not null
 #  max_age         :decimal(, )
 #  name            :string           not null
-#  qris_rating     :string
+#  quality_rating  :string
 #  rate_type       :string           not null
 #  region          :string           not null
 #  school_age      :boolean          default(FALSE)

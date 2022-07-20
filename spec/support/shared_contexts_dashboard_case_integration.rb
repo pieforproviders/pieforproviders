@@ -14,7 +14,7 @@ RSpec.shared_context 'with nebraska child created for dashboard' do
   let(:prior_month_check_in) { child_approval.effective_on.in_time_zone(child.timezone).at_beginning_of_day }
 
   before do
-    child.business.update!(accredited: true, qris_rating: 'step_four')
+    child.business.update!(accredited: true, quality_rating: 'step_four')
     child_approval.update!(
       attributes_for(:child_approval)
       .merge({

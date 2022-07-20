@@ -26,7 +26,7 @@
     "name": {
       "type": "string"
     },
-    "qris_rating": {
+    "quality_rating": {
       "type": [
         "string",
         "null"

@@ -39,8 +39,8 @@ module Nebraska
       end
 
       def ne_base_revenue
-        (hours * hourly_rate * business.ne_qris_bump(date: @date)) +
-          (days * daily_rate * business.ne_qris_bump(date: @date))
+        (hours * hourly_rate * business.ne_qris_bump(date: date)) +
+          (days * daily_rate * business.ne_qris_bump(date: date))
       end
 
       def hourly_rate
@@ -60,7 +60,7 @@ module Nebraska
       end
 
       def qris_check(rate)
-        !rate.qris_rating || (rate.qris_rating && rate.qris_rating == business.qris_rating)
+        !rate.quality_rating || (rate.quality_rating && rate.quality_rating == business.quality_rating)
       end
     end
   end

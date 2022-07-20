@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
+  before { travel_to '2022-06-01'.to_date }
+
+  after  { travel_back }
+
   let!(:full_day_ldds_rate) do
     create(:unaccredited_daily_ldds_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
@@ -109,8 +113,8 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
   describe '#call' do
     context 'when called after qris status update (7-1-2022)' do
       it 'matches hourly rating based on qris_rate if there is one and does not apply qris bump' do
-        hourly_ldds_rate.update!(qris_rating: 'step_three')
-        business_ldds.update!(qris_rating: 'step_three')
+        hourly_ldds_rate.update!(quality_rating: 'step_three')
+        business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
         child_ldds_child_approval.reload
         expect(
@@ -128,9 +132,9 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(hourly_ldds_rate.amount * 3.5)
       end
 
-      it 'does not default to non qris_rate based matching for hourly rates' do
-        hourly_ldds_rate.update!(qris_rating: 'step_four')
-        business_ldds.update!(qris_rating: 'step_three')
+      it 'returns zero revenue when quality rating does not match for hourly rates' do
+        hourly_ldds_rate.update!(quality_rating: 'step_four')
+        business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
         child_ldds_child_approval.reload
 
@@ -150,9 +154,9 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
       end
 
       it 'matches daily rating based on qris_rate if there is one and does not apply qris bump' do
-        business_ldds.update!(qris_rating: 'step_three')
+        business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
-        full_day_ldds_rate.update!(qris_rating: 'step_three')
+        full_day_ldds_rate.update!(quality_rating: 'step_three')
         expect(
           described_class.new(
             child_approval: child_ldds_child_approval,
@@ -168,10 +172,10 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(full_day_ldds_rate.amount)
       end
 
-      it 'does not default to non qris_rate for daily rates' do
-        business_ldds.update!(qris_rating: 'step_three')
+      it 'returns zero revenue when quality rating does not match for daily rates' do
+        business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
-        full_day_ldds_rate.update!(qris_rating: 'step_four')
+        full_day_ldds_rate.update!(quality_rating: 'step_four')
         expect(
           described_class.new(
             child_approval: child_ldds_child_approval,
@@ -188,10 +192,10 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
       end
 
       it 'calculates the correct revenue for a daily_plus_hourly attendance without bump modifier' do
-        business_ldds.update!(qris_rating: 'step_three')
-        hourly_ldds_rate.update!(qris_rating: 'step_three')
+        business_ldds.update!(quality_rating: 'step_three')
+        hourly_ldds_rate.update!(quality_rating: 'step_three')
         child_ldds.reload
-        full_day_ldds_rate.update!(qris_rating: 'step_three')
+        full_day_ldds_rate.update!(quality_rating: 'step_three')
         expect(
           described_class.new(
             child_approval: child_ldds_child_approval,
@@ -210,11 +214,11 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         )
       end
 
-      it 'does not default to non qris_rate for daily_plus_hourly attendance computation' do
-        business_ldds.update!(qris_rating: 'step_three')
-        hourly_ldds_rate.update!(qris_rating: 'step_three')
+      it 'returns zero revenue when quality rating does not match for daily_plus_hourly attendance' do
+        business_ldds.update!(quality_rating: 'step_three')
+        hourly_ldds_rate.update!(quality_rating: 'step_four')
         child_ldds.reload
-        full_day_ldds_rate.update!(qris_rating: 'step_four')
+        full_day_ldds_rate.update!(quality_rating: 'step_four')
         expect(
           described_class.new(
             child_approval: child_ldds_child_approval,
@@ -227,9 +231,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
               business_ldds
             )
           ).call
-        ).to eq(
-          hourly_ldds_rate.amount * 8
-        )
+        ).to eq(0)
       end
     end
 
