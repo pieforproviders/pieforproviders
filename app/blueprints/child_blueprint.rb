@@ -10,6 +10,9 @@ class ChildBlueprint < Blueprinter::Base
   field :first_name
   field :last_name
   field :wonderschool_id
+  field :business_name do |child, _options|
+    child.business.name
+  end
 
   view :cases do
     association :business, blueprint: BusinessBlueprint
