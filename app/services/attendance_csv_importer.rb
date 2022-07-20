@@ -80,7 +80,7 @@ class AttendanceCsvImporter
   end
 
   def business
-    found_business = Business.find_by(name: @file_name.split('-').first)
+    found_business = Business.find_by(name: @file_name.split('.').first.split('-'))
 
     found_business.presence || log_missing_business
   end
