@@ -5,7 +5,11 @@ require 'rails_helper'
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
   describe '#earned_revenue' do
-    let!(:date) { '2022-06-30'.to_date.at_beginning_of_day }
+    before { travel_to '2022-06-01'.to_date }
+
+    after  { travel_back }
+
+    let!(:date) { Time.current }
     let!(:child) do
       create(
         :necc_child,
