@@ -36,7 +36,7 @@ class DeviseCustomMailer < Devise::Mailer
   private
 
   def confirmation_path(token)
-    "#{domain}/confirm?confirmation_token=#{token}"
+    "https://#{domain}/confirm?confirmation_token=#{token}"
   end
 
   def pie_logo
