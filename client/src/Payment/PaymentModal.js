@@ -33,13 +33,13 @@ export function PaymentModal({
   const { getChildCases } = useApiService()
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCases = async () => {
       const response = await getChildCases(modalDates)
       setCases(response)
       initChildPayments(response)
     }
 
-    fetchData()
+    fetchCases()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalDates])
 
