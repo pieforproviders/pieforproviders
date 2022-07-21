@@ -107,7 +107,9 @@ export default function DashboardTitle({ dates, setDates, getDashboardData }) {
   const checkIfPaymentRecorded = async (paymentDate = dates) => {
     const response = await makeRequest({
       type: 'get',
-      url: '/api/v1/payments?filter_date=' + paymentDate.dateFilterValue.date,
+      url:
+        '/api/v1/payments?filter_date=' +
+        paymentDate.dateFilterValue.displayDate,
       headers: {
         Authorization: token
       },
