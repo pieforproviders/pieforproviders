@@ -11,6 +11,7 @@ import PaymentModal from '../Payment'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
 import { MonthSelector } from '_shared/MonthSelector'
+import getFormattedMonthYearDate from '_utils/dateFormatter'
 
 const { useBreakpoint } = Grid
 
@@ -236,8 +237,13 @@ export default function DashboardTitle({ dates, setDates, getDashboardData }) {
     >
       <p>
         {t('paymentSuccessText')}
-        {t(dates.dateFilterValue)}
-        {dates.dateFilterValue}
+        <span className="ml-1 mr-1">
+          {dates.dateFilterValue.date &&
+            getFormattedMonthYearDate(
+              new Date(dates.dateFilterValue.date),
+              'long'
+            ).displayDate}
+        </span>
         {t('paymentSuccessText2')} <b>${totalPayment}.</b>
       </p>
     </Modal>
