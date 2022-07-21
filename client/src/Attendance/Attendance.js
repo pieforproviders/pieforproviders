@@ -18,6 +18,7 @@ import AttendanceDataCell from '_shared/AttendanceDataCell'
 import SiteFilterSelect from '_shared/SiteFilterSelect'
 import '_assets/styles/alert-overrides.css'
 import '_assets/styles/filter-select-overrides.css'
+import '_assets/styles/attendance-table-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
@@ -455,7 +456,7 @@ export function Attendance() {
         pagination={false}
         sticky
         scroll={{ x: 1500 }}
-        className="my-5"
+        className="my-5 attendance-table"
         loading={{
           delay: 1000,
           spinning: isLoading,
