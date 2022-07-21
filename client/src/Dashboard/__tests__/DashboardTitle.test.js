@@ -73,7 +73,7 @@ describe('<DashboardTitle />', () => {
   })
 
   it('calls getDashboardData only once when filtering by month', async () => {
-    const { container, rerender } = neRender()
+    const { container } = neRender()
 
     // Check value of dropdown default option
     expect(container).toHaveTextContent('Mar 2020')
