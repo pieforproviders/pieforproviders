@@ -11,6 +11,7 @@ import smallPie from '../_assets/smallPie.png'
 import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
 import { setLoading } from '_reducers/uiReducer'
 import '_assets/styles/edit-icon.css'
+import '_assets/styles/attendance-table-overrides.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
@@ -145,7 +146,7 @@ export function AttendanceView() {
       dateColumns.push({
         dataIndex: i,
         key: i,
-        width: 275,
+        width: 175,
         // eslint-disable-next-line react/display-name
         title: () => {
           const monthDate = columnDate.format('MMM DD')
@@ -315,7 +316,10 @@ export function AttendanceView() {
         ),
         // eslint-disable-next-line react/display-name
         render: (_, record) => (
-          <div className="eyebrow-large text-gray1">{record.child}</div>
+          <div className="eyebrow-large text-gray1">
+            <div>{record.child}</div>
+            <div className="text-sm">{record.businessName}</div>
+          </div>
         )
       },
       ...dateColumns
@@ -360,6 +364,7 @@ export function AttendanceView() {
           : previousValue.push({
               child: childName,
               key: `${childName}${currentValue.date}`,
+              businessName: currentValue.child.business_name,
               serviceDays: [currentValue]
             })
         return previousValue
@@ -552,18 +557,20 @@ export function AttendanceView() {
               {t('inputAttendance')}
             </Button>
           </div>
-          <div>
-            <WeekPicker
-              hasNext={dateSelected.day(6) < dayjs().day(0)}
-              dateSelected={dateSelected}
-              handleDateChange={handleDateChange}
-            />
-          </div>
-          <div className="relative pt-5">
-            <SiteFilterSelect
-              businesses={businesses}
-              onChange={value => getServiceDays(value)}
-            />
+          <div className="flex">
+            <div style={{ marginRight: '1rem' }}>
+              <WeekPicker
+                hasNext={dateSelected.day(6) < dayjs().day(0)}
+                dateSelected={dateSelected}
+                handleDateChange={handleDateChange}
+              />
+            </div>
+            <div>
+              <SiteFilterSelect
+                businesses={businesses}
+                onChange={value => getServiceDays(value)}
+              />
+            </div>
           </div>
           <Table
             dataSource={[...attendanceData]}
@@ -572,7 +579,7 @@ export function AttendanceView() {
             pagination={false}
             sticky
             scroll={{ x: 1500 }}
-            className="my-5"
+            className="my-5 attendance-table"
             loading={{
               spinning: isLoading,
               indicator: <LoadingDisplay />

@@ -1,0 +1,3 @@
+.attendance-table thead[class*="ant-table-thead"] th{
+  background-color: #E2EBF3 !important;
+}
