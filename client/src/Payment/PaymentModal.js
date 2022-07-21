@@ -9,35 +9,41 @@ import pieSliceLogo from '../_assets/pieSliceLogo.svg'
 import { SectionMessage } from '_shared/SectionMessage'
 import { PIE_FOR_PROVIDERS_EMAIL } from '../constants'
 import { ActionLink } from '../_shared/ActionLink'
+import { MonthSelector } from '_shared/MonthSelector'
+import { useApiService } from '_shared/_hooks/useApiService'
 
 const { useBreakpoint } = Grid
 export function PaymentModal({
   setTotalPayment,
-  lastMonth,
   childPayments,
   setChildPayments,
   isFailedPaymentRequest,
-  isPaymentSubmitted
+  isPaymentSubmitted,
+  dates,
+  checkIfPaymentRecorded
 }) {
-  const { cases } = useSelector(state => state)
+  const selectorCases = useSelector(state => state.cases)
+  const [cases, setCases] = useState(selectorCases)
   const { t } = useTranslation()
   const [currentChildID, setCurrentChildID] = useState(false)
   const [originalPayments, setOriginalPayments] = useState({})
   const screens = useBreakpoint()
   const isSmallScreen = (screens.sm || screens.xs) && !screens.md
+  const [modalDates, setModalDates] = useState({ ...dates })
+  const { getChildCases } = useApiService()
 
   useEffect(() => {
-    initChildPayments()
+    const fetchData = async () => {
+      const response = await getChildCases(modalDates)
+      setCases(response)
+      initChildPayments(response)
+    }
+
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [modalDates])
 
-  useEffect(() => {
-    let updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
-    updatedTotal = Math.round(updatedTotal * 100) / 100
-    setTotalPayment(updatedTotal)
-  }, [childPayments, setTotalPayment])
-
-  function initChildPayments() {
+  function initChildPayments(cases) {
     let payments = {}
 
     cases.forEach(child => {
@@ -45,8 +51,16 @@ export function PaymentModal({
       originalPayments[child.id] = child.earnedRevenue
     })
 
+    console.log('payments', payments)
     setChildPayments(payments)
     setOriginalPayments(payments)
+    updateTotalPayments(payments)
+  }
+
+  function updateTotalPayments(childPayments) {
+    let updatedTotal = Object.values(childPayments).reduce((a, b) => a + b, 0)
+    updatedTotal = Math.round(updatedTotal * 100) / 100
+    setTotalPayment(updatedTotal)
   }
 
   function updateCurrentRowIndex(childID) {
@@ -59,6 +73,11 @@ export function PaymentModal({
 
   function resetPayment() {
     updateTotalPayment(originalPayments[currentChildID])
+  }
+
+  const updateSelectedMonth = dates => {
+    checkIfPaymentRecorded(dates)
+    setModalDates(dates)
   }
 
   const earnedRevenueHeader = (
@@ -85,7 +104,9 @@ export function PaymentModal({
 
   function earnedRevenueBody(childCase) {
     return (
-      <div className="payment-table-text">&#36; {childCase.earnedRevenue}</div>
+      <div className="payment-table-text">
+        &#36; {childCase.earnedRevenue.toFixed(2)}
+      </div>
     )
   }
 
@@ -181,24 +202,6 @@ export function PaymentModal({
     </SectionMessage>
   )
 
-  const monthNames = [
-    'jan',
-    'feb',
-    'mar',
-    'apr',
-    'may',
-    'jun',
-    'jul',
-    'aug',
-    'sep',
-    'oct',
-    'nov',
-    'dec'
-  ]
-
-  const previousMonth = monthNames[lastMonth.getMonth()]
-  const previousMonthYear = lastMonth.getFullYear()
-
   return (
     <div>
       <p className="mb-4 body-1">{t('recordAChildsPayment')}</p>
@@ -219,9 +222,12 @@ export function PaymentModal({
       <div className="mb-2 eyebrow-small">{t('step1')}</div>
       <p className="mb-2 body-1">{t('choosePaymentMonth')}</p>
 
-      <div className="ml-4">
-        {t(previousMonth)} {previousMonthYear}
-      </div>
+      <MonthSelector
+        dates={modalDates}
+        setDates={updateSelectedMonth}
+        className={'payment-month-selector text-primaryBlue'}
+        size="small"
+      />
 
       <div className="mt-4 mb-2 eyebrow-small">{t('step2')}</div>
       <p className="mb-4 body-1">{t('childrenPayment')}</p>
@@ -232,9 +238,10 @@ export function PaymentModal({
 
 PaymentModal.propTypes = {
   setTotalPayment: PropTypes.func.isRequired,
-  lastMonth: PropTypes.instanceOf(Date).isRequired,
   childPayments: PropTypes.object.isRequired,
   setChildPayments: PropTypes.func.isRequired,
   isFailedPaymentRequest: PropTypes.bool.isRequired,
-  isPaymentSubmitted: PropTypes.bool.isRequired
+  isPaymentSubmitted: PropTypes.bool.isRequired,
+  dates: PropTypes.object,
+  checkIfPaymentRecorded: PropTypes.func
 }
