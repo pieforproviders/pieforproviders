@@ -49,7 +49,7 @@ module Commands
       end
 
       def new_or_existing_service_day
-        ServiceDay.find_or_initialize_by(child: child, date: check_in.at_beginning_of_day)
+        ServiceDay::Create.new(child: child, date: check_in.at_beginning_of_day).create
       end
 
       def child_approval
@@ -63,16 +63,9 @@ module Commands
       end
 
       def update_service_day
-        # TODO: command to update?
-        attendance.service_day.update!(absence_type: absence_type, schedule: schedule_for_weekday)
-        # TODO: eventually put this in the service_day update command
-        ServiceDayCalculator.new(service_day: attendance.service_day).call
+        ServiceDay::Update.new(service_day: attendance.service_day, absence_type: absence_type).update
         # To Be Implemented:
         # DashboardCalculator.new(service_day: service_day).call
-      end
-
-      def schedule_for_weekday
-        child&.schedules&.active_on(check_in.to_date)&.for_weekday(check_in.wday)&.first
       end
     end
   end

@@ -101,6 +101,8 @@ module Api
       end
 
       def service_day
+        # service_day = Commands::ServiceDay::Create.new(child: child, date: date).create
+        # Commands::ServiceDay::Update.new(service_day: service_day, absence_type: absence_type).update
         ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
           ServiceDay.create!(child: child, date: date, absence_type: absence_type)
       rescue StandardError => e
