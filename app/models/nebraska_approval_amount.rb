@@ -7,16 +7,7 @@ class NebraskaApprovalAmount < UuidApplicationRecord
   validates :expires_on, presence: true
   validate :expires_on_after_effective_on
 
-  scope :active_on,
-        lambda { |date|
-          where(
-            # rubocop:disable Layout/LineLength
-            'nebraska_approval_amounts.effective_on <= ? and (nebraska_approval_amounts.expires_on is null or nebraska_approval_amounts.expires_on > ?)',
-            # rubocop:enable Layout/LineLength
-            date,
-            date
-          ).order(updated_at: :desc)
-        }
+  scope :active_on, ->(date) { where(effective_on: ..date, expires_on: [nil, date..]).order(updated_at: :desc) }
 
   def family_fee
     Money.from_amount(super)
