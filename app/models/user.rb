@@ -2,6 +2,7 @@
 
 # Person responsible for subsidy management for one or more businesses
 class User < UuidApplicationRecord
+  before_destroy :destroy_restricted_associated_records
   # Include default devise modules. Others available are:
   # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
   devise :confirmable,
@@ -13,13 +14,13 @@ class User < UuidApplicationRecord
          :jwt_authenticatable,
          jwt_revocation_strategy: BlockedToken
 
-  has_many :businesses, dependent: :restrict_with_error
-  has_many :children, through: :businesses, dependent: :restrict_with_error
-  has_many :child_approvals, through: :children, dependent: :restrict_with_error
-  has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :restrict_with_error
-  has_many :approvals, through: :child_approvals, dependent: :restrict_with_error
-  has_many :service_days, through: :children, dependent: :restrict_with_error
-  has_many :schedules, through: :children, dependent: :restrict_with_error
+  has_many :businesses, dependent: :destroy
+  has_many :children, through: :businesses, dependent: :destroy
+  has_many :child_approvals, through: :children, dependent: :destroy
+  has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
+  has_many :approvals, through: :child_approvals, dependent: :destroy
+  has_many :service_days, through: :children, dependent: :destroy
+  has_many :schedules, through: :children, dependent: :destroy
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 
@@ -68,6 +69,12 @@ class User < UuidApplicationRecord
     return if approvals.blank?
 
     approvals.order(effective_on: :asc).first.effective_on
+  end
+
+  private
+
+  def destroy_restricted_associated_records
+    businesses.map { |business| business.children.destroy_all }
   end
 end
 

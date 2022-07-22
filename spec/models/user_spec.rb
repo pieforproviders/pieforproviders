@@ -51,6 +51,47 @@ RSpec.describe User, type: :model do
     expect(new_user.errors.messages[:email]).to include('has already been taken')
   end
 
+  describe '#destroy' do
+    before { user.reload }
+
+    let!(:business) { create(:business, user: user) }
+
+    context 'when user has associated records' do
+      before do
+        create(:child, :with_two_nebraska_attendances, business: business)
+        create(:necc_child, business: business)
+      end
+
+      it 'destroys all business records associated with the user' do
+        expect { user.destroy }.to change(Business, :count).by(-1)
+      end
+
+      it 'destroys the user record' do
+        expect { user.destroy }.to change(described_class, :count).by(-1)
+      end
+
+      it 'destroys all child_approval records associated with the user' do
+        expect { user.destroy }.to change(ChildApproval, :count).by(-2)
+      end
+
+      it 'destroys all nebraska_approval_amounts records associated with the user' do
+        expect { user.destroy }.to change(NebraskaApprovalAmount, :count).by(-1)
+      end
+
+      it 'destroys all child records associated with the user' do
+        expect { user.destroy }.to change(Child, :count).by(-2)
+      end
+
+      it 'destroys all schedule records associated with the user' do
+        expect { user.destroy }.to change(Schedule, :count).by(-10)
+      end
+
+      it 'destroys all service_day records associated with the user' do
+        expect { user.destroy }.to change(ServiceDay, :count).by(-1)
+      end
+    end
+  end
+
   describe '#first_approval_effective_date' do
     let!(:business) { create(:business, user: user) }
     let!(:earliest_child) do

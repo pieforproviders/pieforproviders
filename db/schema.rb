@@ -13,7 +13,6 @@
 ActiveRecord::Schema.define(version: 2022_07_22_155443) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -193,7 +192,7 @@ ActiveRecord::Schema.define(version: 2022_07_22_155443) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-05 01:37:11", null: false
+    t.datetime "month", default: "2022-07-22 16:22:44", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -321,7 +320,7 @@ ActiveRecord::Schema.define(version: 2022_07_22_155443) do
 
   add_foreign_key "attendances", "child_approvals"
   add_foreign_key "attendances", "service_days"
-  add_foreign_key "businesses", "users"
+  add_foreign_key "businesses", "users", on_delete: :cascade
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
   add_foreign_key "children", "businesses"
