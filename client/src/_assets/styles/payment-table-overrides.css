@@ -69,3 +69,8 @@
 .actions-button {
     min-width: 7.875rem;
 }
+
+.payment-month-selector .ant-select-selector {
+    border: 0 !important;
+    background-color: white !important;
+}

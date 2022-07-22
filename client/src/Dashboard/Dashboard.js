@@ -18,6 +18,7 @@ import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
 import '_assets/styles/notification-modal-overrides.css'
+import getFormattedMonthYearDate from '_utils/dateFormatter'
 
 const env = runtimeEnv()
 
@@ -211,14 +212,6 @@ export function Dashboard() {
     }, summaryDataTotalsConfig['default'])
   }
 
-  const makeMonth = (date = new Date()) => ({
-    displayDate: date.toLocaleDateString('default', {
-      month: 'short',
-      year: 'numeric'
-    }),
-    date: date.toISOString().split('T')[0]
-  })
-
   const reduceDates = (res, fd) => {
     const reduceDate = date_name => {
       return new Date(
@@ -239,11 +232,11 @@ export function Dashboard() {
     let currentDate = new Date()
     const numOfMonths = monthDiff(firstMonth, currentDate)
     let dateFilterMonths = []
-    dateFilterMonths.push(makeMonth(currentDate))
+    dateFilterMonths.push(getFormattedMonthYearDate(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
       currentDate.setMonth(currentDate.getMonth() - 1)
-      dateFilterMonths.push(makeMonth(currentDate))
+      dateFilterMonths.push(getFormattedMonthYearDate(currentDate))
     }
 
     return {
@@ -251,7 +244,9 @@ export function Dashboard() {
         month: 'short',
         day: 'numeric'
       }),
-      dateFilterValue: fd ? makeMonth(new Date(fd)) : makeMonth(),
+      dateFilterValue: fd
+        ? getFormattedMonthYearDate(new Date(fd))
+        : getFormattedMonthYearDate(),
       dateFilterMonths
     }
   }
@@ -365,7 +360,6 @@ export function Dashboard() {
       <DashboardTitle
         dates={dates}
         setDates={setDates}
-        makeMonth={makeMonth}
         getDashboardData={getDashboardData}
       />
       <div className="flex mb-10 md:flex-row xs:flex-col">

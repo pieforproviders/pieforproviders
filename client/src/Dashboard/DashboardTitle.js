@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Button, Grid, Typography, Select, Menu, Dropdown, Modal } from 'antd'
+import { Button, Grid, Typography, Menu, Dropdown, Modal } from 'antd'
 import { LeftOutlined, DownOutlined, CloseOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -10,17 +10,12 @@ import '_assets/styles/payment-table-overrides.css'
 import PaymentModal from '../Payment'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useSelector } from 'react-redux'
-import dayjs from 'dayjs'
+import { MonthSelector } from '_shared/MonthSelector'
+import getFormattedMonthYearDate from '_utils/dateFormatter'
 
 const { useBreakpoint } = Grid
-const { Option } = Select
 
-export default function DashboardTitle({
-  dates,
-  setDates,
-  makeMonth,
-  getDashboardData
-}) {
+export default function DashboardTitle({ dates, setDates, getDashboardData }) {
   const { t } = useTranslation()
   const { sendGAEvent } = useGoogleAnalytics()
   const screens = useBreakpoint()
@@ -46,35 +41,15 @@ export default function DashboardTitle({
   useEffect(() => {
     checkIfPaymentRecorded()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [dates])
 
-  const lastMonth = new Date()
-  lastMonth.setMonth(lastMonth.getMonth() - 1)
   const renderMonthSelector = () => (
-    <Select
-      value={dates?.dateFilterValue?.date}
-      onChange={value => {
-        sendGAEvent('dates_filtered', {
-          page_title: 'dashboard',
-          date_selected: value.slice(0, 7)
-        })
-        setDates({
-          ...dates,
-          dateFilterValue: makeMonth(new Date(value))
-        })
-        getDashboardData(value)
-      }}
-      size="large"
+    <MonthSelector
+      dates={dates}
+      setDates={setDates}
+      onChange={getDashboardData}
       className="my-2 mr-2 text-base date-filter-select"
-    >
-      {(dates?.dateFilterMonths ?? []).map((month, k) => {
-        return (
-          <Option key={k} value={month.date}>
-            {matchAndReplaceDate(month.displayDate)}
-          </Option>
-        )
-      })}
-    </Select>
+    />
   )
 
   const showPaymentModal = () => {
@@ -129,11 +104,12 @@ export default function DashboardTitle({
     </Dropdown>
   )
 
-  const checkIfPaymentRecorded = async () => {
-    const date = dayjs().subtract(1, 'month')
+  const checkIfPaymentRecorded = async (paymentDate = dates) => {
     const response = await makeRequest({
       type: 'get',
-      url: '/api/v1/payments?filter_date=' + date.format('YYYY-MM-DD'),
+      url:
+        '/api/v1/payments?filter_date=' +
+        paymentDate.dateFilterValue.displayDate,
       headers: {
         Authorization: token
       },
@@ -141,7 +117,7 @@ export default function DashboardTitle({
     })
 
     if (!response.ok) {
-      console.log('error with response')
+      console.log('error with response', response)
       return
     }
 
@@ -157,7 +133,7 @@ export default function DashboardTitle({
   const addPayment = async () => {
     const paymentsBatch = Object.entries(childPayments).flatMap(data => {
       return {
-        month: lastMonth.toISOString().split('T')[0],
+        month: dates.dateFilterValue.date,
         amount: data[1],
         child_id: data[0]
       }
@@ -212,18 +188,19 @@ export default function DashboardTitle({
           >
             {isPaymentSubmitted
               ? `${t('savePayment')}`
-              : `${t('recordPaymentOf')} ${totalPayment.toFixed()}`}
+              : `${t('recordPaymentOf')} ${totalPayment.toFixed(2)}`}
           </Button>
         </div>
       }
     >
       <PaymentModal
         setTotalPayment={setTotalPayment}
-        lastMonth={lastMonth}
         childPayments={childPayments}
         setChildPayments={setChildPayments}
         isFailedPaymentRequest={isFailedPaymentRequest}
         isPaymentSubmitted={isPaymentSubmitted}
+        dates={dates}
+        checkIfPaymentRecorded={checkIfPaymentRecorded}
       />
     </Modal>
   )
@@ -233,24 +210,6 @@ export default function DashboardTitle({
       setDateFilterValue(dates.dateFilterValue?.date)
     }
   }, [dates, dateFilterValue])
-
-  const monthNames = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december'
-  ]
-
-  const previousMonth = monthNames[lastMonth.getMonth()]
-  const previousMonthYear = lastMonth.getFullYear()
 
   const handleOk = () => {
     setPaymentSuccessOpen(false)
@@ -279,7 +238,14 @@ export default function DashboardTitle({
       }
     >
       <p>
-        {t('paymentSuccessText')} {t(previousMonth)} {previousMonthYear}{' '}
+        {t('paymentSuccessText')}
+        <span className="ml-1 mr-1">
+          {dates.dateFilterValue.date &&
+            getFormattedMonthYearDate(
+              new Date(dates.dateFilterValue.date),
+              'long'
+            ).displayDate}
+        </span>
         {t('paymentSuccessText2')} <b>${totalPayment}.</b>
       </p>
     </Modal>
@@ -336,6 +302,5 @@ export default function DashboardTitle({
 DashboardTitle.propTypes = {
   dates: PropTypes.object,
   setDates: PropTypes.func,
-  makeMonth: PropTypes.func,
   getDashboardData: PropTypes.func
 }
