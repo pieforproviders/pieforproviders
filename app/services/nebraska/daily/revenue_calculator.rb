@@ -60,7 +60,7 @@ module Nebraska
       end
 
       def qris_check(rate)
-        !rate.quality_rating || (rate.quality_rating && rate.quality_rating == business.quality_rating)
+        !rate.quality_rating || rate.quality_rating == business.quality_rating
       end
     end
   end

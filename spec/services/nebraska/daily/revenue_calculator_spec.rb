@@ -112,7 +112,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
 
   describe '#call' do
     context 'when called after qris status update (7-1-2022)' do
-      it 'matches hourly rating based on qris_rate if there is one and does not apply qris bump' do
+      it "uses hourly rate for business' quality rating and does not apply qris bump"do
         hourly_ldds_rate.update!(quality_rating: 'step_three')
         business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
@@ -132,7 +132,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(hourly_ldds_rate.amount * 3.5)
       end
 
-      it 'returns zero revenue when quality rating does not match for hourly rates' do
+      it "returns zero revenue for an hourly attendance when there is no matching rate for the business' quality rating" do
         hourly_ldds_rate.update!(quality_rating: 'step_four')
         business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
@@ -153,7 +153,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(0)
       end
 
-      it 'matches daily rating based on qris_rate if there is one and does not apply qris bump' do
+      it "uses daily rate for business' quality rating and does not apply qris bump" do
         business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
         full_day_ldds_rate.update!(quality_rating: 'step_three')
@@ -172,7 +172,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(full_day_ldds_rate.amount)
       end
 
-      it 'returns zero revenue when quality rating does not match for daily rates' do
+      it "returns zero revenue for a daily attendance when there is no matching rate for the business' quality rating" do
         business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
         full_day_ldds_rate.update!(quality_rating: 'step_four')
@@ -191,7 +191,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         ).to eq(0)
       end
 
-      it 'calculates the correct revenue for a daily_plus_hourly attendance without bump modifier' do
+      it "uses daily and hourly rate for business' quality rating and does not apply qris bump" do
         business_ldds.update!(quality_rating: 'step_three')
         hourly_ldds_rate.update!(quality_rating: 'step_three')
         child_ldds.reload
@@ -214,7 +214,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
         )
       end
 
-      it 'returns zero revenue when quality rating does not match for daily_plus_hourly attendance' do
+      it "returns zero revenue for a daily_plus_hourly attendance when there is no matching rate for the business' quality rating" do
         business_ldds.update!(quality_rating: 'step_three')
         hourly_ldds_rate.update!(quality_rating: 'step_four')
         child_ldds.reload
