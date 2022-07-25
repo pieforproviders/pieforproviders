@@ -57,6 +57,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - Frontend: React
   - ESLint/Prettier
   - Jest/React Testing Library
+  - Redux
 
 </details>
 
@@ -93,6 +94,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 - set up an environment file: copy `.env.sample` to `.env`
 - configure Devise: run `rails secret` to generate a secret string, add it to `.env` as the `DEVISE_JWT_SECRET_KEY` value
 - create and seed the database: `bundle exec rails db:setup`
+- set up frontend environment file: `cd client && cp .env.sample .env && cd ..`
 - install front-end and end-to-end packages: `yarn install-all`
 
 ### Running the App
