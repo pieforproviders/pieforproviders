@@ -80,6 +80,47 @@ RSpec.describe AttendanceCsvImporter do
         )
       end
 
+      it 'creates attendance records given a start date and no end date' do
+        expect { described_class.new(start_date: '2021-03-10'.to_date).call }
+          .to change(ServiceDay, :count).from(0).to(4)
+          .and change(Attendance, :count).from(0).to(2)
+        expect(third_child.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+        expect(third_child.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(hermione_business1.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(hermione_business1.timezone)
+      end
+
+      it 'creates attendance records given an end date and no start date' do
+        expect { described_class.new(end_date: '2021-02-24'.to_date).call }
+          .to change(ServiceDay, :count).from(0).to(2)
+          .and change(Attendance, :count).from(0).to(1)
+        expect(hermione_business1.service_days.count).to eq(1)
+        expect(Child.where(dhs_id: '5678').count).to eq(1)
+        fourth_child = Child.find_by(dhs_id: '5678')
+        expect(fourth_child.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-02-24 6:04am'.in_time_zone(fourth_child.timezone)
+        expect(fourth_child.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-02-24 4:35pm'.in_time_zone(fourth_child.timezone)
+      end
+
+      it 'creates attendance records for a given date range' do
+        expect { described_class.new(start_date: '2021-03-10'.to_date, end_date: '2021-03-10'.to_date).call }
+          .to change(ServiceDay, :count).from(0).to(2)
+          .and change(Attendance, :count).from(0).to(2)
+        expect(third_child.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+        expect(third_child.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_in)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(hermione_business1.timezone)
+        expect(hermione_business1.attendances.order(:check_in).first.check_out)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(hermione_business1.timezone)
+      end
+
       it 'creates attendance records for every row in the file, idempotently' do
         expect { described_class.new.call }
           .to change(ServiceDay, :count).from(0).to(9)

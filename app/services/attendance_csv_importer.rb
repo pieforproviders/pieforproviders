@@ -11,10 +11,12 @@ class AttendanceCsvImporter
 
   class NoSuchChild < StandardError; end
 
-  def initialize
+  def initialize(start_date: nil, end_date: 0.days.after)
     @client = AwsClient.new
     @source_bucket = Rails.application.config.aws_necc_attendance_bucket
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
+    @start_date = start_date&.at_beginning_of_day
+    @end_date = end_date&.at_end_of_day
   end
 
   def call
@@ -39,6 +41,8 @@ class AttendanceCsvImporter
   def process_row(row)
     @row = row
     @child = child
+
+    return unless (@start_date..@end_date).cover?(@row['check_in'].in_time_zone(@child.timezone).at_beginning_of_day)
 
     create_attendance
   rescue StandardError => e
