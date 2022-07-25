@@ -37,6 +37,7 @@ Metrics/ModuleLength:
 Layout/LineLength:
   Exclude:
     - config/routes.rb
+    - spec/services/nebraska/daily/revenue_calculator_spec.rb
 
 Layout/MultilineArrayLineBreaks:
   Enabled: true

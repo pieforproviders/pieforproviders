@@ -112,7 +112,7 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
 
   describe '#call' do
     context 'when called after qris status update (7-1-2022)' do
-      it "uses hourly rate for business' quality rating and does not apply qris bump"do
+      it "uses hourly rate for business' quality rating and does not apply qris bump" do
         hourly_ldds_rate.update!(quality_rating: 'step_three')
         business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
