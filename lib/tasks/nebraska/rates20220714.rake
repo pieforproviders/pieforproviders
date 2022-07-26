@@ -4,6 +4,186 @@
 desc 'Import all Nebraska Hourly and Daily Rates for Family Child Care Home I & II as of 2021/08/13'
 namespace :nebraska do
   task rates20220714: :environment do
+    %w[step_one step_two not_rated].each do |rating|
+      # Licensed Centers LDDS
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Infant Hourly LDDS Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '8.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Infant Daily LDDS Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '55.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Toddler Hourly LDDS Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '7.65',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Toddler Daily LDDS Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '50.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Preschool Hourly LDDS Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '7.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Preschool Daily LDDS Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '45.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'School_Age Hourly LDDS Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '6.50',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'School_Age Daily LDDS Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'LDDS',
+        amount: '40.00',
+        quality_rating: rating
+      )
+
+      # Other County Licensed Centers
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Infant Hourly Other county Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '5.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Infant Daily Other county Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '36.30',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Toddler Hourly Other county Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '5.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Toddler Daily Other county Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '35.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Preschool Hourly Other county Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '5.00',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'Preschool Daily Other county Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '32.25',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'School_Age Hourly Other county Licensed Center',
+        rate_type: 'hourly',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '4.75',
+        quality_rating: rating
+      )
+
+      NebraskaRate.find_or_create_by!(
+        effective_on: '2022-07-01',
+        name: 'School_Age Daily Other county Licensed Center',
+        rate_type: 'daily',
+        license_type: 'licensed_center',
+        max_age: 18,
+        region: 'Other',
+        amount: '32.00',
+        quality_rating: rating
+      )
+    end
+
     { FCCHI: 'family_child_care_home_i', FCCHII: 'family_child_care_home_ii' }.each do |abbr, license_type|
       %w[step_one step_two not_rated].each do |rating|
         # Licensed Family Child Care Homes I
@@ -20,7 +200,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "Infant Daily LDDS FCCHI#{abbr}",
+          name: "Infant Daily LDDS #{abbr}",
           rate_type: 'daily',
           license_type: license_type,
           max_age: 18,
@@ -31,7 +211,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "Toddler Hourly LDDS FCCHI #{abbr}",
+          name: "Toddler Hourly LDDS #{abbr}",
           rate_type: 'hourly',
           license_type: license_type,
           max_age: 18,
@@ -42,7 +222,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "Toddler Daily LDDS FCCHI #{abbr}",
+          name: "Toddler Daily LDDS #{abbr}",
           rate_type: 'daily',
           license_type: license_type,
           max_age: 18,
@@ -53,7 +233,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "Preschool Hourly LDDS FCCHI #{abbr}",
+          name: "Preschool Hourly LDDS #{abbr}",
           rate_type: 'hourly',
           license_type: license_type,
           max_age: 18,
@@ -64,7 +244,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "Preschool Daily LDDS FCCHI#{abbr}",
+          name: "Preschool Daily LDDS #{abbr}",
           rate_type: 'daily',
           license_type: license_type,
           max_age: 18,
@@ -75,7 +255,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "School_Age Hourly LDDS FCCHI #{abbr}",
+          name: "School_Age Hourly LDDS #{abbr}",
           rate_type: 'hourly',
           license_type: license_type,
           max_age: 18,
@@ -86,7 +266,7 @@ namespace :nebraska do
 
         NebraskaRate.find_or_create_by!(
           effective_on: '2022-07-01',
-          name: "School_Age Daily LDDS FCCHI#{abbr}",
+          name: "School_Age Daily LDDS #{abbr}",
           rate_type: 'daily',
           license_type: license_type,
           max_age: 18,
@@ -159,7 +339,7 @@ namespace :nebraska do
         license_type: license_type,
         max_age: 18,
         region: 'LDDS',
-        amount: '34.75',
+        amount: '34.65',
         quality_rating: 'step_three'
       )
 
@@ -358,91 +538,10 @@ namespace :nebraska do
         license_type: license_type,
         max_age: 18,
         region: 'LDDS',
-        amount: '37.50',
+        amount: '37.05',
         quality_rating: 'step_five'
       )
     end
-
-    # Licensed Centers LDDS
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Infant Hourly LDDS Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '8.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Infant Daily LDDS Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '55.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Toddler Hourly LDDS Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '7.65'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Toddler Daily LDDS Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '50.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Preschool Hourly LDDS Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '7.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Preschool Daily LDDS Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '45.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'School_Age Hourly LDDS Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '6.50'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'School_Age Daily LDDS Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'LDDS',
-      amount: '40.00'
-    )
 
     # LDDS Licensed Centers LDDS step_three
     NebraskaRate.find_or_create_by!(
@@ -1233,87 +1332,6 @@ namespace :nebraska do
       )
     end
 
-    # Other County Licensed Centers
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Infant Hourly Other county Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '5.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Infant Daily Other county Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '36.30'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Toddler Hourly Other county Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '5.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Toddler Daily Other county Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '35.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Preschool Hourly Other county Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '5.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Preschool Daily Other county Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '32.25'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'School_Age Hourly Other county Licensed Center',
-      rate_type: 'hourly',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '4.75'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'School_Age Daily Other county Licensed Center',
-      rate_type: 'daily',
-      license_type: 'licensed_center',
-      max_age: 18,
-      region: 'Other',
-      amount: '32.00'
-    )
-
     # Other County Licensed Centers step_three
     NebraskaRate.find_or_create_by!(
       effective_on: '2022-07-01',
@@ -1444,7 +1462,7 @@ namespace :nebraska do
       license_type: 'licensed_center',
       max_age: 18,
       region: 'Other',
-      amount: '38.65',
+      amount: '38.60',
       quality_rating: 'step_four'
     )
 
@@ -1675,28 +1693,8 @@ namespace :nebraska do
 
     NebraskaRate.find_or_create_by!(
       effective_on: '2022-07-01',
-      name: 'Infant Daily License Exempt Family In-Home',
-      rate_type: 'daily',
-      license_type: 'family_in_home',
-      max_age: 18,
-      region: 'All',
-      amount: '9.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
       name: 'Toddler Hourly License Exempt Family In-Home',
       rate_type: 'hourly',
-      license_type: 'family_in_home',
-      max_age: 18,
-      region: 'All',
-      amount: '9.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Toddler Daily License Exempt Family In-Home',
-      rate_type: 'daily',
       license_type: 'family_in_home',
       max_age: 18,
       region: 'All',
@@ -1712,31 +1710,10 @@ namespace :nebraska do
       region: 'All',
       amount: '9.00'
     )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'Preschool Daily License Exempt Family In-Home',
-      rate_type: 'daily',
-      license_type: 'family_in_home',
-      max_age: 18,
-      region: 'All',
-      amount: '9.00'
-    )
-
     NebraskaRate.find_or_create_by!(
       effective_on: '2022-07-01',
       name: 'School_Age Hourly License Exempt Family In-Home',
       rate_type: 'hourly',
-      license_type: 'family_in_home',
-      max_age: 18,
-      region: 'All',
-      amount: '9.00'
-    )
-
-    NebraskaRate.find_or_create_by!(
-      effective_on: '2022-07-01',
-      name: 'School_Age Daily License Exempt Family In-Home',
-      rate_type: 'daily',
       license_type: 'family_in_home',
       max_age: 18,
       region: 'All',
