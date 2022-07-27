@@ -1686,7 +1686,7 @@ namespace :nebraska do
       name: 'Infant Hourly License Exempt Family In-Home',
       rate_type: 'hourly',
       license_type: 'family_in_home',
-      max_age: nil,
+      max_age: 18,
       region: 'All',
       amount: '9.00'
     )
