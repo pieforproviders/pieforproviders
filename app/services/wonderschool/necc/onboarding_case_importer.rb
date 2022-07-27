@@ -53,7 +53,7 @@ module Wonderschool
       rescue StandardError => e
         send_appsignal_error(
           action: 'onboarding-case-importer',
-          exception: e.message,
+          exception: e,
           tags: { case_number: @row['Case number'] }
         )
       end
