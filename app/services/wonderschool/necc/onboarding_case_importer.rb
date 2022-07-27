@@ -44,7 +44,7 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(child_params)
+        @child = Child.find_or_initialize_by(required_child_params)
         @approval = find_approval
 
         raise NotEnoughInfo, @child.errors unless @child.valid?
@@ -53,7 +53,7 @@ module Wonderschool
       rescue StandardError => e
         send_appsignal_error(
           action: 'onboarding-case-importer',
-          exception: e,
+          exception: e.message,
           tags: { case_number: @row['Case number'] }
         )
       end
@@ -82,6 +82,7 @@ module Wonderschool
       end
 
       def build_case
+        @child.update!(optional_child_params)
         @business.update!(optional_business_params)
         update_overlapping_approvals
         @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
@@ -184,14 +185,19 @@ module Wonderschool
         }
       end
 
-      def child_params
+      def required_child_params
         {
           business_id: @business.id,
           first_name: @row['First Name'],
           last_name: @row['Last Name'],
-          wonderschool_id: @row['Wonderschool ID'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
+        }
+      end
+
+      def optional_child_params
+        {
+          wonderschool_id: @row['Wonderschool ID']
         }
       end
 
