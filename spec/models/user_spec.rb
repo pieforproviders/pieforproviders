@@ -16,6 +16,14 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of(:service_agreement_accepted) }
   it { is_expected.to validate_presence_of(:state) }
 
+  it { expect(user).to have_many(:businesses).dependent(:destroy) }
+  it { expect(user).to have_many(:children).dependent(:destroy) }
+  it { expect(user).to have_many(:child_approvals).dependent(:destroy) }
+  it { expect(user).to have_many(:nebraska_approval_amounts).dependent(:destroy) }
+  it { expect(user).to have_many(:approvals).dependent(:destroy) }
+  it { expect(user).to have_many(:service_days).dependent(:destroy) }
+  it { expect(user).to have_many(:schedules).dependent(:destroy) }
+
   it 'factory should be valid (default; no args)' do
     expect(build(:confirmed_user)).to be_valid
     expect(build(:unconfirmed_user)).to be_valid
@@ -49,47 +57,6 @@ RSpec.describe User, type: :model do
     new_user = build(:confirmed_user, email: ' FakeEmaiL@gmaIl.com ')
     expect(new_user).not_to be_valid
     expect(new_user.errors.messages[:email]).to include('has already been taken')
-  end
-
-  describe '#destroy' do
-    before { user.reload }
-
-    let!(:business) { create(:business, user: user) }
-
-    context 'when user has associated records' do
-      before do
-        create(:child, :with_two_nebraska_attendances, business: business)
-        create(:necc_child, business: business)
-      end
-
-      it 'destroys all business records associated with the user' do
-        expect { user.destroy }.to change(Business, :count).by(-1)
-      end
-
-      it 'destroys the user record' do
-        expect { user.destroy }.to change(described_class, :count).by(-1)
-      end
-
-      it 'destroys all child_approval records associated with the user' do
-        expect { user.destroy }.to change(ChildApproval, :count).by(-2)
-      end
-
-      it 'destroys all nebraska_approval_amounts records associated with the user' do
-        expect { user.destroy }.to change(NebraskaApprovalAmount, :count).by(-1)
-      end
-
-      it 'destroys all child records associated with the user' do
-        expect { user.destroy }.to change(Child, :count).by(-2)
-      end
-
-      it 'destroys all schedule records associated with the user' do
-        expect { user.destroy }.to change(Schedule, :count).by(-10)
-      end
-
-      it 'destroys all service_day records associated with the user' do
-        expect { user.destroy }.to change(ServiceDay, :count).by(-1)
-      end
-    end
   end
 
   describe '#first_approval_effective_date' do

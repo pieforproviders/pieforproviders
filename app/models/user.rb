@@ -2,7 +2,6 @@
 
 # Person responsible for subsidy management for one or more businesses
 class User < UuidApplicationRecord
-  before_destroy :destroy_restricted_associated_records
   # Include default devise modules. Others available are:
   # :lockable, :omniauthable, :rememberable, :timeoutable, :trackable
   devise :confirmable,
@@ -69,12 +68,6 @@ class User < UuidApplicationRecord
     return if approvals.blank?
 
     approvals.order(effective_on: :asc).first.effective_on
-  end
-
-  private
-
-  def destroy_restricted_associated_records
-    businesses.map { |business| business.children.destroy_all }
   end
 end
 
