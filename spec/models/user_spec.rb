@@ -20,7 +20,6 @@ RSpec.describe User, type: :model do
   it { expect(user).to have_many(:children).dependent(:destroy) }
   it { expect(user).to have_many(:child_approvals).dependent(:destroy) }
   it { expect(user).to have_many(:nebraska_approval_amounts).dependent(:destroy) }
-  it { expect(user).to have_many(:approvals).dependent(:destroy) }
   it { expect(user).to have_many(:service_days).dependent(:destroy) }
   it { expect(user).to have_many(:schedules).dependent(:destroy) }
 
