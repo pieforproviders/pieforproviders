@@ -17,7 +17,7 @@ class User < UuidApplicationRecord
   has_many :children, through: :businesses, dependent: :destroy
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
-  has_many :approvals, through: :child_approvals, dependent: :destroy
+  has_many :approvals, through: :child_approvals
   has_many :service_days, through: :children, dependent: :destroy
   has_many :schedules, through: :children, dependent: :destroy
 
