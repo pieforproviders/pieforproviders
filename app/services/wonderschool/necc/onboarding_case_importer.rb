@@ -153,7 +153,7 @@ module Wonderschool
 
       def optional_business_params
         {
-          qris_rating: to_qris_rating(@row['Business QRIS rating']),
+          quality_rating: to_quality_rating(@row['Business QRIS rating']),
           accredited: to_boolean(@row['Accredited'])
         }
       end
@@ -161,7 +161,7 @@ module Wonderschool
       # TODO: this is a really bad implementation
       # but we're going to be refactoring QRIS to a table
       # soon so I'm going to leave it
-      def to_qris_rating(value)
+      def to_quality_rating(value)
         ratings = {
           'not rated' => 'not_rated',
           'Step 1' => 'step_one',

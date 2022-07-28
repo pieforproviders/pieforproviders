@@ -5,6 +5,10 @@ require 'rails_helper'
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
   describe '#earned_revenue' do
+    before { travel_to '2022-06-01'.to_date }
+
+    after  { travel_back }
+
     let!(:date) { Time.current }
     let!(:child) do
       create(
@@ -13,7 +17,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
           :business,
           :nebraska_ldds,
           accredited: true,
-          qris_rating: 'not_rated'
+          quality_rating: 'not_rated'
         )
       )
     end
@@ -104,7 +108,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
       )
     end
 
-    let!(:service_day) { build(:service_day, child: child) }
+    let!(:service_day) { build(:service_day, child: child, date: date) }
     let!(:child_approvals) { child.child_approvals }
 
     context 'with an accredited business' do
@@ -335,7 +339,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
 
     context 'with an accredited business with a qris_bump' do
       before do
-        business.update!(accredited: true, qris_rating: 'step_five')
+        business.update!(accredited: true, quality_rating: 'step_five')
       end
 
       it 'gets rates for an hourly-only service_day' do
@@ -451,7 +455,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
 
     context 'with an unaccredited business with a qris_bump' do
       before do
-        business.update!(accredited: false, qris_rating: 'step_five')
+        business.update!(accredited: false, quality_rating: 'step_five')
         child.child_approvals.first.update!(special_needs_rate: false)
       end
 
@@ -568,7 +572,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
 
     context 'with a school age child with an unaccredited qris bump' do
       before do
-        business.update!(accredited: false, qris_rating: 'step_five')
+        business.update!(accredited: false, quality_rating: 'step_five')
         child.child_approvals.first.update!(special_needs_rate: false, enrolled_in_school: true)
       end
 
@@ -685,7 +689,7 @@ RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
 
     context 'with a school age child with an unaccredited qris bump in a non-LDDS county' do
       before do
-        business.update!(accredited: false, qris_rating: 'step_five', county: 'Parker')
+        business.update!(accredited: false, quality_rating: 'step_five', county: 'Parker')
         child.child_approvals.first.update!(special_needs_rate: false, enrolled_in_school: true)
       end
 

@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Business, type: :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_inclusion_of(:qris_rating).in_array(Business::QRIS_RATINGS) }
+  it { is_expected.to validate_inclusion_of(:quality_rating).in_array(QualityRatings::TYPES) }
 
   it_behaves_like 'licenses'
 
@@ -35,10 +35,10 @@ RSpec.describe Business, type: :model do
       expect(business.ne_qris_bump).to eq(1.05**3)
     end
 
-    it 'uses the correct qris_rating' do
+    it 'uses the correct quality_rating' do
       business = create(:business, :nebraska_ldds, :accredited, :step_five)
       expect(business.ne_qris_bump).to eq(1.05**2)
-      business.update!(qris_rating: 'not_rated')
+      business.update!(quality_rating: 'not_rated')
       expect(business.ne_qris_bump).to eq(1.05**0)
     end
   end
@@ -56,7 +56,7 @@ end
 #  inactive_reason :string
 #  license_type    :string           not null
 #  name            :string           not null
-#  qris_rating     :string
+#  quality_rating  :string
 #  state           :string
 #  zipcode         :string
 #  created_at      :datetime         not null

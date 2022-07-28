@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
+  before { travel_to '2022-06-01'.to_date }
+
+  after  { travel_back }
+
   let!(:full_day_ldds_rate) do
     create(:unaccredited_daily_ldds_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
   end
@@ -107,6 +111,130 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
   let!(:child_fih_child_approval) { child_fih.child_approvals.first }
 
   describe '#call' do
+    context 'when called after qris status update (7-1-2022)' do
+      it "uses hourly rate for business' quality rating and does not apply qris bump" do
+        hourly_ldds_rate.update!(quality_rating: 'step_three')
+        business_ldds.update!(quality_rating: 'step_three')
+        child_ldds.reload
+        child_ldds_child_approval.reload
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date,
+            total_time_in_care: 3.hours + 23.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(hourly_ldds_rate.amount * 3.5)
+      end
+
+      it "returns zero revenue for an hourly attendance when there is no matching rate for the business' quality rating" do
+        hourly_ldds_rate.update!(quality_rating: 'step_four')
+        business_ldds.update!(quality_rating: 'step_three')
+        child_ldds.reload
+        child_ldds_child_approval.reload
+
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date,
+            total_time_in_care: 3.hours + 23.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(0)
+      end
+
+      it "uses daily rate for business' quality rating and does not apply qris bump" do
+        business_ldds.update!(quality_rating: 'step_three')
+        child_ldds.reload
+        full_day_ldds_rate.update!(quality_rating: 'step_three')
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date.at_beginning_of_day,
+            total_time_in_care: 8.hours + 11.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(full_day_ldds_rate.amount)
+      end
+
+      it "returns zero revenue for a daily attendance when there is no matching rate for the business' quality rating" do
+        business_ldds.update!(quality_rating: 'step_three')
+        child_ldds.reload
+        full_day_ldds_rate.update!(quality_rating: 'step_four')
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date.at_beginning_of_day,
+            total_time_in_care: 8.hours + 11.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(0)
+      end
+
+      it "uses daily and hourly rate for business' quality rating and does not apply qris bump" do
+        business_ldds.update!(quality_rating: 'step_three')
+        hourly_ldds_rate.update!(quality_rating: 'step_three')
+        child_ldds.reload
+        full_day_ldds_rate.update!(quality_rating: 'step_three')
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date.at_beginning_of_day,
+            total_time_in_care: 19.hours + 52.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(
+          full_day_ldds_rate.amount +
+          (hourly_ldds_rate.amount * 8)
+        )
+      end
+
+      it "returns zero revenue for a daily_plus_hourly attendance when there is no matching rate for the business' quality rating" do
+        business_ldds.update!(quality_rating: 'step_three')
+        hourly_ldds_rate.update!(quality_rating: 'step_four')
+        child_ldds.reload
+        full_day_ldds_rate.update!(quality_rating: 'step_four')
+        expect(
+          described_class.new(
+            child_approval: child_ldds_child_approval,
+            date: '2022-7-1'.to_date.at_beginning_of_day,
+            total_time_in_care: 19.hours + 52.minutes,
+            rates: NebraskaRate.for_case(
+              child_ldds_child_approval.effective_on,
+              child_ldds_child_approval&.enrolled_in_school || false,
+              child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+              business_ldds
+            )
+          ).call
+        ).to eq(0)
+      end
+    end
+
     context 'with a child who has a special needs rate' do
       it 'uses the special needs rate defined on their approval letter instead of the state rates' do
         child_ldds_child_approval.update!(

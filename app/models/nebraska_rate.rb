@@ -3,6 +3,7 @@
 # Subsidy rules that apply for Nebraska
 class NebraskaRate < UuidApplicationRecord
   include Licenses
+  include QualityRatings
 
   has_many :child_approvals, as: :rate, dependent: :restrict_with_error
 
@@ -62,7 +63,7 @@ end
 # Table name: nebraska_rates
 #
 #  id              :uuid             not null, primary key
-#  accredited_rate :boolean          default(FALSE), not null
+#  accredited_rate :boolean          default(FALSE)
 #  amount          :decimal(, )      not null
 #  county          :string
 #  deleted_at      :date
@@ -71,6 +72,7 @@ end
 #  license_type    :string           not null
 #  max_age         :decimal(, )
 #  name            :string           not null
+#  quality_rating  :string
 #  rate_type       :string           not null
 #  region          :string           not null
 #  school_age      :boolean          default(FALSE)

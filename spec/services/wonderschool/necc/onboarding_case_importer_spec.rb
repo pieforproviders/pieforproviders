@@ -85,7 +85,7 @@ module Wonderschool
                 name: "Rebecca's Childcare",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'step_four',
+                quality_rating: 'step_four',
                 accredited: true
               }
             )
@@ -129,7 +129,7 @@ module Wonderschool
                 name: "Kate's Kids",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'step_five',
+                quality_rating: 'step_five',
                 accredited: false
               }
             )
@@ -431,7 +431,7 @@ module Wonderschool
                 name: "Rebecca's Childcare",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'step_four',
+                quality_rating: 'step_four',
                 accredited: true
               }
             )
@@ -475,7 +475,7 @@ module Wonderschool
                 name: "Kate's Kids",
                 zipcode: '68845',
                 county: 'Corke',
-                qris_rating: 'step_five',
+                quality_rating: 'step_five',
                 accredited: false
               }
             )

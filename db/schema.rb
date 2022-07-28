@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_21_165259) do
+ActiveRecord::Schema.define(version: 2022_07_22_155443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.string "zipcode"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "qris_rating"
+    t.string "quality_rating"
     t.boolean "accredited"
     t.date "deleted_at"
     t.string "inactive_reason"
@@ -87,9 +87,9 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.decimal "special_needs_daily_rate"
     t.decimal "special_needs_hourly_rate"
     t.boolean "enrolled_in_school"
-    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.string "rate_type"
     t.uuid "rate_id"
+    t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.date "deleted_at"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.string "rate_type", null: false
     t.decimal "amount", null: false
     t.string "county"
-    t.boolean "accredited_rate", default: false, null: false
+    t.boolean "accredited_rate", default: false
     t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", null: false
@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "school_age", default: false
     t.date "deleted_at"
+    t.string "quality_rating"
     t.index ["effective_on"], name: "index_nebraska_rates_on_effective_on"
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
@@ -331,5 +332,4 @@ ActiveRecord::Schema.define(version: 2022_06_21_165259) do
   add_foreign_key "notifications", "children"
   add_foreign_key "schedules", "children"
   add_foreign_key "service_days", "children"
-  add_foreign_key "service_days", "schedules"
 end

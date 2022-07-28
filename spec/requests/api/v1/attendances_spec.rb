@@ -7,6 +7,10 @@ require 'rails_helper'
 # the week_current_date value to a day that falls within the expected week range
 
 RSpec.describe 'Api::V1::Attendances', type: :request do
+  before { travel_to '2022-06-01'.to_date }
+
+  after  { travel_back }
+
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:business) { create(:business, user: logged_in_user) }
   let!(:child) do
