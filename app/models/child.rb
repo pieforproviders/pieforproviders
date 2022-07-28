@@ -11,7 +11,7 @@ class Child < UuidApplicationRecord
 
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
   has_many :approvals, through: :child_approvals, dependent: :destroy
-  has_many :schedules, dependent: :delete_all
+  has_many :schedules, dependent: :destroy
   has_many :nebraska_approval_amounts, through: :child_approvals, dependent: :destroy
   has_many :service_days, dependent: :destroy
   has_many :attendances, through: :service_days, dependent: :destroy
