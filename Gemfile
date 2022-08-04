@@ -5,6 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.2'
 
+gem 'rubyXL'
 gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'

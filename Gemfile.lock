@@ -352,6 +352,10 @@ GEM
       rexml
     ruby-prof (1.4.3)
     ruby-progressbar (1.11.0)
+    rubyXL (3.4.25)
+      nokogiri (>= 1.10.8)
+      rubyzip (>= 1.3.0)
+    rubyzip (2.3.2)
     shellany (0.0.1)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
@@ -442,6 +446,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   ruby-prof
+  rubyXL
   shoulda-matchers
   simplecov
   skylight
@@ -455,4 +460,4 @@ RUBY VERSION
    ruby 3.0.2p107
 
 BUNDLED WITH
-   2.2.29
+   2.3.15
