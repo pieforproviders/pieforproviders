@@ -13,7 +13,7 @@ module AttendanceSpreadsheet
     end
 
     def call
-      @provider.approvals.limit(4).each_with_index do |approval,index|
+      @provider.approvals.each_with_index do |approval,index|
 
         #Due to RubyXL's limited image handling, workbook needs to be separated into two workbooks
         @workbook_1 = RubyXL::Parser.parse('app/services/attendance_spreadsheet/attendance_month_1.xlsx')
@@ -75,7 +75,6 @@ module AttendanceSpreadsheet
         end
         # Write total hours for day
         worksheet[child_block_offset + 4][3 + (date.day - 1).modulo(15)].change_contents(total_number_of_hours_per_day.to_i.to_s)
-        total_info[:total_hours] += total_number_of_hours_per_day.to_i
 
         #Write Hour Units Billed
         hour_units = service_day&.tag_hourly&.split(' ')&.first || '0'
@@ -89,8 +88,8 @@ module AttendanceSpreadsheet
       end
 
       #Write total hours and daily units billed for an entire row
-      worksheet[child_block_offset + 1 + sheet_num][18 + sheet_num].change_contents(total_info[:total_hours_billed].round(2).to_s)
-      worksheet[child_block_offset + 1 + sheet_num][19 + sheet_num].change_contents(total_info[:total_days_billed].round(2).to_s)
+      worksheet[child_block_offset + 1][18 + sheet_num].change_contents(total_info[:total_hours_billed].round(2).to_s)
+      worksheet[child_block_offset + 1][19 + sheet_num].change_contents(total_info[:total_days_billed].round(2).to_s)
     end
 
     def import_user_data
