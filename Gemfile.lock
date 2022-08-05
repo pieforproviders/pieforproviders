@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/Vasfed/annotate_models.git
-  revision: a2cca56e2a4d56014716157234cbdf7f1b182aac
+  revision: dba8ce96650b45e16d7f6a44c77a87647ca2c2fe
   branch: rails6_warning
   specs:
-    annotate (3.1.1)
-      activerecord (>= 5.0, < 7.0)
+    annotate (4.0.0)
+      activerecord (>= 5.0, < 8.0)
       rake (>= 10.4, < 14.0)
 
 GEM
