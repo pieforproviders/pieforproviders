@@ -401,15 +401,14 @@ export default function DashboardTable({
         name: 'childName',
         sorter: (a, b) => columnSorter(a.childLastName, b.childLastName),
         // eslint-disable-next-line react/display-name
-        render: (text, record) =>
-          isInactive(record) ? (
-            <div>
-              <p>{text}</p>
-              <p>{t('inactive')}</p>
-            </div>
-          ) : (
-            text
-          )
+        render: (text, record) => (
+          <div>
+            <p className="mb-1 text-lg">
+              {`${record.childFirstName} ${record.childLastName}`}
+              {isInactive(record) ? `  (${t('inactive')})` : ''}
+            </p>
+          </div>
+        )
       },
       {
         name: 'cNumber',
