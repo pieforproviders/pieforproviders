@@ -403,7 +403,7 @@ export default function DashboardTable({
         // eslint-disable-next-line react/display-name
         render: (text, record) => (
           <div>
-            <p className="mb-1 text-lg">
+            <p className="mb-1 text-md">
               {`${record.childFirstName} ${record.childLastName}`}
               {isInactive(record) ? `  (${t('inactive')})` : ''}
             </p>
