@@ -209,7 +209,7 @@ def create_case(first_name:,
     12.times do |idx|
       IllinoisApprovalAmount.create!(
         child_approval: child.active_child_approval(Time.current),
-        month: Time.current.at_beginning_of_month + idx.months,
+        month: 1.year.ago.at_beginning_of_month + idx.months,
         part_days_approved_per_week: rand(0..3),
         full_days_approved_per_week: rand(0..2)
       )
