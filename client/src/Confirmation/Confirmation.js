@@ -45,7 +45,7 @@ export function Confirmation({ location }) {
           const { state } = await response.json()
           dispatch(addAuth(authToken))
 
-          if (state === 'NE') {
+          if (state === 'NE' || state === 'IL') {
             history.push('/dashboard')
           } else {
             history.push('/comingsoon')
