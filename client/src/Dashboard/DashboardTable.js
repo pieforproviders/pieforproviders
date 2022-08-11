@@ -401,15 +401,16 @@ export default function DashboardTable({
         name: 'childName',
         sorter: (a, b) => columnSorter(a.childLastName, b.childLastName),
         // eslint-disable-next-line react/display-name
-        render: (text, record) =>
-          isInactive(record) ? (
-            <div>
-              <p>{text}</p>
-              <p>{t('inactive')}</p>
-            </div>
-          ) : (
-            text
-          )
+        render: (text, record) => (
+          <div>
+            <p className="text-base">
+              {`${record.childFirstName} ${record.childLastName}`}
+            </p>
+            <p className="text-base">
+              {isInactive(record) ? `  (${t('inactive')})` : ''}
+            </p>
+          </div>
+        )
       },
       {
         name: 'cNumber',
@@ -427,7 +428,7 @@ export default function DashboardTable({
         render: renderAttendanceRate
       },
       {
-        name: 'earnedRevenue',
+        name: 'guaranteedRevenue',
         sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
         render: renderDollarAmount
       },

@@ -16,6 +16,13 @@ RSpec.describe User, type: :model do
   it { is_expected.to validate_presence_of(:service_agreement_accepted) }
   it { is_expected.to validate_presence_of(:state) }
 
+  it { expect(user).to have_many(:businesses).dependent(:destroy) }
+  it { expect(user).to have_many(:children).dependent(:destroy) }
+  it { expect(user).to have_many(:child_approvals).dependent(:destroy) }
+  it { expect(user).to have_many(:nebraska_approval_amounts).dependent(:destroy) }
+  it { expect(user).to have_many(:service_days).dependent(:destroy) }
+  it { expect(user).to have_many(:schedules).dependent(:destroy) }
+
   it 'factory should be valid (default; no args)' do
     expect(build(:confirmed_user)).to be_valid
     expect(build(:unconfirmed_user)).to be_valid

@@ -448,4 +448,5 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (schedule_id => schedules.id)
 #
