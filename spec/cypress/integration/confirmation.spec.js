@@ -89,7 +89,41 @@ describe('Confirmation', () => {
     })
   })
 
-  describe('unconfirmed non-NE users', () => {
+  describe('unconfirmed non-NE and non-IL users', () => {
+    beforeEach(() => {
+      cy.app('clean')
+      cy.appFactories([
+        [
+          'create',
+          'unconfirmed_user',
+          {
+            email,
+            full_name: fullName,
+            greeting_name: firstName,
+            password,
+            password_confirmation: password,
+            confirmation_token: confirmationToken,
+            confirmed_at: null,
+            state: 'NY'
+          }
+        ]
+      ])
+    })
+
+    describe('valid confirmation link', () => {
+      it('allows a user to confirm and redirects them', () => {
+        cy.intercept({
+          method: 'GET',
+          url: `/confirmation?confirmation_token=${confirmationToken}`
+        }).as('confirmation')
+
+        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+        cy.location('pathname').should('eq', '/comingsoon')
+      })
+    })
+  })
+
+  describe('unconfirmed IL users', () => {
     beforeEach(() => {
       cy.app('clean')
       cy.appFactories([
@@ -118,7 +152,7 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.location('pathname').should('eq', '/comingsoon')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
   })

@@ -1,10 +1,10 @@
 GIT
   remote: https://github.com/Vasfed/annotate_models.git
-  revision: a2cca56e2a4d56014716157234cbdf7f1b182aac
+  revision: dba8ce96650b45e16d7f6a44c77a87647ca2c2fe
   branch: rails6_warning
   specs:
-    annotate (3.1.1)
-      activerecord (>= 5.0, < 7.0)
+    annotate (4.0.0)
+      activerecord (>= 5.0, < 8.0)
       rake (>= 10.4, < 14.0)
 
 GEM
@@ -96,7 +96,7 @@ GEM
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
     blueprinter (0.25.3)
-    bootsnap (1.12.0)
+    bootsnap (1.13.0)
       msgpack (~> 1.2)
     brakeman (5.2.3)
     builder (3.2.4)
@@ -152,7 +152,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faker (2.21.0)
+    faker (2.22.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
     flamegraph (0.9.5)
@@ -226,7 +226,7 @@ GEM
       monetize (~> 1.9)
       money (~> 6.13)
       railties (>= 3.0)
-    msgpack (1.5.2)
+    msgpack (1.5.4)
     nenv (0.3.0)
     nio4r (2.5.8)
     nokogiri (1.13.8)
