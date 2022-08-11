@@ -112,9 +112,31 @@ puts_records_in_db(IllinoisRate)
   too_much_time: 'True'
 )
 
+@user_new_york = User.where(email: 'newyork@test.com').first_or_create(
+  active: true,
+  full_name: 'New York Provider',
+  greeting_name: 'Toby',
+  language: 'en',
+  opt_in_email: true,
+  opt_in_text: true,
+  phone_number: '777-666-3333',
+  state: 'NY',
+  get_from_pie: 'fame',
+  organization: 'New York Child Care',
+  password: 'testpass1234!',
+  password_confirmation: 'testpass1234!',
+  service_agreement_accepted: true,
+  timezone: 'Eastern Time (US & Canada)',
+  stressed_about_billing: 'True',
+  accept_more_subsidy_families: 'True',
+  not_as_much_money: 'True',
+  too_much_time: 'True'
+)
+
 @user_admin.confirm
 @user_kate.confirm
 @user_nebraska.confirm
+@user_new_york.confirm
 
 puts_records_in_db(User)
 
