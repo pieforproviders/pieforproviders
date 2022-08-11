@@ -88,7 +88,7 @@ describe('Login', () => {
         cy.get(createSelector('email')).type(email)
         cy.get(createSelector('password')).type(password)
         cy.get(createSelector('loginBtn')).click()
-        cy.location('pathname').should('eq', '/comingsoon')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
   })

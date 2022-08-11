@@ -118,7 +118,7 @@ describe('Confirmation', () => {
         }).as('confirmation')
 
         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.location('pathname').should('eq', '/comingsoon')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
   })
