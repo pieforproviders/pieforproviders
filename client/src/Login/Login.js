@@ -78,7 +78,7 @@ export function Login() {
       sendGAEvent('login success', { userId: resp.id })
 
       // currently only users from Nebraska are directed to the dashboard
-      if (resp.state === 'NE') {
+      if (resp.state === 'NE' || resp.state === 'IL') {
         history.push('/dashboard')
       } else {
         history.push('/comingsoon')

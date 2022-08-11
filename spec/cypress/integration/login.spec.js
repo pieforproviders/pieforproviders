@@ -58,7 +58,41 @@ describe('Login', () => {
     })
   })
 
-  describe('confirmed non-NE users', () => {
+  describe('confirmed non IL and non NE users', () => {
+    beforeEach(() => {
+      cy.app('clean')
+      cy.appFactories([
+        [
+          'create',
+          'confirmed_user',
+          {
+            email,
+            full_name: fullName,
+            greeting_name: firstName,
+            password,
+            password_confirmation: password,
+            state: 'NY'
+          }
+        ]
+      ])
+    })
+    describe('valid credentials', () => {
+      it('allows a user to log in', () => {
+        cy.intercept({
+          method: 'POST',
+          url: '/login'
+        }).as('login')
+
+        cy.visit('/login')
+        cy.get(createSelector('email')).type(email)
+        cy.get(createSelector('password')).type(password)
+        cy.get(createSelector('loginBtn')).click()
+        cy.location('pathname').should('eq', '/comingsoon')
+      })
+    })
+  })
+
+  describe('confirmed IL users', () => {
     beforeEach(() => {
       cy.app('clean')
       cy.appFactories([
@@ -88,7 +122,7 @@ describe('Login', () => {
         cy.get(createSelector('email')).type(email)
         cy.get(createSelector('password')).type(password)
         cy.get(createSelector('loginBtn')).click()
-        cy.location('pathname').should('eq', '/comingsoon')
+        cy.location('pathname').should('eq', '/dashboard')
       })
     })
   })
