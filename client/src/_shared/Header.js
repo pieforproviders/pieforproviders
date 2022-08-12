@@ -161,11 +161,14 @@ export function Header() {
 
   return (
     <header className="flex items-center w-full p-4 bg-white shadow-md">
-      <img
-        alt={t('pieforProvidersLogoAltText')}
-        src={pieSliceLogo}
-        className="w-8 mr-2"
-      />
+      <a href="#top">
+        <img
+          alt={t('pieforProvidersLogoAltText')}
+          src={pieSliceLogo}
+          className="w-8 mr-2"
+          onClick={() => history.push('/dashboard')}
+        />
+      </a>
       {windowWidth > 768 && userStateIsNE ? (
         <div className="ml-10 grow">
           <div className="flex">
