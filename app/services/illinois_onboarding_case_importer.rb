@@ -11,8 +11,8 @@ class IllinoisOnboardingCaseImporter
 
   def initialize
     @client = AwsClient.new
-    @source_bucket = Rails.application.config.aws_necc_onboarding_bucket
-    @archive_bucket = Rails.application.config.aws_necc_onboarding_archive_bucket
+    @source_bucket = Rails.application.config.aws_onboarding_bucket
+    @archive_bucket = Rails.application.config.aws_onboarding_archive_bucket
   end
 
   def call
@@ -22,7 +22,7 @@ class IllinoisOnboardingCaseImporter
   private
 
   def process_onboarding_cases
-    file_names = @client.list_file_names(@source_bucket)
+    file_names = @client.list_file_names(@source_bucket, 'IL')
     raise NoFilesFound, @source_bucket unless file_names
 
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
@@ -82,7 +82,6 @@ class IllinoisOnboardingCaseImporter
   def build_case
     @child.update!(optional_child_params)
     @business.update!(optional_business_params)
-    update_overlapping_approvals
     @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
     update_child_approval
     update_illinois_approval_amounts
@@ -114,12 +113,7 @@ class IllinoisOnboardingCaseImporter
     approval_amount_params[:approval_periods].each do |period|
       approval = @child.approvals.find_by(approval_params)
       next unless period[:effective_on]&.between?(approval.effective_on, approval.expires_on)
-
-      existing_aa = existing_approval_amount(period)
-      update_overlapping_approval_amounts(period, existing_aa)
-      next if existing_aa
-
-      months = (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select{|d| |d.day == 1|}
+      months = (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select {|d| d.day == 1}
       months.each do |month|
         IllinoisApprovalAmount.find_or_create_by!(
           month: month,
@@ -129,13 +123,6 @@ class IllinoisOnboardingCaseImporter
         )
       end
     end
-  end
-
-
-  def existing_approval_amount(period)
-    @child.illinois_approval_amounts.find_by(
-      period.except(:family_fee).merge(child_approval: @child_approval)
-    )
   end
 
   def approval_params

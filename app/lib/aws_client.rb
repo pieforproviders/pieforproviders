@@ -35,8 +35,8 @@ class AwsClient
     )
   end
 
-  def list_file_names(source_bucket)
-    bucket_objects = find_bucket(name: source_bucket) && @client.list_objects_v2({ bucket: source_bucket }).contents
+  def list_file_names(source_bucket, prefix='')
+    bucket_objects = find_bucket(name: source_bucket) && @client.list_objects_v2({ bucket: source_bucket, prefix: prefix }).contents
     raise NoFilesFound if bucket_objects.empty?
 
     bucket_objects.map! { |object| object[:key] }
