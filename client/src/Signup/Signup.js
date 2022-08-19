@@ -15,6 +15,7 @@ import i18n from 'i18n'
 import ConfirmationSent from './ConfirmationSent'
 import StateDropdown from './StateDropdown'
 import SignupQuestion from './SignupQuestion'
+import useFreshsales from '_shared/_hooks/useFreshsales'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -47,6 +48,7 @@ export function Signup() {
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
   const history = useHistory()
+  useFreshsales()
 
   const onFinish = async () => {
     setValidationErrors(null)
