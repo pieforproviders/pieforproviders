@@ -57,9 +57,7 @@ class IllinoisOnboardingCaseImporter
   end
 
   def find_approval
-    unless @child.approvals.find_by(approval_params)
-      @child.approvals << Approval.find_or_create_by!(approval_params)
-    end
+    @child.approvals << Approval.find_or_create_by!(approval_params) unless @child.approvals.find_by(approval_params)
     @child.save
     @child.approvals.find_by(approval_params)
   end
@@ -82,27 +80,10 @@ class IllinoisOnboardingCaseImporter
   def build_case
     @child.update!(optional_child_params)
     @business.update!(optional_business_params)
+    update_overlapping_approvals
     @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
     update_child_approval
     update_illinois_approval_amounts
-  end
-
-  def update_overlapping_approval_amounts(period, existing_aa)
-    date = period[:effective_on]
-    overlapping_approval_amounts(existing_aa, date).presence&.map do |oaa|
-      if oaa.effective_on == date
-        oaa.update!(period)
-      else
-        oaa.update!(period.except(:effective_on).merge(expires_on: date - 1.day))
-      end
-    end
-    existing_aa&.update!(period)
-  end
-
-  def overlapping_approval_amounts(existing_aa, date)
-    @child.illinois_approval_amounts
-          .reject { |naa| naa == existing_aa }
-          .select { |naa| date.between?(naa.effective_on, naa.expires_on) }
   end
 
   def update_child_approval
@@ -113,14 +94,26 @@ class IllinoisOnboardingCaseImporter
     approval_amount_params[:approval_periods].each do |period|
       approval = @child.approvals.find_by(approval_params)
       next unless period[:effective_on]&.between?(approval.effective_on, approval.expires_on)
-      months = (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select {|d| d.day == 1}
+
+      months = (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select { |d| d.day == 1 }
       months.each do |month|
-        IllinoisApprovalAmount.find_or_create_by!(
+        c = IllinoisApprovalAmount.find_by(
           month: month,
-          child_approval: @child_approval,
-          part_days_approved_per_week: period[:part_days_approved_per_week],
-          full_days_approved_per_week: period[:full_days_approved_per_week]
+          child_approval: @child_approval
         )
+        if c
+          c.update!(
+            part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
+            full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
+          )
+        else
+          IllinoisApprovalAmount.create!(
+            month: month,
+            child_approval: @child_approval,
+            part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
+            full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
+          )
+        end
       end
     end
   end
@@ -177,6 +170,13 @@ class IllinoisOnboardingCaseImporter
     }
   end
 
+  def illinois_params
+    {
+      part_days_approved_per_week: @row['part_days_approved_per_week'],
+      full_days_approved_per_week: @row['full_days_approved_per_week']
+    }
+  end
+
   def required_child_params
     {
       business_id: @business.id,
@@ -209,9 +209,7 @@ class IllinoisOnboardingCaseImporter
       {
         effective_on: find_field(approval_number, 'Begin'),
         expires_on: find_field(approval_number, 'End'),
-        family_fee: find_field(approval_number, 'Family Fee', 'Allocated').to_s.gsub(/[^\d.]/, '').to_f,
-        part_days_approved_per_week: find_field(approval_number, 'Part Days Approved Per Week'),
-        full_days_approved_per_week: find_field(approval_number, 'Full Days Approved Per Week')
+        family_fee: find_field(approval_number, 'Family Fee', 'Allocated').to_s.gsub(/[^\d.]/, '').to_f
       }
     end
   end

@@ -53,7 +53,7 @@ RSpec.describe AwsClient do
   end
 
   describe '#list_file_names' do
-    it 'returns a list of file names in a folder given a prefix' do 
+    it 'returns a list of file names in a folder given a prefix' do
       s3_client.stub_responses(:list_buckets, buckets: [{ name: 'bucket' }])
       s3_client.stub_responses(:list_objects_v2, name: 'bucket', contents: [{ key: 'IL/key' }])
       expect(described_class.new.list_file_names('bucket', 'IL')).to eq(['IL/key'])
