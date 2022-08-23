@@ -84,6 +84,7 @@ class IllinoisOnboardingCaseImporter
   def build_case
     @child.update!(optional_child_params)
     @business.update!(optional_business_params)
+    update_overlapping_approvals
     @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
     update_child_approval
     update_illinois_approval_amounts
