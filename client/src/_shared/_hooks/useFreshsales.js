@@ -5,11 +5,10 @@ const useFreshsales = () => {
     const script = document.createElement('script')
     script.src = '//fw-cdn.com/1908453/2703732.js'
     script.setAttribute('chat', 'false')
-
-    document.head.appendChild(script)
+    document.documentElement.insertBefore(script, document.head)
 
     return () => {
-      document.head.removeChild(script)
+      document.documentElement.removeChild(script)
     }
   }, [])
 }
