@@ -13,8 +13,8 @@ module Wonderschool
 
       def initialize
         @client = AwsClient.new
-        @source_bucket = Rails.application.config.aws_necc_onboarding_bucket
-        @archive_bucket = Rails.application.config.aws_necc_onboarding_archive_bucket
+        @source_bucket = Rails.application.config.aws_onboarding_bucket
+        @archive_bucket = Rails.application.config.aws_onboarding_archive_bucket
       end
 
       def call
@@ -23,8 +23,12 @@ module Wonderschool
 
       private
 
+      def retrieve_file_names
+        @client.list_file_names(@source_bucket, 'NE/').select { |s| s.end_with? '.csv' }
+      end
+
       def process_onboarding_cases
-        file_names = @client.list_file_names(@source_bucket)
+        file_names = retrieve_file_names
         raise NoFilesFound, @source_bucket unless file_names
 
         contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
