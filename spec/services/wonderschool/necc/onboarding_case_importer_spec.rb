@@ -28,7 +28,7 @@ module Wonderschool
         allow(Rails.application.config).to receive(:aws_onboarding_bucket) { source_bucket }
         allow(Rails.application.config).to receive(:aws_onboarding_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }
-        allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'NE') { [file_name] }
+        allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'NE/') { [file_name] }
       end
 
       after { travel_back }

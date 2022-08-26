@@ -22,7 +22,7 @@ class IllinoisOnboardingCaseImporter
   private
 
   def process_onboarding_cases
-    file_names = @client.list_file_names(@source_bucket, 'IL')
+    file_names = @client.list_file_names(@source_bucket, 'IL/').select {|s| s.ends_with? '.csv'}
     raise NoFilesFound, @source_bucket unless file_names
 
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
@@ -90,31 +90,34 @@ class IllinoisOnboardingCaseImporter
     @child_approval&.update!(child_approval_params)
   end
 
+  def update_existing_amount(month)
+    IllinoisApprovalAmount.find_by(
+      month: month,
+      child_approval: @child_approval
+    )&.update!(
+      part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
+      full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
+    )
+  end
+
+  def update_illinois_amounts_for_period(period)
+    months(period).each do |month|
+      unless update_existing_amount(month)
+        IllinoisApprovalAmount.create!(
+          month: month,
+          child_approval: @child_approval,
+          part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
+          full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
+        )
+      end
+    end
+  end
+
   def update_illinois_approval_amounts
     approval_amount_params[:approval_periods].each do |period|
       approval = @child.approvals.find_by(approval_params)
       next unless period[:effective_on]&.between?(approval.effective_on, approval.expires_on)
-
-      months = (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select { |d| d.day == 1 }
-      months.each do |month|
-        c = IllinoisApprovalAmount.find_by(
-          month: month,
-          child_approval: @child_approval
-        )
-        if c
-          c.update!(
-            part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
-            full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
-          )
-        else
-          IllinoisApprovalAmount.create!(
-            month: month,
-            child_approval: @child_approval,
-            part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
-            full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
-          )
-        end
-      end
+      update_illinois_amounts_for_period(period)
     end
   end
 
@@ -218,6 +221,10 @@ class IllinoisOnboardingCaseImporter
     @approval_fields[@approval_fields.to_h.keys.find do |key|
       key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key))
     end ]
+  end
+
+  def months(period)
+    (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select { |d| d.day == 1 }
   end
 end
 # rubocop:enable Metrics/ClassLength

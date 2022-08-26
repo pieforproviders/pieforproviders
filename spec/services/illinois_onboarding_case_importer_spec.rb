@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe IllinoisOnboardingCaseImporter do
-  let!(:file_name) { 'IL/file_name.csv' }
+  let!(:file_name) { 'file_name.csv' }
   let!(:source_bucket) { 'source_bucket' }
   let!(:archive_bucket) { 'archive_bucket' }
   let!(:stubbed_client) { instance_double(AwsClient) }
@@ -28,7 +28,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
     allow(Rails.application.config).to receive(:aws_onboarding_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_onboarding_archive_bucket) { archive_bucket }
     allow(AwsClient).to receive(:new) { stubbed_client }
-    allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'IL') { [file_name] }
+    allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'IL/') { [file_name] }
   end
 
   after { travel_back }
@@ -335,7 +335,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
                        dhs_id: '14047907',
                        approvals: [existing_approval],
                        effective_date: Time.zone.parse('2020-06-01'))
-        existing_illinois_approval_amount = child.illinois_approval_amounts.first
         expect { described_class.new.call }
           .to change(Child, :count)
           .from(1).to(5)
@@ -643,7 +642,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
                        dhs_id: '14047907',
                        approvals: [approval],
                        effective_date: Time.zone.parse('2020-06-01'))
-        illinois_approval_amount = child.illinois_approval_amounts.first
         expect { described_class.new.call }
           .to change(Child, :count)
           .from(1).to(5)
