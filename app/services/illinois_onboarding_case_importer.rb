@@ -21,8 +21,12 @@ class IllinoisOnboardingCaseImporter
 
   private
 
+  def retrieve_file_names
+    @client.list_file_names(@source_bucket, 'IL/').select { |s| s.ends_with? '.csv' }
+  end
+
   def process_onboarding_cases
-    file_names = @client.list_file_names(@source_bucket, 'IL/').select {|s| s.ends_with? '.csv'}
+    file_names = retrieve_file_names
     raise NoFilesFound, @source_bucket unless file_names
 
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
@@ -102,14 +106,14 @@ class IllinoisOnboardingCaseImporter
 
   def update_illinois_amounts_for_period(period)
     months(period).each do |month|
-      unless update_existing_amount(month)
-        IllinoisApprovalAmount.create!(
-          month: month,
-          child_approval: @child_approval,
-          part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
-          full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
-        )
-      end
+      next if update_existing_amount(month)
+
+      IllinoisApprovalAmount.create!(
+        month: month,
+        child_approval: @child_approval,
+        part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
+        full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
+      )
     end
   end
 
@@ -117,6 +121,7 @@ class IllinoisOnboardingCaseImporter
     approval_amount_params[:approval_periods].each do |period|
       approval = @child.approvals.find_by(approval_params)
       next unless period[:effective_on]&.between?(approval.effective_on, approval.expires_on)
+
       update_illinois_amounts_for_period(period)
     end
   end
