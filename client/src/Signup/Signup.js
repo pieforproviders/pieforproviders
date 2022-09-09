@@ -138,6 +138,7 @@ export function Signup() {
             autoComplete="name"
             value={user.fullName}
             data-cy="name"
+            name="fullName"
             onChange={event =>
               setUser({ ...user, fullName: event.target.value })
             }
@@ -149,7 +150,7 @@ export function Signup() {
           name="phone"
           label={`${t('phone')} (${t('phoneNote')})`}
         >
-          <Input.Group compact>
+          <Input.Group compact name="phoneType">
             <label htmlFor="rc_select_1" className="sr-only">
               {t('phoneType')}
             </label>
@@ -204,6 +205,7 @@ export function Signup() {
                 size="10"
                 className="h-8"
                 data-cy="phoneNumber"
+                name="phoneNumber"
                 value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
@@ -216,7 +218,6 @@ export function Signup() {
         <Form.Item
           className="mb-0 text-center body-2-bold text-primaryBlue"
           label={t('preferredLanguage')}
-          name="language"
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
           style={{ marginBottom: '-6px' }}
@@ -232,6 +233,7 @@ export function Signup() {
             optionType="button"
             buttonStyle="solid"
             className="w-full"
+            name="language"
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
@@ -239,7 +241,12 @@ export function Signup() {
               { required: true, message: t('preferredLanguageRequired') }
             ]}
           >
-            <Radio.Button value="en" data-cy="languageEn" className="w-1/2">
+            <Radio.Button
+              value="en"
+              data-cy="languageEn"
+              className="w-1/2"
+              name="language"
+            >
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -261,7 +268,12 @@ export function Signup() {
               )}
               {t('english')}
             </Radio.Button>
-            <Radio.Button value="es" data-cy="languageEs" className="w-1/2">
+            <Radio.Button
+              value="es"
+              data-cy="languageEs"
+              className="w-1/2"
+              name="language"
+            >
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{
@@ -288,7 +300,6 @@ export function Signup() {
 
         <Form.Item
           className="body-2-bold text-primaryBlue"
-          name="state"
           label={t('state')}
           rules={[
             {
@@ -333,6 +344,7 @@ export function Signup() {
             autoComplete="email"
             type="email"
             data-cy="email"
+            name="email"
             onChange={event => setUser({ ...user, email: event.target.value })}
           />
         </Form.Item>
@@ -450,6 +462,7 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, getFromPie: event.target.value })
             }
+            name="openSignUpQuestion"
             className="open-signup-question"
             data-cy="open-signup-question"
           />
