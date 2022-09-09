@@ -66,6 +66,7 @@ function StateDropdown({ onChange }) {
       placeholder={t('chooseOne')}
       onChange={onChange}
       data-cy="state"
+      name="state"
     >
       {stateOptions.map(state => (
         <Option key={state.value} value={state.value} data-cy={state.value}>
