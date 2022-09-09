@@ -233,7 +233,7 @@ export function Signup() {
             optionType="button"
             buttonStyle="solid"
             className="w-full"
-            name="language"
+            name="preferredLanguage"
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
