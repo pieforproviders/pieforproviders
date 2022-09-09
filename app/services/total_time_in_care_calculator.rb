@@ -18,6 +18,7 @@ class TotalTimeInCareCalculator
 
   def calculate_total_time
     Nebraska::TotalTimeInCareCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
+    Illinois::TotalTimeInCareCalculator.new(service_day: service_day).call if service_day.child.state == 'IL'
   end
 
   def total_recorded_attended_time
