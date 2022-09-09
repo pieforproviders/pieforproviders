@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_20_165954) do
+ActiveRecord::Schema.define(version: 2022_09_09_191140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -193,7 +193,7 @@ ActiveRecord::Schema.define(version: 2022_07_20_165954) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-05 01:37:11", null: false
+    t.datetime "month", default: "2022-09-01 19:32:18", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -271,6 +271,7 @@ ActiveRecord::Schema.define(version: 2022_07_20_165954) do
     t.string "earned_revenue_currency", default: "USD", null: false
     t.uuid "schedule_id"
     t.string "absence_type"
+    t.boolean "missing_checkout"
     t.index ["child_id", "date"], name: "index_service_days_on_child_id_and_date", unique: true
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
