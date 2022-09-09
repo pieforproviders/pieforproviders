@@ -233,7 +233,7 @@ export function Signup() {
             optionType="button"
             buttonStyle="solid"
             className="w-full"
-            name="language"
+            name="preferredLanguage"
             onChange={event =>
               setUser({ ...user, language: event.target.value })
             }
@@ -241,12 +241,7 @@ export function Signup() {
               { required: true, message: t('preferredLanguageRequired') }
             ]}
           >
-            <Radio.Button
-              value="en"
-              data-cy="languageEn"
-              className="w-1/2"
-              name="language"
-            >
+            <Radio.Button value="en" data-cy="languageEn" className="w-1/2">
               {user.language === 'en' ? (
                 <CheckCircleIcon
                   style={{
@@ -268,12 +263,7 @@ export function Signup() {
               )}
               {t('english')}
             </Radio.Button>
-            <Radio.Button
-              value="es"
-              data-cy="languageEs"
-              className="w-1/2"
-              name="language"
-            >
+            <Radio.Button value="es" data-cy="languageEs" className="w-1/2">
               {user.language === 'es' ? (
                 <CheckCircleIcon
                   style={{
@@ -462,7 +452,6 @@ export function Signup() {
             onChange={event =>
               setUser({ ...user, getFromPie: event.target.value })
             }
-            name="openSignUpQuestion"
             className="open-signup-question"
             data-cy="open-signup-question"
           />
