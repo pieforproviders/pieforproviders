@@ -5,7 +5,7 @@ require 'rails_helper'
 module Wonderschool
   module Necc
     RSpec.describe OnboardingCaseImporter do
-      let!(:file_name) { 'file_name.csv' }
+      let!(:file_name) { 'NE/file_name.csv' }
       let!(:source_bucket) { 'source_bucket' }
       let!(:archive_bucket) { 'archive_bucket' }
       let!(:stubbed_client) { instance_double(AwsClient) }
@@ -25,10 +25,10 @@ module Wonderschool
       before do
         # this lands us in the 'effective' period for all the approvals in the CSV fixture
         travel_to Date.parse('May 20th, 2021').in_time_zone(first_user.timezone)
-        allow(Rails.application.config).to receive(:aws_necc_onboarding_bucket) { source_bucket }
-        allow(Rails.application.config).to receive(:aws_necc_onboarding_archive_bucket) { archive_bucket }
+        allow(Rails.application.config).to receive(:aws_onboarding_bucket) { source_bucket }
+        allow(Rails.application.config).to receive(:aws_onboarding_archive_bucket) { archive_bucket }
         allow(AwsClient).to receive(:new) { stubbed_client }
-        allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
+        allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'NE/') { [file_name] }
       end
 
       after { travel_back }

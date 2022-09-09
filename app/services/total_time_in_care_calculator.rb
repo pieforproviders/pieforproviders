@@ -24,6 +24,6 @@ class TotalTimeInCareCalculator
     attendances_with_check_out = attendances.presence&.select do |attendance|
       attendance.check_out.present?
     end
-    attendances_with_check_out.presence&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
+    attendances_with_check_out.presence&.map(&:time_in_care)&.sum || 0.minutes
   end
 end
