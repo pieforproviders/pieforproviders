@@ -14,6 +14,14 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
   let(:service_day) { create(:service_day, schedule: nil, child: child) }
 
   describe '#call' do
+    context 'when child has no attendances' do
+      it 'doesn\'t flag the service day and does not change the total hours' do
+        described_class.new(service_day: service_day).call
+        expect(service_day.total_time_in_care).to eq(0)
+        expect(service_day.missing_checkout).to be(false)
+      end
+    end
+
     context 'when child has one attendance with a missing checkout' do
       before do
         service_day.attendances << attendance_with_missing_checkout
