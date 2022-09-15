@@ -140,7 +140,7 @@ class IllinoisOnboardingCaseImporter
       name: @row['Provider Name'],
       zipcode: @row['Business Zip Code'],
       county: @row['Business County'],
-      license_type: @row['Business License'].downcase.tr(' ', '_')
+      license_type: @row['Business License'].downcase.tr(' -', '_')
     }
   end
 
