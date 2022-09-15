@@ -33,13 +33,11 @@ end
 # currently active rule
 IllinoisRate.first_or_create!(
   name: 'Rate 1',
-  max_age: 18,
+  age_bucket: 18,
   license_type: Licenses::TYPES.sample,
-  county: 'Cook',
+  region: 'Cook',
   effective_on: Date.current - 4.years,
-  full_day_rate: 29.5,
-  part_day_rate: 15.4,
-  attendance_threshold: 0.49
+  rate_type: 'part_day'
 )
 
 puts_records_in_db(IllinoisRate)

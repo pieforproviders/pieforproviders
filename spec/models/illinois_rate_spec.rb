@@ -8,15 +8,15 @@ RSpec.describe IllinoisRate, type: :model do
   it { is_expected.to have_many(:child_approvals) }
 
   it { is_expected.to validate_presence_of(:name) }
-  it { is_expected.to validate_presence_of(:max_age) }
-  it { is_expected.to validate_presence_of(:county) }
+  it { is_expected.to validate_presence_of(:age_bucket) }
+  it { is_expected.to validate_presence_of(:region) }
   it { is_expected.to validate_presence_of(:effective_on) }
-  it { is_expected.to validate_numericality_of(:max_age).is_greater_than_or_equal_to(0.00) }
-  it { is_expected.to validate_numericality_of(:bronze_percentage) }
-  it { is_expected.to validate_numericality_of(:full_day_rate) }
-  it { is_expected.to validate_numericality_of(:gold_percentage) }
-  it { is_expected.to validate_numericality_of(:part_day_rate) }
-  it { is_expected.to validate_numericality_of(:silver_percentage) }
+  it { is_expected.to validate_numericality_of(:age_bucket).is_greater_than_or_equal_to(0.00) }
+  # it { is_expected.to validate_numericality_of(:bronze_percentage) }
+  # it { is_expected.to validate_numericality_of(:full_day_rate) }
+  # it { is_expected.to validate_numericality_of(:gold_percentage) }
+  # it { is_expected.to validate_numericality_of(:part_day_rate) }
+  # it { is_expected.to validate_numericality_of(:silver_percentage) }
 
   it_behaves_like 'licenses'
 
@@ -55,22 +55,17 @@ end
 #
 # Table name: illinois_rates
 #
-#  id                   :uuid             not null, primary key
-#  attendance_threshold :decimal(, )
-#  bronze_percentage    :decimal(, )
-#  county               :string           default(" "), not null
-#  deleted_at           :date
-#  effective_on         :date             not null
-#  expires_on           :date
-#  full_day_rate        :decimal(, )
-#  gold_percentage      :decimal(, )
-#  license_type         :string           default("licensed_family_home"), not null
-#  max_age              :decimal(, )      default(0.0), not null
-#  name                 :string           default("Rule Name Filler"), not null
-#  part_day_rate        :decimal(, )
-#  silver_percentage    :decimal(, )
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id           :uuid             not null, primary key
+#  age_bucket   :decimal(, )      default(0.0), not null
+#  deleted_at   :date
+#  effective_on :date             not null
+#  expires_on   :date
+#  license_type :string           default("licensed_family_home"), not null
+#  name         :string           default("Rule Name Filler"), not null
+#  rate_type    :string           not null
+#  region       :string           default(" "), not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 # Indexes
 #

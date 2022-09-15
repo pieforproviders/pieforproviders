@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_09_191140) do
+ActiveRecord::Schema.define(version: 2022_09_15_152614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -160,21 +160,16 @@ ActiveRecord::Schema.define(version: 2022_09_09_191140) do
   end
 
   create_table "illinois_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "bronze_percentage"
-    t.decimal "silver_percentage"
-    t.decimal "gold_percentage"
-    t.decimal "part_day_rate"
-    t.decimal "full_day_rate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.decimal "attendance_threshold"
-    t.string "county", default: " ", null: false
+    t.string "region", default: " ", null: false
     t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
-    t.decimal "max_age", default: "0.0", null: false
+    t.decimal "age_bucket", default: "0.0", null: false
     t.string "name", default: "Rule Name Filler", null: false
     t.date "deleted_at"
+    t.string "rate_type", null: false
     t.index ["effective_on"], name: "index_illinois_rates_on_effective_on"
     t.index ["expires_on"], name: "index_illinois_rates_on_expires_on"
   end

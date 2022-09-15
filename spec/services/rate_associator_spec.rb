@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe RateAssociator do
   let!(:date) { Time.current }
-  let!(:illinois_rate_cook_age5) { create(:illinois_rate, max_age: 5) }
-  let!(:illinois_rate_cook_age3) { create(:illinois_rate, max_age: 3) }
-  let!(:illinois_rate_dupage) { create(:illinois_rate, county: 'DuPage', max_age: 12) }
+  let!(:illinois_rate_cook_age5) { create(:illinois_rate, age_bucket: 5) }
+  let!(:illinois_rate_cook_age3) { create(:illinois_rate, age_bucket: 3) }
+  let!(:illinois_rate_dupage) { create(:illinois_rate, region: 'DuPage', age_bucket: 12) }
   let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
   let!(:business_dupage) { create(:business, county: 'DuPage', zipcode: '60613') }
   let(:child_cook) { build(:child, date_of_birth: date - 2.years - 3.weeks, business: business_cook) }
