@@ -2,7 +2,7 @@
 
 module Illinois
   # Service to find the region in Illinois where a business is located
-  # for rate calculation
+  # for rate calculation.
   class RegionFinder
     attr_reader :business
 
