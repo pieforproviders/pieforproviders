@@ -6,20 +6,19 @@ class IllinoisRate < UuidApplicationRecord
 
   has_many :child_approvals, as: :rate, dependent: :restrict_with_error
 
+  RATE_TYPE = %w[part_day full_day].freeze
+  GROUP_TYPE = %w[group_1a group_1b group_2 all].freeze
+
   validates :name, presence: true
-  validates :county, presence: true
-  validates :max_age, numericality: { greater_than_or_equal_to: 0.00 }, presence: true
+  validates :region, presence: true, inclusion: { in: GROUP_TYPE }
+  validates :age_bucket, numericality: { greater_than_or_equal_to: 0.00 }, allow_nil: true
   validates :effective_on, date_param: true, presence: true
+  validates :rate_type, presence: true, inclusion: { in: RATE_TYPE }
   validates :expires_on,
             date_param: true,
             unless: proc { |illinois_rate|
                       illinois_rate.expires_on_before_type_cast.nil?
                     }
-  validates :bronze_percentage, numericality: true, allow_nil: true
-  validates :full_day_rate, numericality: true, allow_nil: true
-  validates :gold_percentage, numericality: true, allow_nil: true
-  validates :part_day_rate, numericality: true, allow_nil: true
-  validates :silver_percentage, numericality: true, allow_nil: true
 
   scope :active_on,
         lambda { |date|
@@ -31,22 +30,19 @@ end
 #
 # Table name: illinois_rates
 #
-#  id                   :uuid             not null, primary key
-#  attendance_threshold :decimal(, )
-#  bronze_percentage    :decimal(, )
-#  county               :string           default(" "), not null
-#  deleted_at           :date
-#  effective_on         :date             not null
-#  expires_on           :date
-#  full_day_rate        :decimal(, )
-#  gold_percentage      :decimal(, )
-#  license_type         :string           default("licensed_family_home"), not null
-#  max_age              :decimal(, )      default(0.0), not null
-#  name                 :string           default("Rule Name Filler"), not null
-#  part_day_rate        :decimal(, )
-#  silver_percentage    :decimal(, )
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  id                :uuid             not null, primary key
+#  age_bucket        :decimal(, )      default(0.0)
+#  amount            :decimal(, )      not null
+#  deleted_at        :date
+#  effective_on      :date             not null
+#  expires_on        :date
+#  license_type      :string           default("licensed_family_home"), not null
+#  name              :string           default("Rule Name Filler"), not null
+#  rate_type         :string           not null
+#  region            :string           default(" "), not null
+#  silver_percentage :decimal(, )
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #
