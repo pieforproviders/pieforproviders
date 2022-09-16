@@ -35,9 +35,10 @@ IllinoisRate.first_or_create!(
   name: 'Rate 1',
   age_bucket: 18,
   license_type: Licenses::TYPES.sample,
-  region: 'Cook',
+  region: 'group_1a',
   effective_on: Date.current - 4.years,
-  rate_type: 'part_day'
+  rate_type: 'part_day',
+  amount: 36.5
 )
 
 puts_records_in_db(IllinoisRate)

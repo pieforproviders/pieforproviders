@@ -166,10 +166,11 @@ ActiveRecord::Schema.define(version: 2022_09_15_152614) do
     t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
-    t.decimal "age_bucket", default: "0.0", null: false
+    t.decimal "age_bucket", default: "0.0"
     t.string "name", default: "Rule Name Filler", null: false
     t.date "deleted_at"
     t.string "rate_type", null: false
+    t.decimal "amount", null: false
     t.index ["effective_on"], name: "index_illinois_rates_on_effective_on"
     t.index ["expires_on"], name: "index_illinois_rates_on_expires_on"
   end

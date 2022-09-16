@@ -34,7 +34,8 @@ end
 # Table name: illinois_rates
 #
 #  id           :uuid             not null, primary key
-#  age_bucket   :decimal(, )      default(0.0), not null
+#  age_bucket   :decimal(, )      default(0.0)
+#  amount       :decimal(, )      not null
 #  deleted_at   :date
 #  effective_on :date             not null
 #  expires_on   :date

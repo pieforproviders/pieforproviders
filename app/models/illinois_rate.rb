@@ -6,10 +6,14 @@ class IllinoisRate < UuidApplicationRecord
 
   has_many :child_approvals, as: :rate, dependent: :restrict_with_error
 
+  RATE_TYPE = %w[part_day full_day].freeze
+  GROUP_TYPE = %w[group_1a group_1b group_2 all].freeze
+
   validates :name, presence: true
-  validates :region, presence: true
-  validates :age_bucket, numericality: { greater_than_or_equal_to: 0.00 }, presence: true
+  validates :region, presence: true, inclusion: {in: GROUP_TYPE }
+  validates :age_bucket, numericality: { greater_than_or_equal_to: 0.00 }, allow_nil: true
   validates :effective_on, date_param: true, presence: true
+  validates :rate_type, presence: true, inclusion: { in: RATE_TYPE }
   validates :expires_on,
             date_param: true,
             unless: proc { |illinois_rate|
@@ -27,7 +31,8 @@ end
 # Table name: illinois_rates
 #
 #  id           :uuid             not null, primary key
-#  age_bucket   :decimal(, )      default(0.0), not null
+#  age_bucket   :decimal(, )      default(0.0)
+#  amount       :decimal(, )      not null
 #  deleted_at   :date
 #  effective_on :date             not null
 #  expires_on   :date

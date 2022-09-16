@@ -11,12 +11,8 @@ RSpec.describe IllinoisRate, type: :model do
   it { is_expected.to validate_presence_of(:age_bucket) }
   it { is_expected.to validate_presence_of(:region) }
   it { is_expected.to validate_presence_of(:effective_on) }
+  it { is_expected.to validate_presence_of(:rate_type) }
   it { is_expected.to validate_numericality_of(:age_bucket).is_greater_than_or_equal_to(0.00) }
-  # it { is_expected.to validate_numericality_of(:bronze_percentage) }
-  # it { is_expected.to validate_numericality_of(:full_day_rate) }
-  # it { is_expected.to validate_numericality_of(:gold_percentage) }
-  # it { is_expected.to validate_numericality_of(:part_day_rate) }
-  # it { is_expected.to validate_numericality_of(:silver_percentage) }
 
   it_behaves_like 'licenses'
 
@@ -56,7 +52,8 @@ end
 # Table name: illinois_rates
 #
 #  id           :uuid             not null, primary key
-#  age_bucket   :decimal(, )      default(0.0), not null
+#  age_bucket   :decimal(, )      default(0.0)
+#  amount       :decimal(, )      not null
 #  deleted_at   :date
 #  effective_on :date             not null
 #  expires_on   :date
