@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(version: 2022_09_15_152614) do
   end
 
   create_table "illinois_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
+    t.decimal "silver_percentage"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "region", default: " ", null: false
@@ -189,7 +190,7 @@ ActiveRecord::Schema.define(version: 2022_09_15_152614) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-09-01 19:32:18", null: false
+    t.datetime "month", default: "2022-09-16 19:50:30", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"

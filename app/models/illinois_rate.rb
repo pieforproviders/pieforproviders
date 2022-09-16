@@ -10,7 +10,7 @@ class IllinoisRate < UuidApplicationRecord
   GROUP_TYPE = %w[group_1a group_1b group_2 all].freeze
 
   validates :name, presence: true
-  validates :region, presence: true, inclusion: {in: GROUP_TYPE }
+  validates :region, presence: true, inclusion: { in: GROUP_TYPE }
   validates :age_bucket, numericality: { greater_than_or_equal_to: 0.00 }, allow_nil: true
   validates :effective_on, date_param: true, presence: true
   validates :rate_type, presence: true, inclusion: { in: RATE_TYPE }
@@ -30,18 +30,19 @@ end
 #
 # Table name: illinois_rates
 #
-#  id           :uuid             not null, primary key
-#  age_bucket   :decimal(, )      default(0.0)
-#  amount       :decimal(, )      not null
-#  deleted_at   :date
-#  effective_on :date             not null
-#  expires_on   :date
-#  license_type :string           default("licensed_family_home"), not null
-#  name         :string           default("Rule Name Filler"), not null
-#  rate_type    :string           not null
-#  region       :string           default(" "), not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id                :uuid             not null, primary key
+#  age_bucket        :decimal(, )      default(0.0)
+#  amount            :decimal(, )      not null
+#  deleted_at        :date
+#  effective_on      :date             not null
+#  expires_on        :date
+#  license_type      :string           default("licensed_family_home"), not null
+#  name              :string           default("Rule Name Filler"), not null
+#  rate_type         :string           not null
+#  region            :string           default(" "), not null
+#  silver_percentage :decimal(, )
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
 #
 # Indexes
 #
