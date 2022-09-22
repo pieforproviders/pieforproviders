@@ -21,7 +21,7 @@ namespace :illinois do
         language: 'en',
         opt_in_email: true,
         opt_in_text: true,
-        phone_number: "777-666-333#{index}",
+        phone_number: "777-666-#{index}#{index}#{index}#{index}",
         state: 'IL',
         get_from_pie: 'fame',
         organization: row['Provider Name'],
