@@ -16,16 +16,16 @@ namespace :illinois do
   task load_fake_businesses_users: :environment do
     table = CsvParser.new(File.read('lib/tasks/illinois/fake_businesses.csv')).call
     table.each_with_index do |row, index|
-      user = User.where(email: row["Provider Email"]).first_or_create(
+      user = User.where(email: row['Provider Email']).first_or_create(
         active: true,
-        full_name: row["Provider Name"],
+        full_name: row['Provider Name'],
         language: 'en',
         opt_in_email: true,
         opt_in_text: true,
         phone_number: "777-666-333#{index}",
         state: 'IL',
         get_from_pie: 'fame',
-        organization: row["Provider Name"],
+        organization: row['Provider Name'],
         password: 'testpass1234!',
         password_confirmation: 'testpass1234!',
         service_agreement_accepted: true,
