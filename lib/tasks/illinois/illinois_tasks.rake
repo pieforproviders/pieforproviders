@@ -14,14 +14,15 @@ namespace :illinois do
   desc 'Load and create fake businesses users accounts'
   task load_fake_businesses_users: :environment do
     table = CsvParser.new(File.read('lib/tasks/illinois/fake_businesses.csv')).call
-    table.each_with_index do |row, index|
+    table.each do |row|
+      phone_number = "#{random_number(3)}-#{random_number(3)}-#{random_number(4)}"
       user = User.where(email: row['Provider Email']).first_or_create(
         active: true,
         full_name: row['Provider Name'],
         language: 'en',
         opt_in_email: true,
         opt_in_text: true,
-        phone_number: "777-666-#{index}#{index}#{index}#{index}",
+        phone_number: phone_number,
         state: 'IL',
         get_from_pie: 'fame',
         organization: row['Provider Name'],
@@ -36,5 +37,9 @@ namespace :illinois do
       )
       user.confirm
     end
+  end
+
+  def random_number(digits)
+    digits.times.map { rand(1..9) }.join
   end
 end
