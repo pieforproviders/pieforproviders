@@ -11,7 +11,6 @@ task read_illinois_onboarding_cases: :environment do
 end
 
 namespace :illinois do
-
   desc 'Load and create fake businesses users accounts'
   task load_fake_businesses_users: :environment do
     table = CsvParser.new(File.read('lib/tasks/illinois/fake_businesses.csv')).call
