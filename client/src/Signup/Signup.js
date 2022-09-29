@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Form, Input, Select, Radio, Checkbox } from 'antd'
+import { Alert, Form, Input, Radio, Checkbox } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
@@ -16,8 +16,9 @@ import ConfirmationSent from './ConfirmationSent'
 import StateDropdown from './StateDropdown'
 import SignupQuestion from './SignupQuestion'
 import useFreshsales from '_shared/_hooks/useFreshsales'
+import Select from '_shared/_components/Select/Select'
+import { Option } from '_shared/_components/Select/Select'
 
-const { Option } = Select
 const { TextArea } = Input
 
 /**
@@ -155,9 +156,10 @@ export function Signup() {
               {t('phoneType')}
             </label>
             <Select
+              id="phoneType"
+              name="phoneType"
               value={user.phoneType}
               style={{ width: '30%', borderRight: '0', textAlign: 'left' }}
-              name="phoneType"
               data-cy="phoneType"
               placeholder={t('phoneTypePlaceholder')}
               onChange={value => {
@@ -523,6 +525,16 @@ export function Signup() {
             </a>
           </p>
         </div>
+        <Form.Item style={{ display: 'none' }}>
+          <Input name="lifecycleStage" type="lifecycle stage" value="Sign-up" />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input
+            name="lifecycleStage"
+            type="status"
+            value="Completed sign-up form"
+          />
+        </Form.Item>
       </Form>
     </main>
   )
