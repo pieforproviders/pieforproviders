@@ -18,7 +18,7 @@ export function ActionLink({ onClick, text = '', classes = '', children }) {
 
 ActionLink.propTypes = {
   onClick: PropTypes.func.isRequired,
-  text: PropTypes.string,
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   children: PropTypes.node,
   classes: PropTypes.string
 }

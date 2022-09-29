@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
 import { useTranslation } from 'react-i18next'
-
-const { Option } = Select
+import Select, { Option } from '_shared/_components/Select/Select'
 
 function StateDropdown({ onChange }) {
   const { t } = useTranslation()
@@ -67,6 +65,7 @@ function StateDropdown({ onChange }) {
       onChange={onChange}
       data-cy="state"
       name="state"
+      id="state-name"
     >
       {stateOptions.map(state => (
         <Option key={state.value} value={state.value} data-cy={state.value}>
