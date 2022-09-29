@@ -17,7 +17,7 @@ const f2 = dayjs().weekday(6)
 const secondDate =
   f2.format('MMM') === 'Sep'
     ? `${f2.format('MMMM').slice(0, 4)} ${f2.format('D')}`
-    : f2.format('MMM')
+    : f2.format('MMM D')
 
 describe('<WeekPicker />', () => {
   it('renders content', async () => {
