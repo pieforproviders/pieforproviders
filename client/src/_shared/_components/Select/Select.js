@@ -12,7 +12,7 @@ const Select = ({ id, name, children, onChange, ...extraProps }) => {
 
   return (
     <>
-      <input type="hidden" name={name} value={value} id={id} role="hidden" />
+      <input type="hidden" name={name} value={value} id={id} />
       <AntDSelect id={`antd-${id}`} onChange={handleOnChange} {...extraProps}>
         {children}
       </AntDSelect>
