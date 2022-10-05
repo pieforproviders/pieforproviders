@@ -5,6 +5,7 @@
 class RateAssociator
   def initialize(child)
     @child = child
+    @region = Illinois::RegionFinder.new(business: child.business).call
   end
 
   def call
@@ -30,7 +31,7 @@ class RateAssociator
   end
 
   def illinois_rate
-    IllinoisRate.active_on(today).where('max_age >= ?', @child.age).where(county: county).order(:max_age).first
+    IllinoisRate.active_on(today).where('age_bucket >= ?', @child.age).where(region: @region).order(:age_bucket).first
   end
 
   def illinois_rate_associator

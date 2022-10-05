@@ -70,8 +70,8 @@ module App
     config.aws_region = ENV.fetch('AWS_REGION', '')
 
     # onboarding
-    config.aws_necc_onboarding_bucket = ENV.fetch('AWS_NECC_ONBOARDING_BUCKET', '')
-    config.aws_necc_onboarding_archive_bucket = ENV.fetch('AWS_NECC_ONBOARDING_ARCHIVE_BUCKET', '')
+    config.aws_onboarding_bucket = ENV.fetch('AWS_ONBOARDING_BUCKET', '')
+    config.aws_onboarding_archive_bucket = ENV.fetch('AWS_ONBOARDING_ARCHIVE_BUCKET', '')
 
     # Wonderschool Attendance - NECC
     config.wonderschool_attendance_url = ENV.fetch('WONDERSCHOOL_ATTENDANCE_URL', '')

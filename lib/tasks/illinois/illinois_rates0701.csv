@@ -1,0 +1,65 @@
+ID,Geography,License Type,Max age,Time Unit,Amount,Effective on (date),Effective end (date),Source,Other notes,Age bracket (just for reference)
+Rate001,Group 1A,Day Care Center,24,Full Day,$64.00 ,"July 1, 2022",,https://www.dhs.state.il.us/page.aspx?item=144991,,Under 2
+Rate002,Group 1A,Day Care Center,24,Part Day,$32.00 ,"July 1, 2022",,,,Under 2
+Rate003,Group 1A,Day Care Center,36,Full Day,$51.00 ,"July 1, 2022",,,,Age 2
+Rate004,Group 1A,Day Care Center,36,Part Day,$26.00 ,"July 1, 2022",,,,Age 2
+Rate005,Group 1A,Day Care Center,,Full Day,$44.00 ,"July 1, 2022",,,,Age 3+
+Rate006,Group 1A,Day Care Center,,Part Day,$22.00 ,"July 1, 2022",,,,Age 3+
+Rate007,Group 1A,License-Exempt Day Care Center,,Full Day,$39.00 ,"July 1, 2022",,,,Age 3+
+Rate008,Group 1A,License-Exempt Day Care Center,,Part Day,$20.00 ,"July 1, 2022",,,,Age 3+
+Rate009,Group 1A,Child care homes,24,Full Day,$45.89 ,"July 1, 2022",,,,Under 2
+Rate010,Group 1A,Child care homes,24,Part Day,$22.94 ,"July 1, 2022",,,,Under 2
+Rate011,Group 1A,Child care homes,36,Full Day,$42.76 ,"July 1, 2022",,,,Age 2
+Rate012,Group 1A,Child care homes,36,Part Day,$21.38 ,"July 1, 2022",,,,Age 2
+Rate013,Group 1A,Child care homes,,Full Day,$38.90 ,"July 1, 2022",,,,Age 3+
+Rate014,Group 1A,Child care homes,,Part Day,$19.45 ,"July 1, 2022",,,,Age 3+
+Rate015,Group 1A,Group child care homes,24,Full Day,$45.89 ,"July 1, 2022",,,,Under 2
+Rate016,Group 1A,Group child care homes,24,Part Day,$22.94 ,"July 1, 2022",,,,Under 2
+Rate017,Group 1A,Group child care homes,36,Full Day,$42.76 ,"July 1, 2022",,,,Age 2
+Rate018,Group 1A,Group child care homes,36,Part Day,$21.38 ,"July 1, 2022",,,,Age 2
+Rate019,Group 1A,Group child care homes,,Full Day,$38.90 ,"July 1, 2022",,,,Age 3+
+Rate020,Group 1A,Group child care homes,,Part Day,$19.45 ,"July 1, 2022",,,,Age 3+
+Rate021,Group 1B,Day Care Center,24,Full Day,$61.00 ,"July 1, 2022",,,,Under 2
+Rate022,Group 1B,Day Care Center,24,Part Day,$31.00 ,"July 1, 2022",,,,Under 2
+Rate023,Group 1B,Day Care Center,36,Full Day,$48.00 ,"July 1, 2022",,,,Age 2
+Rate024,Group 1B,Day Care Center,36,Part Day,$24.00 ,"July 1, 2022",,,,Age 2
+Rate025,Group 1B,Day Care Center,,Full Day,$41.00 ,"July 1, 2022",,,,Age 3+
+Rate026,Group 1B,Day Care Center,,Part Day,$21.00 ,"July 1, 2022",,,,Age 3+
+Rate027,Group 1B,License-Exempt Day Care Center,,Full Day,$33.00 ,"July 1, 2022",,,,Age 3+
+Rate028,Group 1B,License-Exempt Day Care Center,,Part Day,$17.00 ,"July 1, 2022",,,,Age 3+
+Rate029,Group 1B,Child care homes,24,Full Day,$41.04 ,"July 1, 2022",,,,Under 2
+Rate030,Group 1B,Child care homes,24,Part Day,$20.52 ,"July 1, 2022",,,,Under 2
+Rate031,Group 1B,Child care homes,36,Full Day,$38.15 ,"July 1, 2022",,,,Age 2
+Rate032,Group 1B,Child care homes,36,Part Day,$19.08 ,"July 1, 2022",,,,Age 2
+Rate033,Group 1B,Child care homes,,Full Day,$35.02 ,"July 1, 2022",,,,Age 3+
+Rate034,Group 1B,Child care homes,,Part Day,$17.51 ,"July 1, 2022",,,,Age 3+
+Rate035,Group 1B,Group child care homes,24,Full Day,$41.04 ,"July 1, 2022",,,,Under 2
+Rate036,Group 1B,Group child care homes,24,Part Day,$20.52 ,"July 1, 2022",,,,Under 2
+Rate037,Group 1B,Group child care homes,36,Full Day,$38.15 ,"July 1, 2022",,,,Age 2
+Rate038,Group 1B,Group child care homes,36,Part Day,$19.08 ,"July 1, 2022",,,,Age 2
+Rate039,Group 1B,Group child care homes,,Full Day,$35.02 ,"July 1, 2022",,,,Age 3+
+Rate040,Group 1B,Group child care homes,,Part Day,$17.51 ,"July 1, 2022",,,,Age 3+
+Rate041,Group 2,Day Care Center,24,Full Day,$54.00 ,"July 1, 2022",,,,Under 2
+Rate042,Group 2,Day Care Center,24,Part Day,$27.00 ,"July 1, 2022",,,,Under 2
+Rate043,Group 2,Day Care Center,36,Full Day,$44.00 ,"July 1, 2022",,,,Age 2
+Rate044,Group 2,Day Care Center,36,Part Day,$22.00 ,"July 1, 2022",,,,Age 2
+Rate045,Group 2,Day Care Center,,Full Day,$38.00 ,"July 1, 2022",,,,Age 3+
+Rate046,Group 2,Day Care Center,,Part Day,$19.00 ,"July 1, 2022",,,,Age 3+
+Rate047,Group 2,License-Exempt Day Care Center,,Full Day,$31.00 ,"July 1, 2022",,,,Age 3+
+Rate048,Group 2,License-Exempt Day Care Center,,Part Day,$16.00 ,"July 1, 2022",,,,Age 3+
+Rate049,Group 2,Child care homes,24,Full Day,$38.21 ,"July 1, 2022",,,,Under 2
+Rate050,Group 2,Child care homes,24,Part Day,$19.11 ,"July 1, 2022",,,,Under 2
+Rate051,Group 2,Child care homes,36,Full Day,$35.43 ,"July 1, 2022",,,,Age 2
+Rate052,Group 2,Child care homes,36,Part Day,$17.71 ,"July 1, 2022",,,,Age 2
+Rate053,Group 2,Child care homes,,Full Day,$32.45 ,"July 1, 2022",,,,Age 3+
+Rate054,Group 2,Child care homes,,Part Day,$16.23 ,"July 1, 2022",,,,Age 3+
+Rate055,Group 2,Group child care homes,24,Full Day,$38.21 ,"July 1, 2022",,,,Under 2
+Rate056,Group 2,Group child care homes,24,Part Day,$19.11 ,"July 1, 2022",,,,Under 2
+Rate057,Group 2,Group child care homes,36,Full Day,$35.43 ,"July 1, 2022",,,,Age 2
+Rate058,Group 2,Group child care homes,36,Part Day,$17.71 ,"July 1, 2022",,,,Age 2
+Rate059,Group 2,Group child care homes,,Full Day,$32.45 ,"July 1, 2022",,,,Age 3+
+Rate060,Group 2,Group child care homes,,Part Day,$16.23 ,"July 1, 2022",,,,Age 3+
+Rate061,all,License exempt day care home,,Full Day,$21.09 ,"July 1, 2022",,,,all
+Rate062,all,License exempt day care home,,Part Day,$10.54 ,"July 1, 2022",,,,all
+Rate063,all,In-home,,Full Day,$21.09 ,"July 1, 2022",,,,all
+Rate064,all,In-home,,Part Day,$10.54 ,"July 1, 2022",,,,all

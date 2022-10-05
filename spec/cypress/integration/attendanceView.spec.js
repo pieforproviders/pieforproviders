@@ -26,8 +26,20 @@ const checkOut = new Date(Date.now() - 7200000)
 //   checkOutTimestamp[1].replace('AM', 'am').replace('PM', 'pm')
 let childFullName
 
-const weekPickerText = (date = dayjs()) =>
-  `${date.weekday(0).format('MMM D')} - ${date.weekday(6).format('MMM D')}`
+const weekPickerText = (date = dayjs()) => {
+  const f1 = date.weekday(0)
+  const firstDate =
+    f1.format('MMM') === 'Sep'
+      ? `${f1.format('MMMM').slice(0, 4)} ${f1.format('D')}`
+      : f1.format('MMM D')
+
+  const f2 = date.weekday(6)
+  const secondDate =
+    f2.format('MMM') === 'Sep'
+      ? `${f2.format('MMMM').slice(0, 4)} ${f2.format('D')}`
+      : f2.format('MMM')
+  return `${firstDate} - ${secondDate}`
+}
 
 describe('AttendanceView', () => {
   Cypress.on('uncaught:exception', (err, runnable) => {

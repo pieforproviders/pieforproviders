@@ -9,7 +9,7 @@ function SignupQuestion({ onChange, questionText, tag }) {
   return (
     <div className="mt-1 text-left signup-question">
       <p className="mb-2 font-normal text-gray3">{questionText}</p>
-      <Radio.Group onChange={onChange}>
+      <Radio.Group onChange={onChange} name={`${tag}Question`}>
         <Radio.Button value="True" data-cy={`${tag}-true`}>
           {t('true')}
         </Radio.Button>

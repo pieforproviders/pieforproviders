@@ -13,6 +13,12 @@ module Licenses
     family_child_care_home_i
     family_child_care_home_ii
     family_in_home
+    day_care_center
+    license_exempt_day_care_center
+    group_child_care_homes
+    child_care_homes
+    license_exempt_day_care_home
+    in_home
   ].freeze
 
   included do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_20_165954) do
+ActiveRecord::Schema.define(version: 2022_09_15_152614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -160,21 +160,18 @@ ActiveRecord::Schema.define(version: 2022_07_20_165954) do
   end
 
   create_table "illinois_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.decimal "bronze_percentage"
     t.decimal "silver_percentage"
-    t.decimal "gold_percentage"
-    t.decimal "part_day_rate"
-    t.decimal "full_day_rate"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.decimal "attendance_threshold"
-    t.string "county", default: " ", null: false
+    t.string "region", default: " ", null: false
     t.date "effective_on", null: false
     t.date "expires_on"
     t.string "license_type", default: "licensed_family_home", null: false
-    t.decimal "max_age", default: "0.0", null: false
+    t.decimal "age_bucket", default: "0.0"
     t.string "name", default: "Rule Name Filler", null: false
     t.date "deleted_at"
+    t.string "rate_type", null: false
+    t.decimal "amount", null: false
     t.index ["effective_on"], name: "index_illinois_rates_on_effective_on"
     t.index ["expires_on"], name: "index_illinois_rates_on_expires_on"
   end
@@ -193,7 +190,7 @@ ActiveRecord::Schema.define(version: 2022_07_20_165954) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-05 01:37:11", null: false
+    t.datetime "month", default: "2022-09-16 19:50:30", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -271,6 +268,7 @@ ActiveRecord::Schema.define(version: 2022_07_20_165954) do
     t.string "earned_revenue_currency", default: "USD", null: false
     t.uuid "schedule_id"
     t.string "absence_type"
+    t.boolean "missing_checkout"
     t.index ["child_id", "date"], name: "index_service_days_on_child_id_and_date", unique: true
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
