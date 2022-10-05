@@ -22,6 +22,9 @@ import '_assets/styles/attendance-table-overrides.css'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import dayjs from 'dayjs'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
+dayjs.extend(customParseFormat)
 
 export function Attendance() {
   const { t, i18n } = useTranslation()

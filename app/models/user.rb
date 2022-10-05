@@ -40,6 +40,7 @@ class User < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :nebraska, -> { where(state: 'NE') }
+  scope :illinois, -> { where(state: 'IL') }
 
   scope :with_dashboard_case,
         lambda {

@@ -1,0 +1,11 @@
+Provider Name,Provider Email,Business Zip Code,Business County,Business License,Business QRIS rating,Accredited,QRIS Begin Date,QRIS End Date
+IL Daycare 1,ildaycare1@test.com,60625,Cook,Day Care Center,Gold,No,1-1-2022,
+IL Daycare 2,ildaycare2@test.com,60625,Cook,License-Exempt Day Care Center,Silver,No,1-1-2022,
+IL Daycare 3,ildaycare3@test.com,60625,Cook,Child care homes,not rated,No,1-1-2022,
+IL Daycare 4,ildaycare4@test.com,61008,Boone,Child care homes,Silver,No,1-1-2022,
+IL Daycare 5,ildaycare5@test.com,61016,Boone,Day Care Center,Gold,No,1-1-2022,
+IL Daycare 6,ildaycare6@test.com,61012,Boone,License-Exempt Day Care Center,not rated,No,1-1-2022,
+IL Daycare 7,ildaycare7@test.com,62681,Schuyler,In-home,Gold,No,1-1-2022,
+IL Daycare 8,ildaycare8@test.com,62445,Jasper,Day Care Center,Silver,No,1-1-2022,
+IL Daycare 9,ildaycare9@test.com,62681,Schuyler,License exempt day care home,not rated,No,1-1-2022,
+IL Daycare 10,ildaycare10@test.com,60056,Cook,Group child care homes,Silver,No,1-1-2022,

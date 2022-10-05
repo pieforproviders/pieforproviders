@@ -18,12 +18,13 @@ class TotalTimeInCareCalculator
 
   def calculate_total_time
     Nebraska::TotalTimeInCareCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
+    Illinois::TotalTimeInCareCalculator.new(service_day: service_day).call if service_day.child.state == 'IL'
   end
 
   def total_recorded_attended_time
     attendances_with_check_out = attendances.presence&.select do |attendance|
       attendance.check_out.present?
     end
-    attendances_with_check_out.presence&.map { |attendance| attendance.time_in_care }&.sum || 0.minutes
+    attendances_with_check_out.presence&.map(&:time_in_care)&.sum || 0.minutes
   end
 end

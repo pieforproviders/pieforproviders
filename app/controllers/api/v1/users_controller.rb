@@ -57,7 +57,7 @@ module Api
 
       # GET /case_list_for_dashboard
       def case_list_for_dashboard
-        if current_user.state == 'NE' || current_user.admin?
+        if current_user.state == 'NE'
           render json: nebraska_dashboard
         else
           render json: illinois_dashboard
@@ -92,7 +92,7 @@ module Api
 
       def illinois_dashboard
         UserBlueprint.render(
-          policy_scope(User.includes(:businesses)),
+          policy_scope(User.illinois.with_dashboard_case),
           view: :illinois_dashboard,
           filter_date: filter_date
         )

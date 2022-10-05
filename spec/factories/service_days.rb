@@ -32,6 +32,7 @@ end
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null
+#  missing_checkout        :boolean
 #  total_time_in_care      :interval
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
