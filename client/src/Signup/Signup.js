@@ -526,14 +526,10 @@ export function Signup() {
           </p>
         </div>
         <Form.Item style={{ display: 'none' }}>
-          <Input name="lifecycleStage" type="lifecycle stage" value="Sign-up" />
+          <Input name="lifecycle Stage" type="Dropdown" value="23008664752" />
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          <Input
-            name="lifecycleStage"
-            type="status"
-            value="Completed sign-up form"
-          />
+          <Input name="Status" type="Dropdown" value="22000478564" />
         </Form.Item>
       </Form>
     </main>
