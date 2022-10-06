@@ -157,12 +157,12 @@ GEM
     ffi (1.15.5)
     flamegraph (0.9.5)
     formatador (1.1.0)
-    fugit (1.6.0)
+    fugit (1.7.1)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (3.3.3)
+    good_job (3.4.7)
       activejob (>= 6.0.0)
       activerecord (>= 6.0.0)
       concurrent-ruby (>= 1.0.2)
@@ -205,7 +205,7 @@ GEM
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.18.0)
+    loofah (2.19.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.2.8)
@@ -396,7 +396,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.6.0)
+    zeitwerk (2.6.1)
 
 PLATFORMS
   x86_64-darwin-20
@@ -421,7 +421,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   flamegraph
-  good_job (~> 3.3.2)
+  good_job (~> 3.4.7)
   guard-rspec
   hash_dig_and_collect
   holidays
