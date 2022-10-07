@@ -52,8 +52,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
       february = 2
       attendances = 3
       approved_attendances_times_weeks_in_month = 2 * (Time.current.month == february ? 4 : 5)
-      expected_rate = (attendances / approved_attendances_times_weeks_in_month).to_f
-
+      expected_rate = attendances / approved_attendances_times_weeks_in_month.to_f
       expect(described_class.new(single_child_family, Time.current).call).to eq(expected_rate)
       expect(described_class.new(multiple_child_family_approval.children.first, Time.current).call).to eq(expected_rate)
       expect(described_class.new(multiple_child_family_approval.children.last, Time.current).call).to eq(expected_rate)
