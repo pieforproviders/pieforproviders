@@ -3,16 +3,17 @@ import PropTypes from 'prop-types'
 import { Select as AntDSelect } from 'antd'
 
 const Select = ({ id, name, children, onChange, ...extraProps }) => {
-  const [value, setValue] = useState('')
+  const { value } = extraProps
+  const [selectedValue, setSelectedValue] = useState(value)
 
-  const handleOnChange = selectedValue => {
-    setValue(selectedValue)
-    onChange(selectedValue)
+  const handleOnChange = newSelectedValue => {
+    setSelectedValue(newSelectedValue)
+    onChange(newSelectedValue)
   }
 
   return (
     <>
-      <input type="hidden" name={name} value={value} id={id} />
+      <input type="hidden" name={name} value={selectedValue} id={id} />
       <AntDSelect id={`antd-${id}`} onChange={handleOnChange} {...extraProps}>
         {children}
       </AntDSelect>
