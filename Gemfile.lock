@@ -299,7 +299,7 @@ GEM
       redis-client (>= 0.9.0)
     redis-client (0.9.0)
       connection_pool
-    regexp_parser (2.5.0)
+    regexp_parser (2.6.0)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
@@ -349,8 +349,8 @@ GEM
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.7.0, < 2.0)
-    rubocop-rspec (2.12.1)
-      rubocop (~> 1.31)
+    rubocop-rspec (2.13.2)
+      rubocop (~> 1.33)
     ruby-graphviz (1.2.5)
       rexml
     ruby-prof (1.4.3)
@@ -383,7 +383,7 @@ GEM
     tod (3.1.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
-    unicode-display_width (2.2.0)
+    unicode-display_width (2.3.0)
     uniform_notifier (1.16.0)
     warden (1.2.9)
       rack (>= 2.0.9)
