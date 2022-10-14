@@ -10,6 +10,16 @@ task read_illinois_onboarding_cases: :environment do
   sleep 5
 end
 
+desc 'Load schedules for businesses from CSV'
+task load_illinois_schedules: :environment do
+  # pull multiple files from S3
+  # Process each file through Illinois Schedules Processor
+  # Archive each file to S3
+  Illinois::IllinoisSchedulesImporter.new.call
+  Appsignal.stop 'read_illinois_schedules'
+  sleep 5
+end
+
 namespace :illinois do
   desc 'Load and create fake businesses users accounts'
   task load_fake_businesses_users: :environment do

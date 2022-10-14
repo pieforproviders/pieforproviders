@@ -4,7 +4,7 @@ class BusinessSchedule < ApplicationRecord
   belongs_to :business
 
   validates :weekday, numericality: true, presence: true
-  validates :is_open, inclusion: { in: [true, false] }, presence: true
+  validates :is_open, inclusion: { in: [true, false] }
 end
 
 # == Schema Information

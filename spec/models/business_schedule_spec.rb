@@ -5,7 +5,6 @@ require 'rails_helper'
 RSpec.describe BusinessSchedule, type: :model do
   it { is_expected.to belong_to(:business) }
   it { is_expected.to validate_presence_of(:weekday) }
-  it { is_expected.to validate_presence_of(:is_open) }
 end
 
 # == Schema Information
