@@ -69,4 +69,3 @@ module Illinois
     end
   end
 end
-
