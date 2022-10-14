@@ -2,6 +2,8 @@
 
 # Date helpers for date math
 class DateService
+  SATURDAY_POSITION = 6
+  SUNDAY_POSITION = 0
   # how many weeks have days that count as part of this month?
   # i.e. Jan 2021:
   #  M   T   W   R   F   S   S
@@ -25,5 +27,9 @@ class DateService
   def self.remaining_days_in_month_including_today(date:, weekday:)
     num_remaining_this_month = (date.to_date..date.to_date.at_end_of_month).count { |day| weekday == day.wday }
     num_remaining_this_month.positive? ? num_remaining_this_month : 0
+  end
+
+  def self.weekend?(day)
+    [SATURDAY_POSITION, SUNDAY_POSITION].include?(day)
   end
 end

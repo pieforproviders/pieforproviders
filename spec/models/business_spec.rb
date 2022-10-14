@@ -6,6 +6,8 @@ RSpec.describe Business, type: :model do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:quality_rating).in_array(QualityRatings::TYPES) }
+  it { is_expected.to have_many(:business_schedules) }
+  it { is_expected.to accept_nested_attributes_for :business_schedules }
 
   it_behaves_like 'licenses'
 
@@ -40,6 +42,33 @@ RSpec.describe Business, type: :model do
       expect(business.ne_qris_bump).to eq(1.05**2)
       business.update!(quality_rating: 'not_rated')
       expect(business.ne_qris_bump).to eq(1.05**0)
+    end
+  end
+
+  describe '#set_default_schedules' do
+    it 'does not create schedules if business is not from IL' do
+      business = create(:business, state: 'NY', zipcode: '10007')
+      expect(business.business_schedules.count).to eq(0)
+    end
+
+    it 'creates schedules for 7 days if business is from IL' do
+      business = create(:business)
+      expect(business.business_schedules.count).to eq(7)
+    end
+
+    it 'does not create schedules if business is from IL and already has an schedule' do
+      attrs = attributes_for(:business_schedule)
+      business = create(:business, business_schedules_attributes: [attrs])
+      expect(business.business_schedules.count).to eq(1)
+    end
+
+    it 'creates open schedules from Monday to Friday for business in IL' do
+      business = create(:business)
+      weekdays = business.business_schedules.where(is_open: true)
+      weekend_days = business.business_schedules.where(is_open: false)
+      expect(weekdays.count).to eq(5)
+      expect(weekdays.map(&:weekday)).to eq([1, 2, 3, 4, 5])
+      expect(weekend_days.map(&:weekday)).to eq([0, 6])
     end
   end
 end
