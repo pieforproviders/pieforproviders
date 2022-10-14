@@ -4,8 +4,10 @@
 class Business < UuidApplicationRecord
   include Licenses
   include QualityRatings
+  IL = 'IL'
 
   before_save :state_from_zipcode
+  before_create :set_default_schedules, if: proc { state == IL }
   before_update :prevent_deactivation_with_active_children
 
   belongs_to :user
@@ -13,8 +15,9 @@ class Business < UuidApplicationRecord
   has_many :children, dependent: :destroy
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :approvals, through: :child_approvals, dependent: :destroy
+  has_many :business_schedules, dependent: :destroy
 
-  accepts_nested_attributes_for :children
+  accepts_nested_attributes_for :children, :business_schedules
 
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :user_id }
@@ -53,6 +56,21 @@ class Business < UuidApplicationRecord
 
   def state_from_zipcode
     StateFinder.new(self).call
+  end
+
+  def set_default_schedules
+    return if business_schedules.any?
+
+    7.times do |day|
+      business_schedules.build(business_schedule_default_param(day))
+    end
+  end
+
+  def business_schedule_default_param(day)
+    {
+      weekday: day,
+      is_open: !DateService.weekend?(day)
+    }
   end
 end
 

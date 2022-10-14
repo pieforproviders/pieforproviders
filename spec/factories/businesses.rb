@@ -16,6 +16,12 @@ FactoryBot.define do
       end
     end
 
+    factory :business_with_schedules do
+      before :create do |business|
+        create(:business_schedule, business: business)
+      end
+    end
+
     trait :nebraska_ldds do
       user factory: %i[confirmed_user nebraska]
       zipcode { '68123' }
