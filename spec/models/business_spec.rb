@@ -7,7 +7,9 @@ RSpec.describe Business, type: :model do
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:quality_rating).in_array(QualityRatings::TYPES) }
   it { is_expected.to have_many(:business_schedules) }
+  it { is_expected.to have_many(:business_closures) }
   it { is_expected.to accept_nested_attributes_for :business_schedules }
+  it { is_expected.to accept_nested_attributes_for :business_closures }
 
   it_behaves_like 'licenses'
 
@@ -69,6 +71,26 @@ RSpec.describe Business, type: :model do
       expect(weekdays.count).to eq(5)
       expect(weekdays.map(&:weekday)).to eq([1, 2, 3, 4, 5])
       expect(weekend_days.map(&:weekday)).to eq([0, 6])
+    end
+  end
+
+  describe '#eligible_by_date' do
+    let(:business) { create(:business, business_closures_attributes: [attributes_for(:business_closure)]) }
+
+    it 'is eligible if provider is closed on a given date' do
+      any_date = Date.new(2022, 1, 10)
+      expect(business.eligible_by_date?(any_date)).to be(true)
+    end
+
+    it 'is not eligible if provider is closed on a given date' do
+      july_4th = Date.new(2022, 7, 4)
+      expect(business.eligible_by_date?(july_4th)).to be(false)
+    end
+
+    it 'is not eligible if provider is closed on a Holiday' do
+      december_25th = Date.new(2022, 12, 25)
+      create(:holiday)
+      expect(business.eligible_by_date?(december_25th)).to be(false)
     end
   end
 end

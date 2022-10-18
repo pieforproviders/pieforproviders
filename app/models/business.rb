@@ -16,8 +16,9 @@ class Business < UuidApplicationRecord
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :business_schedules, dependent: :destroy
+  has_many :business_closures, dependent: :destroy
 
-  accepts_nested_attributes_for :children, :business_schedules
+  accepts_nested_attributes_for :children, :business_schedules, :business_closures
 
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :user_id }
@@ -26,6 +27,8 @@ class Business < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  delegate 'eligible_by_date?', to: :child
+
   def ne_qris_bump(date: nil)
     # qris rating is used to determine reimbursement rates after 7/1/22
     # rather than being a multiplier
@@ -33,6 +36,10 @@ class Business < UuidApplicationRecord
 
     exponent = quality_rating && exponents[quality_rating.to_sym] ? exponents[quality_rating.to_sym] : 0
     1.05**exponent # compounding qris formula
+  end
+
+  def eligible_by_date?(date)
+    open_by_date?(date)
   end
 
   private
@@ -71,6 +78,16 @@ class Business < UuidApplicationRecord
       weekday: day,
       is_open: !DateService.weekend?(day)
     }
+  end
+
+  def open_by_date?(date)
+    weekday = date.wday
+    closed_on_date = business_closures.where(date: date).any?
+    return false if closed_on_date
+
+    open_on_date = business_schedules.where(weekday: weekday, is_open: true).any?
+    open_on_date = Holiday.where(date: date).none? if open_on_date
+    open_on_date
   end
 end
 

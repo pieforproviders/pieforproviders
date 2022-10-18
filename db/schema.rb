@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_12_160147) do
+ActiveRecord::Schema.define(version: 2022_10_14_212347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -56,6 +56,16 @@ ActiveRecord::Schema.define(version: 2022_10_12_160147) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
+  end
+
+  create_table "business_closures", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "is_holiday"
+    t.date "date"
+    t.uuid "business_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["business_id", "date"], name: "unique_business_closure", unique: true
+    t.index ["business_id"], name: "index_business_closures_on_business_id"
   end
 
   create_table "business_schedules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -156,6 +166,14 @@ ActiveRecord::Schema.define(version: 2022_10_12_160147) do
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
+  end
+
+  create_table "holidays", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.date "date"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name", "date"], name: "unique_holiday", unique: true
   end
 
   create_table "illinois_approval_amounts", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -329,6 +347,7 @@ ActiveRecord::Schema.define(version: 2022_10_12_160147) do
 
   add_foreign_key "attendances", "child_approvals"
   add_foreign_key "attendances", "service_days"
+  add_foreign_key "business_closures", "businesses"
   add_foreign_key "business_schedules", "businesses"
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
