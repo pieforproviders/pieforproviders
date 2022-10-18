@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class BusinessSchedule < ApplicationRecord
+# The business schedules to quickly tell what days are open or closed
+class BusinessSchedule < UuidApplicationRecord
   belongs_to :business
 
   validates :weekday, numericality: true, presence: true

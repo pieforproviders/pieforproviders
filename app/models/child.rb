@@ -142,6 +142,10 @@ class Child < UuidApplicationRecord
 
   private
 
+  def eligible_by_date?(date)
+    business.eligible_by_date?(date)
+  end
+
   def find_or_create_approvals
     self.approvals = approvals.map do |approval|
       Approval.find_or_create_by(
