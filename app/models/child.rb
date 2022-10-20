@@ -140,6 +140,14 @@ class Child < UuidApplicationRecord
     end
   end
 
+  def eligible_full_days_by_month(date = Time.current)
+    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: true).call
+  end
+
+  def eligible_part_days_by_month(date = Time.current)
+    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: false).call
+  end
+
   private
 
   def eligible_by_date?(date)

@@ -32,4 +32,8 @@ class DateService
   def self.weekend?(day)
     [SATURDAY_POSITION, SUNDAY_POSITION].include?(day)
   end
+
+  def self.days_in_month(date)
+    date.to_date.all_month.count
+  end
 end

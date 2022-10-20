@@ -22,6 +22,14 @@ FactoryBot.define do
       end
     end
 
+    factory :business_with_closed_days_in_november do
+      after :create do |business|
+        1.upto(20).each do |day|
+          create(:business_closure, business: business, date: "2022-11-#{day}")
+        end
+      end
+    end
+
     trait :nebraska_ldds do
       user factory: %i[confirmed_user nebraska]
       zipcode { '68123' }

@@ -3,6 +3,10 @@
 FactoryBot.define do
   factory :business_closure do
     date { '2022-07-04' }
+
+    factory :business_with_closed_day_in_november do
+      date { '2022-11-04' }
+    end
   end
 end
 
