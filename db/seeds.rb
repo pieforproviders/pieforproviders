@@ -255,7 +255,7 @@ def create_case(first_name:,
 
   case child.state
   when 'IL'
-    12.times do |idx|
+    15.times do |idx|
       IllinoisApprovalAmount.create!(
         child_approval: child.active_child_approval(Time.current),
         month: 1.year.ago.at_beginning_of_month + idx.months,
@@ -304,11 +304,11 @@ create_case(first_name: 'Jasveen',
             dhs_id: '5678')
 create_case(first_name: 'Manuel', last_name: 'Céspedes', business: @business_nebraska, dhs_id: '1234')
 create_case(first_name: 'Kevin', last_name: 'Chen', case_number: '1234567A', add_expiring_approval: true)
-create_case(first_name: 'Christy', last_name: 'Bender', business: @business_illinois)
-create_case(first_name: 'Henrietta', last_name: 'Berry', business: @business_illinois)
-create_case(first_name: 'Delmar', last_name: 'Bonilla', business: @business_illinois)
-create_case(first_name: 'Bernard', last_name: 'Munoz', business: @business_illinois)
-create_case(first_name: 'Ken', last_name: 'Best', business: @business_illinois)
+create_case(first_name: 'Christy', last_name: 'Bender', business: @business_illinois, dhs_id: '4321')
+create_case(first_name: 'Henrietta', last_name: 'Berry', business: @business_illinois, dhs_id: '4320')
+create_case(first_name: 'Delmar', last_name: 'Bonilla', business: @business_illinois, dhs_id: '4319')
+create_case(first_name: 'Bernard', last_name: 'Munoz', business: @business_illinois, dhs_id: '4318')
+create_case(first_name: 'Ken', last_name: 'Best', business: @business_illinois, dhs_id: '4317')
 
 puts_records_in_db(Child)
 

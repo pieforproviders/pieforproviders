@@ -423,6 +423,14 @@ export default function DashboardTable({
         render: (text, record) => (isInactive(record) ? '-' : text)
       },
       {
+        name: 'fullDaysAttended',
+        render: (text, record) => text
+      },
+      {
+        name: 'partDaysAttended',
+        render: (text, record) => text
+      },
+      {
         name: 'attendanceRate',
         sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
         render: renderAttendanceRate
