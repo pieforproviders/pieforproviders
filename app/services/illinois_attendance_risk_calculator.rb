@@ -95,7 +95,9 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def threshold
-    active_child_approval&.rate&.attendance_threshold&.to_f
+    # TODO: attendance_threshold doesn't exist
+    # active_child_approval&.rate&.attendance_threshold&.to_f
+    nil
   end
 
   def latest_user_attendance

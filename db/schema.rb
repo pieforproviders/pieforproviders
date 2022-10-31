@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_212347) do
+ActiveRecord::Schema.define(version: 2022_10_26_043446) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -296,9 +296,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_212347) do
     t.uuid "schedule_id"
     t.string "absence_type"
     t.boolean "missing_checkout"
+    t.integer "full_time", default: 0
+    t.integer "part_time", default: 0
     t.index ["child_id", "date"], name: "index_service_days_on_child_id_and_date", unique: true
     t.index ["child_id"], name: "index_service_days_on_child_id"
     t.index ["date"], name: "index_service_days_on_date"
+    t.index ["full_time"], name: "index_service_days_on_full_time"
+    t.index ["part_time"], name: "index_service_days_on_part_time"
     t.index ["schedule_id"], name: "index_service_days_on_schedule_id"
   end
 

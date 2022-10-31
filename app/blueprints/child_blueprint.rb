@@ -23,23 +23,16 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :illinois_dashboard do
-    field :case_number do |child, options|
-      child.approvals.active_on(options[:filter_date]).first&.case_number
-    end
-    field :attendance_risk do |child, options|
-      child.attendance_risk(options[:filter_date])
-    end
-    field(:attendance_rate) do |child, options|
-      child.attendance_rate(options[:filter_date])
-    end
-    field :guaranteed_revenue do |_child, _options|
-      rand(0.00..500.00).round(2)
-    end
-    field :potential_revenue do |_child, _options|
-      rand(500.00..1000.00).round(2)
-    end
-    field :max_approved_revenue do |_child, _options|
-      rand(1000.00..2000.00).round(2)
+    association :illinois_dashboard_case, blueprint: Illinois::DashboardCaseBlueprint do |child, options|
+      options[:filter_date] ||= Time.current
+      child_approval = child&.active_child_approval(options[:filter_date])
+      service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
+      attended_days = service_days&.non_absences
+      Illinois::DashboardCase.new(
+        child: child,
+        filter_date: options[:filter_date],
+        attended_days: attended_days
+      )
     end
   end
 

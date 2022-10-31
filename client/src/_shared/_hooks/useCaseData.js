@@ -45,16 +45,23 @@ export function useCaseData() {
                 key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 childFirstName: childCase.first_name ?? '',
                 childLastName: childCase.last_name ?? '',
-                cNumber: childCase.case_number ?? '',
+                cNumber: childCase.illinois_dashboard_case.case_number ?? '',
                 business: business.name ?? '',
                 attendanceRate: {
                   rate: childCase.attendance_rate ?? '',
                   riskCategory: childCase.attendance_risk ?? ''
                 },
-                guaranteedRevenue: childCase.guaranteed_revenue ?? '',
-                maxApprovedRevenue: childCase.max_approved_revenue ?? '',
-                potentialRevenue: childCase.potential_revenue ?? '',
-                active: childCase.active ?? true
+                guaranteedRevenue:
+                  childCase.illinois_dashboard_case.guaranteed_revenue ?? '',
+                maxApprovedRevenue:
+                  childCase.illinois_dashboard_case.max_approved_revenue ?? '',
+                potentialRevenue:
+                  childCase.illinois_dashboard_case.potential_revenue ?? '',
+                active: childCase.active ?? true,
+                fullDaysAttended:
+                  childCase.illinois_dashboard_case.full_days_attended ?? true,
+                partDaysAttended:
+                  childCase.illinois_dashboard_case.part_days_attended ?? true
               }
         })
       })

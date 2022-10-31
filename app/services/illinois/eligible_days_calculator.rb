@@ -45,7 +45,7 @@ module Illinois
 
     def closed_days_by_month
       closed_days = 0
-      date.all_month.each do |day|
+      date.to_date.all_month.each do |day|
         closed_days += 1 unless child.business.eligible_by_date?(day)
       end
       closed_days

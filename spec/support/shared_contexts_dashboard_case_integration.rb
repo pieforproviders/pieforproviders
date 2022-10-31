@@ -237,3 +237,41 @@ RSpec.shared_context 'with a prior month absence' do |extra_days|
     ServiceDay.all.each(&:reload)
   end
 end
+
+RSpec.shared_context 'with illinois child created for dashboard' do
+  let(:child) { create(:child_in_illinois, effective_date: Time.zone.parse('June 1st, 2021')) }
+  let(:attendance_date) { Time.new(2021, 7, 4, 0, 0, 0, timezone).to_date }
+  let(:child_approval) { child.child_approvals.first }
+
+  before do
+    service_day = create(
+      :service_day,
+      child: child,
+      date: attendance_date.in_time_zone(child.timezone).at_beginning_of_day
+    )
+    create(
+      :attendance,
+      child_approval: child_approval,
+      service_day: service_day,
+      check_in: attendance_date.in_time_zone(child.timezone).to_datetime + 3.hours,
+      check_out: attendance_date.in_time_zone(child.timezone).to_datetime + 6.hours
+    )
+
+    next_day = Helpers.next_attendance_day(child_approval: child_approval).in_time_zone(child.timezone)
+
+    second_service_day = create(
+      :service_day,
+      date: next_day.at_beginning_of_day,
+      child: child
+    )
+    create(
+      :attendance,
+      child_approval: child_approval,
+      service_day: second_service_day,
+      check_in: next_day + 3.hours,
+      check_out: next_day + 9.hours
+    )
+    perform_enqueued_jobs
+    ServiceDay.all.each(&:reload)
+  end
+end
