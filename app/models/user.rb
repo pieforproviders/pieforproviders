@@ -47,6 +47,10 @@ class User < UuidApplicationRecord
           distinct.joins(:businesses).includes(:businesses, :child_approvals, :approvals)
         }
 
+  scope :selected_business, -> (b) { 
+          left_outer_joins(businesses: :children).where(children: { businesses: Business.find(b.split(','))})
+        }
+
   # format phone numbers - remove any non-digit characters
   def phone_number=(value)
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
