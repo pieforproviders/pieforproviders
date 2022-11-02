@@ -82,9 +82,17 @@ module Api
         end
       end
 
+      def dashboard_query(state)
+        if params[:business]
+          state.with_dashboard_case.selected_business(params[:business])
+        else
+          state.with_dashboard_case
+        end
+      end
+
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.nebraska.with_dashboard_case),
+          policy_scope(dashboard_query(User.nebraska)), 
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
@@ -92,7 +100,7 @@ module Api
 
       def illinois_dashboard
         UserBlueprint.render(
-          policy_scope(User.illinois.with_dashboard_case),
+          policy_scope(dashboard_query(User.illinois)),
           view: :illinois_dashboard,
           filter_date: filter_date
         )
