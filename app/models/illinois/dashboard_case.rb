@@ -54,11 +54,11 @@ module Illinois
     end
 
     def full_days_by_date
-      child.service_days.for_month(Time.current).map(&:full_time).compact.reduce(:+) || 0
+      child.service_days.for_month(filter_date).map(&:full_time).compact.reduce(:+) || 0
     end
 
     def part_days_by_date
-      child.service_days.for_month(Time.current).map(&:part_time).compact.reduce(:+) || 0
+      child.service_days.for_month(filter_date).map(&:part_time).compact.reduce(:+) || 0
     end
   end
 end
