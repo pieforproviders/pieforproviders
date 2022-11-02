@@ -5,6 +5,7 @@ import { Button, Grid, Typography, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
+import SiteFilterSelect from '_shared/SiteFilterSelect'
 import '_assets/styles/dashboard-overrides.css'
 
 const { useBreakpoint } = Grid
@@ -14,6 +15,7 @@ export default function DashboardTitle({
   dates,
   setDates,
   makeMonth,
+  businesses,
   getDashboardData
 }) {
   const { t } = useTranslation()
@@ -66,6 +68,17 @@ export default function DashboardTitle({
                 {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
               </Typography.Text>
             </div>
+            <div className="flex flex-row items-center my-2">
+              <SiteFilterSelect
+                businesses={businesses}
+                onChange={value => {
+                  getDashboardData({
+                    businessIds: value,
+                    filterDate: dates?.dateFilterValue?.date
+                  })
+                }}
+              />
+            </div>
             <Typography.Text className="mb-3 text-base">
               {t('revenueProjections')}
             </Typography.Text>
@@ -90,9 +103,18 @@ export default function DashboardTitle({
               {t('dashboardTitle')}
             </Typography.Title>
             {renderMonthSelector()}
-            <Typography.Text className="text-gray3">
+            <Typography.Text className="text-gray3 mr-3">
               {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
             </Typography.Text>
+            <SiteFilterSelect
+              businesses={businesses}
+              onChange={value => {
+                getDashboardData({
+                  businessIds: value,
+                  filterDate: dates?.dateFilterValue?.date
+                })
+              }}
+            />
             <Button
               className="flex ml-auto border-primaryBlue text-primaryBlue"
               onClick={() => {
@@ -116,5 +138,6 @@ DashboardTitle.propTypes = {
   dates: PropTypes.object,
   setDates: PropTypes.func,
   makeMonth: PropTypes.func,
+  businesses: PropTypes.array,
   getDashboardData: PropTypes.func
 }

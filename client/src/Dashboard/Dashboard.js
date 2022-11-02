@@ -17,7 +17,6 @@ import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
-import SiteFilterSelect from '_shared/SiteFilterSelect'
 import '_assets/styles/notification-modal-overrides.css'
 
 const env = runtimeEnv()
@@ -373,19 +372,9 @@ export function Dashboard() {
         dates={dates}
         setDates={setDates}
         makeMonth={makeMonth}
+        businesses={businesses}
         getDashboardData={getDashboardData}
       />
-      <div className="relative pt-5">
-        <SiteFilterSelect
-          businesses={businesses}
-          onChange={value => {
-            getDashboardData({
-              businessIds: value,
-              filterDate: dates?.dateFilterValue?.date
-            })
-          }}
-        />
-      </div>
       <div className="flex mb-10 md:flex-row xs:flex-col">
         <DashboardStats summaryData={summaryData} />
         {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
