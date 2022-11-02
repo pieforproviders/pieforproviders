@@ -37,7 +37,7 @@ export default function DashboardTitle({
           ...dates,
           dateFilterValue: makeMonth(new Date(value))
         })
-        getDashboardData(value)
+        getDashboardData({ filterDate: value })
       }}
       size="large"
       className="my-2 mr-2 text-base date-filter-select"
