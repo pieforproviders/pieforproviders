@@ -17,6 +17,7 @@ import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
+import SiteFilterSelect from '_shared/SiteFilterSelect'
 import '_assets/styles/notification-modal-overrides.css'
 
 const env = runtimeEnv()
@@ -256,12 +257,18 @@ export function Dashboard() {
     }
   }
 
-  const getDashboardData = async (filterDate = undefined) => {
+  const getDashboardData = async ({
+    businessIds = [],
+    filterDate = undefined
+  } = {}) => {
     dispatch(setLoading(true))
-    const baseUrl = '/api/v1/case_list_for_dashboard'
+    let baseUrl = `/api/v1/case_list_for_dashboard?filter_date=${filterDate}`
     const response = await makeRequest({
       type: 'get',
-      url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
+      url:
+        businessIds.length > 0
+          ? baseUrl + `&business=${businessIds.join(',')}`
+          : baseUrl,
       headers: { Authorization: token }
     })
     const parsedResponse = await parseResult(response)
@@ -340,7 +347,7 @@ export function Dashboard() {
     }
 
     if (Object.keys(user).length !== 0) {
-      getDashboardData(dates?.dateFilterValue?.date)
+      getDashboardData({ filterDate: dates?.dateFilterValue?.date })
     }
 
     if (Object.keys(user).length === 0) {
@@ -368,6 +375,17 @@ export function Dashboard() {
         makeMonth={makeMonth}
         getDashboardData={getDashboardData}
       />
+      <div className="relative pt-5">
+        <SiteFilterSelect
+          businesses={businesses}
+          onChange={value => {
+            getDashboardData({
+              businessIds: value,
+              filterDate: dates?.dateFilterValue?.date
+            })
+          }}
+        />
+      </div>
       <div className="flex mb-10 md:flex-row xs:flex-col">
         <DashboardStats summaryData={summaryData} />
         {env.REACT_APP_DASHBOARD_NOTIFICATIONS === 'true' ? (
