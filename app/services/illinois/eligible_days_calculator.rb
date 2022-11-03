@@ -19,17 +19,17 @@ module Illinois
 
     def calculate_time_in_days
       weeks_in_month = DateService.weeks_in_month(date)
-      approval = monthly_approval
-      return 0 if approval.nil?
+      @approval = monthly_approval
+      return 0 if @approval.nil?
 
-      total_days = days_by_time_type(approval) * weeks_in_month
+      total_days = days_by_time_type * weeks_in_month
 
       total_days <= eligible_days_by_business ? total_days : eligible_days_by_business
     end
 
-    def days_by_time_type(approval)
-      return approval.full_days_approved_per_week if full_time
-      return approval.part_days_approved_per_week unless full_time
+    def days_by_time_type
+      return full_time_days if full_time
+      return part_time_days unless full_time
     end
 
     def monthly_approval
@@ -49,6 +49,14 @@ module Illinois
         closed_days += 1 unless child.business.eligible_by_date?(day)
       end
       closed_days
+    end
+
+    def full_time_days
+      @approval.full_days_approved_per_week || 0
+    end
+
+    def part_time_days
+      @approval.part_days_approved_per_week || 0
     end
   end
 end

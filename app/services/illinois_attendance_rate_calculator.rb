@@ -32,14 +32,14 @@ class IllinoisAttendanceRateCalculator
   end
 
   def sum_approvals(child)
-    approval_amount = child.illinois_approval_amounts.for_month(@filter_date).first
-    return 0 unless approval_amount
+    @approval_amount = child.illinois_approval_amounts.for_month(@filter_date).first
+    return 0 if does_not_meet_approval_requirements?
 
     weeks_in_month = DateService.weeks_in_month(@filter_date)
 
     [
-      approval_amount.part_days_approved_per_week * weeks_in_month,
-      approval_amount.full_days_approved_per_week * weeks_in_month
+      @approval_amount.part_days_approved_per_week * weeks_in_month,
+      @approval_amount.full_days_approved_per_week * weeks_in_month
     ].sum
   end
 
@@ -53,5 +53,13 @@ class IllinoisAttendanceRateCalculator
       attendances.illinois_full_plus_part_days.count * 2,
       attendances.illinois_full_plus_full_days.count * 2
     ].sum
+  end
+
+  def does_not_meet_approval_requirements?
+    @approval_amount.nil? || missing_approved_info?
+  end
+
+  def missing_approved_info?
+    @approval_amount.part_days_approved_per_week.nil? || @approval_amount.full_days_approved_per_week.nil?
   end
 end
