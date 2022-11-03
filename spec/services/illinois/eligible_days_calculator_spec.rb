@@ -84,4 +84,44 @@ RSpec.describe Illinois::EligibleDaysCalculator do
       expect(child.eligible_part_days_by_month(november)).to be <= eligible_days_by_month
     end
   end
+
+  describe 'calculate eligible days when kid does not have days approved reference' do
+    let(:child) { create(:child) }
+
+    it 'returns eligible part days for a child in a given month with full days info' do
+      create(:illinois_approval_amount,
+             child_approval: child.active_child_approval(Time.current),
+             month: Time.current.to_date,
+             part_days_approved_per_week: nil,
+             full_days_approved_per_week: 3)
+      eligible_part_days_by_month = 0
+
+      expect(child.eligible_part_days_by_month(Time.current.to_date)).to eq(eligible_part_days_by_month)
+      expect(child.eligible_full_days_by_month(Time.current.to_date)).to eq(15)
+    end
+
+    it 'returns eligible part days for a child in a given month with part days info' do
+      create(:illinois_approval_amount,
+             child_approval: child.active_child_approval(Time.current),
+             month: Time.current.to_date,
+             part_days_approved_per_week: 3,
+             full_days_approved_per_week: nil)
+      eligible_full_days_by_month = 0
+
+      expect(child.eligible_part_days_by_month(Time.current.to_date)).to eq(15)
+      expect(child.eligible_full_days_by_month(Time.current.to_date)).to eq(eligible_full_days_by_month)
+    end
+
+    it 'returns eligible part days for a child in a given month without days info' do
+      create(:illinois_approval_amount,
+             child_approval: child.active_child_approval(Time.current),
+             month: Time.current.to_date,
+             part_days_approved_per_week: nil,
+             full_days_approved_per_week: nil)
+      eligible_days_by_month = 0
+
+      expect(child.eligible_part_days_by_month(Time.current.to_date)).to eq(eligible_days_by_month)
+      expect(child.eligible_full_days_by_month(Time.current.to_date)).to eq(eligible_days_by_month)
+    end
+  end
 end
