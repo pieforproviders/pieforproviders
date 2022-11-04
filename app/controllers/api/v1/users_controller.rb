@@ -83,11 +83,7 @@ module Api
       end
 
       def dashboard_query(state)
-        if params[:business]
-          state.with_dashboard_case.selected_business(params[:business])
-        else
-          state.with_dashboard_case
-        end
+        params[:business] ? state.with_dashboard_case.selected_business(params[:business]) : state.with_dashboard_case
       end
 
       def nebraska_dashboard
