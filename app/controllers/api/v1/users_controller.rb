@@ -92,7 +92,7 @@ module Api
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(dashboard_query(User.nebraska)), 
+          policy_scope(dashboard_query(User.nebraska)),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
