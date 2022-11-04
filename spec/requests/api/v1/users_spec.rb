@@ -218,7 +218,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
           business: nebraska_business,
           approvals: [
             create(:expired_approval, create_children: false),
-            create(:approval, create_children: true)
+            create(:approval, create_children: false)
           ]
         }
       )
@@ -229,7 +229,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
           business: illinois_business,
           approvals: [
             create(:expired_approval, create_children: false),
-            create(:approval, create_children: true)
+            create(:approval, create_children: false)
           ]
         }
       )
