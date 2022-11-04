@@ -16,6 +16,7 @@ export default function DashboardTitle({
   setDates,
   makeMonth,
   businesses,
+  filteredCases,
   getDashboardData
 }) {
   const { t } = useTranslation()
@@ -39,7 +40,7 @@ export default function DashboardTitle({
           ...dates,
           dateFilterValue: makeMonth(new Date(value))
         })
-        getDashboardData({ filterDate: value })
+        getDashboardData({ filterDate: value, businessIds: filteredCases })
       }}
       size="large"
       className="my-2 mr-2 text-base date-filter-select"
@@ -139,5 +140,6 @@ DashboardTitle.propTypes = {
   setDates: PropTypes.func,
   makeMonth: PropTypes.func,
   businesses: PropTypes.array,
+  filteredCases: PropTypes.array,
   getDashboardData: PropTypes.func
 }
