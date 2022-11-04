@@ -69,7 +69,7 @@ export default function DashboardTitle({
                 {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
               </Typography.Text>
             </div>
-            <div className="flex flex-row items-center my-2">
+            <div className="flex flex-row items-center mb-2">
               <SiteFilterSelect
                 businesses={businesses}
                 onChange={value => {
@@ -104,18 +104,20 @@ export default function DashboardTitle({
               {t('dashboardTitle')}
             </Typography.Title>
             {renderMonthSelector()}
-            <Typography.Text className="text-gray3 mr-3">
+            <Typography.Text className="text-gray3">
               {`${t(`asOf`)}: ${matchAndReplaceDate(dates.asOf)}`}
             </Typography.Text>
-            <SiteFilterSelect
-              businesses={businesses}
-              onChange={value => {
-                getDashboardData({
-                  businessIds: value,
-                  filterDate: dates?.dateFilterValue?.date
-                })
-              }}
-            />
+            <div className="mx-2">
+              <SiteFilterSelect
+                businesses={businesses}
+                onChange={value => {
+                  getDashboardData({
+                    businessIds: value,
+                    filterDate: dates?.dateFilterValue?.date
+                  })
+                }}
+              />
+            </div>
             <Button
               className="flex ml-auto border-primaryBlue text-primaryBlue"
               onClick={() => {
