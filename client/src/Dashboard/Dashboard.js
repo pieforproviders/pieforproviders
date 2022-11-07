@@ -263,12 +263,13 @@ export function Dashboard() {
     filterDate = undefined
   } = {}) => {
     dispatch(setLoading(true))
-    let baseUrl = `/api/v1/case_list_for_dashboard?filter_date=${filterDate}`
+    let baseUrl = `/api/v1/case_list_for_dashboard`
     const response = await makeRequest({
       type: 'get',
       url:
-        businessIds.length > 0
-          ? baseUrl + `&business=${businessIds.join(',')}`
+        businessIds.length > 0 || filterDate
+          ? baseUrl +
+            `?filter_date=${filterDate}&business=${businessIds.join(',')}`
           : baseUrl,
       headers: { Authorization: token }
     })
