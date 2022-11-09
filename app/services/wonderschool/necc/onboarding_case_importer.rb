@@ -63,9 +63,7 @@ module Wonderschool
       end
 
       def find_approval
-        unless @child.approvals.find_by(approval_params)
-          @child.approvals << Approval.find_or_create_by(approval_params)
-        end
+        @child.approvals << Approval.find_or_create_by(approval_params) unless @child.approvals.find_by(approval_params)
         @child.save
         @child.approvals.find_by(approval_params)
       end
@@ -147,7 +145,7 @@ module Wonderschool
 
       def required_business_params
         {
-          user: User.find_by_email(@row['Provider Email']&.downcase),
+          user: User.find_by(email: @row['Provider Email']&.downcase),
           name: @row['Provider Name'],
           zipcode: @row['Business Zip Code'],
           county: @row['Business County'],
