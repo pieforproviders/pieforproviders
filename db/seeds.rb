@@ -313,6 +313,8 @@ create_case(first_name: 'Ken', last_name: 'Best', business: @business_illinois, 
 puts_records_in_db(Child)
 
 Rake::Task['nebraska:rates'].invoke
+Rake::Task['update_rate_expiry_date2021'].invoke
+Rake::Task['fix_school_age_rates'].invoke
 Rake::Task['illinois:illinois_rates0916'].invoke
 
 Rails.logger.info 'Seeding is done!'

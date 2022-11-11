@@ -11,6 +11,8 @@ namespace :nebraska do
     if Rails.application.config.allow_seeding
       Rake::Task['nebraska:rates20210813'].invoke
       Rake::Task['nebraska:rates20210924'].invoke
+      Rake::Task['nebraska:rates20211103'].invoke
+      Rake::Task['nebraska:rates20220714'].invoke
     else
       puts 'Error seeding rates: this environment does not allow for seeding rates'
     end
