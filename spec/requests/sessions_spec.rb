@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'sessions requests', type: :request do
+RSpec.describe 'sessions requests' do
   let(:user) { create(:confirmed_user) }
   let(:url) { '/login' }
   let(:params) do

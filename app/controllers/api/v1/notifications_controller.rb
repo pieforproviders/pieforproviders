@@ -8,16 +8,8 @@ module Api
       before_action :set_notifications, only: %i[index]
       before_action :set_child_and_approval,  only: %i[create]
 
-      def create
-        if @approval
-          if check_approval_validity
-            create_notif_with_valid_params
-          else
-            render status: :bad_request
-          end
-        else
-          render status: :not_found
-        end
+      def index
+        render json: NotificationBlueprint.render(@notifications)
       end
 
       def show
@@ -28,8 +20,16 @@ module Api
         end
       end
 
-      def index
-        render json: NotificationBlueprint.render(@notifications)
+      def create
+        if @approval
+          if check_approval_validity
+            create_notif_with_valid_params
+          else
+            render status: :bad_request
+          end
+        else
+          render status: :not_found
+        end
       end
 
       def update

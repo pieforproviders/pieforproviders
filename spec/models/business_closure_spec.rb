@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BusinessClosure, type: :model do
+RSpec.describe BusinessClosure do
   it { is_expected.to belong_to(:business) }
 end
 

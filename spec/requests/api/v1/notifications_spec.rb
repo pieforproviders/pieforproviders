@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Notifications', type: :request do
+RSpec.describe 'Api::V1::Notifications' do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -284,15 +284,15 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       it 'returns all notifications' do
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['first_name'] }).to include(children.first.first_name)
-        expect(parsed_response.collect { |x| x['first_name'] }).to include(non_owner_child.first_name)
+        expect(parsed_response.pluck('first_name')).to include(children.first.first_name)
+        expect(parsed_response.pluck('first_name')).to include(non_owner_child.first_name)
         expect(response).to match_response_schema('notifications')
       end
 
       it 'returns notifications in a chronological order' do
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
-        expires_on_arr = parsed_response.collect { |x| x['expires_on'] }
+        expires_on_arr = parsed_response.pluck('expires_on')
         expect(expires_on_arr).to eq(expires_on_arr.sort)
       end
     end
@@ -303,15 +303,15 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       it 'returns the user\'s notifications' do
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['first_name'] }).to include(children.first.first_name)
-        expect(parsed_response.collect { |x| x['first_name'] }).not_to include(non_owner_child.first_name)
+        expect(parsed_response.pluck('first_name')).to include(children.first.first_name)
+        expect(parsed_response.pluck('first_name')).not_to include(non_owner_child.first_name)
         expect(response).to match_response_schema('notifications')
       end
 
       it 'returns notifications in a chronological order' do
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
-        expires_on_arr = parsed_response.collect { |x| x['expires_on'] }
+        expires_on_arr = parsed_response.pluck('expires_on')
         expect(expires_on_arr).to eq(expires_on_arr.sort)
       end
     end

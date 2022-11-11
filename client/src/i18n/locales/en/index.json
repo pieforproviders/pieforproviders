@@ -281,5 +281,7 @@
   "seeAllNotifications": "See all notifications here",
   "noCheckOut": "no check out time",
   "fullDaysAttended": "Full days attended",
-  "partDaysAttended": "Part days attended"
+  "partDaysAttended": "Part days attended",
+  "twoFullDays": "2 full days",
+  "partDay": "part day"
 }

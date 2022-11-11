@@ -27,7 +27,7 @@ describe('<LoggedInLayout />', () => {
     expect(container).toHaveTextContent('Dashboard')
   })
 
-  it('renders the LoggedInLayout wrapper without header nav buttons', () => {
+  it('renders the LoggedInLayout wrapper with header nav buttons', () => {
     const { container } = doRender(
       {
         children: <Button />,
@@ -35,7 +35,7 @@ describe('<LoggedInLayout />', () => {
       },
       { initialState: { user: { state: 'IL' } } }
     )
-    expect(container).not.toHaveTextContent('Attendance')
-    expect(container).not.toHaveTextContent('Dashboard')
+    expect(container).toHaveTextContent('Attendance')
+    expect(container).toHaveTextContent('Dashboard')
   })
 })

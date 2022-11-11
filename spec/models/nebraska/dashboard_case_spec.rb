@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Nebraska::DashboardCase, type: :model do
+RSpec.describe Nebraska::DashboardCase do
   let(:child) { create(:necc_child) }
   let(:date) { Time.current.to_date }
   let(:child_approval) { child.child_approvals.first }

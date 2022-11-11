@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
+RSpec.describe User do
   subject { create(:confirmed_user) }
 
   let(:user) { create(:confirmed_user, phone_number: '888-888-8888') }

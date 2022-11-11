@@ -266,10 +266,12 @@ export function AttendanceView() {
                     i > 0 ? 'ml-1' : null
                   }`}
                 >
-                  {`${amount} `}
-                  {i18n.t(`${tag.split(' ')[1].toLowerCase()}`, {
-                    count: count
-                  })}
+                  {`${amount > 1 ? amount : ''} `}
+                  {i18n
+                    .t(`${tag.split(' ')[1]}`, {
+                      count: count
+                    })
+                    .toLowerCase()}
                 </div>
               )
             })

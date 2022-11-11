@@ -9,14 +9,14 @@ RSpec.describe IllinoisOnboardingCaseImporter do
   let!(:stubbed_client) { instance_double(AwsClient) }
 
   let!(:onboarding_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/illinois_onboarding/illinois_onboarding_data.csv'))
+    Rails.root.join('spec/fixtures/files/illinois_onboarding/illinois_onboarding_data.csv').read
   end
   let!(:renewal_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv'))
+    Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv').read
   end
-  let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
+  let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv').read }
   let!(:missing_field_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
+    Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv').read
   end
 
   let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }

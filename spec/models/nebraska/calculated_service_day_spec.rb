@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # rubocop:disable RSpec/NestedGroups
-RSpec.describe Nebraska::CalculatedServiceDay, type: :model do
+RSpec.describe Nebraska::CalculatedServiceDay do
   describe '#earned_revenue' do
     before { travel_to '2022-06-01'.to_date }
 
