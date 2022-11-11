@@ -75,11 +75,7 @@ module Api
       end
 
       def filter_date
-        if params[:filter_date]
-          Time.zone.parse(params[:filter_date])&.at_end_of_day
-        else
-          Time.current.at_end_of_day
-        end
+        params[:filter_date] ? Time.zone.parse(params[:filter_date])&.at_end_of_day : Time.current.at_end_of_day
       end
 
       def dashboard_query(state)

@@ -23,7 +23,6 @@ Metrics/ClassLength:
   CountAsOne: ['array', 'heredoc', 'hash']
   Exclude: 
     - app/models/service_day.rb
-    - app/controllers/api/v1/users_controller.rb
 
 Metrics/MethodLength:
   CountAsOne: ['array', 'heredoc', 'hash']
