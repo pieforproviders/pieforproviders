@@ -12,24 +12,10 @@ module Api
         render json: ServiceDayBlueprint.render(@service_days)
       end
 
-      # PUT /service_days
-      def update
+      # GET /service_days/::id
+      def show
         if @service_day
-          if @service_day.update(service_day_params)
-            render json: ServiceDayBlueprint.render(@service_day)
-          else
-            render json: @service_day.errors, status: :unprocessable_entity
-          end
-        else
-          render status: :not_found
-        end
-      end
-
-      # DELETE /service_days
-      def destroy
-        if @service_day
-          @service_day.destroy
-          render status: :no_content
+          render json: ServiceDayBlueprint.render(@service_day)
         else
           render status: :not_found
         end
@@ -50,10 +36,24 @@ module Api
         end
       end
 
-      # GET /service_days/::id
-      def show
+      # PUT /service_days
+      def update
         if @service_day
-          render json: ServiceDayBlueprint.render(@service_day)
+          if @service_day.update(service_day_params)
+            render json: ServiceDayBlueprint.render(@service_day)
+          else
+            render json: @service_day.errors, status: :unprocessable_entity
+          end
+        else
+          render status: :not_found
+        end
+      end
+
+      # DELETE /service_days
+      def destroy
+        if @service_day
+          @service_day.destroy
+          render status: :no_content
         else
           render status: :not_found
         end

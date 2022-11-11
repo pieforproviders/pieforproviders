@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NebraskaApprovalAmount, type: :model do
+RSpec.describe NebraskaApprovalAmount do
   let(:nebraska_approval_amount) { build(:nebraska_approval_amount) }
 
   it { is_expected.to belong_to(:child_approval) }

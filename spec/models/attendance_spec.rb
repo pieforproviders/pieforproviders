@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Attendance, type: :model do
+RSpec.describe Attendance do
   before { travel_to '2022-06-01'.to_date }
 
   after  { travel_back }

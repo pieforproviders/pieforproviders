@@ -74,60 +74,8 @@ class ServiceDay < UuidApplicationRecord
     child.schedules.active_on(date).for_weekday(date.wday).first
   end
 
-  # TODO: extract tags to a service object
   def tags
-    [tag_hourly, tag_daily, tag_absence].compact
-  end
-
-  def tag_hourly
-    return unless state == 'NE'
-
-    hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_hourly_amount} hourly" : nil
-  end
-
-  def tag_daily
-    return unless state == 'NE'
-
-    daily? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_daily_amount} daily" : nil
-  end
-
-  def tag_hourly_amount
-    a = Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
-    a.to_i == a ? a.to_i.to_s : a.to_s
-  end
-
-  def tag_daily_amount
-    Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_s
-  end
-
-  def tag_absence
-    return unless state == 'NE'
-
-    absence? ? 'absence' : nil
-  end
-
-  def hourly?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care <= (5.hours + 45.minutes)
-  end
-
-  def daily?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
-  end
-
-  def daily_plus_hourly?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > 10.hours && total_time_in_care <= 18.hours
-  end
-
-  def daily_plus_hourly_max?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > 18.hours
+    TagsCalculator.new(service_day: self).call
   end
 
   def calculate_service_day

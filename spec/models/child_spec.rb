@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Child, type: :model do
+RSpec.describe Child do
   let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
 

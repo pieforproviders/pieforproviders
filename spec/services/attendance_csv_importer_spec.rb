@@ -8,7 +8,7 @@ RSpec.describe AttendanceCsvImporter do
   let!(:archive_bucket) { 'archive_bucket' }
   let!(:stubbed_client) { instance_double(AwsClient) }
 
-  let!(:attendance_csv) { File.read(Rails.root.join('spec/fixtures/files/Test Child Care-Grid view.csv')) }
+  let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/Test Child Care-Grid view.csv').read }
 
   # TODO: file with a name that doesn't match a business
   # TODO: file with missing required fields (check_in, check_out, full_name OR dhs_id)
@@ -18,9 +18,9 @@ RSpec.describe AttendanceCsvImporter do
   # TODO: file with a child w/ only DHS ID
   # TODO: file with a child w/ only Full Name
   # TODO: file with duplicate attendance to what already exists
-  let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
+  let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv').read }
   let!(:missing_field_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv'))
+    Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
   end
 
   let!(:business1) { create(:business, name: 'Test Child Care') }

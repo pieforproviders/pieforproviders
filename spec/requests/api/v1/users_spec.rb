@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Users', type: :request do
+RSpec.describe 'Api::V1::Users' do
   # Do not send any emails (no confirmation emails, no password was changed emails)
   let(:user) { instance_double(User) }
   let!(:illinois_user) { create(:confirmed_user) }
@@ -134,7 +134,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns all users' do
         get '/api/v1/users', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['greeting_name'] }).to include(nebraska_user.greeting_name)
+        expect(parsed_response.pluck('greeting_name')).to include(nebraska_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('users')
       end

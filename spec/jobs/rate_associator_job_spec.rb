@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe RateAssociatorJob, type: :job do
+RSpec.describe RateAssociatorJob do
   describe '#perform' do
     let(:child) { create(:child) }
     let(:service) { instance_double(RateAssociator, call: true) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'GET /confirmation', type: :request do
+RSpec.describe 'GET /confirmation' do
   let(:unconfirmed_user) { create(:unconfirmed_user) }
   let(:confirmed_user) { create(:confirmed_user) }
   let(:confirmation_token) { unconfirmed_user.confirmation_token }

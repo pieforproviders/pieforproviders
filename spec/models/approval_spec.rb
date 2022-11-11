@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Approval, type: :model do
+RSpec.describe Approval do
   let(:effective_date) { 6.months.ago.to_date }
   let(:approval) { build(:approval) }
 

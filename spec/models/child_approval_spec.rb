@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ChildApproval, type: :model do
+RSpec.describe ChildApproval do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to belong_to(:approval) }
   it { is_expected.to belong_to(:rate).optional }

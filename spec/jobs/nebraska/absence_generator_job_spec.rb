@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Nebraska::AbsenceGeneratorJob, type: :job do
+RSpec.describe Nebraska::AbsenceGeneratorJob do
   describe '#perform' do
     let(:child) { create(:child) }
     let(:service) { instance_double(Nebraska::AbsenceGenerator, call: true) }
