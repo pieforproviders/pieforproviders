@@ -11,58 +11,52 @@ module Illinois
 
     def call
       tags
-      []
     end
 
     private
 
     def tags
-      [tag_hourly, tag_daily, tag_absence].compact
+      [tag_two_days, tag_full, tag_partial, tag_absence].compact
     end
 
-    def tag_hourly
-      hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_hourly_amount} hourly" : nil
+    def tag_partial
+      partial? ? '1 partDay' : nil
     end
 
-    def tag_daily
-      daily? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_daily_amount} daily" : nil
+    def tag_full
+      full_day? ? '1 daily' : nil
     end
 
-    def tag_hourly_amount
-      a = Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: @service_day.total_time_in_care).call
-      a.to_i == a ? a.to_i.to_s : a.to_s
+    def tag_two_days
+      two_days? ? '2 fullDays' : nil
     end
 
-    def tag_daily_amount
-      Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: @service_day.total_time_in_care).call&.to_s
+    def partial?
+      return false unless @service_day.total_time_in_care
+
+      @service_day.total_time_in_care < 5.hours || full_and_part_day?
+    end
+
+    def full_day?
+      return false unless @service_day.total_time_in_care
+
+      (@service_day.total_time_in_care > 5.hours && @service_day.total_time_in_care < 12.hours) || full_and_part_day?
+    end
+
+    def full_and_part_day?
+      return false unless @service_day.total_time_in_care
+
+      @service_day.total_time_in_care > 12.hours && @service_day.total_time_in_care < 17.hours
+    end
+
+    def two_days?
+      return false unless @service_day.total_time_in_care
+
+      @service_day.total_time_in_care > 17.hours
     end
 
     def tag_absence
       @service_day.absence? ? 'absence' : nil
-    end
-
-    def hourly?
-      return false unless @service_day.total_time_in_care
-
-      @service_day.total_time_in_care <= (5.hours + 45.minutes)
-    end
-
-    def daily?
-      return false unless @service_day.total_time_in_care
-
-      @service_day.total_time_in_care > (5.hours + 45.minutes) && @service_day.total_time_in_care <= 10.hours
-    end
-
-    def daily_plus_hourly?
-      return false unless @service_day.total_time_in_care
-
-      @service_day.total_time_in_care > 10.hours && @service_day.total_time_in_care <= 18.hours
-    end
-
-    def daily_plus_hourly_max?
-      return false unless @service_day.total_time_in_care
-
-      @service_day.total_time_in_care > 18.hours
     end
   end
 end
