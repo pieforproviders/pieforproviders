@@ -263,7 +263,7 @@ export function Dashboard() {
     filterDate = undefined
   } = {}) => {
     dispatch(setLoading(true))
-    let baseUrl = `/api/v1/case_list_for_dashboard`
+    const baseUrl = '/api/v1/case_list_for_dashboard'
     const response = await makeRequest({
       type: 'get',
       url:
