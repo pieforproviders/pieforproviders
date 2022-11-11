@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ServiceDay, type: :model do
+RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }

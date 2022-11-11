@@ -4,16 +4,6 @@
 class ConfirmationsController < Devise::ConfirmationsController
   respond_to :json
 
-  def create
-    self.resource = resource_class.send_confirmation_instructions(email: params[:email])
-    if successfully_sent?(resource)
-      respond_with(resource)
-    else
-      errors(resource.errors.details)
-      render json: error_response, status: :unprocessable_entity
-    end
-  end
-
   def show
     self.resource = resource_class.confirm_by_token(params[:confirmation_token])
     if resource.errors.empty?
@@ -21,6 +11,16 @@ class ConfirmationsController < Devise::ConfirmationsController
     else
       errors(resource.errors.details)
       render json: error_response, status: :forbidden
+    end
+  end
+
+  def create
+    self.resource = resource_class.send_confirmation_instructions(email: params[:email])
+    if successfully_sent?(resource)
+      respond_with(resource)
+    else
+      errors(resource.errors.details)
+      render json: error_response, status: :unprocessable_entity
     end
   end
 
