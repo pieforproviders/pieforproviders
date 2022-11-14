@@ -266,7 +266,7 @@ export function AttendanceView() {
                     i > 0 ? 'ml-1' : null
                   }`}
                 >
-                  {`${amount > 1 ? amount : ''} `}
+                  {`${amount} `}
                   {i18n
                     .t(`${tag.split(' ')[1]}`, {
                       count: count

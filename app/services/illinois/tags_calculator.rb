@@ -40,19 +40,19 @@ module Illinois
     def full_day?
       return false unless @service_day.total_time_in_care
 
-      (@service_day.total_time_in_care > 5.hours && @service_day.total_time_in_care < 12.hours) || full_and_part_day?
+      (@service_day.total_time_in_care >= 5.hours && @service_day.total_time_in_care < 12.hours) || full_and_part_day?
     end
 
     def full_and_part_day?
       return false unless @service_day.total_time_in_care
 
-      @service_day.total_time_in_care > 12.hours && @service_day.total_time_in_care < 17.hours
+      @service_day.total_time_in_care >= 12.hours && @service_day.total_time_in_care < 17.hours
     end
 
     def two_days?
       return false unless @service_day.total_time_in_care
 
-      @service_day.total_time_in_care > 17.hours
+      @service_day.total_time_in_care >= 17.hours
     end
 
     def tag_absence
