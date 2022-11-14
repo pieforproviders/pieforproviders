@@ -173,7 +173,7 @@ export default function DashboardTable({
       .map(({ name = '', children = [], ...options }) => {
         const hasDefinition = [
           'attendance',
-          // // 'revenue',
+          // 'revenue',
           'totalAuthorizationPeriod'
         ]
         return {
