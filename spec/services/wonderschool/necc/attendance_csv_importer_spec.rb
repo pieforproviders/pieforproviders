@@ -11,10 +11,10 @@ module Wonderschool
       let!(:stubbed_client) { double('AwsClient') }
       let!(:stubbed_uri) { double('URI') }
 
-      let!(:attendance_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv')) }
-      let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
+      let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv').read }
+      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv').read }
       let!(:missing_field_csv) do
-        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv'))
+        Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
       end
 
       let!(:business1) { create(:business, name: 'Test Daycare') }

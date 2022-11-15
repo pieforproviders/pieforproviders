@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe IllinoisApprovalAmount, type: :model do
+RSpec.describe IllinoisApprovalAmount do
   it { is_expected.to belong_to(:child_approval) }
   it { is_expected.to validate_presence_of(:month) }
   it { is_expected.to validate_numericality_of(:part_days_approved_per_week) }

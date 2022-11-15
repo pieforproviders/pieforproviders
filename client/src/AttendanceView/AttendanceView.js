@@ -267,9 +267,11 @@ export function AttendanceView() {
                   }`}
                 >
                   {`${amount} `}
-                  {i18n.t(`${tag.split(' ')[1].toLowerCase()}`, {
-                    count: count
-                  })}
+                  {i18n
+                    .t(`${tag.split(' ')[1]}`, {
+                      count: count
+                    })
+                    .toLowerCase()}
                 </div>
               )
             })

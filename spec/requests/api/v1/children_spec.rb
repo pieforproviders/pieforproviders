@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Children', type: :request do
+RSpec.describe 'Api::V1::Children' do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:user_business) { create(:business_with_children, user: logged_in_user) }
   let!(:second_user_business) { create(:business_with_children, user: logged_in_user) }

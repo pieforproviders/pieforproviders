@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Notification, type: :model do
+RSpec.describe Notification do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to belong_to(:approval) }
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Schedule, type: :model do
+RSpec.describe Schedule do
   let(:schedule) { build(:schedule) }
 
   it { is_expected.to belong_to(:child) }

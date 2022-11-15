@@ -47,7 +47,7 @@ module Wonderschool
 
       def process_row(row)
         @row = row
-        @business = Business.find_or_create_by!(required_business_params)
+        @business = Business.find_or_create_by(required_business_params)
         @child = Child.find_or_initialize_by(required_child_params)
         @approval = find_approval
 
@@ -63,9 +63,7 @@ module Wonderschool
       end
 
       def find_approval
-        unless @child.approvals.find_by(approval_params)
-          @child.approvals << Approval.find_or_create_by!(approval_params)
-        end
+        @child.approvals << Approval.find_or_create_by(approval_params) unless @child.approvals.find_by(approval_params)
         @child.save
         @child.approvals.find_by(approval_params)
       end
@@ -147,11 +145,11 @@ module Wonderschool
 
       def required_business_params
         {
-          user: User.find_by!(email: @row['Provider Email']&.downcase),
+          user: User.find_by(email: @row['Provider Email']&.downcase),
           name: @row['Provider Name'],
           zipcode: @row['Business Zip Code'],
           county: @row['Business County'],
-          license_type: @row['Business License'].downcase.tr(' ', '_')
+          license_type: @row['Business License']&.downcase&.tr(' ', '_')
         }
       end
 
@@ -191,7 +189,7 @@ module Wonderschool
 
       def required_child_params
         {
-          business_id: @business.id,
+          business_id: @business&.id,
           first_name: @row['First Name'],
           last_name: @row['Last Name'],
           dhs_id: @row['Client ID'],

@@ -239,8 +239,9 @@ RSpec.shared_context 'with a prior month absence' do |extra_days|
 end
 
 RSpec.shared_context 'with illinois child created for dashboard' do
-  let(:child) { create(:child_in_illinois, effective_date: Time.zone.parse('June 1st, 2021')) }
-  let(:attendance_date) { Time.new(2021, 7, 4, 0, 0, 0, timezone).to_date }
+  let(:child) { create(:child_in_illinois, effective_date: Time.zone.parse('June 1st, 2022')) }
+  let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+  let(:attendance_date) { Time.new(2022, 7, 4, 0, 0, 0, timezone).to_date }
   let(:child_approval) { child.child_approvals.first }
 
   before do

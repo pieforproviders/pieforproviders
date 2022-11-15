@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Business, type: :model do
+RSpec.describe Business do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_inclusion_of(:quality_rating).in_array(QualityRatings::TYPES) }

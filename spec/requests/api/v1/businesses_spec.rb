@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Businesses', type: :request do
+RSpec.describe 'Api::V1::Businesses' do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:user_business) { create(:business_with_children, user: logged_in_user) }
   let!(:non_user_business) { create(:business_with_children) }
@@ -17,8 +17,8 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       it "returns the user's businesses" do
         get '/api/v1/businesses', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['name'] }).to include(user_business.name)
-        expect(parsed_response.collect { |x| x['name'] }).not_to include(non_user_business.name)
+        expect(parsed_response.pluck('name')).to include(user_business.name)
+        expect(parsed_response.pluck('name')).not_to include(non_user_business.name)
         expect(response).to match_response_schema('businesses')
       end
     end
@@ -29,8 +29,8 @@ RSpec.describe 'Api::V1::Businesses', type: :request do
       it "returns all users' businesses" do
         get '/api/v1/businesses', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['name'] }).to include(user_business.name)
-        expect(parsed_response.collect { |x| x['name'] }).to include(non_user_business.name)
+        expect(parsed_response.pluck('name')).to include(user_business.name)
+        expect(parsed_response.pluck('name')).to include(non_user_business.name)
         expect(response).to match_response_schema('businesses')
       end
     end

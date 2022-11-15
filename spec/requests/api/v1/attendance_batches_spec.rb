@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
+RSpec.describe 'Api::V1::AttendanceBatches' do
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:approval) { create(:approval, num_children: 3, business: business) }
@@ -54,7 +54,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to eq({})
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
@@ -90,7 +90,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: valid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to eq({})
           expect(Attendance.all.size).to eq(0)
           expect(ServiceDay.all.size).to eq(2)
@@ -125,7 +125,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
@@ -160,7 +160,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
@@ -199,7 +199,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
@@ -239,7 +239,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_invalid_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).to match_array(%w[service_day])
           expect(
@@ -284,7 +284,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).not_to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
@@ -326,7 +326,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: single_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).not_to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
@@ -367,7 +367,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).not_to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(
@@ -409,7 +409,7 @@ RSpec.describe 'Api::V1::AttendanceBatches', type: :request do
           post '/api/v1/attendance_batches', params: all_non_scheduled_absence_batch, headers: headers
 
           parsed_response = JSON.parse(response.body)
-          expect(parsed_response['service_days'].map { |x| x['attendances'] }.flatten).to eq([])
+          expect(parsed_response['service_days'].pluck('attendances').flatten).to eq([])
           expect(parsed_response.dig('meta', 'errors')).not_to be_present
           expect(parsed_response.dig('meta', 'errors').keys.flatten).not_to match_array(%w[service_day])
           expect(

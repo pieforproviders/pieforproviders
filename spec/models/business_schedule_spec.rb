@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BusinessSchedule, type: :model do
+RSpec.describe BusinessSchedule do
   it { is_expected.to belong_to(:business) }
   it { is_expected.to validate_presence_of(:weekday) }
 end
