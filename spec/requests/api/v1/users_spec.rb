@@ -208,6 +208,7 @@ RSpec.describe 'Api::V1::Users' do
     let!(:illinois_user) { create(:confirmed_user) }
     let!(:illinois_business) { create(:business, user: illinois_user) }
     let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
+    let(:nebraska_business_two) { create(:business, :nebraska_ldds, user: nebraska_user) }
 
     before do
       create_list(
@@ -252,6 +253,14 @@ RSpec.describe 'Api::V1::Users' do
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('illinois_case_list_for_dashboard')
       end
+
+      it 'returns the correct cases when a business params is sent' do
+        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business.id }, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
+      end
     end
 
     context 'when logged in as a non-admin user in nebraska' do
@@ -272,6 +281,14 @@ RSpec.describe 'Api::V1::Users' do
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
+
+      it 'returns the correct cases when a business params is sent' do
+        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
+      end
     end
 
     context 'when logged in as an admin user' do
@@ -287,6 +304,14 @@ RSpec.describe 'Api::V1::Users' do
 
       it 'returns the correct cases when a filter_date is sent' do
         get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
+        expect(response).to have_http_status(:ok)
+        expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
+      end
+
+      it 'returns the correct cases when a business params is sent' do
+        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)

@@ -25,6 +25,8 @@ const doRender = (
         }
       ]
     },
+    businesses: [],
+    filteredCases: [],
     getDashboardData: mockedGetDashboardData,
     makeMonth: () => {},
     setDates: () => {}
@@ -102,7 +104,8 @@ describe('<DashboardTitle />', () => {
             date: 'Jan 2020'
           }
         ]
-      }
+      },
+      businesses: []
     }
     rerender(
       <MemoryRouter>

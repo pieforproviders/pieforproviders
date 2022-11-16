@@ -17,6 +17,7 @@ import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
+import { setFilteredCases } from '_reducers/uiReducer'
 import '_assets/styles/notification-modal-overrides.css'
 
 const env = runtimeEnv()
@@ -33,10 +34,11 @@ export function Dashboard() {
     currency: 'USD',
     minimumFractionDigits: 0
   })
-  const { businesses, token, user } = useSelector(state => ({
+  const { businesses, token, user, filteredCases } = useSelector(state => ({
     businesses: state.businesses,
     token: state.auth.token,
-    user: state.user
+    user: state.user,
+    filteredCases: state.ui.filteredCases
   }))
 
   const summaryDataTotalsConfig = {
@@ -256,12 +258,19 @@ export function Dashboard() {
     }
   }
 
-  const getDashboardData = async (filterDate = undefined) => {
+  const getDashboardData = async ({
+    businessIds = [],
+    filterDate = undefined
+  } = {}) => {
     dispatch(setLoading(true))
     const baseUrl = '/api/v1/case_list_for_dashboard'
     const response = await makeRequest({
       type: 'get',
-      url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
+      url:
+        businessIds.length > 0 || filterDate
+          ? baseUrl +
+            `?filter_date=${filterDate}&business=${businessIds.join(',')}`
+          : baseUrl,
       headers: { Authorization: token }
     })
     const parsedResponse = await parseResult(response)
@@ -277,7 +286,7 @@ export function Dashboard() {
         const updatedDates = reduceDates(parsedResponse, filterDate)
         setDates(updatedDates)
       }
-
+      dispatch(setFilteredCases(businessIds))
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
@@ -340,7 +349,10 @@ export function Dashboard() {
     }
 
     if (Object.keys(user).length !== 0) {
-      getDashboardData(dates?.dateFilterValue?.date)
+      getDashboardData({
+        filterDate: dates?.dateFilterValue?.date,
+        businessIds: filteredCases
+      })
     }
 
     if (Object.keys(user).length === 0) {
@@ -366,6 +378,8 @@ export function Dashboard() {
         dates={dates}
         setDates={setDates}
         makeMonth={makeMonth}
+        businesses={businesses}
+        filteredCases={filteredCases}
         getDashboardData={getDashboardData}
       />
       <div className="flex mb-10 md:flex-row xs:flex-col">

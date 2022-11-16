@@ -75,16 +75,20 @@ module Api
       end
 
       def filter_date
-        if params[:filter_date]
-          Time.zone.parse(params[:filter_date])&.at_end_of_day
+        params[:filter_date] ? Time.zone.parse(params[:filter_date])&.at_end_of_day : Time.current.at_end_of_day
+      end
+
+      def dashboard_query(state)
+        if params[:business].present?
+          state.with_dashboard_case.selected_business(params[:business])
         else
-          Time.current.at_end_of_day
+          state.with_dashboard_case
         end
       end
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.nebraska.with_dashboard_case),
+          policy_scope(dashboard_query(User.nebraska)),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
@@ -92,7 +96,7 @@ module Api
 
       def illinois_dashboard
         UserBlueprint.render(
-          policy_scope(User.illinois.with_dashboard_case),
+          policy_scope(dashboard_query(User.illinois)),
           view: :illinois_dashboard,
           filter_date: filter_date
         )
