@@ -130,20 +130,20 @@ export function Dashboard() {
           )}`,
           definition: t('guaranteedRevenueDef')
         },
-        {
-          title: t('potentialRevenue'),
-          stat: `${currencyFormatter.format(
-            totals.potentialRevenueTotal.toFixed()
-          )}`,
-          definition: t('potentialRevenueDef')
-        },
-        {
-          title: t('maxApprovedRevenue'),
-          stat: `${currencyFormatter.format(
-            totals.maxApprovedRevenueTotal.toFixed()
-          )}`,
-          definition: t('maxApprovedRevenueDef')
-        },
+        // {
+        //   title: t('potentialRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     totals.potentialRevenueTotal.toFixed()
+        //   )}`,
+        //   definition: t('potentialRevenueDef')
+        // },
+        // {
+        //   title: t('maxApprovedRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     totals.maxApprovedRevenueTotal.toFixed()
+        //   )}`,
+        //   definition: t('maxApprovedRevenueDef')
+        // },
         {
           title: t('attendanceRate'),
           stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
