@@ -50,8 +50,6 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
-      // expect(container).not.toHaveTextContent('Earned revenue')
-      // expect(container).not.toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
       expect(container).toHaveTextContent('Authorized period')
       expect(container).toHaveTextContent('Total hours remaining')

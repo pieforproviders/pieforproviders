@@ -445,10 +445,26 @@ export default function DashboardTable({
       // //   sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
       // //   render: renderDollarAmount
       // // },
-       {
+ 
+      {
         name: 'maxApprovedRevenue',
         sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
         render: renderDollarAmount
+      },
+      {
+        name: 'authorizedPeriod',
+        sorter: (a, b) =>
+          dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
+        render: (text, record) =>
+          isInactive(record)
+            ? '-'
+            : isNotApproved(record)
+            ? 'unknown'
+            : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
+                record.approvalExpiresOn
+                  ? ` - ${dayjs(record.approvalExpiresOn).format('M/D/YY')}`
+                  : ''
+              }`
       },
       {
         name: 'authorizedPeriod',
