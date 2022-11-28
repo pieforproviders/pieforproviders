@@ -2,8 +2,6 @@ import React from 'react'
 import { render, waitFor } from 'setupTests'
 import { MemoryRouter } from 'react-router-dom'
 import { Dashboard } from '../Dashboard'
-import { useSelector } from 'react-redux'
-import dayjs from 'dayjs'
 
 const doRender = stateOptions => {
   return render(
@@ -13,10 +11,6 @@ const doRender = stateOptions => {
     stateOptions
   )
 }
-// jest.mock('react-redux', () => ({
-//   ...jest.requireActual('react-redux'),
-//   useSelector: jest.fn()
-// }))
 
 describe('<Dashboard />', () => {
   beforeEach(() => jest.spyOn(window, 'fetch'))
