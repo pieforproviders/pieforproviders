@@ -24,12 +24,11 @@ default: &default
   port: <%= ENV.fetch('DB_PORT', '5432') %>
   username: <%= ENV.fetch('PGUSER', '') %>
   password: <%= ENV.fetch('PGPASSWORD', '') %>
-  # username: postgres
-  # password: pgpass
 
 development:
   <<: *default
   database: pie_development
+  
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
   # When left blank, postgres will use the default role. This is
