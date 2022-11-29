@@ -7,7 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { batch, useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
 import { deleteUser } from '_reducers/userReducer'
+import { deleteBusinesses } from '_reducers/businessesReducer'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { deleteFilteredCases } from '_reducers/uiReducer'
 import '_assets/styles/button-header.css'
 
 export function Header() {
@@ -24,6 +26,8 @@ export function Header() {
 
   const logout = () => {
     batch(() => {
+      dispatch(deleteFilteredCases())
+      dispatch(deleteBusinesses())
       dispatch(deleteUser())
       dispatch(removeAuth())
     })

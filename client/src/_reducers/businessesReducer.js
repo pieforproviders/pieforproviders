@@ -9,9 +9,12 @@ const businesses = createSlice({
     setBusinesses(_state, action) {
       const businesses = action.payload
       return [...businesses]
+    },
+    deleteBusinesses() {
+      return initialState
     }
   }
 })
 
-export const { setBusinesses } = businesses.actions
+export const { setBusinesses, deleteBusinesses } = businesses.actions
 export default businesses.reducer

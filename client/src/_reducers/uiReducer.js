@@ -28,9 +28,17 @@ const ui = createSlice({
         ...state,
         progress
       }
+    },
+    deleteFilteredCases() {
+      return initialState.filteredCases
     }
   }
 })
 
-export const { setFilteredCases, setLoading, setProgress } = ui.actions
+export const {
+  setFilteredCases,
+  setLoading,
+  setProgress,
+  deleteFilteredCases
+} = ui.actions
 export default ui.reducer

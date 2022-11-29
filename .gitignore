@@ -63,3 +63,5 @@ latest.dump
 
 # prod-like seeds
 /spec/fixtures/files/prod_like_seeds/*
+
+**/*.rvmrc*
