@@ -163,7 +163,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (3.4.8)
+    good_job (3.6.1)
       activejob (>= 6.0.0)
       activerecord (>= 6.0.0)
       concurrent-ruby (>= 1.0.2)
@@ -419,7 +419,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   flamegraph
-  good_job (~> 3.4.8)
+  good_job (~> 3.6.1)
   guard-rspec
   hash_dig_and_collect
   holidays
