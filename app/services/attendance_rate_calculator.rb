@@ -2,10 +2,12 @@
 
 # Service to calculate a family's attendance rate
 class AttendanceRateCalculator
-  def initialize(child, filter_date)
+  def initialize(child, filter_date, business = nil, eligible_days: nil, attended_days: nil)
     @child = child
     @filter_date = filter_date
-    @state = child.business.state
+    @state = child.present? ? child.business.state : business.state
+    @eligible_days = eligible_days
+    @attended_days = attended_days
   end
 
   def call
@@ -15,6 +17,13 @@ class AttendanceRateCalculator
   private
 
   def calculate_attendance_rate
-    IllinoisAttendanceRateCalculator.new(@child, @filter_date).call if @state == 'IL'
+    return unless @state == 'IL'
+
+    IllinoisAttendanceRateCalculator.new(
+      @child,
+      @filter_date,
+      eligible_days: @eligible_days,
+      attended_days: @attended_days
+    ).call
   end
 end
