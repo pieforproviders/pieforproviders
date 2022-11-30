@@ -8,7 +8,15 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
     create(:approval, create_children: false, effective_on: multiple_child_family_approval.effective_on)
   end
   let!(:single_child_family) { create(:child, approvals: [single_child_family_approval]) }
-  let!(:child_with_missing_info) { create(:child, approvals: [create(:approval, create_children: false, effective_on: multiple_child_family_approval.effective_on)]) }
+  let!(:child_with_missing_info) do
+    create(
+      :child,
+      approvals:
+        [
+          create(:approval, create_children: false, effective_on: multiple_child_family_approval.effective_on)
+        ]
+    )
+  end
 
   # TODO: change this to #call describe and break down contexts
   describe '#call' do
