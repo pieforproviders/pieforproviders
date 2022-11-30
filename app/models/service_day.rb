@@ -66,6 +66,9 @@ class ServiceDay < UuidApplicationRecord
 
   scope :with_attendances, -> { includes(:attendances) }
 
+  scope :full_day, -> { where('full_time > ?', 0) }
+  scope :part_day, -> { where('part_time > ?', 0) }
+
   def absence?
     absence_type.present?
   end
