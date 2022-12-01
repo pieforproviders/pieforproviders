@@ -61,7 +61,12 @@ export function useCaseData() {
                 fullDaysAttended:
                   childCase.illinois_dashboard_case.full_days_attended ?? true,
                 partDaysAttended:
-                  childCase.illinois_dashboard_case.part_days_attended ?? true
+                  childCase.illinois_dashboard_case.part_days_attended ?? true,
+                approvalEffectiveOn:
+                  childCase.illinois_dashboard_case.approval_effective_on ?? '',
+                approvalExpiresOn:
+                  childCase.illinois_dashboard_case.approval_expires_on ?? '',
+                childInfo: childCase ?? ''
               }
         })
       })
