@@ -11,5 +11,7 @@ module Illinois
     field :guaranteed_revenue
     field :potential_revenue
     field :max_approved_revenue
+    field :approval_effective_on
+    field :approval_expires_on
   end
 end
