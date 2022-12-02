@@ -60,5 +60,45 @@ module Illinois
     def part_days_by_date
       child.service_days.for_month(filter_date).map(&:part_time).compact.reduce(:+) || 0
     end
+
+    def child_approvals
+      Appsignal.instrument_sql(
+        'dashboard_case.child_approvals'
+      ) do
+        @child_approvals ||= child&.child_approvals&.with_approval
+      end
+    end
+
+    def approval
+      Appsignal.instrument_sql(
+        'dashboard_case.approval'
+      ) do
+        @approval ||= child&.approvals&.active_on(filter_date)&.first
+      end
+    end
+
+    def child_approval
+      Appsignal.instrument_sql(
+        'dashboard_case.child_approval'
+      ) do
+        @child_approval ||= approval&.child_approvals&.find_by(child: child)
+      end
+    end
+
+    def approval_effective_on
+      Appsignal.instrument_sql(
+        'dashboard_case.approval_effective_on'
+      ) do
+        @approval_effective_on ||= child_approval&.effective_on
+      end
+    end
+
+    def approval_expires_on
+      Appsignal.instrument_sql(
+        'dashboard_case.approval_expires_on'
+      ) do
+        @approval_expires_on ||= child_approval&.expires_on
+      end
+    end
   end
 end

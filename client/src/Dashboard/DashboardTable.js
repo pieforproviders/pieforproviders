@@ -446,11 +446,11 @@ export default function DashboardTable({
       //   render: renderDollarAmount
       // },
 
-      {
-        name: 'maxApprovedRevenue',
-        sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
-        render: renderDollarAmount
-      },
+      // {
+      //   name: 'maxApprovedRevenue',
+      //   sorter: (a, b) => a.maxApprovedRevenue - b.maxApprovedRevenue,
+      //   render: renderDollarAmount
+      // },
       {
         name: 'authorizedPeriod',
         sorter: (a, b) =>
