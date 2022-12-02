@@ -22,13 +22,13 @@ describe('<DashboardTable />', () => {
   it('renders the DashboardTable component', async () => {
     const { container } = doRender()
     await waitFor(() => {
-      expect(screen.getAllByRole('columnheader').length).toEqual(9)
+      expect(screen.getAllByRole('columnheader').length).toEqual(8)
       expect(container).toHaveTextContent('Child name')
       expect(container).toHaveTextContent('Case number')
       expect(container).toHaveTextContent('Attendance rate')
       expect(container).not.toHaveTextContent('Earned revenue')
       expect(container).not.toHaveTextContent('Estimated revenue')
-      expect(container).toHaveTextContent('Max. approved revenue')
+      expect(container).not.toHaveTextContent('Max. approved revenue')
       expect(container).toHaveTextContent('Authorized period')
       expect(container).toHaveTextContent('Actions')
     })

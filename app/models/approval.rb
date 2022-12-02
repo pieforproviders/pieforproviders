@@ -6,7 +6,6 @@ class Approval < UuidApplicationRecord
 
   has_many :child_approvals, dependent: :destroy, inverse_of: :approval, autosave: true
   has_many :children, through: :child_approvals
-  has_many :attendances, through: :children
   has_many :illinois_approval_amounts, through: :child_approvals
   has_many :notifications, dependent: :destroy
 
@@ -23,7 +22,6 @@ class Approval < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
   scope :active_on, ->(date) { where(effective_on: ..date).where(expires_on: [date.., nil]).order(updated_at: :desc) }
-  scope :with_children, -> { includes(:children) }
   # TODO: needs to change to timestamp and get sent from front-end with timestamps
 
   monetize :copay_cents, allow_nil: true

@@ -27,8 +27,6 @@ class Business < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  scope :center, -> { where('license_type like ?', '%center%') }
-
   delegate 'eligible_by_date?', to: :child
 
   def ne_qris_bump(date: nil)
@@ -42,14 +40,6 @@ class Business < UuidApplicationRecord
 
   def eligible_by_date?(date)
     open_by_date?(date)
-  end
-
-  def license_center?
-    license_type.include?('center')
-  end
-
-  def attendance_rate(date, eligible_days, attended_days)
-    AttendanceRateCalculator.new(nil, date, self, eligible_days: eligible_days, attended_days: attended_days).call
   end
 
   private

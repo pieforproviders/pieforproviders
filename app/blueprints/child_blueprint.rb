@@ -23,22 +23,14 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :illinois_dashboard do
-    eligible_attendances = nil
-    attended_days = nil
     association :illinois_dashboard_case, blueprint: Illinois::DashboardCaseBlueprint do |child, options|
       options[:filter_date] ||= Time.current
-      business = child.business
-
-      if business.license_center? && eligible_attendances.nil? && attended_days.nil?
-        business_day_calculator = Illinois::BusinessAttendanceRateCalculator.new(business, options[:filter_date])
-        eligible_attendances = business_day_calculator.eligible_attendances
-        attended_days = business_day_calculator.attended_days
-      end
-
+      child_approval = child&.active_child_approval(options[:filter_date])
+      service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
+      attended_days = service_days&.non_absences
       Illinois::DashboardCase.new(
         child: child,
         filter_date: options[:filter_date],
-        eligible_days: eligible_attendances,
         attended_days: attended_days
       )
     end

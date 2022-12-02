@@ -7,17 +7,14 @@ module Illinois
                 :business,
                 :child,
                 :filter_date,
-                :schedules,
-                :eligible_days,
-                :attended_days
+                :schedules
 
-    def initialize(child:, filter_date:, eligible_days: nil, attended_days: nil)
+    def initialize(child:, filter_date:, attended_days:)
       @child = child
       @filter_date = filter_date
+      @attended_days = attended_days
       @business = child.business
       @schedules = child&.schedules
-      @eligible_days = eligible_days
-      @attended_days = attended_days
     end
 
     def case_number
@@ -41,11 +38,7 @@ module Illinois
     end
 
     def attendance_rate
-      if business.license_center?
-        business.attendance_rate(filter_date, eligible_days, attended_days)
-      else
-        child.attendance_rate(filter_date)
-      end
+      child.attendance_rate(filter_date)
     end
 
     def part_days_attended

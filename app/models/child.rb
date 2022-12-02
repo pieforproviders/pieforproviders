@@ -61,7 +61,6 @@ class Child < UuidApplicationRecord
         }
 
   scope :with_schedules, -> { includes(:schedules) }
-  scope :with_business, -> { includes(:business) }
 
   delegate :county, to: :business
   delegate :user, to: :business
