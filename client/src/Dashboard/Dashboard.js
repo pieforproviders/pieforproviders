@@ -146,7 +146,9 @@ export function Dashboard() {
         // },
         {
           title: t('attendanceRate'),
-          stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
+          stat: `${((totals.attendanceRateTotal / td.length) * 100).toFixed(
+            2
+          )}%`,
           definition: t('attendanceRateDef')
         }
       ]

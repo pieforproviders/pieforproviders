@@ -48,8 +48,9 @@ export function useCaseData() {
                 cNumber: childCase.illinois_dashboard_case.case_number ?? '',
                 business: business.name ?? '',
                 attendanceRate: {
-                  rate: childCase.attendance_rate ?? '',
-                  riskCategory: childCase.attendance_risk ?? ''
+                  rate: childCase.illinois_dashboard_case.attendance_rate ?? '',
+                  riskCategory:
+                    childCase.illinois_dashboard_case.attendance_risk ?? ''
                 },
                 guaranteedRevenue:
                   childCase.illinois_dashboard_case.guaranteed_revenue ?? '',

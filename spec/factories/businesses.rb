@@ -112,6 +112,12 @@ FactoryBot.define do
       zipcode { '68123' }
       county { 'Douglas' }
     end
+
+    trait :illinois_center do
+      license_type { 'licensed_center' }
+      zipcode { '60430' }
+      county { 'Cook' }
+    end
   end
 end
 
