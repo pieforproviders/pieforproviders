@@ -10,7 +10,6 @@ RSpec.describe Illinois::BusinessAttendanceRateCalculator do
 
   describe 'Checks methods for attendance rate IL calculator for businesses' do
     it 'check elegible attendances for an FCC' do
-      # binding.pry
       november = Date.new(2022, 11, 1)
       business_attendance_rate_calculator = described_class.new(business, november)
       part_days_approved_per_week = child.illinois_approval_amounts.first.part_days_approved_per_week
@@ -39,7 +38,7 @@ RSpec.describe Illinois::BusinessAttendanceRateCalculator do
       full_days_approved_per_week = child.illinois_approval_amounts.first.full_days_approved_per_week
       eligible_attendances = (part_days_approved_per_week + full_days_approved_per_week) * 5
       attended_days = child.attendance_rate(november) * eligible_attendances
-      # binding.pry
+
       expect(business_attendance_rate_calculator.attended_days).to eq(attended_days)
     end
 
