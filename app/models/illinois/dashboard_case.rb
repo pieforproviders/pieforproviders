@@ -2,6 +2,7 @@
 
 module Illinois
   # A case for display in the Illinois Dashboard
+  # rubocop:disable Metrics/ClassLength
   class DashboardCase
     attr_reader :absent_days,
                 :business,
@@ -11,6 +12,7 @@ module Illinois
                 :eligible_days,
                 :attended_days
 
+    ATTENDANCE_THRESHOLD = 69.5
     def initialize(child:, filter_date:, eligible_days: nil, attended_days: nil)
       @child = child
       @filter_date = filter_date
@@ -28,8 +30,36 @@ module Illinois
       end
     end
 
-    def guaranteed_revenue
-      rand(0.00..500.00).round(2)
+    def earned_revenue
+      return 0 if no_attendances
+
+      if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD
+        earned_revenue_above_threshold
+      else
+        earned_revenue_below_threshold
+      end
+    end
+
+    def earned_revenue_above_threshold
+      ((eligible_part_days * business_rate('part_day')) +
+        (eligible_full_days * business_rate('full_day'))).round(2)
+    end
+
+    def earned_revenue_below_threshold
+      ((part_days_by_date * business_rate('part_day')) +
+        (full_days_by_date * business_rate('full_day'))).round(2)
+    end
+
+    def eligible_part_days
+      child.eligible_part_days_by_month(filter_date)
+    end
+
+    def eligible_full_days
+      child.eligible_full_days_by_month(filter_date)
+    end
+
+    def no_attendances
+      part_days_by_date.zero? && full_days_by_date.zero?
     end
 
     def potential_revenue
@@ -107,5 +137,20 @@ module Illinois
         @approval_expires_on ||= child_approval&.expires_on
       end
     end
+
+    def business_rate(rate_type)
+      rates.find do |rate|
+        rate.rate_type == rate_type
+      end&.amount || 0
+    end
+
+    def rates
+      IllinoisRate.for_case(
+        filter_date,
+        child.age_in_months(filter_date),
+        business
+      )
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end
