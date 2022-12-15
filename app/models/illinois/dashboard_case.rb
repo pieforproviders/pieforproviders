@@ -30,7 +30,7 @@ module Illinois
       end
     end
 
-    def earned_revenue
+    def guaranteed_revenue
       return 0 if no_attendances
 
       if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD

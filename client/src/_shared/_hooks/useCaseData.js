@@ -52,8 +52,8 @@ export function useCaseData() {
                   riskCategory:
                     childCase.illinois_dashboard_case.attendance_risk ?? ''
                 },
-                earnedRevenue:
-                  childCase.illinois_dashboard_case.earned_revenue ?? '',
+                guaranteedRevenue:
+                  childCase.illinois_dashboard_case.guaranteed_revenue ?? '',
                 maxApprovedRevenue:
                   childCase.illinois_dashboard_case.max_approved_revenue ?? '',
                 potentialRevenue:

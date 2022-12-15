@@ -436,8 +436,8 @@ export default function DashboardTable({
         render: renderAttendanceRate
       },
       {
-        name: 'earnedRevenue',
-        sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
+        name: 'guaranteedRevenue',
+        sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
         render: renderDollarAmount
       },
       // {

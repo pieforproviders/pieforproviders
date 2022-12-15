@@ -8,7 +8,9 @@ module Illinois
     field :full_days_attended
     field :part_days_attended
     field :attendance_rate
-    field :earned_revenue
+    field :guaranteed_revenue do |dashboard_case, _options|
+      dashboard_case.guaranteed_revenue&.to_f
+    end
     field :potential_revenue
     field :max_approved_revenue
     field :approval_effective_on
