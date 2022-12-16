@@ -8,7 +8,7 @@ RSpec.describe Illinois::DashboardCase do
   let(:child_approval) { child.child_approvals.first }
   let(:service_days) { child.service_days&.for_period(child_approval.effective_on, child_approval.expires_on) }
 
-  describe '#earned_revenue' do
+  describe '#guaranteed_revenue' do
     before { child.reload }
 
     it 'returns 0 since there are no attendances' do
@@ -22,7 +22,7 @@ RSpec.describe Illinois::DashboardCase do
         child: child,
         filter_date: date,
         attended_days: service_days.non_absences
-      ).earned_revenue)
+      ).guaranteed_revenue)
         .to eq(0)
     end
   end
