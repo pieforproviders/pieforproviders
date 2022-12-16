@@ -65,7 +65,7 @@ group :development do
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.1.0'
 end
 
 group :test do
