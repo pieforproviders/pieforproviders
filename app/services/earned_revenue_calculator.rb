@@ -16,6 +16,7 @@ class EarnedRevenueCalculator
   private
 
   def calculate_earned_revenue
-    Nebraska::EarnedRevenueCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
+    return Nebraska::EarnedRevenueCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
+    return Illinois::EarnedRevenueCalculator.new(service_day: service_day).call if service_day.child.state == 'IL'
   end
 end
