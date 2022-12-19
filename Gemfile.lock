@@ -111,7 +111,7 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.13.1)
       rack
-    data_migrate (8.2.0)
+    data_migrate (8.4.2)
       activerecord (>= 5.0)
       railties (>= 5.0)
     database_cleaner (2.0.1)
