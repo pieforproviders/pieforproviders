@@ -5,14 +5,27 @@ module Illinois
   class EligibleDaysCalculator
     attr_reader :child, :date, :full_time
 
-    def initialize(date:, child:, full_time: true)
+    def initialize(date:, child:, full_time: true, until_given_date: false)
       @date = date
       @child = child
       @full_time = full_time
+      @until_given_date = until_given_date
     end
 
     def call
       calculate_time_in_days
+    end
+
+    def date_range
+      @until_given_date ? (date.beginning_of_month.to_date..date.to_date) : date.to_date.all_month
+    end
+
+    def closed_days_by_month_until_date
+      closed_days = 0
+      date_range.each do |day|
+        closed_days += 1 unless child.business.eligible_by_date?(day)
+      end
+      closed_days
     end
 
     private
