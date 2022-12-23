@@ -24,6 +24,8 @@ class IllinoisAttendanceRiskCalculator
   def risk_label
     partial_attendance_rate = attendance_rate_until_date * 100
     return 'not_enough_info' if partial_attendance_rate.zero? || less_than_halfway_through_month || !approval_amount
+    partial_attendance_rate = attendance_rate_until_date * 100
+    return 'not_enough_info' if partial_attendance_rate.zero? || less_than_halfway_through_month || !approval_amount
 
     if partial_attendance_rate < threshold
       'at_risk'
