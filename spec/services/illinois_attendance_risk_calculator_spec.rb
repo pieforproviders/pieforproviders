@@ -35,17 +35,11 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
       date = Time.current
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child)
-      service_part_day = create(:service_day, child: child)
       create(
         :illinois_full_day_attendance,
         service_day: service_full_day,
         child_approval: child.active_child_approval(attendance_date)
       )
-      # create(
-      #   :illinois_part_day_attendance,
-      #   service_day: service_part_day,
-      #   child_approval: child.active_child_approval(Time.current)
-      # )
 
       perform_enqueued_jobs
 
@@ -90,7 +84,6 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
     end
 
     it 'return not_enough_info label with attendance info but less than halfway through month' do
-      # travel_to Faker::Time.between(from: Time.current.at_beginning_of_year, to: Time.current)
       travel_to Time.current.at_beginning_of_month + rand(1..14).days
       business = create(:business)
       child = create(:child_in_illinois, business: business)
@@ -133,6 +126,30 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
       attendance_service = described_class.new(child, Time.current)
       expect(attendance_service.call).to eq('at_risk')
+    end
+
+    it 'return on_track label when attended rate is above treshold' do
+      rand_num = rand(14..28)
+      travel_to Time.current.at_beginning_of_month + rand_num.days
+      business = create(:business)
+      child = create(:child_in_illinois, business: business)
+      date = Time.current.at_beginning_of_month
+      amount_of_attendances = 11 + rand_num
+
+      amount_of_attendances.times do |idx|
+        service_day = create(:service_day,
+                             date: date.in_time_zone(Child.first.timezone) + idx.days,
+                             child: child)
+        create(:illinois_part_day_attendance,
+               service_day: service_day,
+               child_approval: child.child_approvals.first,
+               check_in: service_day.date + 3.hours)
+      end
+
+      perform_enqueued_jobs
+
+      attendance_service = described_class.new(child, Time.current)
+      expect(attendance_service.call).to eq('on_track')
     end
   end
 end
