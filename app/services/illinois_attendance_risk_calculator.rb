@@ -26,8 +26,8 @@ class IllinoisAttendanceRiskCalculator
     return 'not_enough_info' if partial_attendance_rate.zero? || less_than_halfway_through_month || !approval_amount
 
     if partial_attendance_rate < threshold
-      threshold_not_met_risks
-    elsif attended_all_approved_days
+      'at_risk'
+    else
       'on_track'
     end
   end
