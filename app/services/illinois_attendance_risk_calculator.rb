@@ -115,7 +115,9 @@ class IllinoisAttendanceRiskCalculator
 
   def elapsed_eligible_days
     elapsed_days = @filter_date.day - @filter_date.at_beginning_of_month.day
-    closed_days = Illinois::EligibleDaysCalculator.new(date: @filter_date, child: @child, until_given_date: true).closed_days_by_month_until_date
+    closed_days = Illinois::EligibleDaysCalculator
+                  .new(date: @filter_date, child: @child, until_given_date: true)
+                  .closed_days_by_month_until_date
 
     elapsed_days - closed_days
   end

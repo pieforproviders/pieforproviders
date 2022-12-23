@@ -40,6 +40,4 @@ class DateService
   def self.days_in_month(date)
     date.to_date.all_month.count
   end
-
-  
 end

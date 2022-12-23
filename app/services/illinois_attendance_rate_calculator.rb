@@ -18,10 +18,6 @@ class IllinoisAttendanceRateCalculator
     (family_days_attended.to_f / family_days_approved).round(3)
   end
 
-  def attended_days
-    return @attended_days
-  end
-
   def family_days_approved
     days = 0
     active_approval.children.each { |child| days += sum_eligible_days(child) }
