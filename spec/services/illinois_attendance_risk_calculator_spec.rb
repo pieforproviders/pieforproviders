@@ -8,22 +8,11 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
       business = create(:business)
       child = create(:child_in_illinois, business: business)
       date = Date.new(2022, 12, 20)
-      elapsed_days = 19
-      weekend_days = 6
-      elapsed_eligible_days = elapsed_days - weekend_days
+      eligible_days_in_week = 5
+      elapsed_weeks = 3
+      elapsed_eligible_days = eligible_days_in_week * elapsed_weeks
       risk_calculator_elapsed_days = described_class.new(child, date).send(:elapsed_eligible_days)
-      expect(risk_calculator_elapsed_days).to eq(elapsed_eligible_days)
-    end
 
-    it 'calculate elapsed eligible days when business has closures' do
-      date = Date.new(2022, 12, 20)
-      business = create(:business)
-      create(:business_closure, business: business, date: date)
-      child = create(:child_in_illinois, business: business)
-      elapsed_days = 19
-      closed_days = 7
-      elapsed_eligible_days = elapsed_days - closed_days
-      risk_calculator_elapsed_days = described_class.new(child, date).send(:elapsed_eligible_days)
       expect(risk_calculator_elapsed_days).to eq(elapsed_eligible_days)
     end
   end

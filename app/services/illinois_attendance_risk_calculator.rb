@@ -25,10 +25,6 @@ class IllinoisAttendanceRiskCalculator
     partial_attendance_rate = attendance_rate_until_date * 100
     return 'not_enough_info' if partial_attendance_rate.zero? || less_than_halfway_through_month || !approval_amount
 
-    
-    # binding.pry
-    
-    
     if partial_attendance_rate < threshold
       'at_risk'
     elsif partial_attendance_rate > threshold
@@ -118,8 +114,14 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def elapsed_eligible_days
-    eligible_full_days = Illinois::EligibleDaysCalculator.new(date: @filter_date, child: @child).call
-    eligible_part_days = Illinois::EligibleDaysCalculator.new(date: @filter_date, child: @child, full_time: false).call
+    eligible_full_days = Illinois::EligibleDaysCalculator.new(date: @filter_date, child: @child, until_given_date: true)
+                                                         .call
+    eligible_part_days = Illinois::EligibleDaysCalculator.new(
+      date: @filter_date,
+      child: @child,
+      full_time: false,
+      until_given_date: true
+    ).call
     eligible_full_days + eligible_part_days
   end
 

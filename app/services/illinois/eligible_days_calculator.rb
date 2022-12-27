@@ -31,7 +31,7 @@ module Illinois
     private
 
     def calculate_time_in_days
-      weeks_in_month = DateService.weeks_in_month(date)
+      weeks_in_month = @until_given_date ? DateService.weeks_until_given_date(date) : DateService.weeks_in_month(date)
       @approval = monthly_approval
       return 0 if @approval.nil?
 
