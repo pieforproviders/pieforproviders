@@ -115,6 +115,8 @@ export default function DashboardTable({
   }
 
   const renderChild = (child, record) => {
+    console.log('***************')
+    console.log(child)
     return child ? (
       <div>
         <p className="mb-1 text-lg">
