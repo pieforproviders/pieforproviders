@@ -398,29 +398,22 @@ export default function DashboardTable({
     ],
     default: [
       {
-        name: 'childName',
+        name: 'child',
         sorter: (a, b) => columnSorter(a.childLastName, b.childLastName),
         // eslint-disable-next-line react/display-name
         render: (text, record) => (
           <div>
-            <p className="text-base">
+            <p className="mb-1 text-lg">
               {`${record.childFirstName} ${record.childLastName}`}
-            </p>
-            <p className="text-base">
               {isInactive(record) ? `  (${t('inactive')})` : ''}
+            </p>
+            <p className="flex flex-wrap mt-0.5">
+              {record.business}{' '}
+              <img className="mx-1" alt="ellipse" src={ellipse} />{' '}
+              {record.cNumber}
             </p>
           </div>
         )
-      },
-      {
-        name: 'cNumber',
-        sorter: (a, b) => columnSorter(a.cNumber, b.cNumber),
-        render: (text, record) => (isInactive(record) ? '-' : text)
-      },
-      {
-        name: 'business',
-        sorter: (a, b) => columnSorter(a.business, b.business),
-        render: (text, record) => (isInactive(record) ? '-' : text)
       },
       {
         name: 'fullDaysAttended',
