@@ -72,7 +72,7 @@ module Illinois
 
     def attendance_rate
       if business.license_center?
-        business.attendance_rate(filter_date, eligible_days, attended_days)
+        business.attendance_rate(child, filter_date, eligible_days, attended_days)
       else
         child.attendance_rate(filter_date)
       end
