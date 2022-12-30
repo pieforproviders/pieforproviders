@@ -48,8 +48,8 @@ class Business < UuidApplicationRecord
     license_type.include?('center')
   end
 
-  def attendance_rate(date, eligible_days, attended_days)
-    AttendanceRateCalculator.new(nil, date, self, eligible_days: eligible_days, attended_days: attended_days).call
+  def attendance_rate(child, date, eligible_days, attended_days)
+    AttendanceRateCalculator.new(child, date, self, eligible_days: eligible_days, attended_days: attended_days).call
   end
 
   private
