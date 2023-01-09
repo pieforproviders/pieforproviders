@@ -6,7 +6,7 @@ class ServiceDayPolicy < ApplicationPolicy
   class Scope < ApplicationScope
     def resolve
       if user.admin?
-        scope.all.joins(child: :business).where(children: { businesses: { state: 'NE' } })
+        scope.all.joins(child: :business).where(children: { businesses: { state: user.state } })
       else
         scope.joins(
           child: {

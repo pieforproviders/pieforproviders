@@ -41,6 +41,7 @@ FactoryBot.define do
     end
 
     factory :admin do
+      state { 'NE' }
       before(:create, &:skip_confirmation!)
 
       confirmed_at { Time.zone.at(rand * Time.current.to_i) }
