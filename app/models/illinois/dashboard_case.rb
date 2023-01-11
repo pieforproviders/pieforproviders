@@ -33,8 +33,6 @@ module Illinois
     def guaranteed_revenue
       return 0 if no_attendances
 
-      # binding.pry 
-
       if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD
         earned_revenue_above_threshold * business.il_quality_bump
       else
