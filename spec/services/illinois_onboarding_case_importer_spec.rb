@@ -85,7 +85,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Rebecca's Childcare",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_four',
+            quality_rating: nil,
             accredited: true
           }
         )
@@ -129,7 +129,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Kate's Kids",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_five',
+            quality_rating: nil,
             accredited: false
           }
         )
@@ -401,7 +401,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Rebecca's Childcare",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_four',
+            quality_rating: nil,
             accredited: true
           }
         )
@@ -438,7 +438,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Kate's Kids",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_five',
+            quality_rating: nil,
             accredited: false
           }
         )

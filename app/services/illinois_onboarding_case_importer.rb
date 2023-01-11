@@ -151,17 +151,12 @@ class IllinoisOnboardingCaseImporter
     }
   end
 
-  # TODO: this is a really bad implementation
-  # but we're going to be refactoring QRIS to a table
-  # soon so I'm going to leave it
   def to_quality_rating(value)
     ratings = {
       'not rated' => 'not_rated',
-      'Step 1' => 'step_one',
-      'Step 2' => 'step_two',
-      'Step 3' => 'step_three',
-      'Step 4' => 'step_four',
-      'Step 5' => 'step_five'
+      'Bronze' => 'bronze',
+      'Silver' => 'silver',
+      'Gold' => 'gold'
     }
     ratings[value]
   end
