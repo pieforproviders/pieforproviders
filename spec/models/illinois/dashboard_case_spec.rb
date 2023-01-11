@@ -27,7 +27,8 @@ RSpec.describe Illinois::DashboardCase do
     end
 
     it 'returns guaranteed revenue for business without quality rating' do
-      fcc_business = create(:business, license_type: 'family_child_care_home_i', quality_rating: nil)
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil)
       child_from_fcc = create(:child_in_illinois, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -41,17 +42,14 @@ RSpec.describe Illinois::DashboardCase do
 
       revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
 
-      earned_revenue = revenues.earned_revenue_below_threshold
+      expected_revenue = Money.from_amount(10)
 
-      quality_bump = 1
-
-      # binding.pry
-
-      expect(revenues.guaranteed_revenue).to eq(earned_revenue * quality_bump)
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
     end
 
     it 'returns guaranteed revenue for business with bronze quality rating' do
-      fcc_business = create(:business, license_type: 'family_child_care_home_i', quality_rating: 'bronze')
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'bronze')
       child_from_fcc = create(:child_in_illinois, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -65,17 +63,14 @@ RSpec.describe Illinois::DashboardCase do
 
       revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
 
-      earned_revenue = revenues.earned_revenue_below_threshold
+      expected_revenue = Money.from_amount(10)
 
-      quality_bump = 1
-
-      # binding.pry
-
-      expect(revenues.guaranteed_revenue).to eq(earned_revenue * quality_bump)
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
     end
 
     it 'returns guaranteed revenue for business with silver quality rating' do
-      fcc_business = create(:business, license_type: 'family_child_care_home_i', quality_rating: 'silver')
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'silver')
       child_from_fcc = create(:child_in_illinois, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -89,17 +84,14 @@ RSpec.describe Illinois::DashboardCase do
 
       revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
 
-      earned_revenue = revenues.earned_revenue_below_threshold
+      expected_revenue = Money.from_amount(11)
 
-      quality_bump = 1
-
-      # binding.pry
-
-      expect(revenues.guaranteed_revenue).to eq(earned_revenue * quality_bump)
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
     end
 
     it 'returns guaranteed revenue for business with gold quality rating' do
-      fcc_business = create(:business, license_type: 'family_child_care_home_i', quality_rating: 'gold')
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'gold')
       child_from_fcc = create(:child_in_illinois, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -113,13 +105,9 @@ RSpec.describe Illinois::DashboardCase do
 
       revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
 
-      earned_revenue = revenues.earned_revenue_below_threshold
+      expected_revenue = Money.from_amount(11.5)
 
-      quality_bump = 1
-
-      # binding.pry
-
-      expect(revenues.guaranteed_revenue).to eq(earned_revenue * quality_bump)
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
     end
   end
 end

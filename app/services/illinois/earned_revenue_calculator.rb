@@ -15,7 +15,6 @@ module Illinois
 
     def call
       calculate_earned_revenue
-      # binding.pry
     end
 
     private
