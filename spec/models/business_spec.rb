@@ -47,6 +47,28 @@ RSpec.describe Business do
     end
   end
 
+  describe '#il_quality_bump' do
+    it 'checks the Illinois quality bump for nil quality rating' do
+      business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil)
+      expect(business.il_quality_bump).to eq(1)
+    end
+
+    it 'checks the Illinois quality bump for bronze quality rating' do
+      business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'bronze')
+      expect(business.il_quality_bump).to eq(1)
+    end
+
+    it 'checks the Illinois quality bump for silver quality rating' do
+      business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'silver')
+      expect(business.il_quality_bump).to eq(1.1)
+    end
+
+    it 'checks the Illinois quality bump for gold quality rating' do
+      business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'gold')
+      expect(business.il_quality_bump).to eq(1.15)
+    end
+  end
+
   describe '#set_default_schedules' do
     it 'does not create schedules if business is not from IL' do
       business = create(:business, state: 'NY', zipcode: '10007')

@@ -36,9 +36,9 @@ module Illinois
       # binding.pry 
 
       if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD
-        earned_revenue_above_threshold * quality_bump
+        earned_revenue_above_threshold * business.il_quality_bump
       else
-        earned_revenue_below_threshold * quality_bump
+        earned_revenue_below_threshold * business.il_quality_bump
       end
     end
 
@@ -152,17 +152,6 @@ module Illinois
         child.age_in_months(filter_date),
         business
       )
-    end
-
-    def quality_bump
-      case business.quality_rating
-      when 'silver'
-        1.1
-      when 'gold'
-        1.15
-      else
-        1
-      end
     end
   end
   # rubocop:enable Metrics/ClassLength
