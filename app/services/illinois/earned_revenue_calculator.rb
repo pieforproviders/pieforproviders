@@ -20,7 +20,6 @@ module Illinois
     private
 
     def calculate_earned_revenue
-      # binding.pry
       service_day.update!(earned_revenue: earned_revenue)
     end
 

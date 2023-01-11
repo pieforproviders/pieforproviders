@@ -25,5 +25,89 @@ RSpec.describe Illinois::DashboardCase do
       ).guaranteed_revenue)
         .to eq(0)
     end
+
+    it 'returns guaranteed revenue for business without quality rating' do
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil)
+      child_from_fcc = create(:child_in_illinois, business: fcc_business)
+      attendance_date = Time.current.at_beginning_of_month
+      service_full_day = create(:service_day, child: child_from_fcc)
+      create(
+        :illinois_full_day_attendance,
+        service_day: service_full_day,
+        child_approval: child_from_fcc.active_child_approval(attendance_date)
+      )
+
+      perform_enqueued_jobs
+
+      revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
+
+      expected_revenue = Money.from_amount(10)
+
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
+    end
+
+    it 'returns guaranteed revenue for business with bronze quality rating' do
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'bronze')
+      child_from_fcc = create(:child_in_illinois, business: fcc_business)
+      attendance_date = Time.current.at_beginning_of_month
+      service_full_day = create(:service_day, child: child_from_fcc)
+      create(
+        :illinois_full_day_attendance,
+        service_day: service_full_day,
+        child_approval: child_from_fcc.active_child_approval(attendance_date)
+      )
+
+      perform_enqueued_jobs
+
+      revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
+
+      expected_revenue = Money.from_amount(10)
+
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
+    end
+
+    it 'returns guaranteed revenue for business with silver quality rating' do
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'silver')
+      child_from_fcc = create(:child_in_illinois, business: fcc_business)
+      attendance_date = Time.current.at_beginning_of_month
+      service_full_day = create(:service_day, child: child_from_fcc)
+      create(
+        :illinois_full_day_attendance,
+        service_day: service_full_day,
+        child_approval: child_from_fcc.active_child_approval(attendance_date)
+      )
+
+      perform_enqueued_jobs
+
+      revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
+
+      expected_revenue = Money.from_amount(11)
+
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
+    end
+
+    it 'returns guaranteed revenue for business with gold quality rating' do
+      create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: 'gold')
+      child_from_fcc = create(:child_in_illinois, business: fcc_business)
+      attendance_date = Time.current.at_beginning_of_month
+      service_full_day = create(:service_day, child: child_from_fcc)
+      create(
+        :illinois_full_day_attendance,
+        service_day: service_full_day,
+        child_approval: child_from_fcc.active_child_approval(attendance_date)
+      )
+
+      perform_enqueued_jobs
+
+      revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
+
+      expected_revenue = Money.from_amount(11.5)
+
+      expect(revenues.guaranteed_revenue).to eq(expected_revenue)
+    end
   end
 end

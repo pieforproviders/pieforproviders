@@ -34,9 +34,9 @@ module Illinois
       return 0 if no_attendances
 
       if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD
-        earned_revenue_above_threshold
+        earned_revenue_above_threshold * business.il_quality_bump
       else
-        earned_revenue_below_threshold
+        earned_revenue_below_threshold * business.il_quality_bump
       end
     end
 

@@ -52,6 +52,17 @@ class Business < UuidApplicationRecord
     AttendanceRateCalculator.new(child, date, self, eligible_days: eligible_days, attended_days: attended_days).call
   end
 
+  def il_quality_bump
+    case quality_rating
+    when 'silver'
+      1.1
+    when 'gold'
+      1.15
+    else
+      1
+    end
+  end
+
   private
 
   def exponents
