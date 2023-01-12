@@ -28,8 +28,8 @@ module Illinois
       end
 
       def il_special_needs_revenue
-        (hours * child_approval.special_needs_hourly_rate) +
-          (days * child_approval.special_needs_daily_rate)
+        (days_attended[:part_time] * child_approval.special_needs_hourly_rate) +
+          (days_attended[:full_time] * child_approval.special_needs_daily_rate)
       end
 
       def il_base_revenue
