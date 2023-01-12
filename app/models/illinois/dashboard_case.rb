@@ -33,11 +33,22 @@ module Illinois
     def guaranteed_revenue
       return 0 if no_attendances
 
+      return (special_earned_revenue * business.il_quality_bump) if child.child_approvals.first.special_needs_rate
+
+      partial_revenue
+    end
+
+    def partial_revenue
       if (child.attendance_rate(filter_date) * 100) >= ATTENDANCE_THRESHOLD
         earned_revenue_above_threshold * business.il_quality_bump
       else
         earned_revenue_below_threshold * business.il_quality_bump
       end
+    end
+
+    def special_earned_revenue
+      ((part_days_by_date * child.child_approvals.first.special_needs_hourly_rate) +
+        (full_days_by_date * child.child_approvals.first.special_needs_daily_rate)).round(2)
     end
 
     def earned_revenue_above_threshold
