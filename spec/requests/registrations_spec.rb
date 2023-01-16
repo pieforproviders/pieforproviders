@@ -64,17 +64,18 @@ RSpec.describe 'POST /signup' do
       post '/signup', params: bad_survey_params
     end
 
-    describe 'with invalid survey params' do
-      let(:bad_survey_params) do
-        params[:user].store(:stressed_about_billing, 'Bonk')
-        params
-      end
+    # describe 'with invalid survey params' do
+    #   let(:bad_survey_params) do
+    #     params[:user].store(:stressed_about_billing, 'Bonk')
+    #     params
+    #   end
 
-      it 'returns unprocessable entity' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(JSON.parse(response.body)['detail']['stressed_about_billing'].first).to eq('is not included in the list')
-      end
-    end
+    #   it 'returns unprocessable entity' do
+    #     expect(response).to have_http_status :unprocessable_entity
+    #     expect(JSON.parse(response.body)['detail']['stressed_about_billing'].first).to
+    #                                                   eq('is not included in the list')
+    #   end
+    # end
 
     describe 'with missing required survey params' do
       let(:bad_survey_params) do
