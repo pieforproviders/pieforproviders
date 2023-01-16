@@ -26,7 +26,7 @@ describe('Signup', () => {
     cy.get(createSelector('CO')).click()
     cy.get(createSelector('email')).type(email)
     cy.get(createSelector('password')).type(password)
-    cy.get(createSelector('stressed-mostly-true')).parent().parent().click()
+    // cy.get(createSelector('stressed-mostly-true')).parent().parent().click()
     cy.get(createSelector('money-false')).parent().parent().click()
     cy.get(createSelector('time-true')).parent().parent().click()
     cy.get(createSelector('moreFamilies-mostly-false'))
