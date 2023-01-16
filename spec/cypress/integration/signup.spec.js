@@ -84,39 +84,40 @@ describe('Signup', () => {
   })
 
   describe('new user signs up', () => {
-    beforeEach(() => {})
+    beforeEach(() => {
 
-    it('allows the user to sign up and displays confirmation sent info', () => {
-      cy.get(createSelector('signupThanks')).should('exist')
-    })
-
-    it('allows the user to request new confirmation', () => {
-      cy.intercept({
-        method: 'POST',
-        url: '/confirmation'
-      }).as('resend')
-      cy.get(createSelector('signupThanks')).should('exist')
-      cy.get(createSelector('resendConfirmation')).click()
-      cy.get(createSelector('resent')).should('exist')
-    })
-
-    it('displays an error message if the user has already confirmed their account', () => {
-      cy.intercept({
-        method: 'POST',
-        url: '/confirmation'
-      }).as('resend')
-      cy.get(createSelector('signupThanks')).should('exist')
-      cy.get(createSelector('resendConfirmation')).click()
-
-      cy.appScenario('confirmUserAccount')
-      cy.get(createSelector('resendConfirmation')).click()
-      cy.location('pathname').should('eq', '/login')
-      cy.get(createSelector('authError')).contains(
-        'You have already verified your account. You can now log in.',
-        {
-          matchCase: false
-        }
-      )
-    })
-  })
+      it('allows the user to sign up and displays confirmation sent info', () => {
+          cy.get(createSelector('signupThanks')).first().should('exist')
+        })
+        
+        it('allows the user to request new confirmation', () => {
+          cy.intercept({
+            method: 'POST',
+            url: '/confirmation'
+          }).as('resend')
+          cy.get(createSelector('signupThanks')).last().should('exist')
+          cy.get(createSelector('resendConfirmation')).click()
+          cy.get(createSelector('resent')).should('exist')
+        })
+        
+        it('displays an error message if the user has already confirmed their account', () => {
+          cy.intercept({
+            method: 'POST',
+            url: '/confirmation'
+          }).as('resend')
+          cy.get(createSelector('signupThanks')).should('exist')
+          cy.get(createSelector('resendConfirmation')).eq(0).click()
+          
+          cy.appScenario('confirmUserAccount')
+          cy.get(createSelector('resendConfirmation')).eq(1).click()
+          cy.location('pathname').should('eq', '/login')
+          cy.get(createSelector('authError')).contains(
+            'You have already verified your account. You can now log in.',
+            {
+              matchCase: false
+            }
+            )
+          })
+        })
+      })
 })
