@@ -14,5 +14,9 @@ describe('<Signup />', () => {
     expect(container).toHaveTextContent(
       'Sign up today to claim more childcare subsidy funding'
     )
+    expect(container).toHaveTextContent(
+      'What are you hoping to get from using Pie for Providers?'
+    )
+    expect(container).toHaveTextContent('How did you hear about us?')
   })
 })
