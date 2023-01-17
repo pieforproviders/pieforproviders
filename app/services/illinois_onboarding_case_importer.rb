@@ -53,6 +53,7 @@ class IllinoisOnboardingCaseImporter
 
     build_case
   rescue StandardError => e
+    print_row_error(e) if should_print_message?
     send_appsignal_error(
       action: 'onboarding-case-importer',
       exception: e,
@@ -88,6 +89,7 @@ class IllinoisOnboardingCaseImporter
     @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
     update_child_approval
     update_illinois_approval_amounts
+    print_successful_message if should_print_message?
   end
 
   def update_child_approval
@@ -225,6 +227,30 @@ class IllinoisOnboardingCaseImporter
 
   def months(period)
     (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select { |d| d.day == 1 }
+  end
+
+  def print_successful_message
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['Client ID']} has been successfully processed"
+    # rubocop:enable Rails/Output
+  end
+
+  def print_row_error(error)
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['Client ID']} has an error #{error.inspect}" if provider_and_dhs_id_present?
+    # rubocop:enable Rails/Output
+  end
+
+  def provider_and_dhs_id_present?
+    @row['Provider Email'].present? && valid_dhs_id?
+  end
+
+  def valid_dhs_id?
+    @row['Client ID'].present? && @row['Client ID'] != '-'
+  end
+
+  def should_print_message?
+    !Rails.env.test?
   end
 end
 # rubocop:enable Metrics/ClassLength

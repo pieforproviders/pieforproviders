@@ -47,7 +47,7 @@ module Wonderschool
 
       def process_row(row)
         @row = row
-        @business = Business.find_or_create_by(required_business_params)
+        @business = Business.find_or_create_by!(required_business_params)
         @child = Child.find_or_initialize_by(required_child_params)
         @approval = find_approval
 
@@ -55,6 +55,7 @@ module Wonderschool
 
         build_case
       rescue StandardError => e
+        print_row_error(e) if should_print_message?
         send_appsignal_error(
           action: 'onboarding-case-importer',
           exception: e,
@@ -90,6 +91,7 @@ module Wonderschool
         @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
         update_child_approval
         update_nebraska_approval_amounts
+        print_successful_message if should_print_message?
       end
 
       def update_overlapping_approval_amounts(period, existing_aa)
@@ -145,7 +147,7 @@ module Wonderschool
 
       def required_business_params
         {
-          user: User.find_by(email: @row['Provider Email']&.downcase),
+          user: User.find_by!(email: @row['Provider Email']&.downcase),
           name: @row['Provider Name'],
           zipcode: @row['Business Zip Code'],
           county: @row['Business County'],
@@ -228,6 +230,30 @@ module Wonderschool
         @approval_fields[@approval_fields.to_h.keys.find do |key|
           key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key))
         end ]
+      end
+
+      def print_successful_message
+        # rubocop:disable Rails/Output
+        pp "DHS ID: #{@row['Client ID']} has been successfully processed test = #{Rails.env.test?}"
+        # rubocop:enable Rails/Output
+      end
+
+      def print_row_error(error)
+        # rubocop:disable Rails/Output
+        pp "DHS ID: #{@row['Client ID']} has an error #{error.inspect}" if provider_and_dhs_id_present?
+        # rubocop:enable Rails/Output
+      end
+
+      def provider_and_dhs_id_present?
+        @row['Provider Email'].present? && valid_dhs_id?
+      end
+
+      def valid_dhs_id?
+        @row['Client ID'].present? && @row['Client ID'] != '-'
+      end
+
+      def should_print_message?
+        !Rails.env.test?
       end
     end
     # rubocop:enable Metrics/ClassLength
