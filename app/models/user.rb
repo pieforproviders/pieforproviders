@@ -23,7 +23,6 @@ class User < UuidApplicationRecord
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 
-  validates :accept_more_subsidy_families, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
@@ -34,7 +33,6 @@ class User < UuidApplicationRecord
   validates :phone_number, uniqueness: true
   validates :service_agreement_accepted, presence: true
   validates :state, presence: true
-  validates :stressed_about_billing, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :timezone, presence: true
   validates :too_much_time, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
 

@@ -40,7 +40,8 @@ export function Signup() {
     acceptMoreSubsidyFamilies: null,
     notAsMuchMoney: null,
     tooMuchTime: null,
-    getFromPie: null
+    getFromPie: null,
+    heardAbout: null
   })
   const { sendGAEvent } = useGoogleAnalytics()
   const [success, setSuccess] = useState(false)
@@ -381,7 +382,7 @@ export function Signup() {
           className="flex mb-0 body-2-bold text-primaryBlue questions"
           label={t('helpUsUnderstand')}
         >
-          <Form.Item
+          {/* <Form.Item
             name="feelStressedQuestion"
             rules={[
               {
@@ -397,7 +398,7 @@ export function Signup() {
               questionText={t('feelStressed')}
               tag="stressed"
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             name="moneyQuestion"
             rules={[
@@ -432,7 +433,7 @@ export function Signup() {
               tag="time"
             />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             name="acceptingMoreQuestion"
             rules={[
               {
@@ -451,7 +452,7 @@ export function Signup() {
               questionText={t('acceptingMoreFamilies')}
               tag="moreFamilies"
             />
-          </Form.Item>
+          </Form.Item> */}
         </Form.Item>
 
         <Form.Item
@@ -460,11 +461,27 @@ export function Signup() {
           label={t('hopeForP4P')}
         >
           <TextArea
-            rows={3}
+            rows={1}
             onChange={event =>
               setUser({ ...user, getFromPie: event.target.value })
             }
             name="openSignUpQuestion"
+            className="open-signup-question"
+            data-cy="open-signup-question"
+          />
+        </Form.Item>
+
+        <Form.Item
+          className="body-2-bold text-primaryBlue optional-questions"
+          name="heardAboutQuestion"
+          label={t('heardAboutUs')}
+        >
+          <TextArea
+            rows={1}
+            onChange={event =>
+              setUser({ ...user, heardAbout: event.target.value })
+            }
+            name="heardAboutQuestion"
             className="open-signup-question"
             data-cy="open-signup-question"
           />
@@ -500,7 +517,7 @@ export function Signup() {
         <Form.Item className="text-center">
           <PaddedButton
             data-cy="signupBtn"
-            text={t('next')}
+            text={t('signUp')}
             classes="bg-green1 border-green1 w-full next-button"
           />
         </Form.Item>
