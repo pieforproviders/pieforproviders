@@ -29,20 +29,6 @@ RSpec.describe User do
     expect(build(:admin)).to be_valid
   end
 
-  # it 'validates that survey questions are a permitted value only' do
-  #   user.save!
-
-  #   user.accept_more_subsidy_families = 'True'
-  #   user.valid?
-  #   expect(user.errors.messages).to eq({})
-  #   expect(user).to be_valid
-
-  #   user.accept_more_subsidy_families = 'not a valid answer'
-  #   user.valid?
-  #   expect(user.errors.messages.keys).to eq([:accept_more_subsidy_families])
-  #   expect(user.errors.messages[:accept_more_subsidy_families]).to include('is not included in the list')
-  # end
-
   it 'formats a phone number with non-digit characters' do
     expect(user.phone_number).to eq('8888888888')
   end
