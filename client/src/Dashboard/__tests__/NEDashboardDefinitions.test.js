@@ -1,13 +1,13 @@
 import React from 'react'
 import { render } from 'setupTests'
-import DashboardDefinitions from '../DashboardDefinitions'
+import NEDashboardDefinitions from '../NEDashboardDefinitions'
 
 const doRender = (props = { activeKey: 1, setActiveKey: () => {} }) => {
-  return render(<DashboardDefinitions {...props} />)
+  return render(<NEDashboardDefinitions {...props} />)
 }
 
-describe('<DashboardDefinitions />', () => {
-  it('renders the DashboardDefinition', () => {
+describe('<NEDashboardDefinitions />', () => {
+  it('renders NE DashboardDefinitions', () => {
     const { container } = doRender()
     expect(container).toHaveTextContent('Definitions')
     expect(container).toHaveTextContent('Attendance')
