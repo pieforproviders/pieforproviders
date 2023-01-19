@@ -10,6 +10,7 @@ import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { setUser } from '_reducers/userReducer'
 import DashboardDefintions from './DashboardDefinitions'
+import ILDashboardDefintions from './ILDashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
@@ -410,10 +411,17 @@ export function Dashboard() {
           }
         }}
       />
-      <DashboardDefintions
-        activeKey={activeKey}
-        setActiveKey={handleDefinitionsPanel}
-      />
+      {user.state === 'NE' ? (
+        <DashboardDefintions
+          activeKey={activeKey}
+          setActiveKey={handleDefinitionsPanel}
+        />
+      ) : (
+        <ILDashboardDefintions
+          activeKey={activeKey}
+          setActiveKey={handleDefinitionsPanel}
+        />
+      )}
       <Modal
         className="notifications-modal"
         visible={showNotificationsModal}

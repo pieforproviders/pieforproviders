@@ -173,8 +173,10 @@ export default function DashboardTable({
       .map(({ name = '', children = [], ...options }) => {
         const hasDefinition = [
           'attendance',
-          // 'revenue',
-          'totalAuthorizationPeriod'
+          'attendanceRate',
+          'guaranteedRevenue',
+          'totalAuthorizationPeriod',
+          'authorizedPeriod'
         ]
         return {
           // eslint-disable-next-line react/display-name
