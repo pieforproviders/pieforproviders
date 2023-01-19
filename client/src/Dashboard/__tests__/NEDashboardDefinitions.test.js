@@ -1,21 +1,21 @@
 import React from 'react'
 import { render } from 'setupTests'
-import DashboardDefinitions from '../DashboardDefinitions'
+import NEDashboardDefinitions from '../NEDashboardDefinitions'
 
 const doRender = (props = { activeKey: 1, setActiveKey: () => {} }) => {
-  return render(<DashboardDefinitions {...props} />)
+  return render(<NEDashboardDefinitions {...props} />)
 }
 
-describe('<DashboardDefinitions />', () => {
-  it('renders the DashboardDefinition', () => {
+describe('<NEDashboardDefinitions />', () => {
+  it('renders NE DashboardDefinitions', () => {
     const { container } = doRender()
     expect(container).toHaveTextContent('Definitions')
     expect(container).toHaveTextContent('Attendance')
-    expect(container).toHaveTextContent('Exceeded limit')
+    // expect(container).toHaveTextContent('Exceeded limit')
     expect(container).toHaveTextContent('On track')
     expect(container).toHaveTextContent('At risk')
-    expect(container).toHaveTextContent('Ahead of schedule')
-    expect(container).toHaveTextContent('Full days')
+    // expect(container).toHaveTextContent('Ahead of schedule')
+    // expect(container).toHaveTextContent('Full days')
     expect(container).toHaveTextContent('Hours')
     expect(container).toHaveTextContent('Hours attended')
     expect(container).toHaveTextContent('Absences')

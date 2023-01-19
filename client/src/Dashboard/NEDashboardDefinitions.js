@@ -5,16 +5,9 @@ import { ArrowUpOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/tag-overrides.css'
 
-export default function ILDashboardDefinitions({ activeKey, setActiveKey }) {
+export default function DashboardDefintions({ activeKey, setActiveKey }) {
   const { Panel } = Collapse
   const { t } = useTranslation()
-  const titleWithDescription = {
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'baseline'
-  }
 
   return (
     <Collapse
@@ -31,17 +24,14 @@ export default function ILDashboardDefinitions({ activeKey, setActiveKey }) {
       >
         {
           <div className="text-gray8 body-1">
-            <div style={titleWithDescription}>
-              <p>
-                <span className="text-black h3-small">
-                  {t('attendanceRate')}:
-                </span>{' '}
-                <span>{t('ilAttendanceRateDef')}</span>
-              </p>
+            <div>
+              <p className="text-black h3-small">{t('attendance')}</p>
             </div>
             {[
+              { name: 'exceededLimit', color: 'red' },
+              { name: 'onTrack', color: 'green' },
               { name: 'atRisk', color: 'orange' },
-              { name: 'onTrack', color: 'green' }
+              { name: 'aheadOfSchedule', color: 'green' }
             ].map((tag, i) => (
               <div key={i} className="my-4">
                 <p>
@@ -50,7 +40,7 @@ export default function ILDashboardDefinitions({ activeKey, setActiveKey }) {
                   </Tag>{' '}
                   <span>
                     {t(
-                      `il${
+                      `ne${
                         tag.name.charAt(0).toUpperCase() + tag.name.slice(1)
                       }Def`
                     )}
@@ -58,23 +48,40 @@ export default function ILDashboardDefinitions({ activeKey, setActiveKey }) {
                 </p>
               </div>
             ))}
-            <div style={titleWithDescription}>
-              <p>
-                <span className="text-black h3-small">
-                  {t('earnedRevenue')}:
-                </span>{' '}
-                <span>{t('ilEarnedRevenueDef')}</span>
+            {['fullDays', 'hours', 'hoursAttended', 'absences'].map((c, i) => (
+              <div key={i} className="my-4">
+                <span>
+                  <span className="font-bold">{t(c)}</span>:{' '}
+                  {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                </span>
+              </div>
+            ))}
+            <div>
+              <p className="text-black h3-small">{t('revenue')}</p>
+            </div>
+            {['earnedRevenue', 'estimatedRevenue', 'familyFee'].map((c, i) => (
+              <div key={i} className="my-4">
+                <span>
+                  <span className="font-bold">{t(c)}</span>:{' '}
+                  {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                </span>
+              </div>
+            ))}
+            <div>
+              <p className="text-black h3-small">
+                {t('totalAuthorizationPeriod')}
               </p>
             </div>
-            <br />
-            <div style={titleWithDescription}>
-              <p>
-                <span className="text-black h3-small">
-                  {t('authorizedPeriod')}:
-                </span>{' '}
-                <span>{t('ilAuthorizedPeriodDef')}</span>
-              </p>
-            </div>
+            {['authorizedPeriod', 'hoursRemaining', 'fullDaysRemaining'].map(
+              (c, i) => (
+                <div key={i} className="my-4">
+                  <span>
+                    <span className="font-bold">{t(c)}</span>:{' '}
+                    {t(`ne${c.charAt(0).toUpperCase() + c.slice(1)}Def`)}
+                  </span>
+                </div>
+              )
+            )}
             <footer className="flex justify-end" id="definitions">
               <a href="#top">
                 <Button
@@ -94,7 +101,7 @@ export default function ILDashboardDefinitions({ activeKey, setActiveKey }) {
   )
 }
 
-ILDashboardDefinitions.propTypes = {
+DashboardDefintions.propTypes = {
   activeKey: PropTypes.number,
   setActiveKey: PropTypes.func
 }
