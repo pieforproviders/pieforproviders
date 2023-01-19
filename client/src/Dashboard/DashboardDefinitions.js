@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import NEDashboardDefintions from './NEDashboardDefinitions'
-import ILDashboardDefintions from './ILDashboardDefinitions'
+import NEDashboardDefinitions from './NEDashboardDefinitions'
+import ILDashboardDefinitions from './ILDashboardDefinitions'
 import '_assets/styles/tag-overrides.css'
 
 export default function DashboardDefinitions({
@@ -10,9 +10,9 @@ export default function DashboardDefinitions({
   state
 }) {
   return state === 'NE' ? (
-    <NEDashboardDefintions activeKey={activeKey} setActiveKey={setActiveKey} />
+    <NEDashboardDefinitions activeKey={activeKey} setActiveKey={setActiveKey} />
   ) : (
-    <ILDashboardDefintions activeKey={activeKey} setActiveKey={setActiveKey} />
+    <ILDashboardDefinitions activeKey={activeKey} setActiveKey={setActiveKey} />
   )
 }
 

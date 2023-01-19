@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { setUser } from '_reducers/userReducer'
-import DashboardDefintions from './DashboardDefinitions'
+import DashboardDefinitions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
@@ -410,7 +410,7 @@ export function Dashboard() {
           }
         }}
       />
-      <DashboardDefintions
+      <DashboardDefinitions
         activeKey={activeKey}
         setActiveKey={handleDefinitionsPanel}
         state={user.state}

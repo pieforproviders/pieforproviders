@@ -5,7 +5,7 @@ import { ArrowUpOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
 import '_assets/styles/tag-overrides.css'
 
-export default function DashboardDefintions({ activeKey, setActiveKey }) {
+export default function NEDashboardDefinitions({ activeKey, setActiveKey }) {
   const { Panel } = Collapse
   const { t } = useTranslation()
 
@@ -101,7 +101,7 @@ export default function DashboardDefintions({ activeKey, setActiveKey }) {
   )
 }
 
-DashboardDefintions.propTypes = {
+NEDashboardDefinitions.propTypes = {
   activeKey: PropTypes.number,
   setActiveKey: PropTypes.func
 }
