@@ -352,7 +352,7 @@ GEM
       rubocop (~> 1.33)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-prof (1.4.3)
+    ruby-prof (1.4.5)
     ruby-progressbar (1.11.0)
     shellany (0.0.1)
     shoulda-matchers (5.3.0)
