@@ -52,7 +52,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-prettier": "^3.4.1",
     "faker": "5.5.3",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.3",
     "start-server-and-test": "^1.15.2"
   },
   "dependencies": {
