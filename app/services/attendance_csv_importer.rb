@@ -45,6 +45,7 @@ class AttendanceCsvImporter
     return unless (@start_date..@end_date).cover?(@row['check_in'].in_time_zone(@child.timezone).at_beginning_of_day)
 
     create_attendance
+    print_successful_message if should_print_message?
   rescue StandardError => e
     # rubocop:disable Rails/Output
     pp "Error on child #{@child.inspect}. error => #{e.inspect}"
@@ -127,5 +128,15 @@ class AttendanceCsvImporter
     # rubocop:enable Rails/Output
 
     raise NoSuchBusiness
+  end
+
+  def print_successful_message
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['dhs_id']} has been successfully processed"
+    # rubocop:enable Rails/Output
+  end
+
+  def should_print_message?
+    !Rails.env.test?
   end
 end
