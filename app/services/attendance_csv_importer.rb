@@ -46,6 +46,10 @@ class AttendanceCsvImporter
 
     create_attendance
   rescue StandardError => e
+    # rubocop:disable Rails/Output
+    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
+    # rubocop:enable Rails/Output
+
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
       exception: e,
@@ -93,23 +97,35 @@ class AttendanceCsvImporter
     found_child = @business.children.find_by(dhs_id: @row['dhs_id']) || @business.children.find_by(
       first_name: @row['first_name'], last_name: @row['last_name']
     )
+
     found_child.presence || log_missing_child
   end
 
   def log_missing_child
+    message = "Business: #{@business.id} - child record for attendance " \
+              "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
+              "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping"
     Rails.logger.tagged('attendance import') do
-      message = "Business: #{@business.id} - child record for attendance " \
-                "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
-                "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping"
       Rails.logger.info message
     end
+
+    # rubocop:disable Rails/Output
+    pp message
+    # rubocop:enable Rails/Output
+
     raise NoSuchChild
   end
 
   def log_missing_business
+    message = "Business #{@file_name.split('-').first} not found; skipping"
     Rails.logger.tagged('attendance import') do
-      Rails.logger.info "Business #{@file_name.split('-').first} not found; skipping"
+      Rails.logger.info message
     end
+
+    # rubocop:disable Rails/Output
+    pp message
+    # rubocop:enable Rails/Output
+
     raise NoSuchBusiness
   end
 end
