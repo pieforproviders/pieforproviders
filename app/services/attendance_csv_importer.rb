@@ -45,7 +45,12 @@ class AttendanceCsvImporter
     return unless (@start_date..@end_date).cover?(@row['check_in'].in_time_zone(@child.timezone).at_beginning_of_day)
 
     create_attendance
+    print_successful_message if should_print_message?
   rescue StandardError => e
+    # rubocop:disable Rails/Output
+    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
+    # rubocop:enable Rails/Output
+
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
       exception: e,
@@ -93,23 +98,45 @@ class AttendanceCsvImporter
     found_child = @business.children.find_by(dhs_id: @row['dhs_id']) || @business.children.find_by(
       first_name: @row['first_name'], last_name: @row['last_name']
     )
+
     found_child.presence || log_missing_child
   end
 
   def log_missing_child
+    message = "Business: #{@business.id} - child record for attendance " \
+              "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
+              "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping"
     Rails.logger.tagged('attendance import') do
-      message = "Business: #{@business.id} - child record for attendance " \
-                "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
-                "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping"
       Rails.logger.info message
     end
+
+    # rubocop:disable Rails/Output
+    pp message
+    # rubocop:enable Rails/Output
+
     raise NoSuchChild
   end
 
   def log_missing_business
+    message = "Business #{@file_name.split('-').first} not found; skipping"
     Rails.logger.tagged('attendance import') do
-      Rails.logger.info "Business #{@file_name.split('-').first} not found; skipping"
+      Rails.logger.info message
     end
+
+    # rubocop:disable Rails/Output
+    pp message
+    # rubocop:enable Rails/Output
+
     raise NoSuchBusiness
+  end
+
+  def print_successful_message
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['dhs_id']} has been successfully processed"
+    # rubocop:enable Rails/Output
+  end
+
+  def should_print_message?
+    !Rails.env.test?
   end
 end

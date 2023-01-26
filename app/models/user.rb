@@ -94,6 +94,7 @@ end
 #  full_name                    :string           not null
 #  get_from_pie                 :text
 #  greeting_name                :string
+#  heard_about                  :string
 #  language                     :string           not null
 #  last_sign_in_at              :datetime
 #  last_sign_in_ip              :inet
