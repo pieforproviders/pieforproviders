@@ -252,5 +252,12 @@ class IllinoisOnboardingCaseImporter
   def should_print_message?
     !Rails.env.test?
   end
+
+  def check_date_format(date)
+    Date.iso8601(date)
+    true
+  rescue ArgumentError
+    false
+  end
 end
 # rubocop:enable Metrics/ClassLength
