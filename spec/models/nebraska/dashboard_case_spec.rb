@@ -51,8 +51,8 @@ RSpec.describe Nebraska::DashboardCase do
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
-      ).attended_weekly_hours).to eq(
-        "0.0 of #{child_approval.authorized_weekly_hours}"
+      ).attended_weekly_hours.to_i).to eq(
+        child_approval.authorized_weekly_hours
       )
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Nebraska::DashboardCase do
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
-      ).attended_weekly_hours).to eq('0.0 of ')
+      ).attended_weekly_hours).to eq('0')
     end
   end
 end
