@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Businesses' do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:user_business) { create(:business_with_children, user: logged_in_user) } 
+  let!(:user_business) { create(:business_with_children, user: logged_in_user) }
   let!(:non_user_business) { create(:business_with_children) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
@@ -34,11 +34,11 @@ RSpec.describe 'Api::V1::Businesses' do
         expect(response).to match_response_schema('businesses')
       end
 
-      it "returns businesses in alphabetical order" do
-        create(:business, name: "aaa child care")
+      it 'returns businesses in alphabetical order' do
+        create(:business, name: 'aaa child care')
         get '/api/v1/businesses', headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.first['name']).to include("aaa child care")
+        expect(parsed_response.first['name']).to include('aaa child care')
       end
     end
   end
