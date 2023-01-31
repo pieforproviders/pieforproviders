@@ -14,7 +14,7 @@
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "@reduxjs/toolkit": "^1.9.1",
-    "antd": "^4.18.9",
+    "antd": "^5.1.7",
     "antd-mask-input": "^0.1.15",
     "craco-less": "^1.20.0",
     "dayjs": "^1.10.8",
