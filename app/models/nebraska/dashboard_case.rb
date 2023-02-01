@@ -191,14 +191,7 @@ module Nebraska
         'dashboard_case.attended_weekly_hours'
       ) do
         authorized_weekly_hours = child_approval&.authorized_weekly_hours
-        return "0.0 of #{authorized_weekly_hours}" unless attendances_this_month || reimbursable_month_absent_days
-
-        @attended_weekly_hours ||= attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
-          attendances: attendances_this_month,
-          absences: reimbursable_month_absent_days,
-          filter_date: filter_date
-        ).call
-        "#{attended_hours&.positive? ? attended_hours : 0.0} of #{authorized_weekly_hours}"
+        authorized_weekly_hours.to_i.to_s
       end
     end
 

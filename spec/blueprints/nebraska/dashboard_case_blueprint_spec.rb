@@ -72,7 +72,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 3).to_f)
         expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 1)
         # hours this week only
-        expect(parsed_response['hours_attended']).to eq("9.0 of #{child_approval.authorized_weekly_hours}")
+        expect(parsed_response['hours_attended'].to_i).to eq(child_approval.authorized_weekly_hours.to_i)
         # no revenue because of family fee
         expect(parsed_response['earned_revenue']).to eq(0)
         # this includes 3.0 of hourly attendance, 1 full day attendance + 17
@@ -111,7 +111,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         )
 
         # hours this week only - we've traveled ahead in time
-        expect(parsed_response['hours_attended']).to eq("0.0 of #{child_approval.authorized_weekly_hours}")
+        expect(parsed_response['hours_attended'].to_i).to eq(child_approval.authorized_weekly_hours.to_i)
         expect(parsed_response['hours']).to eq('3.0')
         expect(parsed_response['full_days']).to eq('1.0')
         expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 3.0).to_f)
@@ -156,7 +156,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['full_days']).to eq('1.0')
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 1)
-          expect(parsed_response['hours_attended']).to eq("0.0 of #{child_approval.authorized_weekly_hours}")
+          expect(parsed_response['hours_attended'].to_i).to eq(child_approval.authorized_weekly_hours.to_i)
           # still no revenue because of family fee
           expect(parsed_response['earned_revenue']).to eq(0.0)
           # this includes prior 3.0 hourly, 1 full day, and new 3.25 hours of attendance + remaining 7 days
@@ -198,7 +198,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 6.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 2)
           # hours this week only - we've traveled ahead in time
-          expect(parsed_response['hours_attended']).to eq("0.0 of #{child_approval.authorized_weekly_hours}")
+          expect(parsed_response['hours_attended'].to_i).to eq(child_approval.authorized_weekly_hours.to_i)
           # broke past the family fee; this formula includes the 2 daily attendances and the 6.25 hourly attendances
           expect(parsed_response['earned_revenue'])
             .to eq(

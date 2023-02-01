@@ -131,89 +131,50 @@ export default function DashboardTable({
     )
   }
 
-  const getCurrentWeek = () => {
-    const getDateByDay = day => new Date().setDate(day)
-
-    const matchAndReplaceDate = (dateString = '') => {
-      const match = dateString.match(/^[A-Za-z]+/)
-      return match
-        ? dateString.replace(match[0], t(match[0].toLowerCase()))
-        : ''
-    }
-
-    const current = new Date()
-    const first = current.getDate() - current.getDay()
-    const last = first + 6
-
-    const firstDay = new Date(getDateByDay(first)).toLocaleDateString(
-      'default',
-      {
-        month: 'short',
-        day: 'numeric'
-      }
-    )
-
-    const lastDay = new Date(getDateByDay(last)).toLocaleDateString('default', {
-      month: 'short',
-      day: 'numeric'
-    })
-
-    return `${matchAndReplaceDate(firstDay)} - ${matchAndReplaceDate(lastDay)}`
-  }
-
   const generateColumns = columns => {
-    return columns
-      .filter(
-        column =>
-          column.name !== 'hoursAttended' ||
-          dateFilterValue === undefined ||
-          (dayjs(dateFilterValue?.date).month() === dayjs().month() &&
-            dayjs(dateFilterValue?.date).year() === dayjs().year())
-      )
-      .map(({ name = '', children = [], ...options }) => {
-        const hasDefinition = [
-          'attendance',
-          'attendanceRate',
-          'guaranteedRevenue',
-          'totalAuthorizationPeriod',
-          'authorizedPeriod'
-        ]
-        return {
-          // eslint-disable-next-line react/display-name
-          title: () =>
-            hasDefinition.includes(name) ? (
-              <div className="flex">
-                {t(`${name}`)}
-                <a
-                  href={'#definitions'}
-                  onClick={() => setActiveKey(name)}
-                  id={name}
-                >
-                  <img
-                    className={`ml-1`}
-                    src={questionMark}
-                    alt="question mark"
-                  />
-                </a>
-              </div>
-            ) : name === 'hoursAttended' ? (
-              <p>
-                {t(`${name}`)}
-                <br />
-                {getCurrentWeek()}
-              </p>
-            ) : (
-              t(`${name}`)
-            ),
-          dataIndex: name,
-          key: name,
-          width: 200,
-          onHeaderCell,
-          children: generateColumns(children),
-          sortDirections: ['descend', 'ascend'],
-          ...options
-        }
-      })
+    return columns.map(({ name = '', children = [], ...options }) => {
+      const hasDefinition = [
+        'attendance',
+        'attendanceRate',
+        'guaranteedRevenue',
+        'totalAuthorizationPeriod',
+        'authorizedPeriod'
+      ]
+      return {
+        // eslint-disable-next-line react/display-name
+        title: () =>
+          hasDefinition.includes(name) ? (
+            <div className="flex">
+              {t(`${name}`)}
+              <a
+                href={'#definitions'}
+                onClick={() => setActiveKey(name)}
+                id={name}
+              >
+                <img
+                  className={`ml-1`}
+                  src={questionMark}
+                  alt="question mark"
+                />
+              </a>
+            </div>
+          ) : name === 'hoursAttended' ? (
+            <p>
+              {t('maxHours')}
+              <br />
+            </p>
+          ) : (
+            t(`${name}`)
+          ),
+        dataIndex: name,
+        key: name,
+        width: 200,
+        onHeaderCell,
+        children: generateColumns(children),
+        sortDirections: ['descend', 'ascend'],
+        ...options
+      }
+    })
   }
 
   const renderDollarAmount = (num, record) =>
