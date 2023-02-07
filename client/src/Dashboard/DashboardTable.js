@@ -13,7 +13,7 @@ import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
-import grayVector from '_assets/gray-vector.svg'
+import editIcon from '_assets/editIcon.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
@@ -213,17 +213,18 @@ export default function DashboardTable({
   const renderActions = (_text, record) => (
     <div>
       <Button
-        disabled={isInactive(record)}
         type="link"
         className="flex items-start"
         onClick={() => handleInactiveClick(record)}
       >
         <img
           alt="vector"
-          src={isInactive(record) ? grayVector : vector}
+          src={isInactive(record) ? editIcon : vector}
           className="mr-2"
         />
-        <span className="underline hover:text-blue2">{t('markInactive')}</span>
+        <span className="underline hover:text-blue2">
+          {isInactive(record) ? t('markActive') : t('markInactive')}
+        </span>
       </Button>
     </div>
   )
@@ -515,13 +516,8 @@ export default function DashboardTable({
           <Button key="cancelModal" onClick={handleModalCancel}>
             {t('cancel')}
           </Button>,
-          <Button
-            key="okModal"
-            disabled={inactiveDate && inactiveReason ? false : true}
-            onClick={handleMIModalOk}
-            type="primary"
-          >
-            {t('markInactive')}
+          <Button key="okModal" onClick={handleMIModalOk} type="primary">
+            {isInactive(selectedChild) ? t('markActive') : t('markInactive')}
           </Button>
         ]}
       >
