@@ -502,7 +502,9 @@ export default function DashboardTable({
         title={
           <div className="text-lg font-semibold text-gray9">
             <p>
-              {t('markInactive') +
+              {(isInactive(selectedChild)
+                ? t('markActive')
+                : t('markInactive')) +
                 ': ' +
                 (`${selectedChild?.child?.childFirstName} ${selectedChild?.child?.childLastName}` ||
                   `${selectedChild?.childFirstName} ${selectedChild?.childLastName}`)}
