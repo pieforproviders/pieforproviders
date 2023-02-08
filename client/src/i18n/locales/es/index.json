@@ -233,6 +233,7 @@
   "absent": "Ausente",
   "covidRelated": "Relacionado con COVID",
   "save": "Guardar",
+  "saving": "Guardando . . .",
   "validTime": "Por favor ingresa una fecha válida",
   "today": "Hoy",
   "addAnotherDate": "Otra fecha",
