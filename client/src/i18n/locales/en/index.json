@@ -233,6 +233,7 @@
   "absent": "Absent",
   "covidRelated": "COVID-related",
   "save": "Save",
+  "saving": "Saving . . .",
   "validTime": "Please enter a valid time",
   "today": "Today",
   "addAnotherDate": "Add another date",
