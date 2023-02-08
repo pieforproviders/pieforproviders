@@ -201,7 +201,7 @@ export default function DashboardTable({
     var formated_dates = dates.map(date => (
       <>
         {dayjs(date).format('M/D')}
-        {last_date == date ? '' : ', '}
+        {last_date === date ? '' : ', '}
       </>
     ))
     return formated_dates
