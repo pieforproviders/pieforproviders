@@ -46,6 +46,8 @@ export function Attendance() {
   const [tableData, setTableData] = useState(cases)
   const [isSuccessModalVisible, setSuccessModalVisible] = useState(false)
   const [errors, setErrors] = useState(true)
+  const [saving, setSaving] = useState(false)
+
   const reduceAttendanceData = data =>
     /* 
     accumulate an array of arrays of objects where the top-level key is the child id
@@ -250,10 +252,15 @@ export function Attendance() {
 
   i18n.on('languageChanged', () => setColumns(generateColumns()))
 
+  const handleSaveLabel = () => {
+    return saving ? t('saving') : t('save')
+  }
+
   const handleSave = async () => {
     let responses = []
     // TODO Refactor: find a more compact way to do this between Attendance
     // and AttendanceView to remove duplicate code and comparison logic
+    setSaving(true)
     const formatAttendanceData = ({ check_in, check_out, date }) => {
       const checkIn = check_in ? dayjs(`${date} ${check_in}`) : null
       const checkOut = check_out ? dayjs(`${date} ${check_out}`) : null
@@ -360,6 +367,7 @@ export function Attendance() {
       console.log('error sending attendance data to API')
     } else {
       setSuccessModalVisible(true)
+      setSaving(false)
       // implemented per: https://help.hotjar.com/hc/en-us/articles/4405109971095-Events-API-Reference
       window.hj =
         window.hj ||
@@ -469,9 +477,9 @@ export function Attendance() {
       <div className="flex justify-center">
         <PaddedButton
           classes="mt-3 w-40 bg-primaryBlue"
-          text={t('save')}
+          text={handleSaveLabel()}
           onClick={handleSave}
-          disabled={latestError.current}
+          disabled={latestError.current || saving}
         />
       </div>
       <Modal
