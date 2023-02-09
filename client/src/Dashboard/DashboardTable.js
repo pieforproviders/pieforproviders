@@ -53,6 +53,7 @@ export default function DashboardTable({
       role: 'columnheader'
     }
   }
+  console.log(sortedRows)
 
   const isInactive = record =>
     !record.active || inactiveCases.includes(record.key)
@@ -180,9 +181,31 @@ export default function DashboardTable({
   const renderDollarAmount = (num, record) =>
     isInactive(record) ? '-' : <div>{currencyFormatter.format(num)}</div>
 
-  const replaceText = (text, translation) => (
-    <div>{text.replace(translation, t(translation))}</div>
-  )
+  const replaceText = (
+    text,
+    translation,
+    is_absence = false,
+    absences_dates = null
+  ) =>
+    !is_absence ? (
+      <div>{text.replace(translation, t(translation))}</div>
+    ) : (
+      <div>
+        <div>{text.replace(translation, t(translation))}</div>
+        <div>{render_absences_dates(absences_dates)}</div>
+      </div>
+    )
+
+  const render_absences_dates = dates => {
+    const last_date = dates.at(-1)
+    var formated_dates = dates.map(date => (
+      <>
+        {dayjs(date).format('M/D')}
+        {last_date === date ? '' : ', '}
+      </>
+    ))
+    return formated_dates
+  }
 
   const renderActions = (_text, record) => (
     <div>
@@ -271,18 +294,20 @@ export default function DashboardTable({
             render: renderFullDays
           },
           {
+            name: 'absences',
+            sorter: (a, b) =>
+              a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
+            render: (text, record) =>
+              isInactive(record)
+                ? '-'
+                : replaceText(text, 'of', true, record.absences_dates)
+          },
+          {
             name: 'hours',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
             render: (text, record) =>
               isInactive(record) ? '-' : text.split(' ')[0]
-          },
-          {
-            name: 'absences',
-            sorter: (a, b) =>
-              a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
-            render: (text, record) =>
-              isInactive(record) ? '-' : replaceText(text, 'of')
           },
           {
             name: 'hoursAttended',

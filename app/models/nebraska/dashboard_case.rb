@@ -47,6 +47,15 @@ module Nebraska
       end
     end
 
+    def absences_dates
+      Appsignal.instrument_sql(
+        'dashboard_case.absences_dates'
+      ) do
+        @absences_dates ||= absent_days
+          &.for_month(filter_date)
+      end
+    end
+
     def case_number
       Appsignal.instrument_sql(
         'dashboard_case.case_number'
