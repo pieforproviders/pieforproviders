@@ -524,39 +524,47 @@ export default function DashboardTable({
         ]}
       >
         <p className="text-base text-gray8">
-          {t('markInactiveInfo1')} {t('markInactiveInfo2')}
+          {!isInactive(selectedChild)
+            ? t('markInactiveInfo1') + ' ' + t('markInactiveInfo2')
+            : t('markActiveInfo')}
         </p>
-        <Select
-          className="inactive-select"
-          dropdownStyle={{ minWidth: `28%` }}
-          placeholder={t('markInactiveReason')}
-          bordered={false}
-          onChange={value => setInactiveReason(value)}
-          value={inactiveReason}
-        >
-          <Select.Option value="no_longer_in_my_care">
-            {t('inactiveReason1')}
-          </Select.Option>
-          <Select.Option value="no_longer_receiving_subsidies">
-            {t('inactiveReason2')}
-          </Select.Option>
-          <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
-        </Select>
-        <p className="mb-3 text-base text-gray8">
-          {t('markInactiveCalendarPrompt')}
-        </p>
-        <DatePicker
-          style={{
-            width: '256px',
-            height: '40px',
-            border: '1px solid #D9D9D9',
-            color: '#BFBFBF'
-          }}
-          onChange={(_, dateString) => setInactiveDate(dateString)}
-          value={
-            inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
-          }
-        />
+        {!isInactive(selectedChild) && (
+          <>
+            <Select
+              className="inactive-select"
+              dropdownStyle={{ minWidth: `28%` }}
+              placeholder={t('markInactiveReason')}
+              bordered={false}
+              onChange={value => setInactiveReason(value)}
+              value={inactiveReason}
+            >
+              <Select.Option value="no_longer_in_my_care">
+                {t('inactiveReason1')}
+              </Select.Option>
+              <Select.Option value="no_longer_receiving_subsidies">
+                {t('inactiveReason2')}
+              </Select.Option>
+              <Select.Option value="other">
+                {t('inactiveReason3')}
+              </Select.Option>
+            </Select>
+            <p className="mb-3 text-base text-gray8">
+              {t('markInactiveCalendarPrompt')}
+            </p>
+            <DatePicker
+              style={{
+                width: '256px',
+                height: '40px',
+                border: '1px solid #D9D9D9',
+                color: '#BFBFBF'
+              }}
+              onChange={(_, dateString) => setInactiveDate(dateString)}
+              value={
+                inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
+              }
+            />
+          </>
+        )}
       </Modal>
     </>
   )
