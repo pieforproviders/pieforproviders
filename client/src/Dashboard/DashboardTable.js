@@ -250,9 +250,9 @@ export default function DashboardTable({
       },
       data: {
         child: {
-          active: false,
-          last_active_date: inactiveDate,
-          inactive_reason: inactiveReason
+          active: isInactive(selectedChild) ? true : false,
+          last_active_date: isInactive(selectedChild) ? null : inactiveDate,
+          inactive_reason: isInactive(selectedChild) ? null : inactiveReason
         }
       }
     })
