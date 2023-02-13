@@ -214,6 +214,7 @@
   "markActive": "Mark active",
   "markInactiveInfo1": "Once you mark this child inactive, you will not see any future attendance or revenue information on your Pie for Providers dashboard.",
   "markInactiveInfo2": "You will still be able to review past attendance and revenue.",
+  "markActiveInfo": "Once you mark this child active, you will be able to see future attendance and revenue information.",
   "markInactiveReason": "Reason for marking inactive",
   "inactiveReason1": "No longer in my care",
   "inactiveReason2": "No longer receiving subsidies",
