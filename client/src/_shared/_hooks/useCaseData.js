@@ -8,6 +8,8 @@ export function useCaseData() {
                 id: childCase.id ?? '',
                 key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 absences: childCase.nebraska_dashboard_case.absences ?? '',
+                absences_dates:
+                  childCase.nebraska_dashboard_case.absences_dates,
                 child: {
                   childFirstName: childCase.first_name ?? '',
                   childLastName: childCase.last_name ?? '',

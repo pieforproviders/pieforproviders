@@ -59,7 +59,7 @@ module Api
       end
 
       def set_businesses
-        @businesses = policy_scope(Business)
+        @businesses = policy_scope(Business.order(:name))
       end
 
       def business_params

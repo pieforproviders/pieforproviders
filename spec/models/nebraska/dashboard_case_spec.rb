@@ -51,8 +51,8 @@ RSpec.describe Nebraska::DashboardCase do
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
-      ).attended_weekly_hours).to eq(
-        "0.0 of #{child_approval.authorized_weekly_hours}"
+      ).attended_weekly_hours.to_i).to eq(
+        child_approval.authorized_weekly_hours
       )
     end
 
@@ -63,7 +63,26 @@ RSpec.describe Nebraska::DashboardCase do
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
-      ).attended_weekly_hours).to eq('0.0 of ')
+      ).attended_weekly_hours).to eq('0')
+    end
+  end
+
+  describe '#absences_dates' do
+    it 'Return all the absences of a child in the month' do
+      test_date = Date.new(2023, 2, 6)
+      Helpers.build_nebraska_absence_list(
+        num: 2,
+        date: test_date,
+        child_approval: child.child_approvals.first
+      )
+      calculated_absences = described_class.new(
+        child: child,
+        filter_date: test_date,
+        attended_days: child.service_days.non_absences,
+        absent_days: child.service_days.absences
+      ).absences_dates
+
+      expect(child.service_days.absences).to eq(calculated_absences)
     end
   end
 end
