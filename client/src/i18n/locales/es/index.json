@@ -214,7 +214,7 @@
   "markActive": "Activar",
   "markInactiveInfo1": "Una vez que marques este niño inactivo, no podrás ver ninguna información futura sobre la asistienca y los ingresos en tu tablero de Pie for Providers.",
   "markInactiveInfo2": "Todavía podrás repasar asistencia y ingresos pasados.",
-  "markActiveInfo": "Una vez que marque a este niño como activo, podrá ver la asistencia futura y la información de ingresos.",
+  "markActiveInfo": "Una vez que marques este niño activo, podrás ver información futura sobre su asistencia y los ingresos de subsidio.",
   "markInactiveReason": "Razón para marcar inactivo.",
   "inactiveReason1": "Ya no en mi cuidado",
   "inactiveReason2": "Ya no recibiendo los subsidios",
