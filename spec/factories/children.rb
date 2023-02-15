@@ -103,19 +103,20 @@ end
 #
 # Table name: children
 #
-#  id               :uuid             not null, primary key
-#  active           :boolean          default(TRUE), not null
-#  date_of_birth    :date             not null
-#  deleted_at       :date
-#  first_name       :string           not null
-#  inactive_reason  :string
-#  last_active_date :date
-#  last_name        :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  business_id      :uuid             not null
-#  dhs_id           :string
-#  wonderschool_id  :string
+#  id                 :uuid             not null, primary key
+#  active             :boolean          default(TRUE), not null
+#  date_of_birth      :date             not null
+#  deleted_at         :date
+#  first_name         :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
+#  last_inactive_date :date
+#  last_name          :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  business_id        :uuid             not null
+#  dhs_id             :string
+#  wonderschool_id    :string
 #
 # Indexes
 #
