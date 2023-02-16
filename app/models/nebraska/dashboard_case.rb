@@ -320,7 +320,16 @@ module Nebraska
         'dashboard_case.reimbursable_month_absent_days_revenue',
         'map & sum earned revenue of reimbursable month absent days'
       ) do
-        @reimbursable_month_absent_days_revenue ||= reimbursable_month_absent_days&.map(&:earned_revenue)&.sum || 0
+        @reimbursable_month_absent_days_revenue ||=
+          reimbursable_month_absent_days&.map { |item| check_absent_days_earned_revenue(item.earned_revenue) }&.sum || 0
+      end
+    end
+
+    def check_absent_days_earned_revenue(revenue)
+      if revenue.nil?
+        Money.from_amount(0)
+      else
+        revenue
       end
     end
 
