@@ -8,7 +8,7 @@ module Nebraska
       "#{dashboard_case.absences} of 5"
     end
     field :absences_dates do |dashboard_case, _options|
-      dashboard_case.absences_dates.map(&:date)
+      dashboard_case.absences_dates.map(&:date).sort
     end
     field :case_number
     field :family_fee
