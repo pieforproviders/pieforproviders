@@ -220,6 +220,7 @@
   "inactiveReason2": "No longer receiving subsidies",
   "inactiveReason3": "Other",
   "markInactiveCalendarPrompt": "Let us know when this child should become inactive.",
+  "markActiveCalendarPrompt": "Let us know when this child should become active.",
   "inactive": "Inactive",
   "addAttendance": "Add attendance",
   "enterAttendance": "Enter attendance history",

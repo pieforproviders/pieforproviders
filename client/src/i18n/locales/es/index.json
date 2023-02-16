@@ -220,6 +220,7 @@
   "inactiveReason2": "Ya no recibiendo los subsidios",
   "inactiveReason3": "Otro",
   "markInactiveCalendarPrompt": "Dinos cuando este niño debe convertirse inactivo.",
+  "markActiveCalendarPrompt": "Dinos cuando este niño debe convertirse activo.",
   "inactive": "Inactivo/a",
   "addAttendance": "Ingresar asistencia",
   "enterAttendance": "Ingresar asistencia",
