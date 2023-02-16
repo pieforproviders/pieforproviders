@@ -49,6 +49,8 @@ class IllinoisOnboardingCaseImporter
     @child = Child.find_or_initialize_by(required_child_params)
     @approval = find_approval
 
+    evaluate_columns
+
     raise NotEnoughInfo, @child.errors unless @child.valid?
 
     build_case
@@ -251,6 +253,30 @@ class IllinoisOnboardingCaseImporter
 
   def should_print_message?
     !Rails.env.test?
+  end
+
+  def evaluate_columns
+    @row.each { |date_column| check_row_column(date_column) }
+  end
+
+  def check_row_column(column)
+    return unless column[0] == 'Effective on' || column[0] == 'Expires on' ||
+                  (column[0].include?('Approval') &
+                  (column[0].include?('Begin') || column[0].include?('End')) &
+                  column[1].present?
+                  )
+
+    check_date_format(column[1].to_s)
+  end
+
+  def check_date_format(date)
+    Date.iso8601(date)
+    true
+  rescue ArgumentError => e
+    # rubocop:disable Rails/Output
+    pp "The date: #{date} has a format error: #{e}. Please make sure it follows the YYYY-MM-DD format"
+    # rubocop:enable Rails/Output
+    false
   end
 end
 # rubocop:enable Metrics/ClassLength
