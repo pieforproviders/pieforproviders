@@ -29,6 +29,7 @@ export default function DashboardTable({
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(null)
+  const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [inactiveCases, setInactiveCases] = useState([])
   const [activeCases, setActiveCases] = useState([])
@@ -252,9 +253,13 @@ export default function DashboardTable({
       },
       data: {
         child: {
-          active: isInactive(selectedChild) ? true : false,
-          last_active_date: isInactive(selectedChild) ? null : inactiveDate,
-          inactive_reason: isInactive(selectedChild) ? null : inactiveReason
+          ...(isInactive(selectedChild)
+            ? { active: true, last_active_date: activeDate }
+            : {
+                active: false,
+                inactive_reason: inactiveReason,
+                last_inactive_date: inactiveDate
+              })
         }
       }
     })
@@ -555,23 +560,31 @@ export default function DashboardTable({
                 {t('inactiveReason3')}
               </Select.Option>
             </Select>
-            <p className="mb-3 text-base text-gray8">
-              {t('markInactiveCalendarPrompt')}
-            </p>
-            <DatePicker
-              style={{
-                width: '256px',
-                height: '40px',
-                border: '1px solid #D9D9D9',
-                color: '#BFBFBF'
-              }}
-              onChange={(_, dateString) => setInactiveDate(dateString)}
-              value={
-                inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
-              }
-            />
           </>
         )}
+        <p className="mb-3 text-base text-gray8">
+          {isInactive(selectedChild)
+            ? t('markActiveCalendarPrompt')
+            : t('markInactiveCalendarPrompt')}
+        </p>
+        <DatePicker
+          style={{
+            width: '256px',
+            height: '40px',
+            border: '1px solid #D9D9D9',
+            color: '#BFBFBF'
+          }}
+          onChange={(_, dateString) =>
+            isInactive(selectedChild)
+              ? setInactiveDate(dateString)
+              : setActiveDate(dateString)
+          }
+          value={
+            inactiveDate || activeDate
+              ? dayjs(inactiveDate || activeDate, 'YYYY-MM-DD')
+              : inactiveDate || activeDate
+          }
+        />
       </Modal>
     </>
   )
