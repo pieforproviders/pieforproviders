@@ -52,6 +52,12 @@
         "null"
       ]
     },
+    "last_inactive_date": {
+      "type": [
+        "date",
+        "null"
+      ]
+    },
     "inactive_reason": {
       "type": [
         "string",
