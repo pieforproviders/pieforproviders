@@ -1,13 +1,14 @@
 [![CI](https://github.com/pieforproviders/pieforproviders/workflows/CI/badge.svg?branch=main)](https://github.com/pieforproviders/pieforproviders/actions?query=branch%3Amain)
 
-[![CI](https://static.hotjar.com/b/hotjar-badge-light.png "Hotjar - Unlimited insights from your web and mobile sites")](//www.hotjar.com/?utm_source=badge)
+[![CI](https://static.hotjar.com/b/hotjar-badge-light.png 'Hotjar - Unlimited insights from your web and mobile sites')](//www.hotjar.com/?utm_source=badge)
 
 [![Pie for Providers](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/sweo6d/main&style=for-the-badge&logo=cypress)](https://dashboard.cypress.io/projects/sweo6d/runs)
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
+[![All Contributors](https://img.shields.io/badge/all_contributors-25-orange.svg?style=flat-square)](#contributors-)
+
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 We help child care providers and families claim the government funding for which they are already eligible.
 
@@ -23,7 +24,7 @@ We need your help!
 
 Pie for Providers helps small child care providers and families claim the government funding for which they are already eligible. Today, 85% of eligible children do not claim this funding. This means families struggle to afford care. This means mothers cannot advance their careers and support their families. This means child care providers - small, women-owned businesses - do not get paid for their work.
 
-Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md) by picking up any of our [help-wanted issues](http://bit.ly/PieHelpWanted).  You can also [sponsor us via Github Sponsors](https://github.com/sponsors/pieforproviders)!
+Let’s change that. [Contribute to Pie for Providers today](CONTRIBUTING.md) by picking up any of our [help-wanted issues](http://bit.ly/PieHelpWanted). You can also [sponsor us via Github Sponsors](https://github.com/sponsors/pieforproviders)!
 
 Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 
@@ -59,6 +60,14 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   - Jest/React Testing Library
   - Redux
 
+### Backups
+
+- **Important information can be found here**: [https://devcenter.heroku.com/articles/heroku-postgres-backups](https://devcenter.heroku.com/articles/heroku-postgres-backups)
+- Database backups are kept in Heroku. It has been set to create daily backups at 2:00 America/New_York.
+- You can list the existing backups by running:
+- `heroku pg:backups -a pie-prod`
+- You download an specific database backup by running:
+- `heroku pg:backups:download b050 -a pie-prod`
 </details>
 
 ---
@@ -67,6 +76,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   <summary>Local Setup (Direct Install)</summary>
 
 ---
+
 **for local development, we strongly recommend you use version managers to handle your dependencies, such as `rvm` for ruby and `nvm` for javascript**
 
 ### Prerequisites
@@ -102,16 +112,17 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
 You have several convenient options for running the app locally.
 
 1. Rake task (requires `heroku cli`)
-    - `rails start`
-    - This spins up both the front end and the back end in the same terminal window
+   - `rails start`
+   - This spins up both the front end and the back end in the same terminal window
 2. Foreman (requires `foreman`)
-    - Run `foreman start`
-    - This spins up both the front end and the back end in the same terminal window
+   - Run `foreman start`
+   - This spins up both the front end and the back end in the same terminal window
 3. Without Foreman or Heroku
-    - Start rails in one terminal: `rails s -p 3001`
-    - Open a second terminal and start react: `cd client && yarn start`
+   - Start rails in one terminal: `rails s -p 3001`
+   - Open a second terminal and start react: `cd client && yarn start`
 
 Visit `localhost:3000` to see the React frontend. 🥳
+
 </details>
 
 ---
@@ -123,7 +134,8 @@ Visit `localhost:3000` to see the React frontend. 🥳
 
 You can create a new user account by visiting `/signup` (or clicking "Sign Up" on the login page at the root).
 
-When you create a new account, you should see a demo email pop up in a new tab; **the link in this URL can't be clicked in local development**.  Instead, copy the path (starting with `localhost`) and paste it into a browser window.  This will confirm your user and automatically log you in.
+When you create a new account, you should see a demo email pop up in a new tab; **the link in this URL can't be clicked in local development**. Instead, copy the path (starting with `localhost`) and paste it into a browser window. This will confirm your user and automatically log you in.
+
 </details>
 
 ---
@@ -160,6 +172,7 @@ When you create a new account, you should see a demo email pop up in a new tab; 
 ---
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
 </details>
 
 ---
@@ -177,7 +190,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 ### Postgres
 
 **Q: I get postgres errors when I try to set up the database**
-**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it.  If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.
+**A:** Make sure Postgres is running on port 5432. Sometimes Postgres doesn't play nice depending on how you've installed it. If you're having trouble with Postgres, I strongly recommend `Postgres.app` - you can install multiple versions and it plays nicer with rails.
 
 **Q: I'm on an m1 and `gem install pg` fails**
 **A:** Make sure that your version of Postgres/Postgres.app was built on your m1. Versions of Postgres.app built on a previous machine and migrated to your m1 may still run, but lack the `libpq` that you need to `gem install pg`. Don't forget to backup/restore your existing databases if you have to upgrade versions of Postgres!
@@ -186,6 +199,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 **Q: I see the following error in my terminal: `gyp: No Xcode or CLT version detected!`**
 **A:** try removing and reinstalling XCode command line tools OR running `xcode-select --reset` (see [this github issue](https://github.com/schnerd/d3-scale-cluster/issues/7) for more info)
+
 </details>
 
 ---
