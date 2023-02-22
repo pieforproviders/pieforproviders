@@ -207,6 +207,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 </details>
 
+---
+
 <details>
   <summary>Database Backups</summary>
 
