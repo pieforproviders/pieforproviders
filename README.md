@@ -59,16 +59,7 @@ Learn more at [www.pieforproviders.com](http://www.pieforproviders.com)
   - ESLint/Prettier
   - Jest/React Testing Library
   - Redux
-
-### Backups
-
-- **Important information can be found here**: [https://devcenter.heroku.com/articles/heroku-postgres-backups](https://devcenter.heroku.com/articles/heroku-postgres-backups)
-- Database backups are kept in Heroku. It has been set to create daily backups at 2:00 America/New_York.
-- You can list the existing backups by running:
-- `heroku pg:backups -a pie-prod`
-- You download an specific database backup by running:
-- `heroku pg:backups:download b050 -a pie-prod`
-</details>
+  </details>
 
 ---
 
@@ -214,6 +205,19 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 - [Build a RESTful JSON API With Rails 5 - Part One](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-one)
 - [Build a RESTful JSON API With Rails 5 - Part Two](https://scotch.io/tutorials/build-a-restful-json-api-with-rails-5-part-two)
 
+</details>
+
+<details>
+  <summary>Database Backups</summary>
+
+---
+
+- **Important information can be found here**: [https://devcenter.heroku.com/articles/heroku-postgres-backups](https://devcenter.heroku.com/articles/heroku-postgres-backups)
+- Database backups are kept in Heroku. It has been set to create daily backups at 2:00 America/New_York.
+- You can list the existing backups by running:
+- `heroku pg:backups -a pie-prod`
+- You download an specific database backup by running:
+- `heroku pg:backups:download b050 -a pie-prod`
 </details>
 
 ## Contributors ✨
