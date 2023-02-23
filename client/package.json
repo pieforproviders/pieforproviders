@@ -4,7 +4,8 @@
   "private": true,
   "engines": {
     "node": "16.x",
-    "npm": ">=6.13.1"
+    "npm": ">=6.13.1",
+    "yarn": "1.22.19"
   },
   "proxy": "http://localhost:3001",
   "dependencies": {
