@@ -64,13 +64,13 @@ RSpec.describe Child do
   it 'validates last_inactive_date as an optional date' do
     child.update(last_inactive_date: Time.current)
     expect(child).to be_valid
-    child.last_active_date = "I'm a string"
+    child.last_inactive_date = "I'm a string"
     expect(child).not_to be_valid
-    child.last_active_date = nil
+    child.last_inactive_date = nil
     expect(child).to be_valid
-    child.last_active_date = '2021-02-01'
+    child.last_inactive_date = '2021-02-01'
     expect(child).to be_valid
-    child.last_active_date = Date.new(2021, 12, 11)
+    child.last_inactive_date = Date.new(2021, 12, 11)
     expect(child).to be_valid
   end
 
