@@ -254,11 +254,11 @@ export default function DashboardTable({
       data: {
         child: {
           ...(isInactive(selectedChild)
-            ? { active: true, last_active_date: activeDate }
+            ? { active: true, last_inactive_date: inactiveDate }
             : {
                 active: false,
                 inactive_reason: inactiveReason,
-                last_inactive_date: inactiveDate
+                last_active_date: activeDate
               })
         }
       }
@@ -274,11 +274,12 @@ export default function DashboardTable({
           updates: { active: isInactive(selectedChild) ? true : false }
         })
       )
-      sendGAEvent('mark_inactive', {
-        date: inactiveDate,
-        page_title: 'dashboard',
-        reason_selected: inactiveReason
-      })
+      !isInactive(selectedChild) &&
+        sendGAEvent('mark_inactive', {
+          date: inactiveDate,
+          page_title: 'dashboard',
+          reason_selected: inactiveReason
+        })
     }
     handleModalCancel()
   }
