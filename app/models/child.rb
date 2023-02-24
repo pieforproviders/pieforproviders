@@ -38,7 +38,9 @@ class Child < UuidApplicationRecord
 
   validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
   validates :last_active_date, date_param: true, unless: proc { |child| child.last_active_date_before_type_cast.nil? }
-  validates :last_inactive_date, date_param: true, unless: proc { |child| child.last_inactive_date_before_type_cast.nil? }
+  validates :last_inactive_date,
+            date_param: true,
+            unless: proc { |child| child.last_inactive_date_before_type_cast.nil? }
 
   accepts_nested_attributes_for :approvals, :child_approvals, :schedules
 
