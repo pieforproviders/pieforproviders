@@ -66,7 +66,7 @@ class AttendanceCsvImporter
   def create_attendance
     check_in = @row['check_in'].in_time_zone(child.timezone)
     check_out = @row['check_out']&.in_time_zone(child.timezone)
-    # binding.pry
+
     if @row['absence']
       find_or_create_service_day(check_in: check_in)
     else
