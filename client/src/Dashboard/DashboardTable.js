@@ -58,7 +58,7 @@ export default function DashboardTable({
 
   const isInactive = record =>
     (!record.active && !activeCases.includes(record.key)) ||
-    (inactiveCases.includes(record.key) && !activeCases.includes(record.key))
+    inactiveCases.includes(record.key)
 
   const isNotApproved = record => record.approvalEffectiveOn === null
 
@@ -265,21 +265,24 @@ export default function DashboardTable({
     })
 
     if (response.ok) {
-      isInactive(selectedChild)
-        ? setActiveCases(activeCases.concat(selectedChild.key))
-        : setInactiveCases(inactiveCases.concat(selectedChild.key))
+      if (isInactive(selectedChild)) {
+        setActiveCases(activeCases.concat(selectedChild.key))
+        setInactiveCases(inactiveCases.filter(i => i !== selectedChild.key))
+      } else {
+        setInactiveCases(inactiveCases.concat(selectedChild.key))
+        setActiveCases(activeCases.filter(a => a !== selectedChild.key))
+        sendGAEvent('mark_inactive', {
+          date: inactiveDate,
+          page_title: 'dashboard',
+          reason_selected: inactiveReason
+        })
+      }
       dispatch(
         updateCase({
           childId: selectedChild?.id,
           updates: { active: isInactive(selectedChild) ? true : false }
         })
       )
-      !isInactive(selectedChild) &&
-        sendGAEvent('mark_inactive', {
-          date: inactiveDate,
-          page_title: 'dashboard',
-          reason_selected: inactiveReason
-        })
     }
     handleModalCancel()
   }
