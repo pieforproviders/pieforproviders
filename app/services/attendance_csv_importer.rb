@@ -31,17 +31,16 @@ class AttendanceCsvImporter
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
       @business = business
-      CsvParser.new(body).call.each { |row| process_row(row) }
+      CsvParser.new(body).call.each { |unstriped_row| process_row(unstriped_row) }
     end
     file_names.each do |file_name|
       @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}")
     end
   end
 
-  def process_row(row)
-    @row = row
-    @child = child
-
+  def process_row(unstriped_row)
+    @row = {}
+    strip_row(unstriped_row)
     return unless (@start_date..@end_date).cover?(@row['check_in'].in_time_zone(@child.timezone).at_beginning_of_day)
 
     create_attendance
@@ -50,13 +49,18 @@ class AttendanceCsvImporter
     # rubocop:disable Rails/Output
     pp "Error on child #{@child.inspect}. error => #{e.inspect}"
     # rubocop:enable Rails/Output
-
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
       exception: e,
       namespace: e.instance_of?(NoSuchChild) ? 'customer-support' : nil,
       tags: { child_id: @child&.id }
     )
+  end
+
+  def strip_row(unstriped_row)
+    unstriped_row.each { |k, value| @row[k] = value.to_s.strip }
+    @row['absence'] = unstriped_row['absence']
+    @child = child
   end
 
   def create_attendance
