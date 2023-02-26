@@ -31,8 +31,6 @@ export default function DashboardTable({
   const [inactiveDate, setInactiveDate] = useState(null)
   const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
-  const [inactiveCases, setInactiveCases] = useState([])
-  const [activeCases, setActiveCases] = useState([])
   const [sortedRows, setSortedRows] = useState([])
   const { makeRequest } = useApiResponse()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -56,9 +54,7 @@ export default function DashboardTable({
     }
   }
 
-  const isInactive = record =>
-    (!record.active && !activeCases.includes(record.key)) ||
-    inactiveCases.includes(record.key)
+  const isInactive = record => !record.active
 
   const isNotApproved = record => record.approvalEffectiveOn === null
 
@@ -265,18 +261,12 @@ export default function DashboardTable({
     })
 
     if (response.ok) {
-      if (isInactive(selectedChild)) {
-        setActiveCases(activeCases.concat(selectedChild.key))
-        setInactiveCases(inactiveCases.filter(i => i !== selectedChild.key))
-      } else {
-        setInactiveCases(inactiveCases.concat(selectedChild.key))
-        setActiveCases(activeCases.filter(a => a !== selectedChild.key))
+      !isInactive(selectedChild) &&
         sendGAEvent('mark_inactive', {
           date: inactiveDate,
           page_title: 'dashboard',
           reason_selected: inactiveReason
         })
-      }
       dispatch(
         updateCase({
           childId: selectedChild?.id,
@@ -486,7 +476,7 @@ export default function DashboardTable({
       )
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableData, inactiveCases, activeCases])
+  }, [tableData])
 
   return (
     <>

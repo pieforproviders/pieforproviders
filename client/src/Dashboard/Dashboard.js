@@ -34,12 +34,15 @@ export function Dashboard() {
     currency: 'USD',
     minimumFractionDigits: 0
   })
-  const { businesses, token, user, filteredCases } = useSelector(state => ({
-    businesses: state.businesses,
-    token: state.auth.token,
-    user: state.user,
-    filteredCases: state.ui.filteredCases
-  }))
+  const { businesses, token, user, filteredCases, cases } = useSelector(
+    state => ({
+      businesses: state.businesses,
+      token: state.auth.token,
+      user: state.user,
+      filteredCases: state.ui.filteredCases,
+      cases: state.cases
+    })
+  )
 
   const summaryDataTotalsConfig = {
     ne: {
@@ -60,7 +63,6 @@ export function Dashboard() {
     summaryDataTotalsConfig[`${user.state === 'NE' ? 'ne' : 'default'}`]
   )
   const [summaryData, setSummaryData] = useState([])
-  const [tableData, setTableData] = useState([])
   const [notificationMessages, setNotificationMessages] = useState([])
   const [dates, setDates] = useState({
     asOf: '',
@@ -75,7 +77,7 @@ export function Dashboard() {
 
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
-  const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
+  const generateSummaryData = (td = cases, totals = summaryDataTotals) => {
     if (user.state === 'NE') {
       return [
         {
@@ -292,7 +294,6 @@ export function Dashboard() {
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-      setTableData(tableData)
     }
     dispatch(setLoading(false))
   }
@@ -396,8 +397,7 @@ export function Dashboard() {
       </div>
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
-        tableData={tableData}
-        setTableData={setTableData}
+        tableData={cases}
         userState={user.state ?? ''}
         setActiveKey={href => {
           if (activeKey) {
