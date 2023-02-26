@@ -250,11 +250,11 @@ export default function DashboardTable({
       data: {
         child: {
           ...(isInactive(selectedChild)
-            ? { active: true, last_inactive_date: inactiveDate }
+            ? { active: true, last_inactive_date: activeDate }
             : {
                 active: false,
                 inactive_reason: inactiveReason,
-                last_active_date: activeDate
+                last_active_date: inactiveDate
               })
         }
       }
@@ -524,7 +524,17 @@ export default function DashboardTable({
           <Button key="cancelModal" onClick={handleModalCancel}>
             {t('cancel')}
           </Button>,
-          <Button key="okModal" onClick={handleMIModalOk} type="primary">
+          <Button
+            key="okModal"
+            disabled={
+              (!isInactive(selectedChild) && inactiveDate && inactiveReason) ||
+              (isInactive(selectedChild) && activeDate)
+                ? false
+                : true
+            }
+            onClick={handleMIModalOk}
+            type="primary"
+          >
             {isInactive(selectedChild) ? t('markActive') : t('markInactive')}
           </Button>
         ]}
@@ -569,7 +579,7 @@ export default function DashboardTable({
             color: '#BFBFBF'
           }}
           onChange={(_, dateString) =>
-            isInactive(selectedChild)
+            !isInactive(selectedChild)
               ? setInactiveDate(dateString)
               : setActiveDate(dateString)
           }
