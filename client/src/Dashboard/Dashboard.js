@@ -63,6 +63,7 @@ export function Dashboard() {
     summaryDataTotalsConfig[`${user.state === 'NE' ? 'ne' : 'default'}`]
   )
   const [summaryData, setSummaryData] = useState([])
+  const [tableData, setTableData] = useState([])
   const [notificationMessages, setNotificationMessages] = useState([])
   const [dates, setDates] = useState({
     asOf: '',
@@ -77,7 +78,7 @@ export function Dashboard() {
 
   const handleDefinitionsPanel = () => setActiveKey(activeKey === 1 ? null : 1)
 
-  const generateSummaryData = (td = cases, totals = summaryDataTotals) => {
+  const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE') {
       return [
         {
@@ -294,6 +295,7 @@ export function Dashboard() {
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+      setTableData(tableData)
     }
     dispatch(setLoading(false))
   }
@@ -375,6 +377,11 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  useEffect(() => {
+    setTableData(cases)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cases])
+
   return (
     <div className="dashboard sm:mx-8">
       <DashboardTitle
@@ -397,7 +404,7 @@ export function Dashboard() {
       </div>
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
-        tableData={cases}
+        tableData={tableData}
         userState={user.state ?? ''}
         setActiveKey={href => {
           if (activeKey) {
