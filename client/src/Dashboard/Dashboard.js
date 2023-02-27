@@ -295,7 +295,6 @@ export function Dashboard() {
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-      setTableData(tableData)
     }
     dispatch(setLoading(false))
   }
