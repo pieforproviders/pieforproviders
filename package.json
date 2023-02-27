@@ -43,7 +43,7 @@
     "node": "16.x"
   },
   "devDependencies": {
-    "cypress": "^9.7.0",
+    "cypress": "^12.7.0",
     "cypress-file-upload": "^5.0.8",
     "dayjs": "^1.11.7",
     "eslint": "^7.26.0",
