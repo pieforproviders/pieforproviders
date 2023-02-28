@@ -179,7 +179,6 @@ export function AttendanceView() {
             hasWoderschoolId = true
           }
 
-
           const handleEditAttendance = () => {
             const serviceDay = record.serviceDays.find(
               day => day.date.slice(0, 10) === columnDate.format('YYYY-MM-DD')
