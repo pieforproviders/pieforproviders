@@ -179,10 +179,6 @@ export function AttendanceView() {
             hasWoderschoolId = true
           }
 
-          // const hideEditButton =
-          //   hasWoderschoolId ||
-          //   matchingServiceDay?.child?.wonderschool_id ||
-          //   false
 
           const handleEditAttendance = () => {
             const serviceDay = record.serviceDays.find(
