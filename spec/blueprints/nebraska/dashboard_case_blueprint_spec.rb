@@ -441,7 +441,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['full_days']).to eq('7.0')
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 16.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 7 - 5)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           # COVID absences count so we add one more daily attendance to the revenue calculation
           expect(parsed_response['earned_revenue'])
             .to eq(
@@ -505,7 +505,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['full_days']).to eq('8.0')
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 16.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 8 - 5)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           # add one more daily attendance to the revenue calculation
           expect(parsed_response['earned_revenue'])
             .to eq(
@@ -574,7 +574,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 19.25).to_f)
           # subtract one more daily
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
               ((3 * hourly_rate * qris_bump) +
@@ -636,7 +636,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['full_days']).to eq('8.0')
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 19.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 5)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
               ((3 * hourly_rate * qris_bump) +
@@ -705,7 +705,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 19.25).to_f)
           # subtract one more daily for the absence
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 6)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
               ((3 * hourly_rate * qris_bump) +
@@ -758,7 +758,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # sorted to the bottom of the list and removed, it won't be reimbursed by the state
           expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 19.25).to_f)
           expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 9 - 6)
-          expect(parsed_response['absences']).to eq('6 of 5')
+          expect(parsed_response['absences']).to eq('7 of 5')
           expect(parsed_response['earned_revenue'])
             .to eq(
               ((3 * hourly_rate * qris_bump) +
