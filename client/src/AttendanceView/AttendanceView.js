@@ -167,16 +167,16 @@ export function AttendanceView() {
             )
           })
 
-          let hasWoderschoolId = false
-
-          if (
-            matchingServiceDay?.child?.wonderschool_id == null ||
-            matchingServiceDay?.child?.wonderschool_id === undefined ||
-            matchingServiceDay?.child?.wonderschool_id.toLowerCase() === 'no'
-          ) {
-            hasWoderschoolId = false
-          } else {
-            hasWoderschoolId = true
+          const hasWoderschoolId = () => {
+            if (
+              matchingServiceDay?.child?.wonderschool_id == null ||
+              matchingServiceDay?.child?.wonderschool_id === undefined ||
+              matchingServiceDay?.child?.wonderschool_id.toLowerCase() === 'no'
+            ) {
+              return false
+            } else {
+              return true
+            }
           }
 
           const handleEditAttendance = () => {
@@ -224,7 +224,7 @@ export function AttendanceView() {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
                 <div>
-                  {hasWoderschoolId ? null : (
+                  {hasWoderschoolId() ? null : (
                     <button
                       className="float-right edit-icon"
                       onClick={handleEditAttendance}
@@ -287,7 +287,7 @@ export function AttendanceView() {
             })
             return (
               <div className="relative text-center body-2">
-                {hasWoderschoolId ? null : (
+                {hasWoderschoolId() ? null : (
                   <button
                     onClick={handleEditAttendance}
                     className="absolute right-0 rounded-full group hover:bg-blue3 focus:bg-primaryBlue"
