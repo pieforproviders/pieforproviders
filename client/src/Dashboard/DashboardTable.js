@@ -53,7 +53,6 @@ export default function DashboardTable({
       role: 'columnheader'
     }
   }
-  console.log(sortedRows)
 
   const isInactive = record =>
     !record.active || inactiveCases.includes(record.key)
