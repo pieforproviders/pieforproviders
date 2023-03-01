@@ -42,7 +42,6 @@ module Nebraska
       ) do
         @absences ||= absent_days
           &.for_month(filter_date)
-          &.standard_absences
           &.size || 0
       end
     end
