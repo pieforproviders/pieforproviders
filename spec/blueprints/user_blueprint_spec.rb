@@ -62,11 +62,11 @@ RSpec.describe UserBlueprint do
       it 'returns the as_of date for the last attendance in the prior month in Illinois' do
         service_day = create(
           :service_day,
-          date: last_month.at_beginning_of_day
+          date: last_month.utc.at_beginning_of_day
         )
-        attendance = create(:attendance, check_in: last_month, service_day: service_day)
-        perform_enqueued_jobs
-        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
+        attendance = create(:attendance, check_in: last_month.utc, service_day: service_day)
+
+        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.utc.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 
@@ -147,14 +147,14 @@ RSpec.describe UserBlueprint do
         child = create(:necc_child, business: nebraska_business)
         service_day = create(:service_day,
                              child: child,
-                             date: last_month.at_beginning_of_day)
+                             date: last_month.utc.at_beginning_of_day)
         attendance = create(:attendance,
                             child_approval: child.child_approvals.first,
-                            check_in: last_month,
+                            check_in: last_month.utc,
                             service_day: service_day)
         perform_enqueued_jobs
         ServiceDay.all.each(&:reload)
-        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
+        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.utc.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 

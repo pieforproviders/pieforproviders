@@ -204,10 +204,10 @@ RSpec.describe ServiceDay do
           child_approval: child_approval
         )
       end
-      let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone) }
+      let(:date) { Time.new(2020, 12, 4).utc }
 
       it 'returns service days for given week' do
-        travel_to Time.current.at_end_of_week(:sunday)
+        travel_to Time.current.utc.at_end_of_week(:sunday)
         perform_enqueued_jobs
         expect(described_class.for_week).not_to include(past_service_day)
         expect(described_class.for_week).to include(current_service_day)
