@@ -176,13 +176,13 @@ RSpec.describe Child do
       3.times do |idx|
         service_day = create(:service_day,
                              child: child,
-                             date: Time.current.in_time_zone(child.timezone).at_beginning_of_day + idx.days)
+                             date: Time.current.at_beginning_of_day + idx.days)
         current_attendances.push(create(:attendance, service_day: service_day, child_approval: current_child_approval))
       end
       3.times do |idx|
         service_day = create(:service_day,
                              child: child,
-                             date: Time.current.in_time_zone(child.timezone).at_beginning_of_day + (3 + idx).days)
+                             date: Time.current.at_beginning_of_day + (3 + idx).days)
         expired_attendances.push(create(:attendance, service_day: service_day, child_approval: expired_child_approval))
       end
       expect(child.attendances.pluck(:id))

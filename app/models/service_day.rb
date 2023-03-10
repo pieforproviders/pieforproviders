@@ -51,7 +51,7 @@ class ServiceDay < UuidApplicationRecord
   scope :for_day,
         lambda { |day = nil|
           day ||= Time.current
-          where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
+          where('date BETWEEN ? AND ?', day.utc.at_beginning_of_day, day.utc.at_end_of_day)
         }
   scope :for_weekday,
         lambda { |weekday|
@@ -93,7 +93,7 @@ class ServiceDay < UuidApplicationRecord
   def set_absence_type_by_schedule
     return unless absence_type == 'absence'
 
-    schedule = child.schedules.active_on(date).for_weekday(date.wday)
+    schedule = child.schedules.active_on(date.utc).for_weekday(date.utc.wday)
     self.absence_type = schedule.presence ? 'absence_on_scheduled_day' : 'absence_on_unscheduled_day'
   end
 end
