@@ -22,7 +22,7 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
   end
 
   describe 'POST /api/v1/attendance_batches' do
-    let!(:effective_date) { children[0].schedules.first.effective_on.in_time_zone(children[0].timezone) }
+    let!(:effective_date) { children[0].schedules.first.effective_on }
 
     context 'when sent with an absence string' do
       context 'with a permitted absence type on the service day' do

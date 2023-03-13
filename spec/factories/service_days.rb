@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :service_day do
     child
     date do
-      Time.current.in_time_zone(child.timezone).at_beginning_of_day
+      Time.current.at_beginning_of_day
     end
     schedule { child.schedules.find_by(weekday: date.to_date.wday) }
 
@@ -15,7 +15,7 @@ FactoryBot.define do
     trait :on_scheduled_day do
       date do
         Helpers.next_weekday(
-          Time.current.in_time_zone(child.timezone).at_beginning_of_day,
+          Time.current.at_beginning_of_day,
           child.schedules.first.weekday
         )
       end

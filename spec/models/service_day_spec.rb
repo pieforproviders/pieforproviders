@@ -184,7 +184,7 @@ RSpec.describe ServiceDay do
     let(:past_service_day) { past_attendance.service_day }
 
     describe '#for_month' do
-      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone) }
 
       it 'returns service days for given month' do
         expect(described_class.for_month).to include(current_service_day)
@@ -204,12 +204,13 @@ RSpec.describe ServiceDay do
           child_approval: child_approval
         )
       end
-      let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 4).utc }
 
       it 'returns service days for given week' do
-        travel_to Time.current.at_end_of_week(:sunday)
-        expect(described_class.for_week).to include(current_service_day)
+        travel_to Time.current.utc.at_end_of_week(:sunday)
+        perform_enqueued_jobs
         expect(described_class.for_week).not_to include(past_service_day)
+        expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)
         expect(described_class.for_week(date)).not_to include(current_service_day)
         expect(described_class.for_week(date - 1.week).size).to eq(0)
@@ -218,7 +219,7 @@ RSpec.describe ServiceDay do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in.in_time_zone(child.timezone).to_date }
+      let(:date) { current_attendance.check_in }
 
       it 'returns service days for given day' do
         travel_to date
