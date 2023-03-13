@@ -49,7 +49,7 @@ module Commands
       end
 
       def new_or_existing_service_day
-        ServiceDay.find_or_initialize_by(child: child, date: check_in.at_beginning_of_day)
+        ServiceDay.find_or_initialize_by(child: child, date: check_in.utc.at_beginning_of_day)
       end
 
       def child_approval

@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe Commands::Attendance::Update, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:child_approval) { child.child_approvals.first }
-  let!(:check_in) { Time.parse('9:00am').in_time_zone(child.timezone).prev_occurring(:monday) }
-  let!(:check_out) { Time.parse('10:50am').in_time_zone(child.timezone).prev_occurring(:monday) }
+  let!(:check_in) { Time.parse('9:00am').utc.prev_occurring(:monday) }
+  let!(:check_out) { Time.parse('10:50am').utc.prev_occurring(:monday) }
   let!(:attendance) { create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out) }
 
   describe '#initialize' do
@@ -152,7 +152,6 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       end
         .to not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-
       expect(attendance.check_in).to eq(check_in)
       expect(attendance.check_out).to eq(check_out + 1.day)
       expect(attendance.service_day).to eq(service_day)

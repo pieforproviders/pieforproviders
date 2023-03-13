@@ -7,7 +7,7 @@ FactoryBot.define do
     child_approval
     service_day do
       create(:service_day,
-             date: check_in.in_time_zone(child_approval.child.timezone).at_beginning_of_day,
+             date: check_in.at_beginning_of_day,
              absence_type: nil,
              child: child_approval.child)
     end
@@ -15,7 +15,6 @@ FactoryBot.define do
     check_in do
       Faker::Time
         .between(from: Time.current.at_beginning_of_month, to: Time.current)
-        .in_time_zone(child_approval.child.timezone)
         .at_beginning_of_day
     end
     check_out { check_in + rand(3..23).hours + rand(0..59).minutes }
@@ -36,7 +35,6 @@ FactoryBot.define do
         check_in do
           Faker::Time
             .between(from: Time.current.at_beginning_of_month, to: Time.current)
-            .in_time_zone(child_approval.child.timezone)
             .at_beginning_of_day
         end
       end

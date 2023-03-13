@@ -64,7 +64,7 @@ RSpec.describe Attendance do
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
     let(:current_attendance) do
-      service_day = create(:service_day, date: now.in_time_zone(timezone).at_beginning_of_day)
+      service_day = create(:service_day, date: now.at_beginning_of_day)
       create(:attendance, check_in: now, child_approval: child_approval, service_day: service_day)
     end
     let(:past_attendance) do
@@ -94,7 +94,7 @@ RSpec.describe Attendance do
       let(:service_day) do
         create(
           :service_day,
-          date: time.in_time_zone(child_approval.child.timezone).at_beginning_of_day,
+          date: time.at_beginning_of_day,
           child: child_approval.child
         )
       end

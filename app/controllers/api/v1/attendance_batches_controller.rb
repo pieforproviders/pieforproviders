@@ -109,7 +109,7 @@ module Api
 
       def date
         @date = attendance_params.dig(:service_day_attributes, :date) ||
-                attendance_params[:check_in]&.in_time_zone(child&.timezone)&.at_beginning_of_day
+                Time.parse(attendance_params[:check_in]).utc&.at_beginning_of_day
       end
 
       def add_error_and_return_nil(key, message = "can't be blank")

@@ -67,7 +67,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
     it 'return not_enough_info label when there is no attendances' do
       business = create(:business)
       child = create(:child_in_illinois, business: business)
-      date = Date.new(2022, 12, 20)
+      date = Time.current.at_end_of_month
       attendance_rate_until_date = described_class.new(child, date).call
       expect(attendance_rate_until_date).to eq('not_enough_info')
     end
