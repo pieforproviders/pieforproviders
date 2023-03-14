@@ -198,8 +198,12 @@ export default function DashboardTable({
   const render_absences_dates = dates => {
     const last_date = dates.at(-1)
     var formated_dates = dates.map(date => (
+      // regex to get the date on M/D format
       <>
-        {dayjs(date).format('M/D')}
+        {`${parseInt(/-(\d{2})-(\d{2})/.exec(date)[1], 10)}/${parseInt(
+          /-(\d{2})-(\d{2})/.exec(date)[2],
+          10
+        )}`}
         {last_date === date ? '' : ', '}
       </>
     ))
