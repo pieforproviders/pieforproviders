@@ -132,7 +132,6 @@ export function AttendanceView() {
       // eslint-disable-next-line no-debugger
       debugger
     }
-
     latestAttendanceData.current = updatedData
     setUpdatedAttendanceData(updatedData)
   }
@@ -367,6 +366,12 @@ export function AttendanceView() {
     if (response.ok) {
       const parsedResponse = await parseResult(response)
       const addServiceDay = (previousValue, currentValue) => {
+        const isInactive = () => !currentValue?.child.active
+
+        if (isInactive()) {
+          return []
+        }
+
         const childName =
           `${currentValue?.child.first_name} ${currentValue?.child.last_name}` ||
           ''
