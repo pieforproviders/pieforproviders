@@ -12,6 +12,7 @@ import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
 import { setLoading } from '_reducers/uiReducer'
 import '_assets/styles/edit-icon.css'
 import '_assets/styles/attendance-table-overrides.css'
+import '_assets/styles/attendance-filters.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
@@ -52,15 +53,6 @@ export function AttendanceView() {
   const [modalButtonDisabled, setModalButtonDisabled] = useState(false)
   const latestAttendanceData = useRef(updatedAttendanceData)
   const titleData = useRef({ childName: null, columnDate: null })
-
-  const filtersContainerStyle = {
-    display: 'flex',
-    alignItems: 'center'
-  }
-
-  const showWeekendsStyle = {
-    marginLeft: '15px'
-  }
 
   const updateAttendanceData = ({ record, secondCheckIn, update }) => {
     const index = secondCheckIn ? 1 : 0
@@ -155,8 +147,8 @@ export function AttendanceView() {
   // create seven columns for each day of the week
   const generateColumns = () => {
     const dateColumns = []
-    var i = showWeekends ? 0 : 1
-    var limit = showWeekends ? 7 : 6
+    let i = showWeekends ? 0 : 1
+    let limit = showWeekends ? 7 : 6
 
     for (i; i < limit; i++) {
       const columnDate = dateSelected.day(i)
@@ -592,7 +584,7 @@ export function AttendanceView() {
               {t('inputAttendance')}
             </Button>
           </div>
-          <div className="flex" style={filtersContainerStyle}>
+          <div className="flex align-center">
             <div style={{ marginRight: '1rem' }}>
               <WeekPicker
                 hasNext={dateSelected.day(6) < dayjs().day(0)}
@@ -606,7 +598,7 @@ export function AttendanceView() {
                 onChange={value => getServiceDays(value)}
               />
             </div>
-            <p style={showWeekendsStyle}>
+            <p className="show-weekend-checkbox">
               <Checkbox
                 className="weekends"
                 onChange={e => {
