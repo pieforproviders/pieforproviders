@@ -149,6 +149,7 @@ export function AttendanceView() {
 
   useEffect(() => {
     setColumns(generateColumns())
+    // eslint-disable-next-line
   }, [showWeekends])
 
   // create seven columns for each day of the week
