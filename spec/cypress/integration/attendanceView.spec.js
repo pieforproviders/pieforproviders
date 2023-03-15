@@ -125,7 +125,7 @@ describe('AttendanceView', () => {
       // cy.contains(checkInTime)
       // cy.contains(checkOutTime)
       cy.contains('Input Attendance')
-      cy.get('[data-cy=noInfo]').its('length').should('eq', 6)
+      cy.get('[data-cy=noInfo]').its('length').should('eq', 4)
     })
 
     it('renders small screen content', () => {
