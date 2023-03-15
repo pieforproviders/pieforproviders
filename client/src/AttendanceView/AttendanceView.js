@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Grid, Table } from 'antd'
+import { Button, Grid, Table, Checkbox } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -52,6 +52,15 @@ export function AttendanceView() {
   const [modalButtonDisabled, setModalButtonDisabled] = useState(false)
   const latestAttendanceData = useRef(updatedAttendanceData)
   const titleData = useRef({ childName: null, columnDate: null })
+
+  const filtersContainerStyle = {
+    display: 'flex',
+    alignItems: 'center'
+  }
+
+  const showWeekendsStyle = {
+    marginLeft: '15px'
+  }
 
   const updateAttendanceData = ({ record, secondCheckIn, update }) => {
     const index = secondCheckIn ? 1 : 0
@@ -136,11 +145,19 @@ export function AttendanceView() {
     setUpdatedAttendanceData(updatedData)
   }
 
+  const [showWeekends, setShowWeekends] = useState(false)
+
+  useEffect(() => {
+    setColumns(generateColumns())
+  }, [showWeekends])
+
   // create seven columns for each day of the week
   const generateColumns = () => {
     const dateColumns = []
+    var i = showWeekends ? 0 : 1
+    var limit = showWeekends ? 7 : 6
 
-    for (let i = 0; i < 7; i++) {
+    for (i; i < limit; i++) {
       const columnDate = dateSelected.day(i)
       dateColumns.push({
         dataIndex: i,
@@ -574,7 +591,7 @@ export function AttendanceView() {
               {t('inputAttendance')}
             </Button>
           </div>
-          <div className="flex">
+          <div className="flex" style={filtersContainerStyle}>
             <div style={{ marginRight: '1rem' }}>
               <WeekPicker
                 hasNext={dateSelected.day(6) < dayjs().day(0)}
@@ -588,6 +605,15 @@ export function AttendanceView() {
                 onChange={value => getServiceDays(value)}
               />
             </div>
+            <p style={showWeekendsStyle}>
+              <Checkbox
+                className="weekends"
+                onChange={e => {
+                  setShowWeekends(!showWeekends)
+                }}
+              />
+              <span className="ml-3">Show Weekends</span>
+            </p>
           </div>
           <Table
             dataSource={[...attendanceData]}
