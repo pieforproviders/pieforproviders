@@ -6,6 +6,7 @@ class ChildBlueprint < Blueprinter::Base
 
   field :active
   field :last_active_date
+  field :last_inactive_date
   field :inactive_reason
   field :first_name
   field :last_name
