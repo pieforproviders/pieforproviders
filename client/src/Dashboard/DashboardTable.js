@@ -13,7 +13,7 @@ import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
-import grayVector from '_assets/gray-vector.svg'
+import editIcon from '_assets/editIcon.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
@@ -29,8 +29,8 @@ export default function DashboardTable({
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(null)
+  const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
-  const [inactiveCases, setInactiveCases] = useState([])
   const [sortedRows, setSortedRows] = useState([])
   const { makeRequest } = useApiResponse()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -54,8 +54,7 @@ export default function DashboardTable({
     }
   }
 
-  const isInactive = record =>
-    !record.active || inactiveCases.includes(record.key)
+  const isInactive = record => !record.active
 
   const isNotApproved = record => record.approvalEffectiveOn === null
 
@@ -213,17 +212,18 @@ export default function DashboardTable({
   const renderActions = (_text, record) => (
     <div>
       <Button
-        disabled={isInactive(record)}
         type="link"
         className="flex items-start"
         onClick={() => handleInactiveClick(record)}
       >
         <img
           alt="vector"
-          src={isInactive(record) ? grayVector : vector}
+          src={isInactive(record) ? editIcon : vector}
           className="mr-2"
         />
-        <span className="underline hover:text-blue2">{t('markInactive')}</span>
+        <span className="underline hover:text-blue2">
+          {isInactive(record) ? t('markActive') : t('markInactive')}
+        </span>
       </Button>
     </div>
   )
@@ -249,23 +249,30 @@ export default function DashboardTable({
       },
       data: {
         child: {
-          active: false,
-          last_active_date: inactiveDate,
-          inactive_reason: inactiveReason
+          ...(isInactive(selectedChild)
+            ? { active: true, last_inactive_date: activeDate }
+            : {
+                active: false,
+                inactive_reason: inactiveReason,
+                last_active_date: inactiveDate
+              })
         }
       }
     })
 
     if (response.ok) {
-      setInactiveCases(inactiveCases.concat(selectedChild.key))
+      !isInactive(selectedChild) &&
+        sendGAEvent('mark_inactive', {
+          date: inactiveDate,
+          page_title: 'dashboard',
+          reason_selected: inactiveReason
+        })
       dispatch(
-        updateCase({ childId: selectedChild?.id, updates: { active: false } })
+        updateCase({
+          childId: selectedChild?.id,
+          updates: { active: isInactive(selectedChild) ? true : false }
+        })
       )
-      sendGAEvent('mark_inactive', {
-        date: inactiveDate,
-        page_title: 'dashboard',
-        reason_selected: inactiveReason
-      })
     }
     handleModalCancel()
   }
@@ -469,7 +476,7 @@ export default function DashboardTable({
       )
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableData, inactiveCases])
+  }, [tableData])
 
   return (
     <>
@@ -501,7 +508,9 @@ export default function DashboardTable({
         title={
           <div className="text-lg font-semibold text-gray9">
             <p>
-              {t('markInactive') +
+              {(isInactive(selectedChild)
+                ? t('markActive')
+                : t('markInactive')) +
                 ': ' +
                 (`${selectedChild?.child?.childFirstName} ${selectedChild?.child?.childLastName}` ||
                   `${selectedChild?.childFirstName} ${selectedChild?.childLastName}`)}
@@ -517,35 +526,50 @@ export default function DashboardTable({
           </Button>,
           <Button
             key="okModal"
-            disabled={inactiveDate && inactiveReason ? false : true}
+            disabled={
+              (!isInactive(selectedChild) && inactiveDate && inactiveReason) ||
+              (isInactive(selectedChild) && activeDate)
+                ? false
+                : true
+            }
             onClick={handleMIModalOk}
             type="primary"
           >
-            {t('markInactive')}
+            {isInactive(selectedChild) ? t('markActive') : t('markInactive')}
           </Button>
         ]}
       >
         <p className="text-base text-gray8">
-          {t('markInactiveInfo1')} {t('markInactiveInfo2')}
+          {!isInactive(selectedChild)
+            ? t('markInactiveInfo1') + ' ' + t('markInactiveInfo2')
+            : t('markActiveInfo')}
         </p>
-        <Select
-          className="inactive-select"
-          dropdownStyle={{ minWidth: `28%` }}
-          placeholder={t('markInactiveReason')}
-          bordered={false}
-          onChange={value => setInactiveReason(value)}
-          value={inactiveReason}
-        >
-          <Select.Option value="no_longer_in_my_care">
-            {t('inactiveReason1')}
-          </Select.Option>
-          <Select.Option value="no_longer_receiving_subsidies">
-            {t('inactiveReason2')}
-          </Select.Option>
-          <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
-        </Select>
+        {!isInactive(selectedChild) && (
+          <>
+            <Select
+              className="inactive-select"
+              dropdownStyle={{ minWidth: `28%` }}
+              placeholder={t('markInactiveReason')}
+              bordered={false}
+              onChange={value => setInactiveReason(value)}
+              value={inactiveReason}
+            >
+              <Select.Option value="no_longer_in_my_care">
+                {t('inactiveReason1')}
+              </Select.Option>
+              <Select.Option value="no_longer_receiving_subsidies">
+                {t('inactiveReason2')}
+              </Select.Option>
+              <Select.Option value="other">
+                {t('inactiveReason3')}
+              </Select.Option>
+            </Select>
+          </>
+        )}
         <p className="mb-3 text-base text-gray8">
-          {t('markInactiveCalendarPrompt')}
+          {isInactive(selectedChild)
+            ? t('markActiveCalendarPrompt')
+            : t('markInactiveCalendarPrompt')}
         </p>
         <DatePicker
           style={{
@@ -554,9 +578,15 @@ export default function DashboardTable({
             border: '1px solid #D9D9D9',
             color: '#BFBFBF'
           }}
-          onChange={(_, dateString) => setInactiveDate(dateString)}
+          onChange={(_, dateString) =>
+            !isInactive(selectedChild)
+              ? setInactiveDate(dateString)
+              : setActiveDate(dateString)
+          }
           value={
-            inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
+            inactiveDate || activeDate
+              ? dayjs(inactiveDate || activeDate, 'YYYY-MM-DD')
+              : inactiveDate || activeDate
           }
         />
       </Modal>
