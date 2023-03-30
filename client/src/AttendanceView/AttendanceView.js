@@ -379,9 +379,8 @@ export function AttendanceView() {
         const isInactive = () => !currentValue?.child.active
 
         if (isInactive()) {
-          return []
+          return previousValue
         }
-
         const childName =
           `${currentValue?.child.first_name} ${currentValue?.child.last_name}` ||
           ''

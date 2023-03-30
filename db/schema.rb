@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_13_210000) do
+ActiveRecord::Schema.define(version: 2023_02_15_052117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 2023_01_13_210000) do
     t.date "deleted_at"
     t.string "first_name", null: false
     t.string "last_name", null: false
+    t.date "last_inactive_date"
     t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["deleted_at"], name: "index_children_on_deleted_at"
     t.index ["first_name", "last_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
