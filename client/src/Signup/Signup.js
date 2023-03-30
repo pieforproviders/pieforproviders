@@ -223,7 +223,7 @@ export function Signup() {
           label={t('preferredLanguage')}
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
-          style={{ marginBottom: '-6px' }}
+          style={{ marginBottom: '15px' }}
           rules={[
             {
               required: true,
