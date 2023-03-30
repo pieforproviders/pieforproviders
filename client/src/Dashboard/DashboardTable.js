@@ -508,7 +508,7 @@ export default function DashboardTable({
             </p>
           </div>
         }
-        visible={isMIModalVisible}
+        open={isMIModalVisible}
         onOk={handleMIModalOk}
         onCancel={handleModalCancel}
         footer={[

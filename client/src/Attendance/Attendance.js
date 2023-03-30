@@ -484,7 +484,7 @@ export function Attendance() {
       </div>
       <Modal
         title={<div className="eyebrow-large text-gray9">{t('success')}</div>}
-        visible={isSuccessModalVisible}
+        open={isSuccessModalVisible}
         onCancel={() => {
           setSuccessModalVisible(false)
           history.push('/dashboard')
