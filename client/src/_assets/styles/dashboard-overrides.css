@@ -1,5 +1,6 @@
 .dashboard-title.ant-typography {
   margin-bottom: 0;
+  color: #006C9E;
 }
 
 button.ant-btn.date-filter-button:hover, button.ant-btn.date-filter-button:disabled {
@@ -27,4 +28,8 @@ div.ant-select-selector.date-filter-select {
 
 div.ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
   background-color: #F3F8FA;
+}
+
+button.ant-btn{
+  align-items: center;
 }

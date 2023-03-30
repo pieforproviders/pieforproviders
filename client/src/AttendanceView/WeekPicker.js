@@ -22,6 +22,7 @@ export function WeekPicker({
   return (
     <div>
       <Button
+        className="change-week-btn"
         disabled={!hasPrev}
         onClick={() => handleDateChange(dateSelected.weekday(-7))}
         data-cy="backWeekButton"
@@ -40,6 +41,7 @@ export function WeekPicker({
         )}${lastDay.slice(3)}`}
       </Button>
       <Button
+        className="change-week-btn"
         disabled={!hasNext}
         onClick={() => handleDateChange(dateSelected.weekday(7))}
         data-cy="forwardWeekButton"
