@@ -423,7 +423,7 @@ export function Dashboard() {
       />
       <Modal
         className="notifications-modal"
-        visible={showNotificationsModal}
+        open={showNotificationsModal}
         cancelButtonProps={{ style: { display: 'none' } }}
         onOk={() => setShowNotificationsModal(false)}
         onCancel={() => setShowNotificationsModal(false)}

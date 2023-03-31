@@ -19,6 +19,7 @@ import NewPassword from './PasswordReset'
 import Login from './Login'
 import Signup from './Signup'
 import NotFound from './NotFound'
+import { ConfigProvider } from 'antd'
 import ErrorBoundary from './ErrorBoundary'
 import CasesImport from './CasesImport'
 import { AuthLayout } from '_shared'
@@ -138,11 +139,20 @@ const Routes = () => {
 
 const App = () => {
   return (
-    <ErrorBoundary>
-      <Router>
-        <Routes />
-      </Router>
-    </ErrorBoundary>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: '#006C9E',
+          fontFamily: 'Proxima Nova'
+        }
+      }}
+    >
+      <ErrorBoundary>
+        <Router>
+          <Routes />
+        </Router>
+      </ErrorBoundary>
+    </ConfigProvider>
   )
 }
 
