@@ -15,6 +15,7 @@ RSpec.describe UserBlueprint do
 
   it 'only includes the expected user fields' do
     expect(parsed_response.keys).to contain_exactly(
+      'email',
       'greeting_name',
       'id',
       'language',
@@ -30,6 +31,7 @@ RSpec.describe UserBlueprint do
         'as_of',
         'businesses',
         'first_approval_effective_date'
+        'email'
       )
     end
 
@@ -102,7 +104,8 @@ RSpec.describe UserBlueprint do
         'first_approval_effective_date',
         'businesses',
         'max_revenue',
-        'total_approved'
+        'total_approved',
+        'email'
       )
       expect(parsed_response['max_revenue']).to eq('N/A')
       expect(parsed_response['total_approved']).to eq('N/A')
