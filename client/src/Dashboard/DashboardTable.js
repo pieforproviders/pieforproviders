@@ -247,8 +247,8 @@ export default function DashboardTable({
     setIsMIModalVisible(false)
   }
 
-  const shouldAllowToexport = () => {
-    return env.REACT_APP_WHITELIST_EXPORT_CSV.includes(user?.email)
+  const shouldAllowToExport = () => {
+    return env?.REACT_APP_WHITELIST_EXPORT_CSV?.includes(user?.email)
   }
 
   const handleMIModalOk = async () => {
@@ -491,7 +491,7 @@ export default function DashboardTable({
 
   return (
     <>
-      {shouldAllowToexport() && (
+      {shouldAllowToExport() && (
         <CsvDownloader data={sortedRows} filename={'dashboard.csv'} />
       )}
       <Table
