@@ -5,6 +5,7 @@ class UserBlueprint < Blueprinter::Base
   identifier :id
   field :greeting_name
   field :language
+  field :email
   field :state do |user|
     user.admin? ? user.state || 'NE' : user.state
   end

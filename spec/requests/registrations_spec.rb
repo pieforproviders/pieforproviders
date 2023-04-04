@@ -37,7 +37,7 @@ RSpec.describe 'POST /signup' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 
@@ -55,7 +55,7 @@ RSpec.describe 'POST /signup' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 

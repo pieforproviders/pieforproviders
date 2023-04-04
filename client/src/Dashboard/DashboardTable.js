@@ -17,7 +17,10 @@ import editIcon from '_assets/editIcon.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
+import CsvDownloader from '_shared/_components/CsvDownloader/CsvDownloader'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 
+const env = runtimeEnv()
 export default function DashboardTable({
   tableData,
   userState,
@@ -32,6 +35,10 @@ export default function DashboardTable({
   const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
+  const { user } = useSelector(state => ({
+    user: state.user
+  }))
+
   const { makeRequest } = useApiResponse()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -238,6 +245,10 @@ export default function DashboardTable({
     setInactiveReason(null)
     setInactiveDate(null)
     setIsMIModalVisible(false)
+  }
+
+  const shouldAllowToExport = () => {
+    return env?.REACT_APP_WHITELIST_EXPORT_CSV?.includes(user?.email)
   }
 
   const handleMIModalOk = async () => {
@@ -480,6 +491,9 @@ export default function DashboardTable({
 
   return (
     <>
+      {shouldAllowToExport() && (
+        <CsvDownloader data={sortedRows} filename={'dashboard.csv'} />
+      )}
       <Table
         dataSource={sortedRows}
         columns={
