@@ -30,7 +30,7 @@ RSpec.describe UserBlueprint do
       expect(parsed_response.keys).to contain_exactly(
         'as_of',
         'businesses',
-        'first_approval_effective_date'
+        'first_approval_effective_date',
         'email'
       )
     end
