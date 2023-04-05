@@ -28,7 +28,7 @@ FactoryBot.define do
         effective_date { 6.months.ago }
       end
       business { create(:business, :nebraska_ldds) }
-      wonderschool_id { SecureRandom.uuid }
+      wonderschool_id { SecureRandom.random_number(10**6).to_s.rjust(6, '0') }
       approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
 
       after(:create) do |child, evaluator|
