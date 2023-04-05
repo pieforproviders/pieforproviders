@@ -298,6 +298,34 @@ RSpec.describe Child do
       end
     end
   end
+
+  describe 'before_action' do
+    it 'allows to save only numeric values to its wonderschool_id attribute' do
+      wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+      child_with_wonderschool_id = create(:child, wonderschool_id: wonderschool_id)
+      expect(child_with_wonderschool_id.wonderschool_id).to eq(wonderschool_id)
+
+      child_with_wonderschool_id.wonderschool_id = 'not present'
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+
+      child_with_wonderschool_id.wonderschool_id = wonderschool_id
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to eq(wonderschool_id)
+
+      child_with_wonderschool_id.wonderschool_id = ''
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+
+      child_with_wonderschool_id.wonderschool_id = 'N/A'
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+    end
+  end
 end
 # == Schema Information
 #
