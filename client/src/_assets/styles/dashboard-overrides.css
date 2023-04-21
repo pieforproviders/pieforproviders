@@ -42,3 +42,16 @@ button.ant-btn-link{
   align-items: center;
   color: var(--primary-blue);
 }
+
+button.ant-btn-link:hover{
+  color: var(--primary-blue) !important;
+}
+
+.anticon-close{
+  position:inherit !important;
+  margin-left: 10px;
+}
+
+.ant-select-selection-item{
+  margin: 0 5px 0 5px;
+}

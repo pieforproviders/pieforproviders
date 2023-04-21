@@ -1,3 +1,6 @@
 button.ant-btn.ant-btn-primary.ant-btn-sm {
   color: black
 }
+.ant-picker-today-btn {
+  color: #006C9E !important;
+}
