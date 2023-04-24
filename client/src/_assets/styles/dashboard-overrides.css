@@ -43,13 +43,8 @@ button.ant-btn-link{
   color: var(--primary-blue);
 }
 
-button.ant-btn-link:hover{
-  color: var(--primary-blue) !important;
-}
-
-.anticon-close{
-  position:inherit !important;
-  margin-left: 10px;
+button.ant-btn-link.text-lg:hover{
+  color: var(--primary-blue);
 }
 
 .ant-select-selection-item{
