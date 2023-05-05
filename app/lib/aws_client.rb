@@ -49,6 +49,11 @@ class AwsClient
     )
   end
 
+  def get_xlsx_contents(source_bucket, file_name)
+    data_object = @client.get_object(bucket: source_bucket, key: file_name)
+    data_object.body.read
+  end
+
   def get_file_contents(source_bucket, file_name)
     contents = find_bucket(name: source_bucket) &&
                @client.get_object({ bucket: source_bucket, key: file_name }).body.read
