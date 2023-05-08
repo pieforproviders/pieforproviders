@@ -36,12 +36,9 @@ class AttendanceXlsxImporter
     contents = file_names.map { |file_name| @client.get_xlsx_contents(@source_bucket, file_name) }
     process_contents(contents, file_names)
 
-    @attendance_data.flatten.each do |child_data|
-      process_data(child_data)
-    end
-    # file_names.each do |file_name|
-    #   @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}")
-    # end
+    @attendance_data.flatten.each { |child_data| process_data(child_data) }
+
+    file_names.each { |file_name| @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}") }
   end
 
   def process_contents(contents, file_names)
@@ -57,8 +54,23 @@ class AttendanceXlsxImporter
     @child_attendances = {}
     strip_children_data(child_data)
 
-    @child_attendances.each do |attendance|
+    process_attendances
 
+    print_successful_message if should_print_message?
+  rescue StandardError => e
+    # rubocop:disable Rails/Output
+    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
+    # rubocop:enable Rails/Output
+    send_appsignal_error(
+      action: 'self-serve-attendance-csv-importer',
+      exception: e,
+      namespace: e.instance_of?(NoSuchChild) ? 'customer-support' : nil,
+      tags: { child_id: @child&.id }
+    )
+  end
+
+  def process_attendances
+    @child_attendances.each do |attendance|
       next unless attendance[:check_in].present? || attendance[:check_out].present?
 
       check_in_date_time = DateTime.strptime(attendance[:check_in], '%Y-%m-%d %I:%M %p')
@@ -67,17 +79,6 @@ class AttendanceXlsxImporter
 
       create_attendance(attendance)
     end
-    print_successful_message if should_print_message?
-  rescue StandardError => e
-    # rubocop:disable Rails/Output
-    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
-    # rubocop:enable Rails/Output
-    # send_appsignal_error(
-    #   action: 'self-serve-attendance-csv-importer',
-    #   exception: e,
-    #   namespace: e.instance_of?(NoSuchChild) ? 'customer-support' : nil,
-    #   tags: { child_id: @child&.id }
-    # )
   end
 
   def strip_children_data(child_data)
@@ -87,26 +88,16 @@ class AttendanceXlsxImporter
   end
 
   def create_attendance(attendance_info)
-    check_in = DateTime.strptime(attendance_info[:check_in], '%Y-%m-%d %I:%M %p').utc
-    check_out = DateTime.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').utc
+    check_in = Time.strptime(attendance_info[:check_in], '%Y-%m-%d %I:%M %p').utc
+    check_out = Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').utc
 
     child_approval = active_child_approval(check_in: check_in)
- 
+
     attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
-    # binding.pry
+
     return if attendance # makes the import idempotent
 
     Commands::Attendance::Create.new(check_in: check_in, child_id: @child.id, check_out: check_out).create
-
-    # if @child_attendances['absence']
-    #   find_or_create_service_day(check_in: check_in)
-    # else
-    #   child_approval = active_child_approval(check_in: check_in)
-    #   attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
-    #   return if attendance # makes the import idempotent
-
-    #   Commands::Attendance::Create.new(check_in: check_in, child_id: @child.id, check_out: check_out).create
-    # end
   end
 
   def active_child_approval(check_in:)
@@ -116,11 +107,6 @@ class AttendanceXlsxImporter
       &.first
       &.child_approvals
       &.find_by(child: @child)
-  end
-
-  def find_or_create_service_day(check_in:)
-    service_day = ServiceDay.find_or_create_by!(child: @child, date: check_in.at_beginning_of_day)
-    service_day.update!(absence_type: @child_attendances['absence'])
   end
 
   def business
@@ -165,7 +151,7 @@ class AttendanceXlsxImporter
 
   def print_successful_message
     # rubocop:disable Rails/Output
-    pp "DHS ID: #{@child_attendances['dhs_id']} has been successfully processed"
+    pp "DHS ID: #{@child.dhs_id} has been successfully processed"
     # rubocop:enable Rails/Output
   end
 
