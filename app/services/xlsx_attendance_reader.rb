@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'roo'
 
 # Reads attendance info from an .xlsx file
@@ -7,7 +9,6 @@ class XlsxAttendanceReader
   def initialize(content)
     @content = content
     @children_data = []
-
   end
 
   def process
@@ -51,12 +52,12 @@ class XlsxAttendanceReader
     dates = (6..worksheet.last_column).step(2).map { |col| worksheet.cell(6, col - 1) }.drop(1)
 
     (7..worksheet.last_column).step(2).each_with_index do |col, index|
-      check_in = worksheet.cell(row, col)
-      check_out = worksheet.cell(row, col + 1)
+      @check_in = worksheet.cell(row, col)
+      @check_out = worksheet.cell(row, col + 1)
 
-      next unless check_in && check_out
+      next unless @check_in && @check_out
 
-      build_data(check_in, check_out, dates, index)
+      build_data(dates, index)
     end
 
     @check_in_out_data
@@ -67,25 +68,33 @@ class XlsxAttendanceReader
     datetime.strftime('%Y-%m-%d %I:%M %p')
   end
 
-  def build_data(check_in, check_out, dates, index)
-    time_pattern = /(\d{1,2}:\d{2} (?:AM|PM))/i
-
+  def build_data(dates, index)
     first_row = @worksheet.row(1).compact!.join
     year = extract_year(first_row)
+    @date = dates[index] + ", #{year} "
 
-   if check_in.empty? || check_out.empty?
-     @check_in_out_data << { check_in: '', check_out: '' }
-   else
-     datetime_check_in = dates[index] + ", #{year} " + check_in.scan(time_pattern).flatten.join.to_s
-     datetime_check_out = dates[index] + ", #{year} " + check_out.scan(time_pattern).flatten.join.to_s
+    build_check_in_out
+  end
 
-     formated_check_in = format_datetime(datetime_check_in)
-     formated_check_out = format_datetime(datetime_check_out)
+  def build_datetime
+    time_pattern = /(\d{1,2}:\d{2} (?:AM|PM))/i
+    dt_check_in = @date + @check_in.scan(time_pattern).flatten.join.to_s
+    dt_check_out = @date + @check_out.scan(time_pattern).flatten.join.to_s
 
-     @check_in_out_data << {
-       check_in: formated_check_in,
-       check_out: formated_check_out
-     }
-   end
+    formated_check_in = format_datetime(dt_check_in)
+    formated_check_out = format_datetime(dt_check_out)
+
+    @check_in_out_data << {
+      check_in: formated_check_in,
+      check_out: formated_check_out
+    }
+  end
+
+  def build_check_in_out
+    if @check_in.empty? || @check_out.empty?
+      @check_in_out_data << { check_in: '', check_out: '' }
+    else
+      build_datetime
+    end
   end
 end

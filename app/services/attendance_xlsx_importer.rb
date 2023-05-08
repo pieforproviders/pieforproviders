@@ -3,7 +3,6 @@
 # Self-Serve Attendance Importer
 class AttendanceXlsxImporter
   include AppsignalReporting
-  include CsvTypecasting
 
   class NotEnoughInfo < StandardError; end
 
@@ -38,7 +37,7 @@ class AttendanceXlsxImporter
 
     @attendance_data.flatten.each { |child_data| process_data(child_data) }
 
-    file_names.each { |file_name| @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}") }
+    file_names.each { |file| @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file}") }
   end
 
   def process_contents(contents, file_names)
