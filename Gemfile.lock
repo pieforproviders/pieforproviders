@@ -90,6 +90,7 @@ GEM
       aws-sigv4 (~> 1.4)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
+    backports (3.24.0)
     bcrypt (3.1.18)
     benchmark-ips (2.10.0)
     benchmark-malloc (0.2.0)
@@ -111,6 +112,8 @@ GEM
     crass (1.0.6)
     cypress-on-rails (1.13.1)
       rack
+    daru (0.3)
+      packable (~> 1.3.13)
     data_migrate (8.4.2)
       activerecord (>= 5.0)
       railties (>= 5.0)
@@ -235,6 +238,8 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     orm_adapter (0.5.0)
+    packable (1.3.17)
+      backports
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
@@ -302,7 +307,12 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    reverse_markdown (2.1.1)
+      nokogiri
     rexml (3.2.5)
+    roo (2.10.0)
+      nokogiri (~> 1)
+      rubyzip (>= 1.3.0, < 3.0.0)
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -354,6 +364,7 @@ GEM
       rexml
     ruby-prof (1.4.5)
     ruby-progressbar (1.11.0)
+    rubyzip (2.3.2)
     shellany (0.0.1)
     shoulda-matchers (5.3.0)
       activesupport (>= 5.2.0)
@@ -411,6 +422,7 @@ DEPENDENCIES
   bullet
   byebug
   cypress-on-rails (~> 1.13)
+  daru
   data_migrate
   database_cleaner
   devise
@@ -438,6 +450,8 @@ DEPENDENCIES
   rails (~> 6.1.6)
   rails-erd
   redis
+  reverse_markdown
+  roo (~> 2.7, >= 2.7.1)
   rspec-benchmark
   rspec-rails
   rubocop-performance
