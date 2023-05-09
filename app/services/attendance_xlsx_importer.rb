@@ -5,9 +5,7 @@ class AttendanceXlsxImporter
   include AppsignalReporting
 
   class NotEnoughInfo < StandardError; end
-
   class NoSuchBusiness < StandardError; end
-
   class NoSuchChild < StandardError; end
 
   def initialize(start_date: nil, end_date: 0.days.after)
@@ -29,7 +27,6 @@ class AttendanceXlsxImporter
   end
 
   def read_attendances
-    @file_content = ''
     @attendance_data = []
     file_names = retrieve_file_names
     contents = file_names.map { |file_name| @client.get_xlsx_contents(@source_bucket, file_name) }
@@ -72,7 +69,7 @@ class AttendanceXlsxImporter
     @child_attendances.each do |attendance|
       next unless attendance[:check_in].present? || attendance[:check_out].present?
 
-      check_in_date_time = DateTime.strptime(attendance[:check_in], '%Y-%m-%d %I:%M %p')
+      check_in_date_time = Time.strptime(attendance[:check_in], '%Y-%m-%d %I:%M %p')
 
       next unless (@start_date..@end_date).cover?(check_in_date_time.at_beginning_of_day)
 
@@ -100,9 +97,7 @@ class AttendanceXlsxImporter
   end
 
   def active_child_approval(check_in:)
-    @child
-      &.approvals
-      &.active_on(check_in)
+    @child&.approvals&.active_on(check_in)
       &.first
       &.child_approvals
       &.find_by(child: @child)
@@ -140,11 +135,9 @@ class AttendanceXlsxImporter
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message
     end
-
     # rubocop:disable Rails/Output
     pp message
     # rubocop:enable Rails/Output
-
     raise NoSuchBusiness
   end
 
