@@ -4,7 +4,6 @@
 class ApplicationController < ActionController::API
   before_action :set_appsignal_context
   before_action :set_locale
-  before_action :set_user_time_zone
   around_action :collect_metrics
 
   before_action do
@@ -61,9 +60,5 @@ class ApplicationController < ActionController::API
 
   def accept_lang_header
     request.headers['Accept-Language'].presence || ''
-  end
-
-  def set_user_time_zone
-    Time.zone = current_user.timezone if current_user.present?
   end
 end
