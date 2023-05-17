@@ -167,31 +167,34 @@ export default function AttendanceDataCell({
           })}
         </div>
         <div className="flex items-center">
-          <Button
-            type="text"
-            className="flex -ml-4 mt-6 font-semibold font-proxima-nova"
-            onClick={() => {
-              handleChange({
-                update: {
-                  absenceType: null,
-                  check_in: null,
-                  check_out: null
-                },
-                callback: () =>
-                  setTimePickerValues(prevValues => ({
-                    ...prevValues,
-                    ...{
-                      firstCheckIn: null,
-                      firstCheckOut: null
-                    }
-                  })),
-                secondCheckIn: false
-              })
-            }}
-          >
-            <CloseOutlined className="font-semibold text-red1" />
-            <p className="ml-1 text-red1">{t('removeCheckInTime')}</p>
-          </Button>
+          {(timePickerValues.firstCheckIn ||
+            timePickerValues.firstCheckOut) && (
+            <Button
+              type="text"
+              className="flex -ml-4 mt-6 font-semibold font-proxima-nova"
+              onClick={() => {
+                handleChange({
+                  update: {
+                    absenceType: null,
+                    check_in: null,
+                    check_out: null
+                  },
+                  callback: () =>
+                    setTimePickerValues(prevValues => ({
+                      ...prevValues,
+                      ...{
+                        firstCheckIn: null,
+                        firstCheckOut: null
+                      }
+                    })),
+                  secondCheckIn: false
+                })
+              }}
+            >
+              <CloseOutlined className="font-semibold text-red1" />
+              <p className="ml-1 text-red1">{t('removeCheckInTime')}</p>
+            </Button>
+          )}
         </div>
       </div>
       <div className="flex flex-row mt-4">
