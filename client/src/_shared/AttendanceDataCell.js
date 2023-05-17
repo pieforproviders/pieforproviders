@@ -169,7 +169,7 @@ export default function AttendanceDataCell({
         <div className="flex items-center">
           <Button
             type="text"
-            className="flex -ml-4 font-semibold font-proxima-nova"
+            className="flex -ml-4 mt-6 font-semibold font-proxima-nova"
             onClick={() => {
               handleChange({
                 update: {
@@ -278,7 +278,7 @@ export default function AttendanceDataCell({
             <div className="flex items-center">
               <Button
                 type="text"
-                className="flex -ml-4 font-semibold font-proxima-nova"
+                className="flex -ml-4 mt-6 font-semibold font-proxima-nova"
                 onClick={() => {
                   handleChange({
                     update: {
