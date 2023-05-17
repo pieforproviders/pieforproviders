@@ -166,68 +166,32 @@ export default function AttendanceDataCell({
                   })
           })}
         </div>
-        <div>
-          <p>
-            <Checkbox
-              className="absence"
-              checked={absence === 'absence'}
-              disabled={
-                /* disable this box if the absence is already marked as covid-related, or if check-in/out is selected */
-                absence === 'covid-related' ||
-                checkInSelected ||
-                checkOutSelected
-              }
-              onChange={e => {
-                e.target.checked
-                  ? handleChange({
-                      update: { absenceType: 'absence' },
-                      callback: () => {
-                        setShowSecondCheckIn(false)
-                        setAbsence('absence')
-                      }
-                    })
-                  : handleChange({
-                      update: { absenceType: null },
-                      callback: () => {
-                        setAbsence(null)
-                      }
-                    })
-              }}
-            />
-            <span className="ml-3">{t('absent')}</span>
-          </p>
-          {
-            /* show COVID checkbox before 2021-07-31 */
-            columnDate && new Date(columnDate) <= new Date('2021-07-31') && (
-              <p className="mt-2">
-                <Checkbox
-                  className="absence"
-                  checked={absence === 'covid-related'}
-                  disabled={
-                    /* disable this box if the absence is already marked as a regular absence, or if check-in/out is selected */
-                    absence === 'absence' || checkInSelected || checkOutSelected
-                  }
-                  onChange={e =>
-                    e.target.checked
-                      ? handleChange({
-                          update: { absenceType: 'covid-related' },
-                          callback: () => {
-                            setShowSecondCheckIn(false)
-                            setAbsence('covid-related')
-                          }
-                        })
-                      : handleChange({
-                          update: { absenceType: null },
-                          callback: setAbsence(null)
-                        })
-                  }
-                />
-                <span className="ml-3">
-                  {t('absent') + ' - ' + t('covidRelated')}
-                </span>
-              </p>
-            )
-          }
+        <div className="flex items-center">
+          <Button
+            type="text"
+            className="flex -ml-4 font-semibold font-proxima-nova"
+            onClick={() => {
+              handleChange({
+                update: {
+                  absenceType: null,
+                  check_in: null,
+                  check_out: null
+                },
+                callback: () =>
+                  setTimePickerValues(prevValues => ({
+                    ...prevValues,
+                    ...{
+                      firstCheckIn: null,
+                      firstCheckOut: null
+                    }
+                  })),
+                secondCheckIn: false
+              })
+            }}
+          >
+            <CloseOutlined className="font-semibold text-red1" />
+            <p className="ml-1 text-red1">{t('removeCheckInTime')}</p>
+          </Button>
         </div>
       </div>
       <div className="flex flex-row mt-4">
@@ -353,6 +317,67 @@ export default function AttendanceDataCell({
             </Button>
           </div>
         )}
+      </div>
+      <div className="flex flex-row mt-4">
+        <p>
+          <Checkbox
+            className="absence"
+            checked={absence === 'absence'}
+            disabled={
+              /* disable this box if the absence is already marked as covid-related, or if check-in/out is selected */
+              absence === 'covid-related' || checkInSelected || checkOutSelected
+            }
+            onChange={e => {
+              e.target.checked
+                ? handleChange({
+                    update: { absenceType: 'absence' },
+                    callback: () => {
+                      setShowSecondCheckIn(false)
+                      setAbsence('absence')
+                    }
+                  })
+                : handleChange({
+                    update: { absenceType: null },
+                    callback: () => {
+                      setAbsence(null)
+                    }
+                  })
+            }}
+          />
+          <span className="ml-3">{t('absent')}</span>
+        </p>
+        {
+          /* show COVID checkbox before 2021-07-31 */
+          columnDate && new Date(columnDate) <= new Date('2021-07-31') && (
+            <p className="mt-2">
+              <Checkbox
+                className="absence"
+                checked={absence === 'covid-related'}
+                disabled={
+                  /* disable this box if the absence is already marked as a regular absence, or if check-in/out is selected */
+                  absence === 'absence' || checkInSelected || checkOutSelected
+                }
+                onChange={e =>
+                  e.target.checked
+                    ? handleChange({
+                        update: { absenceType: 'covid-related' },
+                        callback: () => {
+                          setShowSecondCheckIn(false)
+                          setAbsence('covid-related')
+                        }
+                      })
+                    : handleChange({
+                        update: { absenceType: null },
+                        callback: setAbsence(null)
+                      })
+                }
+              />
+              <span className="ml-3">
+                {t('absent') + ' - ' + t('covidRelated')}
+              </span>
+            </p>
+          )
+        }
       </div>
     </div>
   )
