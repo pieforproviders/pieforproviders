@@ -9,8 +9,8 @@ module Commands
 
       def initialize(check_in:, child_id:, check_out: nil, wonderschool_id: nil)
         @child_id = child_id
-        @check_in = check_in.to_datetime.strftime("%Y-%m-%d %H:%M:%S").to_datetime
-        @check_out = check_out&.to_datetime.strftime("%Y-%m-%d %H:%M:%S").to_datetime
+        @check_in = check_in.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
+        @check_out = check_out.blank? ? nil : check_out.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
         @wonderschool_id = wonderschool_id
         @service_day = new_or_existing_service_day
       end
