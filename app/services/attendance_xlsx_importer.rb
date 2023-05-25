@@ -84,8 +84,8 @@ class AttendanceXlsxImporter
   end
 
   def create_attendance(attendance_info)
-    check_in = Time.strptime(attendance_info[:check_in], '%Y-%m-%d %I:%M %p').in_time_zone(@child.timezone)
-    check_out = Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').in_time_zone(@child.timezone)
+    check_in = Time.strptime(attendance_info[:check_in], '%Y-%m-%d %I:%M %p').to_datetime
+    check_out = Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').to_datetime
 
     child_approval = active_child_approval(check_in: check_in)
 

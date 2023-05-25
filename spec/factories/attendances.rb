@@ -7,7 +7,7 @@ FactoryBot.define do
     child_approval
     service_day do
       create(:service_day,
-             date: check_in.at_beginning_of_day,
+             date: check_in.at_beginning_of_day.utc,
              absence_type: nil,
              child: child_approval.child)
     end

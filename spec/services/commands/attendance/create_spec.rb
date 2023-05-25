@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Commands::Attendance::Create, type: :service do
   let(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
-  let(:check_in) { Time.parse('9:00am').in_time_zone(child.timezone).prev_occurring(:monday) }
+  let(:check_in) { Time.parse('9:00am').prev_occurring(:monday) }
 
   describe '#initialize' do
     it 'initializes with required info' do
@@ -51,7 +51,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
       service_day = create(
         :service_day,
         child: child,
-        date: check_in.in_time_zone(child.timezone).at_beginning_of_day,
+        date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day,
         absence_type: 'absence'
       )
       expect do
@@ -71,7 +71,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
       service_day = create(
         :service_day,
         child: child,
-        date: check_in.in_time_zone(child.timezone).at_beginning_of_day
+        date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day
       )
       create(:attendance, check_in: check_in, check_out: check_in + 6.hours, service_day: service_day)
       expect do
