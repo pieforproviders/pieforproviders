@@ -249,7 +249,7 @@ export function Dashboard() {
     dateFilterMonths.push(makeMonth(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
-      currentDate.setMonth(currentDate.getMonth() - 1)
+      currentDate.setDate(currentDate.getDate() - 31)
       dateFilterMonths.push(makeMonth(currentDate))
     }
 
