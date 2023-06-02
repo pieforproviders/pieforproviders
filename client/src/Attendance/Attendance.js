@@ -278,10 +278,18 @@ export function Attendance() {
       return record[1]
         .filter(day => day.absenceType)
         .flatMap((day, index) => {
+
+          let indices = record[1].reduce((result, item, index) => {
+            if (item.absenceType === 'absence') {
+              result.push(index)
+            }
+            return result
+          }, [])
+
           return {
             service_day: {
               child_id: record[0],
-              date: dayjs(columnDates[index]),
+              date: dayjs(columnDates[indices[index]]),
               absence_type: day.absenceType
             }
           }
