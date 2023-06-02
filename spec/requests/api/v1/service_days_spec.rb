@@ -807,7 +807,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -848,7 +848,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end

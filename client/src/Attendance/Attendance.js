@@ -278,7 +278,6 @@ export function Attendance() {
       return record[1]
         .filter(day => day.absenceType)
         .flatMap((day, index) => {
-
           let indices = record[1].reduce((result, item, index) => {
             if (item.absenceType === 'absence') {
               result.push(index)
