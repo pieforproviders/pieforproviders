@@ -99,7 +99,6 @@ module Api
       def date
         service_day_params[:date]
           .to_date
-          .in_time_zone(Child.find_by(id: service_day_params[:child_id])&.timezone)
       end
 
       def filter_date
