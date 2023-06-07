@@ -71,6 +71,8 @@ class Child < UuidApplicationRecord
   delegate :state, to: :user
   delegate :timezone, to: :user
 
+  before_save :validate_wonderschool_id
+
   def age(date = Time.current)
     years_since_birth = date.year - date_of_birth.year
     birthday_passed = date_of_birth.month <= date.month || date_of_birth.day <= date.day
@@ -182,6 +184,10 @@ class Child < UuidApplicationRecord
 
   def associate_rate
     RateAssociatorJob.perform_later(id)
+  end
+
+  def validate_wonderschool_id
+    self.wonderschool_id = wonderschool_id.to_i.to_s == wonderschool_id ? wonderschool_id : nil
   end
 end
 # rubocop:enable Metrics/ClassLength

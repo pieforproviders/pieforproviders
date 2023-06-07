@@ -5,3 +5,7 @@
 .show-weekend-checkbox{
   margin-left: 15px;
 }
+
+.change-week-btn {
+  display: inline-flex;
+}

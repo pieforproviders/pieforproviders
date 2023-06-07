@@ -49,7 +49,7 @@ input#login_email.ant-input {
 
 .questions .ant-form-item-label > label, .optional-questions .ant-form-item-label > label {
   padding-left: 0;
-  padding-bottom: 0.5rem
+  padding-bottom: 0.5rem;
 }
 
 /* required display */
@@ -65,4 +65,12 @@ input#login_email.ant-input {
 
 .open-signup-question.ant-input {
   border-radius: 5px;
+}
+
+/* label.ant-form-item-required {
+  color: #006C9E !important
+} */
+
+label.ant-form-item-label {
+  color: #006C9E !important
 }

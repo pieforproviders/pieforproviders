@@ -64,9 +64,8 @@ class AttendanceCsvImporter
   end
 
   def create_attendance
-    check_in = @row['check_in'].in_time_zone(child.timezone)
-    check_out = @row['check_out']&.in_time_zone(child.timezone)
-
+    check_in = format_check_in_out(@row['check_in'])
+    check_out = @row['check_out'].blank? ? nil : format_check_in_out(@row['check_out'])
     if @row['absence']
       find_or_create_service_day(check_in: check_in)
     else
@@ -78,17 +77,22 @@ class AttendanceCsvImporter
     end
   end
 
+  def format_check_in_out(date_time)
+    date_time.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
+  end
+
   def active_child_approval(check_in:)
     @child
-      &.approvals
-      &.active_on(check_in)
-      &.first
-      &.child_approvals
+      &.approvals&.active_on(check_in)
+      &.first&.child_approvals
       &.find_by(child: @child)
   end
 
   def find_or_create_service_day(check_in:)
-    service_day = ServiceDay.find_or_create_by!(child: @child, date: check_in.at_beginning_of_day)
+    service_day = ServiceDay.find_or_create_by!(
+      child: @child,
+      date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day
+    )
     service_day.update!(absence_type: @row['absence'])
   end
 
