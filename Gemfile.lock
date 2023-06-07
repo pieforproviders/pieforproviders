@@ -10,6 +10,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.1.0)
     actioncable (6.1.7)
       actionpack (= 6.1.7)
       activesupport (= 6.1.7)
@@ -71,6 +72,7 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    afm (0.2.2)
     appsignal (3.1.6)
       rack
     ast (2.4.2)
@@ -189,6 +191,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hash_dig_and_collect (0.0.1)
+    hashery (2.1.2)
     holidays (8.6.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
@@ -243,6 +246,12 @@ GEM
     parallel (1.22.1)
     parser (3.1.2.1)
       ast (~> 2.4.1)
+    pdf-reader (2.11.0)
+      Ascii85 (~> 1.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pg (1.4.4)
     pgreset (0.3)
     pry (0.14.2)
@@ -364,6 +373,7 @@ GEM
       rexml
     ruby-prof (1.4.5)
     ruby-progressbar (1.11.0)
+    ruby-rc4 (0.1.5)
     rubyzip (2.3.2)
     shellany (0.0.1)
     shoulda-matchers (5.3.0)
@@ -391,6 +401,7 @@ GEM
     stackprof (0.2.23)
     thor (1.2.1)
     tod (3.1.0)
+    ttfunk (1.7.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.3.0)
@@ -440,6 +451,7 @@ DEPENDENCIES
   listen (>= 3.0.5, < 3.8)
   memory_profiler
   money-rails
+  pdf-reader
   pg (>= 0.18, < 2.0)
   pgreset (~> 0.3)
   pry
