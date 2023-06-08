@@ -25,6 +25,7 @@ module Commands
           reader = PDF::Reader.new(io)
 
           reader.pages.each do |page|
+            check_pages_size(page)
             process_page(page)
           end
         end
@@ -35,8 +36,22 @@ module Commands
         )
       end
 
+      def check_pages_size(page)
+        required_size = [0, 0, 2383.9199, 1684.08]
+        pages_size = page.attributes[:MediaBox]
+        raise "Error on file #{@file}. error => wrong format" if pages_size != required_size
+      rescue StandardError => e
+        # rubocop:disable Rails/Output
+        pp "PDF reader stoped. error => #{e.message}"
+        # rubocop:enable Rails/Output
+      end
+
       def process_page(page)
         page_splitted_by_break_line = split_page_by_break_line(page)
+        reduced_splited_page = remove_unnecessary_spaces(page_splitted_by_break_line)
+
+        binding.pry
+        
         raw_attendances = build_raw_attendances(page_splitted_by_break_line)
         text_without_tabs = build_text_without_tabs(raw_attendances)
         complete_times = build_times(text_without_tabs)
@@ -47,6 +62,10 @@ module Commands
         dates.each.with_index do |date, index|
           @attendances[index][:date] = date
         end
+      end
+
+      def remove_unnecessary_spaces(splitted_page)
+        splitted_page.map { |s| s.squeeze(' ').strip }
       end
 
       def split_page_by_break_line(page)
