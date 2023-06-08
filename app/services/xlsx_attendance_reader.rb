@@ -93,6 +93,7 @@ class XlsxAttendanceReader
   def build_check_in_out
     if @check_in.empty? || @check_out.empty?
       @check_in_out_data << { check_in: '', check_out: '' }
+      # write new logic for when you only have check in time: elsif @check_in.present? && @check_out.empty?
     else
       build_datetime
     end

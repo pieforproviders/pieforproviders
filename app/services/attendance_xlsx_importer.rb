@@ -11,7 +11,7 @@ class AttendanceXlsxImporter
   def initialize(start_date: nil, end_date: 0.days.after)
     @client = AwsClient.new
     @source_bucket = Rails.application.config.aws_necc_attendance_bucket
-    @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
+    # @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
   end
@@ -67,6 +67,7 @@ class AttendanceXlsxImporter
 
   def process_attendances
     @child_attendances.each do |attendance|
+      #create logic for when there is only check_in but no check_out times
       next unless attendance[:check_in].present? || attendance[:check_out].present?
 
       check_in_date_time = Time.strptime(attendance[:check_in], '%Y-%m-%d %I:%M %p')
