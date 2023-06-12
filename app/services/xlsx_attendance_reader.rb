@@ -55,7 +55,7 @@ class XlsxAttendanceReader
       @check_in = worksheet.cell(row, col)
       @check_out = worksheet.cell(row, col + 1)
 
-      next unless @check_in && @check_out
+      next if @check_in.blank?
 
       build_data(dates, index)
     end
@@ -77,9 +77,8 @@ class XlsxAttendanceReader
   end
 
   def build_datetime
-    time_pattern = /(\d{1,2}:\d{2} (?:AM|PM))/i
-    dt_check_in = @date + @check_in.scan(time_pattern).flatten.join.to_s
-    dt_check_out = @date + @check_out.scan(time_pattern).flatten.join.to_s
+    dt_check_in = extract_time(@check_in)
+    dt_check_out = extract_time(@check_out)
 
     formated_check_in = format_datetime(dt_check_in)
     formated_check_out = format_datetime(dt_check_out)
@@ -90,9 +89,15 @@ class XlsxAttendanceReader
     }
   end
 
+  def extract_time(str)
+    time_pattern = /(\d{1,2}:\d{2} (?:AM|PM))/i
+    @date + str.scan(time_pattern).flatten.join.to_s
+  end
+
   def build_check_in_out
-    if @check_in.empty? || @check_out.empty?
-      @check_in_out_data << { check_in: '', check_out: '' }
+    if @check_out.blank?
+      dt_check_in = extract_time(@check_in)
+      @check_in_out_data << { check_in: format_datetime(dt_check_in), check_out: nil }
     else
       build_datetime
     end
