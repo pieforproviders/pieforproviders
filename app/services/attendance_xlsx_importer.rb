@@ -11,7 +11,7 @@ class AttendanceXlsxImporter
   def initialize(start_date: nil, end_date: 0.days.after)
     @client = AwsClient.new
     @source_bucket = Rails.application.config.aws_necc_attendance_bucket
-    # @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
+    @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
   end
@@ -52,7 +52,7 @@ class AttendanceXlsxImporter
 
     process_attendances
 
-    print_successful_message if should_print_message?
+    print_successful_message unless Rails.env.test?
   rescue StandardError => e
     # rubocop:disable Rails/Output
     pp "Error on child #{@child.inspect}. error => #{e.inspect}"
@@ -67,9 +67,6 @@ class AttendanceXlsxImporter
 
   def process_attendances
     @child_attendances.each do |attendance|
-      #create logic for when there is only check_in but no check_out times
-      next unless attendance[:check_in].present? || attendance[:check_out].present?
-
       check_in_date_time = Time.strptime(attendance[:check_in], '%Y-%m-%d %I:%M %p')
 
       next unless (@start_date..@end_date).cover?(check_in_date_time.at_beginning_of_day)
@@ -86,7 +83,11 @@ class AttendanceXlsxImporter
 
   def create_attendance(attendance_info)
     check_in = Time.strptime(attendance_info[:check_in], '%Y-%m-%d %I:%M %p').to_datetime
-    check_out = Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').to_datetime
+    check_out = if attendance_info[:check_out].blank?
+                  nil
+                else
+                  Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').to_datetime
+                end
 
     child_approval = active_child_approval(check_in: check_in)
 
@@ -99,9 +100,7 @@ class AttendanceXlsxImporter
 
   def active_child_approval(check_in:)
     @child&.approvals&.active_on(check_in)
-      &.first
-      &.child_approvals
-      &.find_by(child: @child)
+      &.first&.child_approvals&.find_by(child: @child)
   end
 
   def business
@@ -146,9 +145,5 @@ class AttendanceXlsxImporter
     # rubocop:disable Rails/Output
     pp "DHS ID: #{@child.dhs_id} has been successfully processed"
     # rubocop:enable Rails/Output
-  end
-
-  def should_print_message?
-    !Rails.env.test?
   end
 end
