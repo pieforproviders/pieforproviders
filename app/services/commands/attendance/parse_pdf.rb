@@ -3,7 +3,6 @@
 module Commands
   module Attendance
     # Parses PDFs using options defined in the private methods
-    # rubocop:disable Metrics/ClassLength
     class ParsePdf
       include AppsignalReporting
       attr_reader :attendances
@@ -29,6 +28,7 @@ module Commands
             process_page(page)
           end
         end
+        @attendances
       rescue StandardError => e
         send_appsignal_error(
           action: 'csv-parser',
@@ -49,19 +49,22 @@ module Commands
       def process_page(page)
         page_splitted_by_break_line = split_page_by_break_line(page)
         reduced_splited_page = remove_unnecessary_spaces(page_splitted_by_break_line)
-
-        binding.pry
-        
-        raw_attendances = build_raw_attendances(page_splitted_by_break_line)
+        raw_attendances = build_raw_attendances(reduced_splited_page)
         text_without_tabs = build_text_without_tabs(raw_attendances)
         complete_times = build_times(text_without_tabs)
 
         dates = build_dates(raw_attendances)
         build_attendances(complete_times)
 
-        dates.each.with_index do |date, index|
-          @attendances[index][:date] = date
+        dates.each do |date|
+          @attendances[start_dates_index][:date] = date
         end
+      end
+
+      def start_dates_index
+        0 if @attendances.empty?
+        first_element_without_date = @attendances.find { |item| !item.key?(:date) }
+        @attendances.index(first_element_without_date)
       end
 
       def remove_unnecessary_spaces(splitted_page)
@@ -77,9 +80,14 @@ module Commands
       end
 
       def build_raw_attendances(page_splitted_by_break_line)
-        attendances_without_firs_nine_lines = page_splitted_by_break_line[9..]
-        attendances_without_firs_nine_lines.pop
-        attendances_without_firs_nine_lines
+        break_index = find_break_index(page_splitted_by_break_line) + 1
+        attendances_without_first_lines = page_splitted_by_break_line[break_index..]
+        attendances_without_first_lines.pop
+        attendances_without_first_lines
+      end
+
+      def find_break_index(splitted_text)
+        splitted_text.each_with_index.find { |s, _| s.include? 'Total hours' }.pop
       end
 
       def build_text_without_tabs(raw_attendances)
@@ -88,23 +96,20 @@ module Commands
 
       def build_times(text_without_tabs)
         hours_without_am_pm = text_without_tabs.scan(time_pattern)
-        ams_pms = text_without_tabs.scan(Regexp.union(/PM/, /AM/))
         complete_times = []
-        hours_without_am_pm.each_with_index do |time, index|
-          complete_times << "#{time} #{ams_pms[index]}"
+        hours_without_am_pm.each do |time|
+          complete_times << time.to_s
         end
         complete_times
       end
 
       def build_dates(raw_attendances)
         dates = []
-        date_fields_to_nil
 
         raw_attendances.each do |line|
-          date = build_date(line)
+          date = find_and_build_date(line)
           next if date.blank?
 
-          date_fields_to_nil
           dates << date.to_date
         end
 
@@ -115,41 +120,9 @@ module Commands
         text.strip.split(/\s+/)
       end
 
-      def build_date(text)
-        full_date = ''
-        raw_line(text).each do |part|
-          assign_date_fields(part)
-
-          next if @day.nil? || @month.nil? || @year.nil?
-
-          full_date = "#{@day}, #{@month}, #{@year}"
-        end
-
-        full_date
-      end
-
-      def date_fields_to_nil
-        @day = nil
-        @month = nil
-        @year = nil
-      end
-
-      def assign_date_fields(text)
-        build_day(text) if @day.nil?
-        build_month(text) if @month.nil?
-        build_year(text) if @year.nil?
-      end
-
-      def build_day(text)
-        @day = text if text.match(/^\d{1,2}$/).present?
-      end
-
-      def build_month(text)
-        @month = text.chomp(',') if text.match(/^[A-Za-z]+,$/).present?
-      end
-
-      def build_year(text)
-        @year = text if text.match(/^\d{4}$/).present?
+      def find_and_build_date(line)
+        date = line.match(/\b\d{1,2}\s*[A-Za-z]+,\s*\d{4}\b/)
+        Date.strptime(date[0], '%d %B, %Y')
       end
 
       def build_attendances(complete_times)
