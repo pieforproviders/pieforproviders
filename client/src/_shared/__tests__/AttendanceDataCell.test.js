@@ -26,6 +26,20 @@ describe('<AttendanceDataCell />', () => {
     expect(container).toHaveTextContent('Add check-in time')
   })
 
+  it('shows first Remove check-in button when check in/out is selected', () => {
+    const { container } = doRender({
+      defaultValues: {
+        attendances: [
+          {
+            check_in: '2023-05-15 14:00:00 UTC',
+            check_out: '2023-05-15 15:00:00 UTC'
+          }
+        ]
+      }
+    })
+    expect(container).toHaveTextContent('Remove check-in')
+  })
+
   it('adds a second set of attendance inputs', () => {
     doRender()
     let addCheckInButton = screen.getByText(/Add check-in time/)
