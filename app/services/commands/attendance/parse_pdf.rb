@@ -3,6 +3,7 @@
 module Commands
   module Attendance
     # Parses PDFs using options defined in the private methods
+    # rubocop:disable Metrics/ClassLength
     class ParsePdf
       include AppsignalReporting
       attr_reader :attendances
@@ -18,6 +19,16 @@ module Commands
       end
 
       private
+
+      def find_child_name
+        File.open(@file, 'rb') do |io|
+          reader = PDF::Reader.new(io)
+          first_page = reader.pages.first
+          splitted_page = split_page_by_break_line(first_page)
+          reduced_splited_page = remove_unnecessary_spaces(splitted_page)
+          reduced_splited_page[1].split.last(2).join(' ')
+        end
+      end
 
       def attendances_information
         File.open(@file, 'rb') do |io|
