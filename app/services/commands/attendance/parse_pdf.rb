@@ -8,14 +8,27 @@ module Commands
       include AppsignalReporting
       attr_reader :attendances
 
-      def initialize(file: '', child: nil)
-        @file = file
+      def initialize(content)
+        @file = ''
+        @content = content
         @attendances = []
-        @child = child
+        @dates_index = 0
       end
 
       def call
+        temp_file = Tempfile.new(['temp_pdf', '.pdf'])
+        temp_file.write(@content)
+        temp_file.close
+        @file = temp_file
         attendances_information
+      end
+
+      def child
+        find_child_name
+      end
+
+      def business
+        find_business_name
       end
 
       private
@@ -26,14 +39,23 @@ module Commands
           first_page = reader.pages.first
           splitted_page = split_page_by_break_line(first_page)
           reduced_splited_page = remove_unnecessary_spaces(splitted_page)
-          reduced_splited_page[1].split.last(2).join(' ')
+          reduced_splited_page[1].split.last(2).join(' ').split(', ')
+        end
+      end
+
+      def find_business_name
+        File.open(@file, 'rb') do |io|
+          reader = PDF::Reader.new(io)
+          first_page = reader.pages.first
+          splitted_page = split_page_by_break_line(first_page)
+          reduced_splited_page = remove_unnecessary_spaces(splitted_page)
+          reduced_splited_page[2]
         end
       end
 
       def attendances_information
         File.open(@file, 'rb') do |io|
           reader = PDF::Reader.new(io)
-
           reader.pages.each do |page|
             check_pages_size(page)
             process_page(page)
@@ -50,7 +72,8 @@ module Commands
       def check_pages_size(page)
         required_size = [0, 0, 2383.9199, 1684.08]
         pages_size = page.attributes[:MediaBox]
-        raise "Error on file #{@file}. error => wrong format" if pages_size != required_size
+
+        raise "Error on file #{@file}. error => wrong format" if pages_size.sort != required_size.sort
       rescue StandardError => e
         # rubocop:disable Rails/Output
         pp "PDF reader stoped. error => #{e.message}"
@@ -67,16 +90,19 @@ module Commands
         dates = build_dates(raw_attendances)
         build_attendances(complete_times)
 
-        dates.each do |date|
-          @attendances[start_dates_index][:date] = date
-        end
+        build_check_in_out(dates)
       end
 
-      def start_dates_index
-        0 if @attendances.empty?
-        first_element_without_date = @attendances.find { |item| !item.key?(:date) }
-        @attendances.index(first_element_without_date)
+      # rubocop:disable Layout/LineLength
+      def build_check_in_out(dates)
+        dates.each do |date|
+          is_empty = @attendances[@dates_index][:sign_out_time].blank?
+          @attendances[@dates_index][:sign_in_time] = "#{date} " + @attendances[@dates_index][:sign_in_time]
+          @attendances[@dates_index][:sign_out_time] = is_empty ? nil : "#{date} " + @attendances[@dates_index][:sign_out_time]
+          @dates_index += 1
+        end
       end
+      # rubocop:enable Layout/LineLength
 
       def remove_unnecessary_spaces(splitted_page)
         splitted_page.map { |s| s.squeeze(' ').strip }
@@ -121,7 +147,7 @@ module Commands
           date = find_and_build_date(line)
           next if date.blank?
 
-          dates << date.to_date
+          dates << date
         end
 
         dates
@@ -133,7 +159,7 @@ module Commands
 
       def find_and_build_date(line)
         date = line.match(/\b\d{1,2}\s*[A-Za-z]+,\s*\d{4}\b/)
-        Date.strptime(date[0], '%d %B, %Y')
+        date[0]
       end
 
       def build_attendances(complete_times)
