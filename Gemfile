@@ -30,6 +30,7 @@ gem 'tod'
 
 gem 'flamegraph'
 gem 'memory_profiler'
+gem 'pdf-reader'
 gem 'rack-mini-profiler'
 gem 'stackprof'
 
