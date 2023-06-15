@@ -30,9 +30,9 @@ gem 'tod'
 
 gem 'flamegraph'
 gem 'memory_profiler'
+gem 'pdf-reader'
 gem 'rack-mini-profiler'
 gem 'stackprof'
-gem 'pdf-reader'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
