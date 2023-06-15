@@ -117,7 +117,9 @@ export function AttendanceView() {
             // TODO Refactor: no attendance should be saveable with a check-out and no check-in
             if (index === 0) {
               setModalButtonDisabled(
-                !(mergedValue.check_in || update.absenceType)
+                mergedValue.check_in &&
+                  !mergedValue.check_out &&
+                  !update.absenceType
               )
             }
 
