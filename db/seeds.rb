@@ -316,5 +316,6 @@ Rake::Task['nebraska:rates'].invoke
 Rake::Task['update_rate_expiry_date2021'].invoke
 Rake::Task['fix_school_age_rates'].invoke
 Rake::Task['illinois:illinois_rates0916'].invoke
+Rake::Task['db:populate_state_time_rules'].invoke
 
 Rails.logger.info 'Seeding is done!'
