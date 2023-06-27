@@ -6,6 +6,9 @@ RSpec.describe Commands::Attendance::Create, type: :service do
   let(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:check_in) { Time.parse('9:00am').prev_occurring(:monday) }
+  let(:state) do
+    create(:state)
+  end
 
   describe '#initialize' do
     it 'initializes with required info' do
@@ -36,6 +39,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
 
   describe '#create' do
     it 'creates the attendance on a new ServiceDay' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       expect do
         described_class.new(
           check_in: check_in,
@@ -48,6 +72,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     end
 
     it 'creates the attendance on an existing absent ServiceDay' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       service_day = create(
         :service_day,
         child: child,
@@ -68,6 +113,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     end
 
     it 'creates the attendance on an existing attended ServiceDay' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       service_day = create(
         :service_day,
         child: child,
@@ -125,6 +191,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     end
 
     it 'assigns a schedule when one is present for that weekday' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       described_class.new(
         check_in: check_in,
         check_out: check_in + 6.hours,
@@ -134,6 +221,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     end
 
     it 'does not assign a schedule when one is not present for that weekday' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       described_class.new(
         check_in: check_in.prev_occurring(:saturday),
         check_out: check_in.prev_occurring(:saturday) + 6.hours,
@@ -143,6 +251,27 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     end
 
     it 'calculates the time in care for the service day' do
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}", 
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
       described_class.new(
         check_in: check_in.prev_occurring(:saturday),
         check_out: check_in.prev_occurring(:saturday) + 6.hours,
