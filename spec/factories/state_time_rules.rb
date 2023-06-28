@@ -31,4 +31,3 @@ end
 # Foreign Keys
 #
 #  fk_rails_...  (state_id => states.id)
-#

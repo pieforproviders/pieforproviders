@@ -8,6 +8,36 @@ RSpec.describe Commands::Attendance::Update, type: :service do
   let!(:check_in) { Time.parse('9:00am').utc.prev_occurring(:monday) }
   let!(:check_out) { Time.parse('10:50am').utc.prev_occurring(:monday) }
   let!(:attendance) { create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (26 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   describe '#initialize' do
     it 'initializes with required info' do

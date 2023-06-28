@@ -113,7 +113,7 @@ RSpec.describe UserBlueprint do
         ),
         create(
           :state_time_rule,
-          name: "Full Day #{state.name}", 
+          name: "Full Day #{state.name}",
           state: state,
           min_time: 5 * 3600, # 5 hours
           max_time: (10 * 3600) # 10 hours
@@ -152,7 +152,7 @@ RSpec.describe UserBlueprint do
         )
         create(
           :state_time_rule,
-          name: "Full Day #{state.name}", 
+          name: "Full Day #{state.name}",
           state: state,
           min_time: 5 * 3600, # 5 hours
           max_time: (10 * 3600) # 10 hours
