@@ -26,10 +26,7 @@ module Nebraska
     def calculate_full_time_and_part_time
       state = State.find_by(name: 'Nebraska')
       time_engine = TimeConversionEngine.new(service_day: service_day, state: state)
-      time_rule = time_engine.call
-      return { full_time: 0, part_time: 1 } if time_rule.first.name == 'Partial Day Nebraska'
-      return { full_time: 1, part_time: 0 } if time_rule.first.name == 'Full Day Nebraska'
-      return { full_time: 1, part_time: 1 } if time_rule.first.name == 'Full - Partial Day Nebraska'
+      time_engine.call
     end
 
     def schedule_or_duration
