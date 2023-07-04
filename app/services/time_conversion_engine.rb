@@ -19,7 +19,6 @@ class TimeConversionEngine
   def find_state_rule(service_day, state)
     time_in_care = service_day.total_time_in_care
     state_rules = StateTimeRule.where(state: state)
-    result = state_rules.select { |rule| (rule.min_time <= time_in_care.to_i) && (rule.max_time >= time_in_care.to_i) }
-    result.first
+    state_rules.find { |rule| (rule.min_time <= time_in_care.to_i) && (rule.max_time >= time_in_care.to_i) }
   end
 end
