@@ -26,6 +26,40 @@ def puts_records_in_db(klass)
   puts " ... #{klass.count} #{klass.name.pluralize} now in the db"
 end
 
+# ----------------------------------------
+# State Time Rules
+# ----------------------------------------
+
+states = [
+  { name: 'Nebraska', code: 'NE', subsidy_type: 'Type 1' },
+  { name: 'Illinois', code: 'IL', subsidy_type: 'Type 2' }
+]
+
+state = states.find { |item| item[:name] == 'Nebraska' }
+
+created_state = State.create!(state)
+
+puts "Created state: #{created_state.name}"
+
+StateTimeRule.create!(
+  name: "Partial Day #{created_state.name}",
+  state: created_state,
+  min_time: 60, # 1minute
+  max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+)
+StateTimeRule.create!(
+  name: "Full Day #{created_state.name}",
+  state: created_state,
+  min_time: 5 * 3600, # 5 hours
+  max_time: (10 * 3600) # 10 hours
+)
+StateTimeRule.create!(
+  name: "Full - Partial Day #{created_state.name}",
+  state: created_state,
+  min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+  max_time: (30 * 3600) # 18 hours
+)
+
 # ---------------------------------------------
 # Rates
 # ---------------------------------------------
@@ -316,6 +350,5 @@ Rake::Task['nebraska:rates'].invoke
 Rake::Task['update_rate_expiry_date2021'].invoke
 Rake::Task['fix_school_age_rates'].invoke
 Rake::Task['illinois:illinois_rates0916'].invoke
-Rake::Task['db:populate_state_time_rules'].invoke
 
 Rails.logger.info 'Seeding is done!'

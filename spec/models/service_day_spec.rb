@@ -6,6 +6,36 @@ RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -242,6 +272,37 @@ RSpec.describe ServiceDay do
         date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
       )
     end
+
+    let!(:state) do
+      create(:state)
+    end
+
+    let(:state_time_rules) do
+      [
+        create(
+          :state_time_rule,
+          name: "Partial Day #{state.name}",
+          state: state,
+          min_time: 60, # 1minute
+          max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+        ),
+        create(
+          :state_time_rule,
+          name: "Full Day #{state.name}",
+          state: state,
+          min_time: 5 * 3600, # 5 hours
+          max_time: (10 * 3600) # 10 hours
+        ),
+        create(
+          :state_time_rule,
+          name: "Full - Partial Day #{state.name}",
+          state: state,
+          min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+          max_time: nil
+        )
+      ]
+    end
+
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
              service_day: service_day,
