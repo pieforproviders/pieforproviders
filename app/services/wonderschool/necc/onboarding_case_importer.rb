@@ -177,6 +177,7 @@ module Wonderschool
         ratings[value]
       end
 
+      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
@@ -190,6 +191,7 @@ module Wonderschool
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
+      # rubocop:enable Metrics/AbcSize
 
       def required_child_params
         {
