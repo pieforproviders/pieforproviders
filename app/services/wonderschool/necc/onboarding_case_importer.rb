@@ -177,17 +177,21 @@ module Wonderschool
         ratings[value]
       end
 
+      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
+          part_days: to_integer(@row['Authorized partial day units']),
           hours: to_float(@row['Authorized hourly units']),
           authorized_weekly_hours: to_float(@row['Authorized weekly hours']),
           special_needs_rate: to_boolean(@row['Special Needs Rate?']),
           special_needs_daily_rate: to_float(@row['Special Needs Daily Rate']),
           special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate']),
+          special_needs_part_day_rate: to_float(@row['Special Needs Partial Day Rate']),
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
+      # rubocop:enable Metrics/AbcSize
 
       def required_child_params
         {
