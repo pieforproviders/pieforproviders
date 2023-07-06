@@ -30,7 +30,7 @@ namespace :db do
       name: "Full - Partial Day #{created_state.name}",
       state: created_state,
       min_time: (10 * 3600) + 60, # 10 hours and 1 minute
-      max_time: (18 * 3600) # 18 hours
+      max_time: (30 * 3600) # 18 hours
     )
   end
 end
