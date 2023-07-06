@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_15_052117) do
+ActiveRecord::Schema.define(version: 2023_07_04_230941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -110,6 +110,8 @@ ActiveRecord::Schema.define(version: 2023_02_15_052117) do
     t.uuid "rate_id"
     t.decimal "authorized_weekly_hours", precision: 5, scale: 2
     t.date "deleted_at"
+    t.integer "part_days"
+    t.decimal "special_needs_part_day_rate"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
