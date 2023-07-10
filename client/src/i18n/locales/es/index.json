@@ -290,5 +290,8 @@
   "emailTo": "Envía la nueva autorización a ",
   "seeAllNotifications": "Ver todas las notificaciones aquí",
   "noCheckOut": "sin hora de salida",
-  "partDay": "día parcial"
+  "showWeekends": "Mostrar Fines de Semana",
+  "partDay": "día parcial",
+  "fullDay": "día completo",
+  "nebraskaDateWarning": "Este calendario muestra reglas de subsidio desactualizadas. Desde Julio 1 de 2023, las reglas de subsidio de Nebraska ya no incluyen horas, fueron reemplazadas por cálculos de días parciales. \n Más información {{link}}"
 }
