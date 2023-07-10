@@ -283,7 +283,7 @@ export function AttendanceView() {
                 matchingServiceDay.part_time
               ]
 
-              let old_tags = (matchingServiceDay.tags || []).map((tag, i) => {
+              const old_tags = (matchingServiceDay.tags || []).map((tag, i) => {
                 let amount = tag.split(' ')[0]
                 let count = parseInt(amount, 10) <= 1 ? 1 : 0
 
@@ -314,7 +314,7 @@ export function AttendanceView() {
                         i > 0 ? 'ml-1' : null
                       }`}
                     >
-                      {i === 0 ? i18n.t('fullDay') : i18n.t('partialDay')}
+                      {i === 0 ? i18n.t('fullDay') : i18n.t('partDay')}
                     </div>
                   )
                 }
