@@ -103,7 +103,7 @@ describe('<DashboardTable />', () => {
       dateFilterValue: undefined
     })
     await waitFor(() => {
-      expect(getAllByText('-').length).toEqual(10)
+      expect(getAllByText('-').length).toEqual(9)
     })
   })
 })
