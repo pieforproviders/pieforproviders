@@ -24,6 +24,10 @@ export function useCaseData() {
                   text: childCase.nebraska_dashboard_case.full_days ?? '',
                   tag: childCase.nebraska_dashboard_case.attendance_risk ?? ''
                 },
+                partDays: {
+                  text: 'partialDays',
+                  info: childCase.nebraska_dashboard_case.part_days
+                },
                 hours: childCase.nebraska_dashboard_case.hours ?? '',
                 hoursAttended:
                   childCase.nebraska_dashboard_case.hours_attended ?? '',
