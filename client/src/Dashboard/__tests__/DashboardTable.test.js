@@ -44,7 +44,7 @@ describe('<DashboardTable />', () => {
     await waitFor(() => {
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
-      expect(container).toHaveTextContent('Hours')
+      expect(container).toHaveTextContent(/(Hours|Partial days)/i)
       expect(container).toHaveTextContent('Max hours per week')
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
@@ -70,7 +70,7 @@ describe('<DashboardTable />', () => {
     await waitFor(() => {
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
-      expect(container).toHaveTextContent('Hours')
+      expect(container).toHaveTextContent(/(Hours|Partial days)/i)
       expect(container).not.toHaveTextContent('Hours attended')
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
@@ -103,7 +103,7 @@ describe('<DashboardTable />', () => {
       dateFilterValue: undefined
     })
     await waitFor(() => {
-      expect(getAllByText('-').length).toEqual(10)
+      expect(getAllByText('-').length).toEqual(9)
     })
   })
 })

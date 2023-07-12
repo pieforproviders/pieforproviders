@@ -122,8 +122,8 @@ export default function DashboardTable({
 
   const renderHoursOrPartDays = (text, record) => {
     let control_date = dayjs('2023-06-30 23:59')
-    if (dayjs(dateFilterValue.date) > control_date) {
-      return <div>{record.partDays.info}</div>
+    if (dayjs(dateFilterValue?.date) > control_date) {
+      return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
     }
     return isInactive(record) ? '-' : text.split(' ')[0]
   }
@@ -324,7 +324,7 @@ export default function DashboardTable({
           },
           {
             name:
-              dayjs(dateFilterValue.date) > dayjs('2023-06-30 23:59')
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
                 ? t('partialDays')
                 : 'hours',
             render: renderHoursOrPartDays
