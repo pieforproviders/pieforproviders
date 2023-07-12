@@ -31,11 +31,10 @@ module Nebraska
     private
 
     def calculate_time_in_days
-      weeks_in_month = @until_given_date ? DateService.weeks_until_given_date(date) : DateService.weeks_in_month(date)
       @approval = monthly_approval
       return 0 if @approval.nil?
 
-      total_days = days_by_time_type
+      total_days = days_by_time_type / 12
 
       total_days <= eligible_days_by_business ? total_days : eligible_days_by_business
     end
