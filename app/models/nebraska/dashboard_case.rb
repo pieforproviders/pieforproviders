@@ -129,6 +129,16 @@ module Nebraska
       end
     end
 
+    def part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.part_days'
+      ) do
+        return 0 unless attendances_this_month
+
+        @part_days ||= child_approval&.part_days || 0
+      end
+    end
+
     def hours
       Appsignal.instrument_sql(
         'dashboard_case.hours'

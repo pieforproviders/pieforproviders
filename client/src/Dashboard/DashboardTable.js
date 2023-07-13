@@ -120,6 +120,14 @@ export default function DashboardTable({
     }
   }
 
+  const renderHoursOrPartDays = (text, record) => {
+    let control_date = dayjs('2023-06-30 23:59')
+    if (dayjs(dateFilterValue?.date) > control_date) {
+      return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
+    }
+    return isInactive(record) ? '-' : text.split(' ')[0]
+  }
+
   const renderChild = (child, record) => {
     return child ? (
       <div>
@@ -315,6 +323,13 @@ export default function DashboardTable({
             render: renderFullDays
           },
           {
+            name:
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                ? t('partialDays')
+                : 'hours',
+            render: renderHoursOrPartDays
+          },
+          {
             name: 'absences',
             sorter: (a, b) =>
               a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
@@ -323,13 +338,13 @@ export default function DashboardTable({
                 ? '-'
                 : replaceText(text, 'of', true, record.absences_dates)
           },
-          {
-            name: 'hours',
-            sorter: (a, b) =>
-              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: (text, record) =>
-              isInactive(record) ? '-' : text.split(' ')[0]
-          },
+          // {
+          //   name: 'hours',
+          //   sorter: (a, b) =>
+          //     a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
+          //   render: (text, record) =>
+          //     isInactive(record) ? '-' : text.split(' ')[0]
+          // },
           {
             name: 'hoursAttended',
             sorter: (a, b) =>
