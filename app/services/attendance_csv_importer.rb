@@ -26,7 +26,7 @@ class AttendanceCsvImporter
   private
 
   def process_attendances
-    file_names = @client.list_file_names(@source_bucket)
+    file_names = @client.list_file_names(@source_bucket).select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
@@ -34,7 +34,7 @@ class AttendanceCsvImporter
       CsvParser.new(body).call.each { |unstriped_row| process_row(unstriped_row) }
     end
     file_names.each do |file_name|
-      @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}")
+      @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
   end
 

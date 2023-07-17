@@ -23,7 +23,7 @@ class AttendancePdfImporter
   private
 
   def retrieve_file_names
-    @client.list_file_names(@source_bucket).select { |s| s.end_with? '.pdf' }
+    @client.list_file_names(@source_bucket, 'PDF/').select { |s| s.end_with? '.pdf' }
   end
 
   def read_attendances
