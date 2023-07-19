@@ -25,6 +25,7 @@ class AttendanceCsvImporter
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def process_attendances
     file_names = @client.list_file_names(@source_bucket).select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
@@ -37,6 +38,7 @@ class AttendanceCsvImporter
       @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_row(unstriped_row)
     @row = {}
