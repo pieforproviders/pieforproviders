@@ -76,6 +76,7 @@ RSpec.describe AttendanceCsvImporter do
         allow(stubbed_client).to receive(:archive_file).with(
           source_bucket,
           archive_bucket,
+          file_name,
           /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/
         )
       end
@@ -153,6 +154,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { attendance_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
@@ -170,6 +172,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
@@ -181,6 +184,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { missing_field_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
