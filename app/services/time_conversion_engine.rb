@@ -9,6 +9,7 @@ class TimeConversionEngine
 
   def call
     time_rule = find_state_rule(@service_day, @state)
+    return { full_time: 0, part_time: 0 } if time_rule.blank?
     return { full_time: 0, part_time: 1 } if time_rule.name == 'Partial Day Nebraska'
     return { full_time: 1, part_time: 0 } if time_rule.name == 'Full Day Nebraska'
     return { full_time: 1, part_time: 1 } if time_rule.name == 'Full - Partial Day Nebraska'
