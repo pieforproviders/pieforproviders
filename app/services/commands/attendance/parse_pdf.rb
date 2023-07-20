@@ -39,7 +39,7 @@ module Commands
           first_page = reader.pages.first
           splitted_page = split_page_by_break_line(first_page)
           reduced_splited_page = remove_unnecessary_spaces(splitted_page)
-          reduced_splited_page[1].split.last(2).join(' ').split(', ')
+          reduced_splited_page[1].split('for').last.split(',').map(&:strip)
         end
       end
 
