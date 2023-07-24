@@ -314,7 +314,7 @@ export function AttendanceView() {
                         i > 0 ? 'ml-1' : null
                       }`}
                     >
-                      {i === 0 ? i18n.t('fullDay') : i18n.t('partDay')}
+                      {i === 0 ? i18n.t('fullDay') : i18n.t('partialDay')}
                     </div>
                   )
                 }
