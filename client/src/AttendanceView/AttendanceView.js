@@ -319,7 +319,11 @@ export function AttendanceView() {
                   )
                 }
               })
-              if (switch_date < dateSelected) {
+              if (
+                switch_date < dateSelected &&
+                matchingServiceDay.state === 'NE'
+              ) {
+                console.log('STATE!')
                 return new_tags
               }
               return old_tags
