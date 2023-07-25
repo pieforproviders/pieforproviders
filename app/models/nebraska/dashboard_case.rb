@@ -135,7 +135,11 @@ module Nebraska
       ) do
         return 0 unless attendances_this_month
 
-        @part_days ||= child_approval&.part_days || 0
+        @part_days = 0
+        attendances_this_month.each do |service_day|
+          @part_days += 1 if service_day.part_time == 1
+        end
+        @part_days
       end
     end
 
