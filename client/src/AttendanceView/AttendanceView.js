@@ -314,12 +314,16 @@ export function AttendanceView() {
                         i > 0 ? 'ml-1' : null
                       }`}
                     >
-                      {i === 0 ? i18n.t('fullDay') : i18n.t('partDay')}
+                      {i === 0 ? i18n.t('fullDay') : i18n.t('partialDay')}
                     </div>
                   )
                 }
               })
-              if (switch_date < dateSelected) {
+              if (
+                switch_date < dateSelected &&
+                matchingServiceDay.state === 'NE'
+              ) {
+                console.log('STATE!')
                 return new_tags
               }
               return old_tags
