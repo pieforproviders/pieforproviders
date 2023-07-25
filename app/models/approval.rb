@@ -53,6 +53,10 @@ class Approval < UuidApplicationRecord
   def sort_by_name(sort_a, sort_b)
     sort_a.first_name <=> sort_b.first_name
   end
+
+  def date_in_range?(date)
+    date >= effective_on && date <= expires_on
+  end
 end
 
 # == Schema Information

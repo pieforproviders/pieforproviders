@@ -61,22 +61,22 @@ export default function DashboardTable({
     }
   }
 
-  const isInactive = record => !record.active
+  const isInactive = record => !record?.active
 
   const isNotApproved = record => record.approvalEffectiveOn === null
 
   const renderAttendanceRate = (attendanceRate, record) => {
-    if (isInactive(record)) {
+    if (isInactive(record) || !attendanceRate) {
       return '-'
     }
 
     const createTag = (color, text) => (
       <Tag className={`${color}-tag custom-tag`}>
-        {`${(attendanceRate.rate * 100).toFixed(1)}% - ${t(text)}`}
+        {`${(attendanceRate?.rate * 100).toFixed(1)}% - ${t(text)}`}
       </Tag>
     )
 
-    switch (attendanceRate.riskCategory) {
+    switch (attendanceRate?.riskCategory) {
       case attendanceCategories.AHEADOFSCHEDULE:
         return createTag('green', 'aheadOfSchedule')
       case attendanceCategories.ONTRACK:
@@ -106,7 +106,7 @@ export default function DashboardTable({
         </div>
       )
     }
-    switch (fullday.tag) {
+    switch (fullday?.tag) {
       case fullDayCategories.AHEADOFSCHEDULE:
         return renderCell('green', 'aheadOfSchedule')
       case fullDayCategories.ONTRACK:
@@ -125,7 +125,7 @@ export default function DashboardTable({
     if (dayjs(dateFilterValue?.date) > control_date) {
       return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
     }
-    return isInactive(record) ? '-' : text.split(' ')[0]
+    return isInactive(record) ? '-' : text?.split(' ')[0]
   }
 
   const renderChild = (child, record) => {
