@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe AttendanceCsvImporter do
-  let!(:file_name) { 'Test Child Care-Grid view.csv' }
+  let!(:file_name) { 'Test Child Care.csv' }
   let!(:source_bucket) { 'source_bucket' }
   let!(:archive_bucket) { 'archive_bucket' }
   let!(:stubbed_client) { instance_double(AwsClient) }
 
-  let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/Test Child Care-Grid view.csv').read }
+  let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/Test Child Care.csv').read }
 
   # TODO: file with a name that doesn't match a business
   # TODO: file with missing required fields (check_in, check_out, full_name OR dhs_id)
@@ -66,7 +66,7 @@ RSpec.describe AttendanceCsvImporter do
     allow(Rails.application.config).to receive(:aws_necc_attendance_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }
     allow(AwsClient).to receive(:new) { stubbed_client }
-    allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
+    allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'CSV/') { [file_name] }
   end
 
   describe '#call' do
