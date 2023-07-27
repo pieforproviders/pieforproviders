@@ -27,7 +27,7 @@ class AttendanceCsvImporter
 
   # rubocop:disable Metrics/AbcSize
   def process_attendances
-    file_names = @client.list_file_names(@source_bucket).select { |s| s.end_with? '.csv' }
+    file_names = @client.list_file_names(@source_bucket, 'CSV/').select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
@@ -99,7 +99,7 @@ class AttendanceCsvImporter
   end
 
   def business
-    found_business = Business.find_by(name: @file_name.split('.').first.split('-'))
+    found_business = Business.find_by(name: @file_name.split('/').last.split('.').first)
 
     found_business.presence || log_missing_business
   end
