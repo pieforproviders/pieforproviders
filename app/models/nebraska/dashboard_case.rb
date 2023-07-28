@@ -123,7 +123,8 @@ module Nebraska
 
         @full_days ||= attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(
-            total_time_in_care: service_day.total_time_in_care
+            total_time_in_care: service_day.total_time_in_care,
+            filter_date: filter_date
           ).call
         end
       end
