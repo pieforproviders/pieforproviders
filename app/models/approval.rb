@@ -22,7 +22,9 @@ class Approval < UuidApplicationRecord
   # validates :copay_frequency, inclusion: { in: COPAY_FREQUENCIES, allow_nil: true }
 
   scope :active, -> { where(active: true) }
-  scope :active_on, ->(date) { where(effective_on: ..date).where(expires_on: [date.., nil]).order(updated_at: :desc) }
+  scope :active_on, ->(date) { where("DATE_TRUNC('month', approvals.effective_on) <= ? AND 
+    (DATE_TRUNC('month', approvals.expires_on) >= ? OR approvals.expires_on IS NULL)", 
+    date.beginning_of_month, date.beginning_of_month).order(updated_at: :desc) }
   scope :with_children, -> { includes(:children) }
   # TODO: needs to change to timestamp and get sent from front-end with timestamps
 
