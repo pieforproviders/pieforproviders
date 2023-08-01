@@ -52,7 +52,7 @@ class ChildBlueprint < Blueprinter::Base
     association :nebraska_dashboard_case, blueprint: Nebraska::DashboardCaseBlueprint do |child, options|
       options[:filter_date] ||= Time.current
       child_approval = child&.active_child_approval(options[:filter_date])
-      service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
+      service_days = child&.service_days&.for_period(child_approval&.effective_on, child_approval&.expires_on)
       attended_days = service_days&.non_absences
       absent_days = service_days&.absences
       Nebraska::DashboardCase.new(

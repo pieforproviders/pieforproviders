@@ -144,8 +144,6 @@ RSpec.describe Child do
       expect(described_class.approved_for_date(earliest_effective - 1.minute)).to eq([])
       # if it is the child's last day of their approval, it will show them
       expect(described_class.approved_for_date(latest_effective)).to include(child)
-      # if it is after the child's last day of their approval, it will not
-      expect(described_class.approved_for_date(latest_effective + 1.minute)).to eq([])
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do

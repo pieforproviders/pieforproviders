@@ -136,9 +136,9 @@ RSpec.describe Commands::Attendance::Create, type: :service do
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'raises an error when the check out is before the check in' do
@@ -149,9 +149,9 @@ RSpec.describe Commands::Attendance::Create, type: :service do
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'assigns a schedule when one is present for that weekday' do
