@@ -243,6 +243,7 @@
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
+  "goToAttendance": "View attendance",
   "dateError": "Please select a date",
   "inputAttendance": "Input Attendance",
   "name": "Name",

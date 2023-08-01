@@ -243,6 +243,7 @@
   "success": "¡Registro exitoso!",
   "successText": "Acabas de registrar el historial de asistencia para los niños bajo tu supervisión.",
   "gotToDashboard": "Ir al panel principal",
+  "goToAttendance": "Ver el panel de asistencias",
   "dateError": "Por favor selecciona una fecha",
   "inputAttendance": "Ingresar asistencia",
   "name": "Nombre",
