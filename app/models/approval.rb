@@ -24,7 +24,7 @@ class Approval < UuidApplicationRecord
   scope :active, -> { where(active: true) }
   scope :active_on, ->(date) { where("DATE_TRUNC('month', approvals.effective_on) <= ? AND 
     (DATE_TRUNC('month', approvals.expires_on) >= ? OR approvals.expires_on IS NULL)", 
-    date.beginning_of_month, date.beginning_of_month).order(updated_at: :desc) }
+    date&.beginning_of_month, date&.beginning_of_month).order(updated_at: :desc) }
   scope :with_children, -> { includes(:children) }
   # TODO: needs to change to timestamp and get sent from front-end with timestamps
 

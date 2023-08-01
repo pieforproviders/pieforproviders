@@ -49,7 +49,7 @@ class Child < UuidApplicationRecord
         lambda { |date|
           joins(:approvals).where("DATE_TRUNC('month', approvals.effective_on) <= ? AND 
           (DATE_TRUNC('month', approvals.expires_on) >= ? OR approvals.expires_on IS NULL)", 
-          date.beginning_of_month, date.beginning_of_month
+          date&.beginning_of_month, date&.beginning_of_month
    )
         }
   scope :not_deleted, -> { where(deleted_at: nil) }
