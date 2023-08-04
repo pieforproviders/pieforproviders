@@ -48,7 +48,9 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(required_child_params)
+
+        process_child
+
         @approval = find_approval
 
         raise NotEnoughInfo, @child.errors unless @child.valid?
@@ -61,6 +63,21 @@ module Wonderschool
           exception: e,
           tags: { case_number: @row['Case number'] }
         )
+      end
+
+      def process_child
+        first_name = required_child_params[:first_name].downcase
+        last_name = required_child_params[:last_name].downcase
+
+        @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
+                             first_name,
+                             last_name).first_or_initialize(required_child_params)
+
+        if @child.new_record?
+          @child.save
+        else
+          @child.update(required_child_params)
+        end
       end
 
       def find_approval
