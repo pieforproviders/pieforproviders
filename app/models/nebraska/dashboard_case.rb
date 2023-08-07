@@ -144,6 +144,20 @@ module Nebraska
       end
     end
 
+    def total_part_days
+      Appsignal.instrument_sql('dashboard_case.total_part_days') do
+        child.child_approvals.first.part_days
+      end
+    end
+
+    def remaining_part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.remaining_part_days'
+      ) do
+        total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
+      end
+    end
+
     def hours
       Appsignal.instrument_sql(
         'dashboard_case.hours'

@@ -294,6 +294,8 @@
   "showWeekends": "Mostrar Fines de Semana",
   "partDay": "día parcial",
   "fullDay": "día completo",
+  "partialDay": "día parcial",
   "partialDays": "Días parciales",
+  "partialDaysRemaining": "Total de días parciales restantes",
   "nebraskaDateWarning": "Este calendario muestra reglas de subsidio desactualizadas. Desde Julio 1 de 2023, las reglas de subsidio de Nebraska ya no incluyen horas, fueron reemplazadas por cálculos de días parciales. \n Más información {{link}}"
 }

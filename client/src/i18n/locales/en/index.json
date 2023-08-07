@@ -300,5 +300,6 @@
   "fullDay": "full day",
   "partialDay": "partial day",
   "nebraskaDateWarning": "This calendar displays outdated subsidy rules. As of July 1, 2023, hours were eliminated from Nebraska subsidy rules and replaced with partial day calculations. \n More information {{link}}",
-  "partialDays": "Partial days"
+  "partialDays": "Partial days",
+  "partialDaysRemaining": "Total partial days remaining"
 }
