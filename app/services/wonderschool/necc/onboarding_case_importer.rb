@@ -213,8 +213,8 @@ module Wonderschool
       def required_child_params
         {
           business_id: @business&.id,
-          first_name: @row['First Name'],
-          last_name: @row['Last Name'],
+          first_name: @row['First Name'].capitalize,
+          last_name: @row['Last Name'].capitalize,
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
         }
