@@ -141,7 +141,7 @@ RSpec.describe Child do
       expect(described_class.approved_for_date(earliest_effective)).to include(child)
       expect(described_class.approved_for_date(earliest_effective)).to include(inactive_child)
       expect(described_class.approved_for_date(earliest_effective)).to include(deleted_child)
-      expect(described_class.approved_for_date(earliest_effective - 1.minute)).to eq([])
+      expect(described_class.approved_for_date(earliest_effective.beginning_of_month - 1.minute)).to eq([])
       # if it is the child's last day of their approval, it will show them
       expect(described_class.approved_for_date(latest_effective)).to include(child)
     end
