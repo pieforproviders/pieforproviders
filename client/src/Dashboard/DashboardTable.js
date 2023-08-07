@@ -409,20 +409,20 @@ export default function DashboardTable({
                   }`
           },
           {
-            name:
-              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
-                ? t('partialDaysRemaining')
-                : 'hoursRemaining',
-            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
-            render: renderRemainingHoursOrPartDays
-          },
-          {
             name: 'fullDaysRemaining',
             sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
             render: (text, record) =>
               isInactive(record)
                 ? '-'
                 : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+          },
+          {
+            name:
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                ? t('partialDaysRemaining')
+                : 'hoursRemaining',
+            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+            render: renderRemainingHoursOrPartDays
           }
         ]
       },

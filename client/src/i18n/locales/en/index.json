@@ -150,7 +150,7 @@
   "totalAuthorizationPeriod": "Total authorization period",
   "authorizedPeriod": "Authorized period",
   "hoursRemaining": "Total hours remaining",
-  "fullDaysRemaining": "Total days remaining",
+  "fullDaysRemaining": "Full days remaining",
   "comingSoon": "Coming soon!",
   "attendance": "Attendance",
   "revenue": "Revenue",
@@ -301,5 +301,5 @@
   "partialDay": "partial day",
   "nebraskaDateWarning": "This calendar displays outdated subsidy rules. As of July 1, 2023, hours were eliminated from Nebraska subsidy rules and replaced with partial day calculations. \n More information {{link}}",
   "partialDays": "Partial days",
-  "partialDaysRemaining": "Total partial days remaining"
+  "partialDaysRemaining": "Partial days remaining"
 }
