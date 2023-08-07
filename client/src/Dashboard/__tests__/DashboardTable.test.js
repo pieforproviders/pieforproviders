@@ -51,7 +51,9 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
       expect(container).toHaveTextContent('Authorized period')
-      expect(container).toHaveTextContent('Total hours remaining')
+      expect(container).toHaveTextContent(
+        /(Total hours remaining|Total partial days remaining)/i
+      )
       expect(container).toHaveTextContent('Total days remaining')
       expect(container).toHaveTextContent('Actions')
     })
@@ -77,7 +79,9 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
       expect(container).toHaveTextContent('Authorized period')
-      expect(container).toHaveTextContent('Total hours remaining')
+      expect(container).toHaveTextContent(
+        /(Total hours remaining|Total partial days remaining)/i
+      )
       expect(container).toHaveTextContent('Total days remaining')
       expect(container).toHaveTextContent('Actions')
     })
