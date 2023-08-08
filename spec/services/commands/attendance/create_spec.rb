@@ -131,8 +131,8 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'raises an error when there is no current child approval' do
       expect do
         described_class.new(
-          check_in: child_approval.effective_on - 3.days,
-          check_out: child_approval.effective_on - 3.days + 6.hours,
+          check_in: child_approval.effective_on.at_beginning_of_month - 3.days,
+          check_out: child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           child_id: child.id
         ).create
       end

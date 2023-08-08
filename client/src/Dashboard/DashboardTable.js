@@ -101,7 +101,7 @@ export default function DashboardTable({
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{fullday.text.split(' ')[0]}</p>
+          <p className="mb-1">{fullday?.text.split(' ')[0]}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
@@ -126,6 +126,20 @@ export default function DashboardTable({
       return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
     }
     return isInactive(record) ? '-' : text?.split(' ')[0]
+  }
+
+  const renderRemainingHoursOrPartDays = (text, record) => {
+    let control_date = dayjs('2023-06-30 23:59')
+    if (dayjs(dateFilterValue?.date) > control_date) {
+      return isInactive(record) || record.remainingPartDays === null ? (
+        '-'
+      ) : (
+        <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
+      )
+    }
+    return isInactive(record)
+      ? '-'
+      : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
   }
 
   const renderChild = (child, record) => {
@@ -327,6 +341,8 @@ export default function DashboardTable({
               dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
                 ? t('partialDays')
                 : 'hours',
+            sorter: (a, b) =>
+              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
             render: renderHoursOrPartDays
           },
           {
@@ -393,20 +409,20 @@ export default function DashboardTable({
                   }`
           },
           {
-            name: 'hoursRemaining',
-            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
-            render: (text, record) =>
-              isInactive(record)
-                ? '-'
-                : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
-          },
-          {
             name: 'fullDaysRemaining',
             sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
             render: (text, record) =>
               isInactive(record)
                 ? '-'
                 : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+          },
+          {
+            name:
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                ? t('partialDaysRemaining')
+                : 'hoursRemaining',
+            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+            render: renderRemainingHoursOrPartDays
           }
         ]
       },

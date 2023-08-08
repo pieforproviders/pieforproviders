@@ -193,8 +193,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       expect do
         described_class.new(
           attendance: attendance,
-          check_in: attendance.child_approval.effective_on - 3.days,
-          check_out: attendance.child_approval.effective_on - 3.days + 6.hours,
+          check_in: attendance.child_approval.effective_on.at_beginning_of_month - 3.days,
+          check_out: attendance.child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           absence_type: nil
         ).update
       end
