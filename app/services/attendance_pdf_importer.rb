@@ -109,8 +109,8 @@ class AttendancePdfImporter
   end
 
   def log_missing_child
-    message = "Business: #{@business.id} - child record for attendance " \
-              "not found (dhs_id: #{@child['dhs_id']}, ); skipping"
+    message = 'Child record for attendance ' \
+              "Cannont find child on file #{@file_name}; skipping"
 
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message
