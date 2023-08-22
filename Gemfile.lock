@@ -466,6 +466,7 @@ DEPENDENCIES
   rack-mini-profiler
   rails (~> 6.1.6)
   rails-erd
+  rainbow
   redis
   reverse_markdown
   roo (~> 2.7, >= 2.7.1)
