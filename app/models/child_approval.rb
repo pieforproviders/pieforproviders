@@ -29,6 +29,10 @@ class ChildApproval < UuidApplicationRecord
   end
 end
 
+def date_in_range?(date)
+  date >= effective_on && date <= expires_on
+end
+
 # == Schema Information
 #
 # Table name: child_approvals

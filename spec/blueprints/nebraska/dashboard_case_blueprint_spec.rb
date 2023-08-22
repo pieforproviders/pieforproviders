@@ -70,7 +70,10 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       'hours',
       'hours_authorized',
       'hours_remaining',
-      'hours_attended'
+      'hours_attended',
+      'part_days',
+      'remaining_part_days',
+      'total_part_days'
     )
   end
 

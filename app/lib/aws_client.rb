@@ -72,9 +72,11 @@ class AwsClient
     )
   end
 
-  def archive_file(source_bucket, archive_bucket, file_name)
+  def archive_file(source_bucket, archive_bucket, file_name, archive_file_name = nil)
     find_bucket(name: source_bucket) && find_bucket(name: archive_bucket, tech_only: true)
-    @client.copy_object({ bucket: archive_bucket, copy_source: "#{source_bucket}/#{file_name}", key: file_name })
+    @client.copy_object({ bucket: archive_bucket,
+                          copy_source: "#{source_bucket}/#{file_name}",
+                          key: (archive_file_name.presence || file_name) })
     @client.delete_object({ bucket: source_bucket, key: file_name })
   rescue StandardError => e
     send_appsignal_error(

@@ -10,6 +10,7 @@ class ServiceDayBlueprint < Blueprinter::Base
   field :total_time_in_care
   field :full_time
   field :part_time
+  field :state
   association :child, blueprint: ChildBlueprint
   association :attendances, blueprint: AttendanceBlueprint
 end
