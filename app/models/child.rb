@@ -47,7 +47,10 @@ class Child < UuidApplicationRecord
   scope :active, -> { where(active: true) }
   scope :approved_for_date,
         lambda { |date|
-          joins(:approvals).where(approvals: { effective_on: ..date }).where(approvals: { expires_on: [date.., nil] })
+          joins(:approvals).where("DATE_TRUNC('month', approvals.effective_on) <= ? AND
+          (DATE_TRUNC('month', approvals.expires_on) >= ? OR approvals.expires_on IS NULL)",
+                                  date&.beginning_of_month,
+                                  date&.beginning_of_month)
         }
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }

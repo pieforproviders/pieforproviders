@@ -131,14 +131,14 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'raises an error when there is no current child approval' do
       expect do
         described_class.new(
-          check_in: child_approval.effective_on - 3.days,
-          check_out: child_approval.effective_on - 3.days + 6.hours,
+          check_in: child_approval.effective_on.at_beginning_of_month - 3.days,
+          check_out: child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'raises an error when the check out is before the check in' do
@@ -149,9 +149,9 @@ RSpec.describe Commands::Attendance::Create, type: :service do
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'assigns a schedule when one is present for that weekday' do

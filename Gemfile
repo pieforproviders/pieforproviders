@@ -32,7 +32,9 @@ gem 'flamegraph'
 gem 'memory_profiler'
 gem 'pdf-reader'
 gem 'rack-mini-profiler'
+gem 'rainbow'
 gem 'stackprof'
+gem 'terminal-table'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
