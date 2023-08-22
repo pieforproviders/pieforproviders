@@ -44,7 +44,7 @@ class DeviseCustomMailer < Devise::Mailer
   end
 
   def password_update_path(token)
-    "#{domain}/password/update?reset_password_token=#{token}"
+    "https://#{domain}/password/update?reset_password_token=#{token}"
   end
 
   def domain

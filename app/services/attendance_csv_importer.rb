@@ -25,8 +25,9 @@ class AttendanceCsvImporter
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def process_attendances
-    file_names = @client.list_file_names(@source_bucket)
+    file_names = @client.list_file_names(@source_bucket, 'CSV/').select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
@@ -34,9 +35,10 @@ class AttendanceCsvImporter
       CsvParser.new(body).call.each { |unstriped_row| process_row(unstriped_row) }
     end
     file_names.each do |file_name|
-      @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}")
+      @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_row(unstriped_row)
     @row = {}
@@ -64,9 +66,8 @@ class AttendanceCsvImporter
   end
 
   def create_attendance
-    check_in = @row['check_in'].in_time_zone(child.timezone)
-    check_out = @row['check_out']&.in_time_zone(child.timezone)
-
+    check_in = format_check_in_out(@row['check_in'])
+    check_out = @row['check_out'].blank? ? nil : format_check_in_out(@row['check_out'])
     if @row['absence']
       find_or_create_service_day(check_in: check_in)
     else
@@ -78,22 +79,27 @@ class AttendanceCsvImporter
     end
   end
 
+  def format_check_in_out(date_time)
+    date_time.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
+  end
+
   def active_child_approval(check_in:)
     @child
-      &.approvals
-      &.active_on(check_in)
-      &.first
-      &.child_approvals
+      &.approvals&.active_on(check_in)
+      &.first&.child_approvals
       &.find_by(child: @child)
   end
 
   def find_or_create_service_day(check_in:)
-    service_day = ServiceDay.find_or_create_by!(child: @child, date: check_in.at_beginning_of_day)
+    service_day = ServiceDay.find_or_create_by!(
+      child: @child,
+      date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day
+    )
     service_day.update!(absence_type: @row['absence'])
   end
 
   def business
-    found_business = Business.find_by(name: @file_name.split('.').first.split('-'))
+    found_business = Business.find_by(name: @file_name.split('/').last.split('.').first)
 
     found_business.presence || log_missing_business
   end

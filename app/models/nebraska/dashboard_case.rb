@@ -123,9 +123,38 @@ module Nebraska
 
         @full_days ||= attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(
-            total_time_in_care: service_day.total_time_in_care
+            total_time_in_care: service_day.total_time_in_care,
+            filter_date: filter_date
           ).call
         end
+      end
+    end
+
+    def part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.part_days'
+      ) do
+        return 0 unless attendances_this_month
+
+        @part_days = 0
+        attendances_this_month.each do |service_day|
+          @part_days += 1 if service_day.part_time == 1
+        end
+        @part_days
+      end
+    end
+
+    def total_part_days
+      Appsignal.instrument_sql('dashboard_case.total_part_days') do
+        child.child_approvals.first.part_days
+      end
+    end
+
+    def remaining_part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.remaining_part_days'
+      ) do
+        total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
       end
     end
 
