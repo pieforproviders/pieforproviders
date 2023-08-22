@@ -29,9 +29,10 @@ export function AttendanceView() {
   const screens = useBreakpoint()
   const history = useHistory()
   const { makeRequest } = useApiResponse()
-  const { businesses, filteredCases } = useSelector(state => ({
+  const { businesses, filteredCases, user } = useSelector(state => ({
     businesses: state.businesses,
-    filteredCases: state.ui.filteredCases
+    filteredCases: state.ui.filteredCases,
+    user: state.user
   }))
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
@@ -314,12 +315,15 @@ export function AttendanceView() {
                         i > 0 ? 'ml-1' : null
                       }`}
                     >
-                      {i === 0 ? i18n.t('fullDay') : i18n.t('partDay')}
+                      {i === 0 ? i18n.t('fullDay') : i18n.t('partialDay')}
                     </div>
                   )
                 }
               })
-              if (switch_date < dateSelected) {
+              if (
+                switch_date < dateSelected &&
+                matchingServiceDay.state === 'NE'
+              ) {
                 return new_tags
               }
               return old_tags
@@ -638,7 +642,7 @@ export function AttendanceView() {
             </Button>
           </div>
           <div style={{ marginBottom: '1rem', marginTop: '1rem' }}>
-            {dateSelected < dayjs('2023-06-30 23:59') ? (
+            {dateSelected < dayjs('2023-06-30 23:59') && user.state === 'NE' ? (
               <Space direction="vertical" style={{ width: '100%' }}>
                 <Alert message={warningMessage} type="warning" />
               </Space>

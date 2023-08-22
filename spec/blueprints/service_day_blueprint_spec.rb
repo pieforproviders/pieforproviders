@@ -17,7 +17,8 @@ RSpec.describe ServiceDayBlueprint do
       'tags',
       'total_time_in_care',
       'full_time',
-      'part_time'
+      'part_time',
+      'state'
     )
   end
 end

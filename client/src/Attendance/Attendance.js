@@ -494,7 +494,7 @@ export function Attendance() {
         open={isSuccessModalVisible}
         onCancel={() => {
           setSuccessModalVisible(false)
-          history.push('/dashboard')
+          history.push('/attendance')
         }}
         footer={[
           <Button
@@ -503,10 +503,10 @@ export function Attendance() {
             key="ok"
             onClick={() => {
               setSuccessModalVisible(false)
-              history.push('/dashboard')
+              history.push('/attendance')
             }}
           >
-            {t('gotToDashboard')}
+            {t('goToAttendance')}
           </Button>
         ]}
       >

@@ -150,7 +150,7 @@
   "totalAuthorizationPeriod": "Total authorization period",
   "authorizedPeriod": "Authorized period",
   "hoursRemaining": "Total hours remaining",
-  "fullDaysRemaining": "Total days remaining",
+  "fullDaysRemaining": "Full days remaining",
   "comingSoon": "Coming soon!",
   "attendance": "Attendance",
   "revenue": "Revenue",
@@ -243,6 +243,7 @@
   "success": "Success!",
   "successText": "You just entered some attendance history for the kids in your care.",
   "gotToDashboard": "Go to dashboard",
+  "goToAttendance": "View attendance",
   "dateError": "Please select a date",
   "inputAttendance": "Input Attendance",
   "name": "Name",
@@ -299,5 +300,6 @@
   "fullDay": "full day",
   "partialDay": "partial day",
   "nebraskaDateWarning": "This calendar displays outdated subsidy rules. As of July 1, 2023, hours were eliminated from Nebraska subsidy rules and replaced with partial day calculations. \n More information {{link}}",
-  "partialDays": "Partial days"
+  "partialDays": "Partial days",
+  "partialDaysRemaining": "Partial days remaining"
 }

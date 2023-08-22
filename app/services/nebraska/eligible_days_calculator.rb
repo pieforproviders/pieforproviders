@@ -31,10 +31,12 @@ module Nebraska
     private
 
     def calculate_time_in_days
-      @approval = monthly_approval
-      return 0 if @approval.nil?
+      approval = monthly_approval
+      @child_approval = child.child_approvals.find_by(approval_id: approval.id)
 
-      total_days = days_by_time_type / 12
+      return 0 if @child_approval.nil?
+
+      total_days = days_by_time_type
 
       total_days <= eligible_days_by_business ? total_days : eligible_days_by_business
     end
@@ -45,7 +47,7 @@ module Nebraska
     end
 
     def monthly_approval
-      child.child_approvals.each do |approval|
+      child.approvals.each do |approval|
         return approval if approval.date_in_range?(date)
       end
     end
@@ -64,11 +66,11 @@ module Nebraska
     end
 
     def full_time_days
-      @approval.full_days || 0
+      @child_approval.full_days || 0
     end
 
     def part_time_days
-      @approval.part_days || 0
+      (@child_approval.part_days&./ 12) || 0
     end
   end
 end

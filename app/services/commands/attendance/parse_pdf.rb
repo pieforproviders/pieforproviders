@@ -33,15 +33,27 @@ module Commands
 
       private
 
+      # rubocop: disable Metrics/AbcSize Metrics/MethodLength
+      # rubocop: disable Metrics/MethodLength
       def find_child_name
         File.open(@file, 'rb') do |io|
           reader = PDF::Reader.new(io)
           first_page = reader.pages.first
           splitted_page = split_page_by_break_line(first_page)
           reduced_splited_page = remove_unnecessary_spaces(splitted_page)
-          reduced_splited_page[1].split.last(2).join(' ').split(', ')
+          names = reduced_splited_page.second.split('for').last.split(',')
+          first_name = names.last.split.first
+          last_name = names.first.gsub('-', ' ').strip
+          [last_name, first_name]
+        rescue StandardError => e
+          # rubocop:disable Rails/Output
+          pp "Error finding child, please check if the child's name contains any special character or extra names.
+           error => #{e.inspect}"
+          # rubocop:enable Rails/Output
         end
       end
+      # rubocop: enable Metrics/AbcSize Metrics/MethodLength
+      # rubocop: enable Metrics/MethodLength
 
       def find_business_name
         File.open(@file, 'rb') do |io|
