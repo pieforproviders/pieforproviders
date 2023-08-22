@@ -13,6 +13,7 @@ RSpec.describe ChildBlueprint do
       'first_name',
       'last_name',
       'last_active_date',
+      'last_inactive_date',
       'inactive_reason',
       'wonderschool_id',
       'business_name'
@@ -29,6 +30,7 @@ RSpec.describe ChildBlueprint do
         'illinois_dashboard_case',
         'inactive_reason',
         'last_active_date',
+        'last_inactive_date',
         'last_name',
         'wonderschool_id'
       )
@@ -45,6 +47,7 @@ RSpec.describe ChildBlueprint do
         'first_name',
         'last_name',
         'last_active_date',
+        'last_inactive_date',
         'inactive_reason',
         'nebraska_dashboard_case',
         'wonderschool_id',

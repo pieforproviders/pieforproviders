@@ -20,6 +20,29 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     before { child.reload }
 
     it 'with one attendance less than 6 hours, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
+
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -38,6 +61,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with one attendance more than 6 hours but less than 10 hours, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -56,6 +101,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with one attendance greater than 10 hours but less than 18 hours, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -74,6 +141,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with one attendance greater than 18 hours, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (rand(20..24) * 3600) # > 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -92,6 +181,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with one attendance during the filter week and one before the filter week, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -116,6 +227,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with multiple attendances during the filter week, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,
@@ -146,6 +279,28 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
     end
 
     it 'with an attendance during the filter week with multiple check-ins, returns the total' do
+      state = create(:state)
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      )
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      )
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (18 * 3600) # 18 hours
+      )
       service_day = create(:service_day, date: check_in, child: child)
       create(:attendance,
              service_day: service_day,

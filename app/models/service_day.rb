@@ -93,7 +93,7 @@ class ServiceDay < UuidApplicationRecord
   def set_absence_type_by_schedule
     return unless absence_type == 'absence'
 
-    schedule = child.schedules.active_on(date.utc).for_weekday(date.utc.wday)
+    schedule = child.schedules.active_on(date).for_weekday(date.wday)
     self.absence_type = schedule.presence ? 'absence_on_scheduled_day' : 'absence_on_unscheduled_day'
   end
 end

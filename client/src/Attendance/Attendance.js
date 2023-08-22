@@ -278,10 +278,17 @@ export function Attendance() {
       return record[1]
         .filter(day => day.absenceType)
         .flatMap((day, index) => {
+          let indices = record[1].reduce((result, item, index) => {
+            if (item.absenceType === 'absence') {
+              result.push(index)
+            }
+            return result
+          }, [])
+
           return {
             service_day: {
               child_id: record[0],
-              date: dayjs(columnDates[index]),
+              date: dayjs(columnDates[indices[index]]),
               absence_type: day.absenceType
             }
           }
@@ -484,10 +491,10 @@ export function Attendance() {
       </div>
       <Modal
         title={<div className="eyebrow-large text-gray9">{t('success')}</div>}
-        visible={isSuccessModalVisible}
+        open={isSuccessModalVisible}
         onCancel={() => {
           setSuccessModalVisible(false)
-          history.push('/dashboard')
+          history.push('/attendance')
         }}
         footer={[
           <Button
@@ -496,10 +503,10 @@ export function Attendance() {
             key="ok"
             onClick={() => {
               setSuccessModalVisible(false)
-              history.push('/dashboard')
+              history.push('/attendance')
             }}
           >
-            {t('gotToDashboard')}
+            {t('goToAttendance')}
           </Button>
         ]}
       >

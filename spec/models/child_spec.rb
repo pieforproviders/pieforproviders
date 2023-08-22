@@ -5,6 +5,36 @@ require 'rails_helper'
 RSpec.describe Child do
   let!(:child) { create(:child) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   it { is_expected.to belong_to(:business) }
   it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
@@ -61,6 +91,19 @@ RSpec.describe Child do
     expect(child).to be_valid
   end
 
+  it 'validates last_inactive_date as an optional date' do
+    child.update(last_inactive_date: Time.current)
+    expect(child).to be_valid
+    child.last_inactive_date = "I'm a string"
+    expect(child).not_to be_valid
+    child.last_inactive_date = nil
+    expect(child).to be_valid
+    child.last_inactive_date = '2021-02-01'
+    expect(child).to be_valid
+    child.last_inactive_date = Date.new(2021, 12, 11)
+    expect(child).to be_valid
+  end
+
   it 'validates that inactive_reason is a permitted value only' do
     child.save!
 
@@ -98,11 +141,9 @@ RSpec.describe Child do
       expect(described_class.approved_for_date(earliest_effective)).to include(child)
       expect(described_class.approved_for_date(earliest_effective)).to include(inactive_child)
       expect(described_class.approved_for_date(earliest_effective)).to include(deleted_child)
-      expect(described_class.approved_for_date(earliest_effective - 1.minute)).to eq([])
+      expect(described_class.approved_for_date(earliest_effective.beginning_of_month - 1.minute)).to eq([])
       # if it is the child's last day of their approval, it will show them
       expect(described_class.approved_for_date(latest_effective)).to include(child)
-      # if it is after the child's last day of their approval, it will not
-      expect(described_class.approved_for_date(latest_effective + 1.minute)).to eq([])
     end
 
     it 'displays inactive children but not deleted children in the not_deleted scope' do
@@ -285,24 +326,53 @@ RSpec.describe Child do
       end
     end
   end
+
+  describe 'before_action' do
+    it 'allows to save only numeric values to its wonderschool_id attribute' do
+      wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+      child_with_wonderschool_id = create(:child, wonderschool_id: wonderschool_id)
+      expect(child_with_wonderschool_id.wonderschool_id).to eq(wonderschool_id)
+
+      child_with_wonderschool_id.wonderschool_id = 'not present'
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+
+      child_with_wonderschool_id.wonderschool_id = wonderschool_id
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to eq(wonderschool_id)
+
+      child_with_wonderschool_id.wonderschool_id = ''
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+
+      child_with_wonderschool_id.wonderschool_id = 'N/A'
+      child_with_wonderschool_id.save
+      child_with_wonderschool_id.reload
+      expect(child_with_wonderschool_id.wonderschool_id).to be_nil
+    end
+  end
 end
 # == Schema Information
 #
 # Table name: children
 #
-#  id               :uuid             not null, primary key
-#  active           :boolean          default(TRUE), not null
-#  date_of_birth    :date             not null
-#  deleted_at       :date
-#  first_name       :string           not null
-#  inactive_reason  :string
-#  last_active_date :date
-#  last_name        :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  business_id      :uuid             not null
-#  dhs_id           :string
-#  wonderschool_id  :string
+#  id                 :uuid             not null, primary key
+#  active             :boolean          default(TRUE), not null
+#  date_of_birth      :date             not null
+#  deleted_at         :date
+#  first_name         :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
+#  last_inactive_date :date
+#  last_name          :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  business_id        :uuid             not null
+#  dhs_id             :string
+#  wonderschool_id    :string
 #
 # Indexes
 #

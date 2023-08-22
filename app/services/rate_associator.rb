@@ -35,6 +35,6 @@ class RateAssociator
   end
 
   def illinois_rate_associator
-    @child.active_child_approval(today).update!(rate: illinois_rate)
+    @child.active_child_approval(today)&.update!(rate: illinois_rate)
   end
 end
