@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_19_163320) do
+ActiveRecord::Schema.define(version: 2023_07_04_230941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -111,6 +111,8 @@ ActiveRecord::Schema.define(version: 2023_06_19_163320) do
     t.string "rate_type"
     t.uuid "rate_id"
     t.date "deleted_at"
+    t.integer "part_days"
+    t.decimal "special_needs_part_day_rate"
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
@@ -311,10 +313,10 @@ ActiveRecord::Schema.define(version: 2023_06_19_163320) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.integer "min_time"
     t.integer "max_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 

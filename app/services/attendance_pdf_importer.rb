@@ -23,31 +23,29 @@ class AttendancePdfImporter
   private
 
   def retrieve_file_names
-    @client.list_file_names(@source_bucket).select { |s| s.end_with? '.pdf' }
+    @client.list_file_names(@source_bucket, 'PDF/').select { |s| s.end_with? '.pdf' }
   end
 
   def read_attendances
-    @attendance_data = []
     file_names = retrieve_file_names
     contents = file_names.map { |file_name| @client.get_xlsx_contents(@source_bucket, file_name) }
 
-    process_contents(contents, file_names)
-
-    process_data
+    contents.each_with_index do |content, index|
+      @file_name = file_names[index]
+      process_contents(content)
+      process_data
+    end
 
     file_names.each { |file| @client.archive_file(@source_bucket, @archive_bucket, file) }
   end
 
-  def process_contents(contents, file_names)
-    contents.each_with_index do |data, index|
-      @file_name = file_names[index]
-      attendance_reader = Commands::Attendance::ParsePdf.new(data)
-      @attendance_data << attendance_reader.call
-      business_name = attendance_reader.business
-      @child_name = attendance_reader.child
-      @business = business(business_name)
-      @child = child
-    end
+  def process_contents(content)
+    attendance_reader = Commands::Attendance::ParsePdf.new(content)
+    @attendance_data = attendance_reader.call
+    business_name = attendance_reader.business
+    @child_name = attendance_reader.child
+    @business = business(business_name)
+    @child = child
   end
 
   def process_data
@@ -111,8 +109,8 @@ class AttendancePdfImporter
   end
 
   def log_missing_child
-    message = "Business: #{@business.id} - child record for attendance " \
-              "not found (dhs_id: #{@child['dhs_id']}, ); skipping"
+    message = 'Child record for attendance ' \
+              "Cannont find child on file #{@file_name}; skipping"
 
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message

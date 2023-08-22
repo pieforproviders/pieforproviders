@@ -38,6 +38,10 @@ Cypress.Commands.add('appFactories', function (options) {
   return cy.app('factory_bot', options)
 })
 
+Cypress.Commands.add('createState', function () {
+  return cy.appFactories([['create', 'state']])
+})
+
 Cypress.on('fail', (err, runnable) => {
   // allow app to generate additional logging data
   Cypress.$.ajax({

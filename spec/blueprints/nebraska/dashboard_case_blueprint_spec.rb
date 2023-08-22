@@ -11,6 +11,37 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     travel_to attendance_date.in_time_zone(child.timezone) + 4.days + 16.hours
   end
 
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
+
   after { travel_back }
 
   it 'includes the child name and all cases' do
@@ -39,7 +70,10 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       'hours',
       'hours_authorized',
       'hours_remaining',
-      'hours_attended'
+      'hours_attended',
+      'part_days',
+      'remaining_part_days',
+      'total_part_days'
     )
   end
 

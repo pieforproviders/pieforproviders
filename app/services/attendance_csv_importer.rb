@@ -25,8 +25,9 @@ class AttendanceCsvImporter
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def process_attendances
-    file_names = @client.list_file_names(@source_bucket)
+    file_names = @client.list_file_names(@source_bucket, 'CSV/').select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
@@ -34,9 +35,10 @@ class AttendanceCsvImporter
       CsvParser.new(body).call.each { |unstriped_row| process_row(unstriped_row) }
     end
     file_names.each do |file_name|
-      @client.archive_file(@source_bucket, @archive_bucket, "#{Time.current}-#{file_name}")
+      @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_row(unstriped_row)
     @row = {}
@@ -97,7 +99,7 @@ class AttendanceCsvImporter
   end
 
   def business
-    found_business = Business.find_by(name: @file_name.split('.').first.split('-'))
+    found_business = Business.find_by(name: @file_name.split('/').last.split('.').first)
 
     found_business.presence || log_missing_business
   end

@@ -6,6 +6,36 @@ RSpec.describe Commands::Attendance::Create, type: :service do
   let(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
   let(:check_in) { Time.parse('9:00am').prev_occurring(:monday) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   describe '#initialize' do
     it 'initializes with required info' do
@@ -101,14 +131,14 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'raises an error when there is no current child approval' do
       expect do
         described_class.new(
-          check_in: child_approval.effective_on - 3.days,
-          check_out: child_approval.effective_on - 3.days + 6.hours,
+          check_in: child_approval.effective_on.at_beginning_of_month - 3.days,
+          check_out: child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'raises an error when the check out is before the check in' do
@@ -119,9 +149,9 @@ RSpec.describe Commands::Attendance::Create, type: :service do
           child_id: child.id
         ).create
       end
-        .to not_change(Attendance, :count)
+        .to raise_error(ActiveRecord::RecordInvalid)
+        .and not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-        .and raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'assigns a schedule when one is present for that weekday' do
