@@ -89,7 +89,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
   end
 
   describe '#sum_eligible_days' do
-    before { travel_to '2022-08-24'.to_date }
+    before { travel_to '2022-10-24'.to_date }
 
     after  { travel_back }
 

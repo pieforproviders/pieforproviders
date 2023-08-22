@@ -235,7 +235,7 @@ RSpec.describe 'Api::V1::Notifications' do
       before { sign_in admin_user }
 
       it 'updates the notification' do
-        new_time = Time.current.in_time_zone(children.first.timezone).at_beginning_of_day
+        new_time = Time.current.at_beginning_of_day
         params = { notification: { created_at: new_time } }
         put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
         resp = JSON.parse(response.body)
@@ -266,7 +266,7 @@ RSpec.describe 'Api::V1::Notifications' do
       end
 
       it 'updates the notification if is in the scope of the user' do
-        new_time = Time.current.in_time_zone(children.first.timezone).at_beginning_of_day
+        new_time = Time.current.at_beginning_of_day
         params = { notification: { created_at: new_time } }
         put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
         resp = JSON.parse(response.body)

@@ -42,3 +42,11 @@ button.ant-btn-link{
   align-items: center;
   color: var(--primary-blue);
 }
+
+button.ant-btn-link.text-lg:hover{
+  color: var(--primary-blue);
+}
+
+.ant-select-selection-item{
+  margin: 0 5px 0 5px;
+}

@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe AttendanceCsvImporter do
-  let!(:file_name) { 'Test Child Care-Grid view.csv' }
+  let!(:file_name) { 'Test Child Care.csv' }
   let!(:source_bucket) { 'source_bucket' }
   let!(:archive_bucket) { 'archive_bucket' }
   let!(:stubbed_client) { instance_double(AwsClient) }
 
-  let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/Test Child Care-Grid view.csv').read }
+  let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/Test Child Care.csv').read }
 
   # TODO: file with a name that doesn't match a business
   # TODO: file with missing required fields (check_in, check_out, full_name OR dhs_id)
@@ -66,7 +66,7 @@ RSpec.describe AttendanceCsvImporter do
     allow(Rails.application.config).to receive(:aws_necc_attendance_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }
     allow(AwsClient).to receive(:new) { stubbed_client }
-    allow(stubbed_client).to receive(:list_file_names).with(source_bucket) { [file_name] }
+    allow(stubbed_client).to receive(:list_file_names).with(source_bucket, 'CSV/') { [file_name] }
   end
 
   describe '#call' do
@@ -76,6 +76,7 @@ RSpec.describe AttendanceCsvImporter do
         allow(stubbed_client).to receive(:archive_file).with(
           source_bucket,
           archive_bucket,
+          file_name,
           /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/
         )
       end
@@ -85,13 +86,13 @@ RSpec.describe AttendanceCsvImporter do
           .to change(ServiceDay, :count).from(0).to(4)
           .and change(Attendance, :count).from(0).to(2)
         expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.to_datetime
         expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.to_datetime
         expect(hermione_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.to_datetime
         expect(hermione_business1.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.to_datetime
       end
 
       it 'creates attendance records given an end date and no start date' do
@@ -102,9 +103,9 @@ RSpec.describe AttendanceCsvImporter do
         expect(Child.where(dhs_id: '5678').count).to eq(1)
         fourth_child = Child.find_by(dhs_id: '5678')
         expect(fourth_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-02-24 6:04am'.in_time_zone(fourth_child.timezone)
+          .to be_within(1.minute).of '2021-02-24 6:04am'.to_datetime
         expect(fourth_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-02-24 4:35pm'.in_time_zone(fourth_child.timezone)
+          .to be_within(1.minute).of '2021-02-24 4:35pm'.to_datetime
       end
 
       it 'creates attendance records for a given date range' do
@@ -112,13 +113,13 @@ RSpec.describe AttendanceCsvImporter do
           .to change(ServiceDay, :count).from(0).to(2)
           .and change(Attendance, :count).from(0).to(2)
         expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.to_datetime
         expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.to_datetime
         expect(hermione_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.to_datetime
         expect(hermione_business1.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.to_datetime
       end
 
       it 'creates attendance records for every row in the file, idempotently' do
@@ -132,17 +133,17 @@ RSpec.describe AttendanceCsvImporter do
       it 'creates attendance records for the correct child with the correct data' do
         described_class.new.call
         expect(hermione_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-05 5:14am'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-05 5:14am'.to_datetime
         expect(hermione_business1.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-05 12:23pm'.in_time_zone(hermione_business1.timezone)
+          .to be_within(1.minute).of '2021-03-05 12:23pm'.to_datetime
         expect(child2_business1.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-02-24 6:04am'.in_time_zone(child2_business1.timezone)
+          .to be_within(1.minute).of '2021-02-24 6:04am'.to_datetime
         expect(child2_business1.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-02-24 4:35pm'.in_time_zone(child2_business1.timezone)
+          .to be_within(1.minute).of '2021-02-24 4:35pm'.to_datetime
         expect(third_child.attendances.order(:check_in).first.check_in)
-          .to be_within(1.minute).of '2021-03-10 6:54am'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:54am'.to_datetime
         expect(third_child.attendances.order(:check_in).first.check_out)
-          .to be_within(1.minute).of '2021-03-10 6:27pm'.in_time_zone(third_child.timezone)
+          .to be_within(1.minute).of '2021-03-10 6:27pm'.to_datetime
       end
     end
 
@@ -153,6 +154,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { attendance_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
@@ -170,6 +172,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { invalid_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
@@ -181,6 +184,7 @@ RSpec.describe AttendanceCsvImporter do
       allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { missing_field_csv }
       allow(stubbed_client).to receive(:archive_file).with(source_bucket,
                                                            archive_bucket,
+                                                           file_name,
                                                            /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2} [-+]*(\d{4}|UTC)/)
       allow(stubbed_client)
         .to receive(:archive_contents)
