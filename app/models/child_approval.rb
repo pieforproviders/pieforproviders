@@ -29,25 +29,31 @@ class ChildApproval < UuidApplicationRecord
   end
 end
 
+def date_in_range?(date)
+  date >= effective_on && date <= expires_on
+end
+
 # == Schema Information
 #
 # Table name: child_approvals
 #
-#  id                        :uuid             not null, primary key
-#  authorized_weekly_hours   :decimal(5, 2)
-#  deleted_at                :date
-#  enrolled_in_school        :boolean
-#  full_days                 :integer
-#  hours                     :decimal(, )
-#  rate_type                 :string
-#  special_needs_daily_rate  :decimal(, )
-#  special_needs_hourly_rate :decimal(, )
-#  special_needs_rate        :boolean
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  approval_id               :uuid             not null
-#  child_id                  :uuid             not null
-#  rate_id                   :uuid
+#  id                          :uuid             not null, primary key
+#  authorized_weekly_hours     :decimal(5, 2)
+#  deleted_at                  :date
+#  enrolled_in_school          :boolean
+#  full_days                   :integer
+#  hours                       :decimal(, )
+#  part_days                   :integer
+#  rate_type                   :string
+#  special_needs_daily_rate    :decimal(, )
+#  special_needs_hourly_rate   :decimal(, )
+#  special_needs_part_day_rate :decimal(, )
+#  special_needs_rate          :boolean
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  approval_id                 :uuid             not null
+#  child_id                    :uuid             not null
+#  rate_id                     :uuid
 #
 # Indexes
 #

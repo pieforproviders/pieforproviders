@@ -9,26 +9,32 @@ gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
 gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '>= 1.4.2', require: false
+gem 'daru'
 gem 'data_migrate'
 gem 'devise'
 gem 'devise-jwt'
 gem 'faker'
-gem 'good_job', '~> 3.3.2'
+gem 'good_job', '~> 3.7.2'
 gem 'hash_dig_and_collect'
 gem 'holidays'
 gem 'money-rails'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.6'
-gem 'pundit', '~> 2.2'
+gem 'pundit', '~> 2.3'
 gem 'rails', '~> 6.1.6'
 gem 'redis'
+gem 'reverse_markdown'
+gem 'roo', '~> 2.7', '>= 2.7.1'
 gem 'skylight'
 gem 'tod'
 
 gem 'flamegraph'
 gem 'memory_profiler'
+gem 'pdf-reader'
 gem 'rack-mini-profiler'
+gem 'rainbow'
 gem 'stackprof'
+gem 'terminal-table'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
@@ -65,7 +71,7 @@ group :development do
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'spring-watcher-listen', '~> 2.1.0'
 end
 
 group :test do

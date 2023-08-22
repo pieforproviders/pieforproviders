@@ -14,15 +14,19 @@ module Api
         render json: UserBlueprint.render(@users)
       end
 
-      def destroy
-        if @user
-          if @user.destroy
-            render status: :no_content
-          else
-            render json: @user.errors, status: :unprocessable_entity
-          end
+      # GET /profile or GET /users/:id
+      def show
+        render json: UserBlueprint.render(@user)
+      end
+
+      def create
+        authorize User
+
+        @user = User.new(user_params)
+        if @user.save
+          render json: UserBlueprint.render(@user)
         else
-          render status: :not_found
+          render json: @user.errors, status: :unprocessable_entity
         end
       end
 
@@ -39,20 +43,16 @@ module Api
         end
       end
 
-      def create
-        authorize User
-
-        @user = User.new(user_params)
-        if @user.save
-          render json: UserBlueprint.render(@user)
+      def destroy
+        if @user
+          if @user.destroy
+            render status: :no_content
+          else
+            render json: @user.errors, status: :unprocessable_entity
+          end
         else
-          render json: @user.errors, status: :unprocessable_entity
+          render status: :not_found
         end
-      end
-
-      # GET /profile or GET /users/:id
-      def show
-        render json: UserBlueprint.render(@user)
       end
 
       # GET /case_list_for_dashboard
@@ -75,16 +75,20 @@ module Api
       end
 
       def filter_date
-        if params[:filter_date]
-          Time.zone.parse(params[:filter_date])&.at_end_of_day
+        params[:filter_date] ? Time.zone.parse(params[:filter_date])&.at_end_of_day : Time.current.at_end_of_day
+      end
+
+      def dashboard_query(state)
+        if params[:business].present?
+          state.with_dashboard_case.selected_business(params[:business])
         else
-          Time.current.at_end_of_day
+          state.with_dashboard_case
         end
       end
 
       def nebraska_dashboard
         UserBlueprint.render(
-          policy_scope(User.nebraska.with_dashboard_case),
+          policy_scope(dashboard_query(User.nebraska)),
           view: :nebraska_dashboard,
           filter_date: filter_date
         )
@@ -92,7 +96,7 @@ module Api
 
       def illinois_dashboard
         UserBlueprint.render(
-          policy_scope(User.illinois.with_dashboard_case),
+          policy_scope(dashboard_query(User.illinois)),
           view: :illinois_dashboard,
           filter_date: filter_date
         )

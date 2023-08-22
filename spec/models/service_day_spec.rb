@@ -2,10 +2,40 @@
 
 require 'rails_helper'
 
-RSpec.describe ServiceDay, type: :model do
+RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -184,7 +214,7 @@ RSpec.describe ServiceDay, type: :model do
     let(:past_service_day) { past_attendance.service_day }
 
     describe '#for_month' do
-      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone) }
 
       it 'returns service days for given month' do
         expect(described_class.for_month).to include(current_service_day)
@@ -204,12 +234,13 @@ RSpec.describe ServiceDay, type: :model do
           child_approval: child_approval
         )
       end
-      let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 4).utc }
 
       it 'returns service days for given week' do
-        travel_to Time.current.at_end_of_week(:sunday)
-        expect(described_class.for_week).to include(current_service_day)
+        travel_to Time.current.utc.at_end_of_week(:sunday)
+        perform_enqueued_jobs
         expect(described_class.for_week).not_to include(past_service_day)
+        expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)
         expect(described_class.for_week(date)).not_to include(current_service_day)
         expect(described_class.for_week(date - 1.week).size).to eq(0)
@@ -218,7 +249,7 @@ RSpec.describe ServiceDay, type: :model do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in.in_time_zone(child.timezone).to_date }
+      let(:date) { current_attendance.check_in }
 
       it 'returns service days for given day' do
         travel_to date
@@ -241,6 +272,37 @@ RSpec.describe ServiceDay, type: :model do
         date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
       )
     end
+
+    let!(:state) do
+      create(:state)
+    end
+
+    let(:state_time_rules) do
+      [
+        create(
+          :state_time_rule,
+          name: "Partial Day #{state.name}",
+          state: state,
+          min_time: 60, # 1minute
+          max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+        ),
+        create(
+          :state_time_rule,
+          name: "Full Day #{state.name}",
+          state: state,
+          min_time: 5 * 3600, # 5 hours
+          max_time: (10 * 3600) # 10 hours
+        ),
+        create(
+          :state_time_rule,
+          name: "Full - Partial Day #{state.name}",
+          state: state,
+          min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+          max_time: nil
+        )
+      ]
+    end
+
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
              service_day: service_day,
@@ -373,55 +435,6 @@ RSpec.describe ServiceDay, type: :model do
       expect(service_day.total_time_in_care).to eq(attendance.child.schedules.first.duration)
     end
   end
-
-  describe '#tag_hourly_amount' do
-    it 'returns correct hourly amount if decimal' do
-      child = create(:necc_child)
-      service_day = create(
-        :service_day,
-        child: child,
-        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
-      )
-      create(:nebraska_hourly_attendance,
-             service_day: service_day,
-             check_in: service_day.date + 2.hours,
-             child_approval: child.child_approvals.first)
-      perform_enqueued_jobs
-      service_day.reload
-      expect(service_day.tag_hourly_amount).to eq('5.5')
-    end
-
-    it 'returns correct hourly amount if integer' do
-      child = create(:necc_child)
-      service_day = create(
-        :service_day,
-        child: child,
-        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
-      )
-      create(:nebraska_hour_attendance,
-             service_day: service_day,
-             check_in: service_day.date + 2.hours,
-             child_approval: child.child_approvals.first)
-      perform_enqueued_jobs
-      service_day.reload
-      expect(service_day.tag_hourly_amount).to eq('1')
-    end
-  end
-
-  describe '#tag_daily_amount' do
-    it 'returns correct daily amount' do
-      child = create(:necc_child)
-      service_day = create(
-        :service_day,
-        child: child,
-        date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
-      )
-      create(:nebraska_daily_attendance, service_day: service_day)
-      perform_enqueued_jobs
-      service_day.reload
-      expect(service_day.tag_daily_amount).to eq('1')
-    end
-  end
 end
 # == Schema Information
 #
@@ -432,7 +445,9 @@ end
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null
+#  full_time               :integer          default(0)
 #  missing_checkout        :boolean
+#  part_time               :integer          default(0)
 #  total_time_in_care      :interval
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
@@ -444,6 +459,8 @@ end
 #  index_service_days_on_child_id           (child_id)
 #  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
 #  index_service_days_on_date               (date)
+#  index_service_days_on_full_time          (full_time)
+#  index_service_days_on_part_time          (part_time)
 #  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys

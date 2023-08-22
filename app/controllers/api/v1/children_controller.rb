@@ -70,6 +70,7 @@ module Api
           business_id
           active
           last_active_date
+          last_inactive_date
           inactive_reason
         ]
         attributes += [{ approvals_attributes: %i[case_number copay_cents copay_frequency effective_on expires_on] }]

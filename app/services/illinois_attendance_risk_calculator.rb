@@ -22,21 +22,18 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def risk_label
-    return 'not_enough_info' if less_than_halfway_through_month || !approval_amount || !threshold
+    partial_attendance_rate = attendance_rate_until_date * 100
+    return 'not_enough_info' if partial_attendance_rate.zero? || less_than_halfway_through_month || !approval_amount
 
-    attendance_rate = IllinoisAttendanceRateCalculator.new(@child, @filter_date).call
-
-    if attendance_rate < threshold
-      threshold_not_met_risks
-    elsif attended_all_approved_days
-      'sure_bet'
-    else
+    if partial_attendance_rate < threshold
+      'at_risk'
+    elsif partial_attendance_rate > threshold
       'on_track'
     end
   end
 
   def less_than_halfway_through_month
-    Time.current < halfway || (latest_user_attendance && latest_user_attendance < halfway)
+    Time.current < halfway
   end
 
   def approval_amount
@@ -65,12 +62,12 @@ class IllinoisAttendanceRiskCalculator
   def wont_meet_threshold
     active_approval = @child.approvals.active_on(@filter_date).first
     (
-      (threshold * family_days_approved) - family_days_attended
+      (threshold / 100 * family_days_approved) - family_days_attended
     ) > active_approval.child_approvals.count * days_left_in_month
   end
 
   def at_risk
-    family_days_attended.to_f / ((percentage_of_month_elapsed * family_days_approved).nonzero? || 1) < threshold
+    family_days_attended.to_f / ((percentage_of_month_elapsed * family_days_approved).nonzero? || 1) < threshold / 100
   end
 
   def part_day_attendances
@@ -95,7 +92,9 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def threshold
-    active_child_approval&.rate&.attendance_threshold&.to_f
+    69.5
+    # TODO: attendance_threshold doesn't exist
+    # active_child_approval&.rate&.attendance_threshold&.to_f
   end
 
   def latest_user_attendance
@@ -112,5 +111,27 @@ class IllinoisAttendanceRiskCalculator
 
   def total_days_in_month
     @filter_date.to_date.all_month.count
+  end
+
+  def elapsed_eligible_days
+    eligible_full_days = Illinois::EligibleDaysCalculator.new(date: @filter_date, child: @child, until_given_date: true)
+                                                         .call
+    eligible_part_days = Illinois::EligibleDaysCalculator.new(
+      date: @filter_date,
+      child: @child,
+      full_time: false,
+      until_given_date: true
+    ).call
+    eligible_full_days + eligible_part_days
+  end
+
+  def attended_days
+    full_days = @child.service_days.for_month(@filter_date).map(&:full_time).compact.reduce(:+) || 0
+    part_days = @child.service_days.for_month(@filter_date).map(&:part_time).compact.reduce(:+) || 0
+    full_days + part_days
+  end
+
+  def attendance_rate_until_date
+    (attended_days.to_f / elapsed_eligible_days).round(3)
   end
 end

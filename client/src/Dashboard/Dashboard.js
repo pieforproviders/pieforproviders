@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
 import runtimeEnv from '@mars/heroku-js-runtime-env'
 import { setUser } from '_reducers/userReducer'
-import DashboardDefintions from './DashboardDefinitions'
+import DashboardDefinitions from './DashboardDefinitions'
 import DashboardStats from './DashboardStats'
 import DashboardTable from './DashboardTable'
 import DashboardTitle from './DashboardTitle'
@@ -17,6 +17,7 @@ import { setBusinesses } from '_reducers/businessesReducer'
 import { setCaseData } from '_reducers/casesReducer'
 import { setLoading } from '_reducers/uiReducer'
 import Notifications from './Notifications'
+import { setFilteredCases } from '_reducers/uiReducer'
 import '_assets/styles/notification-modal-overrides.css'
 
 const env = runtimeEnv()
@@ -33,11 +34,15 @@ export function Dashboard() {
     currency: 'USD',
     minimumFractionDigits: 0
   })
-  const { businesses, token, user } = useSelector(state => ({
-    businesses: state.businesses,
-    token: state.auth.token,
-    user: state.user
-  }))
+  const { businesses, token, user, filteredCases, cases } = useSelector(
+    state => ({
+      businesses: state.businesses,
+      token: state.auth.token,
+      user: state.user,
+      filteredCases: state.ui.filteredCases,
+      cases: state.cases
+    })
+  )
 
   const summaryDataTotalsConfig = {
     ne: {
@@ -128,23 +133,25 @@ export function Dashboard() {
           )}`,
           definition: t('guaranteedRevenueDef')
         },
-        {
-          title: t('potentialRevenue'),
-          stat: `${currencyFormatter.format(
-            totals.potentialRevenueTotal.toFixed()
-          )}`,
-          definition: t('potentialRevenueDef')
-        },
-        {
-          title: t('maxApprovedRevenue'),
-          stat: `${currencyFormatter.format(
-            totals.maxApprovedRevenueTotal.toFixed()
-          )}`,
-          definition: t('maxApprovedRevenueDef')
-        },
+        // {
+        //   title: t('potentialRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     totals.potentialRevenueTotal.toFixed()
+        //   )}`,
+        //   definition: t('potentialRevenueDef')
+        // },
+        // {
+        //   title: t('maxApprovedRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     totals.maxApprovedRevenueTotal.toFixed()
+        //   )}`,
+        //   definition: t('maxApprovedRevenueDef')
+        // },
         {
           title: t('attendanceRate'),
-          stat: `${(totals.attendanceRateTotal / td.length) * 100}%`,
+          stat: `${((totals.attendanceRateTotal / td.length) * 100).toFixed(
+            2
+          )}%`,
           definition: t('attendanceRateDef')
         }
       ]
@@ -242,7 +249,7 @@ export function Dashboard() {
     dateFilterMonths.push(makeMonth(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
-      currentDate.setMonth(currentDate.getMonth() - 1)
+      currentDate.setDate(currentDate.getDate() - 31)
       dateFilterMonths.push(makeMonth(currentDate))
     }
 
@@ -256,12 +263,19 @@ export function Dashboard() {
     }
   }
 
-  const getDashboardData = async (filterDate = undefined) => {
+  const getDashboardData = async ({
+    businessIds = [],
+    filterDate = undefined
+  } = {}) => {
     dispatch(setLoading(true))
     const baseUrl = '/api/v1/case_list_for_dashboard'
     const response = await makeRequest({
       type: 'get',
-      url: filterDate ? baseUrl + `?filter_date=${filterDate}` : baseUrl,
+      url:
+        businessIds.length > 0 || filterDate
+          ? baseUrl +
+            `?filter_date=${filterDate}&business=${businessIds.join(',')}`
+          : baseUrl,
       headers: { Authorization: token }
     })
     const parsedResponse = await parseResult(response)
@@ -277,11 +291,10 @@ export function Dashboard() {
         const updatedDates = reduceDates(parsedResponse, filterDate)
         setDates(updatedDates)
       }
-
+      dispatch(setFilteredCases(businessIds))
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-      setTableData(tableData)
     }
     dispatch(setLoading(false))
   }
@@ -340,7 +353,10 @@ export function Dashboard() {
     }
 
     if (Object.keys(user).length !== 0) {
-      getDashboardData(dates?.dateFilterValue?.date)
+      getDashboardData({
+        filterDate: dates?.dateFilterValue?.date,
+        businessIds: filteredCases
+      })
     }
 
     if (Object.keys(user).length === 0) {
@@ -360,12 +376,19 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  useEffect(() => {
+    setTableData(cases)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cases])
+
   return (
     <div className="dashboard sm:mx-8">
       <DashboardTitle
         dates={dates}
         setDates={setDates}
         makeMonth={makeMonth}
+        businesses={businesses}
+        filteredCases={filteredCases}
         getDashboardData={getDashboardData}
       />
       <div className="flex mb-10 md:flex-row xs:flex-col">
@@ -381,7 +404,6 @@ export function Dashboard() {
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
-        setTableData={setTableData}
         userState={user.state ?? ''}
         setActiveKey={href => {
           if (activeKey) {
@@ -394,13 +416,14 @@ export function Dashboard() {
           }
         }}
       />
-      <DashboardDefintions
+      <DashboardDefinitions
         activeKey={activeKey}
         setActiveKey={handleDefinitionsPanel}
+        state={user.state}
       />
       <Modal
         className="notifications-modal"
-        visible={showNotificationsModal}
+        open={showNotificationsModal}
         cancelButtonProps={{ style: { display: 'none' } }}
         onOk={() => setShowNotificationsModal(false)}
         onCancel={() => setShowNotificationsModal(false)}

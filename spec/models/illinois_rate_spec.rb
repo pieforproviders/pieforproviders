@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe IllinoisRate, type: :model do
+RSpec.describe IllinoisRate do
   let(:illinois_rate) { build(:illinois_rate) }
 
   it { is_expected.to have_many(:child_approvals) }

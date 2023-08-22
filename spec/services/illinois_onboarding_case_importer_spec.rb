@@ -9,14 +9,14 @@ RSpec.describe IllinoisOnboardingCaseImporter do
   let!(:stubbed_client) { instance_double(AwsClient) }
 
   let!(:onboarding_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/illinois_onboarding/illinois_onboarding_data.csv'))
+    Rails.root.join('spec/fixtures/files/illinois_onboarding/illinois_onboarding_data.csv').read
   end
   let!(:renewal_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv'))
+    Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_renewal_data.csv').read
   end
-  let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
+  let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv').read }
   let!(:missing_field_csv) do
-    File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv'))
+    Rails.root.join('spec/fixtures/files/wonderschool_necc_onboarding_data_missing_field.csv').read
   end
 
   let!(:first_user) { create(:confirmed_user, email: 'rebecca@rebecca.com') }
@@ -38,6 +38,16 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       before do
         allow(stubbed_client).to receive(:get_file_contents).with(source_bucket, file_name) { onboarding_csv }
         allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
+      end
+
+      it 'checks the date format when date format is correct' do
+        check = described_class.new.send(:check_date_format, '2023-12-31')
+        expect(check).to be(true)
+      end
+
+      it 'checks the date format when date format is wrong' do
+        check = described_class.new.send(:check_date_format, '31-12-2023')
+        expect(check).to be(false)
       end
 
       it 'creates case records for every row in the file, idempotently' do
@@ -85,7 +95,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Rebecca's Childcare",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_four',
+            quality_rating: nil,
             accredited: true
           }
         )
@@ -129,7 +139,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Kate's Kids",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_five',
+            quality_rating: nil,
             accredited: false
           }
         )
@@ -401,7 +411,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Rebecca's Childcare",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_four',
+            quality_rating: nil,
             accredited: true
           }
         )
@@ -438,7 +448,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             name: "Kate's Kids",
             zipcode: '68845',
             county: 'Corke',
-            quality_rating: 'step_five',
+            quality_rating: nil,
             accredited: false
           }
         )

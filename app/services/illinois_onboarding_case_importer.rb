@@ -49,10 +49,13 @@ class IllinoisOnboardingCaseImporter
     @child = Child.find_or_initialize_by(required_child_params)
     @approval = find_approval
 
+    evaluate_columns
+
     raise NotEnoughInfo, @child.errors unless @child.valid?
 
     build_case
   rescue StandardError => e
+    print_row_error(e) if should_print_message?
     send_appsignal_error(
       action: 'onboarding-case-importer',
       exception: e,
@@ -88,6 +91,7 @@ class IllinoisOnboardingCaseImporter
     @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
     update_child_approval
     update_illinois_approval_amounts
+    print_successful_message if should_print_message?
   end
 
   def update_child_approval
@@ -151,17 +155,12 @@ class IllinoisOnboardingCaseImporter
     }
   end
 
-  # TODO: this is a really bad implementation
-  # but we're going to be refactoring QRIS to a table
-  # soon so I'm going to leave it
   def to_quality_rating(value)
     ratings = {
       'not rated' => 'not_rated',
-      'Step 1' => 'step_one',
-      'Step 2' => 'step_two',
-      'Step 3' => 'step_three',
-      'Step 4' => 'step_four',
-      'Step 5' => 'step_five'
+      'Bronze' => 'bronze',
+      'Silver' => 'silver',
+      'Gold' => 'gold'
     }
     ratings[value]
   end
@@ -230,6 +229,54 @@ class IllinoisOnboardingCaseImporter
 
   def months(period)
     (period[:effective_on].to_date.beginning_of_month..period[:expires_on].to_date).select { |d| d.day == 1 }
+  end
+
+  def print_successful_message
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['Client ID']} has been successfully processed"
+    # rubocop:enable Rails/Output
+  end
+
+  def print_row_error(error)
+    # rubocop:disable Rails/Output
+    pp "DHS ID: #{@row['Client ID']} has an error #{error.inspect}" if provider_and_dhs_id_present?
+    # rubocop:enable Rails/Output
+  end
+
+  def provider_and_dhs_id_present?
+    @row['Provider Email'].present? && valid_dhs_id?
+  end
+
+  def valid_dhs_id?
+    @row['Client ID'].present? && @row['Client ID'] != '-'
+  end
+
+  def should_print_message?
+    !Rails.env.test?
+  end
+
+  def evaluate_columns
+    @row.each { |date_column| check_row_column(date_column) }
+  end
+
+  def check_row_column(column)
+    return unless column[0] == 'Effective on' || column[0] == 'Expires on' ||
+                  (column[0].include?('Approval') &
+                  (column[0].include?('Begin') || column[0].include?('End')) &
+                  column[1].present?
+                  )
+
+    check_date_format(column[1].to_s)
+  end
+
+  def check_date_format(date)
+    Date.iso8601(date)
+    true
+  rescue ArgumentError => e
+    # rubocop:disable Rails/Output
+    pp "The date: #{date} has a format error: #{e}. Please make sure it follows the YYYY-MM-DD format"
+    # rubocop:enable Rails/Output
+    false
   end
 end
 # rubocop:enable Metrics/ClassLength

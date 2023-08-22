@@ -19,6 +19,14 @@ module Nebraska
 
     def calculate_total_time
       service_day.update!(total_time_in_care: schedule_or_duration)
+      day_duration = calculate_full_time_and_part_time
+      service_day.update!(full_time: day_duration[:full_time], part_time: day_duration[:part_time])
+    end
+
+    def calculate_full_time_and_part_time
+      state = State.find_by(name: 'Nebraska')
+      time_engine = TimeConversionEngine.new(service_day: service_day, state: state)
+      time_engine.call
     end
 
     def schedule_or_duration

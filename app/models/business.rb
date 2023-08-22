@@ -4,8 +4,10 @@
 class Business < UuidApplicationRecord
   include Licenses
   include QualityRatings
+  IL = 'IL'
 
   before_save :state_from_zipcode
+  before_create :set_default_schedules, if: proc { state == IL }
   before_update :prevent_deactivation_with_active_children
 
   belongs_to :user
@@ -13,8 +15,10 @@ class Business < UuidApplicationRecord
   has_many :children, dependent: :destroy
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :approvals, through: :child_approvals, dependent: :destroy
+  has_many :business_schedules, dependent: :destroy
+  has_many :business_closures, dependent: :destroy
 
-  accepts_nested_attributes_for :children
+  accepts_nested_attributes_for :children, :business_schedules, :business_closures
 
   validates :active, inclusion: { in: [true, false] }
   validates :name, presence: true, uniqueness: { scope: :user_id }
@@ -23,6 +27,10 @@ class Business < UuidApplicationRecord
 
   scope :active, -> { where(active: true) }
 
+  scope :center, -> { where('license_type like ?', '%center%') }
+
+  delegate 'eligible_by_date?', to: :child
+
   def ne_qris_bump(date: nil)
     # qris rating is used to determine reimbursement rates after 7/1/22
     # rather than being a multiplier
@@ -30,6 +38,29 @@ class Business < UuidApplicationRecord
 
     exponent = quality_rating && exponents[quality_rating.to_sym] ? exponents[quality_rating.to_sym] : 0
     1.05**exponent # compounding qris formula
+  end
+
+  def eligible_by_date?(date)
+    open_by_date?(date)
+  end
+
+  def license_center?
+    license_type.include?('center')
+  end
+
+  def attendance_rate(child, date, eligible_days, attended_days)
+    AttendanceRateCalculator.new(child, date, self, eligible_days: eligible_days, attended_days: attended_days).call
+  end
+
+  def il_quality_bump
+    case quality_rating
+    when 'silver'
+      1.1
+    when 'gold'
+      1.15
+    else
+      1
+    end
   end
 
   private
@@ -53,6 +84,32 @@ class Business < UuidApplicationRecord
 
   def state_from_zipcode
     StateFinder.new(self).call
+  end
+
+  def set_default_schedules
+    return if business_schedules.any?
+
+    7.times do |day|
+      business_schedules.build(business_schedule_default_param(day))
+    end
+  end
+
+  def business_schedule_default_param(day)
+    {
+      weekday: day,
+      is_open: !DateService.weekend?(day)
+    }
+  end
+
+  def open_by_date?(date)
+    weekday = date.wday
+    closed_on_date = business_closures.where(date: date).any?
+    return false if closed_on_date
+
+    open_on_date = business_schedules.where(weekday: weekday, is_open: true).any?
+    open_on_date = Holiday.where(date: date).none? if open_on_date
+
+    open_on_date
   end
 end
 

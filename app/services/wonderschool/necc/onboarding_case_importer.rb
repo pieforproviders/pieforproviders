@@ -48,13 +48,16 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(required_child_params)
+
+        process_child
+
         @approval = find_approval
 
         raise NotEnoughInfo, @child.errors unless @child.valid?
 
         build_case
       rescue StandardError => e
+        print_row_error(e) if should_print_message?
         send_appsignal_error(
           action: 'onboarding-case-importer',
           exception: e,
@@ -62,10 +65,23 @@ module Wonderschool
         )
       end
 
-      def find_approval
-        unless @child.approvals.find_by(approval_params)
-          @child.approvals << Approval.find_or_create_by!(approval_params)
+      def process_child
+        first_name = required_child_params[:first_name].downcase
+        last_name = required_child_params[:last_name].downcase
+
+        @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
+                             first_name,
+                             last_name).first_or_initialize(required_child_params)
+
+        if @child.new_record?
+          @child.save
+        else
+          @child.update(required_child_params)
         end
+      end
+
+      def find_approval
+        @child.approvals << Approval.find_or_create_by(approval_params) unless @child.approvals.find_by(approval_params)
         @child.save
         @child.approvals.find_by(approval_params)
       end
@@ -92,6 +108,7 @@ module Wonderschool
         @child_approval = @child.reload.child_approvals.find_by(approval: @approval)
         update_child_approval
         update_nebraska_approval_amounts
+        print_successful_message if should_print_message?
       end
 
       def update_overlapping_approval_amounts(period, existing_aa)
@@ -151,7 +168,7 @@ module Wonderschool
           name: @row['Provider Name'],
           zipcode: @row['Business Zip Code'],
           county: @row['Business County'],
-          license_type: @row['Business License'].downcase.tr(' ', '_')
+          license_type: @row['Business License']&.downcase&.tr(' ', '_')
         }
       end
 
@@ -177,23 +194,27 @@ module Wonderschool
         ratings[value]
       end
 
+      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
+          part_days: to_integer(@row['Authorized partial day units']),
           hours: to_float(@row['Authorized hourly units']),
           authorized_weekly_hours: to_float(@row['Authorized weekly hours']),
           special_needs_rate: to_boolean(@row['Special Needs Rate?']),
           special_needs_daily_rate: to_float(@row['Special Needs Daily Rate']),
           special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate']),
+          special_needs_part_day_rate: to_float(@row['Special Needs Partial Day Rate']),
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
+      # rubocop:enable Metrics/AbcSize
 
       def required_child_params
         {
-          business_id: @business.id,
-          first_name: @row['First Name'],
-          last_name: @row['Last Name'],
+          business_id: @business&.id,
+          first_name: @row['First Name'].capitalize,
+          last_name: @row['Last Name'].capitalize,
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
         }
@@ -230,6 +251,30 @@ module Wonderschool
         @approval_fields[@approval_fields.to_h.keys.find do |key|
           key.include?(approval_number) && key.include?(include_key) && (exclude_key.nil? || key.exclude?(exclude_key))
         end ]
+      end
+
+      def print_successful_message
+        # rubocop:disable Rails/Output
+        pp "DHS ID: #{@row['Client ID']} has been successfully processed test = #{Rails.env.test?}"
+        # rubocop:enable Rails/Output
+      end
+
+      def print_row_error(error)
+        # rubocop:disable Rails/Output
+        pp "DHS ID: #{@row['Client ID']} has an error #{error.inspect}" if provider_and_dhs_id_present?
+        # rubocop:enable Rails/Output
+      end
+
+      def provider_and_dhs_id_present?
+        @row['Provider Email'].present? && valid_dhs_id?
+      end
+
+      def valid_dhs_id?
+        @row['Client ID'].present? && @row['Client ID'] != '-'
+      end
+
+      def should_print_message?
+        !Rails.env.test?
       end
     end
     # rubocop:enable Metrics/ClassLength

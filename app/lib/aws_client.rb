@@ -49,6 +49,11 @@ class AwsClient
     )
   end
 
+  def get_xlsx_contents(source_bucket, file_name)
+    data_object = @client.get_object(bucket: source_bucket, key: file_name)
+    data_object.body.read
+  end
+
   def get_file_contents(source_bucket, file_name)
     contents = find_bucket(name: source_bucket) &&
                @client.get_object({ bucket: source_bucket, key: file_name }).body.read
@@ -67,9 +72,11 @@ class AwsClient
     )
   end
 
-  def archive_file(source_bucket, archive_bucket, file_name)
+  def archive_file(source_bucket, archive_bucket, file_name, archive_file_name = nil)
     find_bucket(name: source_bucket) && find_bucket(name: archive_bucket, tech_only: true)
-    @client.copy_object({ bucket: archive_bucket, copy_source: "#{source_bucket}/#{file_name}", key: file_name })
+    @client.copy_object({ bucket: archive_bucket,
+                          copy_source: "#{source_bucket}/#{file_name}",
+                          key: (archive_file_name.presence || file_name) })
     @client.delete_object({ bucket: source_bucket, key: file_name })
   rescue StandardError => e
     send_appsignal_error(

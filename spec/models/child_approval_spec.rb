@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ChildApproval, type: :model do
+RSpec.describe ChildApproval do
   it { is_expected.to belong_to(:child) }
   it { is_expected.to belong_to(:approval) }
   it { is_expected.to belong_to(:rate).optional }
@@ -19,21 +19,23 @@ end
 #
 # Table name: child_approvals
 #
-#  id                        :uuid             not null, primary key
-#  authorized_weekly_hours   :decimal(5, 2)
-#  deleted_at                :date
-#  enrolled_in_school        :boolean
-#  full_days                 :integer
-#  hours                     :decimal(, )
-#  rate_type                 :string
-#  special_needs_daily_rate  :decimal(, )
-#  special_needs_hourly_rate :decimal(, )
-#  special_needs_rate        :boolean
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  approval_id               :uuid             not null
-#  child_id                  :uuid             not null
-#  rate_id                   :uuid
+#  id                          :uuid             not null, primary key
+#  authorized_weekly_hours     :decimal(5, 2)
+#  deleted_at                  :date
+#  enrolled_in_school          :boolean
+#  full_days                   :integer
+#  hours                       :decimal(, )
+#  part_days                   :integer
+#  rate_type                   :string
+#  special_needs_daily_rate    :decimal(, )
+#  special_needs_hourly_rate   :decimal(, )
+#  special_needs_part_day_rate :decimal(, )
+#  special_needs_rate          :boolean
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  approval_id                 :uuid             not null
+#  child_id                    :uuid             not null
+#  rate_id                     :uuid
 #
 # Indexes
 #

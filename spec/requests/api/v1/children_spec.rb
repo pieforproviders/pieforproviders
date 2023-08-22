@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Api::V1::Children', type: :request do
+RSpec.describe 'Api::V1::Children' do
   let!(:logged_in_user) { create(:confirmed_user) }
   let!(:user_business) { create(:business_with_children, user: logged_in_user) }
   let!(:second_user_business) { create(:business_with_children, user: logged_in_user) }
@@ -369,6 +369,18 @@ RSpec.describe 'Api::V1::Children', type: :request do
         }
         put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it 'can update an inactive child to active' do
+        business_children.first.update!(active: false)
+        param = {
+          child: {
+            active: true
+          }
+        }
+        put "/api/v1/children/#{business_children.first.id}", params: param, headers: headers
+        business_children.first.reload
+        expect(business_children.first.active).to be true
       end
     end
 

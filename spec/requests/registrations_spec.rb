@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'POST /signup', type: :request do
+RSpec.describe 'POST /signup' do
   let(:params) do
     {
       user: {
@@ -37,7 +37,7 @@ RSpec.describe 'POST /signup', type: :request do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 
@@ -55,25 +55,13 @@ RSpec.describe 'POST /signup', type: :request do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 
   context 'with invalid required survey params' do
     before do
       post '/signup', params: bad_survey_params
-    end
-
-    describe 'with invalid survey params' do
-      let(:bad_survey_params) do
-        params[:user].store(:stressed_about_billing, 'Bonk')
-        params
-      end
-
-      it 'returns unprocessable entity' do
-        expect(response).to have_http_status :unprocessable_entity
-        expect(JSON.parse(response.body)['detail']['stressed_about_billing'].first).to eq('is not included in the list')
-      end
     end
 
     describe 'with missing required survey params' do

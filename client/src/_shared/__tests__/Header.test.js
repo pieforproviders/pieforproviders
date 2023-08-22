@@ -41,8 +41,8 @@ describe('<Header />', () => {
 
   it('renders the Header component with Dashboard and Attendance', () => {
     const { container } = doRender({ initialState: { user: { state: 'IL' } } })
-    expect(container).not.toHaveTextContent('Dashboard')
-    expect(container).not.toHaveTextContent('Attendance')
+    expect(container).toHaveTextContent('Dashboard')
+    expect(container).toHaveTextContent('Attendance')
 
     let element = screen.getByText(/Español/)
     fireEvent.click(element)

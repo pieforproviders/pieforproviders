@@ -34,8 +34,8 @@ module Nebraska
       end
 
       def ne_special_needs_revenue
-        (hours * child_approval.special_needs_hourly_rate) +
-          (days * child_approval.special_needs_daily_rate)
+        (hours * safe_special_needs_value(child_approval.special_needs_hourly_rate)) +
+          (days * safe_special_needs_value(child_approval.special_needs_daily_rate))
       end
 
       def ne_base_revenue
@@ -61,6 +61,12 @@ module Nebraska
 
       def qris_check(rate)
         !rate.quality_rating || rate.quality_rating == business.quality_rating
+      end
+
+      def safe_special_needs_value(value)
+        return 0 if value.nil?
+
+        value
       end
     end
   end

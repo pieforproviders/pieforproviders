@@ -6,7 +6,38 @@ require 'rails_helper'
 # sure we don't work with a Saturday date to avoid flakiness in spec runs. A way to do this is to set
 # the week_current_date value to a day that falls within the expected week range
 
-RSpec.describe 'Api::V1::ServiceDays', type: :request do
+RSpec.describe 'Api::V1::ServiceDays' do
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
+
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -331,7 +362,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         Attendance.all.destroy_all
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.map { |pr| pr['attendances'] }.compact_blank).to be_empty
+        expect(parsed_response.pluck('attendances').compact_blank).to be_empty
         expect(response).to match_response_schema('service_days')
       end
 
@@ -339,28 +370,28 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *past_service_days.collect(&:child_id),
               *user_second_business_past_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *past_service_days.collect(&:date),
               *user_second_business_past_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *past_service_days.collect(&:tags),
               *user_second_business_past_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -375,13 +406,13 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [user_second_business.id] }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(user_second_business_service_days.collect(&:child_id))
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(user_second_business_service_days.collect(&:date))
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(user_second_business_service_days.collect(&:tags))
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
           )
@@ -393,28 +424,28 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [business.id, user_second_business.id] }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] }.uniq)
+        expect(parsed_response.pluck('child_id').uniq)
           .to match_array(
             [
               *this_week_service_days.collect(&:child_id),
               *user_second_business_service_days.collect(&:child_id)
             ].uniq
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *this_week_service_days.collect(&:date),
               *user_second_business_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *this_week_service_days.collect(&:tags),
               *user_second_business_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -429,19 +460,16 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [user_second_business.id], filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(user_second_business_past_service_days.collect(&:child_id))
-        expect(parsed_response.collect do |x|
-                 x['date']
-               end).to match_array(user_second_business_past_service_days.collect(&:date))
-        expect(parsed_response.collect do |x|
-                 x['tags']
-               end).to match_array(user_second_business_past_service_days.collect(&:tags))
-        expect(parsed_response.collect do |x|
-          x['total_time_in_care']
-        end).to match_array(
-          user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
-        )
+        expect(parsed_response.pluck('date'))
+          .to match_array(user_second_business_past_service_days.collect(&:date))
+        expect(parsed_response.pluck('tags'))
+          .to match_array(user_second_business_past_service_days.collect(&:tags))
+        expect(parsed_response.pluck('total_time_in_care'))
+          .to match_array(
+            user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+          )
         expect(parsed_response.length).to eq(3)
         expect(response).to match_response_schema('service_days')
       end
@@ -450,28 +478,28 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [business.id, user_second_business.id], filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:child_id),
               *past_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:date),
               *past_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:tags),
               *past_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -494,38 +522,34 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       it 'displays the service_days when sent without a filter date' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect do |x|
-                 x['child_id']
-               end).to match_array(
-                 [
-                   *this_week_service_days.collect(&:child_id),
-                   *user_second_business_service_days.collect(&:child_id)
-                 ]
-               )
-        expect(parsed_response.collect do |x|
-                 x['date']
-               end).to match_array(
-                 [
-                   *this_week_service_days.collect(&:date),
-                   *user_second_business_service_days.collect(&:date)
-                 ]
-               )
-        expect(parsed_response.collect do |x|
-                 x['tags']
-               end).to match_array(
-                 [
-                   *this_week_service_days.collect(&:tags),
-                   *user_second_business_service_days.collect(&:tags)
-                 ]
-               )
-        expect(parsed_response.collect do |x|
-                 x['total_time_in_care']
-               end).to match_array(
-                 [
-                   *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
-                   *user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
-                 ]
-               )
+        expect(parsed_response.pluck('child_id'))
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:child_id),
+              *user_second_business_service_days.collect(&:child_id)
+            ]
+          )
+        expect(parsed_response.pluck('date'))
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:date),
+              *user_second_business_service_days.collect(&:date)
+            ]
+          )
+        expect(parsed_response.pluck('tags'))
+          .to match_array(
+            [
+              *this_week_service_days.collect(&:tags),
+              *user_second_business_service_days.collect(&:tags)
+            ]
+          )
+        expect(parsed_response.pluck('total_time_in_care'))
+          .to match_array(
+            [
+              *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
+              *user_second_business_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
+            ]
+          )
         expect(parsed_response.length).to eq(6)
         expect(response).to match_response_schema('service_days')
       end
@@ -547,7 +571,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         Attendance.all.destroy_all
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.map { |pr| pr['attendances'] }.compact_blank).to be_empty
+        expect(parsed_response.pluck('attendances').compact_blank).to be_empty
         expect(response).to match_response_schema('service_days')
       end
 
@@ -555,7 +579,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *past_service_days.collect(&:child_id),
@@ -563,7 +587,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_past_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
 
@@ -572,7 +596,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_past_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *past_service_days.collect(&:tags),
@@ -580,7 +604,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_past_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *past_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -598,19 +622,19 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [other_business.id] }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             another_user_service_days.collect(&:child_id)
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             another_user_service_days.collect(&:date)
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             another_user_service_days.collect(&:tags)
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             another_user_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
           )
@@ -622,28 +646,28 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [business.id, other_business.id] }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *this_week_service_days.collect(&:child_id),
               *another_user_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *this_week_service_days.collect(&:date),
               *another_user_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *this_week_service_days.collect(&:tags),
               *another_user_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -658,13 +682,13 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         params = { business: [user_second_business.id], filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(user_second_business_past_service_days.collect(&:child_id))
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(user_second_business_past_service_days.collect(&:date))
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(user_second_business_past_service_days.collect(&:tags))
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             user_second_business_past_service_days.collect { |service_day| service_day.total_time_in_care.to_s }
           )
@@ -677,28 +701,28 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
                    filter_date: two_weeks_ago_week_current_date }
         get '/api/v1/service_days', params: params, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:child_id),
               *another_user_past_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:date),
               *another_user_past_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect(&:tags),
               *another_user_past_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *user_second_business_past_service_days.collect do |service_day|
@@ -716,7 +740,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       it 'displays the service_days when sent without a filter date' do
         get '/api/v1/service_days', params: {}, headers: headers
         parsed_response = JSON.parse(response.body)
-        expect(parsed_response.collect { |x| x['child_id'] })
+        expect(parsed_response.pluck('child_id'))
           .to match_array(
             [
               *this_week_service_days.collect(&:child_id),
@@ -724,7 +748,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_service_days.collect(&:child_id)
             ]
           )
-        expect(parsed_response.collect { |x| x['date'] })
+        expect(parsed_response.pluck('date'))
           .to match_array(
             [
               *this_week_service_days.collect(&:date),
@@ -732,7 +756,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_service_days.collect(&:date)
             ]
           )
-        expect(parsed_response.collect { |x| x['tags'] })
+        expect(parsed_response.pluck('tags'))
           .to match_array(
             [
               *this_week_service_days.collect(&:tags),
@@ -740,7 +764,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
               *another_user_service_days.collect(&:tags)
             ]
           )
-        expect(parsed_response.collect { |x| x['total_time_in_care'] })
+        expect(parsed_response.pluck('total_time_in_care'))
           .to match_array(
             [
               *this_week_service_days.collect { |service_day| service_day.total_time_in_care.to_s },
@@ -814,7 +838,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -836,7 +860,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(parsed_response['absence_type']).to eq('absence_on_scheduled_day')
-        expect(child.reload.service_days.pluck(:date))
+        expect(child.reload.service_days.map { |service_day| service_day.date.at_beginning_of_day })
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
@@ -855,7 +879,7 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -868,18 +892,6 @@ RSpec.describe 'Api::V1::ServiceDays', type: :request do
       it 'does not create a service_day with a bad absence type' do
         post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it 'creates an absence for the child' do
-        child.reload
-        post '/api/v1/service_days', params: params_with_absence, headers: headers
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response['child_id']).to eq(child.id)
-        expect(parsed_response['absence_type']).to eq('absence_on_scheduled_day')
-        expect(child.reload.service_days.pluck(:date))
-          .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
-        expect(response).to match_response_schema('service_day')
-        expect(response).to have_http_status(:created)
       end
     end
   end

@@ -2,6 +2,7 @@
 
 # The businesses for which users are responsible for keeping subsidy data
 class ServiceDay < UuidApplicationRecord
+  self.skip_time_zone_conversion_for_attributes = [:date]
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
   after_save_commit :calculate_service_day
@@ -40,17 +41,17 @@ class ServiceDay < UuidApplicationRecord
   scope :for_month,
         lambda { |month = nil|
           month ||= Time.current
-          where('date BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
+          where('date BETWEEN ? AND ?', month.utc.at_beginning_of_month, month.utc.at_end_of_month)
         }
   scope :for_week,
         lambda { |week = nil|
           week ||= Time.current
-          where('date BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:sunday))
+          where('date BETWEEN ? AND ?', week.utc.at_beginning_of_week(:sunday), week.utc.at_end_of_week(:sunday))
         }
   scope :for_day,
         lambda { |day = nil|
           day ||= Time.current
-          where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
+          where('date BETWEEN ? AND ?', day.utc.at_beginning_of_day, day.utc.at_end_of_day)
         }
   scope :for_weekday,
         lambda { |weekday|
@@ -66,6 +67,9 @@ class ServiceDay < UuidApplicationRecord
 
   scope :with_attendances, -> { includes(:attendances) }
 
+  scope :full_day, -> { where('full_time > ?', 0) }
+  scope :part_day, -> { where('part_time > ?', 0) }
+
   def absence?
     absence_type.present?
   end
@@ -74,60 +78,8 @@ class ServiceDay < UuidApplicationRecord
     child.schedules.active_on(date).for_weekday(date.wday).first
   end
 
-  # TODO: extract tags to a service object
   def tags
-    [tag_hourly, tag_daily, tag_absence].compact
-  end
-
-  def tag_hourly
-    return unless state == 'NE'
-
-    hourly? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_hourly_amount} hourly" : nil
-  end
-
-  def tag_daily
-    return unless state == 'NE'
-
-    daily? || daily_plus_hourly? || daily_plus_hourly_max? ? "#{tag_daily_amount} daily" : nil
-  end
-
-  def tag_hourly_amount
-    a = Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
-    a.to_i == a ? a.to_i.to_s : a.to_s
-  end
-
-  def tag_daily_amount
-    Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call&.to_s
-  end
-
-  def tag_absence
-    return unless state == 'NE'
-
-    absence? ? 'absence' : nil
-  end
-
-  def hourly?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care <= (5.hours + 45.minutes)
-  end
-
-  def daily?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > (5.hours + 45.minutes) && total_time_in_care <= 10.hours
-  end
-
-  def daily_plus_hourly?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > 10.hours && total_time_in_care <= 18.hours
-  end
-
-  def daily_plus_hourly_max?
-    return false unless state == 'NE' && total_time_in_care
-
-    total_time_in_care > 18.hours
+    TagsCalculator.new(service_day: self).call
   end
 
   def calculate_service_day
@@ -154,7 +106,9 @@ end
 #  date                    :datetime         not null
 #  earned_revenue_cents    :integer
 #  earned_revenue_currency :string           default("USD"), not null
+#  full_time               :integer          default(0)
 #  missing_checkout        :boolean
+#  part_time               :integer          default(0)
 #  total_time_in_care      :interval
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
@@ -166,6 +120,8 @@ end
 #  index_service_days_on_child_id           (child_id)
 #  index_service_days_on_child_id_and_date  (child_id,date) UNIQUE
 #  index_service_days_on_date               (date)
+#  index_service_days_on_full_time          (full_time)
+#  index_service_days_on_part_time          (part_time)
 #  index_service_days_on_schedule_id        (schedule_id)
 #
 # Foreign Keys

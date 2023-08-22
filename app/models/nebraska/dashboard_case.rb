@@ -42,8 +42,16 @@ module Nebraska
       ) do
         @absences ||= absent_days
           &.for_month(filter_date)
-          &.standard_absences
           &.size || 0
+      end
+    end
+
+    def absences_dates
+      Appsignal.instrument_sql(
+        'dashboard_case.absences_dates'
+      ) do
+        @absences_dates ||= absent_days
+          &.for_month(filter_date)
       end
     end
 
@@ -115,9 +123,38 @@ module Nebraska
 
         @full_days ||= attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(
-            total_time_in_care: service_day.total_time_in_care
+            total_time_in_care: service_day.total_time_in_care,
+            filter_date: filter_date
           ).call
         end
+      end
+    end
+
+    def part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.part_days'
+      ) do
+        return 0 unless attendances_this_month
+
+        @part_days = 0
+        attendances_this_month.each do |service_day|
+          @part_days += 1 if service_day.part_time == 1
+        end
+        @part_days
+      end
+    end
+
+    def total_part_days
+      Appsignal.instrument_sql('dashboard_case.total_part_days') do
+        child.child_approvals.first.part_days
+      end
+    end
+
+    def remaining_part_days
+      Appsignal.instrument_sql(
+        'dashboard_case.remaining_part_days'
+      ) do
+        total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
       end
     end
 
@@ -191,14 +228,7 @@ module Nebraska
         'dashboard_case.attended_weekly_hours'
       ) do
         authorized_weekly_hours = child_approval&.authorized_weekly_hours
-        return "0.0 of #{authorized_weekly_hours}" unless attendances_this_month || reimbursable_month_absent_days
-
-        @attended_weekly_hours ||= attended_hours = Nebraska::Weekly::AttendedHoursCalculator.new(
-          attendances: attendances_this_month,
-          absences: reimbursable_month_absent_days,
-          filter_date: filter_date
-        ).call
-        "#{attended_hours&.positive? ? attended_hours : 0.0} of #{authorized_weekly_hours}"
+        authorized_weekly_hours.to_i.to_s
       end
     end
 
@@ -318,7 +348,16 @@ module Nebraska
         'dashboard_case.reimbursable_month_absent_days_revenue',
         'map & sum earned revenue of reimbursable month absent days'
       ) do
-        @reimbursable_month_absent_days_revenue ||= reimbursable_month_absent_days&.map(&:earned_revenue)&.sum || 0
+        @reimbursable_month_absent_days_revenue ||=
+          reimbursable_month_absent_days&.map { |item| check_absent_days_earned_revenue(item.earned_revenue) }&.sum || 0
+      end
+    end
+
+    def check_absent_days_earned_revenue(revenue)
+      if revenue.nil?
+        Money.from_amount(0)
+      else
+        revenue
       end
     end
 

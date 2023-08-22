@@ -23,7 +23,6 @@ class User < UuidApplicationRecord
 
   accepts_nested_attributes_for :businesses, :children, :child_approvals, :approvals, :nebraska_approval_amounts
 
-  validates :accept_more_subsidy_families, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :active, inclusion: { in: [true, false] }
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
@@ -34,7 +33,6 @@ class User < UuidApplicationRecord
   validates :phone_number, uniqueness: true
   validates :service_agreement_accepted, presence: true
   validates :state, presence: true
-  validates :stressed_about_billing, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
   validates :timezone, presence: true
   validates :too_much_time, inclusion: { in: ['True', 'Mostly True', 'Mostly False', 'False'] }
 
@@ -45,6 +43,11 @@ class User < UuidApplicationRecord
   scope :with_dashboard_case,
         lambda {
           distinct.joins(:businesses).includes(:businesses, :child_approvals, :approvals)
+        }
+
+  scope :selected_business,
+        lambda { |business|
+          left_outer_joins(businesses: :children).where(children: { businesses: Business.find(business.split(',')) })
         }
 
   # format phone numbers - remove any non-digit characters
@@ -62,7 +65,7 @@ class User < UuidApplicationRecord
   # track in the child's timezone
   def latest_service_day_in_month(filter_date)
     filter_date ||= Time.current
-    service_days.for_month(filter_date.in_time_zone(timezone))&.max_by(&:date)&.date
+    service_days.for_month(filter_date.utc)&.max_by(&:date)&.date
   end
 
   def first_approval_effective_date
@@ -91,6 +94,7 @@ end
 #  full_name                    :string           not null
 #  get_from_pie                 :text
 #  greeting_name                :string
+#  heard_about                  :string
 #  language                     :string           not null
 #  last_sign_in_at              :datetime
 #  last_sign_in_ip              :inet

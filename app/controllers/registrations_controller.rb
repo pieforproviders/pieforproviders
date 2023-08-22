@@ -15,7 +15,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(
-      :accept_more_subsidy_families,
       :active,
       :email,
       :full_name,
@@ -32,9 +31,9 @@ class RegistrationsController < Devise::RegistrationsController
       :phone_type,
       :service_agreement_accepted,
       :state,
-      :stressed_about_billing,
       :timezone,
-      :too_much_time
+      :too_much_time,
+      :heard_about
     )
   end
 end

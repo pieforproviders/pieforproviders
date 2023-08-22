@@ -16,6 +16,20 @@ FactoryBot.define do
       end
     end
 
+    factory :business_with_schedules do
+      before :create do |business|
+        create(:business_schedule, business: business)
+      end
+    end
+
+    factory :business_with_closed_days_in_november do
+      after :create do |business|
+        1.upto(20).each do |day|
+          create(:business_closure, business: business, date: "2022-11-#{day}")
+        end
+      end
+    end
+
     trait :nebraska_ldds do
       user factory: %i[confirmed_user nebraska]
       zipcode { '68123' }
@@ -97,6 +111,12 @@ FactoryBot.define do
       license_type { 'family_in_home' }
       zipcode { '68123' }
       county { 'Douglas' }
+    end
+
+    trait :illinois_center do
+      license_type { 'licensed_center' }
+      zipcode { '60430' }
+      county { 'Cook' }
     end
   end
 end

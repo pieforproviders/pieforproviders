@@ -3,7 +3,6 @@ import { Alert, Form, Input, Radio, Checkbox } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
-import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -40,7 +39,8 @@ export function Signup() {
     acceptMoreSubsidyFamilies: null,
     notAsMuchMoney: null,
     tooMuchTime: null,
-    getFromPie: null
+    getFromPie: null,
+    heardAbout: null
   })
   const { sendGAEvent } = useGoogleAnalytics()
   const [success, setSuccess] = useState(false)
@@ -186,7 +186,7 @@ export function Signup() {
               style={{ width: '70%', marginBottom: 0 }}
               rules={[
                 {
-                  pattern: /^\d{3}-\d{3}-\d{4}$/,
+                  pattern: /^\d{10}$/,
                   message: t('phoneNumberInvalid')
                 },
                 {
@@ -201,14 +201,10 @@ export function Signup() {
                 `${t('phone')} ${t(validationErrors.phone_number[0].error)}`
               }
             >
-              <MaskedInput
-                mask="111-111-1111"
-                placeholder="___-___-____"
-                size="10"
-                className="h-8"
+              <Input
+                value={user.phoneNumber}
                 data-cy="phoneNumber"
                 name="phoneNumber"
-                value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -222,7 +218,7 @@ export function Signup() {
           label={t('preferredLanguage')}
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
-          style={{ marginBottom: '-6px' }}
+          style={{ marginBottom: '15px' }}
           rules={[
             {
               required: true,
@@ -381,7 +377,7 @@ export function Signup() {
           className="flex mb-0 body-2-bold text-primaryBlue questions"
           label={t('helpUsUnderstand')}
         >
-          <Form.Item
+          {/* <Form.Item
             name="feelStressedQuestion"
             rules={[
               {
@@ -397,7 +393,7 @@ export function Signup() {
               questionText={t('feelStressed')}
               tag="stressed"
             />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item
             name="moneyQuestion"
             rules={[
@@ -432,7 +428,7 @@ export function Signup() {
               tag="time"
             />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             name="acceptingMoreQuestion"
             rules={[
               {
@@ -451,7 +447,7 @@ export function Signup() {
               questionText={t('acceptingMoreFamilies')}
               tag="moreFamilies"
             />
-          </Form.Item>
+          </Form.Item> */}
         </Form.Item>
 
         <Form.Item
@@ -460,11 +456,27 @@ export function Signup() {
           label={t('hopeForP4P')}
         >
           <TextArea
-            rows={3}
+            rows={1}
             onChange={event =>
               setUser({ ...user, getFromPie: event.target.value })
             }
             name="openSignUpQuestion"
+            className="open-signup-question"
+            data-cy="open-signup-question"
+          />
+        </Form.Item>
+
+        <Form.Item
+          className="body-2-bold text-primaryBlue optional-questions"
+          name="heardAboutQuestion"
+          label={t('heardAboutUs')}
+        >
+          <TextArea
+            rows={1}
+            onChange={event =>
+              setUser({ ...user, heardAbout: event.target.value })
+            }
+            name="heardAboutQuestion"
             className="open-signup-question"
             data-cy="open-signup-question"
           />
@@ -500,7 +512,7 @@ export function Signup() {
         <Form.Item className="text-center">
           <PaddedButton
             data-cy="signupBtn"
-            text={t('next')}
+            text={t('signUp')}
             classes="bg-green1 border-green1 w-full next-button"
           />
         </Form.Item>
@@ -526,12 +538,18 @@ export function Signup() {
           </p>
         </div>
         <Form.Item style={{ display: 'none' }}>
-          <Input name="lifecycleStage" type="lifecycle stage" value="Sign-up" />
+          <Input
+            name="lifecycle Stage"
+            type="Dropdown"
+            className="ant-input"
+            value="Sign-up"
+          />
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
           <Input
-            name="lifecycleStage"
-            type="status"
+            name="Status"
+            type="Dropdown"
+            className="ant-input"
             value="Completed sign-up form"
           />
         </Form.Item>

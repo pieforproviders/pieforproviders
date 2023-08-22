@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Grid, Table } from 'antd'
+import { Button, Grid, Table, Checkbox, Alert, Space } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -12,6 +12,7 @@ import { ReactComponent as EditIcon } from '../_assets/editIcon.svg'
 import { setLoading } from '_reducers/uiReducer'
 import '_assets/styles/edit-icon.css'
 import '_assets/styles/attendance-table-overrides.css'
+import '_assets/styles/attendance-filters.css'
 import { WeekPicker } from './WeekPicker'
 import { EditAttendanceModal } from './EditAttendanceModal'
 import { LoadingDisplay } from '_shared/LoadingDisplay'
@@ -28,9 +29,10 @@ export function AttendanceView() {
   const screens = useBreakpoint()
   const history = useHistory()
   const { makeRequest } = useApiResponse()
-  const { businesses, filteredCases } = useSelector(state => ({
+  const { businesses, filteredCases, user } = useSelector(state => ({
     businesses: state.businesses,
-    filteredCases: state.ui.filteredCases
+    filteredCases: state.ui.filteredCases,
+    user: state.user
   }))
   const [attendanceData, setAttendanceData] = useState([])
   // columns will be current dates
@@ -116,7 +118,9 @@ export function AttendanceView() {
             // TODO Refactor: no attendance should be saveable with a check-out and no check-in
             if (index === 0) {
               setModalButtonDisabled(
-                !(mergedValue.check_in || update.absenceType)
+                mergedValue.check_in &&
+                  !mergedValue.check_out &&
+                  !update.absenceType
               )
             }
 
@@ -132,16 +136,24 @@ export function AttendanceView() {
       // eslint-disable-next-line no-debugger
       debugger
     }
-
     latestAttendanceData.current = updatedData
     setUpdatedAttendanceData(updatedData)
   }
 
+  const [showWeekends, setShowWeekends] = useState(false)
+
+  useEffect(() => {
+    setColumns(generateColumns())
+    // eslint-disable-next-line
+  }, [showWeekends])
+
   // create seven columns for each day of the week
   const generateColumns = () => {
     const dateColumns = []
+    let i = showWeekends ? 0 : 1
+    let limit = showWeekends ? 7 : 6
 
-    for (let i = 0; i < 7; i++) {
+    for (i; i < limit; i++) {
       const columnDate = dateSelected.day(i)
       dateColumns.push({
         dataIndex: i,
@@ -166,8 +178,18 @@ export function AttendanceView() {
               serviceDay.date
             )
           })
-          const hideEditButton =
-            matchingServiceDay?.child?.wonderschool_id || false
+
+          const hasWoderschoolId = () => {
+            if (
+              matchingServiceDay?.child?.wonderschool_id == null ||
+              matchingServiceDay?.child?.wonderschool_id === undefined ||
+              matchingServiceDay?.child?.wonderschool_id.toLowerCase() === 'no'
+            ) {
+              return false
+            } else {
+              return true
+            }
+          }
 
           const handleEditAttendance = () => {
             const serviceDay = record.serviceDays.find(
@@ -214,7 +236,7 @@ export function AttendanceView() {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
                 <div>
-                  {hideEditButton ? null : (
+                  {hasWoderschoolId() ? null : (
                     <button
                       className="float-right edit-icon"
                       onClick={handleEditAttendance}
@@ -255,27 +277,61 @@ export function AttendanceView() {
             )
             const totalTimeInCare = hour + ' hrs ' + minute + ' mins'
 
-            const tags = (matchingServiceDay.tags || []).map((tag, i) => {
-              let amount = tag.split(' ')[0]
-              let count = parseInt(amount, 10) <= 1 ? 1 : 0
+            const set_tags = () => {
+              let switch_date = dayjs('2023-06-30 23:59')
+              let service_day_new_tags = [
+                matchingServiceDay.full_time,
+                matchingServiceDay.part_time
+              ]
 
-              return (
-                <div
-                  key={i}
-                  className={`bg-green2 text-green1 box-border p-1 mt-1 ${
-                    i > 0 ? 'ml-1' : null
-                  }`}
-                >
-                  {`${amount} `}
-                  {i18n.t(`${tag.split(' ')[1].toLowerCase()}`, {
-                    count: count
-                  })}
-                </div>
-              )
-            })
+              const old_tags = (matchingServiceDay.tags || []).map((tag, i) => {
+                let amount = tag.split(' ')[0]
+                let count = parseInt(amount, 10) <= 1 ? 1 : 0
+
+                return (
+                  <div
+                    key={i}
+                    className={`bg-green2 text-green1 box-border p-1 mt-1 ${
+                      i > 0 ? 'ml-1' : null
+                    }`}
+                  >
+                    {`${amount} `}
+                    {i18n
+                      .t(`${tag.split(' ')[1]}`, {
+                        count: count
+                      })
+                      .toLowerCase()}
+                  </div>
+                )
+              })
+              let new_tags = (service_day_new_tags || []).map((tag_type, i) => {
+                if (!tag_type) {
+                  return <></>
+                } else {
+                  return (
+                    <div
+                      key={i}
+                      className={`bg-green2 text-green1 box-border p-1 mt-1 ${
+                        i > 0 ? 'ml-1' : null
+                      }`}
+                    >
+                      {i === 0 ? i18n.t('fullDay') : i18n.t('partialDay')}
+                    </div>
+                  )
+                }
+              })
+              if (
+                switch_date < dateSelected &&
+                matchingServiceDay.state === 'NE'
+              ) {
+                return new_tags
+              }
+              return old_tags
+            }
+
             return (
               <div className="relative text-center body-2">
-                {hideEditButton ? null : (
+                {hasWoderschoolId() ? null : (
                   <button
                     onClick={handleEditAttendance}
                     className="absolute right-0 rounded-full group hover:bg-blue3 focus:bg-primaryBlue"
@@ -289,7 +345,7 @@ export function AttendanceView() {
                 <div className="text-xs text-darkGray">
                   {checkInCheckOutTime}
                 </div>
-                <div className="flex justify-center">{tags}</div>
+                <div className="flex justify-center">{set_tags()}</div>
               </div>
             )
           }
@@ -355,6 +411,11 @@ export function AttendanceView() {
     if (response.ok) {
       const parsedResponse = await parseResult(response)
       const addServiceDay = (previousValue, currentValue) => {
+        const isInactive = () => !currentValue?.child.active
+
+        if (isInactive()) {
+          return previousValue
+        }
         const childName =
           `${currentValue?.child.first_name} ${currentValue?.child.last_name}` ||
           ''
@@ -534,6 +595,29 @@ export function AttendanceView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateSelected])
 
+  const warningMessage = i18n
+    .t('nebraskaDateWarning')
+    .split('\n')
+    .map((line, index) => {
+      // if it's the line with a link
+      if (line.includes('{{link}}')) {
+        return (
+          <p key={'more info link'}>
+            {line.split('{{link}}')[0]}
+            <a
+              href="https://dhhs.ne.gov/Pages/Child-Care-Providers.aspx"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {i18n.t('here')}
+            </a>
+          </p>
+        )
+      } else {
+        return <p key={index}>{line}</p>
+      }
+    })
+
   return (
     <div>
       {screens.sm ? (
@@ -557,7 +641,16 @@ export function AttendanceView() {
               {t('inputAttendance')}
             </Button>
           </div>
-          <div className="flex">
+          <div style={{ marginBottom: '1rem', marginTop: '1rem' }}>
+            {dateSelected < dayjs('2023-06-30 23:59') && user.state === 'NE' ? (
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Alert message={warningMessage} type="warning" />
+              </Space>
+            ) : (
+              <></>
+            )}
+          </div>
+          <div className="flex align-center">
             <div style={{ marginRight: '1rem' }}>
               <WeekPicker
                 hasNext={dateSelected.day(6) < dayjs().day(0)}
@@ -571,6 +664,15 @@ export function AttendanceView() {
                 onChange={value => getServiceDays(value)}
               />
             </div>
+            <p className="show-weekend-checkbox">
+              <Checkbox
+                className="weekends"
+                onChange={e => {
+                  setShowWeekends(!showWeekends)
+                }}
+              />
+              <span className="ml-3">{i18n.t('showWeekends')}</span>
+            </p>
           </div>
           <Table
             dataSource={[...attendanceData]}

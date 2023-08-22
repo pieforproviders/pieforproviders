@@ -6,6 +6,7 @@ class ChildBlueprint < Blueprinter::Base
 
   field :active
   field :last_active_date
+  field :last_inactive_date
   field :inactive_reason
   field :first_name
   field :last_name
@@ -23,23 +24,27 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   view :illinois_dashboard do
-    field :case_number do |child, options|
-      child.approvals.active_on(options[:filter_date]).first&.case_number
-    end
-    field :attendance_risk do |child, options|
-      child.attendance_risk(options[:filter_date])
-    end
-    field(:attendance_rate) do |child, options|
-      child.attendance_rate(options[:filter_date])
-    end
-    field :guaranteed_revenue do |_child, _options|
-      rand(0.00..500.00).round(2)
-    end
-    field :potential_revenue do |_child, _options|
-      rand(500.00..1000.00).round(2)
-    end
-    field :max_approved_revenue do |_child, _options|
-      rand(1000.00..2000.00).round(2)
+    eligible_attendances = nil
+    attended_days = nil
+    association :illinois_dashboard_case, blueprint: Illinois::DashboardCaseBlueprint do |child, options|
+      options[:filter_date] ||= Time.current
+      business = child.business
+      child_approval = child&.active_child_approval(options[:filter_date])
+      service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
+      attended_days = service_days&.non_absences
+
+      if business.license_center? && eligible_attendances.nil? && attended_days.nil?
+        business_day_calculator = Illinois::BusinessAttendanceRateCalculator.new(business, options[:filter_date])
+        eligible_attendances = business_day_calculator.eligible_attendances
+        attended_days = business_day_calculator.attended_days
+      end
+
+      Illinois::DashboardCase.new(
+        child: child,
+        filter_date: options[:filter_date],
+        eligible_days: eligible_attendances,
+        attended_days: attended_days
+      )
     end
   end
 
@@ -47,7 +52,7 @@ class ChildBlueprint < Blueprinter::Base
     association :nebraska_dashboard_case, blueprint: Nebraska::DashboardCaseBlueprint do |child, options|
       options[:filter_date] ||= Time.current
       child_approval = child&.active_child_approval(options[:filter_date])
-      service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
+      service_days = child&.service_days&.for_period(child_approval&.effective_on, child_approval&.expires_on)
       attended_days = service_days&.non_absences
       absent_days = service_days&.absences
       Nebraska::DashboardCase.new(

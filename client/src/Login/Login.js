@@ -104,7 +104,6 @@ export function Login() {
           <h1 className="inline-block font-bold uppercase">{t('login')}</h1>
         </div>
       </div>
-
       {apiError && (
         <Alert
           className="mb-2"
@@ -119,7 +118,6 @@ export function Login() {
           data-cy="authError"
         />
       )}
-
       {apiSuccess && (
         <Alert
           message={apiSuccess.message}
@@ -128,7 +126,6 @@ export function Login() {
           data-cy="successMessage"
         />
       )}
-
       <Form
         layout="vertical"
         name="login"
@@ -220,11 +217,10 @@ export function Login() {
           />
         </Form.Item>
       </Form>
-
       {showResetPasswordDialog && (
         <Modal
           centered
-          visible
+          open
           maskClosable
           footer={null}
           maskStyle={{

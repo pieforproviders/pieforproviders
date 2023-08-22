@@ -38,13 +38,19 @@ class Child < UuidApplicationRecord
 
   validates :inactive_reason, inclusion: { in: REASONS }, allow_nil: true
   validates :last_active_date, date_param: true, unless: proc { |child| child.last_active_date_before_type_cast.nil? }
+  validates :last_inactive_date,
+            date_param: true,
+            unless: proc { |child| child.last_inactive_date_before_type_cast.nil? }
 
   accepts_nested_attributes_for :approvals, :child_approvals, :schedules
 
   scope :active, -> { where(active: true) }
   scope :approved_for_date,
         lambda { |date|
-          joins(:approvals).where(approvals: { effective_on: ..date }).where(approvals: { expires_on: [date.., nil] })
+          joins(:approvals).where("DATE_TRUNC('month', approvals.effective_on) <= ? AND
+          (DATE_TRUNC('month', approvals.expires_on) >= ? OR approvals.expires_on IS NULL)",
+                                  date&.beginning_of_month,
+                                  date&.beginning_of_month)
         }
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
@@ -61,11 +67,14 @@ class Child < UuidApplicationRecord
         }
 
   scope :with_schedules, -> { includes(:schedules) }
+  scope :with_business, -> { includes(:business) }
 
   delegate :county, to: :business
   delegate :user, to: :business
   delegate :state, to: :user
   delegate :timezone, to: :user
+
+  before_save :validate_wonderschool_id
 
   def age(date = Time.current)
     years_since_birth = date.year - date_of_birth.year
@@ -140,7 +149,19 @@ class Child < UuidApplicationRecord
     end
   end
 
+  def eligible_full_days_by_month(date = Time.current)
+    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: true).call
+  end
+
+  def eligible_part_days_by_month(date = Time.current)
+    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: false).call
+  end
+
   private
+
+  def eligible_by_date?(date)
+    business.eligible_by_date?(date)
+  end
 
   def find_or_create_approvals
     self.approvals = approvals.map do |approval|
@@ -167,25 +188,30 @@ class Child < UuidApplicationRecord
   def associate_rate
     RateAssociatorJob.perform_later(id)
   end
+
+  def validate_wonderschool_id
+    self.wonderschool_id = wonderschool_id.to_i.to_s == wonderschool_id ? wonderschool_id : nil
+  end
 end
 # rubocop:enable Metrics/ClassLength
 # == Schema Information
 #
 # Table name: children
 #
-#  id               :uuid             not null, primary key
-#  active           :boolean          default(TRUE), not null
-#  date_of_birth    :date             not null
-#  deleted_at       :date
-#  first_name       :string           not null
-#  inactive_reason  :string
-#  last_active_date :date
-#  last_name        :string           not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  business_id      :uuid             not null
-#  dhs_id           :string
-#  wonderschool_id  :string
+#  id                 :uuid             not null, primary key
+#  active             :boolean          default(TRUE), not null
+#  date_of_birth      :date             not null
+#  deleted_at         :date
+#  first_name         :string           not null
+#  inactive_reason    :string
+#  last_active_date   :date
+#  last_inactive_date :date
+#  last_name          :string           not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  business_id        :uuid             not null
+#  dhs_id             :string
+#  wonderschool_id    :string
 #
 # Indexes
 #

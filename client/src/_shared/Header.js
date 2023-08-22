@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import pieSliceLogo from '_assets/pieSliceLogo.svg'
 import { Button, Divider, Dropdown, Menu } from 'antd'
 import { MenuOutlined, CloseOutlined } from '@ant-design/icons'
@@ -8,13 +7,14 @@ import { useTranslation } from 'react-i18next'
 import { batch, useDispatch } from 'react-redux'
 import { removeAuth } from '_reducers/authReducer'
 import { deleteUser } from '_reducers/userReducer'
+import { deleteBusinesses } from '_reducers/businessesReducer'
 import { useAuthentication } from '_shared/_hooks/useAuthentication'
+import { deleteFilteredCases } from '_reducers/uiReducer'
 import '_assets/styles/button-header.css'
 
 export function Header() {
   const isAuthenticated = useAuthentication()
   const dispatch = useDispatch()
-  const userStateIsNE = useSelector(state => state.user.state || '') === 'NE'
   const { t, i18n } = useTranslation()
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const setWidth = () => setWindowWidth(window.innerWidth)
@@ -26,6 +26,8 @@ export function Header() {
 
   const logout = () => {
     batch(() => {
+      dispatch(deleteFilteredCases())
+      dispatch(deleteBusinesses())
       dispatch(deleteUser())
       dispatch(removeAuth())
     })
@@ -55,7 +57,7 @@ export function Header() {
     const mobileMenu = (
       <Menu>
         <Menu.Item key="dashboard" className="leading-7">
-          {isAuthenticated && userStateIsNE && (
+          {isAuthenticated && (
             <Button
               type="link"
               className="text-lg"
@@ -68,6 +70,7 @@ export function Header() {
                 className={
                   location.pathname === '/dashboard' ? 'underline' : ''
                 }
+                id={'header-tab-dashboard'}
               >
                 {t('dashboard')}
               </span>
@@ -75,7 +78,7 @@ export function Header() {
           )}
         </Menu.Item>
         <Menu.Item key="attendance" className="leading-7">
-          {isAuthenticated && userStateIsNE && (
+          {isAuthenticated && (
             <Button
               type="link"
               className="text-lg"
@@ -88,6 +91,7 @@ export function Header() {
                 className={
                   location.pathname.includes('/attendance') ? 'underline' : ''
                 }
+                id={'header-tab-attendance'}
               >
                 {t('attendance')}
               </span>
@@ -169,7 +173,7 @@ export function Header() {
           onClick={() => history.push('/dashboard')}
         />
       </a>
-      {windowWidth > 768 && userStateIsNE ? (
+      {windowWidth > 768 ? (
         <div className="ml-10 grow">
           <div className="flex">
             <div

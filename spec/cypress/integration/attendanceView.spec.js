@@ -51,6 +51,41 @@ describe('AttendanceView', () => {
   })
   beforeEach(() => {
     cy.app('clean')
+    cy.createState().then(states => {
+      const state = states[0]
+      cy.appFactories([
+        [
+          'create',
+          'state_time_rule',
+          {
+            name: 'Partial Day Nebraska',
+            min_time: 60,
+            max_time: 4 * 3600 + 59 * 60,
+            state_id: state.id
+          }
+        ],
+        [
+          'create',
+          'state_time_rule',
+          {
+            name: 'Full Day Nebraska',
+            min_time: 5 * 3600,
+            max_time: 10 * 3600,
+            state_id: state.id
+          }
+        ],
+        [
+          'create',
+          'state_time_rule',
+          {
+            name: 'Full - Partial Day Nebraska',
+            min_time: 10 * 3600 + 60,
+            max_time: 30 * 3600,
+            state_id: state.id
+          }
+        ]
+      ])
+    })
     cy.appFactories([
       [
         'create',
@@ -125,7 +160,7 @@ describe('AttendanceView', () => {
       // cy.contains(checkInTime)
       // cy.contains(checkOutTime)
       cy.contains('Input Attendance')
-      cy.get('[data-cy=noInfo]').its('length').should('eq', 6)
+      cy.get('[data-cy=noInfo]').its('length').should('eq', 4)
     })
 
     it('renders small screen content', () => {

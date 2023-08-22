@@ -29,11 +29,7 @@ export function AuthLayout({
         className="h-screen px-4 mt-4 overflow-y-scroll xs:mt-8 md:px-8"
       >
         <Row gutter={{ xs: 16, md: 32 }}>
-          <Col
-            xs={24}
-            sm={{ span: 12, offset: 6 }}
-            md={{ span: 24, offset: 0 }}
-          >
+          <Col xs={24} md={{ span: 24, offset: 0 }}>
             <header className="flex items-start text-right">
               <ActionLink
                 onClick={() =>

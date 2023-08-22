@@ -7,7 +7,7 @@ RSpec.describe UserBlueprint do
   let(:last_month) do
     Helpers
       .prior_weekday(
-        Time.current.in_time_zone(user.timezone).at_beginning_of_month - 1.month + 10.days, 1
+        Time.current.at_beginning_of_month - 1.month + 10.days, 1
       )
   end
   let(:blueprint) { described_class.render(user) }
@@ -15,6 +15,7 @@ RSpec.describe UserBlueprint do
 
   it 'only includes the expected user fields' do
     expect(parsed_response.keys).to contain_exactly(
+      'email',
       'greeting_name',
       'id',
       'language',
@@ -29,7 +30,8 @@ RSpec.describe UserBlueprint do
       expect(parsed_response.keys).to contain_exactly(
         'as_of',
         'businesses',
-        'first_approval_effective_date'
+        'first_approval_effective_date',
+        'email'
       )
     end
 
@@ -40,7 +42,7 @@ RSpec.describe UserBlueprint do
         child = create(:child, business: illinois_business)
         service_day = create(:service_day,
                              child: child,
-                             date: last_month.in_time_zone(child.timezone).at_beginning_of_day)
+                             date: last_month.at_beginning_of_day)
         create(:attendance,
                check_in: last_month,
                service_day: service_day,
@@ -62,10 +64,11 @@ RSpec.describe UserBlueprint do
       it 'returns the as_of date for the last attendance in the prior month in Illinois' do
         service_day = create(
           :service_day,
-          date: last_month.in_time_zone(illinois_business.children.first.timezone).at_beginning_of_day
+          date: last_month.utc.at_beginning_of_day
         )
-        attendance = create(:attendance, check_in: last_month, service_day: service_day)
-        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.at_end_of_month)
+        attendance = create(:attendance, check_in: last_month.utc, service_day: service_day)
+
+        blueprint = described_class.render(user, view: :illinois_dashboard, filter_date: last_month.utc.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 
@@ -95,13 +98,44 @@ RSpec.describe UserBlueprint do
     let(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
     let(:blueprint) { described_class.render(user, view: :nebraska_dashboard) }
 
+    let!(:state) do
+      create(:state)
+    end
+
+    let(:state_time_rules) do
+      [
+        create(
+          :state_time_rule,
+          name: "Partial Day #{state.name}",
+          state: state,
+          min_time: 60, # 1minute
+          max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+        ),
+        create(
+          :state_time_rule,
+          name: "Full Day #{state.name}",
+          state: state,
+          min_time: 5 * 3600, # 5 hours
+          max_time: (10 * 3600) # 10 hours
+        ),
+        create(
+          :state_time_rule,
+          name: "Full - Partial Day #{state.name}",
+          state: state,
+          min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+          max_time: (24 * 3600)
+        )
+      ]
+    end
+
     it 'includes the user name and all cases' do
       expect(parsed_response.keys).to contain_exactly(
         'as_of',
         'first_approval_effective_date',
         'businesses',
         'max_revenue',
-        'total_approved'
+        'total_approved',
+        'email'
       )
       expect(parsed_response['max_revenue']).to eq('N/A')
       expect(parsed_response['total_approved']).to eq('N/A')
@@ -109,10 +143,32 @@ RSpec.describe UserBlueprint do
 
     context "when there are approvals for this user's children" do
       before do
+        create(
+          :state_time_rule,
+          name: "Partial Day #{state.name}",
+          state: state,
+          min_time: 60, # 1minute
+          max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+        )
+        create(
+          :state_time_rule,
+          name: "Full Day #{state.name}",
+          state: state,
+          min_time: 5 * 3600, # 5 hours
+          max_time: (10 * 3600) # 10 hours
+        )
+        create(
+          :state_time_rule,
+          name: "Full - Partial Day #{state.name}",
+          state: state,
+          min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+          max_time: (24 * 3600)
+        )
+
         child = create(:necc_child, business: nebraska_business)
         service_day = create(:service_day,
                              child: child,
-                             date: last_month.in_time_zone(child.timezone).at_beginning_of_month)
+                             date: last_month.at_beginning_of_month)
         create(:attendance,
                check_in: last_month,
                service_day: service_day,
@@ -121,7 +177,7 @@ RSpec.describe UserBlueprint do
           service_day = create(
             :service_day,
             child: child,
-            date: Time.current.in_time_zone(child.timezone).at_beginning_of_day + idx.days
+            date: Time.current.at_beginning_of_day + idx.days
           )
           create(:attendance,
                  child_approval: child.child_approvals.first,
@@ -146,14 +202,14 @@ RSpec.describe UserBlueprint do
         child = create(:necc_child, business: nebraska_business)
         service_day = create(:service_day,
                              child: child,
-                             date: last_month.in_time_zone(child.timezone).at_beginning_of_day)
+                             date: last_month.utc.at_beginning_of_day)
         attendance = create(:attendance,
                             child_approval: child.child_approvals.first,
-                            check_in: last_month,
+                            check_in: last_month.utc,
                             service_day: service_day)
         perform_enqueued_jobs
         ServiceDay.all.each(&:reload)
-        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
+        blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.utc.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of']).to eq(attendance.check_in.strftime('%m/%d/%Y'))
       end
 

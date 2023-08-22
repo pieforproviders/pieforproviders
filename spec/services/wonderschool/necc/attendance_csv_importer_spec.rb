@@ -11,10 +11,10 @@ module Wonderschool
       let!(:stubbed_client) { double('AwsClient') }
       let!(:stubbed_uri) { double('URI') }
 
-      let!(:attendance_csv) { File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv')) }
-      let!(:invalid_csv) { File.read(Rails.root.join('spec/fixtures/files/invalid_format.csv')) }
+      let!(:attendance_csv) { Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data.csv').read }
+      let!(:invalid_csv) { Rails.root.join('spec/fixtures/files/invalid_format.csv').read }
       let!(:missing_field_csv) do
-        File.read(Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv'))
+        Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
       end
 
       let!(:business1) { create(:business, name: 'Test Daycare') }
@@ -84,7 +84,7 @@ module Wonderschool
           it 'removes existing absences records for the correct child with the correct data' do
             # TODO: somewhere in here, more than one service day is being created for 2/24/2021
             # one for the beginning of the day
-            time = Time.new(2021, 0o2, 24, 0, 0, 0, ActiveSupport::TimeZone.new(second_child.timezone))
+            time = Time.new(2021, 0o2, 24, 0, 0, 0).utc.strftime('%Y-%m-%d %H:%M:%S').to_datetime
             create(:service_day,
                    child: second_child,
                    date: time.at_beginning_of_day,

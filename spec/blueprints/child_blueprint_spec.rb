@@ -13,6 +13,7 @@ RSpec.describe ChildBlueprint do
       'first_name',
       'last_name',
       'last_active_date',
+      'last_inactive_date',
       'inactive_reason',
       'wonderschool_id',
       'business_name'
@@ -22,20 +23,16 @@ RSpec.describe ChildBlueprint do
   context 'when IL view is requested' do
     it 'includes IL dashboard fields' do
       expect(JSON.parse(described_class.render(child, view: :illinois_dashboard)).keys).to contain_exactly(
-        'id',
         'active',
-        'attendance_rate',
-        'attendance_risk',
-        'case_number',
+        'business_name',
         'first_name',
-        'last_name',
-        'guaranteed_revenue',
-        'max_approved_revenue',
-        'potential_revenue',
-        'last_active_date',
+        'id',
+        'illinois_dashboard_case',
         'inactive_reason',
-        'wonderschool_id',
-        'business_name'
+        'last_active_date',
+        'last_inactive_date',
+        'last_name',
+        'wonderschool_id'
       )
     end
   end
@@ -50,6 +47,7 @@ RSpec.describe ChildBlueprint do
         'first_name',
         'last_name',
         'last_active_date',
+        'last_inactive_date',
         'inactive_reason',
         'nebraska_dashboard_case',
         'wonderschool_id',

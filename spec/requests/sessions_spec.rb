@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'sessions requests', type: :request do
+RSpec.describe 'sessions requests' do
   let(:user) { create(:confirmed_user) }
   let(:url) { '/login' }
   let(:params) do
@@ -23,7 +23,7 @@ RSpec.describe 'sessions requests', type: :request do
       it 'returns 200' do
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)['state']).to eq(user.state)
-        expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state')
+        expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
       end
 
       it 'returns JWT token in authorization header' do

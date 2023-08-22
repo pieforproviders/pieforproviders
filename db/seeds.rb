@@ -26,6 +26,40 @@ def puts_records_in_db(klass)
   puts " ... #{klass.count} #{klass.name.pluralize} now in the db"
 end
 
+# ----------------------------------------
+# State Time Rules
+# ----------------------------------------
+
+states = [
+  { name: 'Nebraska', code: 'NE', subsidy_type: 'Type 1' },
+  { name: 'Illinois', code: 'IL', subsidy_type: 'Type 2' }
+]
+
+state = states.find { |item| item[:name] == 'Nebraska' }
+
+created_state = State.create!(state)
+
+puts "Created state: #{created_state.name}"
+
+StateTimeRule.create!(
+  name: "Partial Day #{created_state.name}",
+  state: created_state,
+  min_time: 60, # 1minute
+  max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+)
+StateTimeRule.create!(
+  name: "Full Day #{created_state.name}",
+  state: created_state,
+  min_time: 5 * 3600, # 5 hours
+  max_time: (10 * 3600) # 10 hours
+)
+StateTimeRule.create!(
+  name: "Full - Partial Day #{created_state.name}",
+  state: created_state,
+  min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+  max_time: (30 * 3600) # 18 hours
+)
+
 # ---------------------------------------------
 # Rates
 # ---------------------------------------------
@@ -132,10 +166,32 @@ puts_records_in_db(IllinoisRate)
   too_much_time: 'True'
 )
 
+@user_illinois = User.where(email: 'illinois@test.com').first_or_create(
+  active: true,
+  full_name: 'Chicago Provider',
+  greeting_name: 'Joe Doe',
+  language: 'en',
+  opt_in_email: true,
+  opt_in_text: true,
+  phone_number: '777-666-9999',
+  state: 'IL',
+  get_from_pie: 'fame',
+  organization: 'Illinois Child Care',
+  password: 'testpass1234!',
+  password_confirmation: 'testpass1234!',
+  service_agreement_accepted: true,
+  timezone: 'Eastern Time (US & Canada)',
+  stressed_about_billing: 'True',
+  accept_more_subsidy_families: 'True',
+  not_as_much_money: 'True',
+  too_much_time: 'True'
+)
+
 @user_admin.confirm
 @user_kate.confirm
 @user_nebraska.confirm
 @user_new_york.confirm
+@user_illinois.confirm
 
 puts_records_in_db(User)
 
@@ -153,6 +209,12 @@ puts_records_in_db(User)
   license_type: 'family_child_care_home_i',
   county: 'Douglas',
   zipcode: '68123'
+)
+
+@business_illinois = Business.where(name: 'Illinois Home Child Care', user: @user_illinois).first_or_create!(
+  license_type: 'family_child_care_home_i',
+  county: 'Cook',
+  zipcode: '60402'
 )
 
 puts_records_in_db(Business)
@@ -227,7 +289,7 @@ def create_case(first_name:,
 
   case child.state
   when 'IL'
-    12.times do |idx|
+    15.times do |idx|
       IllinoisApprovalAmount.create!(
         child_approval: child.active_child_approval(Time.current),
         month: 1.year.ago.at_beginning_of_month + idx.months,
@@ -276,9 +338,17 @@ create_case(first_name: 'Jasveen',
             dhs_id: '5678')
 create_case(first_name: 'Manuel', last_name: 'Céspedes', business: @business_nebraska, dhs_id: '1234')
 create_case(first_name: 'Kevin', last_name: 'Chen', case_number: '1234567A', add_expiring_approval: true)
+create_case(first_name: 'Christy', last_name: 'Bender', business: @business_illinois, dhs_id: '4321')
+create_case(first_name: 'Henrietta', last_name: 'Berry', business: @business_illinois, dhs_id: '4320')
+create_case(first_name: 'Delmar', last_name: 'Bonilla', business: @business_illinois, dhs_id: '4319')
+create_case(first_name: 'Bernard', last_name: 'Munoz', business: @business_illinois, dhs_id: '4318')
+create_case(first_name: 'Ken', last_name: 'Best', business: @business_illinois, dhs_id: '4317')
 
 puts_records_in_db(Child)
 
 Rake::Task['nebraska:rates'].invoke
+Rake::Task['update_rate_expiry_date2021'].invoke
+Rake::Task['fix_school_age_rates'].invoke
+Rake::Task['illinois:illinois_rates0916'].invoke
 
 Rails.logger.info 'Seeding is done!'

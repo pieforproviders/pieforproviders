@@ -5,9 +5,39 @@ require 'rails_helper'
 RSpec.describe Commands::Attendance::Update, type: :service do
   let!(:child) { create(:necc_child) }
   let!(:child_approval) { child.child_approvals.first }
-  let!(:check_in) { Time.parse('9:00am').in_time_zone(child.timezone).prev_occurring(:monday) }
-  let!(:check_out) { Time.parse('10:50am').in_time_zone(child.timezone).prev_occurring(:monday) }
+  let!(:check_in) { Time.parse('9:00am').utc.prev_occurring(:monday) }
+  let!(:check_out) { Time.parse('10:50am').utc.prev_occurring(:monday) }
   let!(:attendance) { create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (26 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   describe '#initialize' do
     it 'initializes with required info' do
@@ -152,7 +182,6 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       end
         .to not_change(Attendance, :count)
         .and not_change(ServiceDay, :count)
-
       expect(attendance.check_in).to eq(check_in)
       expect(attendance.check_out).to eq(check_out + 1.day)
       expect(attendance.service_day).to eq(service_day)
@@ -164,8 +193,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       expect do
         described_class.new(
           attendance: attendance,
-          check_in: attendance.child_approval.effective_on - 3.days,
-          check_out: attendance.child_approval.effective_on - 3.days + 6.hours,
+          check_in: attendance.child_approval.effective_on.at_beginning_of_month - 3.days,
+          check_out: attendance.child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           absence_type: nil
         ).update
       end

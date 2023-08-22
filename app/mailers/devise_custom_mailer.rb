@@ -40,11 +40,11 @@ class DeviseCustomMailer < Devise::Mailer
   end
 
   def pie_logo
-    File.read(Rails.root.join('app/views/devise/mailer/assets/pielogo.png'))
+    Rails.root.join('app/views/devise/mailer/assets/pielogo.png').read
   end
 
   def password_update_path(token)
-    "#{domain}/password/update?reset_password_token=#{token}"
+    "https://#{domain}/password/update?reset_password_token=#{token}"
   end
 
   def domain
