@@ -10,9 +10,8 @@ module Commands
       def initialize(attendance:, absence_type:, check_in:, check_out:)
         @attendance = attendance
         @child = attendance.child
-        timezone = @child.timezone
-        @check_in = check_in.in_time_zone(timezone)
-        @check_out = check_out&.in_time_zone(timezone)
+        @check_in = check_in.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
+        @check_out = check_out.blank? ? nil : check_out.to_datetime.strftime('%Y-%m-%d %H:%M:%S').to_datetime
         @absence_type = absence_type
       end
 
@@ -49,7 +48,7 @@ module Commands
       end
 
       def new_or_existing_service_day
-        ServiceDay.find_or_initialize_by(child: child, date: check_in.at_beginning_of_day)
+        ServiceDay.find_or_initialize_by(child: child, date: check_in.utc.at_beginning_of_day)
       end
 
       def child_approval

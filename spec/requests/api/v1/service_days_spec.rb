@@ -7,6 +7,37 @@ require 'rails_helper'
 # the week_current_date value to a day that falls within the expected week range
 
 RSpec.describe 'Api::V1::ServiceDays' do
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
+
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
@@ -807,7 +838,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -829,7 +860,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(parsed_response['absence_type']).to eq('absence_on_scheduled_day')
-        expect(child.reload.service_days.pluck(:date))
+        expect(child.reload.service_days.map { |service_day| service_day.date.at_beginning_of_day })
           .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
@@ -848,7 +879,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
         parsed_response = JSON.parse(response.body)
         expect(parsed_response['child_id']).to eq(child.id)
         expect(child.reload.service_days.pluck(:date))
-          .to include(Time.current.to_date.in_time_zone(child.timezone).at_beginning_of_day + 1.day)
+          .to include(Time.current.to_date.at_beginning_of_day + 1.day)
         expect(response).to match_response_schema('service_day')
         expect(response).to have_http_status(:created)
       end
@@ -861,18 +892,6 @@ RSpec.describe 'Api::V1::ServiceDays' do
       it 'does not create a service_day with a bad absence type' do
         post '/api/v1/service_days', params: params_with_bad_absence_reason, headers: headers
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it 'creates an absence for the child' do
-        child.reload
-        post '/api/v1/service_days', params: params_with_absence, headers: headers
-        parsed_response = JSON.parse(response.body)
-        expect(parsed_response['child_id']).to eq(child.id)
-        expect(parsed_response['absence_type']).to eq('absence_on_scheduled_day')
-        expect(child.reload.service_days.pluck(:date))
-          .to include(params_with_absence[:service_day][:date].at_beginning_of_day)
-        expect(response).to match_response_schema('service_day')
-        expect(response).to have_http_status(:created)
       end
     end
   end

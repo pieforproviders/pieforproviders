@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Illinois::DashboardCase do
   let(:child) { create(:child) }
-  let(:date) { Time.current.to_date }
+  let(:date) { Time.current }
   let(:child_approval) { child.child_approvals.first }
   let(:service_days) { child.service_days&.for_period(child_approval.effective_on, child_approval.expires_on) }
 

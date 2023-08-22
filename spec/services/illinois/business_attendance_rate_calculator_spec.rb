@@ -32,7 +32,7 @@ RSpec.describe Illinois::BusinessAttendanceRateCalculator do
     end
 
     it 'Checks attended days for children on an FCC' do
-      november = Date.new(2022, 11, 1)
+      november = Time.new(2022, 11, 1).utc
       business_attendance_rate_calculator = described_class.new(business, november)
       part_days_approved_per_week = child.illinois_approval_amounts.first.part_days_approved_per_week
       full_days_approved_per_week = child.illinois_approval_amounts.first.full_days_approved_per_week
@@ -43,7 +43,7 @@ RSpec.describe Illinois::BusinessAttendanceRateCalculator do
     end
 
     it 'check attended days for children on a Center' do
-      november = Date.new(2022, 11, 1)
+      november = Time.new(2022, 11, 1).utc
       center_business = create(:business, license_type: 'day_care_center')
       child_from_center = create(:child_in_illinois, business: center_business)
       business_attendance_rate_calculator = described_class.new(center_business, november)

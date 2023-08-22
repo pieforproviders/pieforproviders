@@ -2,6 +2,7 @@
 
 # The businesses for which users are responsible for keeping subsidy data
 class ServiceDay < UuidApplicationRecord
+  self.skip_time_zone_conversion_for_attributes = [:date]
   # if a schedule is deleted this field will be nullified, which doesn't trigger the callback in Schedule
   # to recalculate all service days total_time_in_care; this handles that use case
   after_save_commit :calculate_service_day
@@ -40,17 +41,17 @@ class ServiceDay < UuidApplicationRecord
   scope :for_month,
         lambda { |month = nil|
           month ||= Time.current
-          where('date BETWEEN ? AND ?', month.at_beginning_of_month, month.at_end_of_month)
+          where('date BETWEEN ? AND ?', month.utc.at_beginning_of_month, month.utc.at_end_of_month)
         }
   scope :for_week,
         lambda { |week = nil|
           week ||= Time.current
-          where('date BETWEEN ? AND ?', week.at_beginning_of_week(:sunday), week.at_end_of_week(:sunday))
+          where('date BETWEEN ? AND ?', week.utc.at_beginning_of_week(:sunday), week.utc.at_end_of_week(:sunday))
         }
   scope :for_day,
         lambda { |day = nil|
           day ||= Time.current
-          where('date BETWEEN ? AND ?', day.at_beginning_of_day, day.at_end_of_day)
+          where('date BETWEEN ? AND ?', day.utc.at_beginning_of_day, day.utc.at_end_of_day)
         }
   scope :for_weekday,
         lambda { |weekday|

@@ -33,12 +33,11 @@
 }
 
 .site-filter .anticon-close {
-  position: absolute;
-  top: 0.125rem;
+  margin-left: 5px;
 }
 
 .site-filter.ant-select-multiple .ant-select-selection-item {
-  padding-inline-end: 1rem;
+  padding-inline-end: .5rem;
 }
 
 .site-filter.ant-select-multiple .ant-select-selection-item,
@@ -47,6 +46,8 @@
 .site-filter.ant-select-multiple .anticon-close {
   color: white;
   background: #006C9E;
+  display: flex;
+  justify-content: space-between;
 }
 
 .site-filter.site-filter.ant-select-multiple .ant-select-clear {

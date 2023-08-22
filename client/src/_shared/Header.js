@@ -70,6 +70,7 @@ export function Header() {
                 className={
                   location.pathname === '/dashboard' ? 'underline' : ''
                 }
+                id={'header-tab-dashboard'}
               >
                 {t('dashboard')}
               </span>
@@ -90,6 +91,7 @@ export function Header() {
                 className={
                   location.pathname.includes('/attendance') ? 'underline' : ''
                 }
+                id={'header-tab-attendance'}
               >
                 {t('attendance')}
               </span>

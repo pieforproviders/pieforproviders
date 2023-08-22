@@ -108,6 +108,7 @@ class Business < UuidApplicationRecord
 
     open_on_date = business_schedules.where(weekday: weekday, is_open: true).any?
     open_on_date = Holiday.where(date: date).none? if open_on_date
+
     open_on_date
   end
 end

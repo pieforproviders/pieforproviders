@@ -40,6 +40,16 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         allow(stubbed_client).to receive(:archive_file).with(source_bucket, archive_bucket, file_name)
       end
 
+      it 'checks the date format when date format is correct' do
+        check = described_class.new.send(:check_date_format, '2023-12-31')
+        expect(check).to be(true)
+      end
+
+      it 'checks the date format when date format is wrong' do
+        check = described_class.new.send(:check_date_format, '31-12-2023')
+        expect(check).to be(false)
+      end
+
       it 'creates case records for every row in the file, idempotently' do
         expect do
           described_class.new.call

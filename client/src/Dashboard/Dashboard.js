@@ -34,12 +34,15 @@ export function Dashboard() {
     currency: 'USD',
     minimumFractionDigits: 0
   })
-  const { businesses, token, user, filteredCases } = useSelector(state => ({
-    businesses: state.businesses,
-    token: state.auth.token,
-    user: state.user,
-    filteredCases: state.ui.filteredCases
-  }))
+  const { businesses, token, user, filteredCases, cases } = useSelector(
+    state => ({
+      businesses: state.businesses,
+      token: state.auth.token,
+      user: state.user,
+      filteredCases: state.ui.filteredCases,
+      cases: state.cases
+    })
+  )
 
   const summaryDataTotalsConfig = {
     ne: {
@@ -246,7 +249,7 @@ export function Dashboard() {
     dateFilterMonths.push(makeMonth(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
-      currentDate.setMonth(currentDate.getMonth() - 1)
+      currentDate.setDate(currentDate.getDate() - 31)
       dateFilterMonths.push(makeMonth(currentDate))
     }
 
@@ -292,7 +295,6 @@ export function Dashboard() {
       dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
       setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-      setTableData(tableData)
     }
     dispatch(setLoading(false))
   }
@@ -374,6 +376,11 @@ export function Dashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
+  useEffect(() => {
+    setTableData(cases)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cases])
+
   return (
     <div className="dashboard sm:mx-8">
       <DashboardTitle
@@ -397,7 +404,6 @@ export function Dashboard() {
       <DashboardTable
         dateFilterValue={dates?.dateFilterValue}
         tableData={tableData}
-        setTableData={setTableData}
         userState={user.state ?? ''}
         setActiveKey={href => {
           if (activeKey) {
@@ -417,7 +423,7 @@ export function Dashboard() {
       />
       <Modal
         className="notifications-modal"
-        visible={showNotificationsModal}
+        open={showNotificationsModal}
         cancelButtonProps={{ style: { display: 'none' } }}
         onOk={() => setShowNotificationsModal(false)}
         onCancel={() => setShowNotificationsModal(false)}

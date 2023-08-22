@@ -13,11 +13,14 @@ import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 import ellipse from '_assets/ellipse.svg'
 import questionMark from '_assets/questionMark.svg'
 import vector from '_assets/vector.svg'
-import grayVector from '_assets/gray-vector.svg'
+import editIcon from '_assets/editIcon.svg'
 import '_assets/styles/table-overrides.css'
 import '_assets/styles/tag-overrides.css'
 import '_assets/styles/select-overrides.css'
+import CsvDownloader from '_shared/_components/CsvDownloader/CsvDownloader'
+import runtimeEnv from '@mars/heroku-js-runtime-env'
 
+const env = runtimeEnv()
 export default function DashboardTable({
   tableData,
   userState,
@@ -29,9 +32,13 @@ export default function DashboardTable({
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
   const [inactiveDate, setInactiveDate] = useState(null)
+  const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
-  const [inactiveCases, setInactiveCases] = useState([])
   const [sortedRows, setSortedRows] = useState([])
+  const { user } = useSelector(state => ({
+    user: state.user
+  }))
+
   const { makeRequest } = useApiResponse()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -54,23 +61,22 @@ export default function DashboardTable({
     }
   }
 
-  const isInactive = record =>
-    !record.active || inactiveCases.includes(record.key)
+  const isInactive = record => !record?.active
 
   const isNotApproved = record => record.approvalEffectiveOn === null
 
   const renderAttendanceRate = (attendanceRate, record) => {
-    if (isInactive(record)) {
+    if (isInactive(record) || !attendanceRate) {
       return '-'
     }
 
     const createTag = (color, text) => (
       <Tag className={`${color}-tag custom-tag`}>
-        {`${(attendanceRate.rate * 100).toFixed(1)}% - ${t(text)}`}
+        {`${(attendanceRate?.rate * 100).toFixed(1)}% - ${t(text)}`}
       </Tag>
     )
 
-    switch (attendanceRate.riskCategory) {
+    switch (attendanceRate?.riskCategory) {
       case attendanceCategories.AHEADOFSCHEDULE:
         return createTag('green', 'aheadOfSchedule')
       case attendanceCategories.ONTRACK:
@@ -95,12 +101,12 @@ export default function DashboardTable({
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{fullday.text.split(' ')[0]}</p>
+          <p className="mb-1">{fullday?.text.split(' ')[0]}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
     }
-    switch (fullday.tag) {
+    switch (fullday?.tag) {
       case fullDayCategories.AHEADOFSCHEDULE:
         return renderCell('green', 'aheadOfSchedule')
       case fullDayCategories.ONTRACK:
@@ -112,6 +118,28 @@ export default function DashboardTable({
       default:
         return renderCell('grey', 'notEnoughInfo')
     }
+  }
+
+  const renderHoursOrPartDays = (text, record) => {
+    let control_date = dayjs('2023-06-30 23:59')
+    if (dayjs(dateFilterValue?.date) > control_date) {
+      return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
+    }
+    return isInactive(record) ? '-' : text?.split(' ')[0]
+  }
+
+  const renderRemainingHoursOrPartDays = (text, record) => {
+    let control_date = dayjs('2023-06-30 23:59')
+    if (dayjs(dateFilterValue?.date) > control_date) {
+      return isInactive(record) || record.remainingPartDays === null ? (
+        '-'
+      ) : (
+        <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
+      )
+    }
+    return isInactive(record)
+      ? '-'
+      : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
   }
 
   const renderChild = (child, record) => {
@@ -131,112 +159,100 @@ export default function DashboardTable({
     )
   }
 
-  const getCurrentWeek = () => {
-    const getDateByDay = day => new Date().setDate(day)
-
-    const matchAndReplaceDate = (dateString = '') => {
-      const match = dateString.match(/^[A-Za-z]+/)
-      return match
-        ? dateString.replace(match[0], t(match[0].toLowerCase()))
-        : ''
-    }
-
-    const current = new Date()
-    const first = current.getDate() - current.getDay()
-    const last = first + 6
-
-    const firstDay = new Date(getDateByDay(first)).toLocaleDateString(
-      'default',
-      {
-        month: 'short',
-        day: 'numeric'
-      }
-    )
-
-    const lastDay = new Date(getDateByDay(last)).toLocaleDateString('default', {
-      month: 'short',
-      day: 'numeric'
-    })
-
-    return `${matchAndReplaceDate(firstDay)} - ${matchAndReplaceDate(lastDay)}`
-  }
-
   const generateColumns = columns => {
-    return columns
-      .filter(
-        column =>
-          column.name !== 'hoursAttended' ||
-          dateFilterValue === undefined ||
-          (dayjs(dateFilterValue?.date).month() === dayjs().month() &&
-            dayjs(dateFilterValue?.date).year() === dayjs().year())
-      )
-      .map(({ name = '', children = [], ...options }) => {
-        const hasDefinition = [
-          'attendance',
-          'attendanceRate',
-          'guaranteedRevenue',
-          'totalAuthorizationPeriod',
-          'authorizedPeriod'
-        ]
-        return {
-          // eslint-disable-next-line react/display-name
-          title: () =>
-            hasDefinition.includes(name) ? (
-              <div className="flex">
-                {t(`${name}`)}
-                <a
-                  href={'#definitions'}
-                  onClick={() => setActiveKey(name)}
-                  id={name}
-                >
-                  <img
-                    className={`ml-1`}
-                    src={questionMark}
-                    alt="question mark"
-                  />
-                </a>
-              </div>
-            ) : name === 'hoursAttended' ? (
-              <p>
-                {t(`${name}`)}
-                <br />
-                {getCurrentWeek()}
-              </p>
-            ) : (
-              t(`${name}`)
-            ),
-          dataIndex: name,
-          key: name,
-          width: 200,
-          onHeaderCell,
-          children: generateColumns(children),
-          sortDirections: ['descend', 'ascend'],
-          ...options
-        }
-      })
+    return columns.map(({ name = '', children = [], ...options }) => {
+      const hasDefinition = [
+        'attendance',
+        'attendanceRate',
+        'guaranteedRevenue',
+        'totalAuthorizationPeriod',
+        'authorizedPeriod'
+      ]
+      return {
+        // eslint-disable-next-line react/display-name
+        title: () =>
+          hasDefinition.includes(name) ? (
+            <div className="flex">
+              {t(`${name}`)}
+              <a
+                href={'#definitions'}
+                onClick={() => setActiveKey(name)}
+                id={name}
+              >
+                <img
+                  className={`ml-1`}
+                  src={questionMark}
+                  alt="question mark"
+                />
+              </a>
+            </div>
+          ) : name === 'hoursAttended' ? (
+            <p>
+              {t('maxHours')}
+              <br />
+            </p>
+          ) : (
+            t(`${name}`)
+          ),
+        dataIndex: name,
+        key: name,
+        width: 200,
+        onHeaderCell,
+        children: generateColumns(children),
+        sortDirections: ['descend', 'ascend'],
+        ...options
+      }
+    })
   }
 
   const renderDollarAmount = (num, record) =>
     isInactive(record) ? '-' : <div>{currencyFormatter.format(num)}</div>
 
-  const replaceText = (text, translation) => (
-    <div>{text.replace(translation, t(translation))}</div>
-  )
+  const replaceText = (
+    text,
+    translation,
+    is_absence = false,
+    absences_dates = null
+  ) =>
+    !is_absence ? (
+      <div>{text.replace(translation, t(translation))}</div>
+    ) : (
+      <div>
+        <div>{text.replace(translation, t(translation))}</div>
+        <div>{render_absences_dates(absences_dates)}</div>
+      </div>
+    )
+
+  const render_absences_dates = dates => {
+    const last_date = dates.at(-1)
+    var formated_dates = dates.map(date => (
+      // regex to get the date on M/D format
+      <>
+        {`${parseInt(/-(\d{2})-(\d{2})/.exec(date)[1], 10)}/${parseInt(
+          /-(\d{2})-(\d{2})/.exec(date)[2],
+          10
+        )}`}
+        {last_date === date ? '' : ', '}
+      </>
+    ))
+    return formated_dates
+  }
 
   const renderActions = (_text, record) => (
     <div>
       <Button
-        disabled={isInactive(record)}
         type="link"
         className="flex items-start"
         onClick={() => handleInactiveClick(record)}
       >
         <img
           alt="vector"
-          src={isInactive(record) ? grayVector : vector}
+          src={isInactive(record) ? editIcon : vector}
           className="mr-2"
         />
-        <span className="underline hover:text-blue2">{t('markInactive')}</span>
+        <span className="underline hover:text-blue2">
+          {isInactive(record) ? t('markActive') : t('markInactive')}
+        </span>
       </Button>
     </div>
   )
@@ -253,6 +269,10 @@ export default function DashboardTable({
     setIsMIModalVisible(false)
   }
 
+  const shouldAllowToExport = () => {
+    return env?.REACT_APP_WHITELIST_EXPORT_CSV?.includes(user?.email)
+  }
+
   const handleMIModalOk = async () => {
     const response = await makeRequest({
       type: 'put',
@@ -262,23 +282,30 @@ export default function DashboardTable({
       },
       data: {
         child: {
-          active: false,
-          last_active_date: inactiveDate,
-          inactive_reason: inactiveReason
+          ...(isInactive(selectedChild)
+            ? { active: true, last_inactive_date: activeDate }
+            : {
+                active: false,
+                inactive_reason: inactiveReason,
+                last_active_date: inactiveDate
+              })
         }
       }
     })
 
     if (response.ok) {
-      setInactiveCases(inactiveCases.concat(selectedChild.key))
+      !isInactive(selectedChild) &&
+        sendGAEvent('mark_inactive', {
+          date: inactiveDate,
+          page_title: 'dashboard',
+          reason_selected: inactiveReason
+        })
       dispatch(
-        updateCase({ childId: selectedChild?.id, updates: { active: false } })
+        updateCase({
+          childId: selectedChild?.id,
+          updates: { active: isInactive(selectedChild) ? true : false }
+        })
       )
-      sendGAEvent('mark_inactive', {
-        date: inactiveDate,
-        page_title: 'dashboard',
-        reason_selected: inactiveReason
-      })
     }
     handleModalCancel()
   }
@@ -310,19 +337,30 @@ export default function DashboardTable({
             render: renderFullDays
           },
           {
-            name: 'hours',
+            name:
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                ? t('partialDays')
+                : 'hours',
             sorter: (a, b) =>
               a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
-            render: (text, record) =>
-              isInactive(record) ? '-' : text.split(' ')[0]
+            render: renderHoursOrPartDays
           },
           {
             name: 'absences',
             sorter: (a, b) =>
               a.absences.match(/^\d+/)[0] - b.absences.match(/^\d+/)[0],
             render: (text, record) =>
-              isInactive(record) ? '-' : replaceText(text, 'of')
+              isInactive(record)
+                ? '-'
+                : replaceText(text, 'of', true, record.absences_dates)
           },
+          // {
+          //   name: 'hours',
+          //   sorter: (a, b) =>
+          //     a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
+          //   render: (text, record) =>
+          //     isInactive(record) ? '-' : text.split(' ')[0]
+          // },
           {
             name: 'hoursAttended',
             sorter: (a, b) =>
@@ -371,20 +409,20 @@ export default function DashboardTable({
                   }`
           },
           {
-            name: 'hoursRemaining',
-            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
-            render: (text, record) =>
-              isInactive(record)
-                ? '-'
-                : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
-          },
-          {
             name: 'fullDaysRemaining',
             sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
             render: (text, record) =>
               isInactive(record)
                 ? '-'
                 : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+          },
+          {
+            name:
+              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                ? t('partialDaysRemaining')
+                : 'hoursRemaining',
+            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+            render: renderRemainingHoursOrPartDays
           }
         ]
       },
@@ -480,10 +518,13 @@ export default function DashboardTable({
       )
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableData, inactiveCases])
+  }, [tableData])
 
   return (
     <>
+      {shouldAllowToExport() && (
+        <CsvDownloader data={sortedRows} filename={'dashboard.csv'} />
+      )}
       <Table
         dataSource={sortedRows}
         columns={
@@ -512,14 +553,16 @@ export default function DashboardTable({
         title={
           <div className="text-lg font-semibold text-gray9">
             <p>
-              {t('markInactive') +
+              {(isInactive(selectedChild)
+                ? t('markActive')
+                : t('markInactive')) +
                 ': ' +
                 (`${selectedChild?.child?.childFirstName} ${selectedChild?.child?.childLastName}` ||
                   `${selectedChild?.childFirstName} ${selectedChild?.childLastName}`)}
             </p>
           </div>
         }
-        visible={isMIModalVisible}
+        open={isMIModalVisible}
         onOk={handleMIModalOk}
         onCancel={handleModalCancel}
         footer={[
@@ -528,35 +571,50 @@ export default function DashboardTable({
           </Button>,
           <Button
             key="okModal"
-            disabled={inactiveDate && inactiveReason ? false : true}
+            disabled={
+              (!isInactive(selectedChild) && inactiveDate && inactiveReason) ||
+              (isInactive(selectedChild) && activeDate)
+                ? false
+                : true
+            }
             onClick={handleMIModalOk}
             type="primary"
           >
-            {t('markInactive')}
+            {isInactive(selectedChild) ? t('markActive') : t('markInactive')}
           </Button>
         ]}
       >
         <p className="text-base text-gray8">
-          {t('markInactiveInfo1')} {t('markInactiveInfo2')}
+          {!isInactive(selectedChild)
+            ? t('markInactiveInfo1') + ' ' + t('markInactiveInfo2')
+            : t('markActiveInfo')}
         </p>
-        <Select
-          className="inactive-select"
-          dropdownStyle={{ minWidth: `28%` }}
-          placeholder={t('markInactiveReason')}
-          bordered={false}
-          onChange={value => setInactiveReason(value)}
-          value={inactiveReason}
-        >
-          <Select.Option value="no_longer_in_my_care">
-            {t('inactiveReason1')}
-          </Select.Option>
-          <Select.Option value="no_longer_receiving_subsidies">
-            {t('inactiveReason2')}
-          </Select.Option>
-          <Select.Option value="other">{t('inactiveReason3')}</Select.Option>
-        </Select>
+        {!isInactive(selectedChild) && (
+          <>
+            <Select
+              className="inactive-select"
+              dropdownStyle={{ minWidth: `28%` }}
+              placeholder={t('markInactiveReason')}
+              bordered={false}
+              onChange={value => setInactiveReason(value)}
+              value={inactiveReason}
+            >
+              <Select.Option value="no_longer_in_my_care">
+                {t('inactiveReason1')}
+              </Select.Option>
+              <Select.Option value="no_longer_receiving_subsidies">
+                {t('inactiveReason2')}
+              </Select.Option>
+              <Select.Option value="other">
+                {t('inactiveReason3')}
+              </Select.Option>
+            </Select>
+          </>
+        )}
         <p className="mb-3 text-base text-gray8">
-          {t('markInactiveCalendarPrompt')}
+          {isInactive(selectedChild)
+            ? t('markActiveCalendarPrompt')
+            : t('markInactiveCalendarPrompt')}
         </p>
         <DatePicker
           style={{
@@ -565,9 +623,15 @@ export default function DashboardTable({
             border: '1px solid #D9D9D9',
             color: '#BFBFBF'
           }}
-          onChange={(_, dateString) => setInactiveDate(dateString)}
+          onChange={(_, dateString) =>
+            !isInactive(selectedChild)
+              ? setInactiveDate(dateString)
+              : setActiveDate(dateString)
+          }
           value={
-            inactiveDate ? dayjs(inactiveDate, 'YYYY-MM-DD') : inactiveDate
+            inactiveDate || activeDate
+              ? dayjs(inactiveDate || activeDate, 'YYYY-MM-DD')
+              : inactiveDate || activeDate
           }
         />
       </Modal>

@@ -3,7 +3,6 @@ import { Alert, Form, Input, Radio, Checkbox } from 'antd'
 import { useHistory } from 'react-router-dom'
 import { PaddedButton } from '_shared/PaddedButton'
 import { Link } from 'react-router-dom'
-import MaskedInput from 'antd-mask-input'
 import { useTranslation } from 'react-i18next'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
@@ -187,7 +186,7 @@ export function Signup() {
               style={{ width: '70%', marginBottom: 0 }}
               rules={[
                 {
-                  pattern: /^\d{3}-\d{3}-\d{4}$/,
+                  pattern: /^\d{10}$/,
                   message: t('phoneNumberInvalid')
                 },
                 {
@@ -202,14 +201,10 @@ export function Signup() {
                 `${t('phone')} ${t(validationErrors.phone_number[0].error)}`
               }
             >
-              <MaskedInput
-                mask="111-111-1111"
-                placeholder="___-___-____"
-                size="10"
-                className="h-8"
+              <Input
+                value={user.phoneNumber}
                 data-cy="phoneNumber"
                 name="phoneNumber"
-                value={user.phoneNumber}
                 onChange={event =>
                   setUser({ ...user, phoneNumber: event.target.value })
                 }
@@ -223,7 +218,7 @@ export function Signup() {
           label={t('preferredLanguage')}
           valuePropName="checked"
           // explicity styling around Ant's strong "width of radio buttons" opinion
-          style={{ marginBottom: '-6px' }}
+          style={{ marginBottom: '15px' }}
           rules={[
             {
               required: true,

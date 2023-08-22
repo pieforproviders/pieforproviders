@@ -6,6 +6,36 @@ RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
   let(:service_day) { build(:service_day, child: child) }
+  let!(:state) do
+    create(:state)
+  end
+  # rubocop:disable RSpec/LetSetup
+  let!(:state_time_rules) do
+    [
+      create(
+        :state_time_rule,
+        name: "Partial Day #{state.name}",
+        state: state,
+        min_time: 60, # 1minute
+        max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+      ),
+      create(
+        :state_time_rule,
+        name: "Full Day #{state.name}",
+        state: state,
+        min_time: 5 * 3600, # 5 hours
+        max_time: (10 * 3600) # 10 hours
+      ),
+      create(
+        :state_time_rule,
+        name: "Full - Partial Day #{state.name}",
+        state: state,
+        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        max_time: (24 * 3600)
+      )
+    ]
+  end
+  # rubocop:enable RSpec/LetSetup
 
   it 'factory should be valid (default; no args)' do
     expect(service_day).to be_valid
@@ -184,7 +214,7 @@ RSpec.describe ServiceDay do
     let(:past_service_day) { past_attendance.service_day }
 
     describe '#for_month' do
-      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 15, 0, 0, 0, timezone) }
 
       it 'returns service days for given month' do
         expect(described_class.for_month).to include(current_service_day)
@@ -204,12 +234,13 @@ RSpec.describe ServiceDay do
           child_approval: child_approval
         )
       end
-      let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
+      let(:date) { Time.new(2020, 12, 4).utc }
 
       it 'returns service days for given week' do
-        travel_to Time.current.at_end_of_week(:sunday)
-        expect(described_class.for_week).to include(current_service_day)
+        travel_to Time.current.utc.at_end_of_week(:sunday)
+        perform_enqueued_jobs
         expect(described_class.for_week).not_to include(past_service_day)
+        expect(described_class.for_week).to include(current_service_day)
         expect(described_class.for_week(date)).to include(past_service_day)
         expect(described_class.for_week(date)).not_to include(current_service_day)
         expect(described_class.for_week(date - 1.week).size).to eq(0)
@@ -218,7 +249,7 @@ RSpec.describe ServiceDay do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in.in_time_zone(child.timezone).to_date }
+      let(:date) { current_attendance.check_in }
 
       it 'returns service days for given day' do
         travel_to date
@@ -241,6 +272,37 @@ RSpec.describe ServiceDay do
         date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
       )
     end
+
+    let!(:state) do
+      create(:state)
+    end
+
+    let(:state_time_rules) do
+      [
+        create(
+          :state_time_rule,
+          name: "Partial Day #{state.name}",
+          state: state,
+          min_time: 60, # 1minute
+          max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
+        ),
+        create(
+          :state_time_rule,
+          name: "Full Day #{state.name}",
+          state: state,
+          min_time: 5 * 3600, # 5 hours
+          max_time: (10 * 3600) # 10 hours
+        ),
+        create(
+          :state_time_rule,
+          name: "Full - Partial Day #{state.name}",
+          state: state,
+          min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+          max_time: nil
+        )
+      ]
+    end
+
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
              service_day: service_day,

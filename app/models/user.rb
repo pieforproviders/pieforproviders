@@ -65,7 +65,7 @@ class User < UuidApplicationRecord
   # track in the child's timezone
   def latest_service_day_in_month(filter_date)
     filter_date ||= Time.current
-    service_days.for_month(filter_date.in_time_zone(timezone))&.max_by(&:date)&.date
+    service_days.for_month(filter_date.utc)&.max_by(&:date)&.date
   end
 
   def first_approval_effective_date

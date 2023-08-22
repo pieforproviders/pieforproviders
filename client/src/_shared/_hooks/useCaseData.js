@@ -8,6 +8,8 @@ export function useCaseData() {
                 id: childCase.id ?? '',
                 key: `${index}-${childCase.first_name}-${childCase.last_name}`,
                 absences: childCase.nebraska_dashboard_case.absences ?? '',
+                absences_dates:
+                  childCase.nebraska_dashboard_case.absences_dates,
                 child: {
                   childFirstName: childCase.first_name ?? '',
                   childLastName: childCase.last_name ?? '',
@@ -22,6 +24,16 @@ export function useCaseData() {
                   text: childCase.nebraska_dashboard_case.full_days ?? '',
                   tag: childCase.nebraska_dashboard_case.attendance_risk ?? ''
                 },
+                partDays: {
+                  text: 'partialDays',
+                  info: childCase.nebraska_dashboard_case.part_days
+                },
+                totalPartDays: {
+                  text: 'totalPartDays',
+                  info: childCase.nebraska_dashboard_case.total_part_days
+                },
+                remainingPartDays:
+                  childCase.nebraska_dashboard_case.remaining_part_days,
                 hours: childCase.nebraska_dashboard_case.hours ?? '',
                 hoursAttended:
                   childCase.nebraska_dashboard_case.hours_attended ?? '',

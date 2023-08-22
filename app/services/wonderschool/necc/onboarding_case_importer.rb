@@ -48,7 +48,9 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-        @child = Child.find_or_initialize_by(required_child_params)
+
+        process_child
+
         @approval = find_approval
 
         raise NotEnoughInfo, @child.errors unless @child.valid?
@@ -61,6 +63,21 @@ module Wonderschool
           exception: e,
           tags: { case_number: @row['Case number'] }
         )
+      end
+
+      def process_child
+        first_name = required_child_params[:first_name].downcase
+        last_name = required_child_params[:last_name].downcase
+
+        @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
+                             first_name,
+                             last_name).first_or_initialize(required_child_params)
+
+        if @child.new_record?
+          @child.save
+        else
+          @child.update(required_child_params)
+        end
       end
 
       def find_approval
@@ -177,23 +194,27 @@ module Wonderschool
         ratings[value]
       end
 
+      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
+          part_days: to_integer(@row['Authorized partial day units']),
           hours: to_float(@row['Authorized hourly units']),
           authorized_weekly_hours: to_float(@row['Authorized weekly hours']),
           special_needs_rate: to_boolean(@row['Special Needs Rate?']),
           special_needs_daily_rate: to_float(@row['Special Needs Daily Rate']),
           special_needs_hourly_rate: to_float(@row['Special Needs Hourly Rate']),
+          special_needs_part_day_rate: to_float(@row['Special Needs Partial Day Rate']),
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
+      # rubocop:enable Metrics/AbcSize
 
       def required_child_params
         {
           business_id: @business&.id,
-          first_name: @row['First Name'],
-          last_name: @row['Last Name'],
+          first_name: @row['First Name'].capitalize,
+          last_name: @row['Last Name'].capitalize,
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
         }

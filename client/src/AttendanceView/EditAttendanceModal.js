@@ -16,7 +16,7 @@ export function EditAttendanceModal({
   const { t } = useTranslation()
   return (
     <Modal
-      visible={editAttendanceModalData}
+      open={editAttendanceModalData}
       onCancel={() => {
         setUpdatedAttendanceData({
           absenceType: null,

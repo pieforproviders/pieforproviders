@@ -44,15 +44,17 @@ describe('<DashboardTable />', () => {
     await waitFor(() => {
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
-      expect(container).toHaveTextContent('Hours')
-      expect(container).toHaveTextContent('Hours attended')
+      expect(container).toHaveTextContent(/(Hours|Partial days)/i)
+      expect(container).toHaveTextContent('Max hours per week')
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
       expect(container).toHaveTextContent('Authorized period')
-      expect(container).toHaveTextContent('Total hours remaining')
-      expect(container).toHaveTextContent('Total days remaining')
+      expect(container).toHaveTextContent(
+        /(Total hours remaining|Partial days remaining)/i
+      )
+      expect(container).toHaveTextContent('Full days remaining')
       expect(container).toHaveTextContent('Actions')
     })
   })
@@ -70,15 +72,17 @@ describe('<DashboardTable />', () => {
     await waitFor(() => {
       expect(container).toHaveTextContent('Child')
       expect(container).toHaveTextContent('Full days')
-      expect(container).toHaveTextContent('Hours')
+      expect(container).toHaveTextContent(/(Hours|Partial days)/i)
       expect(container).not.toHaveTextContent('Hours attended')
       expect(container).toHaveTextContent('Absences')
       expect(container).toHaveTextContent('Earned revenue')
       expect(container).toHaveTextContent('Estimated revenue')
       expect(container).toHaveTextContent('Family fee')
       expect(container).toHaveTextContent('Authorized period')
-      expect(container).toHaveTextContent('Total hours remaining')
-      expect(container).toHaveTextContent('Total days remaining')
+      expect(container).toHaveTextContent(
+        /(Total hours remaining|Partial days remaining)/i
+      )
+      expect(container).toHaveTextContent('Full days remaining')
       expect(container).toHaveTextContent('Actions')
     })
   })
