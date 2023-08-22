@@ -3,6 +3,7 @@
 # This is meant to show how to use Rainbow and terminal table gems
 desc 'Generate test table'
 task test_table: :environment do
+  require 'rainbow'
   puts Rainbow('This is an example').bright +
        Rainbow(' on how to use terminal colors').green +
        Rainbow(' and tables').yellow
