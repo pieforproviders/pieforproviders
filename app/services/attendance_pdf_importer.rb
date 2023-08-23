@@ -54,7 +54,7 @@ class AttendancePdfImporter
     print_successful_message if should_print_message?
   rescue StandardError => e
     # rubocop:disable Rails/Output
-    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
+    puts Rainbow("Error on child #{@child_name[1]} #{@child_name[0]}. error => #{e.inspect}").red
     # rubocop:enable Rails/Output
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
@@ -102,41 +102,52 @@ class AttendancePdfImporter
   end
 
   def child
-    found_child = @business.children.find_by(
-      first_name: @child_name[1], last_name: @child_name[0]
-    )
+    matching_engine = NameMatchingEngine.new(first_name: @child_name[1], last_name: @child_name[0])
+    match_results = matching_engine.call
+
+    match_tag = match_results[:match_tag]
+    match_child = match_results[:result_match]
+
+    matching_actions = NameMatchingActions.new(match_tag: match_tag,
+                                               match_child: match_child,
+                                               file_child: [@child_name[1],
+                                                            @child_name[0]],
+                                               business: @business)
+
+    found_child = matching_actions.call
+
     found_child.presence || log_missing_child
   end
 
   def log_missing_child
-    message = 'Child record for attendance ' \
-              "Cannont find child on file #{@file_name}; skipping"
+    message = Rainbow('Child record for attendance ' \
+                      "Cannont find child #{@child_name[1]} #{@child_name[0]} on file #{@file_name}; skipping").red
 
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message
     end
 
     # rubocop:disable Rails/Output
-    pp message
+    puts message
     # rubocop:enable Rails/Output
 
     raise NoSuchChild
   end
 
   def log_missing_business
-    message = "Business #{@file_name.split('-').first} not found; skipping"
+    message = Rainbow("Business #{@file_name.split('-').first} not found; skipping").red
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message
     end
     # rubocop:disable Rails/Output
-    pp message
+    puts message
     # rubocop:enable Rails/Output
     raise NoSuchBusiness
   end
 
   def print_successful_message
     # rubocop:disable Rails/Output
-    pp "DHS ID: #{@child.dhs_id} has been successfully processed"
+    puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
     # rubocop:enable Rails/Output
   end
 
