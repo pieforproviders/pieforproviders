@@ -21,7 +21,7 @@ class NameMatchingEngine
 
   def find_matching_name(first_name, last_name)
     results = ActiveRecord::Base.connection.execute(similarity_query(first_name, last_name))
-    p "Analyzing child '#{first_name} #{last_name}'"
+    puts Rainbow("Analyzing child '#{first_name} #{last_name}'").bright
 
     if results.any?
       matching_child = results[0]
