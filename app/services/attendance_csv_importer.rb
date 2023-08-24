@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Self-Serve Attendance Importer
+
+# rubocop:disable Metrics/ClassLength
 class AttendanceCsvImporter
   include AppsignalReporting
   include CsvTypecasting
@@ -38,7 +40,6 @@ class AttendanceCsvImporter
       @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
   end
-  # rubocop:enable Metrics/AbcSize
 
   def process_row(unstriped_row)
     @row = {}
@@ -119,8 +120,11 @@ class AttendanceCsvImporter
 
     found_child = matching_actions.call
 
+    found_child = @business.children.find_by(dhs_id: @row['dhs_id']) if found_child.blank?
     found_child.presence || log_missing_child
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   def log_missing_child
     message = Rainbow("Business: #{@business.id} - child record for attendance " \
@@ -160,3 +164,5 @@ class AttendanceCsvImporter
     !Rails.env.test?
   end
 end
+
+# rubocop:enable Metrics/ClassLength

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Self-Serve Attendance Importer
+
+# rubocop:disable Metrics/ClassLength
 class AttendanceXlsxImporter
   include AppsignalReporting
 
@@ -158,3 +160,5 @@ class AttendanceXlsxImporter
     # rubocop:enable Rails/Output
   end
 end
+
+# rubocop:enable Metrics/ClassLength
