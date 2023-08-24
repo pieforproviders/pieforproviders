@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Self-Serve Attendance Importer
+
+# rubocop:disable Metrics/ClassLength
 class AttendancePdfImporter
   include AppsignalReporting
 
@@ -14,6 +16,8 @@ class AttendancePdfImporter
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
+    @output_data = []
+    @upload_status = ''
   end
 
   def call
@@ -34,9 +38,24 @@ class AttendancePdfImporter
       @file_name = file_names[index]
       process_contents(content)
       process_data
+      build_output_rows
     end
 
     file_names.each { |file| @client.archive_file(@source_bucket, @archive_bucket, file) }
+
+    print_report_table
+  end
+
+  def print_report_table
+    table = Terminal::Table.new headings: %w[Child Status File_Name], rows: @output_data
+    # rubocop:disable Rails/Output
+    puts table
+    # rubocop:enable Rails/Output
+  end
+
+  def build_output_rows
+    new_row = ["#{@child_name[1]} #{@child_name[0]}", @upload_status, @file_name]
+    @output_data << new_row unless @output_data.include? new_row
   end
 
   def process_contents(content)
@@ -45,14 +64,16 @@ class AttendancePdfImporter
     business_name = attendance_reader.business
     @child_name = attendance_reader.child
     @business = business(business_name)
-    @child = child
   end
 
+  # rubocop: disable Metrics/AbcSize
   def process_data
+    @child = child
     process_attendances
 
     print_successful_message if should_print_message?
   rescue StandardError => e
+    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
     # rubocop:disable Rails/Output
     puts Rainbow("Error on child #{@child_name[1]} #{@child_name[0]}. error => #{e.inspect}").red
     # rubocop:enable Rails/Output
@@ -63,6 +84,7 @@ class AttendancePdfImporter
       tags: { child_id: @child&.id }
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_attendances
     @attendance_data.flatten.each do |attendance|
@@ -146,6 +168,7 @@ class AttendancePdfImporter
   end
 
   def print_successful_message
+    @upload_status = Rainbow('Uploaded Successfully').green
     # rubocop:disable Rails/Output
     puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
     # rubocop:enable Rails/Output
@@ -155,3 +178,5 @@ class AttendancePdfImporter
     !Rails.env.test?
   end
 end
+
+# rubocop:enable Metrics/ClassLength

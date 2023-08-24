@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Self-Serve Attendance Importer
+
+# rubocop:disable Metrics/ClassLength
 class AttendanceCsvImporter
   include AppsignalReporting
   include CsvTypecasting
@@ -17,6 +19,8 @@ class AttendanceCsvImporter
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
+    @output_data = []
+    @upload_status = ''
   end
 
   def call
@@ -26,19 +30,36 @@ class AttendanceCsvImporter
   private
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop: disable Metrics/MethodLength
   def process_attendances
     file_names = @client.list_file_names(@source_bucket, 'CSV/').select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
       @business = business
-      CsvParser.new(body).call.each { |unstriped_row| process_row(unstriped_row) }
+      CsvParser.new(body).call.each do |unstriped_row|
+        process_row(unstriped_row)
+        build_output_rows
+      end
     end
     file_names.each do |file_name|
       @client.archive_file(@source_bucket, @archive_bucket, file_name, "#{Time.current}-#{file_name}")
     end
+    print_report_table
   end
-  # rubocop:enable Metrics/AbcSize
+  # rubocop: enable Metrics/MethodLength
+
+  def build_output_rows
+    new_row = ["#{@row['first_name']} #{@row['last_name']}", @upload_status, @file_name]
+    @output_data << new_row unless @output_data.include? new_row
+  end
+
+  def print_report_table
+    table = Terminal::Table.new headings: %w[Child Status File_Name], rows: @output_data
+    # rubocop:disable Rails/Output
+    puts table
+    # rubocop:enable Rails/Output
+  end
 
   def process_row(unstriped_row)
     @row = {}
@@ -48,6 +69,7 @@ class AttendanceCsvImporter
     create_attendance
     print_successful_message if should_print_message?
   rescue StandardError => e
+    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
     # rubocop:disable Rails/Output
     puts Rainbow("Error on child #{@row['first_name']} #{@row['last_name']}. error => #{e.inspect}").red
     # rubocop:enable Rails/Output
@@ -58,6 +80,7 @@ class AttendanceCsvImporter
       tags: { child_id: @child&.id }
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def strip_row(unstriped_row)
     unstriped_row.each { |k, value| @row[k] = value.to_s.strip }
@@ -123,6 +146,7 @@ class AttendanceCsvImporter
   end
 
   def log_missing_child
+    @upload_status = Rainbow('Not Found').bright
     message = Rainbow("Business: #{@business.id} - child record for attendance " \
                       "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
                       "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping").red
@@ -151,6 +175,7 @@ class AttendanceCsvImporter
   end
 
   def print_successful_message
+    @upload_status = Rainbow('Uploaded Successfully').green
     # rubocop:disable Rails/Output
     puts Rainbow("DHS ID: #{@row['dhs_id']} has been successfully processed").green
     # rubocop:enable Rails/Output
@@ -160,3 +185,5 @@ class AttendanceCsvImporter
     !Rails.env.test?
   end
 end
+
+# rubocop:enable Metrics/ClassLength
