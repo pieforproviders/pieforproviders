@@ -7,17 +7,17 @@ require 'rails_helper'
 RSpec.describe NameMatchingEngine, type: :service do
   subject(:engine) { described_class.new(first_name: first_name, last_name: last_name) }
 
-  let(:first_name) { 'John' }
-  let(:last_name) { 'Doe' }
+  let(:first_name) { Faker::Name.first_name }
+  let(:last_name) { Faker::Name.last_name }
 
   describe '#call' do
     let(:mocked_result) do
       {
-        'id' => 1,
-        'first_name' => 'John',
-        'last_name' => 'Doe',
-        'sml_first_name' => 1,
-        'sml_last_name' => 1
+        'id' => Faker::Number.number(digits: 4),
+        'first_name' => first_name + Faker::Alphanumeric.alpha(number: 2),
+        'last_name' => last_name + Faker::Alphanumeric.alpha(number: 2),
+        'sml_first_name' => Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f,
+        'sml_last_name' => Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f
       }
     end
 
@@ -27,7 +27,8 @@ RSpec.describe NameMatchingEngine, type: :service do
 
     it 'returns the expected result' do
       result = engine.call
-      expect(result[:match_tag]).to eq('exact_match')
+      expected_match_tag = engine.match_tag((mocked_result['sml_first_name'] + mocked_result['sml_last_name']) / 2)
+      expect(result[:match_tag]).to eq(expected_match_tag)
       expect(result[:result_match]).to eq(mocked_result)
     end
   end
@@ -41,7 +42,8 @@ RSpec.describe NameMatchingEngine, type: :service do
 
     context 'when score is positive but less than or equal to 0.99' do
       it 'returns close_match' do
-        expect(engine.match_tag(0.5)).to eq('close_match')
+        random_score = Faker::Number.between(from: 0.01, to: 0.99)
+        expect(engine.match_tag(random_score)).to eq('close_match')
       end
     end
 

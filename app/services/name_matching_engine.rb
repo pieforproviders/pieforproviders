@@ -20,7 +20,16 @@ class NameMatchingEngine
   private
 
   def find_matching_name(first_name, last_name)
-    results = ActiveRecord::Base.connection.execute(similarity_query(first_name, last_name))
+    # results = ActiveRecord::Base.connection.execute(similarity_query(first_name, last_name))
+
+    results = ActiveRecord::Base.connection.execute(ActiveRecord::Base.sanitize_sql_for_conditions([
+                                                                                                     similarity_query,
+                                                                                                     first_name,
+                                                                                                     last_name,
+                                                                                                     first_name,
+                                                                                                     last_name
+                                                                                                   ]))
+
     # rubocop:disable Rails/Output
     puts Rainbow("Analyzing child '#{first_name} #{last_name}'").bright
     # rubocop:enable Rails/Output
@@ -31,19 +40,18 @@ class NameMatchingEngine
       { match_tag: match_tag(average_score), result_match: matching_child }
 
     else
-      # p 'NO RESULT FOUND'
       { match_tag: match_tag(0), result_match: matching_child }
     end
   end
 
-  def similarity_query(first_name, last_name)
+  def similarity_query
     <<-SQL.squish
         SELECT c.id, c.first_name,
-          c.last_name, similarity(c.first_name, '#{first_name}') AS sml_first_name,
-          similarity(c.last_name, '#{last_name}') AS sml_last_name
+          c.last_name, similarity(c.first_name, ?) AS sml_first_name,
+          similarity(c.last_name, ?) AS sml_last_name
         FROM children c
-        WHERE c.first_name % '#{first_name}'
-        and c.last_name % '#{last_name}'
+        WHERE c.first_name % ?
+        and c.last_name % ?
         ORDER BY c.last_name DESC
         LIMIT 1;
     SQL
