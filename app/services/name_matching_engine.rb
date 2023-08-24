@@ -21,8 +21,9 @@ class NameMatchingEngine
 
   def find_matching_name(first_name, last_name)
     results = ActiveRecord::Base.connection.execute(similarity_query(first_name, last_name))
-    p "Analyzing child '#{first_name} #{last_name}'"
-
+    # rubocop:disable Rails/Output
+    puts Rainbow("Analyzing child '#{first_name} #{last_name}'").bright
+    # rubocop:enable Rails/Output
     if results.any?
       matching_child = results[0]
       average_score = (matching_child['sml_first_name'] + matching_child['sml_last_name']).to_f / 2
