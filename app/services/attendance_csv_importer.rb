@@ -80,7 +80,6 @@ class AttendanceCsvImporter
       tags: { child_id: @child&.id }
     )
   end
-  # rubocop:enable Metrics/AbcSize
 
   def strip_row(unstriped_row)
     unstriped_row.each { |k, value| @row[k] = value.to_s.strip }
