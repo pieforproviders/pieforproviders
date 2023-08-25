@@ -16,6 +16,8 @@ class AttendanceXlsxImporter
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
+    @output_data = []
+    @upload_status = ''
   end
 
   def call
@@ -34,9 +36,26 @@ class AttendanceXlsxImporter
     contents = file_names.map { |file_name| @client.get_xlsx_contents(@source_bucket, file_name) }
     process_contents(contents, file_names)
 
-    @attendance_data.flatten.each { |child_data| process_data(child_data) }
+    @attendance_data.flatten.each do |child_data|
+      process_data(child_data)
+      build_output_rows
+    end
 
     file_names.each { |file| @client.archive_file(@source_bucket, @archive_bucket, file) }
+
+    print_report_table
+  end
+
+  def print_report_table
+    table = Terminal::Table.new headings: %w[Child Status File_Name], rows: @output_data
+    # rubocop:disable Rails/Output
+    puts table
+    # rubocop:enable Rails/Output
+  end
+
+  def build_output_rows
+    new_row = ["#{@child_names[0]} #{@child_names[1]}", @upload_status, @file_name]
+    @output_data << new_row unless @output_data.include? new_row
   end
 
   def process_contents(contents, file_names)
@@ -48,6 +67,7 @@ class AttendanceXlsxImporter
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def process_data(child_data)
     @child_attendances = {}
     strip_children_data(child_data)
@@ -56,6 +76,7 @@ class AttendanceXlsxImporter
 
     print_successful_message unless Rails.env.test?
   rescue StandardError => e
+    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
     # rubocop:disable Rails/Output
     puts Rainbow("Error on child #{@child_names[0]} #{@child_names[1]}. error => #{e.inspect}").red
     # rubocop:enable Rails/Output
@@ -66,6 +87,7 @@ class AttendanceXlsxImporter
       tags: { child_id: @child&.id }
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_attendances
     @child_attendances.each do |attendance|
@@ -155,6 +177,7 @@ class AttendanceXlsxImporter
   end
 
   def print_successful_message
+    @upload_status = Rainbow('Uploaded Successfully').green
     # rubocop:disable Rails/Output
     puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
     # rubocop:enable Rails/Output
