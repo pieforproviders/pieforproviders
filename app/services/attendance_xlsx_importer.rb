@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 # Self-Serve Attendance Importer
+
+# rubocop:disable Metrics/ClassLength
 class AttendanceXlsxImporter
   include AppsignalReporting
 
@@ -14,6 +16,8 @@ class AttendanceXlsxImporter
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
     @start_date = start_date&.at_beginning_of_day
     @end_date = end_date&.at_end_of_day
+    @output_data = []
+    @upload_status = ''
   end
 
   def call
@@ -23,7 +27,7 @@ class AttendanceXlsxImporter
   private
 
   def retrieve_file_names
-    @client.list_file_names(@source_bucket).select { |s| s.end_with? '.xlsx' }
+    @client.list_file_names(@source_bucket, 'XLSX/').select { |s| s.end_with? '.xlsx' }
   end
 
   def read_attendances
@@ -32,9 +36,26 @@ class AttendanceXlsxImporter
     contents = file_names.map { |file_name| @client.get_xlsx_contents(@source_bucket, file_name) }
     process_contents(contents, file_names)
 
-    @attendance_data.flatten.each { |child_data| process_data(child_data) }
+    @attendance_data.flatten.each do |child_data|
+      process_data(child_data)
+      build_output_rows
+    end
 
     file_names.each { |file| @client.archive_file(@source_bucket, @archive_bucket, file) }
+
+    print_report_table
+  end
+
+  def print_report_table
+    table = Terminal::Table.new headings: %w[Child Status File_Name], rows: @output_data
+    # rubocop:disable Rails/Output
+    puts table
+    # rubocop:enable Rails/Output
+  end
+
+  def build_output_rows
+    new_row = ["#{@child_names[0]} #{@child_names[1]}", @upload_status, @file_name]
+    @output_data << new_row unless @output_data.include? new_row
   end
 
   def process_contents(contents, file_names)
@@ -46,6 +67,7 @@ class AttendanceXlsxImporter
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
   def process_data(child_data)
     @child_attendances = {}
     strip_children_data(child_data)
@@ -54,8 +76,9 @@ class AttendanceXlsxImporter
 
     print_successful_message unless Rails.env.test?
   rescue StandardError => e
+    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
     # rubocop:disable Rails/Output
-    pp "Error on child #{@child.inspect}. error => #{e.inspect}"
+    puts Rainbow("Error on child #{@child_names[0]} #{@child_names[1]}. error => #{e.inspect}").red
     # rubocop:enable Rails/Output
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
@@ -64,6 +87,7 @@ class AttendanceXlsxImporter
       tags: { child_id: @child&.id }
     )
   end
+  # rubocop:enable Metrics/AbcSize
 
   def process_attendances
     @child_attendances.each do |attendance|
@@ -104,46 +128,60 @@ class AttendanceXlsxImporter
   end
 
   def business
-    found_business = Business.find_by(name: @file_name.split('.').first)
+    found_business = Business.find_by(name: @file_name.split('.').first.split('/').last)
     found_business.presence || log_missing_business
   end
 
   def child
-    found_child = @business.children.find_by(
-      first_name: @child_names[0], last_name: @child_names[1]
-    )
+    matching_engine = NameMatchingEngine.new(first_name: @child_names[0], last_name: @child_names[1])
+    match_results = matching_engine.call
+
+    match_tag = match_results[:match_tag]
+    match_child = match_results[:result_match]
+
+    matching_actions = NameMatchingActions.new(match_tag: match_tag,
+                                               match_child: match_child,
+                                               file_child: [@child_names[0],
+                                                            @child_names[1]],
+                                               business: @business)
+
+    found_child = matching_actions.call
+
     found_child.presence || log_missing_child
   end
 
   def log_missing_child
-    message = "Business: #{@business.id} - child record for attendance " \
-              "not found (dhs_id: #{@child_attendances['dhs_id']}, check_in: #{@child_attendances['check_in']}, " \
-              "check_out: #{@child_attendances['check_out']}, absence: #{@child_attendances['absence']}); skipping"
+    message = Rainbow("Business: #{@business.id} - child record for attendance " \
+                      "not found, child #{@child_names[0]} #{@child_names[1]}; " \
+                      'skipping').red
     Rails.logger.tagged('attendance import') do
-      Rails.logger.info message
+      Rails.logger.info(message)
     end
 
     # rubocop:disable Rails/Output
-    pp message
+    puts message
     # rubocop:enable Rails/Output
 
     raise NoSuchChild
   end
 
   def log_missing_business
-    message = "Business #{@file_name.split('-').first} not found; skipping"
+    message = Rainbow("Business #{@file_name.split('-').first} not found; skipping").red
     Rails.logger.tagged('attendance import') do
       Rails.logger.info message
     end
     # rubocop:disable Rails/Output
-    pp message
+    puts message
     # rubocop:enable Rails/Output
     raise NoSuchBusiness
   end
 
   def print_successful_message
+    @upload_status = Rainbow('Uploaded Successfully').green
     # rubocop:disable Rails/Output
-    pp "DHS ID: #{@child.dhs_id} has been successfully processed"
+    puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
     # rubocop:enable Rails/Output
   end
 end
+
+# rubocop:enable Metrics/ClassLength
