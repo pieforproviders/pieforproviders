@@ -90,10 +90,16 @@ module Api
       end
 
       def child_approval_id
-        id = Child
-             .find(initial_attendance_params[:child_id])
-             &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-        @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+        child = Child.find(initial_attendance_params[:child_id])
+        check_in = Date.parse(initial_attendance_params[:check_in])
+        active_approval = child&.active_child_approval(check_in)
+        if active_approval.present?
+          if check_in > active_approval&.effective_on && check_in < active_approval&.expires_on
+            @child_approval_id = active_approval.id
+          end
+        else
+          add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+        end
       end
 
       def child
