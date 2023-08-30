@@ -12,7 +12,8 @@ class Business < UuidApplicationRecord
 
   belongs_to :user
 
-  has_many :children, dependent: :destroy
+  has_many :child_businesses, dependent: :destroy
+  has_many :children, through: :child_businesses, dependent: :destroy
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :business_schedules, dependent: :destroy

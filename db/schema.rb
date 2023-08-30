@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_04_230941) do
+ActiveRecord::Schema.define(version: 2023_08_30_164143) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -117,6 +117,16 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.index ["approval_id"], name: "index_child_approvals_on_approval_id"
     t.index ["child_id"], name: "index_child_approvals_on_child_id"
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
+  end
+
+  create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.uuid "business_id", null: false
+    t.boolean "active"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["business_id"], name: "index_child_businesses_on_business_id"
+    t.index ["child_id"], name: "index_child_businesses_on_child_id"
   end
 
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -314,10 +324,10 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.integer "min_time"
-    t.integer "max_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "min_time"
+    t.integer "max_time"
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
@@ -379,6 +389,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
+  add_foreign_key "child_businesses", "businesses"
+  add_foreign_key "child_businesses", "children"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
