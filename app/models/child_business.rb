@@ -3,7 +3,7 @@ class ChildBusiness < ApplicationRecord
   belongs_to :business
 
   validates :active,
-            uniqueness: { scope: :child_id, message: t('errors.messages.one_business_only') },
+            uniqueness: { scope: :child_id, message: I18n.t('errors.messages.one_business_only') },
             if: :active
 end
 
