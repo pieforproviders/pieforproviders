@@ -73,9 +73,9 @@ class AttendancePdfImporter
 
     print_successful_message if should_print_message?
   rescue StandardError => e
-    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
+    @upload_status = e.message.include?('NoSuchChild') ? Rainbow(e.message).bright : Rainbow(e.message).red
     # rubocop:disable Rails/Output
-    puts Rainbow("Error on child #{@child_name[1]} #{@child_name[0]}. error => #{e.inspect}").red
+    puts Rainbow("Error on child #{@child_name[1]} #{@child_name[0]}. error => #{e.message}").red
     # rubocop:enable Rails/Output
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
@@ -142,17 +142,6 @@ class AttendancePdfImporter
   end
 
   def log_missing_child
-    message = Rainbow('Child record for attendance ' \
-                      "Cannont find child #{@child_name[1]} #{@child_name[0]} on file #{@file_name}; skipping").red
-
-    Rails.logger.tagged('attendance import') do
-      Rails.logger.info message
-    end
-
-    # rubocop:disable Rails/Output
-    puts message
-    # rubocop:enable Rails/Output
-
     raise NoSuchChild
   end
 
@@ -169,9 +158,6 @@ class AttendancePdfImporter
 
   def print_successful_message
     @upload_status = Rainbow('Uploaded Successfully').green
-    # rubocop:disable Rails/Output
-    puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
-    # rubocop:enable Rails/Output
   end
 
   def should_print_message?
