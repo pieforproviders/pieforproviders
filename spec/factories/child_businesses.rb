@@ -1,8 +1,18 @@
+# factories/child_businesses.rb
+
 FactoryBot.define do
-  factory :child_business do
-    child { nil }
-    business { nil }
-    active { false }
+  factory :child_businesses do
+    child
+
+    transient do
+      businesses_count { 3 }
+    end
+
+    after(:create) do |child_business, evaluator|
+      create_list(:business, evaluator.businesses_count).each do |business|
+        create(:child_business, child: child_business.child, business: business)
+      end
+    end
   end
 end
 
