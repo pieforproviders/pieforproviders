@@ -24,11 +24,11 @@ class Child < UuidApplicationRecord
   validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
-  validates :business_id,
-            uniqueness: { scope: %i[first_name last_name date_of_birth] },
-            unless: lambda {
-              errors[:date_of_birth].present? || errors[:first_name].present? || errors[:last_name].present?
-            }
+  # validates :business_id,
+  #           uniqueness: { scope: %i[first_name last_name date_of_birth] },
+  #           unless: lambda {
+  #             errors[:date_of_birth].present? || errors[:first_name].present? || errors[:last_name].present?
+  #           }
 
   REASONS = %w[
     no_longer_in_my_care
@@ -67,14 +67,23 @@ class Child < UuidApplicationRecord
         }
 
   scope :with_schedules, -> { includes(:schedules) }
-  scope :with_business, -> { includes(:business) }
+  scope :with_businesses, -> { includes(:child_businesses) }
 
-  delegate :county, to: :business
-  delegate :user, to: :business
-  delegate :state, to: :user
-  delegate :timezone, to: :user
+  # Esto asume que quieres obtener el county, user, state, y timezone del primer negocio asociado al niño.
+  delegate :county, to: :primary_business
+  delegate :user, to: :primary_business
+  delegate :state, to: :primary_user
+  delegate :timezone, to: :primary_user
 
   before_save :validate_wonderschool_id
+
+  def primary_business
+    businesses.find_by(active: true)
+  end
+
+  def primary_user
+    primary_business&.user
+  end
 
   def age(date = Time.current)
     years_since_birth = date.year - date_of_birth.year

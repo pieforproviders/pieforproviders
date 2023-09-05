@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'profile', to: 'users#show'
       resources :businesses
       resources :children
+      resources :child_businesses
       resources :attendances
       resources :service_days
       resources :attendance_batches, only: :create
@@ -81,6 +82,12 @@ end
 #                                          PATCH  /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          PUT    /api/v1/children/:id(.:format)                                                                    api/v1/children#update {:format=>:json}
 #                                          DELETE /api/v1/children/:id(.:format)                                                                    api/v1/children#destroy {:format=>:json}
+#                         child_businesses GET    /api/v1/child_businesses(.:format)                                                                api/v1/child_businesses#index {:format=>:json}
+#                                          POST   /api/v1/child_businesses(.:format)                                                                api/v1/child_businesses#create {:format=>:json}
+#                           child_business GET    /api/v1/child_businesses/:id(.:format)                                                            api/v1/child_businesses#show {:format=>:json}
+#                                          PATCH  /api/v1/child_businesses/:id(.:format)                                                            api/v1/child_businesses#update {:format=>:json}
+#                                          PUT    /api/v1/child_businesses/:id(.:format)                                                            api/v1/child_businesses#update {:format=>:json}
+#                                          DELETE /api/v1/child_businesses/:id(.:format)                                                            api/v1/child_businesses#destroy {:format=>:json}
 #                              attendances GET    /api/v1/attendances(.:format)                                                                     api/v1/attendances#index {:format=>:json}
 #                                          POST   /api/v1/attendances(.:format)                                                                     api/v1/attendances#create {:format=>:json}
 #                               attendance GET    /api/v1/attendances/:id(.:format)                                                                 api/v1/attendances#show {:format=>:json}

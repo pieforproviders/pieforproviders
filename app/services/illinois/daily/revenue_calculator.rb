@@ -11,7 +11,7 @@ module Illinois
       def initialize(child_approval:, date:, total_time_in_care:, rates:)
         @child_approval = child_approval
         @child = child_approval.child
-        @business = child.business
+        @business = child.businesses.find_by(active: true)
         @date = date
         @rates = rates
         @total_time_in_care = total_time_in_care

@@ -46,7 +46,7 @@ RSpec.describe Child do
   it { is_expected.to validate_presence_of(:last_name) }
 
   it 'validates that only one child with the same name and birthdate exist in a business' do
-    business = child.business
+    business = child.businesses.find_by(active: true)
     duplicate_child = build(
       :child,
       first_name: child.first_name,
@@ -155,7 +155,7 @@ RSpec.describe Child do
 
   describe 'delegated attributes' do
     it 'gets user from business' do
-      expect(child.user).to eq(child.business.user)
+      expect(child.user).to eq(child.businesses.find_by(active: true).user)
     end
 
     it 'gets state from user' do

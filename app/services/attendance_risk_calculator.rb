@@ -5,7 +5,7 @@ class AttendanceRiskCalculator
   def initialize(child, filter_date)
     @child = child
     @filter_date = filter_date
-    @state = child.business.state
+    @state = child.businesses.find_by(active:true).state
   end
 
   def call

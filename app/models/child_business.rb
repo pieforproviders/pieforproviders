@@ -5,6 +5,8 @@ class ChildBusiness < ApplicationRecord
   validates :active,
             uniqueness: { scope: :child_id, message: I18n.t('errors.messages.one_business_only') },
             if: :active
+
+  # validates :business_id, uniqueness: { scope: :child_id }
 end
 
 # == Schema Information

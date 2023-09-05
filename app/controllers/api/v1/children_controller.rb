@@ -21,8 +21,10 @@ module Api
       def create
         authorize Business.find(child_params[:business_id]), :update? unless current_user.admin?
         @child = Child.new(child_params)
+
         if @child.approvals.each(&:save) && @child.save
           make_approval_amounts
+          @child.child_businesses.create(business_id: child_params[:business_id], active: true)
           render json: @child, status: :created, location: @child
         else
           render json: @child.errors, status: :unprocessable_entity
@@ -52,11 +54,11 @@ module Api
 
       def set_children
         @children = if params[:business].present?
-                      policy_scope(Child.includes(business: :user).where(
-                        business: Business.find(params[:business].split(','))
-                      ).order(:last_name))
+                      policy_scope(Child.joins(:child_businesses).where(
+                        child_businesses: { business_id: params[:business].split(',') }
+                      ).includes(child_businesses: {})).order(:last_name)
                     else
-                      policy_scope(Child.includes(business: :user).order(:last_name))
+                      policy_scope(Child.includes(child_businesses: {})).order(:last_name)
                     end
       end
 

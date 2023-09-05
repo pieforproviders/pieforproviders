@@ -5,7 +5,7 @@ class AttendanceRateCalculator
   def initialize(child, filter_date, business = nil, eligible_days: nil, attended_days: nil)
     @child = child
     @filter_date = filter_date
-    @state = child.present? ? child.business.state : business.state
+    @state = child.present? ? child.businesses.find_by(active: true).state : business.state
     @eligible_days = eligible_days
     @attended_days = attended_days
   end
