@@ -359,7 +359,6 @@ export function AttendanceView() {
         }
       })
     }
-
     return [
       {
         dataIndex: 'name',

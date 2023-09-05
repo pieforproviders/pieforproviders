@@ -9,7 +9,7 @@ export function useCaseAttendanceData() {
               childFirstName: child.first_name ?? '',
               childLastName: child.last_name ?? '',
               cNumber: child.case_number ?? '',
-              business: child.business.name ?? ''
+              business: child.business_name ?? ''
             },
             active: child.active ?? true
           }
@@ -19,7 +19,7 @@ export function useCaseAttendanceData() {
             childFirstName: child.first_name ?? '',
             childLastName: child.last_name ?? '',
             cNumber: child.case_number ?? '',
-            business: child.business.name ?? '',
+            business: child.business_name ?? '',
             active: child.active ?? true
           }
     })

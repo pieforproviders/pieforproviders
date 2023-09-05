@@ -411,8 +411,10 @@ export function Attendance() {
 
       if (businesses.length === 0) {
         const businessData = parsedResponse.reduce((priorValue, newValue) => {
-          return !priorValue.some(item => item.id === newValue.business.id)
-            ? [...priorValue, newValue.business]
+          return !priorValue.some(
+            item => item?.id === newValue.active_business?.id
+          )
+            ? [...priorValue, newValue.active_business]
             : priorValue
         }, [])
         dispatch(setBusinesses(businessData))

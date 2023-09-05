@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux'
 export default function SiteFilterSelect({ businesses, onChange }) {
   const filteredCases = useSelector(state => state.ui.filteredCases)
   const [filterOpen, setFilterOpen] = useState(false)
+
   const setWidths = () => {
     const longestName = businesses.reduce(
       (a, b) => (a.name?.length > b.name?.length ? a.name : b.name),
@@ -38,8 +39,8 @@ export default function SiteFilterSelect({ businesses, onChange }) {
       >
         {businesses.map(business => {
           return (
-            <Select.Option key={business.id} value={business.id}>
-              {business.name}
+            <Select.Option key={business?.id} value={business?.id}>
+              {business?.name}
             </Select.Option>
           )
         })}

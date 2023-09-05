@@ -144,7 +144,7 @@ export default function DashboardTable({
 
   const renderChild = (child, record) => {
     return child ? (
-      <div>
+      <div key={child.cNumber}>
         <p className="mb-1 text-lg">
           {`${child.childFirstName} ${child.childLastName}`}
           {isInactive(record) ? `  (${t('inactive')})` : ''}
@@ -215,17 +215,17 @@ export default function DashboardTable({
     absences_dates = null
   ) =>
     !is_absence ? (
-      <div>{text.replace(translation, t(translation))}</div>
+      <div>{text?.replace(translation, t(translation))}</div>
     ) : (
       <div>
-        <div>{text.replace(translation, t(translation))}</div>
+        <div>{text?.replace(translation, t(translation))}</div>
         <div>{render_absences_dates(absences_dates)}</div>
       </div>
     )
 
   const render_absences_dates = dates => {
-    const last_date = dates.at(-1)
-    var formated_dates = dates.map(date => (
+    const last_date = dates?.at(-1)
+    var formated_dates = dates?.map(date => (
       // regex to get the date on M/D format
       <>
         {`${parseInt(/-(\d{2})-(\d{2})/.exec(date)[1], 10)}/${parseInt(

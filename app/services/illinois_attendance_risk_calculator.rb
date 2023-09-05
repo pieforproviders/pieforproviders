@@ -98,7 +98,7 @@ class IllinoisAttendanceRiskCalculator
   end
 
   def latest_user_attendance
-    @child.business.user.latest_service_day_in_month(@filter_date)
+    @child.businesses.find_by(active: true).user.latest_service_day_in_month(@filter_date)
   end
 
   def halfway

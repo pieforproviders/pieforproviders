@@ -21,7 +21,7 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         )
       )
     end
-    let!(:business) { child.business }
+    let!(:business) { child.businesses.find_by(active: true) }
     let!(:nebraska_accredited_hourly_rate) do
       create(
         :accredited_hourly_ldds_rate,
@@ -104,7 +104,7 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         date,
         child.child_approvals&.first&.enrolled_in_school || false,
         child.age_in_months(date),
-        child.business
+        child.businesses.find_by(active: true)
       )
     end
 
