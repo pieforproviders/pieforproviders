@@ -218,17 +218,10 @@ end
 #  last_name          :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  business_id        :uuid             not null
 #  dhs_id             :string
 #  wonderschool_id    :string
 #
 # Indexes
 #
-#  index_children_on_business_id  (business_id)
-#  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (business_id => businesses.id)
+#  index_children_on_deleted_at  (deleted_at)
 #

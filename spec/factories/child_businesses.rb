@@ -1,16 +1,20 @@
 # factories/child_businesses.rb
 
 FactoryBot.define do
-  factory :child_businesses do
+  factory :child_business do
+    business
     child
-
-    transient do
-      businesses_count { 3 }
+    # Asígnale un Business activo sólo al primer ChildBusiness que crees.
+    after(:create) do |child_business, evaluator|
+      if evaluator.active
+        business = create(:business, active: true)
+        child_business.business = business
+      end
     end
 
-    after(:create) do |child_business, evaluator|
-      create_list(:business, evaluator.businesses_count).each do |business|
-        create(:child_business, child: child_business.child, business: business)
+    factory :child_business_with_active_business do
+      transient do
+        active { true }
       end
     end
   end

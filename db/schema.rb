@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_31_203134) do
+ActiveRecord::Schema.define(version: 2023_09_06_212034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -132,9 +132,8 @@ ActiveRecord::Schema.define(version: 2023_08_31_203134) do
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
-    t.uuid "business_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.string "wonderschool_id"
     t.string "dhs_id"
     t.date "last_active_date"
@@ -143,9 +142,7 @@ ActiveRecord::Schema.define(version: 2023_08_31_203134) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.date "last_inactive_date"
-    t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["deleted_at"], name: "index_children_on_deleted_at"
-    t.index ["first_name", "last_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -391,7 +388,6 @@ ActiveRecord::Schema.define(version: 2023_08_31_203134) do
   add_foreign_key "child_approvals", "children"
   add_foreign_key "child_businesses", "businesses"
   add_foreign_key "child_businesses", "children"
-  add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"

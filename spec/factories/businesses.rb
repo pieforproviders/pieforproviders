@@ -9,6 +9,7 @@ FactoryBot.define do
     user factory: :confirmed_user
     zipcode { '60606' }
     county { 'Cook' }
+    active { false }
 
     factory :business_with_children do
       after :create do |business|
