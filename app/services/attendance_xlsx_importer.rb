@@ -76,9 +76,9 @@ class AttendanceXlsxImporter
 
     print_successful_message unless Rails.env.test?
   rescue StandardError => e
-    @upload_status = e.message.include?('approval') ? Rainbow(e.message).red : Rainbow(e.message).bright
+    @upload_status = e.message.include?('NoSuchChild') ? Rainbow(e.message).bright : Rainbow(e.message).red
     # rubocop:disable Rails/Output
-    puts Rainbow("Error on child #{@child_names[0]} #{@child_names[1]}. error => #{e.inspect}").red
+    puts Rainbow("Error on child #{@child_names[0]} #{@child_names[1]}. error => #{e.message}").red
     # rubocop:enable Rails/Output
     send_appsignal_error(
       action: 'self-serve-attendance-csv-importer',
@@ -151,17 +151,6 @@ class AttendanceXlsxImporter
   end
 
   def log_missing_child
-    message = Rainbow("Business: #{@business.id} - child record for attendance " \
-                      "not found, child #{@child_names[0]} #{@child_names[1]}; " \
-                      'skipping').red
-    Rails.logger.tagged('attendance import') do
-      Rails.logger.info(message)
-    end
-
-    # rubocop:disable Rails/Output
-    puts message
-    # rubocop:enable Rails/Output
-
     raise NoSuchChild
   end
 
@@ -178,9 +167,6 @@ class AttendanceXlsxImporter
 
   def print_successful_message
     @upload_status = Rainbow('Uploaded Successfully').green
-    # rubocop:disable Rails/Output
-    puts Rainbow("DHS ID: #{@child.dhs_id} has been successfully processed").green
-    # rubocop:enable Rails/Output
   end
 end
 

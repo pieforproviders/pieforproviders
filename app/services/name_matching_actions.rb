@@ -25,10 +25,15 @@ class NameMatchingActions
         first_name: @file_child[0], last_name: @file_child[1]
       )
     when 'close_match'
-      puts Rainbow("We've found a name that doesn't exactly match P4P's child records.").yellow
-      puts Rainbow('We found: ').italic.yellow + Rainbow("#{@file_child[0]} #{@file_child[1]}").yellow
-      puts Rainbow("P4P's records show: ").italic.yellow +
-           Rainbow("#{@match_child['first_name']} #{@match_child['last_name']}").yellow
+      rows = []
+      puts Rainbow("This child doesn't exactly match P4P's child records").yellow.bold
+
+      rows << [Rainbow('We found: ').bright.yellow + Rainbow("#{@file_child[0]} #{@file_child[1]}").yellow]
+      rows << [Rainbow('P4P has: ').bright.yellow +
+               Rainbow("#{@match_child['first_name']} #{@match_child['last_name']}").yellow]
+
+      table = Terminal::Table.new rows: rows
+      puts table
 
       $stdout.puts Rainbow('Is this the same child? Yes or No').yellow
       input = $stdin.gets.chomp

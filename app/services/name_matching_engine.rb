@@ -19,6 +19,7 @@ class NameMatchingEngine
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def find_matching_name(first_name, last_name)
     results = ActiveRecord::Base.connection.execute(ActiveRecord::Base.sanitize_sql_for_conditions([
                                                                                                      similarity_query,
@@ -29,6 +30,7 @@ class NameMatchingEngine
                                                                                                    ]))
 
     # rubocop:disable Rails/Output
+    puts(' ')
     puts Rainbow("Analyzing child '#{first_name} #{last_name}'").bright
     # rubocop:enable Rails/Output
     if results.any?
@@ -41,6 +43,7 @@ class NameMatchingEngine
       { match_tag: match_tag(0), result_match: matching_child }
     end
   end
+  # rubocop:enable Metrics/AbcSize
 
   def similarity_query
     <<-SQL.squish
