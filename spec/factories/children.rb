@@ -8,8 +8,11 @@ FactoryBot.define do
     date_of_birth { 2.years.ago.strftime('%Y-%m-%d') }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    business
     approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
+
+    after(:create) do |child|
+      create(:child_business, child: child)
+    end
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -27,11 +30,13 @@ FactoryBot.define do
       transient do
         effective_date { 6.months.ago }
       end
-      business { create(:business, :nebraska_ldds) }
-      wonderschool_id { SecureRandom.random_number(10**6).to_s.rjust(6, '0') }
-      approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
-
       after(:create) do |child, evaluator|
+
+        create(:child_business, child: child, business: create(:business, active: true))
+
+        child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+        child.save!
+
         create(:nebraska_approval_amount,
                child_approval: child.child_approvals.first,
                effective_on: evaluator.effective_date,
@@ -114,17 +119,10 @@ end
 #  last_name          :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  business_id        :uuid             not null
 #  dhs_id             :string
 #  wonderschool_id    :string
 #
 # Indexes
 #
-#  index_children_on_business_id  (business_id)
-#  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (business_id => businesses.id)
+#  index_children_on_deleted_at  (deleted_at)
 #
