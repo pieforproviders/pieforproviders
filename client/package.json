@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "16.x",
-    "npm": ">=6.13.1",
+    "node": "16.17.0",
+    "npm": "8.15.0",
     "yarn": "1.22.19"
   },
   "proxy": "http://localhost:3001",
