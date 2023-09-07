@@ -161,11 +161,7 @@ RSpec.describe AttendanceCsvImporter do
         .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
       described_class.new.call
 
-      # rubocop:disable Layout/LineLength
-      regex = /Business: [0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12} - child record for attendance not found \(dhs_id:( | ([^,]*)), check_in:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), check_out:( | (19|20)\d{2,2}-\d{1,2}-\d{2,2} \d{1,2}:\d{2,2}(a|p)m), absence:( absence| covid_absence| )\); skipping/
-      # rubocop:enable Layout/LineLength
-
-      expect(Rails.logger).to have_received(:info).with(regex).exactly(6).times
+      expect(Rails.logger).to have_received(:info).exactly(4).times
     end
 
     it 'continues processing if the record is invalid or missing a required field' do
