@@ -149,13 +149,6 @@ class AttendanceCsvImporter
 
   def log_missing_child
     @upload_status = Rainbow('Not Found').bright
-
-    message = Rainbow("Business: #{@business.id} - child record for attendance " \
-                      "not found (dhs_id: #{@row['dhs_id']}, check_in: #{@row['check_in']}, " \
-                      "check_out: #{@row['check_out']}, absence: #{@row['absence']}); skipping").red
-    Rails.logger.tagged('attendance import') do
-      Rails.logger.info message
-    end
     raise NoSuchChild
   end
 

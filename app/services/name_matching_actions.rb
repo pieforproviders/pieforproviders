@@ -26,10 +26,10 @@ class NameMatchingActions
       )
     when 'close_match'
       rows = []
-      puts Rainbow("This child doesn't exactly match P4P's child records").yellow.bold
+      puts Rainbow("This child doesn't exactly match P4P's child records").yellow
 
-      rows << [Rainbow('We found: ').bright.yellow + Rainbow("#{@file_child[0]} #{@file_child[1]}").yellow]
-      rows << [Rainbow('P4P has: ').bright.yellow +
+      rows << [Rainbow('We found: ').bright + Rainbow("#{@file_child[0]} #{@file_child[1]}").yellow]
+      rows << [Rainbow('P4P has: ').bright +
                Rainbow("#{@match_child['first_name']} #{@match_child['last_name']}").yellow]
 
       table = Terminal::Table.new rows: rows
