@@ -827,7 +827,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     child.service_days.destroy_all
     child_with_less_hours = create(
       :necc_child,
-      business: child.businesses.find_by(active: true),
+      businesses: child.businesses,
       date_of_birth: child.date_of_birth,
       schedules: [create(:schedule)],
       approvals: [child.approvals.first],

@@ -19,11 +19,11 @@ class RateAssociator
   end
 
   def county
-    @child.businesses.find_by(active: true).county
+    @child.businesses.find_by(active: true)&.county
   end
 
   def state
-    @child.businesses.find_by(active: true).state
+    @child.businesses.find_by(active: true)&.state
   end
 
   def today
