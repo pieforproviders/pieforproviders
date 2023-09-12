@@ -24,11 +24,7 @@ class Child < UuidApplicationRecord
   validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
-  # validates :business_id,
-  #           uniqueness: { scope: %i[first_name last_name date_of_birth] },
-  #           unless: lambda {
-  #             errors[:date_of_birth].present? || errors[:first_name].present? || errors[:last_name].present?
-  #           }
+  validate :unique_name_and_dob_per_business
 
   REASONS = %w[
     no_longer_in_my_care
@@ -76,6 +72,24 @@ class Child < UuidApplicationRecord
   delegate :timezone, to: :primary_user
 
   before_save :validate_wonderschool_id
+
+  def unique_name_and_dob_per_business
+    businesses.each do |business|
+      similar_children = business.children.where(
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth
+      )
+
+      # Excluir el ID actual del niño en caso de que ya exista en la base de datos
+      similar_children = similar_children.where.not(id: id) if id
+
+      if similar_children.exists?
+        errors.add(:base, 'A child with the same name and date of birth already exists for this business.')
+        break
+      end
+    end
+  end
 
   def primary_business
     businesses.find_by(active: true)

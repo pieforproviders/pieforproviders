@@ -13,6 +13,10 @@ FactoryBot.define do
 
     after(:create) do |child|
       create(:child_business, child: child)
+      primary_business = []
+      primary_business << child.child_businesses.first.business
+      primary_business.first.active = true
+      child.businesses = primary_business
     end
 
     factory :child_in_illinois do
