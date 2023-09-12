@@ -35,11 +35,11 @@ module Illinois
     private
 
     def region
-      if %w[license_exempt_day_care_center in_home].include?(business.license_type)
+      if %w[license_exempt_day_care_center in_home].include?(business&.license_type)
         'all'
-      elsif GROUP_1A.include?(business.county)
+      elsif GROUP_1A.include?(business&.county)
         'group_1a'
-      elsif GROUP_2A.include?(business.county)
+      elsif GROUP_2A.include?(business&.county)
         'group_1b'
       else
         'group_2'
