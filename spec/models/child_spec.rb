@@ -36,7 +36,7 @@ RSpec.describe Child do
   end
   # rubocop:enable RSpec/LetSetup
 
-  it { is_expected.to belong_to(:business) }
+  it { is_expected.to have_many(:businesses) }
   it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
   it { is_expected.to have_many(:approvals).through(:child_approvals) }
 
@@ -46,21 +46,24 @@ RSpec.describe Child do
   it { is_expected.to validate_presence_of(:last_name) }
 
   it 'validates that only one child with the same name and birthdate exist in a business' do
-    business = child.businesses.find_by(active: true)
     duplicate_child = build(
       :child,
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      business: business
+      businesses: child.businesses
     )
     expect(duplicate_child).not_to be_valid
+    new_businesses = []
+    diff_businesses = create(:child_business)
+
+    new_businesses << diff_businesses.business
     duplicate_child_diff_business = build(
       :child,
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      business: create(:business)
+      businesses: new_businesses
     )
     expect(duplicate_child_diff_business).to be_valid
   end
@@ -241,13 +244,13 @@ RSpec.describe Child do
 
   describe '#associate_rate' do
     let!(:user) { create(:confirmed_user) }
-    let!(:created_business) { create(:business, user: user) }
+    let!(:created_business) { create(:business, user: user, active: true) }
     let!(:child) do
       create(:child,
              first_name: 'Parvati',
              last_name: 'Patil',
              date_of_birth: '2010-04-09',
-             business_id: created_business.id,
+             businesses: [created_business],
              approvals_attributes: [attributes_for(:approval)])
     end
     let!(:approval) { child.approvals.first }
@@ -258,7 +261,7 @@ RSpec.describe Child do
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
-          business_id: created_business.id,
+          businesses: [created_business],
           approvals_attributes: [
             {
               case_number: approval.case_number,
@@ -295,7 +298,7 @@ RSpec.describe Child do
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
-          business_id: created_business.id,
+          businesses: [created_business],
           approvals_attributes: [
             {
               case_number: approval.case_number,
