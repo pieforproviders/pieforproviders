@@ -83,31 +83,31 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            effective_on: 3.months.ago,
            expires_on: nil)
   end
-  let!(:business_ldds) { create(:business, :nebraska_ldds, :unaccredited, :step_four) }
-  let!(:child_ldds) { create(:necc_child, business: business_ldds, effective_date: 1.month.ago) }
+  let!(:business_ldds) { create(:business, :nebraska_ldds, :unaccredited, :step_four, active: true) }
+  let!(:child_ldds) { create(:necc_child, businesses: [business_ldds], effective_date: 1.month.ago) }
   let!(:child_ldds_child_approval) { child_ldds.child_approvals.first }
-  let!(:business_other) { create(:business, :nebraska_other, :unaccredited, :step_four) }
-  let!(:child_other) { create(:necc_child, business: business_other, effective_date: 1.month.ago) }
+  let!(:business_other) { create(:business, :nebraska_other, :unaccredited, :step_four, active: true) }
+  let!(:child_other) { create(:necc_child, businesses: [business_other], effective_date: 1.month.ago) }
   let!(:child_other_child_approval) { child_other.child_approvals.first }
-  let!(:business_license_exempt_ld) { create(:business, :nebraska_license_exempt_home_ld, :unaccredited, :not_rated) }
+  let!(:business_license_exempt_ld) { create(:business, :nebraska_license_exempt_home_ld, :unaccredited, :not_rated, active: true) }
   let!(:child_license_exempt_ld) do
-    create(:necc_child, business: business_license_exempt_ld, effective_date: 1.month.ago)
+    create(:necc_child, businesses: [business_license_exempt_ld], effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_ld_child_approval) { child_license_exempt_ld.child_approvals.first }
-  let!(:business_license_exempt_ds) { create(:business, :nebraska_license_exempt_home_ds, :unaccredited, :not_rated) }
+  let!(:business_license_exempt_ds) { create(:business, :nebraska_license_exempt_home_ds, :unaccredited, :not_rated, active: true) }
   let!(:child_license_exempt_ds) do
-    create(:necc_child, business: business_license_exempt_ds, effective_date: 1.month.ago)
+    create(:necc_child, businesses: [business_license_exempt_ds], effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_ds_child_approval) { child_license_exempt_ds.child_approvals.first }
   let!(:business_license_exempt_other) do
-    create(:business, :nebraska_license_exempt_home_other, :unaccredited, :not_rated)
+    create(:business, :nebraska_license_exempt_home_other, :unaccredited, :not_rated, active: true)
   end
   let!(:child_license_exempt_other) do
-    create(:necc_child, business: business_license_exempt_other, effective_date: 1.month.ago)
+    create(:necc_child, businesses: [business_license_exempt_other], effective_date: 1.month.ago)
   end
   let!(:child_license_exempt_other_child_approval) { child_license_exempt_other.child_approvals.first }
-  let!(:business_fih) { create(:business, :nebraska_family_in_home, :unaccredited, :not_rated) }
-  let!(:child_fih) { create(:necc_child, business: business_fih, effective_date: 1.month.ago) }
+  let!(:business_fih) { create(:business, :nebraska_family_in_home, :unaccredited, :not_rated, active: true) }
+  let!(:child_fih) { create(:necc_child, businesses: [business_fih], effective_date: 1.month.ago) }
   let!(:child_fih_child_approval) { child_fih.child_approvals.first }
 
   describe '#call' do

@@ -187,7 +187,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -199,7 +200,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -240,7 +241,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -252,7 +254,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -301,7 +303,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -313,7 +316,7 @@ module Wonderschool
             create(:necc_child,
                    first_name: 'Thomas',
                    last_name: 'Eddleman',
-                   business:,
+                   businesses: [business],
                    date_of_birth: '2010-09-01',
                    wonderschool_id: '37821',
                    dhs_id: '14047907',
@@ -340,7 +343,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             existing_approval = create(
               :approval,
@@ -352,7 +356,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -533,7 +537,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -545,7 +550,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -586,7 +591,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -598,7 +604,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -647,7 +653,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -659,7 +666,7 @@ module Wonderschool
             create(:necc_child,
                    first_name: 'Thomas',
                    last_name: 'Eddleman',
-                   business:,
+                   businesses: [business],
                    date_of_birth: '2010-09-01',
                    wonderschool_id: '37821',
                    dhs_id: '14047907',
@@ -686,7 +693,8 @@ module Wonderschool
               name: "Rebecca's Childcare",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -698,7 +706,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
@@ -802,7 +810,8 @@ module Wonderschool
               name: "Kate's Kids",
               zipcode: '68845',
               county: 'Corke',
-              license_type: 'Family Child Care Home I'.downcase.tr(' ', '_')
+              license_type: 'Family Child Care Home I'.downcase.tr(' ', '_'),
+              active: true
             )
             approval = create(
               :approval,
@@ -814,7 +823,7 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Becky',
                            last_name: 'Falzone',
-                           business:,
+                           businesses: [business],
                            date_of_birth: '2013-12-26',
                            wonderschool_id: '37827',
                            dhs_id: '69370816',

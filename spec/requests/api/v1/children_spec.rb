@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Children' do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:user_business) { create(:business_with_children, user: logged_in_user) }
-  let!(:second_user_business) { create(:business_with_children, user: logged_in_user) }
+  let!(:user_business) { create(:business_with_children, user: logged_in_user, active: true) }
+  let!(:second_user_business) { create(:business_with_children, user: logged_in_user, active: true) }
   let!(:business_children) { user_business.children }
   let!(:second_business_children) { second_user_business.children }
-  let!(:other_business) { create(:business_with_children) }
+  let!(:other_business) { create(:business_with_children, active: true) }
   let!(:other_business_children) { other_business.children }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
@@ -211,7 +211,9 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       context 'when logged in as a nebraska user' do
-        let(:nebraska_business) { create(:business, :nebraska_ldds, user: create(:confirmed_user, :nebraska)) }
+        let(:nebraska_business) do
+          create(:business, :nebraska_ldds, user: create(:confirmed_user, :nebraska), active: true)
+        end
 
         before { sign_in nebraska_business.user }
 

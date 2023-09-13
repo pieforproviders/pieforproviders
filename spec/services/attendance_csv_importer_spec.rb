@@ -23,8 +23,8 @@ RSpec.describe AttendanceCsvImporter do
     Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
   end
 
-  let!(:business_one) { create(:business, name: 'Test Child Care') }
-  let!(:business_two) { create(:business, name: 'Fake Daycare') }
+  let!(:business1) { create(:business, name: 'Test Child Care', active: true) }
+  let!(:business2) { create(:business, name: 'Fake Daycare', active: true) }
   let!(:approvals) do
     create_list(:approval,
                 4,
@@ -37,13 +37,13 @@ RSpec.describe AttendanceCsvImporter do
            first_name: 'Hermione',
            last_name: 'Granger',
            dhs_id: '1234',
-           business: business_one,
+           businesses: [business1],
            approvals: [approvals[0]])
   end
   let!(:child2_business_one) do
     create(:necc_child,
            dhs_id: '5678',
-           business: business_one,
+           businesses: [business1],
            approvals: [approvals[1]])
   end
   let!(:third_child) do
@@ -51,7 +51,7 @@ RSpec.describe AttendanceCsvImporter do
            first_name: 'Lucy',
            last_name: 'Pevensie',
            dhs_id: '5677',
-           business: business_one,
+           businesses: [business1],
            approvals: [approvals[2]])
   end
 
@@ -61,7 +61,7 @@ RSpec.describe AttendanceCsvImporter do
            first_name: 'Hermione',
            last_name: 'Granger',
            dhs_id: '5679',
-           business: business_two,
+           businesses: [business2],
            approvals: [approvals[3]])
     allow(Rails.application.config).to receive(:aws_necc_attendance_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }

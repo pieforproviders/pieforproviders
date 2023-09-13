@@ -8,7 +8,7 @@ RSpec.describe BusinessPolicy do
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
-  let(:business) { create(:business, zipcode: '60606', county: 'Cook', user:) }
+  let(:business) { create(:business, zipcode: '60606', county: 'Cook', user:, active: true) }
   let(:inactive_business) do
     create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user:, active: false)
   end
