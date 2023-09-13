@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::Notifications' do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
   let!(:approval) { create(:approval, num_children: 1, business: business, expires_on: 3.days.after) }
   let!(:early_approval) { create(:approval, num_children: 1, business: business, expires_on: 1.day.after) }
   let!(:late_approval) { create(:approval, num_children: 1, business: business, expires_on: 29.days.after) }

@@ -7,9 +7,9 @@ RSpec.describe RateAssociator do
   let!(:illinois_rate_cook_age5) { create(:illinois_rate, region: 'group_1a', age_bucket: 5) }
   let!(:illinois_rate_cook_age3) { create(:illinois_rate, region: 'group_1a', age_bucket: 3) }
   let!(:illinois_rate_champaign) { create(:illinois_rate, region: 'group_1b', age_bucket: 12) }
-  let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606') }
-  let!(:business_champaign) { create(:business, county: 'Champaign', zipcode: '60613') }
-  let(:child_cook) { build(:child, date_of_birth: date - 2.years - 3.weeks, business: business_cook) }
+  let!(:business_cook) { create(:business, county: 'Cook', zipcode: '60606', active: true) }
+  let!(:business_champaign) { create(:business, county: 'Champaign', zipcode: '60613', active: true) }
+  let(:child_cook) { build(:child, date_of_birth: date - 2.years - 3.weeks, businesses: [business_cook]) }
 
   after do
     clear_enqueued_jobs
@@ -34,7 +34,7 @@ RSpec.describe RateAssociator do
     expect(child_cook.active_rate(date)).to eq(illinois_rate_cook_age5)
     age_eligible_for_champaign = date - 6.years - 3.months
     perform_enqueued_jobs do
-      child_cook.update!(business: business_champaign, date_of_birth: age_eligible_for_champaign)
+      child_cook.update!(businesses: [business_champaign], date_of_birth: age_eligible_for_champaign)
     end
     expect(child_cook.active_rate(date)).to eq(illinois_rate_champaign)
   end

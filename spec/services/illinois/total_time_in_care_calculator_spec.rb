@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Illinois::TotalTimeInCareCalculator do
-  let(:il_business) { create(:business) }
-  let(:child) { create(:child_in_illinois, business: il_business) }
+  let(:il_business) { create(:business, active: true) }
+  let(:child) { create(:child_in_illinois, businesses: [il_business]) }
   let(:attendance_with_missing_checkout) { create(:attendance, check_in: Time.current, check_out: nil) }
   let(:valid_attendance) do
     create(:attendance,

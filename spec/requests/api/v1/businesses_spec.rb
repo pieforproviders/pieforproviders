@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Businesses' do
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:user_business) { create(:business_with_children, user: logged_in_user) }
-  let!(:non_user_business) { create(:business_with_children) }
+  let!(:user_business) { create(:business_with_children, user: logged_in_user, active: true) }
+  let!(:non_user_business) { create(:business_with_children, active: true) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   describe 'GET /api/v1/businesses' do
@@ -35,7 +35,7 @@ RSpec.describe 'Api::V1::Businesses' do
       end
 
       it 'returns businesses in alphabetical order' do
-        create(:business, name: 'aaa child care')
+        create(:business, name: 'aaa child care', active: true)
         get '/api/v1/businesses', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.first['name']).to include('aaa child care')
@@ -90,7 +90,8 @@ RSpec.describe 'Api::V1::Businesses' do
           name: 'Happy Hearts Child Care',
           license_type: 'licensed_center',
           zipcode: '60606',
-          county: 'Cook'
+          county: 'Cook',
+          active: true
         }
       }
     end

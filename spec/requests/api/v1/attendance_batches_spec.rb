@@ -34,7 +34,7 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
   end
   # rubocop:enable RSpec/LetSetup
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
   let!(:approval) { create(:approval, num_children: 3, business: business) }
   let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }

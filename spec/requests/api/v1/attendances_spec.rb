@@ -12,9 +12,9 @@ RSpec.describe 'Api::V1::Attendances' do
   after  { travel_back }
 
   let!(:logged_in_user) { create(:confirmed_user) }
-  let!(:business) { create(:business, user: logged_in_user) }
+  let!(:business) { create(:business, user: logged_in_user, active: true) }
   let!(:child) do
-    create(:child, business: business, effective_date: '2021-9-15'.in_time_zone(logged_in_user.timezone) - 2.months)
+    create(:child, businesses: [business], effective_date: '2021-9-15'.in_time_zone(logged_in_user.timezone) - 2.months)
   end
 
   let!(:week_current_date) { '2021-9-15'.in_time_zone(child.timezone) } # Wednesday

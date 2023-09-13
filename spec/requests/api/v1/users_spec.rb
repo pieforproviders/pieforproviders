@@ -7,7 +7,7 @@ RSpec.describe 'Api::V1::Users' do
   let(:user) { instance_double(User) }
   let!(:illinois_user) { create(:confirmed_user) }
   let!(:nebraska_user) { create(:confirmed_user, :nebraska) }
-  let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
+  let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user, active: true) }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   before do
@@ -206,16 +206,16 @@ RSpec.describe 'Api::V1::Users' do
     include_context 'with correct api version header'
     let!(:nebraska_user) { create(:confirmed_user, :nebraska) }
     let!(:illinois_user) { create(:confirmed_user) }
-    let!(:illinois_business) { create(:business, user: illinois_user) }
-    let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user) }
-    let(:nebraska_business_two) { create(:business, :nebraska_ldds, user: nebraska_user) }
+    let!(:illinois_business) { create(:business, user: illinois_user, active: true) }
+    let!(:nebraska_business) { create(:business, :nebraska_ldds, user: nebraska_user, active: true) }
+    let(:nebraska_business_two) { create(:business, :nebraska_ldds, user: nebraska_user, active: true) }
 
     before do
       create_list(
         :child,
         2,
         {
-          business: nebraska_business,
+          businesses: [nebraska_business],
           approvals: [
             create(:expired_approval, create_children: false),
             create(:approval, create_children: false)
@@ -226,7 +226,7 @@ RSpec.describe 'Api::V1::Users' do
         :child,
         2,
         {
-          business: illinois_business,
+          businesses: [illinois_business],
           approvals: [
             create(:expired_approval, create_children: false),
             create(:approval, create_children: false)

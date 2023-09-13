@@ -7,9 +7,9 @@ RSpec.describe ChildPolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, user: user) }
+  let(:business) { create(:business, user: user, active: true) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, business: business) }
+  let(:child) { create(:child, businesses: [business]) }
 
   describe ChildPolicy::Scope do
     context 'when authenticated as an admin' do

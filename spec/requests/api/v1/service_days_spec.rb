@@ -39,14 +39,14 @@ RSpec.describe 'Api::V1::ServiceDays' do
   # rubocop:enable RSpec/LetSetup
 
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
-  let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
-  let!(:other_business) { create(:business, :nebraska_ldds) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
+  let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
+  let!(:other_business) { create(:business, :nebraska_ldds, active: true) }
   let!(:child) do
     create(
       :child,
       last_name: 'zzzz',
-      business: business,
+      businesses: [business],
       effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
     )
   end
@@ -101,7 +101,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
   let!(:user_second_business_service_days) do
     child = create(
       :child,
-      business: user_second_business,
+      businesses: [user_second_business],
       effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
     )
     child_approval = child.child_approvals.first
@@ -128,7 +128,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
   let!(:user_second_business_past_service_days) do
     child = create(
       :child,
-      business: user_second_business,
+      businesses: [user_second_business],
       effective_date: '2021-09-15'.in_time_zone(logged_in_user.timezone) - 3.months
     )
     child_approval = child.child_approvals.first
@@ -152,7 +152,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
   let!(:another_user_service_days) do
     child = create(
       :child,
-      business: other_business,
+      businesses: [other_business],
       effective_date: '2021-09-15'.in_time_zone(other_business.user.timezone) - 3.months
     )
     child_approval = child.child_approvals.first
@@ -179,7 +179,7 @@ RSpec.describe 'Api::V1::ServiceDays' do
   let!(:another_user_past_service_days) do
     child = create(
       :child,
-      business: other_business,
+      businesses: [other_business],
       effective_date: '2021-09-15'.in_time_zone(other_business.user.timezone) - 3.months
     )
     child_approval = child.child_approvals.first

@@ -7,9 +7,9 @@ RSpec.describe ServiceDayPolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, :nebraska_ldds, user: user) }
+  let(:business) { create(:business, :nebraska_ldds, user: user, active: true) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, business: business) }
+  let(:child) { create(:child, businesses: [business]) }
   let(:child_approval) { child.child_approvals.first }
   let(:service_day) { create(:service_day, child: child) }
   let(:attendance) { create(:attendance, child_approval: child_approval, service_day: service_day) }

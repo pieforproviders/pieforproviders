@@ -13,12 +13,13 @@ RSpec.describe Nebraska::CalculatedServiceDay do
     let!(:child) do
       create(
         :necc_child,
-        business: create(
+        businesses: [create(
           :business,
           :nebraska_ldds,
           accredited: true,
-          quality_rating: 'not_rated'
-        )
+          quality_rating: 'not_rated',
+          active: true
+        )]
       )
     end
     let!(:business) { child.businesses.find_by(active: true) }

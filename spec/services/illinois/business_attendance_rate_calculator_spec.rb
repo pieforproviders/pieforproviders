@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe Illinois::BusinessAttendanceRateCalculator do
   before { travel_to '2022-11-01'.to_date }
 
-  let(:business) { create(:business) }
-  let(:child) { create(:child_in_illinois, business: business) }
+  let(:business) { create(:business, active: true) }
+  let(:child) { create(:child_in_illinois, businesses: [business]) }
 
   describe 'Checks methods for attendance rate IL calculator for businesses' do
     it 'check elegible attendances for an FCC' do
