@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.2'
+ruby '3.2.2'
 
 gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
@@ -17,7 +17,10 @@ gem 'faker'
 gem 'good_job', '~> 3.7.2'
 gem 'hash_dig_and_collect'
 gem 'holidays'
+gem 'matrix'
 gem 'money-rails'
+gem 'net-pop'
+gem 'net-smtp'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.6'
 gem 'pundit', '~> 2.3'
