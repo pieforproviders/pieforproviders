@@ -130,13 +130,8 @@ class AttendanceCsvImporter
     matching_engine = NameMatchingEngine.new(first_name: @row['first_name'], last_name: @row['last_name'])
     match_results = matching_engine.call
 
-    match_tag = match_results[:match_tag]
-    match_child = match_results[:result_match]
-
-    matching_actions = NameMatchingActions.new(match_tag: match_tag,
-                                               match_child: match_child,
-                                               file_child: [@row['first_name'],
-                                                            @row['last_name']],
+    matching_actions = NameMatchingActions.new(matches: match_results,
+                                               file_child: [@row['first_name'], @row['last_name']],
                                                business: @business)
 
     found_child = matching_actions.call

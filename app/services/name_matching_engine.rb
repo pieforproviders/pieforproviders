@@ -11,12 +11,6 @@ class NameMatchingEngine
     find_matching_name(@first_name, @last_name)
   end
 
-  def match_tag(score)
-    return 'no_match' if score.zero?
-    return 'close_match' if score.positive? && score <= 0.99
-    return 'exact_match' if score == 1
-  end
-
   private
 
   def find_matching_name(first_name, last_name)
@@ -28,17 +22,12 @@ class NameMatchingEngine
                                                                                                      last_name
                                                                                                    ]))
 
-    # rubocop:disable Rails/Output
-    puts(' ')
-    # rubocop:enable Rails/Output
-    if results.any?
-      matching_child = results[0]
-      average_score = (matching_child['sml_first_name'] + matching_child['sml_last_name']).to_f / 2
+    # puts(' ')
+    return unless results.any?
 
-      { match_tag: match_tag(average_score), result_match: matching_child }
-
-    else
-      { match_tag: match_tag(0), result_match: matching_child }
+    results.sort_by do |match|
+      avg = (match['sml_first_name'] + match['sml_last_name']).to_f / 2
+      -avg
     end
   end
 
@@ -51,7 +40,6 @@ class NameMatchingEngine
         WHERE c.first_name % ?
         and c.last_name % ?
         ORDER BY c.last_name DESC
-        LIMIT 1;
     SQL
   end
 end
