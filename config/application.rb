@@ -55,7 +55,7 @@ module App
     config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en
 
-    config.active_job.queue_adapter = :good_job
+    # config.active_job.queue_adapter = :good_job
 
     # custom configuration
     config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == 'true'
