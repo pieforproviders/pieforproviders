@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/PendingWithoutReason
 require 'rails_helper'
 
 RSpec.describe Illinois::DashboardCaseBlueprint do
@@ -16,7 +17,7 @@ RSpec.describe Illinois::DashboardCaseBlueprint do
     expect(
       JSON.parse(described_class.render(
                    Illinois::DashboardCase.new(
-                     child: child,
+                     child:,
                      filter_date: Time.current,
                      attended_days: child.service_days.with_attendances.non_absences
                    )
@@ -50,3 +51,4 @@ RSpec.describe Illinois::DashboardCaseBlueprint do
     end
   end
 end
+# rubocop:enable RSpec/PendingWithoutReason

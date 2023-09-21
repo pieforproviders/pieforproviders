@@ -20,7 +20,7 @@ module Commands
       private
 
       def update_service_day
-        ServiceDayCalculator.new(service_day: service_day).call
+        ServiceDayCalculator.new(service_day:).call
 
         return unless service_day.attendances.empty?
 

@@ -8,7 +8,7 @@ class NotificationPolicy < ApplicationPolicy
       if user.admin?
         scope.all
       else
-        scope.joins(child: :business).where(children: { businesses: { user: user } })
+        scope.joins(child: :business).where(children: { businesses: { user: } })
       end
     end
   end

@@ -15,7 +15,8 @@ class TagsCalculator
   private
 
   def build_tags
-    return Nebraska::TagsCalculator.new(service_day: service_day).call if service_day.child.state == 'NE'
-    return Illinois::TagsCalculator.new(service_day: service_day).call if service_day.child.state == 'IL'
+    return Nebraska::TagsCalculator.new(service_day:).call if service_day.child.state == 'NE'
+
+    Illinois::TagsCalculator.new(service_day:).call if service_day.child.state == 'IL'
   end
 end

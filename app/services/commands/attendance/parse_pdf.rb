@@ -177,8 +177,8 @@ module Commands
       def build_attendances(complete_times)
         complete_times.each_slice(2) do |sign_in_time, sign_out_time|
           @attendances << {
-            sign_in_time: sign_in_time,
-            sign_out_time: sign_out_time
+            sign_in_time:,
+            sign_out_time:
           }
         end
       end

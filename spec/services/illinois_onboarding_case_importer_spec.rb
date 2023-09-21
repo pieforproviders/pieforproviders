@@ -197,7 +197,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child_in_illinois,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -245,7 +245,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child_in_illinois,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -300,7 +300,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         create(:child,
                first_name: 'Thomas',
                last_name: 'Eddleman',
-               business: business,
+               business:,
                date_of_birth: '2010-09-01',
                wonderschool_id: '37821',
                dhs_id: '14047907',
@@ -339,7 +339,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -500,7 +500,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -552,7 +552,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -607,7 +607,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         create(:child,
                first_name: 'Thomas',
                last_name: 'Eddleman',
-               business: business,
+               business:,
                date_of_birth: '2010-09-01',
                wonderschool_id: '37821',
                dhs_id: '14047907',
@@ -646,7 +646,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
+                       business:,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -680,12 +680,11 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         described_class.new.call
         thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
         expect(thomas.approvals.length).to eq(2)
-        expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
-          [
-            [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
-            [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
-          ]
-        )
+        expect(thomas.approvals.pluck(:effective_on,
+                                      :expires_on)).to contain_exactly([Date.parse('2020-09-01'),
+                                                                        Date.parse('2021-08-31')],
+                                                                       [Date.parse('2021-09-01'),
+                                                                        Date.parse('2022-08-31')])
         first_approval = thomas.approvals.find_by(effective_on: '2020-09-01')
         second_approval = thomas.approvals.find_by(effective_on: '2021-09-01')
         expect(first_approval.child_approvals.length).to eq(1)
@@ -739,7 +738,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Becky',
                        last_name: 'Falzone',
-                       business: business,
+                       business:,
                        date_of_birth: '2013-12-26',
                        wonderschool_id: '37827',
                        dhs_id: '69370816',

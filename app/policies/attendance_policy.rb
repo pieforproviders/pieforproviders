@@ -10,7 +10,7 @@ class AttendancePolicy < ApplicationPolicy
       else
         scope.joins(child_approval: {
                       child: { business: :user }
-                    }).where(child_approvals: { children: { businesses: { user: user } } })
+                    }).where(child_approvals: { children: { businesses: { user: } } })
       end
     end
   end

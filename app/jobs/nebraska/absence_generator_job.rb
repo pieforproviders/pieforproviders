@@ -6,7 +6,7 @@ module Nebraska
     def perform(child:, date: nil)
       return unless child
 
-      Nebraska::AbsenceGenerator.new(child: child, date: date).call
+      Nebraska::AbsenceGenerator.new(child:, date:).call
     end
   end
 end

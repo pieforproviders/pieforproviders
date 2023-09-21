@@ -100,7 +100,7 @@ class IllinoisOnboardingCaseImporter
 
   def update_existing_amount(month)
     IllinoisApprovalAmount.find_by(
-      month: month,
+      month:,
       child_approval: @child_approval
     )&.update!(
       part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
@@ -113,7 +113,7 @@ class IllinoisOnboardingCaseImporter
       next if update_existing_amount(month)
 
       IllinoisApprovalAmount.create!(
-        month: month,
+        month:,
         child_approval: @child_approval,
         part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
         full_days_approved_per_week: illinois_params[:full_days_approved_per_week]

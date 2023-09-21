@@ -20,7 +20,10 @@ module Nebraska
       def calculate_days
         control_date = Date.new(2023, 7, 1)
         return total_time_in_care > 5.hours + 45.minutes ? 1 : 0 if filter_date < control_date
-        return total_time_in_care >= 5.hours ? 1 : 0 if filter_date >= control_date
+
+        return unless filter_date >= control_date
+
+        total_time_in_care >= 5.hours ? 1 : 0
       end
     end
   end

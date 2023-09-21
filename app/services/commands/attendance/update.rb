@@ -31,7 +31,7 @@ module Commands
 
           # TODO: move this to service day command
           unless attendance.service_day == new_service_day = new_or_existing_service_day
-            associate_service_day(new_service_day: new_service_day)
+            associate_service_day(new_service_day:)
           end
 
           update_service_day
@@ -41,14 +41,14 @@ module Commands
 
       def updated_attendance_params
         {
-          check_in: check_in,
-          check_out: check_out,
-          child_approval: child_approval
+          check_in:,
+          check_out:,
+          child_approval:
         }
       end
 
       def new_or_existing_service_day
-        ServiceDay.find_or_initialize_by(child: child, date: check_in.utc.at_beginning_of_day)
+        ServiceDay.find_or_initialize_by(child:, date: check_in.utc.at_beginning_of_day)
       end
 
       def child_approval
@@ -63,7 +63,7 @@ module Commands
 
       def update_service_day
         # TODO: command to update?
-        attendance.service_day.update!(absence_type: absence_type, schedule: schedule_for_weekday)
+        attendance.service_day.update!(absence_type:, schedule: schedule_for_weekday)
         # TODO: eventually put this in the service_day update command
         ServiceDayCalculator.new(service_day: attendance.service_day).call
         # To Be Implemented:

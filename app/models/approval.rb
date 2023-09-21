@@ -55,7 +55,7 @@ class Approval < UuidApplicationRecord
   end
 
   def sort_by_scheduled_time(sort_a, sort_b, date)
-    sort_b.total_time_scheduled_this_month(date: date) <=> sort_a.total_time_scheduled_this_month(date: date)
+    sort_b.total_time_scheduled_this_month(date:) <=> sort_a.total_time_scheduled_this_month(date:)
   end
 
   def sort_by_name(sort_a, sort_b)

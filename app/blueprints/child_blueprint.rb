@@ -40,10 +40,10 @@ class ChildBlueprint < Blueprinter::Base
       end
 
       Illinois::DashboardCase.new(
-        child: child,
+        child:,
         filter_date: options[:filter_date],
         eligible_days: eligible_attendances,
-        attended_days: attended_days
+        attended_days:
       )
     end
   end
@@ -56,10 +56,10 @@ class ChildBlueprint < Blueprinter::Base
       attended_days = service_days&.non_absences
       absent_days = service_days&.absences
       Nebraska::DashboardCase.new(
-        child: child,
+        child:,
         filter_date: options[:filter_date],
-        attended_days: attended_days,
-        absent_days: absent_days
+        attended_days:,
+        absent_days:
       )
     end
   end

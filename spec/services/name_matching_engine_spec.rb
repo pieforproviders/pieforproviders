@@ -5,7 +5,7 @@
 require 'rails_helper'
 
 RSpec.describe NameMatchingEngine, type: :service do
-  subject(:engine) { described_class.new(first_name: first_name, last_name: last_name) }
+  subject(:engine) { described_class.new(first_name:, last_name:) }
 
   let(:first_name) { Faker::Name.first_name }
   let(:last_name) { Faker::Name.last_name }

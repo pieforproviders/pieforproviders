@@ -64,7 +64,7 @@ module Api
           attendance: @attendance,
           check_in: attendance_params['check_in'] || @attendance.check_in,
           check_out: attendance_params['check_out'] || @attendance.check_out,
-          absence_type: absence_type
+          absence_type:
         ).update
       end
 

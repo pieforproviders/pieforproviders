@@ -7,25 +7,25 @@ RSpec.describe ServiceDayPolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, :nebraska_ldds, user: user) }
+  let(:business) { create(:business, :nebraska_ldds, user:) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, business: business) }
+  let(:child) { create(:child, business:) }
   let(:child_approval) { child.child_approvals.first }
-  let(:service_day) { create(:service_day, child: child) }
-  let(:attendance) { create(:attendance, child_approval: child_approval, service_day: service_day) }
+  let(:service_day) { create(:service_day, child:) }
+  let(:attendance) { create(:attendance, child_approval:, service_day:) }
 
   describe ServiceDayPolicy::Scope do
     context 'when authenticated as an admin' do
       it 'returns all service_days' do
         service_days = described_class.new(admin, ServiceDay).resolve
-        expect(service_days).to match_array([service_day])
+        expect(service_days).to contain_exactly(service_day)
       end
     end
 
     context 'when logged in as an owner user' do
       it 'returns the service_days associated to the user' do
         service_days = described_class.new(user, ServiceDay).resolve
-        expect(service_days).to match_array([service_day])
+        expect(service_days).to contain_exactly(service_day)
       end
     end
 

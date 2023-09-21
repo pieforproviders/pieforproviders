@@ -30,14 +30,14 @@ RSpec.describe 'POST /signup' do
 
   context 'when params are correct' do
     before do
-      post '/signup', params: params
+      post '/signup', params:
     end
 
     it 'signs up a new user; creates the user, returns 201' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
-      expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+      expect(response.parsed_body['state']).to eq('NE')
+      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 
@@ -54,8 +54,8 @@ RSpec.describe 'POST /signup' do
     it 'signs up a new user; creates the user, returns 201' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
-      expect(JSON.parse(response.body)['state']).to eq('NE')
-      expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+      expect(response.parsed_body['state']).to eq('NE')
+      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
     end
   end
 
@@ -72,7 +72,7 @@ RSpec.describe 'POST /signup' do
 
       it 'returns unprocessable entity' do
         expect(response).to have_http_status :unprocessable_entity
-        expect(JSON.parse(response.body)['detail']['too_much_time'].first).to eq('is not included in the list')
+        expect(response.parsed_body['detail']['too_much_time'].first).to eq('is not included in the list')
       end
     end
   end
@@ -84,23 +84,23 @@ RSpec.describe 'POST /signup' do
 
     it 'returns unprocessable entity' do
       expect(response).to have_http_status :unprocessable_entity
-      expect(JSON.parse(response.body)['detail']['email'].first).to eq("can't be blank")
-      expect(JSON.parse(response.body)['detail']['password'].first).to eq("can't be blank")
-      expect(JSON.parse(response.body)['detail']['full_name'].first).to eq("can't be blank")
-      expect(JSON.parse(response.body)['detail']['language'].first).to eq("can't be blank")
-      expect(JSON.parse(response.body)['detail']['timezone'].first).to eq("can't be blank")
+      expect(response.parsed_body['detail']['email'].first).to eq("can't be blank")
+      expect(response.parsed_body['detail']['password'].first).to eq("can't be blank")
+      expect(response.parsed_body['detail']['full_name'].first).to eq("can't be blank")
+      expect(response.parsed_body['detail']['language'].first).to eq("can't be blank")
+      expect(response.parsed_body['detail']['timezone'].first).to eq("can't be blank")
     end
   end
 
   context 'when user already exists' do
     before do
       create(:confirmed_user, email: params[:user][:email])
-      post '/signup', params: params
+      post '/signup', params:
     end
 
     it 'returns unprocessable entity' do
       expect(response).to have_http_status :unprocessable_entity
-      expect(JSON.parse(response.body)['detail']['email'].first).to eq('has already been taken')
+      expect(response.parsed_body['detail']['email'].first).to eq('has already been taken')
     end
   end
 end

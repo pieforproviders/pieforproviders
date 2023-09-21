@@ -38,7 +38,7 @@ module Illinois
       end
 
       def days_attended
-        Illinois::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call
+        Illinois::Daily::DaysDurationCalculator.new(total_time_in_care:).call
       end
 
       def part_day_rate

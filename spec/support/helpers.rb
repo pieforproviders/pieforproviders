@@ -20,7 +20,7 @@ module Helpers
   end
 
   def self.next_attendance_day(child_approval:, date: nil)
-    latest_day = latest_service_day(child_approval: child_approval)
+    latest_day = latest_service_day(child_approval:)
     (latest_day && (latest_day + 1.day)) ||
       date.in_time_zone(child_approval.child.timezone) ||
       Time.current.in_time_zone(child_approval.child.timezone).at_beginning_of_day
@@ -38,7 +38,7 @@ module Helpers
     child = child_approval.child
     num.times do
       child.service_days.reload
-      day_for_next_attendance = next_attendance_day(child_approval: child_approval, date: date)
+      day_for_next_attendance = next_attendance_day(child_approval:, date:)
       while child.schedules.where(
         weekday: day_for_next_attendance.wday,
         effective_on: ..day_for_next_attendance,
@@ -53,9 +53,9 @@ module Helpers
       ).first
       FactoryBot.create(
         :service_day,
-        child: child,
+        child:,
         date: day_for_next_attendance,
-        schedule: schedule,
+        schedule:,
         absence_type: type
       )
     end

@@ -13,13 +13,13 @@ RSpec.describe Illinois::DashboardCase do
 
     it 'returns 0 since there are no attendances' do
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences
       ).no_attendances)
         .to be_truthy
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences
       ).guaranteed_revenue)

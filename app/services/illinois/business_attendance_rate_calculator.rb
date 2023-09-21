@@ -38,8 +38,8 @@ module Illinois
     def eligible_days_by_child(child)
       eligible_days = []
 
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child).call
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child, full_time: false).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:, full_time: false).call
 
       eligible_days
     end
