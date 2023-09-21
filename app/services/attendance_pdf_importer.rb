@@ -102,13 +102,13 @@ class AttendancePdfImporter
     check_in = attendance_info[:sign_in_time].to_datetime
     check_out = attendance_info[:sign_out_time].blank? ? nil : attendance_info[:sign_out_time].to_datetime
 
-    child_approval = active_child_approval(check_in: check_in)
+    child_approval = active_child_approval(check_in:)
 
-    attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
+    attendance = Attendance.find_by(check_in:, child_approval:, check_out:)
 
     return if attendance
 
-    Commands::Attendance::Create.new(check_in: check_in, child_id: @child.id, check_out: check_out).create
+    Commands::Attendance::Create.new(check_in:, child_id: @child.id, check_out:).create
   end
 
   def active_child_approval(check_in:)
@@ -130,8 +130,8 @@ class AttendancePdfImporter
     match_tag = match_results[:match_tag]
     match_child = match_results[:result_match]
 
-    matching_actions = NameMatchingActions.new(match_tag: match_tag,
-                                               match_child: match_child,
+    matching_actions = NameMatchingActions.new(match_tag:,
+                                               match_child:,
                                                file_child: [@child_name[1],
                                                             @child_name[0]],
                                                business: @business)

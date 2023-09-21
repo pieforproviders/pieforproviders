@@ -42,10 +42,10 @@ class IllinoisAttendanceRateCalculator
     eligible_days = []
 
     if full_time_attendance_presence?(child)
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:).call
     end
     if part_time_attendance_presence?(child)
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child, full_time: false).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:, full_time: false).call
     end
 
     eligible_days.compact.sum

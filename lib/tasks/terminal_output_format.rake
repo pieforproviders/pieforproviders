@@ -11,6 +11,6 @@ task test_table: :environment do
   rows << [Rainbow('One').bright, 1]
   rows << [Rainbow('Two').yellow, 2]
   rows << [Rainbow('Three').italic, 3]
-  table = Terminal::Table.new headings: %w[Word Number], rows: rows
+  table = Terminal::Table.new(headings: %w[Word Number], rows:)
   puts table
 end

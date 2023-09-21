@@ -20,21 +20,21 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (24 * 3600)
       )
@@ -48,7 +48,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     expect(
       JSON.parse(described_class.render(
                    Nebraska::DashboardCase.new(
-                     child: child,
+                     child:,
                      filter_date: Time.current,
                      attended_days: child.service_days.with_attendances.non_absences,
                      absent_days: child.service_days.absences
@@ -92,7 +92,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           described_class
             .render(
               Nebraska::DashboardCase.new(
-                child: child,
+                child:,
                 filter_date: Time.current,
                 attended_days: child.service_days.with_attendances.non_absences,
                 absent_days: child.service_days.absences
@@ -137,7 +137,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           described_class
             .render(
               Nebraska::DashboardCase.new(
-                child: child,
+                child:,
                 filter_date: Time.current,
                 attended_days: child.service_days.with_attendances.non_absences,
                 absent_days: child.service_days.absences
@@ -178,7 +178,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -219,7 +219,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -272,7 +272,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -335,7 +335,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -398,7 +398,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -462,7 +462,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -525,7 +525,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -593,7 +593,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -656,7 +656,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -725,7 +725,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
               .render(
                 Nebraska::DashboardCase.new(
-                  child: child,
+                  child:,
                   filter_date: Time.current,
                   attended_days: child.service_days.with_attendances.non_absences,
                   absent_days: child.service_days.absences
@@ -777,7 +777,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
             described_class
             .render(
               Nebraska::DashboardCase.new(
-                child: child,
+                child:,
                 filter_date: Time.current,
                 attended_days: child.service_days.with_attendances.non_absences,
                 absent_days: child.service_days.absences
@@ -838,7 +838,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     10.times do |idx|
       child_service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: (attendance_date + idx.days).in_time_zone(child.timezone).at_beginning_of_day
       )
       child_with_less_hours_service_day = create(
@@ -873,7 +873,7 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       described_class
         .render(
           Nebraska::DashboardCase.new(
-            child: child,
+            child:,
             filter_date: Time.current,
             attended_days: child.service_days.with_attendances.non_absences,
             absent_days: child.service_days.absences

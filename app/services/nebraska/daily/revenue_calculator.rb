@@ -26,11 +26,11 @@ module Nebraska
       end
 
       def hours
-        Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care: total_time_in_care).call
+        Nebraska::Daily::HoursDurationCalculator.new(total_time_in_care:).call
       end
 
       def days
-        Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care: total_time_in_care).call
+        Nebraska::Daily::DaysDurationCalculator.new(total_time_in_care:).call
       end
 
       def ne_special_needs_revenue
@@ -39,8 +39,8 @@ module Nebraska
       end
 
       def ne_base_revenue
-        (hours * hourly_rate * business.ne_qris_bump(date: date)) +
-          (days * daily_rate * business.ne_qris_bump(date: date))
+        (hours * hourly_rate * business.ne_qris_bump(date:)) +
+          (days * daily_rate * business.ne_qris_bump(date:))
       end
 
       def hourly_rate

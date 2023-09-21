@@ -17,13 +17,13 @@ RSpec.describe 'sessions requests' do
   describe 'POST /login' do
     context 'when params are correct' do
       before do
-        post url, params: params
+        post url, params:
       end
 
       it 'returns 200' do
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)['state']).to eq(user.state)
-        expect(JSON.parse(response.body).keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+        expect(response.parsed_body['state']).to eq(user.state)
+        expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
       end
 
       it 'returns JWT token in authorization header' do

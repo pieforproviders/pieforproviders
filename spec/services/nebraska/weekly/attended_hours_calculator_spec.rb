@@ -24,30 +24,30 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
 
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 4.hours + 5.minutes)
       perform_enqueued_jobs
       service_days.each(&:reload)
@@ -65,29 +65,29 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 6.hours + 15.minutes)
       perform_enqueued_jobs
       service_days.each(&:reload)
@@ -105,29 +105,29 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 12.hours + 42.minutes)
       perform_enqueued_jobs
       service_days.each(&:reload)
@@ -145,29 +145,29 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (rand(20..24) * 3600) # > 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 19.hours + 11.minutes)
       perform_enqueued_jobs
       service_days.each(&:reload)
@@ -185,34 +185,34 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 12.hours + 42.minutes)
-      saturday_service_day = create(:service_day, date: check_in.at_beginning_of_week(:sunday) - 1.day, child: child)
+      saturday_service_day = create(:service_day, date: check_in.at_beginning_of_week(:sunday) - 1.day, child:)
       create(:attendance,
              service_day: saturday_service_day,
-             child_approval: child_approval,
+             child_approval:,
              check_in: check_in.at_beginning_of_week(:sunday) - 1.day + 8.hours,
              check_out: nil)
       perform_enqueued_jobs
@@ -231,40 +231,40 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 6.hours + 15.minutes)
-      second_service_day = create(:service_day, date: check_in + 1.day, child: child)
+      second_service_day = create(:service_day, date: check_in + 1.day, child:)
       create(:attendance,
              service_day: second_service_day,
-             child_approval: child_approval,
+             child_approval:,
              check_in: check_in + 1.day,
              check_out: check_in + 1.day + 12.hours + 42.minutes)
-      third_service_day = create(:service_day, date: check_in + 2.days, child: child)
+      third_service_day = create(:service_day, date: check_in + 2.days, child:)
       create(:attendance,
              service_day: third_service_day,
-             child_approval: child_approval,
+             child_approval:,
              check_in: check_in + 2.days,
              check_out: check_in + 2.days + 4.hours + 5.minutes)
       perform_enqueued_jobs
@@ -283,33 +283,33 @@ RSpec.describe Nebraska::Weekly::AttendedHoursCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       )
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       )
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (18 * 3600) # 18 hours
       )
-      service_day = create(:service_day, date: check_in, child: child)
+      service_day = create(:service_day, date: check_in, child:)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
-             check_in: check_in,
+             service_day:,
+             child_approval:,
+             check_in:,
              check_out: check_in + 1.hour)
       create(:attendance,
-             service_day: service_day,
-             child_approval: child_approval,
+             service_day:,
+             child_approval:,
              check_in: check_in + 2.hours,
              check_out: check_in + 12.hours + 42.minutes)
       perform_enqueued_jobs

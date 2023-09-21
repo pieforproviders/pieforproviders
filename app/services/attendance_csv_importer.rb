@@ -91,13 +91,13 @@ class AttendanceCsvImporter
     check_in = format_check_in_out(@row['check_in'])
     check_out = @row['check_out'].blank? ? nil : format_check_in_out(@row['check_out'])
     if @row['absence']
-      find_or_create_service_day(check_in: check_in)
+      find_or_create_service_day(check_in:)
     else
-      child_approval = active_child_approval(check_in: check_in)
-      attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
+      child_approval = active_child_approval(check_in:)
+      attendance = Attendance.find_by(check_in:, child_approval:, check_out:)
       return if attendance # makes the import idempotent
 
-      Commands::Attendance::Create.new(check_in: check_in, child_id: @child.id, check_out: check_out).create
+      Commands::Attendance::Create.new(check_in:, child_id: @child.id, check_out:).create
     end
   end
 
@@ -133,8 +133,8 @@ class AttendanceCsvImporter
     match_tag = match_results[:match_tag]
     match_child = match_results[:result_match]
 
-    matching_actions = NameMatchingActions.new(match_tag: match_tag,
-                                               match_child: match_child,
+    matching_actions = NameMatchingActions.new(match_tag:,
+                                               match_child:,
                                                file_child: [@row['first_name'],
                                                             @row['last_name']],
                                                business: @business)

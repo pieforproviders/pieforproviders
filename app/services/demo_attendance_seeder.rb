@@ -18,8 +18,8 @@ class DemoAttendanceSeeder
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def generate_attendances
-    Child.all.each do |child|
-      starting_date = (last_attendance_check_out(child: child) + 1.week).at_beginning_of_week(:sunday)
+    Child.find_each do |child|
+      starting_date = (last_attendance_check_out(child:) + 1.week).at_beginning_of_week(:sunday)
       weeks_to_populate = ((Time.current - starting_date).seconds.in_days / 7).round
 
       Rails.logger.info { "\nChild: #{child.first_name} #{child.last_name}" }
@@ -28,9 +28,9 @@ class DemoAttendanceSeeder
 
       if weeks_to_populate.positive?
         create_attendances(
-          child: child,
-          weeks_to_populate: weeks_to_populate,
-          starting_date: starting_date
+          child:,
+          weeks_to_populate:,
+          starting_date:
         )
       end
 
@@ -47,23 +47,23 @@ class DemoAttendanceSeeder
         week_start = starting_date + week.weeks
         week_end = week_start.at_end_of_week(:sunday)
         rand(4..6).times do |num|
-          last_attendance = num.zero? ? week_start : last_attendance_check_out(child: child)
+          last_attendance = num.zero? ? week_start : last_attendance_check_out(child:)
           break if last_attendance > week_end
 
           check_in = Faker::Time.between(from: last_attendance, to: week_end)
-          Rails.logger.info range_string(num: num,
-                                         last_attendance: last_attendance,
-                                         week_end: week_end,
-                                         check_in: check_in)
+          Rails.logger.info range_string(num:,
+                                         last_attendance:,
+                                         week_end:,
+                                         check_in:)
           active_child_approval = child.active_child_approval(check_in)
           if check_in > Time.current || !active_child_approval
-            generate_messages(check_in: check_in, active_child_approval: active_child_approval)
+            generate_messages(check_in:, active_child_approval:)
             throw :stop_making_attendances
           end
 
           check_out = check_in + rand(0..23).hours + rand(0..59).minutes
-          attendance = Attendance.create!(check_in: check_in,
-                                          check_out: check_out,
+          attendance = Attendance.create!(check_in:,
+                                          check_out:,
                                           child_approval: active_child_approval)
           Rails.logger.info ' ...success' if attendance
         end

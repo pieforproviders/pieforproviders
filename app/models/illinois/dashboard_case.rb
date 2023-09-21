@@ -129,7 +129,7 @@ module Illinois
       Appsignal.instrument_sql(
         'dashboard_case.child_approval'
       ) do
-        @child_approval ||= approval&.child_approvals&.find_by(child: child)
+        @child_approval ||= approval&.child_approvals&.find_by(child:)
       end
     end
 

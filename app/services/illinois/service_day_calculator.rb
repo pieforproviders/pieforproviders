@@ -18,8 +18,8 @@ module Illinois
     private
 
     def update_calculations
-      TotalTimeInCareCalculator.new(service_day: service_day).call
-      EarnedRevenueCalculator.new(service_day: service_day).call
+      TotalTimeInCareCalculator.new(service_day:).call
+      EarnedRevenueCalculator.new(service_day:).call
     end
   end
 end

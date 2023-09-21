@@ -28,10 +28,10 @@ module Nebraska
       ) do
         Nebraska::Monthly::AttendanceRiskCalculator.new(
           timezone: child.timezone,
-          filter_date: filter_date,
-          family_fee: family_fee,
-          scheduled_revenue: scheduled_revenue,
-          estimated_revenue: estimated_revenue
+          filter_date:,
+          family_fee:,
+          scheduled_revenue:,
+          estimated_revenue:
         ).call
       end
     end
@@ -124,7 +124,7 @@ module Nebraska
         @full_days ||= attendances_this_month.reduce(0) do |sum, service_day|
           sum + Nebraska::Daily::DaysDurationCalculator.new(
             total_time_in_care: service_day.total_time_in_care,
-            filter_date: filter_date
+            filter_date:
           ).call
         end
       end
@@ -270,7 +270,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.child_approval'
       ) do
-        @child_approval ||= approval&.child_approvals&.find_by(child: child)
+        @child_approval ||= approval&.child_approvals&.find_by(child:)
       end
     end
 
@@ -381,9 +381,9 @@ module Nebraska
 
           days << make_calculated_service_day(
             service_day: ServiceDay.new(
-              date: date,
-              child: child,
-              schedule: schedule,
+              date:,
+              child:,
+              schedule:,
               total_time_in_care: schedule&.duration || 8.hours
             )
           )
@@ -459,11 +459,11 @@ module Nebraska
         'dashboard_case.reimbursable_absent_service_days',
         'finds reimbursable absent days for given month; COVID are reimbursable w/o restriction, others capped at 5'
       ) do
-        absences = month ? absences_for_month(month: month) : absences_this_month
+        absences = month ? absences_for_month(month:) : absences_this_month
 
         return if absences.blank?
 
-        covid_absences, standard_absences = split_absences_by_type(absences: absences)
+        covid_absences, standard_absences = split_absences_by_type(absences:)
         [
           covid_absences,
           standard_absences.sort_by(&:total_time_in_care).reverse!.take(5)
@@ -542,9 +542,9 @@ module Nebraska
         'makes a new calculated service day'
       ) do
         Nebraska::CalculatedServiceDay.new(
-          service_day: service_day,
-          child_approvals: child_approvals,
-          rates: rates
+          service_day:,
+          child_approvals:,
+          rates:
         )
       end
     end

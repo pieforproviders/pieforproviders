@@ -37,12 +37,13 @@ module Illinois
 
       total_days = days_by_time_type * weeks_in_month
 
-      total_days <= eligible_days_by_business ? total_days : eligible_days_by_business
+      [total_days, eligible_days_by_business].min
     end
 
     def days_by_time_type
       return full_time_days if full_time
-      return part_time_days unless full_time
+
+      part_time_days unless full_time
     end
 
     def monthly_approval

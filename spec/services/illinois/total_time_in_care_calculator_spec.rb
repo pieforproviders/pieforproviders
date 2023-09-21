@@ -16,12 +16,12 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
            check_in: Time.current.at_beginning_of_day,
            check_out: Time.current.at_beginning_of_day + 16.hours)
   end
-  let(:service_day) { create(:service_day, schedule: nil, child: child) }
+  let(:service_day) { create(:service_day, schedule: nil, child:) }
 
   describe '#call' do
     context 'when child has no attendances' do
       it 'doesn\'t flag the service day and does not change the total hours' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(0)
         expect(service_day.part_time).to eq(0)
         expect(service_day.full_time).to eq(0)
@@ -35,7 +35,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'flags the service day and does not change the total hours' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(0)
         expect(service_day.part_time).to eq(1) # part_days_approved_per_week > full_days_approved_per_week
         expect(service_day.full_time).to eq(0)
@@ -49,7 +49,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'updates the total_time_in_care normally' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(3.hours)
         expect(service_day.part_time).to eq(1)
         expect(service_day.full_time).to eq(0)
@@ -64,7 +64,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'updates the total_time_in_care and flags the service day' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(3.hours)
         expect(service_day.part_time).to eq(1)
         expect(service_day.full_time).to eq(0)
@@ -78,7 +78,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'updates full and part times' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(16.hours)
         expect(service_day.full_time).to eq(1)
         expect(service_day.part_time).to eq(1)
@@ -97,7 +97,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'updates full and part times' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(3.hours)
         expect(service_day.full_time).to eq(0)
         expect(service_day.part_time).to eq(1)
@@ -116,7 +116,7 @@ RSpec.describe Illinois::TotalTimeInCareCalculator do
       end
 
       it 'updates full and part times' do
-        described_class.new(service_day: service_day).call
+        described_class.new(service_day:).call
         expect(service_day.total_time_in_care).to eq(18.hours)
         expect(service_day.full_time).to eq(2)
         expect(service_day.part_time).to eq(0)

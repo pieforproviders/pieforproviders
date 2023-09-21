@@ -34,9 +34,9 @@ module Api
               service_day
             else
               Commands::Attendance::Create.new(
-                check_in: check_in,
+                check_in:,
                 child_id: child.id,
-                check_out: check_out
+                check_out:
               ).create.service_day
             end
           end
@@ -52,7 +52,7 @@ module Api
 
           next unless child_approval_id
 
-          initial_attendance_params.except(:child_id).merge(child_approval_id: child_approval_id)
+          initial_attendance_params.except(:child_id).merge(child_approval_id:)
         rescue Pundit::NotAuthorizedError
           next add_error_and_return_nil(
             :child_id,
@@ -107,8 +107,8 @@ module Api
       end
 
       def service_day
-        ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
-          ServiceDay.create!(child: child, date: date, absence_type: absence_type)
+        ServiceDay.find_by(child:, date:)&.update!(absence_type:) ||
+          ServiceDay.create!(child:, date:, absence_type:)
       rescue StandardError => e
         add_error_and_return_nil(:service_day, e.message)
       end
@@ -141,7 +141,7 @@ module Api
         ServiceDayBlueprint.render(
           attendance_batch.compact_blank,
           root: :service_days,
-          meta: { errors: errors }
+          meta: { errors: }
         )
       end
     end

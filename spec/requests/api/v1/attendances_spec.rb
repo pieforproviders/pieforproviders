@@ -80,7 +80,7 @@ RSpec.describe 'Api::V1::Attendances' do
       it 'gets the attendance by id' do
         get("/api/v1/attendances/#{extra_attendances.first.id}", params: {}, headers:)
         expect(response).to match_response_schema('attendance')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['id']).to eq(extra_attendances.first.id)
       end
 
@@ -98,7 +98,7 @@ RSpec.describe 'Api::V1::Attendances' do
       it 'gets the attendance by id' do
         get("/api/v1/attendances/#{this_week_attendances.first.id}", params: {}, headers:)
         expect(response).to match_response_schema('attendance')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['id']).to eq(this_week_attendances.first.id)
       end
 
@@ -134,7 +134,7 @@ RSpec.describe 'Api::V1::Attendances' do
 
       it 'displays the attendances' do
         get('/api/v1/attendances', params:, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response.pluck('child_approval_id')).to match_array(past_attendances.collect(&:child_approval_id))
         expect(parsed_response.pluck('time_in_care'))
           .to match_array(past_attendances.collect { |x| x.time_in_care.to_s })
@@ -146,7 +146,7 @@ RSpec.describe 'Api::V1::Attendances' do
     context 'when sent without a filter date' do
       it 'displays the attendances' do
         get('/api/v1/attendances', params: {}, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response.pluck('child_approval_id'))
           .to match_array(this_week_attendances.collect(&:child_approval_id))
         expect(parsed_response.pluck('time_in_care'))
@@ -164,7 +164,7 @@ RSpec.describe 'Api::V1::Attendances' do
 
       it 'displays the attendances' do
         get('/api/v1/attendances', params: {}, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         all_current_attendances = this_week_attendances + extra_attendances
         expect(parsed_response.pluck('child_approval_id'))
           .to match_array(all_current_attendances.collect(&:child_approval_id))
@@ -193,14 +193,14 @@ RSpec.describe 'Api::V1::Attendances' do
       it 'can submit a new check_in for an attendance' do
         check_in_params = { attendance: { check_in: new_check_in.to_s } }
         put("/api/v1/attendances/#{attendance.id}", params: check_in_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
       end
 
       it 'can submit a new check_out for an attendance' do
         check_out_params = { attendance: { check_out: new_check_out.to_s } }
         put("/api/v1/attendances/#{attendance.id}", params: check_out_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
       end
 
@@ -210,7 +210,7 @@ RSpec.describe 'Api::V1::Attendances' do
         absence_params = { attendance: { service_day_attributes: { absence_type: 'absence' } } }
         create(:schedule, child:, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
         put("/api/v1/attendances/#{attendance.id}", params: absence_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         attendance.reload
         expect(DateTime.parse(parsed_response['check_in']))
           .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))
@@ -247,14 +247,14 @@ RSpec.describe 'Api::V1::Attendances' do
       it 'can submit a new check_in for an attendance' do
         check_in_params = { attendance: { check_in: new_check_in.to_s } }
         put("/api/v1/attendances/#{attendance.id}", params: check_in_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(DateTime.parse(parsed_response['check_in'])).to eq(DateTime.parse(new_check_in.to_s))
       end
 
       it 'can submit a new check_out for an attendance' do
         check_out_params = { attendance: { check_out: new_check_out.to_s } }
         put("/api/v1/attendances/#{attendance.id}", params: check_out_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(DateTime.parse(parsed_response['check_out'])).to eq(DateTime.parse(new_check_out.to_s))
       end
 
@@ -264,7 +264,7 @@ RSpec.describe 'Api::V1::Attendances' do
         absence_params = { attendance: { service_day_attributes: { absence_type: 'absence' } } }
         create(:schedule, child:, effective_on: new_check_in - 2.days, weekday: new_check_in.wday)
         put("/api/v1/attendances/#{attendance.id}", params: absence_params, headers:)
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         attendance.reload
         expect(DateTime.parse(parsed_response['check_in']))
           .to eq(DateTime.parse(check_in.in_time_zone(child.timezone).to_s))

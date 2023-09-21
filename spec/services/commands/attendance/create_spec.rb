@@ -15,21 +15,21 @@ RSpec.describe Commands::Attendance::Create, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (24 * 3600)
       )
@@ -40,14 +40,14 @@ RSpec.describe Commands::Attendance::Create, type: :service do
   describe '#initialize' do
     it 'initializes with required info' do
       expect do
-        described_class.new(check_in: check_in, child_id: child.id)
+        described_class.new(check_in:, child_id: child.id)
       end.to not_raise_error
     end
 
     it 'initializes with optional info' do
       expect do
         described_class.new(
-          check_in: check_in,
+          check_in:,
           check_out: check_in + 6.hours,
           child_id: child.id,
           wonderschool_id: 'string'
@@ -68,7 +68,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'creates the attendance on a new ServiceDay' do
       expect do
         described_class.new(
-          check_in: check_in,
+          check_in:,
           check_out: check_in + 6.hours,
           child_id: child.id
         ).create
@@ -80,7 +80,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'creates the attendance on an existing absent ServiceDay' do
       service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day,
         absence_type: 'absence'
       )
@@ -100,10 +100,10 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'creates the attendance on an existing attended ServiceDay' do
       service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: check_in.strftime('%Y-%m-%d %H:%M:%S').to_datetime.at_beginning_of_day
       )
-      create(:attendance, check_in: check_in, check_out: check_in + 6.hours, service_day: service_day)
+      create(:attendance, check_in:, check_out: check_in + 6.hours, service_day:)
       expect do
         described_class.new(
           check_in: check_in + 8.hours,
@@ -118,7 +118,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'raises an error when there is no matching child' do
       expect do
         described_class.new(
-          check_in: check_in,
+          check_in:,
           check_out: check_in + 6.hours,
           child_id: 'bad-id'
         ).create
@@ -144,7 +144,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
     it 'raises an error when the check out is before the check in' do
       expect do
         described_class.new(
-          check_in: check_in,
+          check_in:,
           check_out: check_in - 6.hours,
           child_id: child.id
         ).create
@@ -156,7 +156,7 @@ RSpec.describe Commands::Attendance::Create, type: :service do
 
     it 'assigns a schedule when one is present for that weekday' do
       described_class.new(
-        check_in: check_in,
+        check_in:,
         check_out: check_in + 6.hours,
         child_id: child.id
       ).create

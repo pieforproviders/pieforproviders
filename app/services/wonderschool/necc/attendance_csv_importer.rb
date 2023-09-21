@@ -51,16 +51,16 @@ module Wonderschool
         check_out = row['checked_out_at']
         if attendance
           Commands::Attendance::Update.new(
-            attendance: attendance,
-            check_in: check_in,
-            check_out: check_out,
+            attendance:,
+            check_in:,
+            check_out:,
             absence_type: nil
           ).update
         else
           Commands::Attendance::Create.new(
-            check_in: check_in,
+            check_in:,
             child_id: child.id,
-            check_out: check_out,
+            check_out:,
             wonderschool_id: row['attendance_id']
           ).create
         end

@@ -11,8 +11,10 @@ RSpec.describe 'Api::V1::Users' do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
 
   before do
-    allow(user).to receive(:send_confirmation_notification?).and_return(false)
-    allow(user).to receive(:send_password_change_notification?).and_return(false)
+    allow(user).to receive_messages(
+      send_confirmation_notification?: false,
+      send_password_change_notification?: false
+    )
   end
 
   describe 'PUT /api/v1/users/::id' do
@@ -21,15 +23,15 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in illinois_user }
 
       it 'updates the user' do
-        put "/api/v1/users/#{illinois_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        put("/api/v1/users/#{illinois_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers:)
         expect(response).to match_response_schema('user')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq('Harvey')
       end
 
       it 'returns error if user is not within the scope of the user' do
         admin = create(:admin)
-        put "/api/v1/users/#{admin.id}", params: { user: { full_name: 'Harvey Dent' } }, headers: headers
+        put("/api/v1/users/#{admin.id}", params: { user: { full_name: 'Harvey Dent' } }, headers:)
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -38,17 +40,17 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'updates the user' do
-        put "/api/v1/users/#{admin_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        put("/api/v1/users/#{admin_user.id}", params: { user: { greeting_name: 'Harvey' } }, headers:)
         expect(response).to match_response_schema('user')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq('Harvey')
       end
 
       it 'can update any user' do
         dummy = create(:confirmed_user)
-        put "/api/v1/users/#{dummy.id}", params: { user: { greeting_name: 'Harvey' } }, headers: headers
+        put("/api/v1/users/#{dummy.id}", params: { user: { greeting_name: 'Harvey' } }, headers:)
         expect(response).to match_response_schema('user')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq('Harvey')
       end
     end
@@ -81,9 +83,9 @@ RSpec.describe 'Api::V1::Users' do
                     accept_more_subsidy_families: 'True',
                     not_as_much_money: 'True',
                     too_much_time: 'True' } }
-        post '/api/v1/users', params: params, headers: headers
+        post('/api/v1/users', params:, headers:)
         expect(response).to match_response_schema('user')
-        parsed_response = JSON.parse(response.body)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq('Candice')
       end
     end
@@ -96,7 +98,7 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'deletes any user' do
-        delete "/api/v1/users/#{illinois_user.id}", params: {}, headers: headers
+        delete("/api/v1/users/#{illinois_user.id}", params: {}, headers:)
         expect(response).to have_http_status(:no_content)
       end
     end
@@ -105,12 +107,12 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in illinois_user }
 
       it 'can delete the user\'s own account' do
-        delete "/api/v1/users/#{illinois_user.id}", params: {}, headers: headers
+        delete("/api/v1/users/#{illinois_user.id}", params: {}, headers:)
         expect(response).to have_http_status(:no_content)
       end
 
       it 'cannot delete other users\' accounts' do
-        delete "/api/v1/users/#{nebraska_user.id}", params: {}, headers: headers
+        delete("/api/v1/users/#{nebraska_user.id}", params: {}, headers:)
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -123,7 +125,7 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in illinois_user }
 
       it 'returns only the user' do
-        get '/api/v1/users', headers: headers
+        get('/api/v1/users', headers:)
         expect(response).to have_http_status(:forbidden)
       end
     end
@@ -132,8 +134,8 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'returns all users' do
-        get '/api/v1/users', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/users', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.pluck('greeting_name')).to include(nebraska_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('users')
@@ -148,23 +150,23 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in illinois_user }
 
       it 'returns the user using their ID' do
-        get "/api/v1/users/#{illinois_user.id}", headers: headers
-        parsed_response = JSON.parse(response.body)
+        get("/api/v1/users/#{illinois_user.id}", headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
       it 'returns the user using /profile' do
-        get '/api/v1/profile', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/profile', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq(illinois_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
       it 'does not return another user' do
-        get "/api/v1/users/#{nebraska_user.id}", headers: headers
+        get("/api/v1/users/#{nebraska_user.id}", headers:)
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -173,21 +175,21 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'does not return the illinois user' do
-        get "/api/v1/users/#{illinois_user.id}", headers: headers
+        get("/api/v1/users/#{illinois_user.id}", headers:)
         expect(response).to match_response_schema('user')
       end
 
       it 'returns the admin user using /profile' do
-        get '/api/v1/profile', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/profile', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq(admin_user.greeting_name)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('user')
       end
 
       it 'returns the nebraska user' do
-        get "/api/v1/users/#{nebraska_user.id}", headers: headers
-        parsed_response = JSON.parse(response.body)
+        get("/api/v1/users/#{nebraska_user.id}", headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response['greeting_name']).to eq(nebraska_user.greeting_name)
         expect(response).to match_response_schema('user')
       end
@@ -195,7 +197,7 @@ RSpec.describe 'Api::V1::Users' do
       # TODO: requires user policy changes
       # it 'returns the other user' do
       #   get "/api/v1/users/#{nebraska_user.id}", headers: headers
-      #   parsed_response = JSON.parse(response.body)
+      #   parsed_response = response.parsed_body
       #   expect(parsed_response['greeting_name']).to eq(nebraska_user.greeting_name)
       #   expect(response).to match_response_schema('user')
       # end
@@ -239,24 +241,24 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in illinois_user }
 
       it 'returns the correct data schema' do
-        get '/api/v1/case_list_for_dashboard', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('illinois_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a filter_date is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('illinois_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a business params is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business.id }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { business: nebraska_business.id }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
@@ -267,24 +269,24 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in nebraska_user }
 
       it 'returns the correct data schema' do
-        get '/api/v1/case_list_for_dashboard', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a filter_date is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a business params is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
@@ -295,24 +297,24 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'returns the correct data schema' do
-        get '/api/v1/case_list_for_dashboard', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a filter_date is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { filter_date: '2017-12-12' }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end
 
       it 'returns the correct cases when a business params is sent' do
-        get '/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', params: { business: nebraska_business_two.id }, headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(0)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')

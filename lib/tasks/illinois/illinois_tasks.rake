@@ -32,7 +32,7 @@ namespace :illinois do
         language: 'en',
         opt_in_email: true,
         opt_in_text: true,
-        phone_number: phone_number,
+        phone_number:,
         state: 'IL',
         get_from_pie: 'fame',
         organization: row['Provider Name'],

@@ -25,7 +25,7 @@ class Schedule < UuidApplicationRecord
                 date.at_beginning_of_month,
                 date.at_end_of_month).order(updated_at: :desc)
         }
-  scope :for_weekday, ->(weekday) { where(weekday: weekday).order(updated_at: :desc) }
+  scope :for_weekday, ->(weekday) { where(weekday:).order(updated_at: :desc) }
 
   private
 

@@ -17,7 +17,7 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       travel_to attendance_date
       expect(described_class.new(
         timezone: child.timezone,
-        family_fee: family_fee,
+        family_fee:,
         filter_date: Time.current,
         estimated_revenue: Money.from_amount(300),
         scheduled_revenue: Money.from_amount(1000)
@@ -35,7 +35,7 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       it 'returns at_risk when the ratio is less than -0.2' do
         expect(described_class.new(
           timezone: child.timezone,
-          family_fee: family_fee,
+          family_fee:,
           filter_date: Time.current,
           estimated_revenue: Money.from_amount(300),
           scheduled_revenue: Money.from_amount(1000)
@@ -45,7 +45,7 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       it 'returns on_track when the ratio is between -0.2 and 0.2' do
         expect(described_class.new(
           timezone: child.timezone,
-          family_fee: family_fee,
+          family_fee:,
           filter_date: Time.current,
           estimated_revenue: Money.from_amount(998),
           scheduled_revenue: Money.from_amount(1000)
@@ -55,7 +55,7 @@ RSpec.describe Nebraska::Monthly::AttendanceRiskCalculator, type: :service do
       it 'returns ahead_of_schedule when the ratio is above 0.2' do
         expect(described_class.new(
           timezone: child.timezone,
-          family_fee: family_fee,
+          family_fee:,
           filter_date: Time.current,
           estimated_revenue: Money.from_amount(2200),
           scheduled_revenue: Money.from_amount(1000)

@@ -4,7 +4,7 @@
 # Fix all service_days where the date is not at the beginning of the day for the child
 desc 'Cast all service_days to the beginning of the day'
 task cast_service_days_to_beginning_of_day: :environment do
-  ServiceDay.all.each do |service_day|
+  ServiceDay.find_each do |service_day|
     service_day.update!(date: service_day.date.in_time_zone(service_day.child.timezone).at_beginning_of_day)
   end
 end

@@ -33,7 +33,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
                              date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
                              child: single_child_family)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: single_child_family.child_approvals.first,
                check_in: service_day.date + 3.hours)
       end
@@ -46,9 +46,9 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
         3.times do |idx|
           service_day = create(:service_day,
                                date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
-                               child: child)
+                               child:)
           create(:illinois_part_day_attendance,
-                 service_day: service_day,
+                 service_day:,
                  child_approval: child.child_approvals.first,
                  check_in: service_day.date + 3.hours)
         end
@@ -112,11 +112,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -144,11 +144,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours,
             check_out: service_day.date + 9.hours
@@ -177,11 +177,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -208,11 +208,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -222,11 +222,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: 1.week.ago.prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours,
             check_out: service_day.date + 9.hours

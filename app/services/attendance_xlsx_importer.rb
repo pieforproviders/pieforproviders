@@ -113,13 +113,13 @@ class AttendanceXlsxImporter
                   Time.strptime(attendance_info[:check_out], '%Y-%m-%d %I:%M %p').to_datetime
                 end
 
-    child_approval = active_child_approval(check_in: check_in)
+    child_approval = active_child_approval(check_in:)
 
-    attendance = Attendance.find_by(check_in: check_in, child_approval: child_approval, check_out: check_out)
+    attendance = Attendance.find_by(check_in:, child_approval:, check_out:)
 
     return if attendance # makes the import idempotent
 
-    Commands::Attendance::Create.new(check_in: check_in, child_id: @child.id, check_out: check_out).create
+    Commands::Attendance::Create.new(check_in:, child_id: @child.id, check_out:).create
   end
 
   def active_child_approval(check_in:)
@@ -139,8 +139,8 @@ class AttendanceXlsxImporter
     match_tag = match_results[:match_tag]
     match_child = match_results[:result_match]
 
-    matching_actions = NameMatchingActions.new(match_tag: match_tag,
-                                               match_child: match_child,
+    matching_actions = NameMatchingActions.new(match_tag:,
+                                               match_child:,
                                                file_child: [@child_names[0],
                                                             @child_names[1]],
                                                business: @business)
