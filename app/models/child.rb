@@ -55,8 +55,6 @@ class Child < UuidApplicationRecord
   scope :not_deleted, -> { where(deleted_at: nil) }
   scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
 
-  require 'memory_profiler'
-
   scope :with_dashboard_case,
         lambda { |date = nil|
           date ||= Time.current

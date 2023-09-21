@@ -29,11 +29,16 @@ module App
   # The Application
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 7.0
 
     config.autoload_paths << Rails.root.join('lib').to_s
+    config.eager_load_paths << Rails.root.join('lib').to_s
 
     config.active_record.schema_format = :ruby
+
+    config.session_store :cookie_store, key: '_pieforproviders_session'
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use config.session_store
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -55,7 +60,7 @@ module App
     config.i18n.available_locales = %i[en es]
     config.i18n.default_locale = :en
 
-    # config.active_job.queue_adapter = :good_job
+    config.active_job.queue_adapter = :good_job
 
     # custom configuration
     config.allow_seeding = ENV.fetch('ALLOW_SEEDING', false) == 'true'
