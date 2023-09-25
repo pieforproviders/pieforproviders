@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ChildBusiness, type: :model do
+RSpec.describe ChildBusiness do
   pending "add some examples to (or delete) #{__FILE__}"
 end
 
@@ -8,12 +8,12 @@ end
 #
 # Table name: child_businesses
 #
-#  id          :uuid             not null, primary key
-#  active      :boolean
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  business_id :uuid             not null
-#  child_id    :uuid             not null
+#  id               :uuid             not null, primary key
+#  currently_active :boolean          default(FALSE)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  business_id      :uuid             not null
+#  child_id         :uuid             not null
 #
 # Indexes
 #

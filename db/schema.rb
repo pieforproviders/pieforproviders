@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_06_212034) do
+ActiveRecord::Schema.define(version: 2023_09_25_125337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 2023_09_06_212034) do
   end
 
   create_table "businesses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.string "license_type", null: false
     t.string "name", null: false
     t.uuid "user_id", null: false
@@ -122,9 +121,9 @@ ActiveRecord::Schema.define(version: 2023_09_06_212034) do
   create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.uuid "business_id", null: false
-    t.boolean "active"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "currently_active", default: false
     t.index ["business_id"], name: "index_child_businesses_on_business_id"
     t.index ["child_id"], name: "index_child_businesses_on_child_id"
   end

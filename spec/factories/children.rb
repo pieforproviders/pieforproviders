@@ -35,6 +35,7 @@ FactoryBot.define do
         effective_date { 6.months.ago }
       end
       after(:create) do |child, evaluator|
+        child.businesses.destroy_all
         create(:child_business, child: child, business: create(:business, :nebraska_ldds, active: true))
 
         child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')

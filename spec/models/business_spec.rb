@@ -125,7 +125,6 @@ end
 #
 #  id              :uuid             not null, primary key
 #  accredited      :boolean
-#  active          :boolean          default(TRUE), not null
 #  county          :string
 #  deleted_at      :date
 #  inactive_reason :string

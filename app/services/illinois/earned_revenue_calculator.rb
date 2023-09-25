@@ -9,7 +9,8 @@ module Illinois
     def initialize(service_day:)
       super
       @child = service_day.child
-      @business = child.businesses.find_by(active: true)
+      child_business = @child.child_businesses.find_by(currently_active: true)
+      @business = @child.businesses.find(child_business.business_id)
       @child_approval = child.active_child_approval(service_day.date)
     end
 

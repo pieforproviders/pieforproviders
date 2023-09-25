@@ -4,19 +4,8 @@ FactoryBot.define do
   factory :child_business do
     business
     child
-    # Asígnale un Business activo sólo al primer ChildBusiness que crees.
-    after(:create) do |child_business, evaluator|
-      if evaluator.active
-        business = create(:business, active: true)
-        child_business.business = business
-      end
-    end
 
-    factory :child_business_with_active_business do
-      transient do
-        active { true }
-      end
-    end
+    currently_active { true }
   end
 end
 
@@ -24,12 +13,12 @@ end
 #
 # Table name: child_businesses
 #
-#  id          :uuid             not null, primary key
-#  active      :boolean
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  business_id :uuid             not null
-#  child_id    :uuid             not null
+#  id               :uuid             not null, primary key
+#  currently_active :boolean          default(FALSE)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  business_id      :uuid             not null
+#  child_id         :uuid             not null
 #
 # Indexes
 #

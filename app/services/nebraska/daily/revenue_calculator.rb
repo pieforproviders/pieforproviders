@@ -9,7 +9,8 @@ module Nebraska
       def initialize(child_approval:, date:, total_time_in_care:, rates:)
         @child_approval = child_approval
         @child = child_approval.child
-        @business = child.businesses.find_by(active: true)
+        child_business = child.child_businesses.find_by(currently_active: true)
+        @business = child.businesses.find(child_business.business_id)
         @date = date
         @rates = rates
         @total_time_in_care = total_time_in_care
