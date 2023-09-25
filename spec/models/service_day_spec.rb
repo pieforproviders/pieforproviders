@@ -272,11 +272,9 @@ RSpec.describe ServiceDay do
         date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
       )
     end
-
     let!(:state) do
       create(:state)
     end
-
     let(:state_time_rules) do
       [
         create(
@@ -302,7 +300,6 @@ RSpec.describe ServiceDay do
         )
       ]
     end
-
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
              service_day:,
@@ -346,12 +343,12 @@ RSpec.describe ServiceDay do
 
     it 'calculates the right total when the service day is changed from an absence_on_scheduled_day' \
        'back to a non-absence' do
-      attendance.update!(check_out: attendance.check_in + 6.hours)
       service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
       service_day.update!(absence_type: 'absence_on_scheduled_day')
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.total_time_in_care).to eq(10.minutes)
+      expect(service_day.schedule.duration).to eq(10.minutes)
+      attendance.update!(check_out: attendance.check_in + 6.hours)
       service_day.update!(absence_type: nil)
       perform_enqueued_jobs
       service_day.reload

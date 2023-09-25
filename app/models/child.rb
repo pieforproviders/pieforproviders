@@ -92,7 +92,8 @@ class Child < UuidApplicationRecord
   end
 
   def primary_business
-    businesses.find_by(active: true)
+    child_business = child_businesses.find_by(currently_active: true)
+    businesses.find(child_business.business_id)
   end
 
   def primary_user
