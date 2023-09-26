@@ -38,9 +38,9 @@
     "arrowParens": "avoid"
   },
   "engines": {
-    "node": "16.17.0",
-    "npm": "8.15.0",
-    "yarn": "1.22.19"
+    "node": "18.x",
+    "npm": "9.8.x",
+    "yarn": "1.22.x"
   },
   "devDependencies": {
     "cypress": "^9.7.0",

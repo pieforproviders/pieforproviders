@@ -4,7 +4,7 @@
   "private": true,
   "engines": {
     "node": "18.x",
-    "npm": "8.15.0",
+    "npm": "9.8.x",
     "yarn": "1.22.x"
   },
   "proxy": "http://localhost:3001",
