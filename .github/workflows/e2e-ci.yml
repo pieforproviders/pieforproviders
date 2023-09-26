@@ -49,7 +49,7 @@ jobs:
           DEVISE_JWT_SECRET_KEY: imasecretkey
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16.17.0'
+          node-version: '18.x'
       - name: Run Cypress tests
         run: yarn cy:ci
         env:
