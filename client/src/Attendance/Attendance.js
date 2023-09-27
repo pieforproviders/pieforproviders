@@ -472,8 +472,9 @@ export function Attendance() {
         columns={columns}
         bordered={true}
         pagination={false}
+        virtual
         sticky
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1500, y: 475 }}
         className="my-5 attendance-table"
         loading={{
           delay: 1000,
