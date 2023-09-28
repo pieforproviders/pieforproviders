@@ -49,14 +49,14 @@
     "xlsx": "^0.18.4"
   },
   "scripts": {
-    "build": "craco build",
+    "build": "react-scripts --openssl-legacy-provider build",
     "build:style": "tailwind build src/tailwind.css -o src/tailwind.generated.css",
     "format": "prettier --write \"**/*.+(js|jsx|json|yml|yaml|css|md|vue)\"",
     "lint": "yarn eslint ./src",
     "lint:fix": "yarn lint --fix",
     "prebuild": "yarn run build:style",
     "prestart": "yarn run build:style",
-    "start": "craco start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "test": "craco test --env=jest-environment-jsdom-sixteen --coverage --watchAll",
     "test-once": "CI=true craco test"
   },
