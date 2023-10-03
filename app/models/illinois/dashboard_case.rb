@@ -17,7 +17,7 @@ module Illinois
       @child = child
       @filter_date = filter_date
       child_business = child.child_businesses.find_by(currently_active: true)
-      @business = child.businesses.find(child_business.business_id)
+      @business = Business.find(child_business.business_id)
       @schedules = child&.schedules
       @eligible_days = eligible_days
       @attended_days = attended_days

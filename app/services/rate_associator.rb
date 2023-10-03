@@ -5,7 +5,9 @@
 class RateAssociator
   def initialize(child)
     @child = child
-    @region = Illinois::RegionFinder.new(business: child.businesses.find_by(active: true)).call
+    child_business = @child.child_businesses.find_by(currently_active: true)
+    active_business = Business.find(child_business.business_id)
+    @region = Illinois::RegionFinder.new(business: active_business).call
   end
 
   def call
@@ -19,11 +21,13 @@ class RateAssociator
   end
 
   def county
-    @child.businesses.find_by(active: true)&.county
+    child_business = @child.child_businesses.find_by(currently_active: true)
+    Business.find(child_business.business_id)&.county
   end
 
   def state
-    @child.businesses.find_by(active: true)&.state
+    child_business = @child.child_businesses.find_by(currently_active: true)
+    Business.find(child_business.business_id).state
   end
 
   def today

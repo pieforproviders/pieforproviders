@@ -46,7 +46,7 @@ module Api
       end
 
       def child_business_params
-        params.require(:child_business).permit(:child_id, :business_id, :active)
+        params.require(:child_business).permit(:child_id, :business_id, :currently_active)
       end
     end
   end

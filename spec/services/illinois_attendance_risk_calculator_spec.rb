@@ -5,9 +5,10 @@ require 'rails_helper'
 RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
   describe '#elapsed_eligible_days' do
     it 'calculate elapsed eligible days for child with attended info' do
-      business = create(:business, active: true)
-      child = create(:child_in_illinois, businesses: [business])
-      date = Date.new(2022, 12, 20)
+      business = create(:business)
+      child = create(:child_in_illinois)
+      create(:child_business, child: child, business: business)
+      date = Date.new(2023, 1, 20)
       eligible_days_in_week = 5
       elapsed_weeks = 3
       elapsed_eligible_days = eligible_days_in_week * elapsed_weeks
@@ -19,7 +20,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
   describe '#attended_days' do
     it 'calculate attended days until given date' do
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current
       attendance_date = Time.current.at_beginning_of_month
@@ -43,7 +44,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
   describe '#attendance_rate_until_date' do
     it 'caculate attendance rate until given date' do
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current
       attendance_date = Time.current.at_beginning_of_month
@@ -65,7 +66,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
   describe '#risk_label' do
     it 'return not_enough_info label when there is no attendances' do
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_end_of_month
       attendance_rate_until_date = described_class.new(child, date).call
@@ -74,7 +75,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
     it 'return not_enough_info label with attendance info but less than halfway through month' do
       travel_to Time.current.at_beginning_of_month + rand(2..14).days
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month + 5.days
 
@@ -97,7 +98,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
 
     it 'return at_risk label when attended rate is below treshold' do
       travel_to Time.current.at_beginning_of_month + rand(15..28).days
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month
 
@@ -120,7 +121,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
     it 'return on_track label when attended rate is above treshold' do
       rand_num = rand(14..28)
       travel_to Time.current.at_beginning_of_month + rand_num.days
-      business = create(:business, active: true)
+      business = create(:business)
       child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month
       amount_of_attendances = 11 + rand_num

@@ -13,13 +13,13 @@ class ChildBlueprint < Blueprinter::Base
   field :wonderschool_id
   field :business_name do |child, _options|
     child_business = child.child_businesses.find_by(currently_active: true)
-    business = child.businesses.find(child_business.business_id)
+    business = Business.find(child_business.business_id)
     business.name
   end
 
   field :active_business do |child, _options|
     child_business = child.child_businesses.find_by(currently_active: true)
-    business = child.businesses.find(child_business.business_id)
+    business = Business.find(child_business.business_id)
     { id: business.id, name: business.name }
   end
 
@@ -37,7 +37,7 @@ class ChildBlueprint < Blueprinter::Base
     association :illinois_dashboard_case, blueprint: Illinois::DashboardCaseBlueprint do |child, options|
       options[:filter_date] ||= Time.current
       child_business = child.child_businesses.find_by(currently_active: true)
-      business = child.businesses.find(child_business.business_id)
+      business = Business.find(child_business.business_id)
       child_approval = child&.active_child_approval(options[:filter_date])
       service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
       attended_days = service_days&.non_absences

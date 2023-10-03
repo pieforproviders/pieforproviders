@@ -9,11 +9,13 @@ FactoryBot.define do
     user factory: :confirmed_user
     zipcode { '60606' }
     county { 'Cook' }
-    active { false }
 
     factory :business_with_children do
       after :create do |business|
-        create_list(:child, 3, business:)
+        3.times do
+          child = create(:child)
+          create(:child_business, business:, child:)
+        end
       end
     end
 
@@ -128,6 +130,7 @@ end
 #
 #  id              :uuid             not null, primary key
 #  accredited      :boolean
+#  active          :boolean          default(TRUE), not null
 #  county          :string
 #  deleted_at      :date
 #  inactive_reason :string

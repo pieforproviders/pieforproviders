@@ -133,7 +133,7 @@ RSpec.describe Attendance do
   end
 
   describe '#illinois_*_days scopes' do
-    let(:child) { create(:child, businesses: [create(:business, zipcode: '60606', active: true)]) }
+    let(:child) { create(:child, businesses: [create(:business, zipcode: '60606')]) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
     let(:part_day) do

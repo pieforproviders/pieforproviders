@@ -34,7 +34,8 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
   end
   # rubocop:enable RSpec/LetSetup
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:child_business) { create(:child_business, business:) }
   let!(:approval) { create(:approval, num_children: 3, business:) }
   let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }
@@ -43,6 +44,7 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
   let!(:second_check_in) { (approval.effective_on + 4.days + 8.hours + 11.minutes).strftime('%Y-%m-%d %I:%M%P') }
   let!(:second_check_out) { (approval.effective_on + 4.days + 14.hours + 29.minutes).strftime('%Y-%m-%d %I:%M%P') }
 
+  children.each { |child| child_business.child = child }
   include_context 'with correct api version header'
 
   before do

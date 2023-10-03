@@ -158,7 +158,9 @@ RSpec.describe Child do
 
   describe 'delegated attributes' do
     it 'gets user from business' do
-      expect(child.user).to eq(child.businesses.find_by(active: true).user)
+      child_business = child.child_businesses.find_by(currently_active: true)
+      active_business = Business.find(child_business.business_id)
+      expect(child.user).to eq(active_business.user)
     end
 
     it 'gets state from user' do
@@ -244,7 +246,7 @@ RSpec.describe Child do
 
   describe '#associate_rate' do
     let!(:user) { create(:confirmed_user) }
-    let!(:created_business) { create(:business, user:, active: true) }
+    let!(:created_business) { create(:business, user:) }
     let!(:child) do
       create(:child,
              first_name: 'Parvati',

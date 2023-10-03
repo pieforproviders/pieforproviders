@@ -6,7 +6,7 @@ RSpec.describe ApplicationPolicy do
   let(:user) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, user:, active: true) }
+  let(:business) { create(:business, user:) }
 
   it 'raises an exception if user is nil' do
     expect { described_class.new(nil, business) }.to raise_error(Pundit::NotAuthorizedError)

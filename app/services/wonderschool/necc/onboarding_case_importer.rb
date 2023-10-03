@@ -71,12 +71,12 @@ module Wonderschool
 
         @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
                              first_name,
-                             last_name).first_or_initialize(required_child_params)
-
+                             last_name).first_or_initialize(required_child_params.except(:business_id))
         if @child.new_record?
           @child.save
+          @child.child_businesses.create!(business: @business, currently_active: true)
         else
-          @child.update(required_child_params)
+          @child.update(required_child_params.except(:business_id))
         end
       end
 

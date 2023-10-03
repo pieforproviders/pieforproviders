@@ -23,8 +23,8 @@ RSpec.describe AttendanceCsvImporter do
     Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
   end
 
-  let!(:business1) { create(:business, name: 'Test Child Care', active: true) }
-  let!(:business2) { create(:business, name: 'Fake Daycare', active: true) }
+  let!(:business1) { create(:business, name: 'Test Child Care') }
+  let!(:business2) { create(:business, name: 'Fake Daycare') }
   let!(:approvals) do
     create_list(:approval,
                 4,
@@ -32,37 +32,40 @@ RSpec.describe AttendanceCsvImporter do
                 expires_on: nil,
                 create_children: false)
   end
-  let!(:hermione_business_one) do
-    create(:necc_child,
-           first_name: 'Hermione',
-           last_name: 'Granger',
-           dhs_id: '1234',
-           businesses: [business1],
-           approvals: [approvals[0]])
+  let!(:hermione_business1) do
+    child = create(:necc_child,
+                   first_name: 'Hermione',
+                   last_name: 'Granger',
+                   dhs_id: '1234',
+                   approvals: [approvals[0]])
+    create(:child_business, child:, business: business1)
+    child
   end
-  let!(:child2_business_one) do
-    create(:necc_child,
-           dhs_id: '5678',
-           businesses: [business1],
-           approvals: [approvals[1]])
+  let!(:child2_business1) do
+    child = create(:necc_child,
+                   dhs_id: '5678',
+                   approvals: [approvals[1]])
+    create(:child_business, child:, business: business1)
+    child
   end
   let!(:third_child) do
-    create(:necc_child,
-           first_name: 'Lucy',
-           last_name: 'Pevensie',
-           dhs_id: '5677',
-           businesses: [business1],
-           approvals: [approvals[2]])
+    child = create(:necc_child,
+                   first_name: 'Lucy',
+                   last_name: 'Pevensie',
+                   dhs_id: '5677',
+                   approvals: [approvals[2]])
+    create(:child_business, child:, business: business1)
+    child
   end
 
   before do
     # 4th child, different business
-    create(:necc_child,
-           first_name: 'Hermione',
-           last_name: 'Granger',
-           dhs_id: '5679',
-           businesses: [business2],
-           approvals: [approvals[3]])
+    child = create(:necc_child,
+                   first_name: 'Hermione',
+                   last_name: 'Granger',
+                   dhs_id: '5679',
+                   approvals: [approvals[3]])
+    create(:child_business, child:, business: business2)
     allow(Rails.application.config).to receive(:aws_necc_attendance_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }
     allow(AwsClient).to receive(:new) { stubbed_client }

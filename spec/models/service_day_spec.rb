@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
+  let(:child_business) { create(:child_business, child:) }
   let(:service_day) { build(:service_day, child:) }
   let!(:state) do
     create(:state)
@@ -103,6 +104,7 @@ RSpec.describe ServiceDay do
   context 'with absence types' do
     let(:type_schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
     let(:type_child) { schedule.child }
+    let(:child_business) { create(:child_business, child: type_child) }
 
     before do
       type_child.schedules.where(weekday: [2, 3, 4, 5, 6, 7]).destroy_all

@@ -7,7 +7,7 @@ RSpec.describe ChildPolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, user:, active: true) }
+  let(:business) { create(:business, user:) }
   let(:admin) { create(:admin) }
   let(:child) { create(:child, businesses: [business]) }
 

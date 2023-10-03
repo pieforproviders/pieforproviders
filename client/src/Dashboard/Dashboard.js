@@ -229,7 +229,7 @@ export function Dashboard() {
   const reduceDates = (res, fd) => {
     const reduceDate = date_name => {
       return new Date(
-        res.reduce((user1, user2) => {
+        res?.reduce((user1, user2) => {
           return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
         })[`${date_name}`]
       )

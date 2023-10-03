@@ -185,8 +185,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -234,8 +233,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -290,8 +288,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -330,8 +327,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         existing_approval = create(
           :approval,
@@ -492,8 +488,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -545,8 +540,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -601,8 +595,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -641,8 +634,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Rebecca's Childcare",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,
@@ -734,8 +726,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           name: "Kate's Kids",
           zipcode: '68845',
           county: 'Corke',
-          license_type: 'Family Child Care Home I'.downcase.tr(' ', '_'),
-          active: true
+          license_type: 'Family Child Care Home I'.downcase.tr(' ', '_')
         )
         approval = create(
           :approval,

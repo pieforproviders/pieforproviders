@@ -7,9 +7,10 @@ RSpec.describe AttendancePolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, user:, active: true) }
+  let(:business) { create(:business, user:) }
+  let(:child) { create(:child) }
+  let(:child_businesses) { create(:child_business, business:, child:) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, businesses: [business]) }
   let(:child_approval) { child.child_approvals.first }
   let(:service_day) { create(:service_day, child:) }
   let(:attendance) { create(:attendance, child_approval:, service_day:) }
