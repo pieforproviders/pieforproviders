@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/tasks/update_children.rake
 
 require 'csv'
