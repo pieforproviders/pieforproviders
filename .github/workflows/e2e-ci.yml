@@ -56,3 +56,4 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
           DEVISE_JWT_SECRET_KEY: imasecretkey
+          NODE_OPTIONS: '--openssl-legacy-provider'
