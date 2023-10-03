@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'Api::V1::Notifications' do
   let!(:admin_user) { create(:confirmed_user, admin: true) }
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
   let!(:approval) { create(:approval, num_children: 1, business: business, expires_on: 3.days.after) }
   let!(:early_approval) { create(:approval, num_children: 1, business: business, expires_on: 1.day.after) }
   let!(:late_approval) { create(:approval, num_children: 1, business: business, expires_on: 29.days.after) }
@@ -45,6 +45,7 @@ RSpec.describe 'Api::V1::Notifications' do
       before { sign_in logged_in_user }
 
       it 'gets the notification by id' do
+        create(:child_business, child: children.first, business: business)
         get "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
         expect(response).to match_response_schema('notification')
         parsed_response = JSON.parse(response.body)
@@ -128,6 +129,7 @@ RSpec.describe 'Api::V1::Notifications' do
 
       it 'returns an error if approval has been renewed recently' do
         child = children.first
+        create(:child_business, child: child, business: business)
         params = { notification: { child_id: child.id, approval_id: child.approvals.first.id } }
         post '/api/v1/notifications', params: params, headers: headers
         expect(response).to have_http_status(:bad_request)
@@ -136,6 +138,7 @@ RSpec.describe 'Api::V1::Notifications' do
       it 'creates a notification for an existing child and approval' do
         existing_approval = create(:approval, num_children: 1, business: business, expires_on: 3.days.after)
         child = existing_approval.children.first
+        create(:child_business, business: business, child: child)
         logged_in_user.reload
         existing_approval.reload
         child.reload
@@ -176,6 +179,7 @@ RSpec.describe 'Api::V1::Notifications' do
       it 'returns an error if approval is expired' do
         existing_approval = create(:approval, num_children: 1, business: business, expires_on: 1.day.before)
         child = existing_approval.children.first
+        create(:child_business, business: business, child: child)
         params = { notification: { child_id: child.id, approval_id: existing_approval.id } }
         post '/api/v1/notifications', params: params, headers: headers
         expect(response).to have_http_status(:bad_request)
@@ -223,6 +227,7 @@ RSpec.describe 'Api::V1::Notifications' do
       end
 
       it 'deletes the notification if it is within the scope of the user' do
+        create(:child_business, business: business, child: children.first)
         delete "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
         expect(response).to have_http_status(:no_content)
       end
@@ -268,6 +273,7 @@ RSpec.describe 'Api::V1::Notifications' do
       it 'updates the notification if is in the scope of the user' do
         new_time = Time.current.at_beginning_of_day
         params = { notification: { created_at: new_time } }
+        create(:child_business, business: business, child: children.first)
         put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
         resp = JSON.parse(response.body)
         expect(resp['created_at']).to eq(new_time.to_s)
@@ -301,6 +307,7 @@ RSpec.describe 'Api::V1::Notifications' do
       before { sign_in logged_in_user }
 
       it 'returns the user\'s notifications' do
+        create(:child_business, business: business, child: children.first)
         get '/api/v1/notifications', headers: headers
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.pluck('first_name')).to include(children.first.first_name)

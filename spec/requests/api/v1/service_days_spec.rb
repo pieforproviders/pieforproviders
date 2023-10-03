@@ -39,9 +39,9 @@ RSpec.describe 'Api::V1::ServiceDays' do
   # rubocop:enable RSpec/LetSetup
 
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
-  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
-  let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user, active: true) }
-  let!(:other_business) { create(:business, :nebraska_ldds, active: true) }
+  let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:user_second_business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  let!(:other_business) { create(:business, :nebraska_ldds) }
   let!(:child) do
     create(
       :child,

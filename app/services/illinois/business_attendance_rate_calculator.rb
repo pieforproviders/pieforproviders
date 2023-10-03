@@ -14,7 +14,7 @@ module Illinois
       children_checked = []
 
       @business.approvals.active_on(@filter_date).each do |approval|
-        approval.children.with_business.each do |child|
+        approval.children.each do |child|
           eligible_days << eligible_days_by_child(child) unless children_checked.include?(child.id)
           children_checked << child.id
         end

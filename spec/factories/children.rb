@@ -12,10 +12,6 @@ FactoryBot.define do
 
     after(:create) do |child|
       create(:child_business, child: child)
-      primary_business = []
-      primary_business << child.child_businesses.first.business
-      primary_business.first.active = true
-      child.businesses = primary_business
     end
 
     factory :child_in_illinois do
@@ -35,10 +31,12 @@ FactoryBot.define do
         effective_date { 6.months.ago }
       end
       after(:create) do |child, evaluator|
-        child.businesses.destroy_all
-        create(:child_business, child: child, business: create(:business, :nebraska_ldds, active: true))
+        child.child_businesses.destroy_all
+        business = create(:business, :nebraska_ldds)
+        create(:child_business, child: child, business: business)
 
-        child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
+        child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0') if
+        child.wonderschool_id.blank?
         child.save!
 
         create(:nebraska_approval_amount,

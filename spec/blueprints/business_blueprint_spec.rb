@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe BusinessBlueprint do
-  let(:business) { create(:business, active: true) }
+  let(:business) { create(:business) }
   let(:blueprint) { described_class.render(business) }
 
   it 'only includes the expected fields' do

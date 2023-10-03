@@ -44,10 +44,11 @@ RSpec.describe UserBlueprint do
     end
 
     context "when there are approvals for this user's children" do
-      let!(:illinois_business) { create(:business, user: user, active: true) }
+      let!(:illinois_business) { create(:business, user: user) }
 
       before do
-        child = create(:child, businesses: [illinois_business])
+        child = create(:child)
+        create(:child_business, child: child, business: illinois_business)
         service_day = create(:service_day,
                              child: child,
                              date: last_month.at_beginning_of_day)
@@ -55,7 +56,8 @@ RSpec.describe UserBlueprint do
                check_in: last_month,
                service_day: service_day,
                child_approval: child.child_approvals.first)
-        create(:child, :with_two_illinois_attendances, businesses: [illinois_business])
+        two_attendances_child = create(:child, :with_two_illinois_attendances)
+        create(:child_business, child: two_attendances_child, business: illinois_business)
 
         date_to_travel = user.service_days&.order(:date)&.first&.date
         travel_to(date_to_travel) if date_to_travel
@@ -107,7 +109,7 @@ RSpec.describe UserBlueprint do
 
   context 'when NE view is requested' do
     let(:user) { create(:confirmed_user, :nebraska) }
-    let(:nebraska_business) { create(:business, :nebraska_ldds, user: user, active: true) }
+    let(:nebraska_business) { create(:business, :nebraska_ldds, user: user) }
     let(:blueprint) { described_class.render(user, view: :nebraska_dashboard) }
 
     let!(:state) do
@@ -177,7 +179,7 @@ RSpec.describe UserBlueprint do
           max_time: (24 * 3600)
         )
 
-        child = create(:necc_child, businesses: [nebraska_business])
+        child = create(:necc_child)
         service_day = create(:service_day,
                              child: child,
                              date: last_month.at_beginning_of_month)
@@ -221,7 +223,8 @@ RSpec.describe UserBlueprint do
       end
 
       it 'returns the as_of date for the last attendance in the prior month' do
-        child = create(:necc_child, businesses: [nebraska_business])
+        child = create(:necc_child)
+        create(:child_business, business: nebraska_business, child: child)
         service_day = create(:service_day,
                              child: child,
                              date: last_month.at_beginning_of_day)

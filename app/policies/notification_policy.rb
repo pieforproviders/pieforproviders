@@ -9,7 +9,7 @@ class NotificationPolicy < ApplicationPolicy
         scope.all
       else
         scope.joins(child: { child_businesses: :business })
-             .where('businesses.active = ? AND businesses.user_id = ?', true, user.id)
+             .where('child_businesses.currently_active = ? AND businesses.user_id = ?', true, user.id)
       end
     end
   end

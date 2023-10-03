@@ -28,8 +28,9 @@ RSpec.describe Illinois::DashboardCase do
 
     it 'returns guaranteed revenue for business without quality rating' do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
-      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil, active: true)
-      child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
+      fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil)
+      child_from_fcc = create(:child_in_illinois)
+      create(:child_business, child: child_from_fcc, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
       create(
@@ -51,8 +52,7 @@ RSpec.describe Illinois::DashboardCase do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
-                            quality_rating: 'bronze',
-                            active: true)
+                            quality_rating: 'bronze')
       child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -75,8 +75,7 @@ RSpec.describe Illinois::DashboardCase do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
-                            quality_rating: 'silver',
-                            active: true)
+                            quality_rating: 'silver')
       child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -99,8 +98,7 @@ RSpec.describe Illinois::DashboardCase do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
-                            quality_rating: 'gold',
-                            active: true)
+                            quality_rating: 'gold')
       child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -123,8 +121,7 @@ RSpec.describe Illinois::DashboardCase do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home')
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
-                            quality_rating: 'silver',
-                            active: true)
+                            quality_rating: 'silver')
       child_from_fcc = create(
         :child,
         businesses: [fcc_business],

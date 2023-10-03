@@ -45,7 +45,7 @@ RSpec.describe User do
   end
 
   describe '#first_approval_effective_date' do
-    let!(:business) { create(:business, user: user, active: true) }
+    let!(:business) { create(:business, user: user) }
     let!(:earliest_child) do
       create(:child, businesses: [business], approvals: [create(:approval, effective_on: 3.years.ago)])
     end
@@ -65,7 +65,7 @@ RSpec.describe User do
     let!(:child) do
       create(
         :child,
-        businesses: [create(:business, user: user, active: true)],
+        businesses: [create(:business, user: user)],
         approvals: [create(:approval, effective_on: six_months_ago - 1.month, create_children: false)]
       )
     end
