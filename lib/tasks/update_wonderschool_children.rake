@@ -6,9 +6,6 @@ require 'aws-sdk-s3'
 namespace :children do
   desc "Update children's wonderschool_id from a CSV file in an AWS S3 bucket"
   task update_wonderschool_id: :environment do
-    # s3 = Aws::S3::Resource.new(region: 'us-west-2')
-    # bucket = s3.bucket('your-bucket-name')
-    # obj = bucket.object('path/to/your/file.csv')
     @client = AwsClient.new
     @source_bucket = Rails.application.config.aws_necc_attendance_bucket
     @archive_bucket = Rails.application.config.aws_necc_attendance_archive_bucket
