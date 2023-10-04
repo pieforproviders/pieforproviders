@@ -190,7 +190,7 @@ class Child < UuidApplicationRecord
   end
 
   def validate_wonderschool_id
-    self.wonderschool_id = wonderschool_id.to_i.to_s == wonderschool_id ? wonderschool_id : nil
+    self.wonderschool_id = wonderschool_id.to_s.strip.empty? ? nil : wonderschool_id
   end
 end
 # rubocop:enable Metrics/ClassLength

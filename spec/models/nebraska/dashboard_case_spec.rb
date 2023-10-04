@@ -69,7 +69,7 @@ RSpec.describe Nebraska::DashboardCase do
 
   describe '#absences_dates' do
     it 'Return all the absences of a child in the month' do
-      test_date = Time.new(2023, 3, 6).utc
+      test_date = Time.new(2023, 4, 6).utc
       Helpers.build_nebraska_absence_list(
         num: 2,
         date: test_date,
@@ -81,7 +81,6 @@ RSpec.describe Nebraska::DashboardCase do
         attended_days: child.service_days.non_absences,
         absent_days: child.service_days.absences
       ).absences_dates
-
       expect(child.service_days.absences).to eq(calculated_absences)
     end
   end
