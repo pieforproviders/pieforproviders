@@ -25,7 +25,7 @@ module Api
       def create
         @service_day = ServiceDay.new(
           child_id: service_day_params[:child_id],
-          date: date,
+          date:,
           absence_type: service_day_params[:absence_type]
         )
 

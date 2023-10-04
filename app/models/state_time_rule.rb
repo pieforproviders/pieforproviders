@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# StateTimeRule model
 class StateTimeRule < ApplicationRecord
   belongs_to :state
 end

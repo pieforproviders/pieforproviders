@@ -14,7 +14,8 @@ class NameMatchingEngine
   def match_tag(score)
     return 'no_match' if score.zero?
     return 'close_match' if score.positive? && score <= 0.99
-    return 'exact_match' if score == 1
+
+    'exact_match' if score == 1
   end
 
   private

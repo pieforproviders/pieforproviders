@@ -45,9 +45,9 @@ class NebraskaRate < UuidApplicationRecord
         lambda { |date, school_age, age, business|
           where('effective_on <= ?', date.at_end_of_month)
             .where('expires_on is null or expires_on > ?', date.at_beginning_of_month)
-            .where(school_age: school_age)
+            .where(school_age:)
             .where('max_age >= ? OR max_age IS NULL', age)
-            .where(region: Nebraska::RegionFinder.new(business: business).call)
+            .where(region: Nebraska::RegionFinder.new(business:).call)
             .where(license_type: business.license_type)
             .where(accredited_rate: business.accredited || false)
             .order_max_age

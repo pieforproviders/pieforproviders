@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable FactoryBot/FactoryAssociationWithStrategy
 require Rails.root.join('spec/support/helpers')
 
 FactoryBot.define do
@@ -101,6 +102,7 @@ FactoryBot.define do
     end
   end
 end
+# rubocop:enable FactoryBot/FactoryAssociationWithStrategy
 
 # == Schema Information
 #

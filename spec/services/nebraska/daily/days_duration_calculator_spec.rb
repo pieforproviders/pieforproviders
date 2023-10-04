@@ -5,12 +5,12 @@ require 'rails_helper'
 RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
   let(:child) { create(:necc_child) }
   let(:child_approval) { child.child_approvals.first }
-  let(:service_day) { create(:service_day, child: child) }
+  let(:service_day) { create(:service_day, child:) }
   let!(:attendance) do
     create(
       :nebraska_daily_attendance,
-      service_day: service_day,
-      child_approval: child_approval
+      service_day:,
+      child_approval:
     )
   end
 
@@ -23,21 +23,21 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (26 * 3600)
       )
@@ -77,7 +77,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 1.hour + 7.minutes)
       create(
         :nebraska_hourly_attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 2.hours,
         check_out: attendance.check_in + 3.hours + 38.minutes
@@ -92,7 +92,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 7.hours + 14.minutes)
       create(
         :nebraska_hourly_attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 8.hours,
         check_out: attendance.check_in + 9.hours + 6.minutes
@@ -106,7 +106,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 11.hours + 38.minutes)
       create(
         :nebraska_hourly_attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 12.hours,
         check_out: attendance.check_in + 13.hours + 18.minutes
@@ -121,7 +121,7 @@ RSpec.describe Nebraska::Daily::DaysDurationCalculator, type: :service do
       attendance.update!(check_out: attendance.check_in + 19.hours + 12.minutes)
       create(
         :nebraska_hourly_attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child_approval,
         check_in: attendance.check_in + 20.hours,
         check_out: attendance.check_in + 21.hours + 31.minutes

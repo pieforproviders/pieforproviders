@@ -27,7 +27,7 @@ class ServiceDayScheduleUpdater
   end
 
   def reassign_service_days
-    service_days.each { |sd| sd.update!(schedule: schedule) unless sd.schedule == schedule }
+    service_days.each { |sd| sd.update!(schedule:) unless sd.schedule == schedule }
   end
 
   def calculate_service_day

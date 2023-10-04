@@ -19,8 +19,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in logged_in_user }
 
       it "returns the user's children" do
-        get '/api/v1/children', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/children', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -38,8 +38,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'returns the correct children when a business filter is sent' do
-        get '/api/v1/children', headers: headers, params: { business: [user_business.id] }
-        parsed_response = JSON.parse(response.body)
+        get '/api/v1/children', headers:, params: { business: [user_business.id] }
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -55,8 +55,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'returns the correct children when multiple businesses are sent in the filter' do
-        get '/api/v1/children', headers: headers, params: { business: [user_business.id, other_business.id] }
-        parsed_response = JSON.parse(response.body)
+        get '/api/v1/children', headers:, params: { business: [user_business.id, other_business.id] }
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -76,8 +76,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in admin_user }
 
       it "returns all users' children" do
-        get '/api/v1/children', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/children', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -97,8 +97,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'returns the correct children when a business filter is sent' do
-        get '/api/v1/children', headers: headers, params: { business: [user_business.id] }
-        parsed_response = JSON.parse(response.body)
+        get '/api/v1/children', headers:, params: { business: [user_business.id] }
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -114,8 +114,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'returns the correct children when multiple businesses are sent in the filter' do
-        get '/api/v1/children', headers: headers, params: { business: [user_business.id, other_business.id] }
-        parsed_response = JSON.parse(response.body)
+        get '/api/v1/children', headers:, params: { business: [user_business.id, other_business.id] }
+        parsed_response = response.parsed_body
         expect(parsed_response.collect do |x|
                  "#{x['first_name']} #{x['last_name']}"
                end).to include(*business_children.map do |c|
@@ -132,8 +132,8 @@ RSpec.describe 'Api::V1::Children' do
 
       it 'returns the children ordered by last names' do
         create(:child, last_name: 'zzzz')
-        get '/api/v1/children', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/children', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.last['last_name']).to eq('zzzz')
       end
     end
@@ -146,8 +146,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in logged_in_user }
 
       it "returns the user's child" do
-        get "/api/v1/children/#{business_children.first.id}", headers: headers
-        parsed_response = JSON.parse(response.body)
+        get("/api/v1/children/#{business_children.first.id}", headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
           business_children.first.first_name, business_children.first.last_name
         ].join(' '))
@@ -155,7 +155,7 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'does not return a child for another user' do
-        get "/api/v1/children/#{other_business_children.first.id}", headers: headers
+        get("/api/v1/children/#{other_business_children.first.id}", headers:)
         expect(response).to have_http_status(:not_found)
       end
     end
@@ -164,8 +164,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in admin_user }
 
       it "returns the user's child" do
-        get "/api/v1/children/#{business_children.first.id}", headers: headers
-        parsed_response = JSON.parse(response.body)
+        get("/api/v1/children/#{business_children.first.id}", headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
           business_children.first.first_name, business_children.first.last_name
         ].join(' '))
@@ -173,8 +173,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'returns a child for another user' do
-        get "/api/v1/children/#{other_business_children.first.id}", headers: headers
-        parsed_response = JSON.parse(response.body)
+        get("/api/v1/children/#{other_business_children.first.id}", headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq([
           other_business_children.first.first_name, other_business_children.first.last_name
         ].join(' '))
@@ -203,8 +203,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in logged_in_user }
 
       it "creates a child for that user's business" do
-        post '/api/v1/children', params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
+        post('/api/v1/children', params:, headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
         expect(logged_in_user.children.map { |c| [c.first_name, c.last_name].join(' ') }).to include('Parvati Patil')
         expect(response).to match_response_schema('child')
@@ -217,8 +217,8 @@ RSpec.describe 'Api::V1::Children' do
 
         it "creates a child for that user's business" do
           params[:child][:business_id] = nebraska_business.id
-          post '/api/v1/children', params: params, headers: headers
-          parsed_response = JSON.parse(response.body)
+          post('/api/v1/children', params:, headers:)
+          parsed_response = response.parsed_body
           expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
           expect(nebraska_business.children.map do |c|
                    [c.first_name, c.last_name].join(' ')
@@ -268,18 +268,18 @@ RSpec.describe 'Api::V1::Children' do
         end
 
         it 'does not create approval amounts when no month is passed' do
-          post '/api/v1/children', params: params, headers: headers
+          post('/api/v1/children', params:, headers:)
           expect(response).to have_http_status(:created)
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts).to be_empty
           expect(response).to match_response_schema('child')
         end
 
         it 'creates 12 approval amounts when a single month is passed' do
-          post '/api/v1/children', params: one_month_amount, headers: headers
+          post('/api/v1/children', params: one_month_amount, headers:)
           expect(response).to have_http_status(:created)
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
           expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
@@ -289,9 +289,9 @@ RSpec.describe 'Api::V1::Children' do
         end
 
         it 'creates 12 approval amounts when 12 months are passed' do
-          post '/api/v1/children', params: all_month_amounts, headers: headers
+          post('/api/v1/children', params: all_month_amounts, headers:)
           expect(response).to have_http_status(:created)
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(12)
           expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
@@ -301,9 +301,9 @@ RSpec.describe 'Api::V1::Children' do
         end
 
         it 'creates exactly the number of approval amounts passed when the number is between 1 and 12' do
-          post '/api/v1/children', params: some_month_amounts, headers: headers
+          post('/api/v1/children', params: some_month_amounts, headers:)
           expect(response).to have_http_status(:created)
-          json = JSON.parse(response.body)
+          json = response.parsed_body
           child = Child.find(json['id'])
           expect(child.child_approvals.first.illinois_approval_amounts.length).to eq(6)
           expect(child.child_approvals.first.illinois_approval_amounts.pluck(:month)).to include(
@@ -318,15 +318,15 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in admin_user }
 
       it 'creates a child for the passed business' do
-        post '/api/v1/children', params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
+        post('/api/v1/children', params:, headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Parvati Patil')
         expect(logged_in_user.children.map { |c| [c.first_name, c.last_name].join(' ') }).to include('Parvati Patil')
         expect(response).to match_response_schema('child')
       end
 
       it 'fails unless the business is passed' do
-        post '/api/v1/children', params: params_without_business, headers: headers
+        post('/api/v1/children', params: params_without_business, headers:)
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -348,8 +348,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in logged_in_user }
 
       it "updates the user's child" do
-        put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
+        put("/api/v1/children/#{business_children.first.id}", params:, headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
         business_children.first.reload
         expect("#{business_children.first.first_name} #{business_children.first.last_name}").to eq('Padma Patil')
@@ -357,7 +357,7 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'does not update a child for another user' do
-        put "/api/v1/children/#{other_business_children.first.id}", params: params, headers: headers
+        put("/api/v1/children/#{other_business_children.first.id}", params:, headers:)
         expect(response).to have_http_status(:not_found)
       end
 
@@ -367,7 +367,7 @@ RSpec.describe 'Api::V1::Children' do
             date_of_birth: 'Not a date'
           }
         }
-        put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
+        put("/api/v1/children/#{business_children.first.id}", params:, headers:)
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -378,7 +378,7 @@ RSpec.describe 'Api::V1::Children' do
             active: true
           }
         }
-        put "/api/v1/children/#{business_children.first.id}", params: param, headers: headers
+        put("/api/v1/children/#{business_children.first.id}", params: param, headers:)
         business_children.first.reload
         expect(business_children.first.active).to be true
       end
@@ -388,8 +388,8 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in admin_user }
 
       it "updates the user's child" do
-        put "/api/v1/children/#{business_children.first.id}", params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
+        put("/api/v1/children/#{business_children.first.id}", params:, headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
         business_children.first.reload
         expect("#{business_children.first.first_name} #{business_children.first.last_name}").to eq('Padma Patil')
@@ -397,8 +397,8 @@ RSpec.describe 'Api::V1::Children' do
       end
 
       it 'updates a child for another user' do
-        put "/api/v1/children/#{other_business_children.first.id}", params: params, headers: headers
-        parsed_response = JSON.parse(response.body)
+        put("/api/v1/children/#{other_business_children.first.id}", params:, headers:)
+        parsed_response = response.parsed_body
         expect("#{parsed_response['first_name']} #{parsed_response['last_name']}").to eq('Padma Patil')
         other_business_children.first.reload
         expect("#{other_business_children.first.first_name} #{other_business_children.first.last_name}")
@@ -415,7 +415,7 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in logged_in_user }
 
       it "soft-deletes the user's child" do
-        delete "/api/v1/children/#{business_children.first.id}", headers: headers
+        delete("/api/v1/children/#{business_children.first.id}", headers:)
         expect(response).to have_http_status(:no_content)
         expect(business_children.first.reload.deleted_at).to eq(Time.current.to_date)
       end
@@ -425,7 +425,7 @@ RSpec.describe 'Api::V1::Children' do
       before { sign_in admin_user }
 
       it "soft-deletes the user's child" do
-        delete "/api/v1/children/#{business_children.first.id}", headers: headers
+        delete("/api/v1/children/#{business_children.first.id}", headers:)
         expect(response).to have_http_status(:no_content)
         expect(business_children.first.reload.deleted_at).to eq(Time.current.to_date)
       end

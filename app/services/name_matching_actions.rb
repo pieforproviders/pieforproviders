@@ -32,7 +32,7 @@ class NameMatchingActions
       rows << [Rainbow('P4P has: ').bright +
                Rainbow("#{@match_child['first_name']} #{@match_child['last_name']}").yellow]
 
-      table = Terminal::Table.new rows: rows
+      table = Terminal::Table.new(rows:)
       puts table
 
       $stdout.puts Rainbow('Is this the same child? Yes or No').yellow

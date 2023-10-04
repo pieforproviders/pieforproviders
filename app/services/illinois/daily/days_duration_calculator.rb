@@ -18,8 +18,8 @@ module Illinois
 
       def calculate_days
         {
-          full_time: full_time,
-          part_time: part_time
+          full_time:,
+          part_time:
         }
       end
 
@@ -27,13 +27,15 @@ module Illinois
         return 0 if total_time_in_care <= 5.hours
         return 1 if total_time_in_care > 5.hours && total_time_in_care < 12.hours
         return 2 if total_time_in_care >= 17.hours
-        return 1 if total_time_in_care >= 12.hours && total_time_in_care < 17.hours
+
+        1 if total_time_in_care >= 12.hours && total_time_in_care < 17.hours
       end
 
       def part_time
         return 0 if zero_part_time?
         return 1 if total_time_in_care <= 5.hours
-        return 1 if total_time_in_care >= 12.hours && total_time_in_care < 17.hours
+
+        1 if total_time_in_care >= 12.hours && total_time_in_care < 17.hours
       end
 
       def zero_part_time?

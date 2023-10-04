@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable FactoryBot/FactoryAssociationWithStrategy
 FactoryBot.define do
   factory :child do
     transient do
@@ -43,61 +44,62 @@ FactoryBot.define do
 
     trait :with_two_illinois_attendances do
       after(:create) do |child|
-        service_day = create(:service_day, child: child)
+        service_day = create(:service_day, child:)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:illinois_full_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
       end
     end
 
     trait :with_three_illinois_attendances do
       after(:create) do |child|
-        service_day = create(:service_day, child: child)
+        service_day = create(:service_day, child:)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:illinois_full_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:illinois_full_plus_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
       end
     end
 
     trait :with_two_nebraska_attendances do
       after(:create) do |child|
-        service_day = create(:service_day, child: child)
+        service_day = create(:service_day, child:)
         create(:nebraska_hourly_attendance,
                :recent,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:nebraska_daily_attendance,
                :recent,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
       end
     end
 
     trait :with_three_nebraska_attendances do
       after(:create) do |child|
-        service_day = create(:service_day, child: child)
+        service_day = create(:service_day, child:)
         create(:nebraska_hourly_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:nebraska_daily_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
         create(:nebraska_daily_plus_hourly_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.active_child_approval(Time.current))
       end
     end
   end
 end
+# rubocop:enable FactoryBot/FactoryAssociationWithStrategy
 
 # == Schema Information
 #

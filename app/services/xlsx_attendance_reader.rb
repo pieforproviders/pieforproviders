@@ -35,9 +35,9 @@ class XlsxAttendanceReader
       check_in_out_data = extract_check_in_out_data(worksheet, row)
 
       @children_data << {
-        first_name: first_name,
-        last_name: last_name,
-        check_in_out_data: check_in_out_data
+        first_name:,
+        last_name:,
+        check_in_out_data:
       }
     end
   end

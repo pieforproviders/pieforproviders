@@ -45,13 +45,13 @@ RSpec.describe User do
   end
 
   describe '#first_approval_effective_date' do
-    let!(:business) { create(:business, user: user) }
+    let!(:business) { create(:business, user:) }
     let!(:earliest_child) do
-      create(:child, business: business, approvals: [create(:approval, effective_on: 3.years.ago)])
+      create(:child, business:, approvals: [create(:approval, effective_on: 3.years.ago)])
     end
 
     before do
-      create_list(:child, 3, business: business)
+      create_list(:child, 3, business:)
     end
 
     it 'returns the correct date' do
@@ -65,24 +65,24 @@ RSpec.describe User do
     let!(:child) do
       create(
         :child,
-        business: create(:business, user: user),
+        business: create(:business, user:),
         approvals: [create(:approval, effective_on: six_months_ago - 1.month, create_children: false)]
       )
     end
     let!(:first_attendance) do
-      service_day = create(:service_day, child: child, date: six_months_ago)
+      service_day = create(:service_day, child:, date: six_months_ago)
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         check_in: six_months_ago + 11.hours,
         child_approval: child.child_approvals.first
       )
     end
     let!(:second_attendance) do
-      service_day = create(:service_day, child: child, date: six_months_ago + 2.days)
+      service_day = create(:service_day, child:, date: six_months_ago + 2.days)
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         check_in: six_months_ago + 2.days + 12.hours,
         child_approval: first_attendance.child_approval
       )
@@ -90,7 +90,7 @@ RSpec.describe User do
     let!(:third_attendance) do
       service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: Time
                 .current
                 .in_time_zone(first_attendance.child_approval.child.timezone)
@@ -98,7 +98,7 @@ RSpec.describe User do
       )
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         check_in: service_day.date + 6.hours,
         child_approval: first_attendance.child_approval
       )

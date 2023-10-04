@@ -8,23 +8,23 @@ RSpec.describe BusinessPolicy do
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
   let(:admin) { create(:admin) }
-  let(:business) { create(:business, zipcode: '60606', county: 'Cook', user: user) }
+  let(:business) { create(:business, zipcode: '60606', county: 'Cook', user:) }
   let(:inactive_business) do
-    create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user: user, active: false)
+    create(:business, zipcode: '60606', county: 'Cook', name: 'Test Daycare Center', user:, active: false)
   end
 
   describe BusinessPolicy::Scope do
     context 'when authenticated as an admin' do
       it 'returns all businesses' do
         businesses = described_class.new(admin, Business).resolve
-        expect(businesses).to match_array([business, inactive_business])
+        expect(businesses).to contain_exactly(business, inactive_business)
       end
     end
 
     context 'when logged in as an owner user' do
       it "returns the user's active businesses" do
         businesses = described_class.new(user, Business).resolve
-        expect(businesses).to match_array([business])
+        expect(businesses).to contain_exactly(business)
       end
     end
 

@@ -14,21 +14,21 @@ RSpec.describe Child do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (24 * 3600)
       )
@@ -52,7 +52,7 @@ RSpec.describe Child do
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      business: business
+      business:
     )
     expect(duplicate_child).not_to be_valid
     duplicate_child_diff_business = build(
@@ -175,7 +175,7 @@ RSpec.describe Child do
       it 'creates default schedules if no schedules_attributes are passed' do
         child.reload
         expect(child.schedules.pluck(:duration).uniq).to eq([8.hours])
-        expect(child.schedules.pluck(:weekday)).to match_array([1, 2, 3, 4, 5])
+        expect(child.schedules.pluck(:weekday)).to contain_exactly(1, 2, 3, 4, 5)
       end
 
       it "doesn't create default schedules if schedules_attributes are passed" do
@@ -197,34 +197,34 @@ RSpec.describe Child do
     end
 
     it 'returns an active child_approval for a specific date' do
-      current_child_approval = child.approvals.first.child_approvals.where(child: child).first
+      current_child_approval = child.approvals.first.child_approvals.where(child:).first
       expect(child.active_child_approval(Time.current)).to eq(current_child_approval)
       expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
       child.approvals << expired_approval
-      expired_child_approval = expired_approval.child_approvals.where(child: child).first
+      expired_child_approval = expired_approval.child_approvals.where(child:).first
       expect(child.active_child_approval(2.years.ago - 6.months)).to eq(expired_child_approval)
     end
   end
 
   describe 'attendance methods' do
     it 'returns all attendances regardless of approval date' do
-      current_child_approval = child.approvals.first.child_approvals.where(child: child).first
+      current_child_approval = child.approvals.first.child_approvals.where(child:).first
       expired_approval = create(:approval, effective_on: 3.years.ago, expires_on: 2.years.ago, create_children: false)
       child.approvals << expired_approval
-      expired_child_approval = expired_approval.child_approvals.where(child: child).first
+      expired_child_approval = expired_approval.child_approvals.where(child:).first
       current_attendances = []
       expired_attendances = []
       3.times do |idx|
         service_day = create(:service_day,
-                             child: child,
+                             child:,
                              date: Time.current.at_beginning_of_day + idx.days)
-        current_attendances.push(create(:attendance, service_day: service_day, child_approval: current_child_approval))
+        current_attendances.push(create(:attendance, service_day:, child_approval: current_child_approval))
       end
       3.times do |idx|
         service_day = create(:service_day,
-                             child: child,
+                             child:,
                              date: Time.current.at_beginning_of_day + (3 + idx).days)
-        expired_attendances.push(create(:attendance, service_day: service_day, child_approval: expired_child_approval))
+        expired_attendances.push(create(:attendance, service_day:, child_approval: expired_child_approval))
       end
       expect(child.attendances.pluck(:id))
         .to match_array(current_attendances.pluck(:id) + expired_attendances.pluck(:id))
@@ -241,7 +241,7 @@ RSpec.describe Child do
 
   describe '#associate_rate' do
     let!(:user) { create(:confirmed_user) }
-    let!(:created_business) { create(:business, user: user) }
+    let!(:created_business) { create(:business, user:) }
     let!(:child) do
       create(:child,
              first_name: 'Parvati',
@@ -330,7 +330,7 @@ RSpec.describe Child do
   describe 'before_action' do
     it 'sets wonderschool_id to nil only for blank values' do
       wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0')
-      child_with_wonderschool_id = create(:child, wonderschool_id: wonderschool_id)
+      child_with_wonderschool_id = create(:child, wonderschool_id:)
       expect(child_with_wonderschool_id.wonderschool_id).to eq(wonderschool_id)
 
       child_with_wonderschool_id.wonderschool_id = 'not present'

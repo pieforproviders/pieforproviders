@@ -138,7 +138,7 @@ class Child < UuidApplicationRecord
     end
     return 0 unless schedule_for_weekday
 
-    schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)
+    schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date:, weekday:)
   end
 
   def schedules_for_weekday(date, weekday)
@@ -150,11 +150,11 @@ class Child < UuidApplicationRecord
   end
 
   def eligible_full_days_by_month(date = Time.current)
-    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: true).call
+    Illinois::EligibleDaysCalculator.new(date:, child: self, full_time: true).call
   end
 
   def eligible_part_days_by_month(date = Time.current)
-    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: false).call
+    Illinois::EligibleDaysCalculator.new(date:, child: self, full_time: false).call
   end
 
   private

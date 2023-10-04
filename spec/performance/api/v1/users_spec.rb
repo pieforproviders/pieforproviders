@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable RSpec/PendingWithoutReason
 RSpec.xdescribe 'Api::V1::Users', type: :request do
   include_context 'with correct api version header'
   include_context 'when authenticated as an admin'
@@ -37,6 +38,7 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
 
   it 'performs under 3s' do
     puts "Started the test: #{Time.current}"
-    expect { get '/api/v1/case_list_for_dashboard', headers: headers }.to perform_under(3).sec
+    expect { get '/api/v1/case_list_for_dashboard', headers: }.to perform_under(3).sec
   end
 end
+# rubocop:enable RSpec/PendingWithoutReason

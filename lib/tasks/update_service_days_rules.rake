@@ -8,7 +8,7 @@ namespace :db do
     state = State.find_by(name: 'Nebraska')
 
     outdated_service_days.each do |service_day|
-      time_engine = TimeConversionEngine.new(service_day: service_day, state: state)
+      time_engine = TimeConversionEngine.new(service_day:, state:)
       update_params = time_engine.call
       service_day.update!(update_params)
       puts("Service Day: #{service_day.id} successfully updated")
