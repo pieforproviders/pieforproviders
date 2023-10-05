@@ -32,9 +32,9 @@ module Wonderschool
       end
 
       def process_row(row)
-        child = Child.find_by(wonderschool_id: row['child_id'])
+        child = Child.find_by(wonderschool_id: row['id_ccms2__student'])
 
-        log_missing_child(row['child_id']) and return unless child
+        log_missing_child(row['id_ccms2__student']) and return unless child
 
         attendance = child.attendances.find_by(wonderschool_id: row['attendance_id'])
         update_attendance_and_service_day(attendance, child, row)
@@ -42,13 +42,13 @@ module Wonderschool
         send_appsignal_error(
           action: 'wonderschool-necc-attendance-csv-importer',
           exception: e,
-          tags: { child_id: row['child_id'] }
+          tags: { child_id: row['id_ccms2__student'] }
         )
       end
 
       def update_attendance_and_service_day(attendance, child, row)
-        check_in = row['checked_in_at']
-        check_out = row['checked_out_at']
+        check_in = row['checked_in_at_local_time']
+        check_out = row['checked_out_at_local_time']
         if attendance
           Commands::Attendance::Update.new(
             attendance:,

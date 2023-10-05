@@ -13,6 +13,7 @@ app:template
 app:update
 attendances
 cast_service_days_to_beginning_of_day
+children:update_wonderschool_id
 daily_notifications
 data:abort_if_pending_migrations
 data:dump
@@ -28,6 +29,7 @@ data:version
 db:abort_if_pending_migrations:with_data
 db:create
 db:drop
+db:encryption:init
 db:environment:set
 db:fixtures:load
 db:forward:with_data
@@ -54,8 +56,6 @@ db:schema:load:with_data
 db:seed
 db:seed:replant
 db:setup
-db:structure:dump
-db:structure:load
 db:structure:load:with_data
 db:update_service_days_rules
 db:version
