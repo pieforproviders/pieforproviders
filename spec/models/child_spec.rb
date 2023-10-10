@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Child do
-  let!(:child) { create(:child) }
+  let!(:business) { create(:business) }
+  let!(:child) { create(:child, businesses: [business]) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
   let!(:state) do
     create(:state)
@@ -51,19 +52,16 @@ RSpec.describe Child do
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      businesses: child.businesses
+      businesses: [business]
     )
     expect(duplicate_child).not_to be_valid
-    new_businesses = []
-    diff_businesses = create(:child_business)
-
-    new_businesses << diff_businesses.business
+    diff_business = create(:business)
     duplicate_child_diff_business = build(
       :child,
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      businesses: new_businesses
+      businesses: [diff_business]
     )
     expect(duplicate_child_diff_business).to be_valid
   end

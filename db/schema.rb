@@ -323,8 +323,8 @@ ActiveRecord::Schema.define(version: 2023_09_28_155541) do
     t.uuid "state_id", null: false
     t.integer "min_time"
     t.integer "max_time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
