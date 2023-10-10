@@ -36,7 +36,7 @@ module Wonderschool
 
         log_missing_child(row['id_ccms2__student']) and return unless child
 
-        attendance = child.attendances.find_by(wonderschool_id: row['attendance_id'])
+        attendance = child.attendances.find_by(wonderschool_id: row['id_dropoff_activity'])
         update_attendance_and_service_day(attendance, child, row)
       rescue StandardError => e
         send_appsignal_error(
@@ -61,7 +61,7 @@ module Wonderschool
             check_in:,
             child_id: child.id,
             check_out:,
-            wonderschool_id: row['attendance_id']
+            wonderschool_id: row['id_dropoff_activity']
           ).create
         end
       end
