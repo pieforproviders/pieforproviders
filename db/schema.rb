@@ -118,16 +118,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
-  create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "child_id", null: false
-    t.uuid "business_id", null: false
-    t.boolean "active"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["business_id"], name: "index_child_businesses_on_business_id"
-    t.index ["child_id"], name: "index_child_businesses_on_child_id"
-  end
-
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
@@ -388,8 +378,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "child_businesses", "businesses"
-  add_foreign_key "child_businesses", "children"
   add_foreign_key "children", "businesses"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
