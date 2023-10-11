@@ -104,7 +104,7 @@ GEM
     benchmark-malloc (0.2.0)
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
-    blueprinter (0.25.3)
+    blueprinter (0.30.0)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     brakeman (6.0.1)
@@ -454,7 +454,7 @@ DEPENDENCIES
   appsignal
   aws-sdk-s3 (~> 1)
   benchmark-ips
-  blueprinter (~> 0.25.3)
+  blueprinter (~> 0.30.0)
   bootsnap (>= 1.4.2)
   brakeman
   bullet
