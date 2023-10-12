@@ -35,11 +35,10 @@ FactoryBot.define do
         child.child_businesses.destroy_all
         business = create(:business, :nebraska_ldds)
         create(:child_business, child: child, business: business)
-
         child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0') if
         child.wonderschool_id.blank?
         child.save!
-
+        child.reload
         create(:nebraska_approval_amount,
                child_approval: child.child_approvals.first,
                effective_on: evaluator.effective_date,
