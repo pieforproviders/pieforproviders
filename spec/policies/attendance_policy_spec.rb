@@ -9,11 +9,14 @@ RSpec.describe AttendancePolicy do
   let(:non_owner) { create(:confirmed_user) }
   let(:business) { create(:business, user:) }
   let(:child) { create(:child) }
-  let(:child_businesses) { create(:child_business, business:, child:) }
   let(:admin) { create(:admin) }
   let(:child_approval) { child.child_approvals.first }
   let(:service_day) { create(:service_day, child:) }
   let(:attendance) { create(:attendance, child_approval:, service_day:) }
+
+  before do
+    create(:child_business, business:, child:)
+  end
 
   describe AttendancePolicy::Scope do
     context 'when authenticated as an admin' do
