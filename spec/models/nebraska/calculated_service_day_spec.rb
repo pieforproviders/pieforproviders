@@ -5,20 +5,31 @@ require 'rails_helper'
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe Nebraska::CalculatedServiceDay do
   describe '#earned_revenue' do
-    before { travel_to '2022-06-01'.to_date }
+    before do
+      travel_to '2022-06-01'.to_date
+      business.update!(
+        accredited: true,
+        quality_rating: 'not_rated'
+      )
+    end
 
-    after  { travel_back }
+    after { travel_back }
 
     let!(:date) { Time.current }
+    let(:child_business) { child.child_businesses.find_by(currently_active: true) }
+    let(:rates) do
+      NebraskaRate.for_case(
+        date,
+        child.child_approvals&.first&.enrolled_in_school || false,
+        child.age_in_months(date),
+        child.businesses.find(child_business.business_id)
+      )
+    end
+    let!(:service_day) { build(:service_day, child: child, date: date) }
+    let!(:child_approvals) { child.child_approvals }
     let!(:child) do
       create(
-        :necc_child,
-        businesses: [create(
-          :business,
-          :nebraska_ldds,
-          accredited: true,
-          quality_rating: 'not_rated'
-        )]
+        :necc_child
       )
     end
     let!(:business) { child.businesses.first }
@@ -98,19 +109,6 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         county: business.county
       )
     end
-
-    let(:rates) do
-      NebraskaRate.for_case(
-        date,
-        child.child_approvals&.first&.enrolled_in_school || false,
-        child.age_in_months(date),
-        child_business = child_businesses.find_by(currently_active: true),
-        child.businesses.find(child_business.business_id)
-      )
-    end
-
-    let!(:service_day) { build(:service_day, child: child, date: date) }
-    let!(:child_approvals) { child.child_approvals }
 
     context 'with an accredited business' do
       it 'gets rates for an hourly-only service_day' do
