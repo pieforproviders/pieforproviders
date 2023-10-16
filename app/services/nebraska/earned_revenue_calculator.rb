@@ -10,7 +10,8 @@ module Nebraska
       super
       @child = service_day.child
       child_business = @child.child_businesses.find_by(currently_active: true)
-      @business = @child.businesses.find(child_business.business_id)
+      @business = child_business.business
+      @child_approval = @child.active_child_approval(service_day.date)
     end
 
     def call
