@@ -257,6 +257,8 @@ RSpec.describe ServiceDay do
       it 'returns service days for given day' do
         current_attendance.update(check_in: date, check_out: date + 5.hours)
         current_attendance.service_day.update(date: date.at_beginning_of_day)
+        current_attendance.update(check_in: date, check_out: date + 5.hours)
+        current_attendance.service_day.update(date: date.at_beginning_of_day)
         travel_to date
         expect(described_class.for_day).to include(current_service_day)
         expect(described_class.for_day).not_to include(past_service_day)
