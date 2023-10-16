@@ -30,6 +30,8 @@ RSpec.describe Illinois::DashboardCase do
       create(:illinois_rate, age_bucket: 36, license_type: 'license_exempt_day_care_home', amount: 10.0)
       fcc_business = create(:business, license_type: 'license_exempt_day_care_home', quality_rating: nil)
       child_from_fcc = create(:child_in_illinois)
+      child_from_fcc.reload
+      child_from_fcc.child_businesses.destroy_all
       create(:child_business, child: child_from_fcc, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
@@ -40,7 +42,6 @@ RSpec.describe Illinois::DashboardCase do
       )
 
       perform_enqueued_jobs
-
       revenues = described_class.new(child: child_from_fcc, filter_date: Time.current)
 
       expected_revenue = Money.from_amount(10)
@@ -53,7 +54,10 @@ RSpec.describe Illinois::DashboardCase do
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
                             quality_rating: 'bronze')
-      child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
+      child_from_fcc = create(:child_in_illinois)
+      child_from_fcc.reload
+      child_from_fcc.child_businesses.destroy_all
+      create(:child_business, child: child_from_fcc, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
       create(
@@ -76,7 +80,10 @@ RSpec.describe Illinois::DashboardCase do
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
                             quality_rating: 'silver')
-      child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
+      child_from_fcc = create(:child_in_illinois)
+      child_from_fcc.reload
+      child_from_fcc.child_businesses.destroy_all
+      create(:child_business, child: child_from_fcc, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
       create(
@@ -99,7 +106,10 @@ RSpec.describe Illinois::DashboardCase do
       fcc_business = create(:business,
                             license_type: 'license_exempt_day_care_home',
                             quality_rating: 'gold')
-      child_from_fcc = create(:child_in_illinois, businesses: [fcc_business])
+      child_from_fcc = create(:child_in_illinois)
+      child_from_fcc.reload
+      child_from_fcc.child_businesses.destroy_all
+      create(:child_business, child: child_from_fcc, business: fcc_business)
       attendance_date = Time.current.at_beginning_of_month
       service_full_day = create(:service_day, child: child_from_fcc)
       create(
@@ -124,9 +134,11 @@ RSpec.describe Illinois::DashboardCase do
                             quality_rating: 'silver')
       child_from_fcc = create(
         :child,
-        businesses: [fcc_business],
         approvals: [create(:approval, create_children: false, effective_on: Time.current.at_beginning_of_month)]
       )
+      child_from_fcc.reload
+      child_from_fcc.child_businesses.destroy_all
+      create(:child_business, child: child_from_fcc, business: fcc_business)
 
       child_from_fcc.child_approvals.first.update!(
         special_needs_rate: true,
