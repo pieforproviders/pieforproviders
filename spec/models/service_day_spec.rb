@@ -103,7 +103,7 @@ RSpec.describe ServiceDay do
 
   context 'with absence types' do
     let(:type_schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
-    let(:type_child) { schedule.child }
+    let(:type_child) { type_schedule.child }
     let(:child_business) { create(:child_business, child: type_child) }
 
     before do
@@ -117,7 +117,7 @@ RSpec.describe ServiceDay do
           :service_day,
           child: type_child,
           absence_type: 'absence',
-          date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
+          date: Helpers.prior_weekday(Time.current, 3).in_time_zone(child.timezone).at_beginning_of_day
         )
       end
       let(:scheduled_absence) do
@@ -146,7 +146,7 @@ RSpec.describe ServiceDay do
         :service_day,
         child: child,
         absence_type: 'absence',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        date: Helpers.prior_weekday(Time.current, 3).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
     let!(:covid_absence) do
@@ -174,6 +174,7 @@ RSpec.describe ServiceDay do
     end
 
     it 'returns standard absences only' do
+      child.reload
       expect(described_class.standard_absences).to include(absence)
       expect(described_class.standard_absences).not_to include(covid_absence)
       expect(described_class.standard_absences).not_to include(service_day_with_attendance)
@@ -251,9 +252,11 @@ RSpec.describe ServiceDay do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in }
+      let(:date) { Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours }
 
       it 'returns service days for given day' do
+        current_attendance.update(check_in: date, check_out: date + 5.hours)
+        current_attendance.service_day.update(date: date.at_beginning_of_day)
         travel_to date
         expect(described_class.for_day).to include(current_service_day)
         expect(described_class.for_day).not_to include(past_service_day)
