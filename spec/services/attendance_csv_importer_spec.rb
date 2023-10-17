@@ -32,7 +32,7 @@ RSpec.describe AttendanceCsvImporter do
                 expires_on: nil,
                 create_children: false)
   end
-  let!(:hermione_business1) do
+  let!(:hermione_business_one) do
     child = create(:necc_child,
                    first_name: 'Hermione',
                    last_name: 'Granger',
@@ -41,7 +41,7 @@ RSpec.describe AttendanceCsvImporter do
     create(:child_business, child:, business: business1)
     child
   end
-  let!(:child2_business1) do
+  let!(:child2_business_one) do
     child = create(:necc_child,
                    dhs_id: '5678',
                    approvals: [approvals[1]])
