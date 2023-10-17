@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable FactoryBot/FactoryAssociationWithStrategy
 FactoryBot.define do
   factory :child do
     transient do
@@ -12,7 +11,7 @@ FactoryBot.define do
     approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
 
     after(:create) do |child|
-      create(:child_business, child: child)
+      create(:child_business, child:)
     end
 
     factory :child_in_illinois do
@@ -34,7 +33,7 @@ FactoryBot.define do
       after(:create) do |child, evaluator|
         child.child_businesses.destroy_all
         business = create(:business, :nebraska_ldds)
-        create(:child_business, child: child, business: business)
+        create(:child_business, child:, business:)
         child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0') if
         child.wonderschool_id.blank?
         child.save!
@@ -105,7 +104,6 @@ FactoryBot.define do
     end
   end
 end
-# rubocop:enable FactoryBot/FactoryAssociationWithStrategy
 
 # == Schema Information
 #

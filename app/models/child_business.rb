@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# ChildBusiness model lets children have multiple businesses
 class ChildBusiness < ApplicationRecord
   belongs_to :child
   belongs_to :business

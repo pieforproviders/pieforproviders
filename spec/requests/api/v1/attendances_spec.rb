@@ -6,6 +6,7 @@ require 'rails_helper'
 # sure we don't work with a Saturday date to avoid flakiness in spec runs. A way to do this is to set
 # the week_current_date value to a day that falls within the expected week range
 
+# rubocop:disable RSpec/LetSetup
 RSpec.describe 'Api::V1::Attendances' do
   before { travel_to '2022-06-01'.to_date }
 
@@ -16,7 +17,8 @@ RSpec.describe 'Api::V1::Attendances' do
   let!(:child) do
     create(:child, effective_date: '2021-9-15'.in_time_zone(logged_in_user.timezone) - 2.months)
   end
-  let!(:child_business) { create(:child_business, child: child, business: business) }
+
+  let!(:child_business) { create(:child_business, child:, business:) }
 
   let!(:week_current_date) { '2021-9-15'.in_time_zone(child.timezone) } # Wednesday
   let!(:week_start_date) { week_current_date.at_beginning_of_week(:sunday) + 1.day + 11.hours } # Monday
@@ -313,3 +315,4 @@ RSpec.describe 'Api::V1::Attendances' do
     end
   end
 end
+# rubocop:enable RSpec/LetSetup

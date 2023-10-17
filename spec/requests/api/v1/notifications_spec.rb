@@ -46,7 +46,7 @@ RSpec.describe 'Api::V1::Notifications' do
 
       it 'gets the notification by id' do
         create(:child_business, child: children.first, business:)
-        get "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        get("/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers:)
         expect(response).to match_response_schema('notification')
         parsed_response = response.parsed_body
         expect(parsed_response['first_name']).to eq(children.first.first_name)
@@ -228,7 +228,7 @@ RSpec.describe 'Api::V1::Notifications' do
 
       it 'deletes the notification if it is within the scope of the user' do
         create(:child_business, business:, child: children.first)
-        delete "/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers: headers
+        delete("/api/v1/notifications/#{children.first.notifications.first.id}", params: {}, headers:)
         expect(response).to have_http_status(:no_content)
       end
     end
@@ -274,8 +274,10 @@ RSpec.describe 'Api::V1::Notifications' do
         new_time = Time.current.at_beginning_of_day
         params = { notification: { created_at: new_time } }
         create(:child_business, business:, child: children.first)
-        put "/api/v1/notifications/#{children.first.notifications.first.id}", params: params, headers: headers
-        resp = JSON.parse(response.body)
+        put("/api/v1/notifications/#{children.first.notifications.first.id}",
+            params:,
+            headers:)
+        resp = response.parsed_body
         expect(resp['created_at']).to eq(new_time.to_s)
       end
     end
@@ -308,8 +310,8 @@ RSpec.describe 'Api::V1::Notifications' do
 
       it 'returns the user\'s notifications' do
         create(:child_business, business:, child: children.first)
-        get '/api/v1/notifications', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/notifications', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.pluck('first_name')).to include(children.first.first_name)
         expect(parsed_response.pluck('first_name')).not_to include(non_owner_child.first_name)
         expect(response).to match_response_schema('notifications')

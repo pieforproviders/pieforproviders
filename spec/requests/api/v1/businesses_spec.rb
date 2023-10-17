@@ -36,8 +36,8 @@ RSpec.describe 'Api::V1::Businesses' do
 
       it 'returns businesses in alphabetical order' do
         create(:business, name: 'aaa child care')
-        get '/api/v1/businesses', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/businesses', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.first['name']).to include('aaa child care')
       end
     end

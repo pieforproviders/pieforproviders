@@ -233,7 +233,7 @@ RSpec.describe UserBlueprint do
                             check_in: last_month,
                             service_day:)
         perform_enqueued_jobs
-        ServiceDay.all.each(&:reload)
+        ServiceDay.find_each(&:reload)
         blueprint = described_class.render(user, view: :nebraska_dashboard, filter_date: last_month.at_end_of_month)
         expect(JSON.parse(blueprint)['as_of'])&.to eq(attendance.check_in&.strftime('%m/%d/%Y'))
       end

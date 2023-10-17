@@ -1,7 +1,6 @@
-# # frozen_string_literal: true
+# frozen_string_literal: true
 
 # require 'rails_helper'
-
 # module Wonderschool
 #   module Necc
 #     RSpec.describe OnboardingCaseImporter do
@@ -718,7 +717,8 @@
 #               .from(1).to(7)
 #               .and not_raise_error
 #             child.reload
-#             expect((child.approvals.reject { |app| app == approval }).first.expires_on).to eq(Date.parse('2021-08-31'))
+#             expect((child.approvals.reject { |app| app == approval }).first.expires_on).to
+# eq(Date.parse('2021-08-31'))
 #             expect(approval.reload.expires_on).to eq(Date.parse('2020-08-31'))
 #             expect(child.nebraska_approval_amounts.reject do |naa|
 #               naa == nebraska_approval_amount
@@ -887,3 +887,6 @@
 #     end
 #   end
 # end
+
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength

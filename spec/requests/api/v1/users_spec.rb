@@ -301,8 +301,8 @@ RSpec.describe 'Api::V1::Users' do
       before { sign_in admin_user }
 
       it 'returns the correct data schema' do
-        get '/api/v1/case_list_for_dashboard', headers: headers
-        parsed_response = JSON.parse(response.body)
+        get('/api/v1/case_list_for_dashboard', headers:)
+        parsed_response = response.parsed_body
         expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(6)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')

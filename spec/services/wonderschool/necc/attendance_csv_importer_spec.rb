@@ -17,8 +17,8 @@ module Wonderschool
         Rails.root.join('spec/fixtures/files/wonderschool_necc_attendance_data_missing_field.csv').read
       end
 
-      let!(:business1) { create(:business, name: 'Test Daycare') }
-      let!(:business2) { create(:business, name: 'Fake Daycare') }
+      let!(:business_one) { create(:business, name: 'Test Daycare') }
+      let!(:business_two) { create(:business, name: 'Fake Daycare') }
       let!(:approvals) do
         create_list(:approval,
                     3,
@@ -30,21 +30,21 @@ module Wonderschool
         child = create(:necc_child,
                        wonderschool_id: '1234',
                        approvals: [approvals[0]])
-        create(:child_business, business: business1, child: child)
+        create(:child_business, business: business_one, child:)
         child
       end
       let!(:second_child) do
         child = create(:necc_child,
                        wonderschool_id: '5678',
                        approvals: [approvals[1]])
-        create(:child_business, business: business2, child: child)
+        create(:child_business, business: business_two, child:)
         child
       end
       let!(:third_child) do
         child = create(:necc_child,
                        wonderschool_id: '5677',
                        approvals: [approvals[2]])
-        create(:child_business, business: business2, child: child)
+        create(:child_business, business: business_two, child:)
         child
       end
 

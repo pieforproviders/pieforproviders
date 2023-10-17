@@ -76,13 +76,13 @@ class Child < UuidApplicationRecord
   def unique_name_and_dob_per_business
     businesses.each do |business|
       similar_children = business.children.where(
-        first_name: first_name,
-        last_name: last_name,
-        date_of_birth: date_of_birth
+        first_name:,
+        last_name:,
+        date_of_birth:
       )
 
       # Excluir el ID actual del niño en caso de que ya exista en la base de datos
-      similar_children = similar_children.where.not(id: id) if id
+      similar_children = similar_children.where.not(id:) if id
 
       if similar_children.exists?
         errors.add(:base, 'A child with the same name and date of birth already exists for this business.')
