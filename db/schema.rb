@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_28_155541) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_09_28_155541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -122,8 +121,8 @@ ActiveRecord::Schema.define(version: 2023_09_28_155541) do
   create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id", null: false
     t.uuid "business_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "currently_active", default: false
     t.index ["business_id"], name: "index_child_businesses_on_business_id"
     t.index ["child_id"], name: "index_child_businesses_on_child_id"
@@ -132,8 +131,8 @@ ActiveRecord::Schema.define(version: 2023_09_28_155541) do
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "wonderschool_id"
     t.string "dhs_id"
     t.date "last_active_date"
@@ -321,10 +320,10 @@ ActiveRecord::Schema.define(version: 2023_09_28_155541) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "min_time"
     t.integer "max_time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 

@@ -24,10 +24,6 @@
       "type": "string",
       "format": "date-time"
     },
-    "business_id": {
-      "type": "string",
-      "format": "uuid"
-    },
     "wonderschool_id": {
       "type": [
         "string",
