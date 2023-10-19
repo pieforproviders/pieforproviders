@@ -17,8 +17,7 @@ module Nebraska
       @filter_date = filter_date
       @attended_days = attended_days
       @absent_days = absent_days
-      child_business = child.child_businesses.find_by(currently_active: true)
-      @business = Business.find(child_business.business_id)
+      @business = child.child_businesses.find_by(currently_active: true).business
       @schedules = child&.schedules
       @reimbursable_month_absent_days = reimbursable_absent_service_days
     end

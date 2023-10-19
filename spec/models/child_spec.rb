@@ -156,8 +156,7 @@ RSpec.describe Child do
 
   describe 'delegated attributes' do
     it 'gets user from business' do
-      child_business = child.child_businesses.find_by(currently_active: true)
-      active_business = Business.find(child_business.business_id)
+      active_business = child.child_businesses.find_by(currently_active: true).business
       expect(child.user).to eq(active_business.user)
     end
 

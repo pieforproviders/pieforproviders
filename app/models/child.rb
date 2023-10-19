@@ -65,7 +65,6 @@ class Child < UuidApplicationRecord
   scope :with_schedules, -> { includes(:schedules) }
   scope :with_businesses, -> { includes(:child_businesses) }
 
-  # Esto asume que quieres obtener el county, user, state, y timezone del primer negocio asociado al niño.
   delegate :county, to: :primary_business
   delegate :user, to: :primary_business
   delegate :state, to: :primary_user
@@ -81,7 +80,6 @@ class Child < UuidApplicationRecord
         date_of_birth:
       )
 
-      # Excluir el ID actual del niño en caso de que ya exista en la base de datos
       similar_children = similar_children.where.not(id:) if id
 
       if similar_children.exists?
@@ -92,8 +90,7 @@ class Child < UuidApplicationRecord
   end
 
   def primary_business
-    child_business = child_businesses.find_by(currently_active: true)
-    Business.find(child_business.business_id)
+    child_businesses.find_by(currently_active: true).business
   end
 
   def primary_user

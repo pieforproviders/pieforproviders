@@ -23,8 +23,7 @@ module Nebraska
     def closed_days_by_month_until_date
       closed_days = 0
       date_range.each do |day|
-        child_business = @child.child_businesses.find_by(currently_active: true)
-        active_business = businesses.find(child_business.business_id)
+        active_business = @child.child_businesses.find_by(currently_active: true).business
         closed_days += 1 unless active_business.eligible_by_date?(day)
       end
       closed_days

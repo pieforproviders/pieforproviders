@@ -31,17 +31,17 @@ end
 
 RSpec.shared_context 'with nebraska rates created for dashboard' do
   before do
-    child_business = child.child_businesses.find_by(currently_active: true)
+    business = child.child_businesses.find_by(currently_active: true).business
     create(
       :accredited_hourly_ldds_rate,
-      license_type: Business.find(child_business.business_id).license_type,
+      license_type: business.license_type,
       amount: 5.15,
       effective_on: Time.zone.parse('April 1st, 2021'),
       expires_on: nil
     )
     create(
       :accredited_daily_ldds_rate,
-      license_type: Business.find(child_business.business_id).license_type,
+      license_type: business.license_type,
       amount: 25.15,
       effective_on: Time.zone.parse('April 1st, 2021'),
       expires_on: nil

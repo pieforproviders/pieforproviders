@@ -16,8 +16,7 @@ module Illinois
     def initialize(child:, filter_date:, eligible_days: nil, attended_days: nil)
       @child = child
       @filter_date = filter_date
-      child_business = child.child_businesses.find_by(currently_active: true)
-      @business = Business.find(child_business.business_id)
+      @business = child.child_businesses.find_by(currently_active: true).business
       @schedules = child&.schedules
       @eligible_days = eligible_days
       @attended_days = attended_days

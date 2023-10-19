@@ -217,9 +217,6 @@ RSpec.describe UserBlueprint do
         else
           expect(as_of_date).to eq(expected_date)
         end
-
-        # expect(JSON.parse(blueprint)['as_of'])
-        #   &.to eq(user.latest_service_day_in_month(Time.current)&.strftime('%m/%d/%Y'))
       end
 
       it 'returns the as_of date for the last attendance in the prior month' do

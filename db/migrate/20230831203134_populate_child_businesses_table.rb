@@ -9,7 +9,6 @@ class PopulateChildBusinessesTable < ActiveRecord::Migration[6.0]
   end
 
   def down
-    # Esto eliminará todos los registros en child_businesses, úsalo con precaución.
     execute "DELETE FROM child_businesses"
   end
 end
