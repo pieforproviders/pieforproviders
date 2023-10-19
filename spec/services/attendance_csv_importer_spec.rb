@@ -33,36 +33,39 @@ RSpec.describe AttendanceCsvImporter do
                 create_children: false)
   end
   let!(:hermione_business_one) do
-    create(:necc_child,
-           first_name: 'Hermione',
-           last_name: 'Granger',
-           dhs_id: '1234',
-           business: business_one,
-           approvals: [approvals[0]])
+    child = create(:necc_child,
+                   first_name: 'Hermione',
+                   last_name: 'Granger',
+                   dhs_id: '1234',
+                   approvals: [approvals[0]])
+    create(:child_business, child:, business: business_one)
+    child
   end
   let!(:child2_business_one) do
-    create(:necc_child,
-           dhs_id: '5678',
-           business: business_one,
-           approvals: [approvals[1]])
+    child = create(:necc_child,
+                   dhs_id: '5678',
+                   approvals: [approvals[1]])
+    create(:child_business, child:, business: business_one)
+    child
   end
   let!(:third_child) do
-    create(:necc_child,
-           first_name: 'Lucy',
-           last_name: 'Pevensie',
-           dhs_id: '5677',
-           business: business_one,
-           approvals: [approvals[2]])
+    child = create(:necc_child,
+                   first_name: 'Lucy',
+                   last_name: 'Pevensie',
+                   dhs_id: '5677',
+                   approvals: [approvals[2]])
+    create(:child_business, child:, business: business_one)
+    child
   end
 
   before do
     # 4th child, different business
-    create(:necc_child,
-           first_name: 'Hermione',
-           last_name: 'Granger',
-           dhs_id: '5679',
-           business: business_two,
-           approvals: [approvals[3]])
+    child = create(:necc_child,
+                   first_name: 'Hermione',
+                   last_name: 'Granger',
+                   dhs_id: '5679',
+                   approvals: [approvals[3]])
+    create(:child_business, child:, business: business_two)
     allow(Rails.application.config).to receive(:aws_necc_attendance_bucket) { source_bucket }
     allow(Rails.application.config).to receive(:aws_necc_attendance_archive_bucket) { archive_bucket }
     allow(AwsClient).to receive(:new) { stubbed_client }

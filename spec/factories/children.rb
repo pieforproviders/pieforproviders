@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable FactoryBot/FactoryAssociationWithStrategy
 FactoryBot.define do
   factory :child do
     transient do
@@ -9,8 +8,11 @@ FactoryBot.define do
     date_of_birth { 2.years.ago.strftime('%Y-%m-%d') }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    business
     approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
+
+    after(:create) do |child|
+      create(:child_business, child:)
+    end
 
     factory :child_in_illinois do
       after(:create) do |child|
@@ -28,11 +30,14 @@ FactoryBot.define do
       transient do
         effective_date { 6.months.ago }
       end
-      business { create(:business, :nebraska_ldds) }
-      wonderschool_id { SecureRandom.random_number(10**6).to_s.rjust(6, '0') }
-      approvals { [create(:approval, create_children: false, effective_on: effective_date)] }
-
       after(:create) do |child, evaluator|
+        child.child_businesses.destroy_all
+        business = create(:business, :nebraska_ldds)
+        create(:child_business, child:, business:)
+        child.wonderschool_id = SecureRandom.random_number(10**6).to_s.rjust(6, '0') if
+        child.wonderschool_id.blank?
+        child.save!
+        child.reload
         create(:nebraska_approval_amount,
                child_approval: child.child_approvals.first,
                effective_on: evaluator.effective_date,
@@ -99,7 +104,6 @@ FactoryBot.define do
     end
   end
 end
-# rubocop:enable FactoryBot/FactoryAssociationWithStrategy
 
 # == Schema Information
 #
@@ -116,17 +120,10 @@ end
 #  last_name          :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  business_id        :uuid             not null
 #  dhs_id             :string
 #  wonderschool_id    :string
 #
 # Indexes
 #
-#  index_children_on_business_id  (business_id)
-#  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (business_id => businesses.id)
+#  index_children_on_deleted_at  (deleted_at)
 #

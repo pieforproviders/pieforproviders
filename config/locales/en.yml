@@ -53,21 +53,22 @@ en:
 
   errors:
     messages:
-      taken: "has already been taken"
-      confirmation: "Confirmation Error"
+      taken: 'has already been taken'
+      confirmation: 'Confirmation Error'
+      one_business_only: 'Only one business can be active per child'
   mailers:
     confirmation_instructions:
       body: Welcome to Pie for Providers! Get ready to increase your slice of the pie with simple child care subsidy management tools. To get started, please verify your email address by clicking the link below (you can also copy and paste it into your browser).
-      questions: "Questions? Email "
-      subject: "Pie for Providers email verification"
+      questions: 'Questions? Email '
+      subject: 'Pie for Providers email verification'
 
     reset_password_instructions:
-      subject: "Pie for Providers - reset password instructions"
-      body: "Someone has requested a link to change your password. You can do this through the link below."
+      subject: 'Pie for Providers - reset password instructions'
+      body: 'Someone has requested a link to change your password. You can do this through the link below.'
       note: "If you didn't request this, please ignore this email. Your password won't change until you access the link above and create a new one."
 
     password_change:
-      subject: "Pie for Providers - password changed"
+      subject: 'Pie for Providers - password changed'
       body: "We're contacting you to notify you that your password has been changed."
   faker:
     name:
@@ -135,4 +136,3 @@ en:
         - 8319
         - 8320
         - 8321
-        

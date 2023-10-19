@@ -12,7 +12,10 @@ FactoryBot.define do
 
     factory :business_with_children do
       after :create do |business|
-        create_list(:child, 3, business:)
+        3.times do
+          child = create(:child)
+          create(:child_business, business:, child:)
+        end
       end
     end
 

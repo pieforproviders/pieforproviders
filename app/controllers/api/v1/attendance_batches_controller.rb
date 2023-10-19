@@ -27,7 +27,7 @@ module Api
                   :errors
 
       def attendances
-        batch.compact_blank.map do |attendance_params|
+        batch&.compact_blank&.map do |attendance_params|
           @attendance_params = attendance_params
           ActiveRecord::Base.transaction do
             if absence_type

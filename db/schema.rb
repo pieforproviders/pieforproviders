@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_28_155541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -79,7 +79,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
   end
 
   create_table "businesses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.string "license_type", null: false
     t.string "name", null: false
     t.uuid "user_id", null: false
@@ -92,6 +91,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
     t.boolean "accredited"
     t.date "deleted_at"
     t.string "inactive_reason"
+    t.boolean "active", default: true, null: false
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -118,10 +118,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
+  create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.uuid "business_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "currently_active", default: false
+    t.index ["business_id"], name: "index_child_businesses_on_business_id"
+    t.index ["child_id"], name: "index_child_businesses_on_child_id"
+  end
+
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
-    t.uuid "business_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "wonderschool_id"
@@ -132,9 +141,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.date "last_inactive_date"
-    t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["deleted_at"], name: "index_children_on_deleted_at"
-    t.index ["first_name", "last_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -313,10 +320,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.integer "min_time"
-    t.integer "max_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "min_time"
+    t.integer "max_time"
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
@@ -378,7 +385,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_19_181000) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "children", "businesses"
+  add_foreign_key "child_businesses", "businesses"
+  add_foreign_key "child_businesses", "children"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"

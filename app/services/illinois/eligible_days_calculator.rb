@@ -23,7 +23,8 @@ module Illinois
     def closed_days_by_month_until_date
       closed_days = 0
       date_range.each do |day|
-        closed_days += 1 unless child.business.eligible_by_date?(day)
+        active_business = @child.child_businesses.find_by(currently_active: true).business
+        closed_days += 1 unless active_business.eligible_by_date?(day)
       end
       closed_days
     end
@@ -60,7 +61,9 @@ module Illinois
     def closed_days_by_month
       closed_days = 0
       date.to_date.all_month.each do |day|
-        closed_days += 1 unless child.business.eligible_by_date?(day)
+        child_business = child.child_businesses.find_by(currently_active: true)
+        business = child.businesses.find(child_business.business_id)
+        closed_days += 1 unless business.eligible_by_date?(day)
       end
       closed_days
     end

@@ -65,21 +65,24 @@ module Wonderschool
         )
       end
 
+      # rubocop: disable Metrics/AbcSize
+      # rubocop: disable Metrics/MethodLength
       def process_child
         first_name = required_child_params[:first_name].downcase
         last_name = required_child_params[:last_name].downcase
 
         @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
                              first_name,
-                             last_name).first_or_initialize(required_child_params)
-
+                             last_name).first_or_initialize(required_child_params.except(:business_id))
         if @child.new_record?
           @child.save
+          @child.child_businesses.create!(business: @business, currently_active: true)
         else
-          @child.update(required_child_params)
+          @child.update(required_child_params.except(:business_id))
         end
       end
 
+      # rubocop: enable Metrics/MethodLength
       def find_approval
         @child.approvals << Approval.find_or_create_by(approval_params) unless @child.approvals.find_by(approval_params)
         @child.save
@@ -194,7 +197,6 @@ module Wonderschool
         ratings[value]
       end
 
-      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
@@ -208,7 +210,7 @@ module Wonderschool
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
-      # rubocop:enable Metrics/AbcSize
+      # rubocop: enable Metrics/AbcSize
 
       def required_child_params
         {

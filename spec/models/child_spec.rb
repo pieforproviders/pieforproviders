@@ -3,7 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Child do
-  let!(:child) { create(:child) }
+  let!(:business) { create(:business) }
+  let!(:child) { create(:child, businesses: [business]) }
   let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
   let!(:state) do
     create(:state)
@@ -36,7 +37,7 @@ RSpec.describe Child do
   end
   # rubocop:enable RSpec/LetSetup
 
-  it { is_expected.to belong_to(:business) }
+  it { is_expected.to have_many(:businesses) }
   it { is_expected.to have_many(:child_approvals).dependent(:destroy).inverse_of(:child).autosave(true) }
   it { is_expected.to have_many(:approvals).through(:child_approvals) }
 
@@ -46,21 +47,21 @@ RSpec.describe Child do
   it { is_expected.to validate_presence_of(:last_name) }
 
   it 'validates that only one child with the same name and birthdate exist in a business' do
-    business = child.business
     duplicate_child = build(
       :child,
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      business:
+      businesses: [business]
     )
     expect(duplicate_child).not_to be_valid
+    diff_business = create(:business)
     duplicate_child_diff_business = build(
       :child,
       first_name: child.first_name,
       last_name: child.last_name,
       date_of_birth: child.date_of_birth,
-      business: create(:business)
+      businesses: [diff_business]
     )
     expect(duplicate_child_diff_business).to be_valid
   end
@@ -155,7 +156,8 @@ RSpec.describe Child do
 
   describe 'delegated attributes' do
     it 'gets user from business' do
-      expect(child.user).to eq(child.business.user)
+      active_business = child.child_businesses.find_by(currently_active: true).business
+      expect(child.user).to eq(active_business.user)
     end
 
     it 'gets state from user' do
@@ -247,7 +249,7 @@ RSpec.describe Child do
              first_name: 'Parvati',
              last_name: 'Patil',
              date_of_birth: '2010-04-09',
-             business_id: created_business.id,
+             businesses: [created_business],
              approvals_attributes: [attributes_for(:approval)])
     end
     let!(:approval) { child.approvals.first }
@@ -258,7 +260,7 @@ RSpec.describe Child do
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
-          business_id: created_business.id,
+          businesses: [created_business],
           approvals_attributes: [
             {
               case_number: approval.case_number,
@@ -295,7 +297,7 @@ RSpec.describe Child do
           first_name: 'Dev',
           last_name: 'Patil',
           date_of_birth: '2015-04-09',
-          business_id: created_business.id,
+          businesses: [created_business],
           approvals_attributes: [
             {
               case_number: approval.case_number,
@@ -370,17 +372,10 @@ end
 #  last_name          :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  business_id        :uuid             not null
 #  dhs_id             :string
 #  wonderschool_id    :string
 #
 # Indexes
 #
-#  index_children_on_business_id  (business_id)
-#  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (business_id => businesses.id)
+#  index_children_on_deleted_at  (deleted_at)
 #

@@ -20,7 +20,7 @@ FactoryBot.define do
     after(:create) do |approval, evaluator|
       if evaluator.create_children
         business = evaluator.business || (evaluator.nebraska ? create(:business, :nebraska_ldds) : create(:business))
-        create_list(:child, evaluator.num_children, business:, approvals: [approval])
+        create_list(:child, evaluator.num_children, businesses: [business], approvals: [approval])
       end
       approval.child_approvals.each do |child_approval|
         child_approval.update!(attributes_for(:child_approval))

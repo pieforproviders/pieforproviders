@@ -9,8 +9,9 @@ module Nebraska
     def initialize(service_day:)
       super
       @child = service_day.child
-      @business = child.business
-      @child_approval = child.active_child_approval(service_day.date)
+      child_business = @child.child_businesses.find_by(currently_active: true)
+      @business = child_business.business
+      @child_approval = @child.active_child_approval(service_day.date)
     end
 
     def call

@@ -35,6 +35,7 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
   # rubocop:enable RSpec/LetSetup
   let!(:logged_in_user) { create(:confirmed_user, :nebraska) }
   let!(:business) { create(:business, :nebraska_ldds, user: logged_in_user) }
+  # let!(:child_business) { create(:child_business, business: business) }
   let!(:approval) { create(:approval, num_children: 3, business:) }
   let!(:children) { approval.children }
   let!(:non_owner_child) { create(:necc_child) }
@@ -49,6 +50,10 @@ RSpec.describe 'Api::V1::AttendanceBatches' do
     sign_in logged_in_user
     children.each(&:reload) # triggers changes as a result of the callbacks in the model
     non_owner_child.reload # triggers changes as a result of the callbacks in the model
+    children.each do |child|
+      child.businesses.where(state: 'IL').destroy_all
+      child.child_businesses.each { |cbusiness| cbusiness.update(currently_active: true) }
+    end
   end
 
   describe 'POST /api/v1/attendance_batches' do

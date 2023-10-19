@@ -213,28 +213,32 @@ RSpec.describe 'Api::V1::Users' do
     let(:nebraska_business_two) { create(:business, :nebraska_ldds, user: nebraska_user) }
 
     before do
-      create_list(
+      ne_children = create_list(
         :child,
         2,
         {
-          business: nebraska_business,
           approvals: [
             create(:expired_approval, create_children: false),
             create(:approval, create_children: false)
           ]
         }
       )
-      create_list(
+      ne_children.each do |child|
+        create(:child_business, child:, business: nebraska_business)
+      end
+      il_children = create_list(
         :child,
         2,
         {
-          business: illinois_business,
           approvals: [
             create(:expired_approval, create_children: false),
             create(:approval, create_children: false)
           ]
         }
       )
+      il_children.each do |child|
+        create(:child_business, child:, business: illinois_business)
+      end
     end
 
     context 'when logged in as a non-admin user in illinois' do
@@ -299,7 +303,7 @@ RSpec.describe 'Api::V1::Users' do
       it 'returns the correct data schema' do
         get('/api/v1/case_list_for_dashboard', headers:)
         parsed_response = response.parsed_body
-        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(2)
+        expect(parsed_response.collect { |user| user.dig_and_collect('businesses', 'cases') }.flatten.size).to eq(6)
         expect(response).to have_http_status(:ok)
         expect(response).to match_response_schema('nebraska_case_list_for_dashboard')
       end

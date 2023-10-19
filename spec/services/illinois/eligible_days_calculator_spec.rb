@@ -32,7 +32,7 @@ RSpec.describe Illinois::EligibleDaysCalculator do
 
   describe '#calculate eligible days with holidays' do
     let(:business) { create(:business) }
-    let(:child) { create(:child_in_illinois, business:) }
+    let(:child) { create(:child_in_illinois, businesses: [business]) }
     let(:holiday) { create(:holiday) }
 
     it 'returns eligible full days for a child in a month with holiday' do
@@ -60,7 +60,8 @@ RSpec.describe Illinois::EligibleDaysCalculator do
 
   describe '#calculate eligible days with closed days' do
     let(:business) { create(:business_with_closed_days_in_november) }
-    let(:child) { create(:child_in_illinois, business:) }
+    let(:child) { create(:child_in_illinois) }
+    let(:child_businesses) { create(:child_businesses, business:, child:) }
 
     it 'returns eligible full days for a child in a month with closures' do
       november = Date.new(2022, 11, 1)

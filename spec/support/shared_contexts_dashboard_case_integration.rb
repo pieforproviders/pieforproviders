@@ -14,7 +14,9 @@ RSpec.shared_context 'with nebraska child created for dashboard' do
   let(:prior_month_check_in) { child_approval.effective_on.in_time_zone(child.timezone).at_beginning_of_day }
 
   before do
-    child.business.update!(accredited: true, quality_rating: 'step_four')
+    child_business = child.child_businesses.find_by(currently_active: true)
+
+    Business.find(child_business.business_id)&.update!(accredited: true, quality_rating: 'step_four')
     child_approval.update!(
       attributes_for(:child_approval)
       .merge({
@@ -29,16 +31,17 @@ end
 
 RSpec.shared_context 'with nebraska rates created for dashboard' do
   before do
+    business = child.child_businesses.find_by(currently_active: true).business
     create(
       :accredited_hourly_ldds_rate,
-      license_type: child.business.license_type,
+      license_type: business.license_type,
       amount: 5.15,
       effective_on: Time.zone.parse('April 1st, 2021'),
       expires_on: nil
     )
     create(
       :accredited_daily_ldds_rate,
-      license_type: child.business.license_type,
+      license_type: business.license_type,
       amount: 25.15,
       effective_on: Time.zone.parse('April 1st, 2021'),
       expires_on: nil

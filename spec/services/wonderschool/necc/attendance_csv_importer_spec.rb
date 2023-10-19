@@ -27,22 +27,25 @@ module Wonderschool
                     create_children: false)
       end
       let!(:first_child) do
-        create(:necc_child,
-               wonderschool_id: '1234',
-               business: business_one,
-               approvals: [approvals[0]])
+        child = create(:necc_child,
+                       wonderschool_id: '1234',
+                       approvals: [approvals[0]])
+        create(:child_business, business: business_one, child:)
+        child
       end
       let!(:second_child) do
-        create(:necc_child,
-               wonderschool_id: '5678',
-               business: business_two,
-               approvals: [approvals[1]])
+        child = create(:necc_child,
+                       wonderschool_id: '5678',
+                       approvals: [approvals[1]])
+        create(:child_business, business: business_two, child:)
+        child
       end
       let!(:third_child) do
-        create(:necc_child,
-               wonderschool_id: '5677',
-               business: business_two,
-               approvals: [approvals[2]])
+        child = create(:necc_child,
+                       wonderschool_id: '5677',
+                       approvals: [approvals[2]])
+        create(:child_business, business: business_two, child:)
+        child
       end
 
       before do
@@ -100,7 +103,8 @@ module Wonderschool
         it "continues processing if the child doesn't exist" do
           allow(Rails.logger).to receive(:tagged).and_yield
           allow(Rails.logger).to receive(:info)
-          first_child.destroy!
+          first_child.child_businesses.destroy_all
+          first_child.reload.destroy!
           allow(stubbed_client)
             .to receive(:archive_contents)
             .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
