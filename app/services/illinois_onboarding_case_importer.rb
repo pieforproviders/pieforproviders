@@ -43,12 +43,15 @@ class IllinoisOnboardingCaseImporter
     )
   end
 
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def process_row(row)
     @row = row
     @business = Business.find_or_create_by!(required_business_params)
-    @child = Child.find_or_initialize_by(required_child_params)
+    @child = Child.find_or_initialize_by(required_child_params.except(:business_id))
     @approval = find_approval
-
+    @child.save
+    @child.child_businesses.create!(business: @business, currently_active: true)
     evaluate_columns
 
     raise NotEnoughInfo, @child.errors unless @child.valid?
@@ -62,6 +65,8 @@ class IllinoisOnboardingCaseImporter
       tags: { case_number: @row['Case number'] }
     )
   end
+  # rubocop: enable Metrics/MethodLength
+  # rubocop: enable Metrics/AbcSize
 
   def find_approval
     @child.approvals << Approval.find_or_create_by!(approval_params) unless @child.approvals.find_by(approval_params)
