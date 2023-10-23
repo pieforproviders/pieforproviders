@@ -48,7 +48,6 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-
         process_child
 
         @approval = find_approval
@@ -75,6 +74,7 @@ module Wonderschool
                              first_name,
                              last_name).first_or_initialize(required_child_params.except(:business_id))
         if @child.new_record?
+          find_approval
           @child.save
           @child.child_businesses.create!(business: @business, currently_active: true)
         else
