@@ -62,7 +62,7 @@ module Api
       end
 
       def check_params
-        case initial_attendance_params
+        case @initial_attendance_params
         when ->(params) { !params.key?(:check_in) }
           add_error_and_return_nil(:check_in)
         when ->(params) { !params.key?(:child_id) }
@@ -94,7 +94,7 @@ module Api
         check_in = Date.parse(initial_attendance_params[:check_in])
         active_approval = child&.active_child_approval(check_in)
         if active_approval.present?
-          if check_in > active_approval&.effective_on && check_in < active_approval&.expires_on
+          if check_in >= active_approval&.effective_on && check_in <= active_approval&.expires_on
             @child_approval_id = active_approval.id
           end
         else
