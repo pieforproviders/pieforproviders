@@ -65,10 +65,10 @@ class Child < UuidApplicationRecord
   scope :with_schedules, -> { includes(:schedules) }
   scope :with_businesses, -> { includes(:child_businesses) }
 
-  delegate :county, to: :primary_business
-  delegate :user, to: :primary_business
-  delegate :state, to: :primary_user
-  delegate :timezone, to: :primary_user
+  delegate :county, to: :businesses
+  delegate :user, to: :businesses
+  delegate :state, to: :primary_users
+  delegate :timezone, to: :primary_users
 
   before_save :validate_wonderschool_id
 
@@ -89,12 +89,12 @@ class Child < UuidApplicationRecord
     end
   end
 
-  def primary_business
-    child_businesses.find_by(currently_active: true).business
+  def businesses
+    child_businesses.map(&:business)
   end
 
-  def primary_user
-    primary_business&.user
+  def primary_users
+    businesses.map(&:user)
   end
 
   def age(date = Time.current)

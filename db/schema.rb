@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_30_215621) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_31_155252) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -123,7 +123,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_215621) do
     t.uuid "business_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "currently_active", default: false
     t.index ["business_id"], name: "index_child_businesses_on_business_id"
     t.index ["child_id"], name: "index_child_businesses_on_child_id"
   end
@@ -366,10 +365,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_215621) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.integer "min_time"
-    t.integer "max_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "min_time"
+    t.integer "max_time"
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 

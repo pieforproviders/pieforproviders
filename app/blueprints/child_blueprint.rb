@@ -12,14 +12,13 @@ class ChildBlueprint < Blueprinter::Base
   field :last_name
   field :wonderschool_id
   field :business_name do |child, _options|
-    business = child.child_businesses.find_by(currently_active: true).business
-    business.name
+    child.child_businesses.map { |child_business| child_business.business.name }
   end
 
-  field :active_business do |child, _options|
-    business = child.child_businesses.find_by(currently_active: true).business
-    { id: business.id, name: business.name }
-  end
+  # field :active_business do |child, _options|
+  #   business = child.child_businesses.find_by(currently_active: true).business
+  #   { id: business.id, name: business.name }
+  # end
 
   view :cases do
     association :child_businesses, blueprint: ChildBusinessBlueprint
