@@ -65,24 +65,30 @@ module Wonderschool
       end
 
       # rubocop: disable Metrics/AbcSize
-      # rubocop: disable Metrics/MethodLength
       def process_child
         first_name = required_child_params[:first_name].downcase
         last_name = required_child_params[:last_name].downcase
-
-        @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
-                             first_name,
-                             last_name).first_or_initialize(required_child_params.except(:business_id))
-        if @child.new_record?
-          find_approval
-          @child.save
-          @child.child_businesses.create!(business: @business, currently_active: true)
+        @child = Child.find_by(dhs_id: @row['Client ID'])
+        if @child.present?
+          update_child_info
         else
-          @child.update(required_child_params.except(:business_id))
+          @child = Child.where(first_name:,
+                               last_name:).first_or_initialize(required_child_params)
+          find_approval
+          @child.child_businesses.create!(business: @business, currently_active: true)
         end
       end
 
-      # rubocop: enable Metrics/MethodLength
+      def update_child_info
+        if @child.first_name != @row['first_name'] || @child.last_name != @row['last_name']
+          @child.update(required_child_params.except(:first_name, :last_name))
+        elsif @child.date_of_birth != @row['date_of_birth'].to_date
+          @child.update(required_child_params.except(:date_of_birth))
+        else
+          @child.update(required_child_params)
+        end
+      end
+
       def find_approval
         @child.approvals << Approval.find_or_create_by(approval_params) unless @child.approvals.find_by(approval_params)
         @child.save
@@ -214,9 +220,8 @@ module Wonderschool
 
       def required_child_params
         {
-          business_id: @business&.id,
-          first_name: @row['First Name'].capitalize,
-          last_name: @row['Last Name'].capitalize,
+          first_name: @row['First Name'],
+          last_name: @row['Last Name'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
         }
