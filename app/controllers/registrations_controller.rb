@@ -5,6 +5,7 @@ class RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   def create
+    build_names
     build_resource(sign_up_params)
 
     resource.save
@@ -12,6 +13,12 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def build_names
+    full_name = sign_up_params.delete(:full_name)
+    first_name, last_name = full_name.split(' ', 2)
+    sign_up_params.merge(first_name:, last_name:)
+  end
 
   def sign_up_params
     params.require(:user).permit(
