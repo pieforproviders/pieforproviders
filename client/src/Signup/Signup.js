@@ -27,6 +27,8 @@ const { TextArea } = Input
 export function Signup() {
   const [user, setUser] = useState({
     fullName: null,
+    firstName: null,
+    lastName: null,
     email: null,
     language: i18n.language,
     password: null,
@@ -51,10 +53,22 @@ export function Signup() {
   const history = useHistory()
   useFreshsales()
 
+  const setNames = fullName => {
+    var firstSpaceIndex = fullName.indexOf(' ')
+    var first_name = fullName.slice(0, firstSpaceIndex)
+    var last_name = fullName.slice(firstSpaceIndex + 1)
+    setUser({
+      ...user,
+      fullName: fullName,
+      firstName: first_name,
+      lastName: last_name
+    })
+  }
+
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
-
+    console.log(user)
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -140,8 +154,9 @@ export function Signup() {
             value={user.fullName}
             data-cy="name"
             name="fullName"
-            onChange={event =>
-              setUser({ ...user, fullName: event.target.value })
+            onChange={
+              event => setNames(event.target.value)
+              // setUser({ ...user, fullName: event.target.value })
             }
           />
         </Form.Item>
@@ -206,7 +221,7 @@ export function Signup() {
                 data-cy="phoneNumber"
                 name="phoneNumber"
                 onChange={event =>
-                  setUser({ ...user, phoneNumber: `+1${event.target.value}` })
+                  setUser({ ...user, phoneNumber: event.target.value })
                 }
               />
             </Form.Item>

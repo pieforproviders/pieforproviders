@@ -6,24 +6,20 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     build_resource(sign_up_params)
-    build_names
+
+    resource.save
     render_resource(resource)
   end
 
   private
-
-  def build_names
-    full_name = sign_up_params.delete(:full_name)
-    first_name, last_name = full_name.split(' ', 2)
-    resource.update(first_name:, last_name:)
-    resource.save
-  end
 
   def sign_up_params
     params.require(:user).permit(
       :active,
       :email,
       :full_name,
+      :first_name,
+      :last_name,
       :get_from_pie,
       :greeting_name,
       :language,
