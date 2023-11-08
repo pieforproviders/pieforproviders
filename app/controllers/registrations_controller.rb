@@ -5,10 +5,8 @@ class RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
   def create
-    build_names
     build_resource(sign_up_params)
-
-    resource.save
+    build_names
     render_resource(resource)
   end
 
@@ -17,7 +15,8 @@ class RegistrationsController < Devise::RegistrationsController
   def build_names
     full_name = sign_up_params.delete(:full_name)
     first_name, last_name = full_name.split(' ', 2)
-    sign_up_params.merge(first_name:, last_name:)
+    resource.update(first_name:, last_name:)
+    resource.save
   end
 
   def sign_up_params
