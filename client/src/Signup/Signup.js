@@ -63,11 +63,11 @@ export function Signup() {
       lastName
     })
   }
-  useFreshsales()
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
     console.log(user)
+    useFreshsales()
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -217,7 +217,7 @@ export function Signup() {
               }
             >
               <Input
-                value={`+1 ${user.phoneNumber}`}
+                value={user.phoneNumber}
                 data-cy="phoneNumber"
                 name="phoneNumber"
                 onChange={event =>
@@ -577,6 +577,13 @@ export function Signup() {
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
           <Input value={user.lastName} className="ant-input" name="lastName" />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input
+            value={'+1' + user.phoneNumber}
+            className="ant-input"
+            name="codePhoneNumber"
+          />
         </Form.Item>
       </Form>
     </main>
