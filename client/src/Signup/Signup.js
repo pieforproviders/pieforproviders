@@ -51,7 +51,6 @@ export function Signup() {
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
   const history = useHistory()
-  useFreshsales()
 
   const setNames = fullName => {
     const firstSpaceIndex = fullName.indexOf(' ')
@@ -64,7 +63,7 @@ export function Signup() {
       lastName
     })
   }
-
+  useFreshsales()
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
@@ -155,12 +154,13 @@ export function Signup() {
             data-cy="name"
             name="fullName"
             onChange={
-              event => setNames(event.target.value)
+              event => {
+                setNames(event.target.value)
+              }
               // setUser({ ...user, fullName: event.target.value })
             }
           />
         </Form.Item>
-
         <Form.Item
           className="body-2-bold text-primaryBlue phone"
           name="phone"
@@ -217,7 +217,7 @@ export function Signup() {
               }
             >
               <Input
-                value={'+1' + user.phoneNumber}
+                value={`+1 ${user.phoneNumber}`}
                 data-cy="phoneNumber"
                 name="phoneNumber"
                 onChange={event =>
