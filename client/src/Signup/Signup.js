@@ -568,6 +568,9 @@ export function Signup() {
             value="Completed sign-up form"
           />
         </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input value="Test value" className="ant-input" name="lastName" />
+        </Form.Item>
       </Form>
     </main>
   )
