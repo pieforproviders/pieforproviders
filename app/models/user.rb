@@ -53,7 +53,6 @@ class User < UuidApplicationRecord
   # format phone numbers - remove any non-digit characters
   def phone_number=(value)
     super(value.blank? ? nil : value.gsub(/[^\d]/, ''))
-    self[:phone_number] = "+1#{self[:phone_number]}" if self[:phone_number].present?
   end
 
   # don't return the user's admin status in the API JSON

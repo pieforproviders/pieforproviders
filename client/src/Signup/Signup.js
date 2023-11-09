@@ -217,11 +217,11 @@ export function Signup() {
               }
             >
               <Input
-                value={user.phoneNumber}
+                value={'+1' + user.phoneNumber}
                 data-cy="phoneNumber"
                 name="phoneNumber"
                 onChange={event =>
-                  setUser({ ...user, phoneNumber: '+1' + event.target.value })
+                  setUser({ ...user, phoneNumber: event.target.value })
                 }
               />
             </Form.Item>
