@@ -54,14 +54,14 @@ export function Signup() {
   useFreshsales()
 
   const setNames = fullName => {
-    var firstSpaceIndex = fullName.indexOf(' ')
-    var first_name = fullName.slice(0, firstSpaceIndex)
-    var last_name = fullName.slice(firstSpaceIndex + 1)
+    const firstSpaceIndex = fullName.indexOf(' ')
+    const firstName = fullName.slice(0, firstSpaceIndex)
+    const lastName = fullName.slice(firstSpaceIndex + 1)
     setUser({
       ...user,
-      fullName: fullName,
-      firstName: first_name,
-      lastName: last_name
+      fullName,
+      firstName,
+      lastName
     })
   }
 
@@ -221,7 +221,7 @@ export function Signup() {
                 data-cy="phoneNumber"
                 name="phoneNumber"
                 onChange={event =>
-                  setUser({ ...user, phoneNumber: event.target.value })
+                  setUser({ ...user, phoneNumber: '+1' + event.target.value })
                 }
               />
             </Form.Item>
@@ -569,7 +569,14 @@ export function Signup() {
           />
         </Form.Item>
         <Form.Item style={{ display: 'none' }}>
-          <Input value="Test value" className="ant-input" name="lastName" />
+          <Input
+            value={user.firstName}
+            className="ant-input"
+            name="firstName"
+          />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input value={user.lastName} className="ant-input" name="lastName" />
         </Form.Item>
       </Form>
     </main>
