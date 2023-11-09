@@ -63,11 +63,10 @@ export function Signup() {
       lastName
     })
   }
+  useFreshsales()
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
-    console.log(user)
-    useFreshsales()
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
