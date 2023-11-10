@@ -49,7 +49,7 @@ class Child < UuidApplicationRecord
                                   date&.beginning_of_month)
         }
   scope :not_deleted, -> { where(deleted_at: nil) }
-  scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
+  scope :nebraska, -> { joins(child_businesses: :business).where(businesses: { state: 'NE' }) }
 
   scope :with_dashboard_case,
         lambda { |date = nil|
