@@ -156,7 +156,6 @@ export function Signup() {
               event => {
                 setNames(event.target.value)
               }
-              // setUser({ ...user, fullName: event.target.value })
             }
           />
         </Form.Item>
