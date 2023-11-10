@@ -48,7 +48,6 @@ class IllinoisOnboardingCaseImporter
   def process_row(row)
     @row = row
     @business = Business.find_or_create_by!(required_business_params)
-    # @child = Child.find_or_initialize_by(required_child_params.except(:business_id))
     @child = Child.find_by(dhs_id: @row['Client ID'])
     if @child.present?
       update_child_info
@@ -59,7 +58,6 @@ class IllinoisOnboardingCaseImporter
     end
     @approval = find_approval
     @child.save
-    # @child.child_businesses.create!(business: @business, currently_active: true)
     evaluate_columns
 
     raise NotEnoughInfo, @child.errors unless @child.valid?

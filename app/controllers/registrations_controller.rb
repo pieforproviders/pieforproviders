@@ -18,6 +18,8 @@ class RegistrationsController < Devise::RegistrationsController
       :active,
       :email,
       :full_name,
+      :first_name,
+      :last_name,
       :get_from_pie,
       :greeting_name,
       :language,

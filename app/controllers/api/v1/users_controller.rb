@@ -106,6 +106,8 @@ module Api
         params.require(:user).permit(:email,
                                      :active,
                                      :full_name,
+                                     :first_name,
+                                     :last_name,
                                      :greeting_name,
                                      :language,
                                      :opt_in_email,
