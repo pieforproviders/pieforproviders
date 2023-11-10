@@ -152,11 +152,9 @@ export function Signup() {
             value={user.fullName}
             data-cy="name"
             name="fullName"
-            onChange={
-              event => {
-                setNames(event.target.value)
-              }
-            }
+            onChange={event => {
+              setNames(event.target.value)
+            }}
           />
         </Form.Item>
         <Form.Item
