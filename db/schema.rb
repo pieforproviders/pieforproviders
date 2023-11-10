@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_06_175734) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -123,6 +123,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_06_175734) do
     t.uuid "business_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "currently_active", default: false
     t.index ["business_id"], name: "index_child_businesses_on_business_id"
     t.index ["child_id"], name: "index_child_businesses_on_child_id"
   end
