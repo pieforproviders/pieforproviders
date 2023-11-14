@@ -66,8 +66,8 @@ module Wonderschool
 
       # rubocop: disable Metrics/AbcSize
       def process_child
-        first_name = required_child_params[:first_name].downcase
-        last_name = required_child_params[:last_name].downcase
+        first_name = required_child_params[:first_name]
+        last_name = required_child_params[:last_name]
         @child = Child.find_by(dhs_id: @row['Client ID'])
         if @child.present?
           update_child_info
