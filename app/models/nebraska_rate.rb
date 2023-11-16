@@ -48,8 +48,8 @@ class NebraskaRate < UuidApplicationRecord
             .where(school_age:)
             .where('max_age >= ? OR max_age IS NULL', age)
             .where(region: Nebraska::RegionFinder.new(business:).call)
-            .where(license_type: business.license_type)
-            .where(accredited_rate: business.accredited || false)
+            .where(license_type: business.first.license_type)
+            .where(accredited_rate: business.first.accredited || false)
             .order_max_age
         }
 

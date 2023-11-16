@@ -18,7 +18,7 @@ module Nebraska
 
     # rubocop:disable Metrics/MethodLength
     def region
-      if business.license_type == 'license_exempt_home'
+      if business.first.license_type == 'license_exempt_home'
         if %w[Lancaster Dakota].include?(business.county)
           'Lancaster-Dakota'
         elsif %(Douglas Sarpy).include?(business.county)
@@ -26,10 +26,10 @@ module Nebraska
         else
           'Other'
         end
-      elsif business.license_type == 'family_in_home'
+      elsif business.first.license_type == 'family_in_home'
         'All'
       else
-        %w[Lancaster Dakota Douglas Sarpy].include?(business.county) ? 'LDDS' : 'Other'
+        %w[Lancaster Dakota Douglas Sarpy].include?(business.first.county) ? 'LDDS' : 'Other'
       end
     end
     # rubocop:enable Metrics/MethodLength

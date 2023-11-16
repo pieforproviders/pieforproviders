@@ -94,11 +94,11 @@ class Child < UuidApplicationRecord
   end
 
   def primary_users
-    businesses.map(&:user)
+    businesses.map(&:user).first
   end
 
   def age(date = Time.current)
-    years_since_birth = date.year - date_of_birth.year
+    years_since_birth = date.year - date_of_birth.yearprimaprimary_usersy_users
     birthday_passed = date_of_birth.month <= date.month || date_of_birth.day <= date.day
     birthday_passed ? years_since_birth : years_since_birth - 1
   end

@@ -9,7 +9,7 @@ module Nebraska
       def initialize(child_approval:, date:, total_time_in_care:, rates:)
         @child_approval = child_approval
         @child = child_approval.child
-        @business = child.child_businesses.find_by(currently_active: true).business
+        @business = child.businesses
         @date = date
         @rates = rates
         @total_time_in_care = total_time_in_care
@@ -39,8 +39,8 @@ module Nebraska
       end
 
       def ne_base_revenue
-        (hours * hourly_rate * business.ne_qris_bump(date:)) +
-          (days * daily_rate * business.ne_qris_bump(date:))
+        (hours * hourly_rate * business.first.ne_qris_bump(date:)) +
+          (days * daily_rate * business.first.ne_qris_bump(date:))
       end
 
       def hourly_rate
@@ -60,7 +60,7 @@ module Nebraska
       end
 
       def qris_check(rate)
-        !rate.quality_rating || rate.quality_rating == business.quality_rating
+        !rate.quality_rating || rate.quality_rating == business.first.quality_rating
       end
 
       def safe_special_needs_value(value)

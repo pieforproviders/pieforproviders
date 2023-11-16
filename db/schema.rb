@@ -365,10 +365,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_155252) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "min_time"
     t.integer "max_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
