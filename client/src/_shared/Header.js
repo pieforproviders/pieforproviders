@@ -24,13 +24,22 @@ export function Header() {
 
   const changeLanguage = lang => i18n.changeLanguage(lang)
 
-  const logout = () => {
-    batch(() => {
-      dispatch(deleteFilteredCases())
-      dispatch(deleteBusinesses())
-      dispatch(deleteUser())
-      dispatch(removeAuth())
-    })
+  const logout = async () => {
+    try {
+      await fetch('/logout', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {}
+      })
+      batch(() => {
+        dispatch(deleteFilteredCases())
+        dispatch(deleteBusinesses())
+        dispatch(deleteUser())
+        dispatch(removeAuth())
+      })
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error)
+    }
     history.push('/login')
   }
 

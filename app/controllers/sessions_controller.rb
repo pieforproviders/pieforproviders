@@ -4,6 +4,12 @@
 class SessionsController < Devise::SessionsController
   respond_to :json
 
+  def destroy
+    request.cookie_jar.delete :_session_id
+
+    super
+  end
+
   private
 
   def respond_with(resource, _opts = {})
