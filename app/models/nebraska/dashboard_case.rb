@@ -22,19 +22,19 @@ module Nebraska
       @reimbursable_month_absent_days = reimbursable_absent_service_days
     end
 
-    def attendance_risk
-      Appsignal.instrument_sql(
-        'dashboard_case.attendance_risk'
-      ) do
-        Nebraska::Monthly::AttendanceRiskCalculator.new(
-          timezone: child.timezone,
-          filter_date:,
-          family_fee:,
-          scheduled_revenue:,
-          estimated_revenue:
-        ).call
-      end
-    end
+    # def attendance_risk
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.attendance_risk'
+    #   ) do
+    #     Nebraska::Monthly::AttendanceRiskCalculator.new(
+    #       timezone: child.timezone,
+    #       filter_date:,
+    #       family_fee:,
+    #       scheduled_revenue:,
+    #       estimated_revenue:
+    #     ).call
+    #   end
+    # end
 
     def absences
       Appsignal.instrument_sql(
@@ -76,32 +76,32 @@ module Nebraska
       end
     end
 
-    def earned_revenue
-      Appsignal.instrument_sql(
-        'dashboard_case.earned_revenue'
-      ) do
-        @earned_revenue ||= [
-          attended_month_days_revenue +
-            reimbursable_month_absent_days_revenue -
-            family_fee,
-          Money.from_amount(0)
-        ].max
-      end
-    end
+    # def earned_revenue
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.earned_revenue'
+    #   ) do
+    #     @earned_revenue ||= [
+    #       attended_month_days_revenue +
+    #         reimbursable_month_absent_days_revenue -
+    #         family_fee,
+    #       Money.from_amount(0)
+    #     ].max
+    #   end
+    # end
 
-    def estimated_revenue
-      Appsignal.instrument_sql(
-        'dashboard_case.estimated_revenue'
-      ) do
-        @estimated_revenue ||= [
-          estimated_month_days_revenue +
-            attended_month_days_revenue +
-            reimbursable_month_absent_days_revenue -
-            family_fee,
-          Money.from_amount(0)
-        ].max
-      end
-    end
+    # def estimated_revenue
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.estimated_revenue'
+    #   ) do
+    #     @estimated_revenue ||= [
+    #       estimated_month_days_revenue +
+    #         attended_month_days_revenue +
+    #         reimbursable_month_absent_days_revenue -
+    #         family_fee,
+    #       Money.from_amount(0)
+    #     ].max
+    #   end
+    # end
 
     def scheduled_revenue
       Appsignal.instrument_sql(
@@ -144,19 +144,19 @@ module Nebraska
       end
     end
 
-    def total_part_days
-      Appsignal.instrument_sql('dashboard_case.total_part_days') do
-        child.child_approvals.first.part_days
-      end
-    end
+    # def total_part_days
+    #   Appsignal.instrument_sql('dashboard_case.total_part_days') do
+    #     child.child_approvals.first.part_days
+    #   end
+    # end
 
-    def remaining_part_days
-      Appsignal.instrument_sql(
-        'dashboard_case.remaining_part_days'
-      ) do
-        total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
-      end
-    end
+    # def remaining_part_days
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.remaining_part_days'
+    #   ) do
+    #     total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
+    #   end
+    # end
 
     def hours
       Appsignal.instrument_sql(
@@ -173,22 +173,22 @@ module Nebraska
     end
 
     # TODO: anything called 'full days' should be made consistent - daily/days
-    def full_days_remaining
-      Appsignal.instrument_sql(
-        'dashboard_case.full_days_remaining'
-      ) do
-        return 0 unless attended_days || reimbursable_approval_absent_days
+    # def full_days_remaining
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.full_days_remaining'
+    #   ) do
+    #     return 0 unless attended_days || reimbursable_approval_absent_days
 
-        @full_days_remaining ||= days = approval_days_to_count_for_duration_limits
-                                        .reduce(0) do |sum, service_day|
-          sum + Nebraska::Daily::DaysDurationCalculator.new(
-            total_time_in_care: service_day.total_time_in_care
-          ).call
-        end
+    #     @full_days_remaining ||= days = approval_days_to_count_for_duration_limits
+    #                                     .reduce(0) do |sum, service_day|
+    #       sum + Nebraska::Daily::DaysDurationCalculator.new(
+    #         total_time_in_care: service_day.total_time_in_care
+    #       ).call
+    #     end
 
-        [full_days_authorized - days, 0].max
-      end
-    end
+    #     [full_days_authorized - days, 0].max
+    #   end
+    # end
 
     def hours_remaining
       Appsignal.instrument_sql(
@@ -207,13 +207,13 @@ module Nebraska
       end
     end
 
-    def full_days_authorized
-      Appsignal.instrument_sql(
-        'dashboard_case.full_days_authorized'
-      ) do
-        @full_days_authorized ||= child_approval&.full_days || 0
-      end
-    end
+    # def full_days_authorized
+    #   Appsignal.instrument_sql(
+    #     'dashboard_case.full_days_authorized'
+    #   ) do
+    #     @full_days_authorized ||= child_approval&.full_days || 0
+    #   end
+    # end
 
     def hours_authorized
       Appsignal.instrument_sql(
