@@ -81,20 +81,20 @@ export function Dashboard() {
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE') {
       return [
-        {
-          title: t('earnedRevenue'),
-          stat: `${currencyFormatter.format(
-            (totals.earnedRevenueTotal || 0).toFixed()
-          )}`,
-          definition: t('earnedRevenueDef')
-        },
-        {
-          title: t('estimatedRevenue'),
-          stat: `${currencyFormatter.format(
-            (totals.estimatedRevenueTotal || 0).toFixed()
-          )}`,
-          definition: t(`estimatedRevenueDef`)
-        }
+        // {
+        //   title: t('earnedRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     (totals.earnedRevenueTotal || 0).toFixed()
+        //   )}`,
+        //   definition: t('earnedRevenueDef')
+        // },
+        // {
+        //   title: t('estimatedRevenue'),
+        //   stat: `${currencyFormatter.format(
+        //     (totals.estimatedRevenueTotal || 0).toFixed()
+        //   )}`,
+        //   definition: t(`estimatedRevenueDef`)
+        // }
         // {
         //   title: t(`maxRevenue`),
         //   stat: `${

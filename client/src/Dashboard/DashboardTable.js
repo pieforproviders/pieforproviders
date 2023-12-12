@@ -128,19 +128,19 @@ export default function DashboardTable({
     return isInactive(record) ? '-' : text?.split(' ')[0]
   }
 
-  const renderRemainingHoursOrPartDays = (text, record) => {
-    let control_date = dayjs('2023-06-30 23:59')
-    if (dayjs(dateFilterValue?.date) > control_date) {
-      return isInactive(record) || record.remainingPartDays === null ? (
-        '-'
-      ) : (
-        <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
-      )
-    }
-    return isInactive(record)
-      ? '-'
-      : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
-  }
+  // const renderRemainingHoursOrPartDays = (text, record) => {
+  //   let control_date = dayjs('2023-06-30 23:59')
+  //   if (dayjs(dateFilterValue?.date) > control_date) {
+  //     return isInactive(record) || record.remainingPartDays === null ? (
+  //       '-'
+  //     ) : (
+  //       <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
+  //     )
+  //   }
+  //   return isInactive(record)
+  //     ? '-'
+  //     : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
+  // }
 
   const renderChild = (child, record) => {
     return child ? (
@@ -373,16 +373,16 @@ export default function DashboardTable({
       {
         name: 'revenue',
         children: [
-          {
-            name: 'earnedRevenue',
-            sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
-            render: renderDollarAmount
-          },
-          {
-            name: 'estimatedRevenue',
-            sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
-            render: renderDollarAmount
-          },
+          // {
+          //   name: 'earnedRevenue',
+          //   sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
+          //   render: renderDollarAmount
+          // },
+          // {
+          //   name: 'estimatedRevenue',
+          //   sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
+          //   render: renderDollarAmount
+          // },
           {
             name: 'familyFee',
             sorter: (a, b) => a.familyFee - b.familyFee,
@@ -407,23 +407,23 @@ export default function DashboardTable({
                       ? ` - ${dayjs(record.approvalExpiresOn).format('M/D/YY')}`
                       : ''
                   }`
-          },
-          {
-            name: 'fullDaysRemaining',
-            sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
-            render: (text, record) =>
-              isInactive(record)
-                ? '-'
-                : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
-          },
-          {
-            name:
-              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
-                ? t('partialDaysRemaining')
-                : 'hoursRemaining',
-            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
-            render: renderRemainingHoursOrPartDays
           }
+          // {
+          //   name: 'fullDaysRemaining',
+          //   sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
+          //   render: (text, record) =>
+          //     isInactive(record)
+          //       ? '-'
+          //       : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+          // },
+          // {
+          //   name:
+          //     dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+          //       ? t('partialDaysRemaining')
+          //       : 'hoursRemaining',
+          //   sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+          //   render: renderRemainingHoursOrPartDays
+          // }
         ]
       },
       {
@@ -468,11 +468,11 @@ export default function DashboardTable({
         sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
         render: renderAttendanceRate
       },
-      {
-        name: 'guaranteedRevenue',
-        sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
-        render: renderDollarAmount
-      },
+      // {
+      //   name: 'guaranteedRevenue',
+      //   sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
+      //   render: renderDollarAmount
+      // },
       // {
       //   name: 'potentialRevenue',
       //   sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
