@@ -23,19 +23,19 @@ module Nebraska
       @user = Thread.current[:current_user]
     end
 
-    # def attendance_risk
-    #   Appsignal.instrument_sql(
-    #     'dashboard_case.attendance_risk'
-    #   ) do
-    #     Nebraska::Monthly::AttendanceRiskCalculator.new(
-    #       timezone: child.timezone,
-    #       filter_date:,
-    #       family_fee:,
-    #       scheduled_revenue:,
-    #       estimated_revenue:
-    #     ).call
-    #   end
-    # end
+    def attendance_risk
+      Appsignal.instrument_sql(
+        'dashboard_case.attendance_risk'
+      ) do
+        Nebraska::Monthly::AttendanceRiskCalculator.new(
+          timezone: child.timezone,
+          filter_date:,
+          family_fee:,
+          scheduled_revenue:,
+          estimated_revenue:
+        ).call
+      end
+    end
 
     def absences
       Appsignal.instrument_sql(
@@ -188,16 +188,16 @@ module Nebraska
       ) do
         return 0 unless attended_days || reimbursable_approval_absent_days || !@user.admin
 
-    #     @full_days_remaining ||= days = approval_days_to_count_for_duration_limits
-    #                                     .reduce(0) do |sum, service_day|
-    #       sum + Nebraska::Daily::DaysDurationCalculator.new(
-    #         total_time_in_care: service_day.total_time_in_care
-    #       ).call
-    #     end
+        @full_days_remaining ||= days = approval_days_to_count_for_duration_limits
+                                        .reduce(0) do |sum, service_day|
+          sum + Nebraska::Daily::DaysDurationCalculator.new(
+            total_time_in_care: service_day.total_time_in_care
+          ).call
+        end
 
-    #     [full_days_authorized - days, 0].max
-    #   end
-    # end
+        [full_days_authorized - days, 0].max
+      end
+    end
 
     def hours_remaining
       Appsignal.instrument_sql(
@@ -216,13 +216,13 @@ module Nebraska
       end
     end
 
-    # def full_days_authorized
-    #   Appsignal.instrument_sql(
-    #     'dashboard_case.full_days_authorized'
-    #   ) do
-    #     @full_days_authorized ||= child_approval&.full_days || 0
-    #   end
-    # end
+    def full_days_authorized
+      Appsignal.instrument_sql(
+        'dashboard_case.full_days_authorized'
+      ) do
+        @full_days_authorized ||= child_approval&.full_days || 0
+      end
+    end
 
     def hours_authorized
       Appsignal.instrument_sql(

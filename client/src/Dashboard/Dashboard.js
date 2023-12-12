@@ -96,37 +96,7 @@ export function Dashboard() {
                 (totals.estimatedRevenueTotal || 0).toFixed()
               )}`,
               definition: t(`estimatedRevenueDef`)
-            },
-            {
-              title: t(`maxRevenue`),
-              stat: `${
-                totals.maxRevenueTotal === 'n/a'
-                  ? totals.maxRevenueTotal
-                  : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
-              }`,
-              definition: t(`comingSoon`)
-            },
-            [
-              {
-                title: t(`totalApproved`),
-                stat: `${
-                  totals.totalApprovedTotal === 'n/a'
-                    ? totals.totalApprovedTotal
-                    : currencyFormatter.format(
-                        totals.totalApprovedTotal.toFixed()
-                      )
-                }`,
-                definition: t(`comingSoon`)
-              },
-              {
-                title: t(`totalApprovedWithFamilyFee`),
-                stat: 'n/a',
-                // `${currencyFormatter.format(
-                //   totals.totalApprovedRevenueWithFamilyFeeTotal.toFixed()
-                // )}`
-                definition: t(`comingSoon`)
-              }
-            ]
+            }
           ]
     } else if (totals.guaranteedRevenueTotal >= 0) {
       return [

@@ -128,19 +128,19 @@ export default function DashboardTable({
     return isInactive(record) ? '-' : text?.split(' ')[0]
   }
 
-  const renderRemainingHoursOrPartDays = (text, record) => {
-    let control_date = dayjs('2023-06-30 23:59')
-    if (dayjs(dateFilterValue?.date) > control_date) {
-      return isInactive(record) || record.remainingPartDays === null ? (
-        '-'
-      ) : (
-        <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
-      )
-    }
-    return isInactive(record)
-      ? '-'
-      : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
-  }
+  // const renderRemainingHoursOrPartDays = (text, record) => {
+  //   let control_date = dayjs('2023-06-30 23:59')
+  //   if (dayjs(dateFilterValue?.date) > control_date) {
+  //     return isInactive(record) || record.remainingPartDays === null ? (
+  //       '-'
+  //     ) : (
+  //       <div>{`${record.remainingPartDays} (of ${record.totalPartDays?.info})`}</div>
+  //     )
+  //   }
+  //   return isInactive(record)
+  //     ? '-'
+  //     : `${record.hoursRemaining} (of ${record.hoursAuthorized})`
+  // }
 
   const renderChild = (child, record) => {
     return child ? (
@@ -498,11 +498,11 @@ export default function DashboardTable({
         sorter: (a, b) => a.attendanceRate.rate - b.attendanceRate.rate,
         render: renderAttendanceRate
       },
-      {
-        name: 'guaranteedRevenue',
-        sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
-        render: renderDollarAmount
-      },
+      // {
+      //   name: 'guaranteedRevenue',
+      //   sorter: (a, b) => a.guaranteedRevenue - b.guaranteedRevenue,
+      //   render: renderDollarAmount
+      // },
       // {
       //   name: 'potentialRevenue',
       //   sorter: (a, b) => a.potentialRevenue - b.potentialRevenue,
