@@ -16,10 +16,10 @@ export function useCaseData() {
                   cNumber: childCase.nebraska_dashboard_case.case_number ?? '',
                   business: business.name ?? ''
                 },
-                // earnedRevenue:
-                //   childCase.nebraska_dashboard_case.earned_revenue ?? '',
-                // estimatedRevenue:
-                //   childCase.nebraska_dashboard_case.estimated_revenue ?? '',
+                earnedRevenue:
+                  childCase.nebraska_dashboard_case.earned_revenue ?? '',
+                estimatedRevenue:
+                  childCase.nebraska_dashboard_case.estimated_revenue ?? '',
                 fullDays: {
                   text: childCase.nebraska_dashboard_case.full_days ?? '',
                   tag: childCase.nebraska_dashboard_case.attendance_risk ?? ''
@@ -32,8 +32,8 @@ export function useCaseData() {
                   text: 'totalPartDays',
                   info: childCase.nebraska_dashboard_case.total_part_days
                 },
-                // remainingPartDays:
-                //   childCase.nebraska_dashboard_case.remaining_part_days,
+                remainingPartDays:
+                  childCase.nebraska_dashboard_case.remaining_part_days,
                 hours: childCase.nebraska_dashboard_case.hours ?? '',
                 hoursAttended:
                   childCase.nebraska_dashboard_case.hours_attended ?? '',
@@ -45,8 +45,8 @@ export function useCaseData() {
                   childCase.nebraska_dashboard_case.hours_remaining ?? '',
                 fullDaysAuthorized:
                   childCase.nebraska_dashboard_case.full_days_authorized ?? '',
-                // fullDaysRemaining:
-                //   childCase.nebraska_dashboard_case.full_days_remaining ?? '',
+                fullDaysRemaining:
+                  childCase.nebraska_dashboard_case.full_days_remaining ?? '',
                 approvalEffectiveOn:
                   childCase.nebraska_dashboard_case.approval_effective_on ?? '',
                 approvalExpiresOn:
