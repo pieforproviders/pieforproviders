@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 # Serializer for users
+# rubocop: disable Style/SymbolProc
 class UserBlueprint < Blueprinter::Base
   identifier :id
   field :greeting_name
   field :language
   field :email
+  field :is_admin do |user|
+    user.admin
+  end
+
   field :state do |user|
     user.admin? ? user.state || 'NE' : user.state
   end
@@ -40,3 +45,4 @@ class UserBlueprint < Blueprinter::Base
     excludes :id, :greeting_name, :language, :state
   end
 end
+# rubocop:enable Style/SymbolProc
