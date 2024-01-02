@@ -57,7 +57,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
     ).to contain_exactly(
       'absences',
       'absences_dates',
-      'attendance_risk',
       'approval_effective_on',
       'approval_expires_on',
       'case_number',
@@ -65,7 +64,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       'estimated_revenue',
       'family_fee',
       'full_days',
-      'full_days_authorized',
       'full_days_remaining',
       'hours',
       'hours_authorized',
@@ -121,7 +119,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
               family_fee).to_f
           )
         # too early in the month to show risk
-        expect(parsed_response['attendance_risk']).to eq('not_enough_info')
       end
     end
 
@@ -152,7 +149,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         expect(parsed_response['hours_remaining']).to eq((child_approval.hours - 3.0).to_f)
         expect(parsed_response['full_days_remaining']).to eq(child_approval.full_days - 1)
         expect(parsed_response['hours_authorized']).to eq(child_approval.hours.to_f)
-        expect(parsed_response['full_days_authorized']).to eq(child_approval.full_days)
         # still no revenue because of family fee
         expect(parsed_response['earned_revenue']).to eq(0.0)
         # no new attendances, stays the same even though we've traveled
@@ -166,7 +162,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         # estimated: (3.0 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump) = 227.4825
         # add family fee back in for calcs to match spreadsheet
         # ratio: ((227.48 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.47
-        expect(parsed_response['attendance_risk']).to eq('at_risk')
       end
 
       # rubocop:disable RSpec/NestedGroups
@@ -206,7 +201,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: (6.25 * hourly_rate * qris_bump) + (8 * daily_rate * qris_bump) = 245.06
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((245.06 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.44
-          expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
 
@@ -254,7 +248,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: (6.25 * hourly_rate * qris_bump) + (9 * daily_rate * qris_bump) = 271.46
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((271.46 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.40
-          expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
 
@@ -314,7 +307,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 377.60
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((377.60 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.21
-          expect(parsed_response['attendance_risk']).to eq('at_risk')
         end
       end
 
@@ -375,7 +367,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 456.83
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((456.83 + 80) - (500.97 + 80)) / (500.97 + 80) = -0.08
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -438,7 +429,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 509.65
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((509.65 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.01
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -500,7 +490,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 536.06
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((536.06 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.06
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -565,7 +554,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 562.47
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((562.47 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.11
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -627,7 +615,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 ((daily_rate * qris_bump) * 18) -
                 family_fee).to_f
             )
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -689,7 +676,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 ((daily_rate * qris_bump) * 18) -
                 family_fee).to_f
             )
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
 
@@ -758,7 +744,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
                 ((daily_rate * qris_bump) * 18) -
                 family_fee).to_f
             )
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
 
         it 'renders correct data with schedule changes' do
@@ -816,7 +801,6 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
           # estimated: 552.28
           # add family fee back in for calcs to match spreadsheet
           # ratio: ((552.28 + 80) - (500.97 + 80)) / (500.97 + 80) = 0.09
-          expect(parsed_response['attendance_risk']).to eq('on_track')
         end
       end
       # rubocop:enable RSpec/NestedGroups

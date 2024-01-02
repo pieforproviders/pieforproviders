@@ -37,7 +37,12 @@ RSpec.describe 'POST /signup' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(response.parsed_body['state']).to eq('NE')
-      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+      expect(response.parsed_body.keys).to contain_exactly('id',
+                                                           'greeting_name',
+                                                           'language',
+                                                           'state',
+                                                           'email',
+                                                           'is_admin')
     end
   end
 
@@ -55,7 +60,12 @@ RSpec.describe 'POST /signup' do
       expect(response).to have_http_status(:created)
       expect(response).to match_response_schema('user')
       expect(response.parsed_body['state']).to eq('NE')
-      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+      expect(response.parsed_body.keys).to contain_exactly('id',
+                                                           'greeting_name',
+                                                           'language',
+                                                           'state',
+                                                           'email',
+                                                           'is_admin')
     end
   end
 

@@ -27,7 +27,8 @@ RSpec.describe UserBlueprint do
       'greeting_name',
       'id',
       'language',
-      'state'
+      'state',
+      'is_admin'
     )
   end
 
@@ -39,7 +40,8 @@ RSpec.describe UserBlueprint do
         'as_of',
         'businesses',
         'first_approval_effective_date',
-        'email'
+        'email',
+        'is_admin'
       )
     end
 
@@ -149,7 +151,8 @@ RSpec.describe UserBlueprint do
         'businesses',
         'max_revenue',
         'total_approved',
-        'email'
+        'email',
+        'is_admin'
       )
       expect(parsed_response['max_revenue']).to eq('N/A')
       expect(parsed_response['total_approved']).to eq('N/A')

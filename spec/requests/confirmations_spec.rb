@@ -14,7 +14,7 @@ RSpec.describe 'GET /confirmation' do
 
     it 'confirms and returns the user' do
       expect(response).to match_response_schema('user')
-      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+      expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email', 'is_admin')
       expect(response.parsed_body['state']).to eq(unconfirmed_user.state)
       expect(response.parsed_body['id']).to eq(unconfirmed_user.id)
       expect(response.parsed_body['greeting_name']).to eq(unconfirmed_user.greeting_name)

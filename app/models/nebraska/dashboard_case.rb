@@ -20,7 +20,6 @@ module Nebraska
       @business = child.child_businesses.find_by(currently_active: true).business
       @schedules = child&.schedules
       @reimbursable_month_absent_days = reimbursable_absent_service_days
-      # @user = Thread.current[:current_user]
       @user = Thread.current[:current_user]
     end
 
@@ -82,7 +81,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.earned_revenue'
       ) do
-        return 0 if @user.admin
+        return 0 if @user&.admin
 
         @earned_revenue ||= [
           attended_month_days_revenue +
@@ -97,7 +96,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.estimated_revenue'
       ) do
-        return 0 if @user.admin
+        return 0 if @user&.admin
 
         @estimated_revenue ||= [
           estimated_month_days_revenue +
@@ -152,7 +151,7 @@ module Nebraska
 
     def total_part_days
       Appsignal.instrument_sql('dashboard_case.total_part_days') do
-        return 0 if @user.admin
+        return 0 if @user&.admin
 
         child.child_approvals.first.part_days
       end
@@ -162,7 +161,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.remaining_part_days'
       ) do
-        return 0 if @user.admin
+        return 0 if @user&.admin
 
         total_part_days.present? && part_days.present? ? total_part_days - part_days : nil
       end
