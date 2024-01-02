@@ -22,7 +22,7 @@ describe('<DashboardTable />', () => {
   it('renders the DashboardTable component', async () => {
     const { container } = doRender()
     await waitFor(() => {
-      expect(screen.getAllByRole('columnheader').length).toEqual(7)
+      expect(screen.getAllByRole('columnheader').length).toEqual(6)
       expect(container).toHaveTextContent('Child')
       expect(container).not.toHaveTextContent('Case number')
       expect(container).toHaveTextContent('Attendance rate')
