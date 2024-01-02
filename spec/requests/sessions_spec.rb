@@ -23,7 +23,12 @@ RSpec.describe 'sessions requests' do
       it 'returns 200' do
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body['state']).to eq(user.state)
-        expect(response.parsed_body.keys).to contain_exactly('id', 'greeting_name', 'language', 'state', 'email')
+        expect(response.parsed_body.keys).to contain_exactly('id',
+                                                             'greeting_name',
+                                                             'language',
+                                                             'state',
+                                                             'email',
+                                                             'is_admin')
       end
 
       it 'returns JWT token in authorization header' do

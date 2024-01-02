@@ -372,59 +372,89 @@ export default function DashboardTable({
       },
       {
         name: 'revenue',
-        children: [
-          {
-            name: 'earnedRevenue',
-            sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
-            render: renderDollarAmount
-          },
-          {
-            name: 'estimatedRevenue',
-            sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
-            render: renderDollarAmount
-          },
-          {
-            name: 'familyFee',
-            sorter: (a, b) => a.familyFee - b.familyFee,
-            render: renderDollarAmount
-          }
-        ]
+        children: user.is_admin
+          ? [
+              {
+                name: 'familyFee',
+                sorter: (a, b) => a.familyFee - b.familyFee,
+                render: renderDollarAmount
+              }
+            ]
+          : [
+              {
+                name: 'earnedRevenue',
+                sorter: (a, b) => a.earnedRevenue - b.earnedRevenue,
+                render: renderDollarAmount
+              },
+              {
+                name: 'estimatedRevenue',
+                sorter: (a, b) => a.estimatedRevenue - b.estimatedRevenue,
+                render: renderDollarAmount
+              },
+              {
+                name: 'familyFee',
+                sorter: (a, b) => a.familyFee - b.familyFee,
+                render: renderDollarAmount
+              }
+            ]
       },
       {
         name: 'totalAuthorizationPeriod',
-        children: [
-          {
-            name: 'authorizedPeriod',
-            sorter: (a, b) =>
-              dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
-            render: (text, record) =>
-              isInactive(record)
-                ? '-'
-                : isNotApproved(record)
-                ? 'unknown'
-                : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
-                    record.approvalExpiresOn
-                      ? ` - ${dayjs(record.approvalExpiresOn).format('M/D/YY')}`
-                      : ''
-                  }`
-          },
-          {
-            name: 'fullDaysRemaining',
-            sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
-            render: (text, record) =>
-              isInactive(record)
-                ? '-'
-                : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
-          },
-          {
-            name:
-              dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
-                ? t('partialDaysRemaining')
-                : 'hoursRemaining',
-            sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
-            render: renderRemainingHoursOrPartDays
-          }
-        ]
+        children: user.is_admin
+          ? [
+              {
+                name: 'authorizedPeriod',
+                sorter: (a, b) =>
+                  dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
+                render: (text, record) =>
+                  isInactive(record)
+                    ? '-'
+                    : isNotApproved(record)
+                    ? 'unknown'
+                    : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
+                        record.approvalExpiresOn
+                          ? ` - ${dayjs(record.approvalExpiresOn).format(
+                              'M/D/YY'
+                            )}`
+                          : ''
+                      }`
+              }
+            ]
+          : [
+              {
+                name: 'authorizedPeriod',
+                sorter: (a, b) =>
+                  dayjs(a.approvalEffectiveOn) - dayjs(b.approvalEffectiveOn),
+                render: (text, record) =>
+                  isInactive(record)
+                    ? '-'
+                    : isNotApproved(record)
+                    ? 'unknown'
+                    : `${dayjs(record.approvalEffectiveOn).format('M/D/YY')}${
+                        record.approvalExpiresOn
+                          ? ` - ${dayjs(record.approvalExpiresOn).format(
+                              'M/D/YY'
+                            )}`
+                          : ''
+                      }`
+              },
+              {
+                name: 'fullDaysRemaining',
+                sorter: (a, b) => a.fullDaysRemaining - b.fullDaysRemaining,
+                render: (text, record) =>
+                  isInactive(record)
+                    ? '-'
+                    : `${record.fullDaysRemaining} (of ${record.fullDaysAuthorized})`
+              },
+              {
+                name:
+                  dayjs(dateFilterValue?.date) > dayjs('2023-06-30 23:59')
+                    ? t('partialDaysRemaining')
+                    : 'hoursRemaining',
+                sorter: (a, b) => a.hoursRemaining - b.hoursRemaining,
+                render: renderRemainingHoursOrPartDays
+              }
+            ]
       },
       {
         children: [
