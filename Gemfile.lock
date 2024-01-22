@@ -105,7 +105,7 @@ GEM
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
     blueprinter (0.25.3)
-    bootsnap (1.16.0)
+    bootsnap (1.17.1)
       msgpack (~> 1.2)
     brakeman (6.0.1)
     builder (3.2.4)
