@@ -42,8 +42,8 @@ module Nebraska
         'dashboard_case.absences'
       ) do
         @absences ||= absent_days
-          &.for_month(filter_date)
-          &.size || 0
+                      &.for_month(filter_date)
+                      &.size || 0
       end
     end
 
@@ -52,7 +52,7 @@ module Nebraska
         'dashboard_case.absences_dates'
       ) do
         @absences_dates ||= absent_days
-          &.for_month(filter_date)
+                            &.for_month(filter_date)
       end
     end
 

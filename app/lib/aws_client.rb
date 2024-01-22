@@ -76,7 +76,7 @@ class AwsClient
     find_bucket(name: source_bucket) && find_bucket(name: archive_bucket, tech_only: true)
     @client.copy_object({ bucket: archive_bucket,
                           copy_source: "#{source_bucket}/#{file_name}",
-                          key: (archive_file_name.presence || file_name) })
+                          key: archive_file_name.presence || file_name })
     @client.delete_object({ bucket: source_bucket, key: file_name })
   rescue StandardError => e
     send_appsignal_error(
