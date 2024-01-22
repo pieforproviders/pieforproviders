@@ -252,7 +252,7 @@ RSpec.describe 'Api::V1::Children' do
         end
         let(:some_month_amounts) do
           6.times do |x|
-            params[`"month#{x + 1}"`] = {
+            params["month#{x + 1}"] = {
               part_days_approved_per_week: 3,
               full_days_approved_per_week: 2
             }
@@ -261,7 +261,7 @@ RSpec.describe 'Api::V1::Children' do
         end
         let(:all_month_amounts) do
           12.times do |x|
-            params[`"month#{x + 1}"`] = {
+            params["month#{x + 1}"] = {
               part_days_approved_per_week: 3,
               full_days_approved_per_week: 2
             }
