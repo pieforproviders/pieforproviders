@@ -5,11 +5,16 @@ class ApplicationController < ActionController::API
   before_action :set_appsignal_context
   before_action :set_locale
   around_action :collect_metrics
+  before_action :set_current_user
 
   before_action do
     if Rails.env.development? || (Rails.env.production? && current_user && current_user.admin? && params[:rmp])
       Rack::MiniProfiler.authorize_request
     end
+  end
+
+  def set_current_user
+    Thread.current[:current_user] = current_user
   end
 
   def render_resource(resource)

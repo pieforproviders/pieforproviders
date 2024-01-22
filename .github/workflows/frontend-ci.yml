@@ -1,11 +1,11 @@
 name: Frontend CI
-concurrency: 
+concurrency:
   group: frontend-${{ github.head_ref }}
   cancel-in-progress: true
 on:
   push:
-      branches:
-        - 'main'
+    branches:
+      - 'main'
   pull_request:
     paths-ignore:
       - 'docs/**'
@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
         with:
-          node-version: '16'
+          node-version: '18.x'
       - name: Linting
         run: |
           cd client
@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
         with:
-          node-version: '16'
+          node-version: '18.x'
       - name: yarn test
         run: |
           cd client

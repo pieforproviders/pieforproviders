@@ -12,7 +12,8 @@ class Business < UuidApplicationRecord
 
   belongs_to :user
 
-  has_many :children, dependent: :destroy
+  has_many :child_businesses, dependent: :destroy
+  has_many :children, through: :child_businesses, dependent: :destroy
   has_many :child_approvals, through: :children, dependent: :destroy
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :business_schedules, dependent: :destroy
@@ -49,7 +50,7 @@ class Business < UuidApplicationRecord
   end
 
   def attendance_rate(child, date, eligible_days, attended_days)
-    AttendanceRateCalculator.new(child, date, self, eligible_days: eligible_days, attended_days: attended_days).call
+    AttendanceRateCalculator.new(child, date, self, eligible_days:, attended_days:).call
   end
 
   def il_quality_bump
@@ -103,11 +104,11 @@ class Business < UuidApplicationRecord
 
   def open_by_date?(date)
     weekday = date.wday
-    closed_on_date = business_closures.where(date: date).any?
+    closed_on_date = business_closures.where(date:).any?
     return false if closed_on_date
 
-    open_on_date = business_schedules.where(weekday: weekday, is_open: true).any?
-    open_on_date = Holiday.where(date: date).none? if open_on_date
+    open_on_date = business_schedules.where(weekday:, is_open: true).any?
+    open_on_date = Holiday.where(date:).none? if open_on_date
 
     open_on_date
   end

@@ -90,7 +90,7 @@ module Api
         UserBlueprint.render(
           policy_scope(dashboard_query(User.nebraska)),
           view: :nebraska_dashboard,
-          filter_date: filter_date
+          filter_date:
         )
       end
 
@@ -98,7 +98,7 @@ module Api
         UserBlueprint.render(
           policy_scope(dashboard_query(User.illinois)),
           view: :illinois_dashboard,
-          filter_date: filter_date
+          filter_date:
         )
       end
 
@@ -106,6 +106,8 @@ module Api
         params.require(:user).permit(:email,
                                      :active,
                                      :full_name,
+                                     :first_name,
+                                     :last_name,
                                      :greeting_name,
                                      :language,
                                      :opt_in_email,

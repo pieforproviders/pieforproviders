@@ -97,7 +97,9 @@ RSpec.describe Business do
   end
 
   describe '#eligible_by_date' do
-    let(:business) { create(:business, business_closures_attributes: [attributes_for(:business_closure)]) }
+    let(:business) do
+      create(:business, business_closures_attributes: [attributes_for(:business_closure)])
+    end
 
     it 'is eligible if provider is closed on a given date' do
       any_date = Date.new(2022, 1, 10)

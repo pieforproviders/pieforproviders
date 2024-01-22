@@ -7,8 +7,8 @@ class Child < UuidApplicationRecord
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
   after_save_commit :associate_rate, unless: proc { |child| child.active_previously_changed?(from: true, to: false) }
 
-  belongs_to :business
-
+  has_many :child_businesses, dependent: :destroy
+  has_many :businesses, through: :child_businesses
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true
   has_many :approvals, through: :child_approvals, dependent: :destroy
   has_many :schedules, dependent: :destroy
@@ -24,11 +24,7 @@ class Child < UuidApplicationRecord
   validates :last_name, presence: true
   # This prevents this validation from running if other validations failed; if date_of_birth has thrown an error,
   # this will try to validate with the incorrect dob even though the record has already failed
-  validates :business_id,
-            uniqueness: { scope: %i[first_name last_name date_of_birth] },
-            unless: lambda {
-              errors[:date_of_birth].present? || errors[:first_name].present? || errors[:last_name].present?
-            }
+  validate :unique_name_and_dob_per_business
 
   REASONS = %w[
     no_longer_in_my_care
@@ -53,7 +49,7 @@ class Child < UuidApplicationRecord
                                   date&.beginning_of_month)
         }
   scope :not_deleted, -> { where(deleted_at: nil) }
-  scope :nebraska, -> { joins(:business).where(business: { state: 'NE' }) }
+  scope :nebraska, -> { joins(child_businesses: :business).where(businesses: { state: 'NE' }) }
 
   scope :with_dashboard_case,
         lambda { |date = nil|
@@ -67,14 +63,39 @@ class Child < UuidApplicationRecord
         }
 
   scope :with_schedules, -> { includes(:schedules) }
-  scope :with_business, -> { includes(:business) }
+  scope :with_businesses, -> { includes(:child_businesses) }
 
-  delegate :county, to: :business
-  delegate :user, to: :business
-  delegate :state, to: :user
-  delegate :timezone, to: :user
+  delegate :county, to: :primary_business
+  delegate :user, to: :primary_business
+  delegate :state, to: :primary_user
+  delegate :timezone, to: :primary_user
 
   before_save :validate_wonderschool_id
+
+  def unique_name_and_dob_per_business
+    businesses.each do |business|
+      similar_children = business.children.where(
+        first_name:,
+        last_name:,
+        date_of_birth:
+      )
+
+      similar_children = similar_children.where.not(id:) if id
+
+      if similar_children.exists?
+        errors.add(:base, 'A child with the same name and date of birth already exists for this business.')
+        break
+      end
+    end
+  end
+
+  def primary_business
+    child_businesses.find_by(currently_active: true).business
+  end
+
+  def primary_user
+    primary_business&.user
+  end
 
   def age(date = Time.current)
     years_since_birth = date.year - date_of_birth.year
@@ -138,7 +159,7 @@ class Child < UuidApplicationRecord
     end
     return 0 unless schedule_for_weekday
 
-    schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date: date, weekday: weekday)
+    schedule_for_weekday.duration * DateService.remaining_days_in_month_including_today(date:, weekday:)
   end
 
   def schedules_for_weekday(date, weekday)
@@ -150,11 +171,11 @@ class Child < UuidApplicationRecord
   end
 
   def eligible_full_days_by_month(date = Time.current)
-    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: true).call
+    Illinois::EligibleDaysCalculator.new(date:, child: self, full_time: true).call
   end
 
   def eligible_part_days_by_month(date = Time.current)
-    Illinois::EligibleDaysCalculator.new(date: date, child: self, full_time: false).call
+    Illinois::EligibleDaysCalculator.new(date:, child: self, full_time: false).call
   end
 
   private
@@ -190,7 +211,7 @@ class Child < UuidApplicationRecord
   end
 
   def validate_wonderschool_id
-    self.wonderschool_id = wonderschool_id.to_i.to_s == wonderschool_id ? wonderschool_id : nil
+    self.wonderschool_id = wonderschool_id.to_s.strip.empty? ? nil : wonderschool_id
   end
 end
 # rubocop:enable Metrics/ClassLength
@@ -209,17 +230,10 @@ end
 #  last_name          :string           not null
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  business_id        :uuid             not null
 #  dhs_id             :string
 #  wonderschool_id    :string
 #
 # Indexes
 #
-#  index_children_on_business_id  (business_id)
-#  index_children_on_deleted_at   (deleted_at)
-#  unique_children                (first_name,last_name,date_of_birth,business_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (business_id => businesses.id)
+#  index_children_on_deleted_at  (deleted_at)
 #

@@ -27,6 +27,8 @@ const { TextArea } = Input
 export function Signup() {
   const [user, setUser] = useState({
     fullName: null,
+    firstName: null,
+    lastName: null,
     email: null,
     language: i18n.language,
     password: null,
@@ -49,12 +51,22 @@ export function Signup() {
   const { makeRequest } = useApiResponse()
   const { t } = useTranslation()
   const history = useHistory()
-  useFreshsales()
 
+  const setNames = fullName => {
+    const firstSpaceIndex = fullName.indexOf(' ')
+    const firstName = fullName.slice(0, firstSpaceIndex)
+    const lastName = fullName.slice(firstSpaceIndex + 1)
+    setUser({
+      ...user,
+      fullName,
+      firstName,
+      lastName
+    })
+  }
+  useFreshsales()
   const onFinish = async () => {
     setValidationErrors(null)
     setError(false)
-
     const response = await makeRequest({
       type: 'post',
       url: '/signup',
@@ -140,12 +152,11 @@ export function Signup() {
             value={user.fullName}
             data-cy="name"
             name="fullName"
-            onChange={event =>
-              setUser({ ...user, fullName: event.target.value })
-            }
+            onChange={event => {
+              setNames(event.target.value)
+            }}
           />
         </Form.Item>
-
         <Form.Item
           className="body-2-bold text-primaryBlue phone"
           name="phone"
@@ -551,6 +562,23 @@ export function Signup() {
             type="Dropdown"
             className="ant-input"
             value="Completed sign-up form"
+          />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input
+            value={user.firstName}
+            className="ant-input"
+            name="firstName"
+          />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input value={user.lastName} className="ant-input" name="lastName" />
+        </Form.Item>
+        <Form.Item style={{ display: 'none' }}>
+          <Input
+            value={'+1' + user.phoneNumber}
+            className="ant-input"
+            name="codePhoneNumber"
           />
         </Form.Item>
       </Form>

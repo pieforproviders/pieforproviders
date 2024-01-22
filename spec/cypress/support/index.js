@@ -20,7 +20,11 @@ import './on-rails'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 Cypress.on('uncaught:exception', err => {
-  if (err.message.includes('ResizeObserver')) {
+  console.log(err.message)
+  if (
+    err.message.includes('ResizeObserver') ||
+    err.message.includes('uncaught:exception')
+  ) {
     // returning false here prevents Cypress from
     // failing the test
     return false

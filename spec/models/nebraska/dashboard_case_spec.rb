@@ -13,7 +13,7 @@ RSpec.describe Nebraska::DashboardCase do
 
     it 'returns the database value' do
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
@@ -29,7 +29,7 @@ RSpec.describe Nebraska::DashboardCase do
         schedules: [create(:schedule, weekday: 1)]
       )
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
@@ -47,7 +47,7 @@ RSpec.describe Nebraska::DashboardCase do
   describe '#attended_weekly_hours' do
     it 'shows attended hours w/ weekly hours when the child_approval has weekly hours' do
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
@@ -59,7 +59,7 @@ RSpec.describe Nebraska::DashboardCase do
     it 'shows attended hours w/o weekly hours when the child_approval has noweekly hours' do
       child_approval.update!(authorized_weekly_hours: nil)
       expect(described_class.new(
-        child: child,
+        child:,
         filter_date: date,
         attended_days: service_days.non_absences,
         absent_days: service_days.absences
@@ -69,19 +69,18 @@ RSpec.describe Nebraska::DashboardCase do
 
   describe '#absences_dates' do
     it 'Return all the absences of a child in the month' do
-      test_date = Time.new(2023, 2, 6).utc
+      test_date = Time.new(2023, 12, 17).utc
       Helpers.build_nebraska_absence_list(
         num: 2,
         date: test_date,
         child_approval: child.child_approvals.first
       )
       calculated_absences = described_class.new(
-        child: child,
+        child:,
         filter_date: test_date,
         attended_days: child.service_days.non_absences,
         absent_days: child.service_days.absences
       ).absences_dates
-
       expect(child.service_days.absences).to eq(calculated_absences)
     end
   end

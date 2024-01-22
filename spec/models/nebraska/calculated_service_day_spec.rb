@@ -5,23 +5,34 @@ require 'rails_helper'
 # rubocop:disable RSpec/NestedGroups
 RSpec.describe Nebraska::CalculatedServiceDay do
   describe '#earned_revenue' do
-    before { travel_to '2022-06-01'.to_date }
-
-    after  { travel_back }
-
-    let!(:date) { Time.current }
-    let!(:child) do
-      create(
-        :necc_child,
-        business: create(
-          :business,
-          :nebraska_ldds,
-          accredited: true,
-          quality_rating: 'not_rated'
-        )
+    before do
+      travel_to '2022-06-01'.to_date
+      business.update!(
+        accredited: true,
+        quality_rating: 'not_rated'
       )
     end
-    let!(:business) { child.business }
+
+    after { travel_back }
+
+    let!(:date) { Time.current }
+    let(:child_business) { child.child_businesses.find_by(currently_active: true) }
+    let(:rates) do
+      NebraskaRate.for_case(
+        date,
+        child.child_approvals&.first&.enrolled_in_school || false,
+        child.age_in_months(date),
+        child.businesses.find(child_business.business_id)
+      )
+    end
+    let!(:service_day) { build(:service_day, child:, date:) }
+    let!(:child_approvals) { child.child_approvals }
+    let!(:child) do
+      create(
+        :necc_child
+      )
+    end
+    let!(:business) { child.businesses.first }
     let!(:nebraska_accredited_hourly_rate) do
       create(
         :accredited_hourly_ldds_rate,
@@ -99,26 +110,14 @@ RSpec.describe Nebraska::CalculatedServiceDay do
       )
     end
 
-    let(:rates) do
-      NebraskaRate.for_case(
-        date,
-        child.child_approvals&.first&.enrolled_in_school || false,
-        child.age_in_months(date),
-        child.business
-      )
-    end
-
-    let!(:service_day) { build(:service_day, child: child, date: date) }
-    let!(:child_approvals) { child.child_approvals }
-
     context 'with an accredited business' do
       it 'gets rates for an hourly-only service_day' do
         service_day.total_time_in_care = 3.25.hours
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_accredited_hourly_rate.amount)
       end
@@ -127,9 +126,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_accredited_daily_rate.amount)
       end
@@ -138,9 +137,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_accredited_hourly_rate.amount) + (1 * nebraska_accredited_daily_rate.amount)
@@ -151,9 +150,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_accredited_hourly_rate.amount) + (1 * nebraska_accredited_daily_rate.amount)
@@ -173,9 +172,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -184,9 +183,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -195,9 +194,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -209,9 +208,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -230,9 +229,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 3.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount)
       end
@@ -241,9 +240,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_unaccredited_daily_rate.amount)
       end
@@ -252,9 +251,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_unaccredited_hourly_rate.amount) +
@@ -266,9 +265,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_unaccredited_hourly_rate.amount) +
@@ -289,9 +288,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -300,9 +299,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -311,9 +310,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -325,9 +324,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -346,9 +345,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 3.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_accredited_hourly_rate.amount * (1.05**2))
       end
@@ -357,9 +356,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_accredited_daily_rate.amount * (1.05**2))
       end
@@ -368,9 +367,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_accredited_hourly_rate.amount * (1.05**2)) +
@@ -382,9 +381,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_accredited_hourly_rate.amount * (1.05**2)) +
@@ -405,9 +404,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -416,9 +415,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -427,9 +426,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -441,9 +440,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -463,9 +462,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 3.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_unaccredited_hourly_rate.amount * (1.05**3))
       end
@@ -474,9 +473,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_unaccredited_daily_rate.amount * (1.05**3))
       end
@@ -485,9 +484,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_unaccredited_hourly_rate.amount * (1.05**3)) +
@@ -499,9 +498,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_unaccredited_hourly_rate.amount * (1.05**3)) +
@@ -522,9 +521,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -533,9 +532,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -544,9 +543,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -558,9 +557,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -580,9 +579,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 3.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3))
       end
@@ -591,9 +590,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_school_age_unaccredited_daily_rate.amount * (1.05**3))
       end
@@ -602,9 +601,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3)) +
@@ -616,9 +615,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_school_age_unaccredited_hourly_rate.amount * (1.05**3)) +
@@ -639,9 +638,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -650,9 +649,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -661,9 +660,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -675,9 +674,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -697,9 +696,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 3.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(3.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3))
       end
@@ -708,9 +707,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 6.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(1 * nebraska_school_age_unaccredited_non_urban_daily_rate.amount * (1.05**3))
       end
@@ -719,9 +718,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 12.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (2.25 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3)) +
@@ -733,9 +732,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
         service_day.total_time_in_care = 21.hours + 12.minutes
         expect(
           described_class.new(
-            service_day: service_day,
-            child_approvals: child_approvals,
-            rates: rates
+            service_day:,
+            child_approvals:,
+            rates:
           ).earned_revenue
         ).to eq(
           (8 * nebraska_school_age_unaccredited_non_urban_hourly_rate.amount * (1.05**3)) +
@@ -756,9 +755,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 3.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(3.25 * child.child_approvals.first.special_needs_hourly_rate)
         end
@@ -767,9 +766,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 6.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(1 * child.child_approvals.first.special_needs_daily_rate)
         end
@@ -778,9 +777,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 12.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (2.25 * child.child_approvals.first.special_needs_hourly_rate) +
@@ -792,9 +791,9 @@ RSpec.describe Nebraska::CalculatedServiceDay do
           service_day.total_time_in_care = 21.hours + 12.minutes
           expect(
             described_class.new(
-              service_day: service_day,
-              child_approvals: child_approvals,
-              rates: rates
+              service_day:,
+              child_approvals:,
+              rates:
             ).earned_revenue
           ).to eq(
             (8 * child.child_approvals.first.special_needs_hourly_rate) +

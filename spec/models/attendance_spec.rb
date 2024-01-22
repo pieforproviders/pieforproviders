@@ -10,7 +10,7 @@ RSpec.describe Attendance do
   let(:service_day) { create(:service_day) }
   let(:now) { Time.current }
   let(:child_approval) { service_day.child.child_approvals.first }
-  let(:attendance) { build(:attendance, check_out: nil, service_day: service_day, child_approval: child_approval) }
+  let(:attendance) { build(:attendance, check_out: nil, service_day:, child_approval:) }
 
   it { is_expected.to belong_to(:child_approval) }
 
@@ -56,7 +56,7 @@ RSpec.describe Attendance do
 
   it 'factory should be valid (default; no args)' do
     service_day = create(:service_day)
-    expect(build(:attendance, service_day: service_day)).to be_valid
+    expect(build(:attendance, service_day:)).to be_valid
   end
 
   context 'with date scopes' do
@@ -65,14 +65,14 @@ RSpec.describe Attendance do
     let(:child_approval) { child.child_approvals.first }
     let(:current_attendance) do
       service_day = create(:service_day, date: now.at_beginning_of_day)
-      create(:attendance, check_in: now, child_approval: child_approval, service_day: service_day)
+      create(:attendance, check_in: now, child_approval:, service_day:)
     end
     let(:past_attendance) do
       time = Time.new(2020, 12, 1, 9, 31, 0, timezone)
       service_day = create(:service_day, date: time.at_beginning_of_day)
       create(:attendance,
-             child_approval: child_approval,
-             service_day: service_day,
+             child_approval:,
+             service_day:,
              check_in: time,
              check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone))
     end
@@ -102,8 +102,8 @@ RSpec.describe Attendance do
         create(
           :attendance,
           check_in: time,
-          service_day: service_day,
-          child_approval: child_approval
+          service_day:,
+          child_approval:
         )
       end
       let(:date) { Time.new(2020, 12, 4, 0, 0, 0, timezone).to_date }
@@ -133,42 +133,42 @@ RSpec.describe Attendance do
   end
 
   describe '#illinois_*_days scopes' do
-    let(:child) { create(:child, business: create(:business, zipcode: '60606')) }
+    let(:child) { create(:child, businesses: [create(:business, zipcode: '60606')]) }
     let(:timezone) { ActiveSupport::TimeZone.new(child.timezone) }
     let(:child_approval) { child.child_approvals.first }
     let(:part_day) do
       time = Time.new(2020, 12, 1, 9, 31, 0, timezone)
-      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child:)
       create(:attendance,
-             child_approval: child_approval,
-             service_day: service_day,
+             child_approval:,
+             service_day:,
              check_in: time,
              check_out: Time.new(2020, 12, 1, 13, 30, 0, timezone))
     end
     let(:full_day) do
       time = Time.new(2020, 12, 2, 9, 31, 0, timezone)
-      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child:)
       create(:attendance,
-             child_approval: child_approval,
-             service_day: service_day,
+             child_approval:,
+             service_day:,
              check_in: time,
              check_out: Time.new(2020, 12, 2, 21, 31, 0, timezone))
     end
     let(:full_plus_part_day) do
       time = Time.new(2020, 12, 3, 9, 31, 0, timezone)
-      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child:)
       create(:attendance,
-             child_approval: child_approval,
-             service_day: service_day,
+             child_approval:,
+             service_day:,
              check_in: time,
              check_out: Time.new(2020, 12, 3, 21, 32, 0, timezone))
     end
     let(:full_plus_full_day) do
       time = Time.new(2020, 12, 4, 9, 31, 0, timezone)
-      service_day = create(:service_day, date: time.at_beginning_of_day, child: child)
+      service_day = create(:service_day, date: time.at_beginning_of_day, child:)
       create(:attendance,
-             child_approval: child_approval,
-             service_day: service_day,
+             child_approval:,
+             service_day:,
              check_in: time,
              check_out: Time.new(2020, 12, 5, 2, 31, 0, timezone))
     end
@@ -204,7 +204,7 @@ RSpec.describe Attendance do
       service_day = create(:service_day)
       attendance = create(:attendance,
                           check_out: nil,
-                          service_day: service_day,
+                          service_day:,
                           child_approval: service_day.child.child_approvals.first)
       expect(attendance.time_in_care.seconds).to eq(0.seconds)
     end

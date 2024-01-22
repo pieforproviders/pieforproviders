@@ -44,14 +44,14 @@ RSpec.describe UserPolicy do
     context 'when authenticated as an admin' do
       it 'returns all users' do
         users = described_class.new(admin, User).resolve
-        expect(users).to match_array([user, admin, non_owner])
+        expect(users).to contain_exactly(user, admin, non_owner)
       end
     end
 
     context 'when authenticated as a non-admin user' do
       it 'returns only the user' do
         users = described_class.new(user, User).resolve
-        expect(users).to match_array([user])
+        expect(users).to contain_exactly(user)
       end
     end
   end

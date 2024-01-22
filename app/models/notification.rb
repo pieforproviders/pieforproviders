@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Notifications Model
 class Notification < ApplicationRecord
   belongs_to :child
   belongs_to :approval

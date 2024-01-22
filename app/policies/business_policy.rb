@@ -8,7 +8,7 @@ class BusinessPolicy < ApplicationPolicy
       if user.admin?
         scope.all
       else
-        scope.where(user: user).active
+        scope.where(user:).active
       end
     end
   end

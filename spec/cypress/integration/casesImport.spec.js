@@ -72,7 +72,7 @@ describe('CasesImport', () => {
   })
 
   describe('imports a file', () => {
-    ;['csv', 'xls', 'xlsx'].forEach(type => {
+    ;['csv', 'xls', 'xlsx']?.forEach(type => {
       it(`imports ${type} file`, () => {
         cy.get(createSelector('cases-upload')).attachFile(`test.${type}`)
         cy.get(createSelector('cases-table')).should('exist')

@@ -619,17 +619,12 @@
               "last_name": {
                 "type": "string",
                 "example": "Finnigan"
-              },
-              "business_id": {
-                "type": "uuid",
-                "example": "3fa57706-f5bb-4d40-9350-85871f698d55"
               }
             },
             "required": [
               "first_name",
               "last_name",
-              "date_of_birth",
-              "business_id"
+              "date_of_birth"
             ]
           }
         }

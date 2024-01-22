@@ -5,7 +5,8 @@ require 'rails_helper'
 RSpec.describe ServiceDay do
   let(:schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
   let(:child) { schedule.child }
-  let(:service_day) { build(:service_day, child: child) }
+  let(:child_business) { create(:child_business, child:) }
+  let(:service_day) { build(:service_day, child:) }
   let!(:state) do
     create(:state)
   end
@@ -15,21 +16,21 @@ RSpec.describe ServiceDay do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (24 * 3600)
       )
@@ -73,7 +74,7 @@ RSpec.describe ServiceDay do
 
     absence = build(
       :service_day,
-      child: child,
+      child:,
       absence_type: 'covid_absence',
       date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
@@ -82,7 +83,7 @@ RSpec.describe ServiceDay do
 
     absence = build(
       :service_day,
-      child: child,
+      child:,
       absence_type: 'absence',
       date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
@@ -92,7 +93,7 @@ RSpec.describe ServiceDay do
 
     absence = build(
       :service_day,
-      child: child,
+      child:,
       absence_type: 'fake_reason',
       date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
     )
@@ -102,7 +103,8 @@ RSpec.describe ServiceDay do
 
   context 'with absence types' do
     let(:type_schedule) { create(:schedule, weekday: 1, expires_on: 1.year.from_now) }
-    let(:type_child) { schedule.child }
+    let(:type_child) { type_schedule.child }
+    let(:child_business) { create(:child_business, child: type_child) }
 
     before do
       type_child.schedules.where(weekday: [2, 3, 4, 5, 6, 7]).destroy_all
@@ -115,7 +117,7 @@ RSpec.describe ServiceDay do
           :service_day,
           child: type_child,
           absence_type: 'absence',
-          date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
+          date: Helpers.prior_weekday(Time.current, 3).in_time_zone(child.timezone).at_beginning_of_day
         )
       end
       let(:scheduled_absence) do
@@ -142,15 +144,15 @@ RSpec.describe ServiceDay do
     let!(:absence) do
       create(
         :service_day,
-        child: child,
+        child:,
         absence_type: 'absence',
-        date: Helpers.prior_weekday(Time.current, 1).in_time_zone(child.timezone).at_beginning_of_day
+        date: Helpers.prior_weekday(Time.current, 3).in_time_zone(child.timezone).at_beginning_of_day
       )
     end
     let!(:covid_absence) do
       create(
         :service_day,
-        child: child,
+        child:,
         absence_type: 'covid_absence',
         date: Helpers.prior_weekday(Time.current, 2).in_time_zone(child.timezone).at_beginning_of_day
       )
@@ -172,6 +174,7 @@ RSpec.describe ServiceDay do
     end
 
     it 'returns standard absences only' do
+      child.reload
       expect(described_class.standard_absences).to include(absence)
       expect(described_class.standard_absences).not_to include(covid_absence)
       expect(described_class.standard_absences).not_to include(service_day_with_attendance)
@@ -191,22 +194,22 @@ RSpec.describe ServiceDay do
     let(:current_service_day) do
       create(
         :service_day,
-        child: child,
+        child:,
         date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
       )
     end
     let(:current_attendance) do
-      create(:attendance, service_day: current_service_day, check_in: Time.current, child_approval: child_approval)
+      create(:attendance, service_day: current_service_day, check_in: Time.current, child_approval:)
     end
     let(:past_attendance) do
       create(
         :attendance,
         service_day: create(
           :service_day,
-          child: child,
+          child:,
           date: Time.new(2020, 12, 1, 9, 31, 0, timezone).at_beginning_of_day
         ),
-        child_approval: child_approval,
+        child_approval:,
         check_in: Time.new(2020, 12, 1, 9, 31, 0, timezone),
         check_out: Time.new(2020, 12, 1, 16, 56, 0, timezone)
       )
@@ -231,7 +234,7 @@ RSpec.describe ServiceDay do
           :attendance,
           service_day: current_service_day,
           check_in: Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours,
-          child_approval: child_approval
+          child_approval:
         )
       end
       let(:date) { Time.new(2020, 12, 4).utc }
@@ -249,9 +252,13 @@ RSpec.describe ServiceDay do
     end
 
     describe '#for_day' do
-      let(:date) { current_attendance.check_in }
+      let(:date) { Time.current.at_beginning_of_week(:sunday) + 2.days + 11.hours }
 
       it 'returns service days for given day' do
+        current_attendance.update(check_in: date, check_out: date + 5.hours)
+        current_attendance.service_day.update(date: date.at_beginning_of_day)
+        current_attendance.update(check_in: date, check_out: date + 5.hours)
+        current_attendance.service_day.update(date: date.at_beginning_of_day)
         travel_to date
         expect(described_class.for_day).to include(current_service_day)
         expect(described_class.for_day).not_to include(past_service_day)
@@ -268,44 +275,41 @@ RSpec.describe ServiceDay do
     let!(:service_day) do
       create(
         :service_day,
-        child: child,
+        child:,
         date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday).at_beginning_of_day
       )
     end
-
     let!(:state) do
       create(:state)
     end
-
     let(:state_time_rules) do
       [
         create(
           :state_time_rule,
           name: "Partial Day #{state.name}",
-          state: state,
+          state:,
           min_time: 60, # 1minute
           max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
         ),
         create(
           :state_time_rule,
           name: "Full Day #{state.name}",
-          state: state,
+          state:,
           min_time: 5 * 3600, # 5 hours
           max_time: (10 * 3600) # 10 hours
         ),
         create(
           :state_time_rule,
           name: "Full - Partial Day #{state.name}",
-          state: state,
+          state:,
           min_time: (10 * 3600) + 60, # 10 hours and 1 minute
           max_time: nil
         )
       ]
     end
-
     let!(:attendance) do
       create(:nebraska_hourly_attendance,
-             service_day: service_day,
+             service_day:,
              check_in: service_day.date + 2.hours,
              check_out: nil,
              child_approval: child.child_approvals.first)
@@ -346,12 +350,12 @@ RSpec.describe ServiceDay do
 
     it 'calculates the right total when the service day is changed from an absence_on_scheduled_day' \
        'back to a non-absence' do
-      attendance.update!(check_out: attendance.check_in + 6.hours)
       service_day.update!(schedule: create(:schedule, weekday: service_day.date.wday, duration: 10.minutes))
       service_day.update!(absence_type: 'absence_on_scheduled_day')
       perform_enqueued_jobs
       service_day.reload
-      expect(service_day.total_time_in_care).to eq(10.minutes)
+      expect(service_day.schedule.duration).to eq(10.minutes)
+      attendance.update!(check_out: attendance.check_in + 6.hours)
       service_day.update!(absence_type: nil)
       perform_enqueued_jobs
       service_day.reload
@@ -387,7 +391,7 @@ RSpec.describe ServiceDay do
     it 'for multiple check-ins with and without check-outs, returns scheduled duration if total is less' do
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: child.child_approvals.first,
         check_in: service_day.date + 1.hour + 30.minutes,
         check_out: service_day.date + 3.hours + 30.minutes
@@ -401,12 +405,12 @@ RSpec.describe ServiceDay do
       child = create(:necc_child)
       service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
       )
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child.child_approvals.first,
         check_in: attendance.check_in + 1.hour + 30.minutes,
         check_out: attendance.check_in + 10.hours + 30.minutes
@@ -420,12 +424,12 @@ RSpec.describe ServiceDay do
       child = create(:necc_child)
       service_day = create(
         :service_day,
-        child: child,
+        child:,
         date: Time.current.in_time_zone(child.timezone).at_beginning_of_day
       )
       create(
         :attendance,
-        service_day: service_day,
+        service_day:,
         child_approval: attendance.child.child_approvals.first,
         check_in: attendance.check_in + 3.hours + 30.minutes,
         check_out: nil

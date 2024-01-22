@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Move all existing absences to service days
-task remove_absences: :environment do
-  attendances = ServiceDay.where('created_at > ?', '2023-05-01 00:00:00')
+task :remove_absences, [:initial_date] => [:environment] do |_t, args|
+  attendances = ServiceDay.where('created_at > ?', args[:initial_date])
   duplicates = attendances.select(:child_id).group(:child_id).having('count(*) > 1')
   child_ids = duplicates.map(&:child_id)
   to_remove_absences = []

@@ -25,7 +25,7 @@ module Api
       def create
         @service_day = ServiceDay.new(
           child_id: service_day_params[:child_id],
-          date: date,
+          date:,
           absence_type: service_day_params[:absence_type]
         )
 
@@ -77,9 +77,9 @@ module Api
         policy_scope(
           ServiceDay
           .left_outer_joins(:attendances)
-          .includes(:attendances, { child: { business: :user } })
-          .joins(child: :business)
-          .where(children: { businesses: Business.find(params[:business].split(',')) })
+          .includes(:attendances, { child: { child_businesses: :business } })
+          .joins(child: { child_businesses: :business })
+          .where(child_businesses: { business_id: params[:business].split(',') })
           .order('children.last_name')
           .for_week(filter_date)
         )
@@ -89,8 +89,8 @@ module Api
         policy_scope(
           ServiceDay
           .left_outer_joins(:attendances)
-          .includes(:attendances, { child: { business: :user } })
-          .joins(child: :business)
+          .includes(:attendances, { child: { child_businesses: :business } })
+          .joins(child: { child_businesses: :business })
           .order('children.last_name')
           .for_week(filter_date)
         )

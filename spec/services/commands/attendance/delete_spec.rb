@@ -12,21 +12,21 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (24 * 3600)
       )
@@ -44,7 +44,7 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
   describe '#initialize' do
     it 'initializes with required info' do
       expect do
-        described_class.new(attendance: attendance)
+        described_class.new(attendance:)
       end.to not_raise_error
     end
 
@@ -59,17 +59,17 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
     it 'deletes the attendance and keeps the service_day if it has other attendances' do
       second_attendance = create(:attendance,
                                  check_in: attendance.check_in + 6.hours,
-                                 service_day: service_day,
+                                 service_day:,
                                  child_approval: child.child_approvals.first)
       expect do
-        described_class.new(attendance: attendance).delete
+        described_class.new(attendance:).delete
       end
         .to change(Attendance, :count).from(2).to(1)
         .and not_change(ServiceDay, :count)
 
       service_day.reload
 
-      expect(ServiceDay.all.count).to eq(1)
+      expect(ServiceDay.count).to eq(1)
       expect(service_day.attendances).not_to include(attendance)
 
       expect(service_day.total_time_in_care).to eq(second_attendance.time_in_care)
@@ -79,7 +79,7 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
       service_day.schedule.destroy!
       service_day.reload
       expect do
-        described_class.new(attendance: attendance).delete
+        described_class.new(attendance:).delete
       end
         .to change(Attendance, :count).from(1).to(0)
         .and change(ServiceDay, :count).from(1).to(0)
@@ -89,13 +89,13 @@ RSpec.describe Commands::Attendance::Delete, type: :service do
       attendance.reload
       service_day.reload
       expect do
-        described_class.new(attendance: attendance).delete
+        described_class.new(attendance:).delete
       end
         .to change(Attendance, :count).from(1).to(0)
         .and not_change(ServiceDay, :count)
 
       service_day.reload
-      expect(ServiceDay.all.count).to eq(1)
+      expect(ServiceDay.count).to eq(1)
       expect(service_day.attendances).not_to include(attendance)
       expect(service_day.absence_type).to eq('absence_on_scheduled_day')
       expect(service_day.total_time_in_care).to eq(8.hours)

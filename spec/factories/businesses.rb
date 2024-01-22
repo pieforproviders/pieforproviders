@@ -12,20 +12,23 @@ FactoryBot.define do
 
     factory :business_with_children do
       after :create do |business|
-        create_list(:child, 3, business: business)
+        3.times do
+          child = create(:child)
+          create(:child_business, business:, child:)
+        end
       end
     end
 
     factory :business_with_schedules do
       before :create do |business|
-        create(:business_schedule, business: business)
+        create(:business_schedule, business:)
       end
     end
 
     factory :business_with_closed_days_in_november do
       after :create do |business|
         1.upto(20).each do |day|
-          create(:business_closure, business: business, date: "2022-11-#{day}")
+          create(:business_closure, business:, date: "2022-11-#{day}")
         end
       end
     end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-
 module Wonderschool
   module Necc
     RSpec.describe OnboardingCaseImporter do
@@ -80,7 +79,8 @@ module Wonderschool
                 wonderschool_id: '37821'
               }
             )
-            expect(thomas.business).to have_attributes(
+
+            expect(thomas.child_businesses.find_by(currently_active: true).business).to have_attributes(
               {
                 name: "Rebecca's Childcare",
                 zipcode: '68845',
@@ -124,7 +124,7 @@ module Wonderschool
                 wonderschool_id: '37827'
               }
             )
-            expect(becky.business).to have_attributes(
+            expect(becky.child_businesses.find_by(currently_active: true).business).to have_attributes(
               {
                 name: "Kate's Kids",
                 zipcode: '68845',
@@ -181,14 +181,6 @@ module Wonderschool
           end
 
           it 'skips the child if all their existing details are the same' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -199,11 +191,17 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [approval])
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             child.reload.child_approvals.first.update!(
               authorized_weekly_hours: 30.0,
               full_days: 276,
@@ -219,11 +217,12 @@ module Wonderschool
               expires_on: Date.parse('2021-08-31'),
               family_fee: 0
             )
+
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(5)
               .and change(Approval, :count)
@@ -234,14 +233,6 @@ module Wonderschool
           end
 
           it 'updates the existing details if the approval dates are the same but other details are different' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -252,11 +243,18 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [approval])
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             child.reload.child_approvals.first.update!(
               enrolled_in_school: false,
               authorized_weekly_hours: 30.0,
@@ -277,7 +275,7 @@ module Wonderschool
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(5)
               .and change(Approval, :count)
@@ -295,14 +293,6 @@ module Wonderschool
           end
 
           it 'processes existing child with new approval details if new approval dates are different' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -310,20 +300,26 @@ module Wonderschool
               expires_on: '2020-08-31',
               create_children: false
             )
-            create(:necc_child,
-                   first_name: 'Thomas',
-                   last_name: 'Eddleman',
-                   business: business,
-                   date_of_birth: '2010-09-01',
-                   wonderschool_id: '37821',
-                   dhs_id: '14047907',
-                   approvals: [approval],
-                   effective_date: Time.zone.parse('2019-09-01'))
+            child = create(:necc_child,
+                           first_name: 'Thomas',
+                           last_name: 'Eddleman',
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           approvals: [approval],
+                           effective_date: Time.zone.parse('2019-09-01'))
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(6)
               .and change(Approval, :count)
@@ -334,14 +330,6 @@ module Wonderschool
           end
 
           it 'updates the child with new approval details if the new approval overlaps' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             existing_approval = create(
               :approval,
               case_number: '14635435',
@@ -352,18 +340,25 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [existing_approval],
                            effective_date: Time.zone.parse('2020-06-01'))
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             existing_nebraska_approval_amount = child.nebraska_approval_amounts.first
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(6)
               .and change(Approval, :count)
@@ -426,7 +421,7 @@ module Wonderschool
                 wonderschool_id: '37821'
               }
             )
-            expect(thomas.business).to have_attributes(
+            expect(thomas.businesses.first).to have_attributes(
               {
                 name: "Rebecca's Childcare",
                 zipcode: '68845',
@@ -470,7 +465,7 @@ module Wonderschool
                 wonderschool_id: '37827'
               }
             )
-            expect(becky.business).to have_attributes(
+            expect(becky.businesses.first).to have_attributes(
               {
                 name: "Kate's Kids",
                 zipcode: '68845',
@@ -527,14 +522,6 @@ module Wonderschool
           end
 
           it 'skips the child if all their existing details are the same' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -545,11 +532,18 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [approval])
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             child.reload.child_approvals.first.update!(
               authorized_weekly_hours: 30.0,
               full_days: 276,
@@ -569,7 +563,7 @@ module Wonderschool
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(5)
               .and change(Approval, :count)
@@ -580,14 +574,6 @@ module Wonderschool
           end
 
           it 'updates the existing details if the approval dates are the same but other details are different' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -598,11 +584,18 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [approval])
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             child.reload.child_approvals.first.update!(
               enrolled_in_school: false,
               authorized_weekly_hours: 30.0,
@@ -623,7 +616,7 @@ module Wonderschool
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(5)
               .and change(Approval, :count)
@@ -641,14 +634,6 @@ module Wonderschool
           end
 
           it 'processes existing child with new approval details if new approval dates are different' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -656,20 +641,27 @@ module Wonderschool
               expires_on: '2020-08-31',
               create_children: false
             )
-            create(:necc_child,
-                   first_name: 'Thomas',
-                   last_name: 'Eddleman',
-                   business: business,
-                   date_of_birth: '2010-09-01',
-                   wonderschool_id: '37821',
-                   dhs_id: '14047907',
-                   approvals: [approval],
-                   effective_date: Time.zone.parse('2019-09-01'))
+            child = create(:necc_child,
+                           first_name: 'Thomas',
+                           last_name: 'Eddleman',
+                           date_of_birth: '2010-09-01',
+                           wonderschool_id: '37821',
+                           dhs_id: '14047907',
+                           approvals: [approval],
+                           effective_date: Time.zone.parse('2019-09-01'))
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(6)
               .and change(Approval, :count)
@@ -680,14 +672,6 @@ module Wonderschool
           end
 
           it 'updates the child with new approval details if the new approval overlaps' do
-            business = create(
-              :business,
-              user: first_user,
-              name: "Rebecca's Childcare",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '14635435',
@@ -698,18 +682,25 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Thomas',
                            last_name: 'Eddleman',
-                           business: business,
                            date_of_birth: '2010-09-01',
                            wonderschool_id: '37821',
                            dhs_id: '14047907',
                            approvals: [approval],
                            effective_date: Time.zone.parse('2020-06-01'))
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: first_user,
+                         name: "Rebecca's Childcare",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_ii')
+
             nebraska_approval_amount = child.nebraska_approval_amounts.first
             expect { described_class.new.call }
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(6)
               .and change(Approval, :count)
@@ -737,11 +728,9 @@ module Wonderschool
             described_class.new.call
             thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
             expect(thomas.approvals.length).to eq(2)
-            expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
-              [
-                [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
-                [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
-              ]
+            expect(thomas.approvals.pluck(:effective_on, :expires_on)).to contain_exactly(
+              [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
+              [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
             )
             first_approval = thomas.approvals.find_by(effective_on: '2020-09-01')
             second_approval = thomas.approvals.find_by(effective_on: '2021-09-01')
@@ -797,14 +786,6 @@ module Wonderschool
           end
 
           it 'updates the existing details if approval periods are different' do
-            business = create(
-              :business,
-              user: second_user,
-              name: "Kate's Kids",
-              zipcode: '68845',
-              county: 'Corke',
-              license_type: 'Family Child Care Home I'.downcase.tr(' ', '_')
-            )
             approval = create(
               :approval,
               case_number: '56582912',
@@ -815,11 +796,18 @@ module Wonderschool
             child = create(:necc_child,
                            first_name: 'Becky',
                            last_name: 'Falzone',
-                           business: business,
                            date_of_birth: '2013-12-26',
                            wonderschool_id: '37827',
                            dhs_id: '69370816',
                            approvals: [approval])
+
+            child.child_businesses.find_by(currently_active: true).business
+                 .update(user: second_user,
+                         name: "Kate's Kids",
+                         zipcode: '68845',
+                         county: 'Corke',
+                         license_type: 'family_child_care_home_i')
+
             child.reload.child_approvals.first.update!(
               enrolled_in_school: false,
               authorized_weekly_hours: 45,
@@ -840,7 +828,7 @@ module Wonderschool
               .to change(Child, :count)
               .from(1).to(5)
               .and change(Business, :count)
-              .from(1).to(2)
+              .from(2).to(3)
               .and change(ChildApproval, :count)
               .from(1).to(5)
               .and change(Approval, :count)

@@ -3,9 +3,36 @@
 require 'rails_helper'
 
 RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
-  before { travel_to '2022-06-01'.to_date }
+  before do
+    travel_to '2022-06-01'.to_date
+    business_ldds.update!(quality_rating: 'step_three', accredited: false)
+    business_other.update!(accredited: false,
+                           quality_rating: 'step_four',
+                           zipcode: '69201',
+                           county: 'Cherry')
+    business_license_exempt_ld.update!(accredited: false,
+                                       quality_rating: 'not_rated',
+                                       license_type: 'license_exempt_home',
+                                       zipcode: '68516',
+                                       county: 'Lancaster')
+    business_license_exempt_ds.update!(accredited: false,
+                                       quality_rating: 'not_rated',
+                                       license_type: 'license_exempt_home',
+                                       zipcode: '68123',
+                                       county: 'Douglas')
+    business_license_exempt_other.update!(accredited: false,
+                                          quality_rating: 'not_rated',
+                                          license_type: 'license_exempt_home',
+                                          zipcode: '69201',
+                                          county: 'Cherry')
+    business_fih.update!(accredited: false,
+                         quality_rating: 'not_rated',
+                         license_type: 'family_in_home',
+                         zipcode: '68123',
+                         county: 'Douglas')
+  end
 
-  after  { travel_back }
+  after { travel_back }
 
   let!(:full_day_ldds_rate) do
     create(:unaccredited_daily_ldds_rate, max_age: 216, effective_on: 3.months.ago, expires_on: nil)
@@ -83,39 +110,43 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
            effective_on: 3.months.ago,
            expires_on: nil)
   end
-  let!(:business_ldds) { create(:business, :nebraska_ldds, :unaccredited, :step_four) }
-  let!(:child_ldds) { create(:necc_child, business: business_ldds, effective_date: 1.month.ago) }
+  let!(:child_ldds) { create(:necc_child, effective_date: 1.month.ago) }
+  let!(:business_ldds) { child_ldds.businesses.first }
+
   let!(:child_ldds_child_approval) { child_ldds.child_approvals.first }
-  let!(:business_other) { create(:business, :nebraska_other, :unaccredited, :step_four) }
-  let!(:child_other) { create(:necc_child, business: business_other, effective_date: 1.month.ago) }
+
+  let!(:child_other) { create(:necc_child, effective_date: 1.month.ago) }
+  let!(:business_other) { child_other.businesses.first }
   let!(:child_other_child_approval) { child_other.child_approvals.first }
-  let!(:business_license_exempt_ld) { create(:business, :nebraska_license_exempt_home_ld, :unaccredited, :not_rated) }
+
   let!(:child_license_exempt_ld) do
-    create(:necc_child, business: business_license_exempt_ld, effective_date: 1.month.ago)
+    create(:necc_child, effective_date: 1.month.ago)
   end
+  let!(:business_license_exempt_ld) { child_license_exempt_ld.businesses.first }
   let!(:child_license_exempt_ld_child_approval) { child_license_exempt_ld.child_approvals.first }
-  let!(:business_license_exempt_ds) { create(:business, :nebraska_license_exempt_home_ds, :unaccredited, :not_rated) }
+
   let!(:child_license_exempt_ds) do
-    create(:necc_child, business: business_license_exempt_ds, effective_date: 1.month.ago)
+    create(:necc_child, effective_date: 1.month.ago)
   end
+  let!(:business_license_exempt_ds) { child_license_exempt_ds.businesses.first }
   let!(:child_license_exempt_ds_child_approval) { child_license_exempt_ds.child_approvals.first }
-  let!(:business_license_exempt_other) do
-    create(:business, :nebraska_license_exempt_home_other, :unaccredited, :not_rated)
-  end
+
   let!(:child_license_exempt_other) do
-    create(:necc_child, business: business_license_exempt_other, effective_date: 1.month.ago)
+    create(:necc_child, effective_date: 1.month.ago)
   end
+  let!(:business_license_exempt_other) { child_license_exempt_other.businesses.first }
   let!(:child_license_exempt_other_child_approval) { child_license_exempt_other.child_approvals.first }
-  let!(:business_fih) { create(:business, :nebraska_family_in_home, :unaccredited, :not_rated) }
-  let!(:child_fih) { create(:necc_child, business: business_fih, effective_date: 1.month.ago) }
+
+  let!(:child_fih) { create(:necc_child, effective_date: 1.month.ago) }
+  let!(:business_fih) { child_fih.businesses.first }
   let!(:child_fih_child_approval) { child_fih.child_approvals.first }
 
   describe '#call' do
     context 'when called after qris status update (7-1-2022)' do
       it "uses hourly rate for business' quality rating and does not apply qris bump" do
         hourly_ldds_rate.update!(quality_rating: 'step_three')
-        business_ldds.update!(quality_rating: 'step_three')
         child_ldds.reload
+        child_ldds.businesses.where(state: 'IL').destroy_all
         child_ldds_child_approval.reload
         expect(
           described_class.new(
@@ -308,89 +339,86 @@ RSpec.describe Nebraska::Daily::RevenueCalculator, type: :service do
     end
 
     it 'calculates the correct revenue for an hourly attendance' do
-      expect(
-        described_class.new(
-          child_approval: child_ldds_child_approval,
-          date: child_ldds_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_ldds_child_approval.effective_on,
-            child_ldds_child_approval&.enrolled_in_school || false,
-            child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
-            business_ldds
-          )
-        ).call
-      ).to eq(hourly_ldds_rate.amount * 3.5 * business_ldds.ne_qris_bump)
+      business_ldds.update!(accredited: false, quality_rating: 'step_four')
 
-      expect(
-        described_class.new(
-          child_approval: child_other_child_approval,
-          date: child_other_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_other_child_approval.effective_on,
-            child_other_child_approval&.enrolled_in_school || false,
-            child_other&.age_in_months(child_other_child_approval.effective_on),
-            business_other
-          )
-        ).call
-      ).to eq(hourly_other_rate.amount * 3.5 * business_other.ne_qris_bump)
+      ldds_result = described_class.new(
+        child_approval: child_ldds_child_approval,
+        date: child_ldds_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_ldds_child_approval.effective_on,
+          child_ldds_child_approval&.enrolled_in_school || false,
+          child_ldds&.age_in_months(child_ldds_child_approval.effective_on),
+          business_ldds
+        )
+      ).call
+      expect(ldds_result).to eq(hourly_ldds_rate.amount * 3.5 * business_ldds.ne_qris_bump)
 
-      expect(
-        described_class.new(
-          child_approval: child_license_exempt_ld_child_approval,
-          date: child_license_exempt_ld_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_license_exempt_ld_child_approval.effective_on,
-            child_license_exempt_ld_child_approval&.enrolled_in_school || false,
-            child_license_exempt_ld&.age_in_months(child_license_exempt_ld_child_approval.effective_on),
-            business_license_exempt_ld
-          )
-        ).call
-      ).to eq(hourly_ld_license_exempt_rate.amount * 3.5 * business_license_exempt_ld.ne_qris_bump)
+      other_result = described_class.new(
+        child_approval: child_other_child_approval,
+        date: child_other_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_other_child_approval.effective_on,
+          child_other_child_approval&.enrolled_in_school || false,
+          child_other&.age_in_months(child_other_child_approval.effective_on),
+          business_other
+        )
+      ).call
+      expect(other_result).to eq(hourly_other_rate.amount * 3.5 * business_other.ne_qris_bump)
 
-      expect(
-        described_class.new(
-          child_approval: child_license_exempt_ds_child_approval,
-          date: child_license_exempt_ds_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_license_exempt_ds_child_approval.effective_on,
-            child_license_exempt_ds_child_approval&.enrolled_in_school || false,
-            child_license_exempt_ds&.age_in_months(child_license_exempt_ds_child_approval.effective_on),
-            business_license_exempt_ds
-          )
-        ).call
-      ).to eq(hourly_ds_license_exempt_rate.amount * 3.5 * business_license_exempt_ds.ne_qris_bump)
+      exempt_result = described_class.new(
+        child_approval: child_license_exempt_ld_child_approval,
+        date: child_license_exempt_ld_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_license_exempt_ld_child_approval.effective_on,
+          child_license_exempt_ld_child_approval&.enrolled_in_school || false,
+          child_license_exempt_ld&.age_in_months(child_license_exempt_ld_child_approval.effective_on),
+          business_license_exempt_ld
+        )
+      ).call
+      expect(exempt_result).to eq(hourly_ld_license_exempt_rate.amount * 3.5 * business_license_exempt_ld.ne_qris_bump)
 
-      expect(
-        described_class.new(
-          child_approval: child_license_exempt_other_child_approval,
-          date: child_license_exempt_other_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_license_exempt_other_child_approval.effective_on,
-            child_license_exempt_other_child_approval&.enrolled_in_school || false,
-            child_license_exempt_other&.age_in_months(child_license_exempt_other_child_approval.effective_on),
-            business_license_exempt_other
-          )
-        ).call
-      ).to eq(hourly_other_license_exempt_rate.amount * 3.5 * business_license_exempt_other.ne_qris_bump)
+      exempt_ds_result = described_class.new(
+        child_approval: child_license_exempt_ds_child_approval,
+        date: child_license_exempt_ds_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_license_exempt_ds_child_approval.effective_on,
+          child_license_exempt_ds_child_approval&.enrolled_in_school || false,
+          child_license_exempt_ds&.age_in_months(child_license_exempt_ds_child_approval.effective_on),
+          business_license_exempt_ds
+        )
+      ).call
+      expect(exempt_ds_result).to eq(hourly_ds_license_exempt_rate.amount * 3.5 * business_license_exempt_ds.ne_qris_bump)
 
-      expect(
-        described_class.new(
-          child_approval: child_fih_child_approval,
-          date: child_fih_child_approval.effective_on,
-          total_time_in_care: 3.hours + 23.minutes,
-          rates: NebraskaRate.for_case(
-            child_fih_child_approval.effective_on,
-            child_fih_child_approval&.enrolled_in_school || false,
-            child_fih&.age_in_months(child_fih_child_approval.effective_on),
-            business_fih
-          )
-        ).call
-      ).to eq(hourly_fih_rate.amount * 3.5 * business_fih.ne_qris_bump)
+      other_exempt_result = described_class.new(
+        child_approval: child_license_exempt_other_child_approval,
+        date: child_license_exempt_other_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_license_exempt_other_child_approval.effective_on,
+          child_license_exempt_other_child_approval&.enrolled_in_school || false,
+          child_license_exempt_other&.age_in_months(child_license_exempt_other_child_approval.effective_on),
+          business_license_exempt_other
+        )
+      ).call
+      expect(other_exempt_result).to eq(hourly_other_license_exempt_rate.amount * 3.5 * business_license_exempt_other.ne_qris_bump)
+
+      fih_result = described_class.new(
+        child_approval: child_fih_child_approval,
+        date: child_fih_child_approval.effective_on,
+        total_time_in_care: 3.hours + 23.minutes,
+        rates: NebraskaRate.for_case(
+          child_fih_child_approval.effective_on,
+          child_fih_child_approval&.enrolled_in_school || false,
+          child_fih&.age_in_months(child_fih_child_approval.effective_on),
+          business_fih
+        )
+      ).call
+
+      expect(fih_result).to eq(hourly_fih_rate.amount * 3.5 * business_fih.ne_qris_bump)
     end
 
     it 'calculates the correct revenue for a daily attendance' do

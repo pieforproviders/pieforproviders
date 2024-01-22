@@ -411,8 +411,10 @@ export function Attendance() {
 
       if (businesses.length === 0) {
         const businessData = parsedResponse.reduce((priorValue, newValue) => {
-          return !priorValue.some(item => item.id === newValue.business.id)
-            ? [...priorValue, newValue.business]
+          return !priorValue.some(
+            item => item?.id === newValue.active_business?.id
+          )
+            ? [...priorValue, newValue.active_business]
             : priorValue
         }, [])
         dispatch(setBusinesses(businessData))
@@ -472,8 +474,9 @@ export function Attendance() {
         columns={columns}
         bordered={true}
         pagination={false}
+        virtual
         sticky
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1500, y: 475 }}
         className="my-5 attendance-table"
         loading={{
           delay: 1000,

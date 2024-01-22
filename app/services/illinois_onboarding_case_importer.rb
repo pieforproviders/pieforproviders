@@ -43,12 +43,21 @@ class IllinoisOnboardingCaseImporter
     )
   end
 
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
   def process_row(row)
     @row = row
     @business = Business.find_or_create_by!(required_business_params)
-    @child = Child.find_or_initialize_by(required_child_params)
+    @child = Child.find_by(dhs_id: @row['Client ID'])
+    if @child.present?
+      update_child_info
+    else
+      @child = Child.find_or_initialize_by(required_child_params)
+      find_approval
+      @child.child_businesses.create!(business: @business, currently_active: true)
+    end
     @approval = find_approval
-
+    @child.save
     evaluate_columns
 
     raise NotEnoughInfo, @child.errors unless @child.valid?
@@ -61,6 +70,18 @@ class IllinoisOnboardingCaseImporter
       exception: e,
       tags: { case_number: @row['Case number'] }
     )
+  end
+  # rubocop: enable Metrics/MethodLength
+  # rubocop: enable Metrics/AbcSize
+
+  def update_child_info
+    if @child.first_name != @row['First Name'] || @child.last_name != @row['Last Name']
+      @child.update(required_child_params.except(:first_name, :last_name))
+    elsif @child.date_of_birth != @row['Date of birth (required)'].to_date
+      @child.update(required_child_params.except(:date_of_birth))
+    else
+      @child.update(required_child_params)
+    end
   end
 
   def find_approval
@@ -100,7 +121,7 @@ class IllinoisOnboardingCaseImporter
 
   def update_existing_amount(month)
     IllinoisApprovalAmount.find_by(
-      month: month,
+      month:,
       child_approval: @child_approval
     )&.update!(
       part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
@@ -113,7 +134,7 @@ class IllinoisOnboardingCaseImporter
       next if update_existing_amount(month)
 
       IllinoisApprovalAmount.create!(
-        month: month,
+        month:,
         child_approval: @child_approval,
         part_days_approved_per_week: illinois_params[:part_days_approved_per_week],
         full_days_approved_per_week: illinois_params[:full_days_approved_per_week]
@@ -186,7 +207,6 @@ class IllinoisOnboardingCaseImporter
 
   def required_child_params
     {
-      business_id: @business.id,
       first_name: @row['First Name'],
       last_name: @row['Last Name'],
       dhs_id: @row['Client ID'],

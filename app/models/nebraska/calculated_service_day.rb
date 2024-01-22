@@ -18,10 +18,10 @@ module Nebraska
       return 0 unless child_approval && service_day.date && total_time_in_care
 
       Nebraska::Daily::RevenueCalculator.new(
-        child_approval: child_approval,
+        child_approval:,
         date: service_day.date,
-        total_time_in_care: total_time_in_care,
-        rates: rates
+        total_time_in_care:,
+        rates:
       ).call
     end
 

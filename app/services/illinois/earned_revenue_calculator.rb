@@ -9,7 +9,8 @@ module Illinois
     def initialize(service_day:)
       super
       @child = service_day.child
-      @business = child.business
+      child_business = @child.child_businesses.find_by(currently_active: true)
+      @business = @child.businesses.find(child_business.business_id)
       @child_approval = child.active_child_approval(service_day.date)
     end
 
@@ -20,17 +21,17 @@ module Illinois
     private
 
     def calculate_earned_revenue
-      service_day.update!(earned_revenue: earned_revenue)
+      service_day.update!(earned_revenue:)
     end
 
     def earned_revenue
       return 0 unless child_approval && service_day.date && service_day.total_time_in_care
 
       Illinois::Daily::RevenueCalculator.new(
-        child_approval: child_approval,
+        child_approval:,
         date: service_day.date,
         total_time_in_care: service_day.total_time_in_care,
-        rates: rates
+        rates:
       ).call
     end
 
