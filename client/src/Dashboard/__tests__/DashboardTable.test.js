@@ -26,8 +26,6 @@ describe('<DashboardTable />', () => {
       expect(container).toHaveTextContent('Child')
       expect(container).not.toHaveTextContent('Case number')
       expect(container).toHaveTextContent('Attendance rate')
-      expect(container).toHaveTextContent('Earned revenue')
-      expect(container).not.toHaveTextContent('Estimated revenue')
       expect(container).not.toHaveTextContent('Max. approved revenue')
       expect(container).toHaveTextContent('Authorized period')
       expect(container).toHaveTextContent('Actions')

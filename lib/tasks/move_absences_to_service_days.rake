@@ -3,7 +3,7 @@
 # Move all existing absences to service days
 task move_absences_to_service_days: :environment do
   Rails.logger.level = 3
-  attendances = Attendance.all.where.not(absence: nil)
+  attendances = Attendance.where.not(absence: nil)
   puts "Records: #{attendances.size}"
   batch_number = 0
   attendances.in_batches do |attendance_batch|

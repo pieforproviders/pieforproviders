@@ -32,7 +32,7 @@ class IllinoisRate < UuidApplicationRecord
           where('effective_on <= ?', date.at_end_of_month)
             .where('expires_on is null or expires_on > ?', date.at_beginning_of_month)
             .where('age_bucket >= ? OR age_bucket IS NULL', age)
-            .where(region: Illinois::RegionFinder.new(business: business).call)
+            .where(region: Illinois::RegionFinder.new(business:).call)
             .where(license_type: business.license_type)
             .order_age_bucket
         }

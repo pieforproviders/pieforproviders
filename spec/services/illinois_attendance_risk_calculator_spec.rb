@@ -6,8 +6,9 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
   describe '#elapsed_eligible_days' do
     it 'calculate elapsed eligible days for child with attended info' do
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
-      date = Date.new(2022, 12, 20)
+      child = create(:child_in_illinois)
+      create(:child_business, child:, business:)
+      date = Date.new(2023, 4, 20)
       eligible_days_in_week = 5
       elapsed_weeks = 3
       elapsed_eligible_days = eligible_days_in_week * elapsed_weeks
@@ -20,10 +21,10 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
   describe '#attended_days' do
     it 'calculate attended days until given date' do
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current
       attendance_date = Time.current.at_beginning_of_month
-      service_full_day = create(:service_day, child: child)
+      service_full_day = create(:service_day, child:)
       create(
         :illinois_full_day_attendance,
         service_day: service_full_day,
@@ -44,10 +45,10 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
   describe '#attendance_rate_until_date' do
     it 'caculate attendance rate until given date' do
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current
       attendance_date = Time.current.at_beginning_of_month
-      service_full_day = create(:service_day, child: child)
+      service_full_day = create(:service_day, child:)
       create(
         :illinois_full_day_attendance,
         service_day: service_full_day,
@@ -66,7 +67,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
   describe '#risk_label' do
     it 'return not_enough_info label when there is no attendances' do
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_end_of_month
       attendance_rate_until_date = described_class.new(child, date).call
       expect(attendance_rate_until_date).to eq('not_enough_info')
@@ -75,15 +76,15 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
     it 'return not_enough_info label with attendance info but less than halfway through month' do
       travel_to Time.current.at_beginning_of_month + rand(2..14).days
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month + 5.days
 
       3.times do |idx|
         service_day = create(:service_day,
                              date: date.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
-                             child: child)
+                             child:)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.child_approvals.first,
                check_in: service_day.date + 3.hours)
       end
@@ -98,15 +99,15 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
     it 'return at_risk label when attended rate is below treshold' do
       travel_to Time.current.at_beginning_of_month + rand(15..28).days
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month
 
       7.times do |idx|
         service_day = create(:service_day,
                              date: date.in_time_zone(Child.first.timezone) + idx.days,
-                             child: child)
+                             child:)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.child_approvals.first,
                check_in: service_day.date + 3.hours)
       end
@@ -121,16 +122,16 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
       rand_num = rand(14..28)
       travel_to Time.current.at_beginning_of_month + rand_num.days
       business = create(:business)
-      child = create(:child_in_illinois, business: business)
+      child = create(:child_in_illinois, businesses: [business])
       date = Time.current.at_beginning_of_month
       amount_of_attendances = 11 + rand_num
 
       amount_of_attendances.times do |idx|
         service_day = create(:service_day,
                              date: date.in_time_zone(Child.first.timezone) + idx.days,
-                             child: child)
+                             child:)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: child.child_approvals.first,
                check_in: service_day.date + 3.hours)
       end

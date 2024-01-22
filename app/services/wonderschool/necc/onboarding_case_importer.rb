@@ -48,7 +48,6 @@ module Wonderschool
       def process_row(row)
         @row = row
         @business = Business.find_or_create_by!(required_business_params)
-
         process_child
 
         @approval = find_approval
@@ -65,16 +64,26 @@ module Wonderschool
         )
       end
 
+      # rubocop: disable Metrics/AbcSize
       def process_child
-        first_name = required_child_params[:first_name].downcase
-        last_name = required_child_params[:last_name].downcase
+        first_name = required_child_params[:first_name]
+        last_name = required_child_params[:last_name]
+        @child = Child.find_by(dhs_id: @row['Client ID'])
+        if @child.present?
+          update_child_info
+        else
+          @child = Child.where(first_name:,
+                               last_name:).first_or_initialize(required_child_params)
+          find_approval
+          @child.child_businesses.create!(business: @business, currently_active: true)
+        end
+      end
 
-        @child = Child.where('lower(first_name) = ? AND lower(last_name) = ?',
-                             first_name,
-                             last_name).first_or_initialize(required_child_params)
-
-        if @child.new_record?
-          @child.save
+      def update_child_info
+        if @child.first_name != @row['first_name'] || @child.last_name != @row['last_name']
+          @child.update(required_child_params.except(:first_name, :last_name))
+        elsif @child.date_of_birth != @row['date_of_birth'].to_date
+          @child.update(required_child_params.except(:date_of_birth))
         else
           @child.update(required_child_params)
         end
@@ -194,7 +203,6 @@ module Wonderschool
         ratings[value]
       end
 
-      # rubocop:disable Metrics/AbcSize
       def child_approval_params
         {
           full_days: to_integer(@row['Authorized full day units']),
@@ -208,13 +216,12 @@ module Wonderschool
           enrolled_in_school: to_boolean(@row['Enrolled in School (Kindergarten or later)'])
         }
       end
-      # rubocop:enable Metrics/AbcSize
+      # rubocop: enable Metrics/AbcSize
 
       def required_child_params
         {
-          business_id: @business&.id,
-          first_name: @row['First Name'].capitalize,
-          last_name: @row['Last Name'].capitalize,
+          first_name: @row['First Name'],
+          last_name: @row['Last Name'],
           dhs_id: @row['Client ID'],
           date_of_birth: @row['Date of birth (required)']
         }

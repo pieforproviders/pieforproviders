@@ -1,5 +1,5 @@
 name: Backend CI
-concurrency: 
+concurrency:
   group: backend-${{ github.head_ref }}
   cancel-in-progress: true
 on:
@@ -20,7 +20,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: 3.2.2
       - name: Rubocop
         run: |
           sudo apt-get -yqq install libpq-dev
@@ -28,7 +28,7 @@ jobs:
           bundle config path vendor/bundle
           bundle install --jobs 4 --retry 3
           bundle exec rubocop
-  # TODO: Parse error was fixed in Brakeman 5.1.2 but 
+  # TODO: Parse error was fixed in Brakeman 5.1.2 but
   # the Github Action is using the docker image
   # which is stuck at 5.1.1 so we need to disable
   # this for now
@@ -40,8 +40,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Analyze code statically using Brakeman
         uses: artplan1/brakeman-action@v1.2.1
-        with: 
-          flags: "--color"
+        with:
+          flags: '--color'
   test_backend:
     name: Backend tests
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-    # Install local deps if this action is being run locally
+      # Install local deps if this action is being run locally
       - name: Install local dependencies
         if: ${{ env.ACT }}
         run: |
@@ -81,7 +81,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.0.2
+          ruby-version: 3.2.2
       - name: Install libraries
         run: sudo apt-get install libpq-dev
       - name: Bundle install

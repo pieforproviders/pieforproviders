@@ -12,11 +12,17 @@ class ChildBlueprint < Blueprinter::Base
   field :last_name
   field :wonderschool_id
   field :business_name do |child, _options|
-    child.business.name
+    business = child.child_businesses.find_by(currently_active: true).business
+    business.name
+  end
+
+  field :active_business do |child, _options|
+    business = child.child_businesses.find_by(currently_active: true).business
+    { id: business.id, name: business.name }
   end
 
   view :cases do
-    association :business, blueprint: BusinessBlueprint
+    association :child_businesses, blueprint: ChildBusinessBlueprint
     field :state
     field :case_number do |child|
       child&.approvals&.first&.case_number
@@ -28,7 +34,7 @@ class ChildBlueprint < Blueprinter::Base
     attended_days = nil
     association :illinois_dashboard_case, blueprint: Illinois::DashboardCaseBlueprint do |child, options|
       options[:filter_date] ||= Time.current
-      business = child.business
+      business = child.child_businesses.find_by(currently_active: true).business
       child_approval = child&.active_child_approval(options[:filter_date])
       service_days = child&.service_days&.for_period(child_approval.effective_on, child_approval.expires_on)
       attended_days = service_days&.non_absences
@@ -40,10 +46,10 @@ class ChildBlueprint < Blueprinter::Base
       end
 
       Illinois::DashboardCase.new(
-        child: child,
+        child:,
         filter_date: options[:filter_date],
         eligible_days: eligible_attendances,
-        attended_days: attended_days
+        attended_days:
       )
     end
   end
@@ -56,10 +62,10 @@ class ChildBlueprint < Blueprinter::Base
       attended_days = service_days&.non_absences
       absent_days = service_days&.absences
       Nebraska::DashboardCase.new(
-        child: child,
+        child:,
         filter_date: options[:filter_date],
-        attended_days: attended_days,
-        absent_days: absent_days
+        attended_days:,
+        absent_days:
       )
     end
   end

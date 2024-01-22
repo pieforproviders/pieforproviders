@@ -3,6 +3,6 @@
 # Job to update Dashboard Cases
 class DashboardUpdaterJob < ApplicationJob
   def perform(attendance:)
-    DashboardUpdater.new(attendance: attendance).call
+    DashboardUpdater.new(attendance:).call
   end
 end

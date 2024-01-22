@@ -21,10 +21,10 @@ module Nebraska
 
       ActiveRecord::Base.transaction do
         sd = ServiceDay.find_or_create_by!(
-          child: child,
-          date: date
+          child:,
+          date:
         )
-        sd.update!(absence_type: 'absence', schedule: schedule)
+        sd.update!(absence_type: 'absence', schedule:)
       end
     end
 

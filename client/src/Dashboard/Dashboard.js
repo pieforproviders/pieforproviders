@@ -80,50 +80,24 @@ export function Dashboard() {
 
   const generateSummaryData = (td = tableData, totals = summaryDataTotals) => {
     if (user.state === 'NE') {
-      return [
-        {
-          title: t('earnedRevenue'),
-          stat: `${currencyFormatter.format(
-            (totals.earnedRevenueTotal || 0).toFixed()
-          )}`,
-          definition: t('earnedRevenueDef')
-        },
-        {
-          title: t('estimatedRevenue'),
-          stat: `${currencyFormatter.format(
-            (totals.estimatedRevenueTotal || 0).toFixed()
-          )}`,
-          definition: t(`estimatedRevenueDef`)
-        }
-        // {
-        //   title: t(`maxRevenue`),
-        //   stat: `${
-        //     totals.maxRevenueTotal === 'n/a'
-        //       ? totals.maxRevenueTotal
-        //       : currencyFormatter.format(totals.maxRevenueTotal.toFixed())
-        //   }`,
-        //   definition: t(`comingSoon`)
-        // },
-        // [
-        //   {
-        //     title: t(`totalApproved`),
-        //     stat: `${
-        //       totals.totalApprovedTotal === 'n/a'
-        //         ? totals.totalApprovedTotal
-        //         : currencyFormatter.format(totals.totalApprovedTotal.toFixed())
-        //     }`,
-        //     definition: t(`comingSoon`)
-        //   },
-        //   {
-        //     title: t(`totalApprovedWithFamilyFee`),
-        //     stat: 'n/a',
-        //     // `${currencyFormatter.format(
-        //     //   totals.totalApprovedRevenueWithFamilyFeeTotal.toFixed()
-        //     // )}`
-        //     definition: t(`comingSoon`)
-        //   }
-        // ]
-      ]
+      return user.is_admin
+        ? []
+        : [
+            {
+              title: t('earnedRevenue'),
+              stat: `${currencyFormatter.format(
+                (totals.earnedRevenueTotal || 0).toFixed()
+              )}`,
+              definition: t('earnedRevenueDef')
+            },
+            {
+              title: t('estimatedRevenue'),
+              stat: `${currencyFormatter.format(
+                (totals.estimatedRevenueTotal || 0).toFixed()
+              )}`,
+              definition: t(`estimatedRevenueDef`)
+            }
+          ]
     } else if (totals.guaranteedRevenueTotal >= 0) {
       return [
         {
@@ -229,7 +203,7 @@ export function Dashboard() {
   const reduceDates = (res, fd) => {
     const reduceDate = date_name => {
       return new Date(
-        res.reduce((user1, user2) => {
+        res?.reduce((user1, user2) => {
           return new Date(user1.as_of) > new Date(user2.as_of) ? user1 : user2
         })[`${date_name}`]
       )
@@ -249,7 +223,7 @@ export function Dashboard() {
     dateFilterMonths.push(makeMonth(currentDate))
 
     for (let i = 0; i < numOfMonths; i++) {
-      currentDate.setDate(currentDate.getDate() - 31)
+      currentDate.setDate(0)
       dateFilterMonths.push(makeMonth(currentDate))
     }
 

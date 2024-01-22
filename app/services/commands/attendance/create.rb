@@ -19,7 +19,7 @@ module Commands
         ActiveRecord::Base.transaction do
           created_attendance = ::Attendance.create!(attendance)
           service_day.update!(absence_type: nil, schedule: schedule_for_weekday) # TODO: command to update?
-          ServiceDayCalculator.new(service_day: service_day).call
+          ServiceDayCalculator.new(service_day:).call
           # To Be Implemented:
           # DashboardCalculator.new(service_day: service_day).call
           created_attendance
@@ -32,11 +32,11 @@ module Commands
 
       def attendance
         {
-          check_in: check_in,
-          check_out: check_out,
-          child_approval: child_approval,
-          service_day: service_day,
-          wonderschool_id: wonderschool_id
+          check_in:,
+          check_out:,
+          child_approval:,
+          service_day:,
+          wonderschool_id:
         }
       end
 
@@ -49,7 +49,7 @@ module Commands
       end
 
       def new_or_existing_service_day
-        ServiceDay.find_or_initialize_by(child: child, date: check_in.at_beginning_of_day)
+        ServiceDay.find_or_initialize_by(child:, date: check_in.at_beginning_of_day)
       end
 
       def child_approval

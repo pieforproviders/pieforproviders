@@ -25,7 +25,7 @@ module Nebraska
 
     def calculate_full_time_and_part_time
       state = State.find_by(name: 'Nebraska')
-      time_engine = TimeConversionEngine.new(service_day: service_day, state: state)
+      time_engine = TimeConversionEngine.new(service_day:, state:)
       time_engine.call
     end
 

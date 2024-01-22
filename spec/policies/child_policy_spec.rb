@@ -7,22 +7,22 @@ RSpec.describe ChildPolicy do
 
   let(:user) { create(:confirmed_user) }
   let(:non_owner) { create(:confirmed_user) }
-  let(:business) { create(:business, user: user) }
+  let(:business) { create(:business, user:) }
   let(:admin) { create(:admin) }
-  let(:child) { create(:child, business: business) }
+  let(:child) { create(:child, businesses: [business]) }
 
   describe ChildPolicy::Scope do
     context 'when authenticated as an admin' do
       it 'returns all children' do
         children = described_class.new(admin, Child).resolve
-        expect(children).to match_array([child])
+        expect(children).to contain_exactly(child)
       end
     end
 
     context 'when logged in as an owner user' do
       it 'returns the children associated to the user' do
         children = described_class.new(user, Child).resolve
-        expect(children).to match_array([child])
+        expect(children).to contain_exactly(child)
       end
     end
 

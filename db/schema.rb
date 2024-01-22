@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_04_230941) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
+  enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -24,8 +24,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.string "copay_frequency"
     t.date "effective_on"
     t.date "expires_on"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.date "deleted_at"
     t.boolean "active", default: true, null: false
     t.string "inactive_reason"
@@ -34,11 +34,11 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   end
 
   create_table "attendances", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "check_in", null: false
-    t.datetime "check_out"
+    t.datetime "check_in", precision: nil, null: false
+    t.datetime "check_out", precision: nil
     t.interval "time_in_care", null: false, comment: "Calculated: check_out time - check_in time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.uuid "child_approval_id", null: false
     t.string "wonderschool_id"
     t.string "absence"
@@ -52,9 +52,9 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
 
   create_table "blocked_tokens", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.string "jti", null: false
-    t.datetime "expiration", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "expiration", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["jti"], name: "index_blocked_tokens_on_jti"
   end
 
@@ -62,8 +62,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.boolean "is_holiday"
     t.date "date"
     t.uuid "business_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["business_id", "date"], name: "unique_business_closure", unique: true
     t.index ["business_id"], name: "index_business_closures_on_business_id"
   end
@@ -72,26 +72,26 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.integer "weekday", null: false
     t.boolean "is_open", null: false
     t.uuid "business_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["business_id", "weekday"], name: "unique_business_schedules", unique: true
     t.index ["business_id"], name: "index_business_schedules_on_business_id"
   end
 
   create_table "businesses", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
-    t.boolean "active", default: true, null: false
     t.string "license_type", null: false
     t.string "name", null: false
     t.uuid "user_id", null: false
     t.string "county"
     t.string "state"
     t.string "zipcode"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "quality_rating"
     t.boolean "accredited"
     t.date "deleted_at"
     t.string "inactive_reason"
+    t.boolean "active", default: true, null: false
     t.index ["name", "user_id"], name: "index_businesses_on_name_and_user_id", unique: true
     t.index ["user_id"], name: "index_businesses_on_user_id"
   end
@@ -99,8 +99,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   create_table "child_approvals", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "approval_id", null: false
     t.uuid "child_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "full_days"
     t.decimal "hours"
     t.boolean "special_needs_rate"
@@ -118,12 +118,21 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.index ["rate_type", "rate_id"], name: "index_child_approvals_on_rate"
   end
 
+  create_table "child_businesses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "child_id", null: false
+    t.uuid "business_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "currently_active", default: false
+    t.index ["business_id"], name: "index_child_businesses_on_business_id"
+    t.index ["child_id"], name: "index_child_businesses_on_child_id"
+  end
+
   create_table "children", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.date "date_of_birth", null: false
-    t.uuid "business_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "wonderschool_id"
     t.string "dhs_id"
     t.date "last_active_date"
@@ -132,41 +141,85 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.string "first_name", null: false
     t.string "last_name", null: false
     t.date "last_inactive_date"
-    t.index ["business_id"], name: "index_children_on_business_id"
     t.index ["deleted_at"], name: "index_children_on_deleted_at"
-    t.index ["first_name", "last_name", "date_of_birth", "business_id"], name: "unique_children", unique: true
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
   end
 
+  create_table "good_job_batches", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "description"
+    t.jsonb "serialized_properties"
+    t.text "on_finish"
+    t.text "on_success"
+    t.text "on_discard"
+    t.text "callback_queue_name"
+    t.integer "callback_priority"
+    t.datetime "enqueued_at"
+    t.datetime "discarded_at"
+    t.datetime "finished_at"
+  end
+
+  create_table "good_job_executions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "active_job_id", null: false
+    t.text "job_class"
+    t.text "queue_name"
+    t.jsonb "serialized_params"
+    t.datetime "scheduled_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.integer "error_event", limit: 2
+    t.index ["active_job_id", "created_at"], name: "index_good_job_executions_on_active_job_id_and_created_at"
+  end
+
   create_table "good_job_processes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.jsonb "state"
+  end
+
+  create_table "good_job_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "key"
+    t.jsonb "value"
+    t.index ["key"], name: "index_good_job_settings_on_key", unique: true
   end
 
   create_table "good_jobs", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.text "queue_name"
     t.integer "priority"
     t.jsonb "serialized_params"
-    t.datetime "scheduled_at"
-    t.datetime "performed_at"
-    t.datetime "finished_at"
+    t.datetime "scheduled_at", precision: nil
+    t.datetime "performed_at", precision: nil
+    t.datetime "finished_at", precision: nil
     t.text "error"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.uuid "active_job_id"
     t.text "concurrency_key"
     t.text "cron_key"
     t.uuid "retried_good_job_id"
-    t.datetime "cron_at"
+    t.datetime "cron_at", precision: nil
+    t.uuid "batch_id"
+    t.uuid "batch_callback_id"
+    t.boolean "is_discrete"
+    t.integer "executions_count"
+    t.text "job_class"
+    t.integer "error_event", limit: 2
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
     t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
+    t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
+    t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
     t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
     t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
     t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at", unique: true
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
+    t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
@@ -174,8 +227,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   create_table "holidays", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.date "date"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name", "date"], name: "unique_holiday", unique: true
   end
 
@@ -184,16 +237,16 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.integer "part_days_approved_per_week"
     t.integer "full_days_approved_per_week"
     t.uuid "child_approval_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_illinois_approval_amounts_on_child_approval_id"
   end
 
   create_table "illinois_rates", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "silver_percentage"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "region", default: " ", null: false
     t.date "effective_on", null: false
     t.date "expires_on"
@@ -212,8 +265,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.date "effective_on", null: false
     t.date "expires_on", null: false
     t.decimal "family_fee", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.date "deleted_at"
     t.index ["child_approval_id"], name: "index_nebraska_approval_amounts_on_child_approval_id"
     t.index ["effective_on"], name: "index_nebraska_approval_amounts_on_effective_on"
@@ -221,7 +274,7 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   end
 
   create_table "nebraska_dashboard_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "month", default: "2022-05-05 01:37:11", null: false
+    t.datetime "month", precision: nil, default: "2022-05-05 01:37:11", null: false
     t.string "attendance_risk", default: "not_enough_info", null: false
     t.integer "absences", default: 0, null: false
     t.integer "earned_revenue_cents"
@@ -236,8 +289,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.float "hours_remaining", default: 0.0, null: false
     t.float "attended_weekly_hours", default: 0.0, null: false
     t.uuid "child_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_nebraska_dashboard_cases_on_child_id"
     t.index ["month", "child_id"], name: "index_nebraska_dashboard_cases_on_month_and_child_id", unique: true
   end
@@ -253,8 +306,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.string "license_type", null: false
     t.decimal "max_age"
     t.string "name", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "school_age", default: false
     t.date "deleted_at"
     t.string "quality_rating"
@@ -265,8 +318,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id"
     t.uuid "approval_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_notifications_on_approval_id"
     t.index ["child_id", "approval_id"], name: "index_notifications_on_child_id_and_approval_id", unique: true
     t.index ["child_id"], name: "index_notifications_on_child_id"
@@ -277,8 +330,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.date "expires_on"
     t.integer "weekday", null: false
     t.uuid "child_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.date "deleted_at"
     t.interval "duration"
     t.index ["child_id"], name: "index_schedules_on_child_id"
@@ -290,10 +343,10 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   end
 
   create_table "service_days", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "date", null: false
+    t.datetime "date", precision: nil, null: false
     t.uuid "child_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.interval "total_time_in_care"
     t.integer "earned_revenue_cents"
     t.string "earned_revenue_currency", default: "USD", null: false
@@ -313,10 +366,10 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "min_time"
     t.integer "max_time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
@@ -324,8 +377,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.string "name"
     t.string "code"
     t.string "subsidy_type"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :uuid, default: -> { "public.gen_random_uuid()" }, force: :cascade do |t|
@@ -344,19 +397,19 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.string "timezone", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
     t.string "unconfirmed_email"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.date "deleted_at"
     t.string "state", limit: 2
     t.text "stressed_about_billing"
@@ -365,6 +418,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
     t.text "accept_more_subsidy_families"
     t.text "get_from_pie"
     t.string "heard_about"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["phone_number"], name: "index_users_on_phone_number", unique: true
@@ -378,7 +433,8 @@ ActiveRecord::Schema.define(version: 2023_07_04_230941) do
   add_foreign_key "businesses", "users"
   add_foreign_key "child_approvals", "approvals"
   add_foreign_key "child_approvals", "children"
-  add_foreign_key "children", "businesses"
+  add_foreign_key "child_businesses", "businesses"
+  add_foreign_key "child_businesses", "children"
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"

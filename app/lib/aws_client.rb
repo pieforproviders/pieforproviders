@@ -16,7 +16,7 @@ class AwsClient
     region = Rails.application.config.aws_region
     @client = Aws::S3::Client.new(
       credentials: Aws::Credentials.new(akid, secret),
-      region: region
+      region:
     )
   rescue StandardError => e
     send_appsignal_error(action: 'aws-client', exception: e)
@@ -31,13 +31,13 @@ class AwsClient
       action: 'aws-find-bucket',
       exception: e,
       namespace: tech_only ? 'tech-support' : nil,
-      tags: { name: name }
+      tags: { name: }
     )
   end
 
   def list_file_names(source_bucket, prefix = '')
     bucket_objects = find_bucket(name: source_bucket) && @client.list_objects_v2({ bucket: source_bucket,
-                                                                                   prefix: prefix }).contents
+                                                                                   prefix: }).contents
     raise NoFilesFound if bucket_objects.empty?
 
     bucket_objects.map! { |object| object[:key] }
@@ -45,7 +45,7 @@ class AwsClient
     send_appsignal_error(
       action: 'aws-list-file-names',
       exception: e,
-      tags: { source_bucket: source_bucket }
+      tags: { source_bucket: }
     )
   end
 
@@ -66,8 +66,8 @@ class AwsClient
       action: 'aws-get-file-contents',
       exception: e,
       tags: {
-        source_bucket: source_bucket,
-        file_name: file_name
+        source_bucket:,
+        file_name:
       }
     )
   end
@@ -84,9 +84,9 @@ class AwsClient
       exception: e,
       namespace: 'tech-support',
       tags: {
-        source_bucket: source_bucket,
-        archive_bucket: archive_bucket,
-        file_name: file_name
+        source_bucket:,
+        archive_bucket:,
+        file_name:
       }
     )
   end
@@ -100,8 +100,8 @@ class AwsClient
       exception: e,
       namespace: 'tech-support',
       tags: {
-        archive_bucket: archive_bucket,
-        file_name: file_name
+        archive_bucket:,
+        file_name:
       }
     )
   end

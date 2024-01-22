@@ -7,7 +7,7 @@ RSpec.describe Commands::Attendance::Update, type: :service do
   let!(:child_approval) { child.child_approvals.first }
   let!(:check_in) { Time.parse('9:00am').utc.prev_occurring(:monday) }
   let!(:check_out) { Time.parse('10:50am').utc.prev_occurring(:monday) }
-  let!(:attendance) { create(:attendance, child_approval: child_approval, check_in: check_in, check_out: check_out) }
+  let!(:attendance) { create(:attendance, child_approval:, check_in:, check_out:) }
   let!(:state) do
     create(:state)
   end
@@ -17,21 +17,21 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       create(
         :state_time_rule,
         name: "Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: 60, # 1minute
         max_time: (4 * 3600) + (59 * 60) # 4 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full Day #{state.name}",
-        state: state,
+        state:,
         min_time: 5 * 3600, # 5 hours
         max_time: (10 * 3600) # 10 hours
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
-        state: state,
+        state:,
         min_time: (10 * 3600) + 60, # 10 hours and 1 minute
         max_time: (26 * 3600)
       )
@@ -43,8 +43,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'initializes with required info' do
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
+          attendance:,
+          check_in:,
           check_out: check_in + 6.hours,
           absence_type: 'absence'
         )
@@ -64,9 +64,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'does nothing if all the data is the same' do
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
-          check_out: check_out,
+          attendance:,
+          check_in:,
+          check_out:,
           absence_type: nil
         ).update
       end
@@ -83,9 +83,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       attendance.service_day.update!(absence_type: 'absence')
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
-          check_out: check_out,
+          attendance:,
+          check_in:,
+          check_out:,
           absence_type: 'absence'
         ).update
       end
@@ -101,9 +101,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'updates the attendance if the check_in has changed to the same day' do
       expect do
         described_class.new(
-          attendance: attendance,
+          attendance:,
           check_in: check_in + 10.minutes,
-          check_out: check_out,
+          check_out:,
           absence_type: nil
         ).update
       end
@@ -118,8 +118,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'updates the attendance if the check_out has changed to the same day' do
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
+          attendance:,
+          check_in:,
           check_out: check_out + 20.minutes,
           absence_type: nil
         ).update
@@ -135,9 +135,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'updates the service_day if the absence_type has changed' do
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
-          check_out: check_out,
+          attendance:,
+          check_in:,
+          check_out:,
           absence_type: 'covid_absence'
         ).update
       end
@@ -155,9 +155,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       service_day = attendance.service_day
       expect do
         described_class.new(
-          attendance: attendance,
+          attendance:,
           check_in: check_in + 10.minutes - 1.day,
-          check_out: check_out,
+          check_out:,
           absence_type: nil
         ).update
       end
@@ -174,8 +174,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       service_day = attendance.service_day
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
+          attendance:,
+          check_in:,
           check_out: check_out + 1.day,
           absence_type: nil
         ).update
@@ -192,7 +192,7 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       service_day = attendance.service_day
       expect do
         described_class.new(
-          attendance: attendance,
+          attendance:,
           check_in: attendance.child_approval.effective_on.at_beginning_of_month - 3.days,
           check_out: attendance.child_approval.effective_on.at_beginning_of_month - 3.days + 6.hours,
           absence_type: nil
@@ -213,8 +213,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
       service_day = attendance.service_day
       expect do
         described_class.new(
-          attendance: attendance,
-          check_in: check_in,
+          attendance:,
+          check_in:,
           check_out: check_in - 6.hours,
           absence_type: nil
         ).update
@@ -233,7 +233,7 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'changes the schedule when changing to a different day if one is present for that weekday' do
       schedule = attendance.service_day.schedule
       described_class.new(
-        attendance: attendance,
+        attendance:,
         check_in: check_in.next_occurring(:tuesday) + 1.day,
         check_out: check_out.next_occurring(:tuesday) + 1.day,
         absence_type: nil
@@ -247,7 +247,7 @@ RSpec.describe Commands::Attendance::Update, type: :service do
     it 'removes the schedule when changing to a different day if one is not present for that weekday' do
       schedule = attendance.service_day.schedule
       described_class.new(
-        attendance: attendance,
+        attendance:,
         check_in: check_in.next_occurring(:saturday),
         check_out: check_out.next_occurring(:saturday),
         absence_type: nil
@@ -270,9 +270,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
 
       expect(attendance.service_day.total_time_in_care).to eq(1.hour + 50.minutes)
       described_class.new(
-        attendance: attendance,
+        attendance:,
         check_in: check_in - 1.hour,
-        check_out: check_out,
+        check_out:,
         absence_type: nil
       ).update
       expect(attendance.service_day.total_time_in_care).to eq(2.hours + 50.minutes)
@@ -285,8 +285,8 @@ RSpec.describe Commands::Attendance::Update, type: :service do
 
       expect(attendance.service_day.total_time_in_care).to eq(1.hour + 50.minutes)
       described_class.new(
-        attendance: attendance,
-        check_in: check_in,
+        attendance:,
+        check_in:,
         check_out: check_in + 6.hours,
         absence_type: nil
       ).update
@@ -300,9 +300,9 @@ RSpec.describe Commands::Attendance::Update, type: :service do
 
       expect(attendance.service_day.total_time_in_care).to eq(1.hour + 50.minutes)
       described_class.new(
-        attendance: attendance,
-        check_in: check_in,
-        check_out: check_out,
+        attendance:,
+        check_in:,
+        check_out:,
         absence_type: 'absence'
       ).update
       expect(attendance.service_day.total_time_in_care).to eq(8.hours)

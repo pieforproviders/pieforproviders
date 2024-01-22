@@ -726,7 +726,7 @@ namespace :nebraska do
       amount: '30.80',
       accredited_rate: true
     )
-    Attendance.where('check_in >= ?', '2021-07-01').each do |attendance|
+    Attendance.where('check_in >= ?', '2021-07-01').find_each do |attendance|
       attendance.update!(updated_at: Time.current)
     end
   end

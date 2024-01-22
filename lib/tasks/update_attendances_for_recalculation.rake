@@ -4,5 +4,5 @@
 # update their earned revenue
 desc 'Update attendances so their rates will be recalculated correctly'
 task update_attendances_for_recalculation: :environment do
-  Attendance.all.each { |attendance| attendance.update!(updated_at: Time.current) }
+  Attendance.find_each { |attendance| attendance.update!(updated_at: Time.current) }
 end

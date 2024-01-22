@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe AttendanceBlueprint do
   let(:service_day) { create(:service_day) }
-  let(:attendance) { create(:attendance, service_day: service_day, check_in: service_day.date + 2.hours) }
+  let(:attendance) { create(:attendance, service_day:, check_in: service_day.date + 2.hours) }
   let(:blueprint) { described_class.render(attendance) }
   let(:blueprint_with_child) { described_class.render(attendance, view: :with_child) }
 

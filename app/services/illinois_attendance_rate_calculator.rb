@@ -5,7 +5,8 @@ class IllinoisAttendanceRateCalculator
   def initialize(child, filter_date, eligible_days: nil, attended_days: nil)
     @child = child
     @filter_date = filter_date
-    @business = child&.business
+    child_business = child&.child_businesses&.find_by(currently_active: true)
+    @business = child&.businesses&.find(child_business.business_id)
     @eligible_days = eligible_days
     @attended_days = attended_days
   end
@@ -42,10 +43,10 @@ class IllinoisAttendanceRateCalculator
     eligible_days = []
 
     if full_time_attendance_presence?(child)
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:).call
     end
     if part_time_attendance_presence?(child)
-      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child: child, full_time: false).call
+      eligible_days << Illinois::EligibleDaysCalculator.new(date: @filter_date, child:, full_time: false).call
     end
 
     eligible_days.compact.sum

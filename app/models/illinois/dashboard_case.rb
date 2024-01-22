@@ -16,7 +16,7 @@ module Illinois
     def initialize(child:, filter_date:, eligible_days: nil, attended_days: nil)
       @child = child
       @filter_date = filter_date
-      @business = child.business
+      @business = child.child_businesses.find_by(currently_active: true).business
       @schedules = child&.schedules
       @eligible_days = eligible_days
       @attended_days = attended_days
@@ -129,7 +129,7 @@ module Illinois
       Appsignal.instrument_sql(
         'dashboard_case.child_approval'
       ) do
-        @child_approval ||= approval&.child_approvals&.find_by(child: child)
+        @child_approval ||= approval&.child_approvals&.find_by(child:)
       end
     end
 

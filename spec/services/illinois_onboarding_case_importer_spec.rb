@@ -83,6 +83,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       it 'creates case records for the correct child with the correct data' do
         described_class.new.call
         thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
+
         expect(thomas).to have_attributes(
           {
             dhs_id: '14047907',
@@ -90,7 +91,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             wonderschool_id: '37821'
           }
         )
-        expect(thomas.business).to have_attributes(
+        expect(thomas.child_businesses.find_by(currently_active: true)&.business).to have_attributes(
           {
             name: "Rebecca's Childcare",
             zipcode: '68845',
@@ -134,7 +135,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             wonderschool_id: '37827'
           }
         )
-        expect(becky.business).to have_attributes(
+        expect(becky.child_businesses.find_by(currently_active: true).business).to have_attributes(
           {
             name: "Kate's Kids",
             zipcode: '68845',
@@ -179,14 +180,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'skips the child if all their existing details are the same' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -197,7 +190,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child_in_illinois,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -216,7 +208,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(5)
           .and change(Approval, :count)
@@ -227,14 +219,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'updates the existing details if the approval dates are the same but other details are different' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -245,7 +229,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child_in_illinois,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -265,7 +248,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(5)
           .and change(Approval, :count)
@@ -282,14 +265,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'processes existing child with new approval details if new approval dates are different' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -300,7 +275,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         create(:child,
                first_name: 'Thomas',
                last_name: 'Eddleman',
-               business: business,
                date_of_birth: '2010-09-01',
                wonderschool_id: '37821',
                dhs_id: '14047907',
@@ -310,7 +284,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(6)
           .and change(Approval, :count)
@@ -321,14 +295,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'updates the child with new approval details if the new approval overlaps' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         existing_approval = create(
           :approval,
           case_number: '14635435',
@@ -339,7 +305,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -349,7 +314,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(6)
           .and change(Approval, :count)
@@ -406,7 +371,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             wonderschool_id: '37821'
           }
         )
-        expect(thomas.business).to have_attributes(
+        expect(thomas.child_businesses.find_by(currently_active: true).business).to have_attributes(
           {
             name: "Rebecca's Childcare",
             zipcode: '68845',
@@ -443,7 +408,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
             wonderschool_id: '37827'
           }
         )
-        expect(becky.business).to have_attributes(
+        expect(becky.child_businesses.find_by(currently_active: true).business).to have_attributes(
           {
             name: "Kate's Kids",
             zipcode: '68845',
@@ -482,14 +447,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'skips the child if all their existing details are the same' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -500,7 +457,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -523,7 +479,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(5)
           .and change(Approval, :count)
@@ -534,14 +490,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'updates the existing details if the approval dates are the same but other details are different' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -552,7 +500,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -572,7 +519,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(5)
           .and change(Approval, :count)
@@ -589,14 +536,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'processes existing child with new approval details if new approval dates are different' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -607,7 +546,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         create(:child,
                first_name: 'Thomas',
                last_name: 'Eddleman',
-               business: business,
                date_of_birth: '2010-09-01',
                wonderschool_id: '37821',
                dhs_id: '14047907',
@@ -617,7 +555,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(6)
           .and change(Approval, :count)
@@ -628,14 +566,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'updates the child with new approval details if the new approval overlaps' do
-        business = create(
-          :business,
-          user: first_user,
-          name: "Rebecca's Childcare",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home II'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '14635435',
@@ -646,7 +576,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Thomas',
                        last_name: 'Eddleman',
-                       business: business,
                        date_of_birth: '2010-09-01',
                        wonderschool_id: '37821',
                        dhs_id: '14047907',
@@ -656,7 +585,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(6)
           .and change(Approval, :count)
@@ -680,11 +609,9 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         described_class.new.call
         thomas = Child.find_by(first_name: 'Thomas', last_name: 'Eddleman')
         expect(thomas.approvals.length).to eq(2)
-        expect(thomas.approvals.pluck(:effective_on, :expires_on)).to match_array(
-          [
-            [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
-            [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
-          ]
+        expect(thomas.approvals.pluck(:effective_on, :expires_on)).to contain_exactly(
+          [Date.parse('2020-09-01'), Date.parse('2021-08-31')],
+          [Date.parse('2021-09-01'), Date.parse('2022-08-31')]
         )
         first_approval = thomas.approvals.find_by(effective_on: '2020-09-01')
         second_approval = thomas.approvals.find_by(effective_on: '2021-09-01')
@@ -721,14 +648,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
       end
 
       it 'updates the existing details if approval periods are different' do
-        business = create(
-          :business,
-          user: second_user,
-          name: "Kate's Kids",
-          zipcode: '68845',
-          county: 'Corke',
-          license_type: 'Family Child Care Home I'.downcase.tr(' ', '_')
-        )
         approval = create(
           :approval,
           case_number: '56582912',
@@ -739,7 +658,6 @@ RSpec.describe IllinoisOnboardingCaseImporter do
         child = create(:child,
                        first_name: 'Becky',
                        last_name: 'Falzone',
-                       business: business,
                        date_of_birth: '2013-12-26',
                        wonderschool_id: '37827',
                        dhs_id: '69370816',
@@ -759,7 +677,7 @@ RSpec.describe IllinoisOnboardingCaseImporter do
           .to change(Child, :count)
           .from(1).to(5)
           .and change(Business, :count)
-          .from(1).to(2)
+          .from(1).to(3)
           .and change(ChildApproval, :count)
           .from(1).to(5)
           .and change(Approval, :count)

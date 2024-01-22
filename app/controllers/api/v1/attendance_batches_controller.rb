@@ -27,16 +27,16 @@ module Api
                   :errors
 
       def attendances
-        batch.compact_blank.map do |attendance_params|
+        batch&.compact_blank&.map do |attendance_params|
           @attendance_params = attendance_params
           ActiveRecord::Base.transaction do
             if absence_type
               service_day
             else
               Commands::Attendance::Create.new(
-                check_in: check_in,
+                check_in:,
                 child_id: child.id,
-                check_out: check_out
+                check_out:
               ).create.service_day
             end
           end
@@ -52,7 +52,7 @@ module Api
 
           next unless child_approval_id
 
-          initial_attendance_params.except(:child_id).merge(child_approval_id: child_approval_id)
+          initial_attendance_params.except(:child_id).merge(child_approval_id:)
         rescue Pundit::NotAuthorizedError
           next add_error_and_return_nil(
             :child_id,
@@ -62,7 +62,7 @@ module Api
       end
 
       def check_params
-        case initial_attendance_params
+        case @initial_attendance_params
         when ->(params) { !params.key?(:check_in) }
           add_error_and_return_nil(:check_in)
         when ->(params) { !params.key?(:child_id) }
@@ -90,10 +90,16 @@ module Api
       end
 
       def child_approval_id
-        id = Child
-             .find(initial_attendance_params[:child_id])
-             &.active_child_approval(Date.parse(initial_attendance_params[:check_in]))&.id
-        @child_approval_id = id || add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+        child = Child.find(initial_attendance_params[:child_id])
+        check_in = Date.parse(initial_attendance_params[:check_in])
+        active_approval = child&.active_child_approval(check_in)
+        if active_approval.present?
+          if check_in >= active_approval&.effective_on && check_in <= active_approval&.expires_on
+            @child_approval_id = active_approval.id
+          end
+        else
+          add_error_and_return_nil(:child_approval_id, child_approval_error_message)
+        end
       end
 
       def child
@@ -101,8 +107,8 @@ module Api
       end
 
       def service_day
-        ServiceDay.find_by(child: child, date: date)&.update!(absence_type: absence_type) ||
-          ServiceDay.create!(child: child, date: date, absence_type: absence_type)
+        ServiceDay.find_by(child:, date:)&.update!(absence_type:) ||
+          ServiceDay.create!(child:, date:, absence_type:)
       rescue StandardError => e
         add_error_and_return_nil(:service_day, e.message)
       end
@@ -135,7 +141,7 @@ module Api
         ServiceDayBlueprint.render(
           attendance_batch.compact_blank,
           root: :service_days,
-          meta: { errors: errors }
+          meta: { errors: }
         )
       end
     end

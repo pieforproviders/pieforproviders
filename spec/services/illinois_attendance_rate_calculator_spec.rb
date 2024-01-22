@@ -33,7 +33,7 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
                              date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
                              child: single_child_family)
         create(:illinois_part_day_attendance,
-               service_day: service_day,
+               service_day:,
                child_approval: single_child_family.child_approvals.first,
                check_in: service_day.date + 3.hours)
       end
@@ -46,9 +46,9 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
         3.times do |idx|
           service_day = create(:service_day,
                                date: Time.current.in_time_zone(Child.first.timezone).prev_occurring(:monday) + idx.days,
-                               child: child)
+                               child:)
           create(:illinois_part_day_attendance,
-                 service_day: service_day,
+                 service_day:,
                  child_approval: child.child_approvals.first,
                  check_in: service_day.date + 3.hours)
         end
@@ -112,11 +112,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -144,11 +144,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours,
             check_out: service_day.date + 9.hours
@@ -177,11 +177,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -208,11 +208,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: Time.current.in_time_zone(child.timezone).prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours
           )
@@ -222,11 +222,11 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
           service_day = create(
             :service_day,
             date: 1.week.ago.prev_occurring(:monday) + idx.days,
-            child: child
+            child:
           )
           create(
             :illinois_part_day_attendance,
-            service_day: service_day,
+            service_day:,
             child_approval: child.child_approvals.first,
             check_in: service_day.date + 3.hours,
             check_out: service_day.date + 9.hours
@@ -244,96 +244,4 @@ RSpec.describe IllinoisAttendanceRateCalculator, type: :service do
       end
     end
   end
-
-  # describe 'for center licensed business' do
-  #   before { travel_to '2022-08-24'.to_date }
-
-  #   after  { travel_back }
-
-  #   let!(:illinois_business_center) { create(:business, :illinois_center) }
-  #   let!(:child_approval) do
-  #     create(:approval, create_children: false, effective_on: 3.months.ago, business: illinois_business_center)
-  #   end
-  #   let!(:child_approval2) do
-  #     create(:approval, create_children: false, effective_on: 3.months.ago, business: illinois_business_center)
-  #   end
-  #   let!(:child1) { create(:child, approvals: [child_approval], business: illinois_business_center) }
-  #   let!(:child2) { create(:child, approvals: [child_approval2], business: illinois_business_center) }
-
-  #   context 'when multiple children are present' do
-  #     it 'sums attendances for all children' do
-  #       create(
-  #         :illinois_approval_amount,
-  #         part_days_approved_per_week: 4,
-  #         full_days_approved_per_week: 0,
-  #         child_approval: child1.child_approvals.first,
-  #         month: Time.current
-  #       )
-
-  #       create(
-  #         :illinois_approval_amount,
-  #         part_days_approved_per_week: 4,
-  #         full_days_approved_per_week: 0,
-  #         child_approval: child2.child_approvals.first,
-  #         month: Time.current
-  #       )
-
-  #       4.times do |idx|
-  #         service_day = create(
-  #           :service_day,
-  #           date: Time.current.in_time_zone(child1.timezone).prev_occurring(:monday) + idx.days,
-  #           child: child1
-  #         )
-  #         create(
-  #           :illinois_part_day_attendance,
-  #           service_day: service_day,
-  #           child_approval: child1.child_approvals.first,
-  #           check_in: service_day.date + 3.hours
-  #         )
-  #         service_day = create(
-  #           :service_day,
-  #           date: Time.current.in_time_zone(child2.timezone).prev_occurring(:monday) + idx.days,
-  #           child: child2
-  #         )
-  #         create(
-  #           :illinois_part_day_attendance,
-  #           service_day: service_day,
-  #           child_approval: child2.child_approvals.first,
-  #           check_in: service_day.date + 3.hours
-  #         )
-  #       end
-
-  #       2.times do |idx|
-  #         service_day = create(
-  #           :service_day,
-  #           date: 1.week.ago.prev_occurring(:monday) + idx.days,
-  #           child: child1
-  #         )
-  #         create(
-  #           :illinois_part_day_attendance,
-  #           service_day: service_day,
-  #           child_approval: child1.child_approvals.first,
-  #           check_in: service_day.date + 3.hours
-  #         )
-  #         service_day = create(
-  #           :service_day,
-  #           date: 1.week.ago.prev_occurring(:monday) + idx.days,
-  #           child: child2
-  #         )
-  #         create(
-  #           :illinois_part_day_attendance,
-  #           service_day: service_day,
-  #           child_approval: child2.child_approvals.first,
-  #           check_in: service_day.date + 3.hours
-  #         )
-  #       end
-
-  #       perform_enqueued_jobs
-  #       february = 2
-  #       approved_attendances_times_weeks_in_month = 8 * (Time.current.month == february ? 4 : 5)
-  #       expect(described_class.new(child1, Time.current).family_days_attended)
-  #         .to eq(12)
-  #     end
-  #   end
-  # end
 end

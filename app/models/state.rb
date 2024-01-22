@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# State Model
 class State < ApplicationRecord
   has_one :state_time_rule, dependent: :destroy
 end

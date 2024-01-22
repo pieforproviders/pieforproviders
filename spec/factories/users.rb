@@ -66,11 +66,13 @@ end
 #  deleted_at                   :date
 #  email                        :string           not null
 #  encrypted_password           :string           default(""), not null
+#  first_name                   :string
 #  full_name                    :string           not null
 #  get_from_pie                 :text
 #  greeting_name                :string
 #  heard_about                  :string
 #  language                     :string           not null
+#  last_name                    :string
 #  last_sign_in_at              :datetime
 #  last_sign_in_ip              :inet
 #  not_as_much_money            :text
