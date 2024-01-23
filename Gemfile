@@ -7,7 +7,7 @@ ruby '3.2.2'
 
 gem 'appsignal'
 gem 'aws-sdk-s3', '~> 1'
-gem 'blueprinter', '~> 0.25.3'
+gem 'blueprinter', '~> 1.0.1'
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'daru'
 gem 'data_migrate'
