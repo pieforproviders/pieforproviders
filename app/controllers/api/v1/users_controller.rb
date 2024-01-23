@@ -122,7 +122,7 @@ module Api
                                      :timezone,
                                      :stressed_about_billing,
                                      :accept_more_subsidy_families,
-                                     :not_as_much_money, \
+                                     :not_as_much_money,
                                      :too_much_time)
       end
     end

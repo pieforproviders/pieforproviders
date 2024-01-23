@@ -31,7 +31,7 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
         # klass.insert_all(JSON.parse(file.read)) if file
       end
     else
-      create_list(:attendance, 200)
+      create_list(:attendance, 10)
     end
     puts "Seed Time: #{(Time.current - start_time).seconds} seconds"
   end

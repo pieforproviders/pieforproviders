@@ -113,9 +113,9 @@ class AttendancePdfImporter
 
   def active_child_approval(check_in:)
     @child&.approvals&.active_on(check_in)
-      &.first
-      &.child_approvals
-      &.find_by(child: @child)
+          &.first
+          &.child_approvals
+          &.find_by(child: @child)
   end
 
   def business(business_name)
