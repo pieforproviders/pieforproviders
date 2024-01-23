@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 # rubocop:disable RSpec/PendingWithoutReason
-# rubocop:disable FactoryBot/ExcessiveCreateList
 RSpec.xdescribe 'Api::V1::Users', type: :request do
   include_context 'with correct api version header'
   include_context 'when authenticated as an admin'
@@ -32,7 +31,7 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
         # klass.insert_all(JSON.parse(file.read)) if file
       end
     else
-      create_list(:attendance, 200)
+      create_list(:attendance, 10)
     end
     puts "Seed Time: #{(Time.current - start_time).seconds} seconds"
   end
@@ -43,4 +42,3 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
   end
 end
 # rubocop:enable RSpec/PendingWithoutReason
-# rubocop:enable FactoryBot/ExcessiveCreateList
