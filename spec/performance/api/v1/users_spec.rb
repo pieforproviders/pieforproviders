@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 # rubocop:disable RSpec/PendingWithoutReason
+# rubocop:disable FactoryBot/ExcessiveCreateList
 RSpec.xdescribe 'Api::V1::Users', type: :request do
   include_context 'with correct api version header'
   include_context 'when authenticated as an admin'
@@ -42,3 +43,4 @@ RSpec.xdescribe 'Api::V1::Users', type: :request do
   end
 end
 # rubocop:enable RSpec/PendingWithoutReason
+# rubocop:enable FactoryBot/ExcessiveCreateList
