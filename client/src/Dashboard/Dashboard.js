@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { useCaseData } from '_shared/_hooks/useCaseData'
+// import { useCaseData } from '_shared/_hooks/useCaseData'
+import { useCaseDataNew } from '_shared/_hooks/useCaseDataNew'
 import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
@@ -26,7 +27,8 @@ export function Dashboard() {
   const dispatch = useDispatch()
   const { parseResult } = useProgress()
   const { identifyHotjar } = useHotjar()
-  const { reduceTableData } = useCaseData()
+  // const { reduceTableData } = useCaseData()
+  const { reduceNewTableData } = useCaseDataNew()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -139,7 +141,7 @@ export function Dashboard() {
   const reduceSummaryData = (data, res) => {
     if (user.state === 'NE') {
       return {
-        ...data.reduce((acc, cv) => {
+        ...data?.reduce((acc, cv) => {
           return {
             ...acc,
             earnedRevenueTotal: cv.active
@@ -242,33 +244,57 @@ export function Dashboard() {
     filterDate = undefined
   } = {}) => {
     dispatch(setLoading(true))
-    const baseUrl = '/api/v1/case_list_for_dashboard'
-    const response = await makeRequest({
+    // const baseUrl = '/api/v1/case_list_for_dashboard'
+    const testUrl = '/api/v1/dashboard_case'
+    // const response = await makeRequest({
+    //   type: 'get',
+    //   url:
+    //     businessIds.length > 0 || filterDate
+    //       ? baseUrl +
+    //         `?filter_date=${filterDate}&business=${businessIds.join(',')}`
+    //       : baseUrl,
+    //   headers: { Authorization: token }
+    // })
+    const testResp = await makeRequest({
       type: 'get',
       url:
         businessIds.length > 0 || filterDate
-          ? baseUrl +
+          ? testUrl +
             `?filter_date=${filterDate}&business=${businessIds.join(',')}`
-          : baseUrl,
+          : testUrl,
       headers: { Authorization: token }
     })
-    const parsedResponse = await parseResult(response)
-
-    if (!parsedResponse.error) {
-      const tableData = reduceTableData(parsedResponse, user)
+    // const parsedResponse = await parseResult(response)
+    const parsedTest = await parseResult(testResp)
+    console.log('*********************************')
+    console.log(parsedTest)
+    // console.log(parsedResponse)
+    if (!parsedTest.error) {
+      // const tableData = reduceTableData(parsedResponse, user)
+      const newTableData = reduceNewTableData(parsedTest[0].data)
+      console.log('########################')
+      console.log(newTableData)
+      // console.log(tableData)
       const updatedSummaryDataTotals = reduceSummaryData(
-        tableData,
-        parsedResponse
+        // tableData,
+        newTableData,
+        parsedTest
+        // parsedResponse
       )
 
       if (dates.asOf === '') {
-        const updatedDates = reduceDates(parsedResponse, filterDate)
+        // const updatedDates = reduceDates(parsedResponse, filterDate)
+        const updatedDates = reduceDates(parsedTest, filterDate)
         setDates(updatedDates)
       }
       dispatch(setFilteredCases(businessIds))
-      dispatch(setCaseData(tableData))
+      // dispatch(setCaseData(tableData))
+      dispatch(setCaseData(newTableData))
       setSummaryTotals(updatedSummaryDataTotals)
-      setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+      // setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
+      setSummaryData(
+        generateSummaryData(newTableData, updatedSummaryDataTotals)
+      )
     }
     dispatch(setLoading(false))
   }

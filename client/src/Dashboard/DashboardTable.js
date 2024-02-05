@@ -97,11 +97,11 @@ export default function DashboardTable({
     if (isInactive(record)) {
       return '-'
     }
-
     const renderCell = (color, text) => {
       return (
         <div className="-mb-4">
-          <p className="mb-1">{fullday?.text.split(' ')[0]}</p>
+          {/* <p className="mb-1">{fullday?.text.split(' ')[0]}</p> */}
+          <p className="mb-1">{fullday?.text}</p>
           <Tag className={`${color}-tag custom-tag`}>{t(text)}</Tag>
         </div>
       )
@@ -123,9 +123,10 @@ export default function DashboardTable({
   const renderHoursOrPartDays = (text, record) => {
     let control_date = dayjs('2023-06-30 23:59')
     if (dayjs(dateFilterValue?.date) > control_date) {
-      return isInactive(record) ? '-' : <div>{record.partDays?.info}</div>
+      return isInactive(record) ? '-' : <div>{record.partDays?.text}</div>
     }
-    return isInactive(record) ? '-' : text?.split(' ')[0]
+    // return isInactive(record) ? '-' : text?.split(' ')[0]
+    return isInactive(record) ? '-' : text
   }
 
   const renderRemainingHoursOrPartDays = (text, record) => {
@@ -225,17 +226,25 @@ export default function DashboardTable({
 
   const render_absences_dates = dates => {
     const last_date = dates?.at(-1)
-    var formated_dates = dates?.map(date => (
-      // regex to get the date on M/D format
-      <>
-        {`${parseInt(/-(\d{2})-(\d{2})/.exec(date)[1], 10)}/${parseInt(
-          /-(\d{2})-(\d{2})/.exec(date)[2],
-          10
-        )}`}
-        {last_date === date ? '' : ', '}
-      </>
-    ))
+    const formated_dates = dates?.map(date => {
+      const splited_date = date.trim().split('/')
+      const month = parseInt(splited_date[0], 10)
+      const day = parseInt(splited_date[1], 10)
+      return `${month}/${day}${last_date === date ? ' ' : ', '}`
+    })
     return formated_dates
+    // const last_date = dates?.at(-1)
+    // var formated_dates = dates?.map(date => (
+    // regex to get the date on M/D format
+    // <>
+    //   {`${parseInt(/-(\d{2})-(\d{2})/.exec(date)[1], 10)}/${parseInt(
+    //     /-(\d{2})-(\d{2})/.exec(date)[2],
+    //     10
+    //   )}`}
+    //   {last_date === date ? '' : ', '}
+    // </>
+    // ))
+    // return formated_dates
   }
 
   const renderActions = (_text, record) => (
@@ -342,7 +351,8 @@ export default function DashboardTable({
                 ? t('partialDays')
                 : 'hours',
             sorter: (a, b) =>
-              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
+              a.partDays.text.match(/^\d+/)[0] -
+              b.partDays.text.match(/^\d+/)[0],
             render: renderHoursOrPartDays
           },
           {
