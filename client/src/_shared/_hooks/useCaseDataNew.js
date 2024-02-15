@@ -17,7 +17,7 @@ export function useCaseDataNew() {
       absences: `${item.absences_count.toString() ?? '0'} of 5`,
       absences_dates: item.absences?.split(',') ?? [],
       hoursAttended: item.max_hours_per_week ?? '',
-      familyFee: item.familyFee ?? ''
+      familyFee: item.family_fee ?? ''
     }))
   }
 
