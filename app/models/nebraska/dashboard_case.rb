@@ -220,7 +220,7 @@ module Nebraska
       Appsignal.instrument_sql(
         'dashboard_case.full_days_authorized'
       ) do
-        @full_days_authorized ||= child_approval&.full_days || 0
+        @user&.admin ? nil : @full_days_authorized ||= child_approval&.full_days || 0
       end
     end
 

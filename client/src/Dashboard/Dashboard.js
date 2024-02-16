@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Modal } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
-// import { useCaseData } from '_shared/_hooks/useCaseData'
+import { useCaseData } from '_shared/_hooks/useCaseData'
 import { useCaseDataNew } from '_shared/_hooks/useCaseDataNew'
 import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
@@ -27,7 +27,7 @@ export function Dashboard() {
   const dispatch = useDispatch()
   const { parseResult } = useProgress()
   const { identifyHotjar } = useHotjar()
-  // const { reduceTableData } = useCaseData()
+  const { reduceTableData } = useCaseData()
   const { reduceNewTableData } = useCaseDataNew()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
@@ -244,57 +244,38 @@ export function Dashboard() {
     filterDate = undefined
   } = {}) => {
     dispatch(setLoading(true))
-    // const baseUrl = '/api/v1/case_list_for_dashboard'
-    const testUrl = '/api/v1/dashboard_case'
-    // const response = await makeRequest({
-    //   type: 'get',
-    //   url:
-    //     businessIds.length > 0 || filterDate
-    //       ? baseUrl +
-    //         `?filter_date=${filterDate}&business=${businessIds.join(',')}`
-    //       : baseUrl,
-    //   headers: { Authorization: token }
-    // })
-    const testResp = await makeRequest({
+    const baseUrl = user.is_admin
+      ? '/api/v1/dashboard_case'
+      : '/api/v1/case_list_for_dashboard'
+    const response = await makeRequest({
       type: 'get',
       url:
         businessIds.length > 0 || filterDate
-          ? testUrl +
+          ? baseUrl +
             `?filter_date=${filterDate}&business=${businessIds.join(',')}`
-          : testUrl,
+          : baseUrl,
       headers: { Authorization: token }
     })
-    // const parsedResponse = await parseResult(response)
-    const parsedTest = await parseResult(testResp)
-    console.log('*********************************')
-    console.log(parsedTest)
-    // console.log(parsedResponse)
-    if (!parsedTest.error) {
-      // const tableData = reduceTableData(parsedResponse, user)
-      const newTableData = reduceNewTableData(parsedTest[0].data)
-      console.log('########################')
-      console.log(newTableData)
-      // console.log(tableData)
+    const parsedResponse = await parseResult(response)
+
+    if (!parsedResponse.error) {
+      const tableData = user.is_admin
+        ? reduceNewTableData(parsedResponse[0].data)
+        : reduceTableData(parsedResponse, user)
+
       const updatedSummaryDataTotals = reduceSummaryData(
-        // tableData,
-        newTableData,
-        parsedTest
-        // parsedResponse
+        tableData,
+        parsedResponse
       )
 
       if (dates.asOf === '') {
-        // const updatedDates = reduceDates(parsedResponse, filterDate)
-        const updatedDates = reduceDates(parsedTest, filterDate)
+        const updatedDates = reduceDates(parsedResponse, filterDate)
         setDates(updatedDates)
       }
       dispatch(setFilteredCases(businessIds))
-      // dispatch(setCaseData(tableData))
-      dispatch(setCaseData(newTableData))
+      dispatch(setCaseData(tableData))
       setSummaryTotals(updatedSummaryDataTotals)
-      // setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
-      setSummaryData(
-        generateSummaryData(newTableData, updatedSummaryDataTotals)
-      )
+      setSummaryData(generateSummaryData(tableData, updatedSummaryDataTotals))
     }
     dispatch(setLoading(false))
   }
