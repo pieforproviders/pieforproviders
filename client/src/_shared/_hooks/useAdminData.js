@@ -1,5 +1,5 @@
-export function useCaseDataNew() {
-  const reduceNewTableData = data => {
+export function useAdminData() {
+  const reduceAdminData = data => {
     return data.map((item, index) => ({
       id: item.id ?? '',
       key: `${index}-${item.first_name}-${item.last_name}`,
@@ -21,5 +21,5 @@ export function useCaseDataNew() {
     }))
   }
 
-  return { reduceNewTableData }
+  return { reduceAdminData }
 }

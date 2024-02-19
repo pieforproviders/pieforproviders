@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Modal } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
-import { useCaseDataNew } from '_shared/_hooks/useCaseDataNew'
+import { useAdminData } from '_shared/_hooks/useAdminData'
 import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
@@ -28,7 +28,7 @@ export function Dashboard() {
   const { parseResult } = useProgress()
   const { identifyHotjar } = useHotjar()
   const { reduceTableData } = useCaseData()
-  const { reduceNewTableData } = useCaseDataNew()
+  const { reduceAdminData } = useAdminData()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -260,7 +260,7 @@ export function Dashboard() {
 
     if (!parsedResponse.error) {
       const tableData = user.is_admin
-        ? reduceNewTableData(parsedResponse[0].data)
+        ? reduceAdminData(parsedResponse[0].data)
         : reduceTableData(parsedResponse, user)
 
       const updatedSummaryDataTotals = reduceSummaryData(
