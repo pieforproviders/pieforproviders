@@ -70,7 +70,7 @@ group :development do
   gem 'benchmark-ips'
   gem 'guard-rspec', require: false
   gem 'letter_opener_web', '~> 2.0'
-  gem 'listen', '>= 3.0.5', '< 3.8'
+  gem 'listen', '>= 3.0.5', '< 3.10'
   gem 'pgreset', '~> 0.3'
   gem 'rails-erd'
   gem 'spring'
