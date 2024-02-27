@@ -71,7 +71,8 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
       'hours_attended',
       'part_days',
       'remaining_part_days',
-      'total_part_days'
+      'total_part_days',
+      'full_days_authorized'
     )
   end
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Modal } from 'antd'
 import { useApiResponse } from '_shared/_hooks/useApiResponse'
 import { useCaseData } from '_shared/_hooks/useCaseData'
+import { useAdminData } from '_shared/_hooks/useAdminData'
 import { useProgress } from '_shared/_hooks/useProgress'
 import { useDispatch, useSelector } from 'react-redux'
 import useHotjar from 'react-use-hotjar'
@@ -27,6 +28,7 @@ export function Dashboard() {
   const { parseResult } = useProgress()
   const { identifyHotjar } = useHotjar()
   const { reduceTableData } = useCaseData()
+  const { reduceAdminData } = useAdminData()
   const { makeRequest } = useApiResponse()
   const { t, i18n } = useTranslation()
   const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -139,7 +141,7 @@ export function Dashboard() {
   const reduceSummaryData = (data, res) => {
     if (user.state === 'NE') {
       return {
-        ...data.reduce((acc, cv) => {
+        ...data?.reduce((acc, cv) => {
           return {
             ...acc,
             earnedRevenueTotal: cv.active
@@ -242,7 +244,9 @@ export function Dashboard() {
     filterDate = undefined
   } = {}) => {
     dispatch(setLoading(true))
-    const baseUrl = '/api/v1/case_list_for_dashboard'
+    const baseUrl = user.is_admin
+      ? '/api/v1/dashboard_case'
+      : '/api/v1/case_list_for_dashboard'
     const response = await makeRequest({
       type: 'get',
       url:
@@ -255,7 +259,10 @@ export function Dashboard() {
     const parsedResponse = await parseResult(response)
 
     if (!parsedResponse.error) {
-      const tableData = reduceTableData(parsedResponse, user)
+      const tableData = user.is_admin
+        ? reduceAdminData(parsedResponse[0].data)
+        : reduceTableData(parsedResponse, user)
+
       const updatedSummaryDataTotals = reduceSummaryData(
         tableData,
         parsedResponse

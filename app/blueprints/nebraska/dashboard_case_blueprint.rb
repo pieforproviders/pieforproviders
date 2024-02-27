@@ -43,7 +43,7 @@ module Nebraska
     field :hours_remaining do |dashboard_case, _options|
       dashboard_case.hours_remaining&.to_f
     end
-    # field :full_days_authorized
+    field :full_days_authorized
     field :hours_authorized do |dashboard_case, _options|
       dashboard_case.hours_authorized&.to_f
     end
