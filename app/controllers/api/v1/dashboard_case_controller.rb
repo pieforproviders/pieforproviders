@@ -12,7 +12,7 @@ module Api
         end_date = filter_date.at_end_of_month.to_s
 
         all_business_ids = Business.all.map { |business| business.id.to_s }
-        selected_business_ids = params[:business].split(',')
+        selected_business_ids = params[:business]&.split(',')
 
         filter_business_ids = params[:business].present? ? selected_business_ids : all_business_ids
 
