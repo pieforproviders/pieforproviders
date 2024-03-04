@@ -383,7 +383,10 @@ export default function DashboardTable({
           {
             name: 'hoursAttended',
             sorter: (a, b) =>
-              a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
+              user.is_admin
+                ? a.hoursAttended.match(/^\d+/)[0] -
+                  b.hoursAttended.match(/^\d+/)[0]
+                : a.hours.match(/^\d+/)[0] - b.hours.match(/^\d+/)[0],
             render: (text, record) =>
               isInactive(record) ? '-' : replaceText(text, 'of')
           }
