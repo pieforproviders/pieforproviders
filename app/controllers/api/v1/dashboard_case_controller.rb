@@ -32,7 +32,7 @@ module Api
                                                                                                         end_date,
                                                                                                         filter_business_ids,
                                                                                                         end_date,
-                                                                                                        end_date
+                                                                                                        start_date
                                                                                                       ]))
         first_approval = find_first_approval
         response_data = {
