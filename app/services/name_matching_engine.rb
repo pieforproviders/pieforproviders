@@ -23,7 +23,6 @@ class NameMatchingEngine
   private
 
   def find_matching_name(first_name, last_name)
-    # binding.pry
     results = ActiveRecord::Base.connection.execute(ActiveRecord::Base.sanitize_sql_for_conditions([
                                                                                                      similarity_query,
                                                                                                      first_name,
