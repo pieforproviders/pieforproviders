@@ -127,21 +127,18 @@ class AttendanceCsvImporter
   end
 
   def child
-    matching_engine = NameMatchingEngine.new(first_name: @row['first_name'], last_name: @row['last_name'])
-    match_results = matching_engine.call
+    if @row['first_name'].blank? || @row['last_name'].blank?
+      found_child = @business.children.find_by(dhs_id: @row['dhs_id'])
+    else
+      matching_engine = NameMatchingEngine.new(first_name: @row['first_name'], last_name: @row['last_name'])
+      match_children = matching_engine.call
+      matching_actions = NameMatchingActions.new(match_children:,
+                                                 file_child: [@row['first_name'],
+                                                              @row['last_name']],
+                                                 business: @business)
 
-    match_tag = match_results[:match_tag]
-    match_child = match_results[:result_match]
-
-    matching_actions = NameMatchingActions.new(match_tag:,
-                                               match_child:,
-                                               file_child: [@row['first_name'],
-                                                            @row['last_name']],
-                                               business: @business)
-
-    found_child = matching_actions.call
-
-    found_child = @business.children.find_by(dhs_id: @row['dhs_id']) if found_child.blank?
+      found_child = matching_actions.call
+    end
     found_child.presence || log_missing_child
   end
 

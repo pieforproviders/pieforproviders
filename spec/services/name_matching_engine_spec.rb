@@ -16,8 +16,8 @@ RSpec.describe NameMatchingEngine, type: :service do
         'id' => Faker::Number.number(digits: 4),
         'first_name' => first_name + Faker::Alphanumeric.alpha(number: 2),
         'last_name' => last_name + Faker::Alphanumeric.alpha(number: 2),
-        'sml_first_name' => Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f,
-        'sml_last_name' => Faker::Number.decimal(l_digits: 1, r_digits: 2).to_f
+        'sml_first_name' => Faker::Number.decimal(l_digits: 0, r_digits: 2).to_f,
+        'sml_last_name' => Faker::Number.decimal(l_digits: 0, r_digits: 2).to_f
       }
     end
 
@@ -28,8 +28,9 @@ RSpec.describe NameMatchingEngine, type: :service do
     it 'returns the expected result' do
       result = engine.call
       expected_match_tag = engine.match_tag((mocked_result['sml_first_name'] + mocked_result['sml_last_name']) / 2)
-      expect(result[:match_tag]).to eq(expected_match_tag)
-      expect(result[:result_match]).to eq(mocked_result)
+      expect(result.first[:match_tag]).to eq(expected_match_tag)
+      expect(result.first[:first_name]).to eq(mocked_result['first_name'])
+      expect(result.first[:last_name]).to eq(mocked_result['last_name'])
     end
   end
 
