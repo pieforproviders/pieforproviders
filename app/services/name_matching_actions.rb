@@ -31,7 +31,7 @@ class NameMatchingActions
 
         rows << [Rainbow('We found: ').bright + Rainbow("#{@file_child[0]} #{@file_child[1]}").yellow]
         rows << [Rainbow('P4P has: ').bright +
-                 Rainbow("#{match_child['first_name']} #{match_child['last_name']}").yellow]
+                 Rainbow("#{match_child[:first_name]} #{match_child[:last_name]}").yellow]
 
         table = Terminal::Table.new(rows:)
         puts table
@@ -41,10 +41,10 @@ class NameMatchingActions
 
         if input.downcase == 'yes'
           puts Rainbow("Thanks, we'll upload this attendance!").green
-          return @business.children.find_by(first_name: match_child['first_name'], last_name: match_child['last_name'])
+          return @business.children.find_by(first_name: match_child[:first_name], last_name: match_child[:last_name])
         else
           puts Rainbow("Okay, we'll skip over this record.").yellow
-          nil
+          return nil
         end
 
       when 'no_match'
