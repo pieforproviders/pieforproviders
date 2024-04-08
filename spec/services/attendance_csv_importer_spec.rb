@@ -164,7 +164,7 @@ RSpec.describe AttendanceCsvImporter do
         .with(archive_bucket, anything, CsvParser.new(attendance_csv).call)
       described_class.new.call
 
-      expect(Rails.logger).to have_received(:info).exactly(4).times
+      expect(Rails.logger).to have_received(:info).exactly(8).times
     end
 
     it 'continues processing if the record is invalid or missing a required field' do
