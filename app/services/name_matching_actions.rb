@@ -2,10 +2,9 @@
 
 # Actions for name matching engine results
 class NameMatchingActions
-  def initialize(match_children:, file_child:, business:)
+  def initialize(match_children:, file_child:)
     @match_children = match_children
     @file_child = file_child
-    @business = business
   end
 
   def call
@@ -22,7 +21,7 @@ class NameMatchingActions
       match_tag = match_child[:match_tag]
       case match_tag
       when 'exact_match'
-        return @business.children.find_by(
+        return Child.find_by(
           first_name: @file_child[0], last_name: @file_child[1]
         )
       when 'close_match'
@@ -41,7 +40,7 @@ class NameMatchingActions
 
         if input.downcase == 'yes'
           puts Rainbow("Thanks, we'll upload this attendance!").green
-          return @business.children.find_by(first_name: match_child[:first_name], last_name: match_child[:last_name])
+          return Child.find_by(first_name: match_child[:first_name], last_name: match_child[:last_name])
         else
           puts Rainbow("Okay, we'll skip over this record.").yellow
           return nil

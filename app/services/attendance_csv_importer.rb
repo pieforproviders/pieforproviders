@@ -36,7 +36,6 @@ class AttendanceCsvImporter
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
-      @business = business
       CsvParser.new(body).call.each do |unstriped_row|
         process_row(unstriped_row)
         build_output_rows
@@ -120,22 +119,15 @@ class AttendanceCsvImporter
     service_day.update!(absence_type: @row['absence'])
   end
 
-  def business
-    found_business = Business.find_by(name: @file_name.split('/').last.split('.').first)
-
-    found_business.presence || log_missing_business
-  end
-
   def child
     if @row['first_name'].blank? || @row['last_name'].blank?
-      found_child = @business.children.find_by(dhs_id: @row['dhs_id'])
+      found_child = Child.find_by(dhs_id: @row['dhs_id'])
     else
       matching_engine = NameMatchingEngine.new(first_name: @row['first_name'], last_name: @row['last_name'])
       match_children = matching_engine.call
       matching_actions = NameMatchingActions.new(match_children:,
                                                  file_child: [@row['first_name'],
-                                                              @row['last_name']],
-                                                 business: @business)
+                                                              @row['last_name']])
 
       found_child = matching_actions.call
     end
