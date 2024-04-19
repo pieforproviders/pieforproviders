@@ -175,7 +175,7 @@ export function AttendanceView() {
         render: (_, record) => {
           const matchingServiceDay = record.serviceDays.find(serviceDay => {
             return new RegExp(columnDate.format('YYYY-MM-DD')).test(
-              serviceDay.date
+              serviceDay.date.split('T')[0]
             )
           })
 
@@ -398,9 +398,12 @@ export function AttendanceView() {
     dispatch(setLoading(true))
     const response = await makeRequest({
       type: 'get',
-      url: `/api/v1/service_days?filter_date=${dateSelected.format(
+      url: `/api/v1/attendance_view?filter_date=${dateSelected.format(
         'YYYY-MM-DD'
-      )}&business=${businessIds.length > 0 ? businessIds.join(',') : ''}`,
+      )}&business_ids=${businessIds.length > 0 ? businessIds.join(',') : ''}`,
+      // url: `/api/v1/service_days?filter_date=${dateSelected.format(
+      //   'YYYY-MM-DD'
+      // )}&business=${businessIds.length > 0 ? businessIds.join(',') : ''}`,
       headers: {
         Authorization: token
       },
@@ -409,8 +412,10 @@ export function AttendanceView() {
 
     if (response.ok) {
       const parsedResponse = await parseResult(response)
+      console.log('parsedResponse')
+      console.log(parsedResponse)
       const addServiceDay = (previousValue, currentValue) => {
-        const isInactive = () => !currentValue?.child.active
+        const isInactive = () => !currentValue?.child?.active
 
         if (isInactive()) {
           return previousValue
@@ -431,6 +436,8 @@ export function AttendanceView() {
       }
 
       const reducedData = parsedResponse.reduce(addServiceDay, [])
+      console.log('###############')
+      console.log(reducedData)
       dispatch(setFilteredCases(businessIds))
       setAttendanceData(reducedData)
       setColumns(generateColumns())
