@@ -8,7 +8,7 @@ RSpec.describe IllinoisAttendanceRiskCalculator, type: :service do
       business = create(:business)
       child = create(:child_in_illinois)
       create(:child_business, child:, business:)
-      date = Date.new(2023, 7, 20)
+      date = Date.new(2023, 8, 20)
       eligible_days_in_week = 5
       elapsed_weeks = 3
       elapsed_eligible_days = eligible_days_in_week * elapsed_weeks
