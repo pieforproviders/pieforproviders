@@ -17,7 +17,7 @@ class ChildBlueprint < Blueprinter::Base
   end
 
   field :active_business do |child, _options|
-    business = child.child_businesses.find_by(currently_active: true).business
+    business = child.child_businesses.find_by(currently_active: true)&.business
     { id: business.id, name: business.name }
   end
 
