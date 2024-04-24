@@ -12,7 +12,7 @@ module Api
         start_date = filter_date == current_date ? (current_date.at_beginning_of_week - 1.day).to_s : filter_date.to_s
         end_date = filter_date == current_date ? current_date.at_end_of_week.to_s : (filter_date + 1.day).at_end_of_week.to_s
 
-        business_ids = params[:business_ids]
+        business_ids = params[:business_ids]&.split(',')
 
         attendance_info = AttendanceInfoService.new(start_date, end_date, business_ids)
         response = attendance_info.call

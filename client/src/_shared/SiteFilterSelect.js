@@ -14,8 +14,8 @@ export default function SiteFilterSelect({ businesses, onChange }) {
       ''
     )
     return {
-      minWidth: `${longestName.length * 10}px`,
-      maxWidth: `${longestName.length * 10}px`
+      minWidth: `${longestName.length * 20}px`,
+      maxWidth: `${longestName.length * 20}px`
     }
   }
 
@@ -32,7 +32,7 @@ export default function SiteFilterSelect({ businesses, onChange }) {
         onChange={onChange}
         onSelect={() => setFilterOpen(!filterOpen)}
         dropdownStyle={setWidths()}
-        style={{ minWidth: '200px' }}
+        style={{ minWidth: '220px' }}
         role="siteFilter"
         onClick={() => setFilterOpen(!filterOpen)}
         value={filteredCases}
