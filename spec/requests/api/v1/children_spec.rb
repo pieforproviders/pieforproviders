@@ -11,6 +11,8 @@ RSpec.describe 'Api::V1::Children' do
   let!(:other_business) { create(:business_with_children) }
   let!(:other_business_children) { other_business.children }
   let!(:admin_user) { create(:confirmed_user, admin: true) }
+  let(:child) { create(:child) }
+  let(:approval) { create(:approval, child:, effective_on: '2020-01-01', expires_on: '2020-12-31') }
 
   describe 'GET /api/v1/children' do
     include_context 'with correct api version header'
@@ -430,6 +432,37 @@ RSpec.describe 'Api::V1::Children' do
         delete("/api/v1/children/#{business_children.first.id}", headers:)
         expect(response).to have_http_status(:no_content)
         expect(business_children.first.reload.deleted_at).to eq(Time.current.to_date)
+      end
+    end
+  end
+
+  describe 'PATCH /children/:id/update_auth' do
+    include_context 'with correct api version header'
+
+    context 'when logged in as an admin user' do
+      before do
+        sign_in admin_user
+      end
+
+      it "updates child's approval" do
+        approval = child.approvals.first
+        current_effective_date = approval.effective_on.to_s
+        current_expiration_date = approval.expires_on.to_s
+
+        data = {
+          current_effective_date:,
+          current_expiration_date:,
+          new_effective_date: '2023-05-01',
+          new_expiration_date: '2024-05-31'
+        }
+
+        patch("/api/v1/children/#{child.id}/update_auth", headers:, params: data)
+        expect(response).to have_http_status(:ok)
+
+        approval.reload
+
+        expect(approval.effective_on.to_s).to eq('2023-05-01')
+        expect(approval.expires_on.to_s).to eq('2024-05-31')
       end
     end
   end

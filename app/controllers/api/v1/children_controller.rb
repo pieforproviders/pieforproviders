@@ -49,6 +49,20 @@ module Api
         @child.update!(deleted_at: Time.current.to_date)
       end
 
+      # PATCH /children/:id/update_auth
+      def update_auth
+        child = Child.find(params[:child_id])
+
+        effective_date = params[:current_effective_date]
+        expiration_date = params[:current_expiration_date]
+        new_effective_date = params[:new_effective_date]
+        new_expiration_date = params[:new_expiration_date]
+
+        approval = child.approvals.find_by!(effective_on: effective_date, expires_on: expiration_date)
+        approval.update(effective_on: new_effective_date, expires_on: new_expiration_date)
+        render json: approval, status: :ok
+      end
+
       private
 
       def set_child
