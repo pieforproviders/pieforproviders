@@ -106,7 +106,7 @@ class AttendancePdfImporter
 
     attendance = Attendance.find_by(check_in:, child_approval:, check_out:)
 
-    return if attendance
+    return if attendance || child_approval.blank?
 
     Commands::Attendance::Create.new(check_in:, child_id: @child.id, check_out:).create
   end
