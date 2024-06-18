@@ -179,18 +179,6 @@ export function AttendanceView() {
             )
           })
 
-          // const hasWoderschoolId = () => {
-          //   if (
-          //     matchingServiceDay?.child?.wonderschool_id == null ||
-          //     matchingServiceDay?.child?.wonderschool_id === undefined ||
-          //     matchingServiceDay?.child?.wonderschool_id.toLowerCase() === 'no'
-          //   ) {
-          //     return false
-          //   } else {
-          //     return true
-          //   }
-          // }
-
           const handleEditAttendance = () => {
             const serviceDay = record.serviceDays.find(
               day => day.date.slice(0, 10) === columnDate.format('YYYY-MM-DD')
