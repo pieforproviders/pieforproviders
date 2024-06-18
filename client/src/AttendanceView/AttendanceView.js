@@ -439,9 +439,24 @@ export function AttendanceView() {
     let responses = []
     const formatAttendanceData = attendance => {
       let checkIn, checkOut
+
+      const makeValidDate = date => {
+        const isPm = date.includes('pm')
+
+        let validDate = ''
+
+        if (isPm) {
+          validDate = dayjs(date.split(' ')[0]).add(12, 'hours')
+        } else {
+          validDate = dayjs(date.split(' ')[0])
+        }
+
+        return validDate.toString()
+      }
+
       if (attendance.check_in) {
-        if (dayjs(attendance.check_in.replace('T', ':')).isValid()) {
-          checkIn = dayjs(attendance.check_in.replace('T', ':'))
+        if (dayjs(makeValidDate(attendance.check_in)).isValid()) {
+          checkIn = dayjs(makeValidDate(attendance.check_in))
         } else if (
           dayjs(
             `${latestAttendanceData.current.date} ${attendance.check_in}`
@@ -456,8 +471,8 @@ export function AttendanceView() {
       }
 
       if (attendance.check_out) {
-        if (dayjs(attendance.check_out.replace('T', ':')).isValid()) {
-          checkOut = dayjs(attendance.check_out.replace('T', ':'))
+        if (dayjs(makeValidDate(attendance.check_out)).isValid()) {
+          checkOut = dayjs(makeValidDate(attendance.check_out))
         } else if (
           dayjs(
             `${latestAttendanceData.current.date} ${attendance.check_out}`
