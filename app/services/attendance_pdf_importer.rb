@@ -106,7 +106,7 @@ class AttendancePdfImporter
 
     attendance = Attendance.find_by(check_in:, child_approval:, check_out:)
 
-    return if attendance
+    return if attendance || child_approval.blank?
 
     Commands::Attendance::Create.new(check_in:, child_id: @child.id, check_out:).create
   end
@@ -125,16 +125,11 @@ class AttendancePdfImporter
 
   def child
     matching_engine = NameMatchingEngine.new(first_name: @child_name[1], last_name: @child_name[0])
-    match_results = matching_engine.call
+    match_children = matching_engine.call
 
-    match_tag = match_results[:match_tag]
-    match_child = match_results[:result_match]
-
-    matching_actions = NameMatchingActions.new(match_tag:,
-                                               match_child:,
+    matching_actions = NameMatchingActions.new(match_children:,
                                                file_child: [@child_name[1],
-                                                            @child_name[0]],
-                                               business: @business)
+                                                            @child_name[0]])
 
     found_child = matching_actions.call
 

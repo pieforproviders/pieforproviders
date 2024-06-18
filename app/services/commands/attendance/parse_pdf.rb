@@ -94,15 +94,10 @@ module Commands
 
       def process_page(page)
         page_splitted_by_break_line = split_page_by_break_line(page)
-        reduced_splited_page = remove_unnecessary_spaces(page_splitted_by_break_line)
-        raw_attendances = build_raw_attendances(reduced_splited_page)
-        text_without_tabs = build_text_without_tabs(raw_attendances)
-        complete_times = build_times(text_without_tabs)
-
-        dates = build_dates(raw_attendances)
-        build_attendances(complete_times)
-
-        build_check_in_out(dates)
+        regex = /(\d{1,2}\s[A-Za-z]+\,\s\d{4})(?:.*?(\d{1,2}:\d{2}\s?[AP]M))?(?:.*?(\d{1,2}:\d{2}\s?[AP]M))?/ # rubocop:disable Style/RedundantRegexpEscape
+        raw_attendances = build_raw_attendances(page_splitted_by_break_line)
+        attendances_info = raw_attendances.map { |attendance| attendance.scan(regex).flatten }
+        build_attendances(attendances_info)
       end
 
       # rubocop:disable Layout/LineLength
@@ -174,8 +169,13 @@ module Commands
         date[0]
       end
 
-      def build_attendances(complete_times)
-        complete_times.each_slice(2) do |sign_in_time, sign_out_time|
+      def build_attendances(attendances_info)
+        attendances_info.each do |attendance|
+          date = attendance.first
+          check_in = attendance.second
+          check_out = attendance.last
+          sign_in_time = check_in.present? ? "#{date} #{check_in}" : nil
+          sign_out_time = check_out.present? ? "#{date} #{check_out}" : nil
           @attendances << {
             sign_in_time:,
             sign_out_time:
