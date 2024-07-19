@@ -179,18 +179,6 @@ export function AttendanceView() {
             )
           })
 
-          const hasWoderschoolId = () => {
-            if (
-              matchingServiceDay?.child?.wonderschool_id == null ||
-              matchingServiceDay?.child?.wonderschool_id === undefined ||
-              matchingServiceDay?.child?.wonderschool_id.toLowerCase() === 'no'
-            ) {
-              return false
-            } else {
-              return true
-            }
-          }
-
           const handleEditAttendance = () => {
             const serviceDay = record.serviceDays.find(
               day => day.date.slice(0, 10) === columnDate.format('YYYY-MM-DD')
@@ -236,14 +224,13 @@ export function AttendanceView() {
             if (matchingServiceDay.tags.includes('absence')) {
               return (
                 <div>
-                  {hasWoderschoolId() ? null : (
-                    <button
-                      className="float-right edit-icon"
-                      onClick={handleEditAttendance}
-                    >
-                      <EditIcon />
-                    </button>
-                  )}
+                  <button
+                    className="float-right edit-icon"
+                    onClick={handleEditAttendance}
+                  >
+                    <EditIcon />
+                  </button>
+
                   <div className="flex justify-center">
                     <div
                       className="box-border p-1 bg-orange2 text-orange3"
@@ -331,14 +318,12 @@ export function AttendanceView() {
 
             return (
               <div className="relative text-center body-2">
-                {hasWoderschoolId() ? null : (
-                  <button
-                    onClick={handleEditAttendance}
-                    className="absolute right-0 rounded-full group hover:bg-blue3 focus:bg-primaryBlue"
-                  >
-                    <EditIcon className="m-1.5 fill-gray3 group-hover:fill-primaryBlue group-focus:fill-white" />
-                  </button>
-                )}
+                <button
+                  onClick={handleEditAttendance}
+                  className="absolute right-0 rounded-full group hover:bg-blue3 focus:bg-primaryBlue"
+                >
+                  <EditIcon className="m-1.5 fill-gray3 group-hover:fill-primaryBlue group-focus:fill-white" />
+                </button>
                 <div className="mb-2 text-gray8 font-semiBold">
                   {totalTimeInCare}
                 </div>
@@ -442,9 +427,24 @@ export function AttendanceView() {
     let responses = []
     const formatAttendanceData = attendance => {
       let checkIn, checkOut
+
+      const makeValidDate = date => {
+        const isPm = date.includes('pm')
+
+        let validDate = ''
+
+        if (isPm) {
+          validDate = dayjs(date.split(' ')[0]).add(12, 'hours')
+        } else {
+          validDate = dayjs(date.split(' ')[0])
+        }
+
+        return validDate.toString()
+      }
+
       if (attendance.check_in) {
-        if (dayjs(attendance.check_in).isValid()) {
-          checkIn = dayjs(attendance.check_in)
+        if (dayjs(makeValidDate(attendance.check_in)).isValid()) {
+          checkIn = dayjs(makeValidDate(attendance.check_in))
         } else if (
           dayjs(
             `${latestAttendanceData.current.date} ${attendance.check_in}`
@@ -459,8 +459,8 @@ export function AttendanceView() {
       }
 
       if (attendance.check_out) {
-        if (dayjs(attendance.check_out).isValid()) {
-          checkOut = dayjs(attendance.check_out)
+        if (dayjs(makeValidDate(attendance.check_out)).isValid()) {
+          checkOut = dayjs(makeValidDate(attendance.check_out))
         } else if (
           dayjs(
             `${latestAttendanceData.current.date} ${attendance.check_out}`
@@ -476,7 +476,7 @@ export function AttendanceView() {
       return {
         check_in: checkIn ? checkIn.format() : null,
         check_out: checkOut
-          ? checkIn.isAfter(checkOut)
+          ? checkIn?.isAfter(checkOut)
             ? checkOut.add(1, 'day').format()
             : checkOut.format()
           : null
