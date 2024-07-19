@@ -2,6 +2,7 @@ const GET = 'GET'
 const POST = 'POST'
 const PUT = 'PUT'
 const DEL = 'DELETE'
+const PATCH = 'PATCH'
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
@@ -59,6 +60,15 @@ export function useApi(onUnauthorized, onError) {
       fetchData({
         path: path,
         method: PUT,
+        data: data,
+        headers: headers,
+        onUnauthorized: onUnauthorized,
+        onError: onError
+      }),
+    patch: (path, data, headers) =>
+      fetchData({
+        path: path,
+        method: PATCH,
         data: data,
         headers: headers,
         onUnauthorized: onUnauthorized,

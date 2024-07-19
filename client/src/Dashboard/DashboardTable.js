@@ -30,11 +30,15 @@ export default function DashboardTable({
   const dispatch = useDispatch()
   const { sendGAEvent } = useGoogleAnalytics()
   const [isMIModalVisible, setIsMIModalVisible] = useState(false)
+  const [isAUModalVisible, setIsAUModalVisible] = useState(false)
   const [selectedChild, setSelectedChild] = useState({})
+  const [effectiveDate, setEffectiveDate] = useState(null)
+  const [expirationDate, setExpirationDate] = useState(null)
   const [inactiveDate, setInactiveDate] = useState(null)
   const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
+  const [aUErrorMessage, setAUErrorMessage] = useState('')
   const { user } = useSelector(state => ({
     user: state.user
   }))
@@ -59,6 +63,13 @@ export default function DashboardTable({
       },
       role: 'columnheader'
     }
+  }
+
+  const datePickerStyle = {
+    width: '256px',
+    height: '40px',
+    border: '1px solid #D9D9D9',
+    color: '#BFBFBF'
   }
 
   const isInactive = record => !record?.active
@@ -254,24 +265,81 @@ export default function DashboardTable({
     return formated_dates
   }
 
+  const renderAuthInfo = child => {
+    if (Object.keys(child).length === 0) {
+      return <></>
+    } else {
+      const full_name =
+        child.child.childFirstName + ' ' + child.child.childLastName
+      const effective_date = child?.approvalEffectiveOn
+      const expiration_date = child?.approvalExpiresOn
+      return (
+        <>
+          <p className="text-lg text-gray10">{full_name}</p>
+          <p className="text-base text-gray8">Current Effective Date:</p>
+          <p>{effective_date}</p>
+          <p className="text-base text-gray8">Current Expiration Date:</p>
+          <p>{expiration_date}</p>
+          <br></br>
+          <p className="text-base text-gray10">New Effective Date</p>
+          <DatePicker
+            style={datePickerStyle}
+            onChange={(_, dateString) => {
+              setEffectiveDate(dateString)
+            }}
+            value={effectiveDate ? dayjs(effectiveDate, 'YYYY-MM-DD') : null}
+          />
+          <div style={{ height: 20 }}></div>
+          <p className="text-base text-gray10">New Expiration Date</p>
+          <DatePicker
+            style={datePickerStyle}
+            onChange={(_, dateString) => {
+              setExpirationDate(dateString)
+            }}
+            value={expirationDate ? dayjs(expirationDate, 'YYYY-MM-DD') : null}
+          />
+          {auModalErrorMessage(aUErrorMessage)}
+        </>
+      )
+    }
+  }
+
   const renderActions = (_text, record) => (
     <div>
-      <Button
-        type="link"
-        className="flex items-start"
-        onClick={() => handleInactiveClick(record)}
-      >
-        <img
-          alt="vector"
-          src={isInactive(record) ? editIcon : vector}
-          className="mr-2"
-        />
-        <span className="underline hover:text-blue2">
-          {isInactive(record) ? t('markActive') : t('markInactive')}
-        </span>
-      </Button>
+      <div>
+        <Button
+          type="link"
+          className="flex items-start"
+          onClick={() => handleInactiveClick(record)}
+        >
+          <img
+            alt="vector"
+            src={isInactive(record) ? editIcon : vector}
+            className="mr-2"
+          />
+          <span className="underline hover:text-blue2">
+            {isInactive(record) ? t('markActive') : t('markInactive')}
+          </span>
+        </Button>
+      </div>
+      <div>
+        <Button
+          type="link"
+          className="flex items-start"
+          onClick={() => handleEditAuthClick(record)}
+        >
+          <span className="underline hover:text-blue2">
+            {'\u27F3'} Update Authorization
+          </span>
+        </Button>
+      </div>
     </div>
   )
+
+  const handleEditAuthClick = record => {
+    setSelectedChild(record)
+    setIsAUModalVisible(true)
+  }
 
   const handleInactiveClick = record => {
     setSelectedChild(record)
@@ -324,6 +392,59 @@ export default function DashboardTable({
       )
     }
     handleModalCancel()
+  }
+
+  const auModalErrorMessage = type => {
+    let error_message = ''
+    switch (type) {
+      case 'wrong_date':
+        error_message = 'Expiration date must be after the Effective date'
+        break
+      case 'empty_dates':
+        error_message = 'Date fields cannot be empty'
+        break
+      default:
+        error_message = ''
+    }
+    return (
+      <div style={{ marginTop: 25, marginBottom: 25 }}>
+        <p className="text-sm text-red-500">{error_message}</p>
+      </div>
+    )
+  }
+
+  const handleAUModalOk = async () => {
+    if (expirationDate < effectiveDate) {
+      setAUErrorMessage('wrong_date')
+    } else if (expirationDate === null || effectiveDate === null) {
+      setAUErrorMessage('empty_dates')
+    } else {
+      const response = await makeRequest({
+        type: 'patch',
+        url: `/api/v1/children/${selectedChild.id}/update_auth`,
+        headers: {
+          Authorization: token
+        },
+        data: {
+          current_effective_date: selectedChild.approvalEffectiveOn,
+          current_expiration_date: selectedChild.approvalExpiresOn,
+          new_effective_date: effectiveDate,
+          new_expiration_date: expirationDate
+        }
+      })
+      if (response.ok) {
+        dispatch(
+          updateCase({
+            childId: selectedChild?.id,
+            updates: {
+              approvalEffectiveOn: effectiveDate,
+              approvalExpiresOn: expirationDate
+            }
+          })
+        )
+        setIsAUModalVisible(false)
+      }
+    }
   }
 
   const columnConfig = {
@@ -687,6 +808,17 @@ export default function DashboardTable({
           }
         />
       </Modal>
+      <>
+        <Modal
+          title="Update Authorization"
+          open={isAUModalVisible}
+          onOk={handleAUModalOk}
+          onCancel={() => setIsAUModalVisible(false)}
+          okText="Update Authorization"
+        >
+          {renderAuthInfo(selectedChild)}
+        </Modal>
+      </>
     </>
   )
 }

@@ -27,7 +27,9 @@ Rails.application.routes.draw do
       resources :users
       get 'profile', to: 'users#show'
       resources :businesses
-      resources :children
+      resources :children do
+        patch :update_auth
+      end
       resources :child_businesses
       resources :attendances
       resources :service_days

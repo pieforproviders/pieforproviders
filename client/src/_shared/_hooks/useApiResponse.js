@@ -4,7 +4,7 @@ import apiErrorHandler from '_utils/apiErrorHandler'
 import useUnauthorizedHandler from '_shared/_hooks/useUnauthorizedHandler'
 
 export const useApiResponse = () => {
-  const { get, post, put, del } = useApi(
+  const { get, post, put, del, patch } = useApi(
     useUnauthorizedHandler(),
     apiErrorHandler()
   )
@@ -21,6 +21,8 @@ export const useApiResponse = () => {
 
     const result = (async () => {
       switch (type) {
+        case 'patch':
+          return await patch(url, data, headers)
         case 'post':
           return await post(url, data, headers)
         case 'put':
