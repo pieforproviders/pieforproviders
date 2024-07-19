@@ -38,7 +38,7 @@ export default function DashboardTable({
   const [activeDate, setActiveDate] = useState(null)
   const [inactiveReason, setInactiveReason] = useState(null)
   const [sortedRows, setSortedRows] = useState([])
-  const [auErrorMessage, setAUErrorMessage] = useState('')
+  const [aUErrorMessage, setAUErrorMessage] = useState('')
   const { user } = useSelector(state => ({
     user: state.user
   }))
@@ -63,6 +63,13 @@ export default function DashboardTable({
       },
       role: 'columnheader'
     }
+  }
+
+  const datePickerStyle = {
+    width: '256px',
+    height: '40px',
+    border: '1px solid #D9D9D9',
+    color: '#BFBFBF'
   }
 
   const isInactive = record => !record?.active
@@ -276,12 +283,7 @@ export default function DashboardTable({
           <br></br>
           <p className="text-base text-gray10">New Effective Date</p>
           <DatePicker
-            style={{
-              width: '256px',
-              height: '40px',
-              border: '1px solid #D9D9D9',
-              color: '#BFBFBF'
-            }}
+            style={datePickerStyle}
             onChange={(_, dateString) => {
               setEffectiveDate(dateString)
             }}
@@ -290,18 +292,13 @@ export default function DashboardTable({
           <div style={{ height: 20 }}></div>
           <p className="text-base text-gray10">New Expiration Date</p>
           <DatePicker
-            style={{
-              width: '256px',
-              height: '40px',
-              border: '1px solid #D9D9D9',
-              color: '#BFBFBF'
-            }}
+            style={datePickerStyle}
             onChange={(_, dateString) => {
               setExpirationDate(dateString)
             }}
             value={expirationDate ? dayjs(expirationDate, 'YYYY-MM-DD') : null}
           />
-          {auModalErrorMessage(auErrorMessage)}
+          {auModalErrorMessage(aUErrorMessage)}
         </>
       )
     }
