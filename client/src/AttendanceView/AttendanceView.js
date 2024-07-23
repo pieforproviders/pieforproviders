@@ -106,7 +106,7 @@ export function AttendanceView() {
             const mergedValue =
               Object.keys(currentAttendance).length === 0
                 ? {
-                    child_id: record?.serviceDays[0]?.child_id || '',
+                    child_id: record?.serviceDays[0]?.child?.id || '',
                     ...updatedValue
                   }
                 : {
