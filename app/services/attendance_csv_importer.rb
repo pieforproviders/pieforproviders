@@ -34,6 +34,8 @@ class AttendanceCsvImporter
   def process_attendances
     file_names = @client.list_file_names(@source_bucket, 'CSV/').select { |s| s.end_with? '.csv' }
     contents = file_names.map { |file_name| @client.get_file_contents(@source_bucket, file_name) }
+    @previous_child = ''
+    @last_found_child = nil
     contents.each_with_index do |body, index|
       @file_name = file_names[index]
       CsvParser.new(body).call.each do |unstriped_row|
@@ -119,18 +121,23 @@ class AttendanceCsvImporter
     service_day.update!(absence_type: @row['absence'])
   end
 
-  def child
+  def child # rubocop:disable Metrics/MethodLength
     if @row['first_name'].blank? || @row['last_name'].blank?
       found_child = Child.find_by(dhs_id: @row['dhs_id'])
+    elsif @previous_child == "#{@row['first_name']} #{@row['last_name']}"
+      found_child = @last_found_child
     else
       matching_engine = NameMatchingEngine.new(first_name: @row['first_name'], last_name: @row['last_name'])
       match_children = matching_engine.call
+
       matching_actions = NameMatchingActions.new(match_children:,
                                                  file_child: [@row['first_name'],
                                                               @row['last_name']])
 
       found_child = matching_actions.call
     end
+    @previous_child = "#{@row['first_name']} #{@row['last_name']}"
+    @last_found_child = found_child
     found_child.presence || log_missing_child
   end
 
