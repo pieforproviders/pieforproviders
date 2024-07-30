@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
+ActiveRecord::Schema[7.0].define(version: 2024_07_29_205605) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -211,14 +211,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
     t.integer "executions_count"
     t.text "job_class"
     t.integer "error_event", limit: 2
+    t.text "labels", array: true
     t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
-    t.index ["active_job_id"], name: "index_good_jobs_on_active_job_id"
     t.index ["batch_callback_id"], name: "index_good_jobs_on_batch_callback_id", where: "(batch_callback_id IS NOT NULL)"
     t.index ["batch_id"], name: "index_good_jobs_on_batch_id", where: "(batch_id IS NOT NULL)"
     t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
-    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
-    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at", unique: true
+    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at_cond", where: "(cron_key IS NOT NULL)"
+    t.index ["cron_key", "cron_at"], name: "index_good_jobs_on_cron_key_and_cron_at_cond", unique: true, where: "(cron_key IS NOT NULL)"
     t.index ["finished_at"], name: "index_good_jobs_jobs_on_finished_at", where: "((retried_good_job_id IS NULL) AND (finished_at IS NOT NULL))"
+    t.index ["labels"], name: "index_good_jobs_on_labels", where: "(labels IS NOT NULL)", using: :gin
     t.index ["priority", "created_at"], name: "index_good_jobs_jobs_on_priority_created_at_when_unfinished", order: { priority: "DESC NULLS LAST" }, where: "(finished_at IS NULL)"
     t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
     t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
@@ -315,6 +316,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
     t.index ["expires_on"], name: "index_nebraska_rates_on_expires_on"
   end
 
+  create_table "not_attending_periods", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.date "start_date"
+    t.date "end_date"
+    t.uuid "child_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_not_attending_periods_on_child_id"
+  end
+
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "child_id"
     t.uuid "approval_id"
@@ -366,10 +376,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
   create_table "state_time_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.uuid "state_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "min_time"
     t.integer "max_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["state_id"], name: "index_state_time_rules_on_state_id"
   end
 
@@ -438,6 +448,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_10_133535) do
   add_foreign_key "illinois_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_approval_amounts", "child_approvals"
   add_foreign_key "nebraska_dashboard_cases", "children"
+  add_foreign_key "not_attending_periods", "children"
   add_foreign_key "notifications", "approvals"
   add_foreign_key "notifications", "children"
   add_foreign_key "schedules", "children"
