@@ -74,6 +74,10 @@ module App
     config.aws_secret_access_key = ENV.fetch('AWS_SECRET_ACCESS_KEY', '')
     config.aws_region = ENV.fetch('AWS_REGION', '')
 
+    # not attending periods
+    config.aws_not_attending_period_bucket = ENV.fetch('AWS_NOT_ATTENDING_PERIOD_BUCKET', '')
+    config.aws_not_attending_period_archive_bucket = ENV.fetch('AWS_NOT_ATTENDING_PERIOD_ARCHIVE_BUCKET', '')
+
     # onboarding
     config.aws_onboarding_bucket = ENV.fetch('AWS_ONBOARDING_BUCKET', '')
     config.aws_onboarding_archive_bucket = ENV.fetch('AWS_ONBOARDING_ARCHIVE_BUCKET', '')
