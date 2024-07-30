@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
+# Not attending period factory
+
 FactoryBot.define do
   factory :not_attending_period do
-    start_date { "2024-07-28" }
-    end_date { "2024-07-28" }
-    child { nil }
+    start_date { Time.zone.now }
+    end_date { 5.days.from_now }
+    child
   end
 end
 
