@@ -80,6 +80,7 @@ end
 #                                          PATCH  /api/v1/businesses/:id(.:format)                                                                  api/v1/businesses#update {:format=>:json}
 #                                          PUT    /api/v1/businesses/:id(.:format)                                                                  api/v1/businesses#update {:format=>:json}
 #                                          DELETE /api/v1/businesses/:id(.:format)                                                                  api/v1/businesses#destroy {:format=>:json}
+#                        child_update_auth PATCH  /api/v1/children/:child_id/update_auth(.:format)                                                  api/v1/children#update_auth {:format=>:json}
 #                                 children GET    /api/v1/children(.:format)                                                                        api/v1/children#index {:format=>:json}
 #                                          POST   /api/v1/children(.:format)                                                                        api/v1/children#create {:format=>:json}
 #                                    child GET    /api/v1/children/:id(.:format)                                                                    api/v1/children#show {:format=>:json}
@@ -111,6 +112,8 @@ end
 #                                          PATCH  /api/v1/notifications/:id(.:format)                                                               api/v1/notifications#update {:format=>:json}
 #                                          PUT    /api/v1/notifications/:id(.:format)                                                               api/v1/notifications#update {:format=>:json}
 #                                          DELETE /api/v1/notifications/:id(.:format)                                                               api/v1/notifications#destroy {:format=>:json}
+#                     dashboard_case_index GET    /api/v1/dashboard_case(.:format)                                                                  api/v1/dashboard_case#index {:format=>:json}
+#                    attendance_view_index GET    /api/v1/attendance_view(.:format)                                                                 api/v1/attendance_view#index {:format=>:json}
 #                  case_list_for_dashboard GET    /api/v1/case_list_for_dashboard(.:format)                                                         api/v1/users#case_list_for_dashboard {:format=>:json}
 #                                          GET    /*path(.:format)                                                                                  static#fallback_index_html
 #            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
