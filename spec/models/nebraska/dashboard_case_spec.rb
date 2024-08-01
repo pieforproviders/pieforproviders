@@ -69,7 +69,7 @@ RSpec.describe Nebraska::DashboardCase do
 
   describe '#absences_dates' do
     it 'Return all the absences of a child in the month' do
-      test_date = Time.new(2024, 1, 17).utc
+      test_date = Time.zone.now
       Helpers.build_nebraska_absence_list(
         num: 2,
         date: test_date,
