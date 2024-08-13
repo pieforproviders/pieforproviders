@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Move all existing absences to service days
+# Remove absences marked on a not attending period
 task remove_not_attending_absences: :environment do
   children = Child.joins(:not_attending_period)
   absences = []
