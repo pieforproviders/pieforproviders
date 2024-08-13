@@ -29,13 +29,13 @@ RSpec.describe Nebraska::DashboardCaseBlueprint do
         name: "Full Day #{state.name}",
         state:,
         min_time: 5 * 3600, # 5 hours
-        max_time: (10 * 3600) # 10 hours
+        max_time: (9 * 3600) + (59 * 60) # 9 hours 59 minutes
       ),
       create(
         :state_time_rule,
         name: "Full - Partial Day #{state.name}",
         state:,
-        min_time: (10 * 3600) + 60, # 10 hours and 1 minute
+        min_time: (10 * 3600), # 10 hours
         max_time: (24 * 3600)
       )
     ]
