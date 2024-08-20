@@ -35,7 +35,7 @@ RSpec.describe NotAttendingPeriod do
       let(:end_date) { 1.day.from_now }
 
       it 'returns true' do
-        expect(period.currently_active).to be true
+        expect(period.active?).to be true
       end
     end
 
@@ -44,7 +44,7 @@ RSpec.describe NotAttendingPeriod do
       let(:end_date) { 2.days.from_now }
 
       it 'returns false' do
-        expect(period.currently_active).to be false
+        expect(period.active?).to be false
       end
     end
   end
