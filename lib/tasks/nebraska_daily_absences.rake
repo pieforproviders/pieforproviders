@@ -6,6 +6,6 @@
 desc 'Create daily absences'
 task nebraska_daily_absences: :environment do
   Child.nebraska.each do |child|
-    Nebraska::AbsenceGeneratorJob.perform_later(child:) unless child.not_attending_period&.currently_active
+    Nebraska::AbsenceGeneratorJob.perform_later(child:) if child.not_attending_period&.currently_active&.empty?
   end
 end

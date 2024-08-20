@@ -8,9 +8,9 @@ class NotAttendingPeriod < ApplicationRecord
 
   validate :end_date_after_start_date
 
-  validates :child_id, uniqueness: true, if: -> { child_id.present? }
+  scope :currently_active, -> { where('start_date <= ? AND end_date >= ?', Date.today, Date.today) } # rubocop:disable Rails/Date
 
-  def currently_active
+  def active?
     start_date <= Date.today && end_date >= Date.today # rubocop:disable Rails/Date
   end
 
