@@ -7,7 +7,7 @@ class Child < UuidApplicationRecord
   after_create_commit :create_default_schedule, unless: proc { |child| child.schedules.present? }
   after_save_commit :associate_rate, unless: proc { |child| child.active_previously_changed?(from: true, to: false) }
 
-  has_one :not_attending_period, dependent: :destroy
+  has_many :not_attending_period, dependent: :destroy
   has_many :child_businesses, dependent: :destroy
   has_many :businesses, through: :child_businesses
   has_many :child_approvals, dependent: :destroy, inverse_of: :child, autosave: true

@@ -27,7 +27,7 @@ RSpec.describe NotAttendingPeriod do
     end
   end
 
-  describe '#currently_active' do
+  describe '#active?' do
     let(:period) { build(:not_attending_period, start_date:, end_date:) }
 
     context 'when the period includes today' do
@@ -35,7 +35,7 @@ RSpec.describe NotAttendingPeriod do
       let(:end_date) { 1.day.from_now }
 
       it 'returns true' do
-        expect(period.currently_active).to be true
+        expect(period.active?).to be true
       end
     end
 
@@ -44,8 +44,26 @@ RSpec.describe NotAttendingPeriod do
       let(:end_date) { 2.days.from_now }
 
       it 'returns false' do
-        expect(period.currently_active).to be false
+        expect(period.active?).to be false
       end
+    end
+  end
+
+  describe '.currently_active' do
+    let!(:active_period) { create(:not_attending_period, start_date: Date.yesterday, end_date: Date.tomorrow) }
+    let!(:past_period) { create(:not_attending_period, start_date: 2.weeks.ago, end_date: 1.week.ago) }
+    let!(:future_period) { create(:not_attending_period, start_date: 1.week.from_now, end_date: 2.weeks.from_now) }
+
+    it 'includes periods that are currently active' do
+      expect(described_class.currently_active).to include(active_period)
+    end
+
+    it 'does not include periods that have ended' do
+      expect(described_class.currently_active).not_to include(past_period)
+    end
+
+    it 'does not include periods that have not started yet' do
+      expect(described_class.currently_active).not_to include(future_period)
     end
   end
 end
