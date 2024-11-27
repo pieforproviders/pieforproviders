@@ -17,7 +17,7 @@ import GettingStarted from './GettingStarted'
 import Confirmation from './Confirmation'
 import NewPassword from './PasswordReset'
 import Login from './Login'
-import Signup from './Signup'
+// import Signup from './Signup'
 import NotFound from './NotFound'
 import { ConfigProvider } from 'antd'
 import ErrorBoundary from './ErrorBoundary'
@@ -90,7 +90,7 @@ const Routes = () => {
         <Route path="/signup">
           <AuthLayout
             backgroundImageClass="auth-image"
-            contentComponent={Signup}
+            contentComponent={Login}
           />
         </Route>
         <Route path="/login">
