@@ -176,7 +176,7 @@ export function Login() {
           data-cy="signupBtn"
           text={t('signup')}
           classes="bg-white text-green3 border-green3 mb-4 w-full signup-button"
-          onClick={() => history.push('/signup')}
+          onClick={() => history.push('/')}
         />
         <div className="text-black">
           <p>{t('learnMore')}</p>
