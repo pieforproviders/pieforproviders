@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Form, Input, Alert, Modal } from 'antd'
 import useHotjar from 'react-use-hotjar'
@@ -97,10 +97,6 @@ export function Login() {
         <h1 className="h1-large leading-8">{t('gettingStartedWelcome')}</h1>
         <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2>
         <div className="m-10">
-          <Link to="/signup" className="uppercase">
-            {t('signup')}
-          </Link>{' '}
-          {t('or ')}
           <h1 className="inline-block font-bold uppercase">{t('login')}</h1>
         </div>
       </div>
