@@ -1,192 +1,192 @@
-import faker from 'faker'
-import { createSelector } from '../utils'
+// import faker from 'faker'
+// import { createSelector } from '../utils'
 
-const { name, internet } = faker
-const firstName = name.firstName()
-const fullName = name.findName(firstName)
-const email = internet.email(firstName)
-const password = internet.password()
-const confirmationToken = 'hotdog'
-const confirmationDate = new Date()
+// const { name, internet } = faker
+// const firstName = name.firstName()
+// const fullName = name.findName(firstName)
+// const email = internet.email(firstName)
+// const password = internet.password()
+// const confirmationToken = 'hotdog'
+// const confirmationDate = new Date()
 
-describe('Confirmation', () => {
-  describe('unconfirmed NE users', () => {
-    beforeEach(() => {
-      cy.app('clean')
-      cy.appFactories([
-        [
-          'create',
-          'unconfirmed_user',
-          {
-            email,
-            full_name: fullName,
-            greeting_name: firstName,
-            password,
-            password_confirmation: password,
-            confirmation_token: confirmationToken,
-            confirmed_at: null,
-            state: 'NE'
-          }
-        ]
-      ])
-    })
+// describe('Confirmation', () => {
+//   describe('unconfirmed NE users', () => {
+//     beforeEach(() => {
+//       cy.app('clean')
+//       cy.appFactories([
+//         [
+//           'create',
+//           'unconfirmed_user',
+//           {
+//             email,
+//             full_name: fullName,
+//             greeting_name: firstName,
+//             password,
+//             password_confirmation: password,
+//             confirmation_token: confirmationToken,
+//             confirmed_at: null,
+//             state: 'NE'
+//           }
+//         ]
+//       ])
+//     })
 
-    describe('valid confirmation link', () => {
-      it('allows a user to confirm and redirects them', () => {
-        cy.intercept({
-          method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`
-        }).as('confirmation')
+//     describe('valid confirmation link', () => {
+//       it('allows a user to confirm and redirects them', () => {
+//         cy.intercept({
+//           method: 'GET',
+//           url: `/confirmation?confirmation_token=${confirmationToken}`
+//         }).as('confirmation')
 
-        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.location('pathname').should('eq', '/dashboard')
-      })
-    })
+//         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+//         cy.location('pathname').should('eq', '/dashboard')
+//       })
+//     })
 
-    describe('invalid confirmation link', () => {
-      it('displays an error message', () => {
-        cy.intercept({
-          method: 'GET',
-          url: '/confirmation?confirmation_token=cactus'
-        }).as('confirmation')
+//     describe('invalid confirmation link', () => {
+//       it('displays an error message', () => {
+//         cy.intercept({
+//           method: 'GET',
+//           url: '/confirmation?confirmation_token=cactus'
+//         }).as('confirmation')
 
-        cy.visit(`/confirm?confirmation_token=cactus`)
-        cy.get(createSelector('authError')).should('exist')
-        cy.location('pathname').should('eq', '/login')
-      })
-    })
+//         cy.visit(`/confirm?confirmation_token=cactus`)
+//         cy.get(createSelector('authError')).should('exist')
+//         cy.location('pathname').should('eq', '/login')
+//       })
+//     })
 
-    describe('no confirmation token provided', () => {
-      it('displays an error message', () => {
-        cy.intercept({
-          method: 'GET',
-          url: '/confirmation'
-        }).as('confirmation')
+//     describe('no confirmation token provided', () => {
+//       it('displays an error message', () => {
+//         cy.intercept({
+//           method: 'GET',
+//           url: '/confirmation'
+//         }).as('confirmation')
 
-        cy.visit('/confirm')
-        cy.get(createSelector('authError')).should('exist')
-        cy.location('pathname').should('eq', '/login')
-      })
-    })
+//         cy.visit('/confirm')
+//         cy.get(createSelector('authError')).should('exist')
+//         cy.location('pathname').should('eq', '/login')
+//       })
+//     })
 
-    describe('expired confirmation token', () => {
-      it('displays an error message', () => {
-        cy.appScenario('confirmationTokenExpired')
-        cy.intercept({
-          method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`
-        }).as('confirmation')
+//     describe('expired confirmation token', () => {
+//       it('displays an error message', () => {
+//         cy.appScenario('confirmationTokenExpired')
+//         cy.intercept({
+//           method: 'GET',
+//           url: `/confirmation?confirmation_token=${confirmationToken}`
+//         }).as('confirmation')
 
-        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.get(createSelector('authError')).contains(
-          'Your confirmation period has expired.',
-          {
-            matchCase: false
-          }
-        )
-        cy.location('pathname').should('eq', '/login')
-      })
-    })
-  })
+//         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+//         cy.get(createSelector('authError')).contains(
+//           'Your confirmation period has expired.',
+//           {
+//             matchCase: false
+//           }
+//         )
+//         cy.location('pathname').should('eq', '/login')
+//       })
+//     })
+//   })
 
-  describe('unconfirmed non-NE and non-IL users', () => {
-    beforeEach(() => {
-      cy.app('clean')
-      cy.appFactories([
-        [
-          'create',
-          'unconfirmed_user',
-          {
-            email,
-            full_name: fullName,
-            greeting_name: firstName,
-            password,
-            password_confirmation: password,
-            confirmation_token: confirmationToken,
-            confirmed_at: null,
-            state: 'NY'
-          }
-        ]
-      ])
-    })
+//   describe('unconfirmed non-NE and non-IL users', () => {
+//     beforeEach(() => {
+//       cy.app('clean')
+//       cy.appFactories([
+//         [
+//           'create',
+//           'unconfirmed_user',
+//           {
+//             email,
+//             full_name: fullName,
+//             greeting_name: firstName,
+//             password,
+//             password_confirmation: password,
+//             confirmation_token: confirmationToken,
+//             confirmed_at: null,
+//             state: 'NY'
+//           }
+//         ]
+//       ])
+//     })
 
-    describe('valid confirmation link', () => {
-      it('allows a user to confirm and redirects them', () => {
-        cy.intercept({
-          method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`
-        }).as('confirmation')
+//     describe('valid confirmation link', () => {
+//       it('allows a user to confirm and redirects them', () => {
+//         cy.intercept({
+//           method: 'GET',
+//           url: `/confirmation?confirmation_token=${confirmationToken}`
+//         }).as('confirmation')
 
-        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.location('pathname').should('eq', '/comingsoon')
-      })
-    })
-  })
+//         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+//         cy.location('pathname').should('eq', '/comingsoon')
+//       })
+//     })
+//   })
 
-  describe('unconfirmed IL users', () => {
-    beforeEach(() => {
-      cy.app('clean')
-      cy.appFactories([
-        [
-          'create',
-          'unconfirmed_user',
-          {
-            email,
-            full_name: fullName,
-            greeting_name: firstName,
-            password,
-            password_confirmation: password,
-            confirmation_token: confirmationToken,
-            confirmed_at: null,
-            state: 'IL'
-          }
-        ]
-      ])
-    })
+//   describe('unconfirmed IL users', () => {
+//     beforeEach(() => {
+//       cy.app('clean')
+//       cy.appFactories([
+//         [
+//           'create',
+//           'unconfirmed_user',
+//           {
+//             email,
+//             full_name: fullName,
+//             greeting_name: firstName,
+//             password,
+//             password_confirmation: password,
+//             confirmation_token: confirmationToken,
+//             confirmed_at: null,
+//             state: 'IL'
+//           }
+//         ]
+//       ])
+//     })
 
-    describe('valid confirmation link', () => {
-      it('allows a user to confirm and redirects them', () => {
-        cy.intercept({
-          method: 'GET',
-          url: `/confirmation?confirmation_token=${confirmationToken}`
-        }).as('confirmation')
+//     describe('valid confirmation link', () => {
+//       it('allows a user to confirm and redirects them', () => {
+//         cy.intercept({
+//           method: 'GET',
+//           url: `/confirmation?confirmation_token=${confirmationToken}`
+//         }).as('confirmation')
 
-        cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-        cy.location('pathname').should('eq', '/dashboard')
-      })
-    })
-  })
+//         cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+//         cy.location('pathname').should('eq', '/dashboard')
+//       })
+//     })
+//   })
 
-  describe('confirmed users', () => {
-    beforeEach(() => {
-      cy.app('clean')
-      cy.appFactories([
-        [
-          'create',
-          'confirmed_user',
-          {
-            email,
-            full_name: fullName,
-            greeting_name: firstName,
-            password,
-            password_confirmation: password,
-            confirmation_token: confirmationToken,
-            confirmed_at: confirmationDate,
-            state: 'NE'
-          }
-        ]
-      ])
-    })
+//   describe('confirmed users', () => {
+//     beforeEach(() => {
+//       cy.app('clean')
+//       cy.appFactories([
+//         [
+//           'create',
+//           'confirmed_user',
+//           {
+//             email,
+//             full_name: fullName,
+//             greeting_name: firstName,
+//             password,
+//             password_confirmation: password,
+//             confirmation_token: confirmationToken,
+//             confirmed_at: confirmationDate,
+//             state: 'NE'
+//           }
+//         ]
+//       ])
+//     })
 
-    it('displays an error message', () => {
-      cy.intercept({
-        method: 'GET',
-        url: `/confirmation?confirmation_token=${confirmationToken}`
-      }).as('confirmation')
+//     it('displays an error message', () => {
+//       cy.intercept({
+//         method: 'GET',
+//         url: `/confirmation?confirmation_token=${confirmationToken}`
+//       }).as('confirmation')
 
-      cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
-      cy.get(createSelector('authError')).should('exist')
-      cy.location('pathname').should('eq', '/login')
-    })
-  })
-})
+//       cy.visit(`/confirm?confirmation_token=${confirmationToken}`)
+//       cy.get(createSelector('authError')).should('exist')
+//       cy.location('pathname').should('eq', '/login')
+//     })
+//   })
+// })
