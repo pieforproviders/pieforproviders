@@ -1,106 +1,123 @@
-import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import React from 'react'
+// import { useHistory, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Form, Input, Alert, Modal } from 'antd'
-import useHotjar from 'react-use-hotjar'
-import { PaddedButton } from '_shared/PaddedButton'
-import { useApiResponse } from '_shared/_hooks/useApiResponse'
-import { PasswordResetRequest } from '../PasswordReset'
-import AuthStatusAlert from 'AuthStatusAlert'
-import { batch, useDispatch } from 'react-redux'
-import { addAuth, removeAuth } from '_reducers/authReducer'
-import { setUser } from '_reducers/userReducer'
-import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
+// import { Form, Input, Alert, Modal } from 'antd'
+// import useHotjar from 'react-use-hotjar'
+// import { PaddedButton } from '_shared/PaddedButton'
+// import { useApiResponse } from '_shared/_hooks/useApiResponse'
+// import { PasswordResetRequest } from '../PasswordReset'
+// // import AuthStatusAlert from 'AuthStatusAlert'
+// import { batch, useDispatch } from 'react-redux'
+// import { addAuth, removeAuth } from '_reducers/authReducer'
+// import { setUser } from '_reducers/userReducer'
+// import { useGoogleAnalytics } from '_shared/_hooks/useGoogleAnalytics'
 
 export function Login() {
-  const dispatch = useDispatch()
-  const location = useLocation()
-  const { sendGAEvent } = useGoogleAnalytics()
-  const { identifyHotjar } = useHotjar()
-  const [apiError, setApiError] = useState(null)
-  const [apiSuccess, setApiSuccess] = useState(null)
-  const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
-  const { makeRequest } = useApiResponse()
-  let history = useHistory()
+  // const dispatch = useDispatch()
+  // const location = useLocation()
+  // const { sendGAEvent } = useGoogleAnalytics()
+  // const { identifyHotjar } = useHotjar()
+  // const [apiError, setApiError] = useState(null)
+  // const [apiSuccess, setApiSuccess] = useState(null)
+  // const [showResetPasswordDialog, setShowResetPasswordDialog] = useState(false)
+  // const { makeRequest } = useApiResponse()
+  // let history = useHistory()
   const { t } = useTranslation()
 
-  useEffect(() => {
-    if (location.state?.error?.status) {
-      setApiSuccess(null)
-      setApiError({
-        status: location.state?.error?.status,
-        message: location.state?.error?.message,
-        attribute: location.state?.error?.attribute,
-        context: location.state?.error?.context,
-        type: location.state?.error?.type
-      })
-      window.history.replaceState(null, '')
-    }
-  }, [location])
+  // useEffect(() => {
+  //   if (location.state?.error?.status) {
+  //     setApiSuccess(null)
+  //     setApiError({
+  //       status: location.state?.error?.status,
+  //       message: location.state?.error?.message,
+  //       attribute: location.state?.error?.attribute,
+  //       context: location.state?.error?.context,
+  //       type: location.state?.error?.type
+  //     })
+  //     window.history.replaceState(null, '')
+  //   }
+  // }, [location])
 
-  useEffect(() => {
-    if (location.state?.success) {
-      setApiError(null)
-      setApiSuccess({
-        message: location.state.success.message
-      })
-      window.history.replaceState(null, '')
-    }
-  }, [location])
+  // useEffect(() => {
+  //   if (location.state?.success) {
+  //     setApiError(null)
+  //     setApiSuccess({
+  //       message: location.state.success.message
+  //     })
+  //     window.history.replaceState(null, '')
+  //   }
+  // }, [location])
 
-  const onFinish = async values => {
-    setApiSuccess(null)
-    setApiError(null)
-    const response = await makeRequest({
-      type: 'post',
-      url: '/login',
-      data: { user: values }
-    })
-    const authToken = response.headers.get('authorization')
-    if (!response.ok || authToken === null) {
-      const errorMessage = await response.json()
-      setApiError({
-        status: response.status,
-        message: errorMessage.error,
-        attribute: errorMessage.attribute,
-        type: errorMessage.type,
-        context: { email: values.email }
-      })
-    } else {
-      const resp = await response.json()
+  // const onFinish = async values => {
+  //   setApiSuccess(null)
+  //   setApiError(null)
+  //   const response = await makeRequest({
+  //     type: 'post',
+  //     url: '/login',
+  //     data: { user: values }
+  //   })
+  //   const authToken = response.headers.get('authorization')
+  //   if (!response.ok || authToken === null) {
+  //     const errorMessage = await response.json()
+  //     setApiError({
+  //       status: response.status,
+  //       message: errorMessage.error,
+  //       attribute: errorMessage.attribute,
+  //       type: errorMessage.type,
+  //       context: { email: values.email }
+  //     })
+  //   } else {
+  //     const resp = await response.json()
 
-      batch(() => {
-        dispatch(addAuth(authToken))
-        dispatch(setUser(resp))
-        identifyHotjar(resp.id ?? null, resp, console.info)
-      })
+  //     batch(() => {
+  //       dispatch(addAuth(authToken))
+  //       dispatch(setUser(resp))
+  //       identifyHotjar(resp.id ?? null, resp, console.info)
+  //     })
 
-      sendGAEvent('login success', { userId: resp.id })
+  //     sendGAEvent('login success', { userId: resp.id })
 
-      // currently only users from Nebraska are directed to the dashboard
-      if (resp.state === 'NE' || resp.state === 'IL') {
-        history.push('/dashboard')
-      } else {
-        history.push('/comingsoon')
-      }
-    }
-  }
+  //     // currently only users from Nebraska are directed to the dashboard
+  //     if (resp.state === 'NE' || resp.state === 'IL') {
+  //       history.push('/dashboard')
+  //     } else {
+  //       history.push('/comingsoon')
+  //     }
+  //   }
+  // }
 
-  const onChooseReset = () => {
-    dispatch(removeAuth())
-    history.push('/dashboard')
-  }
+  // const onChooseReset = () => {
+  //   dispatch(removeAuth())
+  //   history.push('/dashboard')
+  // }
 
   return (
     <main className="text-center">
       <div className="mb-8">
         <h1 className="h1-large leading-8">{t('gettingStartedWelcome')}</h1>
-        <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2>
-        <div className="m-10">
+        {/* <h2 className="mt-2 mb-5 eyebrow-small">{t('signupNote')}</h2> */}
+        {/* <div className="m-10">
           <h1 className="inline-block font-bold uppercase">{t('login')}</h1>
-        </div>
+        </div> */}
       </div>
-      {apiError && (
+      <div
+        style={{ height: '512px' }}
+        className="flex items-center justify-center"
+      >
+        <p className="text-center text-2xl">
+          Pie for Providers is not actively operating at this time.
+          <br />
+          Please reach out with any questions to:
+          <br />
+          <a
+            href="mailto:support@lillio.com"
+            className="font-bold no-underline"
+          >
+            support@lillio.com
+          </a>
+        </p>
+      </div>
+      {/* {apiError && (
         <Alert
           className="mb-2"
           message={
@@ -113,16 +130,16 @@ export function Login() {
           type="error"
           data-cy="authError"
         />
-      )}
-      {apiSuccess && (
+      )} */}
+      {/* {apiSuccess && (
         <Alert
           message={apiSuccess.message}
           type="success"
           className="mb-2"
           data-cy="successMessage"
         />
-      )}
-      <Form
+      )} */}
+      {/* <Form
         layout="vertical"
         name="login"
         onFinish={onFinish}
@@ -186,8 +203,8 @@ export function Login() {
             </a>
           </p>
         </div>
-      </Form>
-      <Form
+      </Form> */}
+      {/* <Form
         layout="vertical"
         name="reset-password"
         onFinish={onChooseReset}
@@ -212,8 +229,8 @@ export function Login() {
             data-cy="resetPasswordBtn"
           />
         </Form.Item>
-      </Form>
-      {showResetPasswordDialog && (
+      </Form> */}
+      {/* {showResetPasswordDialog && (
         <Modal
           centered
           open
@@ -228,7 +245,7 @@ export function Login() {
             onClose={() => setShowResetPasswordDialog(false)}
           />
         </Modal>
-      )}
+      )} */}
     </main>
   )
 }
