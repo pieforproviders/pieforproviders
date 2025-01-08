@@ -15,6 +15,8 @@ const doRender = () => {
 describe('<App />', () => {
   it('renders the Login page by default', () => {
     const { container } = doRender()
-    expect(container).toHaveTextContent('Sign Up')
+    expect(container).toHaveTextContent(
+      'Pie for Providers is not actively operating at this time.'
+    )
   })
 })
