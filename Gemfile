@@ -54,7 +54,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'bullet'
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
-  gem 'cypress-on-rails', '~> 1.13'
+  gem 'cypress-on-rails', '~> 1.17'
   gem 'factory_bot_rails' # we use factorybot for seeding so it must be in both groups
   gem 'pry'
   gem 'pry-remote'
