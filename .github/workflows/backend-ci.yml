@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Analyze code statically using Brakeman
         uses: artplan1/brakeman-action@v1.2.1
         with:
@@ -77,7 +77,7 @@ jobs:
           export POSTGRES_PASSWORD=postgres
           sudo -u postgres psql -U postgres -d postgres -c "alter user postgres with password 'postgres';"
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
